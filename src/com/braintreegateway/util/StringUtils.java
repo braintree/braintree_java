@@ -1,0 +1,45 @@
+package com.braintreegateway.util;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+public class StringUtils {
+
+    public static String dasherize(String str) {
+        return str == null ? null : str.replaceAll("([A-Z])", "-$0").replaceAll("_", "-").toLowerCase();
+    }
+
+    public static String getFileContents(String filename) throws IOException {
+        return inputStreamToString(getClassLoader().getResourceAsStream(filename));
+    }
+
+    public static String getFullPathOfFile(String filename) {
+        return getClassLoader().getResource(filename).getFile();
+    }
+
+    private static ClassLoader getClassLoader() {
+        return Thread.currentThread().getContextClassLoader();
+    }
+    
+    public static String inputStreamToString(InputStream inputStream) throws IOException {
+        InputStreamReader inputReader = new InputStreamReader(inputStream);
+        StringBuilder builder = new StringBuilder();
+        char[] buffer = new char[0x1000];
+        int bytesRead = inputReader.read(buffer, 0, buffer.length);
+        while (bytesRead >= 0) {
+            builder.append(buffer, 0, bytesRead);
+            bytesRead = inputReader.read(buffer, 0, buffer.length);
+        }
+        return builder.toString();
+    }
+    
+    public static String nullIfEmpty(String str) {
+        return str == null || str.isEmpty() ? null : str;
+    }
+
+    public static String underscore(String str) {
+        return str == null ? null : str.replaceAll("([A-Z])", "_$0").replaceAll("-", "_").toLowerCase();
+    }
+    
+}

@@ -1,0 +1,5 @@
+*.jar
+*.gz
+classes
+test-classes
+.DS_Store
