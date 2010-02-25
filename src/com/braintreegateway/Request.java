@@ -3,6 +3,10 @@ package com.braintreegateway;
 import java.net.URLEncoder;
 import java.util.Map;
 
+
+/**
+ * Abstract class for fluent interface request builders.
+ */
 public abstract class Request {
     public abstract String toXML();
     public abstract String toQueryString(String parent);

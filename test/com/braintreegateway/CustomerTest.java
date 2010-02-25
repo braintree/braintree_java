@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.UnexpectedException;
 
@@ -74,6 +75,12 @@ public class CustomerTest {
         Customer customer = result.getTarget();
         Assert.assertEquals("John", customer.getFirstName());
         Assert.assertEquals("Doe", customer.getLastName());
+    }
+    
+    @Test(expected = ForgedQueryStringException.class)
+    public void createViaTransparentRedirectThrowsWhenQueryStringHasBeenTamperedWith() {
+        String queryString = customerViaTR(new CustomerRequest(), new CustomerRequest(), gateway.customer().transparentRedirectURLForCreate());
+        gateway.customer().confirmTransparentRedirect(queryString + "this make it invalid");
     }
 
     @Test
@@ -336,7 +343,6 @@ public class CustomerTest {
         Assert.assertEquals("http://getbraintree.com", customer.getWebsite());
     }
 
-
     @Test
     public void updateToken() {
         Random rand = new Random();
@@ -436,5 +442,31 @@ public class CustomerTest {
             throw new UnexpectedException(e.getMessage());
         }
         return response;
+    }
+    
+    @Test
+    public void all() {
+        PagedCollection<Customer> pagedCollection = gateway.customer().all();
+
+        Assert.assertTrue(pagedCollection.getTotalItems() > 0);
+        Assert.assertTrue(pagedCollection.getPageSize() > 0);
+        Assert.assertEquals(1, pagedCollection.getCurrentPageNumber());
+        Assert.assertNotNull(pagedCollection.getItems().get(0));
+    }
+
+    @Test
+    public void allWithPageNumber() {
+        PagedCollection<Customer> pagedCollection = gateway.customer().all(2);
+        Assert.assertEquals(2, pagedCollection.getCurrentPageNumber());
+    }
+
+    @Test
+    public void allCanTraversePages() {
+        PagedCollection<Customer> pagedCollection = gateway.customer().all();
+        Assert.assertEquals(1, pagedCollection.getCurrentPageNumber());
+
+        PagedCollection<Customer> nextPage = pagedCollection.getNextPage();
+        Assert.assertEquals(2, nextPage.getCurrentPageNumber());
+        Assert.assertNotSame(pagedCollection.getItems().get(0).getId(), nextPage.getItems().get(0).getId());
     }
 }

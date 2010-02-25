@@ -2,6 +2,9 @@ package com.braintreegateway;
 
 import java.math.BigDecimal;
 
+/**
+ * Values for testing in the {@link Environment#SANDBOX SANDBOX} environment.
+ */
 public class SandboxValues {
     public enum CreditCardNumber {
         VISA("4111111111111111");

@@ -7,6 +7,9 @@ import java.util.Map;
 import com.braintreegateway.Transaction.Type;
 import com.braintreegateway.util.QueryString;
 
+/**
+ * Provides a fluent interface to build up requests around {@link Transaction Transactions}.
+ */
 public class TransactionRequest extends Request {
     private BigDecimal amount;
     private NestedAddressRequest<TransactionRequest> billingAddressRequest;

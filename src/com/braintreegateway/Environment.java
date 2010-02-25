@@ -1,9 +1,17 @@
 package com.braintreegateway;
 
+/**
+ * Indicates the environment of the Braintree Gateway with which to interact.
+ */
 public enum Environment {
+    /** For Braintree internal development. */
     DEVELOPMENT("http://localhost:" + developmentPort()),
-    SANDBOX("https://sandbox.braintreegateway.com:443"),
-    PRODUCTION("https://braintreegateway.com:443");
+    
+    /** For production. */
+    PRODUCTION("https://braintreegateway.com:443"),
+    
+    /** For merchant's to use during their development and testing. */
+    SANDBOX("https://sandbox.braintreegateway.com:443");
 
     public final String baseURL;
 

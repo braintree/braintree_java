@@ -2,6 +2,10 @@ package com.braintreegateway;
 
 import java.util.Calendar;
 
+import junit.framework.Assert;
+
+import com.braintreegateway.util.Crypto;
+
 public class TestHelper {
 
     public static void assertDatesEqual(Calendar first, Calendar second) {
@@ -28,4 +32,13 @@ public class TestHelper {
             throw new AssertionError(buffer.toString());
         }
     }
+    
+    public static void assertValidTrData(Configuration configuration, String trData) {
+        String[] dataSections = trData.split("\\|");
+        String trHash = dataSections[0];
+        String trContent = dataSections[1];
+        Assert.assertEquals(trHash, new Crypto().hmacHash(configuration.privateKey, trContent));
+    }
+
+
 }

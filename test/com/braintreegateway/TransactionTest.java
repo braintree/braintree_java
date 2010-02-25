@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
+import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Http;
@@ -44,20 +45,20 @@ public class TransactionTest {
     @Test
     public void trData() {
         String trData = gateway.trData(new TransactionRequest(), "http://example.com");
-        Assert.assertTrue(gateway.isTrDataValid(trData));
+        TestHelper.assertValidTrData(gateway.getConfiguration(), trData);
     }
 
     @Test
     public void saleTrData() {
         String trData = gateway.transaction().saleTrData(new TransactionRequest(), "http://example.com");
-        Assert.assertTrue(gateway.isTrDataValid(trData));
+        TestHelper.assertValidTrData(gateway.getConfiguration(), trData);
         Assert.assertTrue(trData.contains("sale"));
     }
 
     @Test
     public void creditTrData() {
         String trData = gateway.transaction().creditTrData(new TransactionRequest(), "http://example.com");
-        Assert.assertTrue(gateway.isTrDataValid(trData));
+        TestHelper.assertValidTrData(gateway.getConfiguration(), trData);
         Assert.assertTrue(trData.contains("credit"));
     }
 
@@ -79,6 +80,12 @@ public class TransactionTest {
         String queryString = transactionViaTR(trParams, request, gateway.transaction().transparentRedirectURLForCreate());
         Result<Transaction> result = gateway.transaction().confirmTransparentRedirect(queryString);
         Assert.assertTrue(result.isSuccess());
+    }
+    
+    @Test(expected = ForgedQueryStringException.class)
+    public void createViaTransparentRedirectThrowsWhenQueryStringHasBeenTamperedWith() {
+        String queryString = transactionViaTR(new TransactionRequest(), new TransactionRequest(), gateway.transaction().transparentRedirectURLForCreate());
+        gateway.transaction().confirmTransparentRedirect(queryString + "this make it invalid");
     }
 
     @Test
@@ -674,7 +681,7 @@ public class TransactionTest {
 
     @Test
     public void basicSearch() {
-        PagedCollection pagedCollection = gateway.transaction().search("411111");
+        PagedCollection<Transaction> pagedCollection = gateway.transaction().search("411111");
 
         Assert.assertTrue(pagedCollection.getTotalItems() > 0);
         Assert.assertTrue(pagedCollection.getPageSize() > 0);
@@ -684,18 +691,27 @@ public class TransactionTest {
 
     @Test
     public void basicSearchWithPageNumber() {
-        PagedCollection pagedCollection = gateway.transaction().search("411111", 2);
+        PagedCollection<Transaction> pagedCollection = gateway.transaction().search("411111", 2);
         Assert.assertEquals(2, pagedCollection.getCurrentPageNumber());
     }
 
     @Test
     public void basicSearchCanTraversePages() {
-        PagedCollection pagedCollection = gateway.transaction().search("411111");
+        PagedCollection<Transaction> pagedCollection = gateway.transaction().search("411111");
         Assert.assertEquals(1, pagedCollection.getCurrentPageNumber());
 
-        PagedCollection nextPage = pagedCollection.getNextPage();
+        PagedCollection<Transaction> nextPage = pagedCollection.getNextPage();
         Assert.assertEquals(2, nextPage.getCurrentPageNumber());
         Assert.assertNotSame(pagedCollection.getItems().get(0).getId(), nextPage.getItems().get(0).getId());
+    }
+    
+    @Test
+    public void basicSearchUpdatesCurrentPageSizeOnLastPage() {
+        PagedCollection<Transaction> pagedCollection = gateway.transaction().search("411111");
+        Assert.assertEquals(pagedCollection.getCurrentPageSize(), pagedCollection.getPageSize());
+        
+        pagedCollection = gateway.transaction().search("411111", pagedCollection.getTotalPages());
+        Assert.assertTrue(pagedCollection.getCurrentPageSize() < pagedCollection.getPageSize());
     }
 
     @Test
@@ -790,5 +806,12 @@ public class TransactionTest {
         String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><shipping/><type>sale</type></transaction>";
         Transaction transaction = new Transaction(new NodeWrapper(xml));
         Assert.assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
+    }
+
+    @Test
+    public void unrecognizedType() {
+        String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><shipping/><type>sale</type></transaction>";
+        Transaction transaction = new Transaction(new NodeWrapper(xml));
+        Assert.assertEquals(Transaction.Type.UNRECOGNIZED, transaction.getType());
     }
 }

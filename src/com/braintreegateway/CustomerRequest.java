@@ -5,6 +5,10 @@ import java.util.HashMap;
 
 import com.braintreegateway.util.QueryString;
 
+
+/**
+ * Provides a fluent interface to build up requests around {@link Customer Customers}.
+ */
 public class CustomerRequest extends Request {
     private String company;
     private String customerId;

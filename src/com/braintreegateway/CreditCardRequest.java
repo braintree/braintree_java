@@ -2,6 +2,10 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.QueryString;
 
+
+/**
+ * Provides a fluent interface to build up requests around {@link CreditCard CreditCards}.
+ */
 public class CreditCardRequest extends Request {
     private NestedAddressRequest<CreditCardRequest> billingAddressRequest;
     private String cardholderName;

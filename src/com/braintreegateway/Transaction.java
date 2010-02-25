@@ -4,29 +4,17 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Map;
 
+import com.braintreegateway.util.EnumUtils;
 import com.braintreegateway.util.NodeWrapper;
 
 public class Transaction {
 
     public enum Status {
         AUTHORIZED, AUTHORIZING, FAILED, GATEWAY_REJECTED, PROCESSOR_DECLINED, SETTLED, SETTLEMENT_FAILED, SUBMITTED_FOR_SETTLEMENT, UNKNOWN, UNRECOGNIZED, VOIDED;
-
-        public static Status findByStatus(String status) {
-            if (status == null) {
-                return null;
-            }
-
-            for (Status statusEnum : values()) {
-                if (statusEnum.toString().equals(status.toUpperCase())) {
-                    return statusEnum;
-                }
-            }
-            return UNRECOGNIZED;
-        }
     }
 
     public enum Type {
-        CREDIT, SALE;
+        CREDIT, SALE, UNRECOGNIZED;
     }
 
     private BigDecimal amount;
@@ -56,8 +44,8 @@ public class Transaction {
         processorResponseCode = node.findString("processor-response-code");
         processorResponseText = node.findString("processor-response-text");
         shippingAddress = new Address(node.findFirst("shipping"));
-        status = Status.findByStatus(node.findString("status"));
-        type = Type.valueOf(node.findString("type").toUpperCase());
+        status = EnumUtils.findByName(Status.class, node.findString("status"));
+        type = EnumUtils.findByName(Type.class, node.findString("type"));
         updatedAt = node.findDateTime("updated-at");
     }
 

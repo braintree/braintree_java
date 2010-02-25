@@ -64,9 +64,7 @@ public class Http {
                 connection.getOutputStream().write(postBody.getBytes("UTF-8"));
                 connection.getOutputStream().close();
             }
-            if (isErrorCode(connection.getResponseCode())) {
-                throwExceptionForStatusCode(connection.getResponseCode());
-            }
+            throwExceptionIfErrorStatusCode(connection.getResponseCode());
             if (requestMethod.equals(RequestMethod.DELETE)) {
                 return null;
             }
@@ -79,10 +77,6 @@ public class Http {
         } catch (IOException e) {
             throw new UnexpectedException(e.getMessage());
         }
-    }
-
-    private boolean isErrorCode(int responseCode) {
-        return responseCode != 200 && responseCode != 201 && responseCode != 422;
     }
 
     private HttpURLConnection buildConnection(RequestMethod requestMethod, String urlString) throws java.io.IOException {
@@ -98,21 +92,27 @@ public class Http {
         return connection;
     }
 
-    private void throwExceptionForStatusCode(int statusCode) {
-        switch (statusCode) {
-        case 401:
-            throw new AuthenticationException();
-        case 403:
-            throw new AuthorizationException();
-        case 404:
-            throw new NotFoundException();
-        case 500:
-            throw new ServerException();
-        case 503:
-            throw new DownForMaintenanceException();
-        default:
-            throw new UnexpectedException("Unexpected HTTP_RESPONSE " + statusCode);
+    public static void throwExceptionIfErrorStatusCode(int statusCode) {
+        if (isErrorCode(statusCode)) {
+            switch (statusCode) {
+            case 401:
+                throw new AuthenticationException();
+            case 403:
+                throw new AuthorizationException();
+            case 404:
+                throw new NotFoundException();
+            case 500:
+                throw new ServerException();
+            case 503:
+                throw new DownForMaintenanceException();
+            default:
+                throw new UnexpectedException("Unexpected HTTP_RESPONSE " + statusCode);
 
+            }
         }
+    }
+
+    private static boolean isErrorCode(int responseCode) {
+        return responseCode != 200 && responseCode != 201 && responseCode != 422;
     }
 }

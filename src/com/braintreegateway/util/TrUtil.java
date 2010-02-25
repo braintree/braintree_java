@@ -32,11 +32,12 @@ public class TrUtil {
         return trHash + "|" + trContent;
     }
 
-    public boolean validateTrData(String trData) {
-        String[] dataSections = trData.split("\\|");
-        String trHash = dataSections[0];
-        String trContent = dataSections[1];
-        return trHash.equals(new Crypto().hmacHash(configuration.privateKey, trContent));
+    public boolean isValidTrQueryString(String queryString) {
+        String[] pieces = queryString.split("&hash=");
+        String queryStringWithoutHash = pieces[0];
+        String hash = pieces[1];
+        
+        return hash.equals(new Crypto().hmacHash(configuration.privateKey, queryStringWithoutHash));
     }
 
     protected String encodeMap(Map<String, String> map) {

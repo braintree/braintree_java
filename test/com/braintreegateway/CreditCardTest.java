@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.UnexpectedException;
 
@@ -39,7 +40,7 @@ public class CreditCardTest {
     @Test
     public void trData() {
         String trData = gateway.trData(new CreditCardRequest(), "http://example.com");
-        Assert.assertTrue(gateway.isTrDataValid(trData));
+        TestHelper.assertValidTrData(gateway.getConfiguration(), trData);
     }
 
     @Test
@@ -120,6 +121,15 @@ public class CreditCardTest {
         Assert.assertTrue(card.getToken() != null);
     }
 
+    @Test(expected = ForgedQueryStringException.class)
+    public void createViaTransparentRedirectThrowsWhenQueryStringHasBeenTamperedWith() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest trParams = new CreditCardRequest().customerId(customer.getId());
+        
+        String queryString = creditCardViaTR(trParams, new CreditCardRequest(), gateway.creditCard().transparentRedirectURLForCreate());
+        gateway.creditCard().confirmTransparentRedirect(queryString + "this makes it invalid");
+    }
+    
     @Test
     public void update() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();

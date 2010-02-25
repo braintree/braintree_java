@@ -4,6 +4,15 @@ import java.util.Calendar;
 
 import com.braintreegateway.util.NodeWrapper;
 
+/**
+ * An address can belong to:
+ * <ul>
+ * <li>a CreditCard as the billing address 
+ * <li>a Customer as an address 
+ * <li>a Transaction as a billing or shipping address
+ * </ul>
+ *
+ */
 public class Address {
 
     private String company;

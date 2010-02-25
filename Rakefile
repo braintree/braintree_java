@@ -12,6 +12,7 @@ task :clean do
   sh "rm -f *.jar"
   sh "rm -rf classes/*"
   sh "rm -rf test-classes/*"
+  sh "rm -rf doc"
 end
 
 task :compile => :init do
@@ -31,6 +32,10 @@ end
 
 task :test => :compile_tests do
   sh "java -cp #{jar_name}:test-classes:#{lib_classpath} org.junit.runner.JUnitCore com.braintreegateway.AllTests"
+end
+
+task :javadoc do
+  sh "javadoc -sourcepath src -subpackages com.braintreegateway -d doc"
 end
 
 def lib_classpath

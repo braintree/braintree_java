@@ -2,6 +2,9 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.QueryString;
 
+/**
+ * Provides a fluent interface to build up requests around {@link Address Addresses}.
+ */
 public class AddressRequest extends Request {
 
     private String countryName;
