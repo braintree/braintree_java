@@ -28,6 +28,7 @@ public class CustomerRequest extends Request {
     }
 
     public CustomerRequest(TransactionRequest transactionRequest) {
+        this();
         this.parent = transactionRequest;
     }
 
@@ -106,7 +107,9 @@ public class CustomerRequest extends Request {
         builder.append(buildXMLElement("lastName", lastName));
         builder.append(buildXMLElement("phone", phone));
         builder.append(buildXMLElement("website", website));
-        builder.append(buildXMLElement("customFields", customFields));
+        if (customFields.size() > 0) {
+            builder.append(buildXMLElement("customFields", customFields));
+        }
         builder.append(buildXMLElement(creditCardRequest));
         builder.append("</customer>");
         return builder.toString();

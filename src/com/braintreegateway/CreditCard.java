@@ -6,16 +6,16 @@ import com.braintreegateway.util.NodeWrapper;
 
 public class CreditCard {
 
-    private Calendar createdAt;
-    private Calendar updatedAt;
+    private Address billingAddress;
     private String bin;
     private String cardholderName;
     private String cardType;
+    private Calendar createdAt;
     private String expirationMonth;
     private String expirationYear;
     private String last4;
     private String token;
-    private Address billingAddress;
+    private Calendar updatedAt;
 
     public CreditCard(NodeWrapper node) {
         token = node.findString("token");
@@ -34,16 +34,12 @@ public class CreditCard {
         }
     }
 
-    public Calendar getCreatedAt() {
-        return createdAt;
+    public Address getBillingAddress() {
+        return billingAddress;
     }
 
-    public Calendar getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public String getToken() {
-        return token;
+    public String getBin() {
+        return bin;
     }
 
     public String getCardholderName() {
@@ -52,6 +48,14 @@ public class CreditCard {
 
     public String getCardType() {
         return cardType;
+    }
+
+    public Calendar getCreatedAt() {
+        return createdAt;
+    }
+
+    public String getExpirationDate() {
+        return expirationMonth + "/" + expirationYear;
     }
 
     public String getExpirationMonth() {
@@ -66,16 +70,15 @@ public class CreditCard {
         return last4;
     }
 
-    public String getBin() {
-        return bin;
+    public String getMaskedNumber() {
+        return getBin() + "******" + getLast4();
     }
 
-    public String getExpirationDate() {
-        return expirationMonth + "/" + expirationYear;
+    public String getToken() {
+        return token;
     }
 
-    public Address getBillingAddress() {
-        return billingAddress;
+    public Calendar getUpdatedAt() {
+        return updatedAt;
     }
-
 }

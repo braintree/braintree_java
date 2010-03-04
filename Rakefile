@@ -35,7 +35,7 @@ task :test => :compile_tests do
 end
 
 task :javadoc do
-  sh "javadoc -sourcepath src -subpackages com.braintreegateway -d doc"
+  sh "javadoc -sourcepath src -subpackages com.braintreegateway -d doc -overview overview.html"
 end
 
 def lib_classpath

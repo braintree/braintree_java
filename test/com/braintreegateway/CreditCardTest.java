@@ -62,6 +62,7 @@ public class CreditCardTest {
         Assert.assertEquals("2012", card.getExpirationYear());
         Assert.assertEquals("05/2012", card.getExpirationDate());
         Assert.assertEquals("5100", card.getLast4());
+        Assert.assertEquals("510510******5100", card.getMaskedNumber());
         Assert.assertTrue(card.getToken() != null);
         Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getCreatedAt().get(Calendar.YEAR));
         Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getUpdatedAt().get(Calendar.YEAR));
