@@ -58,7 +58,7 @@ public class HttpTest {
     @Test
     public void sslCertificateSuccessful() {
         Http http = new Http(gateway.getAuthorizationHeader(), "https://qa-master.braintreegateway.com/merchants/integration_merchant_id", "1.0.0");
-        http.get("/customers/131866");
+        http.get("/customers");
     }
 
     @Test
