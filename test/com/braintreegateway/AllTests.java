@@ -24,6 +24,7 @@ import com.braintreegateway.util.TrUtilTest;
     QueryStringTest.class,
     StringUtilsTest.class,
     SubscriptionTest.class,
+    TransactionRequestTest.class,
     TransactionTest.class,
     TrUtilTest.class,
     ValidationErrorCodeTest.class,
