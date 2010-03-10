@@ -102,6 +102,7 @@ public class TransactionTest {
         Transaction transaction = result.getTarget();
 
         Assert.assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
+        Assert.assertNotNull(transaction.getProcessorAuthorizationCode());
         Assert.assertEquals(Transaction.Type.SALE, transaction.getType());
         Assert.assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
         Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));

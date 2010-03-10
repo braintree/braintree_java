@@ -1,6 +1,6 @@
-*.jar
-*.gz
-classes
-doc
-test-classes
+/*.jar
+/*.gz
+/classes
+/doc
+/test-classes
 .DS_Store
