@@ -1,3 +1,7 @@
+## 1.1.2
+
+* Added processorAuthorizationCode() to Transaction
+
 ## 1.1.1
 
 * Fixed a bug preventing TransactionRequest objects with nested Customer objects from building properly
