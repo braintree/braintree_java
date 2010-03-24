@@ -68,6 +68,7 @@ public class SubscriptionTest {
         Assert.assertEquals(Subscription.Status.ACTIVE, subscription.getStatus());
         Assert.assertEquals(new Integer(0), subscription.getFailureCount());
         Assert.assertEquals(false, subscription.hasTrialPeriod());
+        Assert.assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
         
         TestHelper.assertDatesEqual(expectedBillingPeriodEndDate, subscription.getBillingPeriodEndDate());
         TestHelper.assertDatesEqual(expectedBillingPeriodStartDate, subscription.getBillingPeriodStartDate());
@@ -176,6 +177,22 @@ public class SubscriptionTest {
     }
     
     @Test
+    public void setMerchantAccountId() {
+        Plan plan = Plan.PLAN_WITH_TRIAL;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId()).
+            price(new BigDecimal("482.48")).
+            merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID);
+
+        Result<Subscription> createResult = gateway.subscription().create(request);
+        Assert.assertTrue(createResult.isSuccess());
+        Subscription subscription = createResult.getTarget();
+
+        Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
+    }
+    
+    @Test
     public void hasTransactionOnCreateWithNoTrial() {
         Plan plan = Plan.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
@@ -246,6 +263,26 @@ public class SubscriptionTest {
         
         Assert.assertEquals(newId, subscription.getId());
         Assert.assertNotNull(gateway.subscription().find(newId));
+    }
+    
+    @Test
+    public void updateMerchantAccountId() {
+        Plan plan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest createRequest = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId());
+
+        Result<Subscription> createResult = gateway.subscription().create(createRequest);
+        Assert.assertTrue(createResult.isSuccess());
+
+        SubscriptionRequest updateRequest = new SubscriptionRequest()
+            .merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID);
+        Result<Subscription> result = gateway.subscription().update(createResult.getTarget().getId(), updateRequest);
+
+        Assert.assertTrue(result.isSuccess());
+        Subscription subscription = result.getTarget();
+
+        Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
     }
 
     @Test

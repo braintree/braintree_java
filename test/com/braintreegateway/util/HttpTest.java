@@ -11,9 +11,6 @@ import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Environment;
 import com.braintreegateway.exceptions.AuthenticationException;
-import com.braintreegateway.util.Http;
-import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.util.StringUtils;
 
 public class HttpTest {
 
@@ -57,7 +54,8 @@ public class HttpTest {
     
     @Test
     public void sslCertificateSuccessful() {
-        Http http = new Http(gateway.getAuthorizationHeader(), "https://qa-master.braintreegateway.com/merchants/integration_merchant_id", "1.0.0");
+        BraintreeGateway testGateway = new BraintreeGateway(Environment.DEVELOPMENT, "test_merchant_id", "test_public_key", "test_private_key");
+        Http http = new Http(testGateway.getAuthorizationHeader(), "https://qa-master.braintreegateway.com/merchants/test_merchant_id", "1.0.0");
         http.get("/customers");
     }
 

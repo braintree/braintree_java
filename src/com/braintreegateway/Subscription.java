@@ -16,6 +16,7 @@ public class Subscription {
     private Calendar firstBillingDate;
     private Boolean hasTrialPeriod;
     private String id;
+    private String merchantAccountId;
     private Calendar nextBillingDate;
     private String paymentMethodToken;
     private String planId;
@@ -39,6 +40,7 @@ public class Subscription {
         failureCount = node.findInteger("failure-count");
         firstBillingDate = node.findDate("first-billing-date");
         id = node.findString("id");
+        merchantAccountId = node.findString("merchant-account-id");
         nextBillingDate = node.findDate("next-billing-date");
         paymentMethodToken = node.findString("payment-method-token");
         planId = node.findString("plan-id");
@@ -71,6 +73,10 @@ public class Subscription {
 
     public Calendar getFirstBillingDate() {
         return firstBillingDate;
+    }
+
+    public String getMerchantAccountId() {
+        return merchantAccountId;
     }
 
     public Calendar getNextBillingDate() {
@@ -108,5 +114,4 @@ public class Subscription {
     public Boolean hasTrialPeriod() {
         return hasTrialPeriod;
     }
-
 }
