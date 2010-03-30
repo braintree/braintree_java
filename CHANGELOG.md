@@ -1,3 +1,7 @@
+## 1.1.3
+
+* Updated production URL
+
 ## 1.1.2
 
 * Added processorAuthorizationCode() to Transaction
