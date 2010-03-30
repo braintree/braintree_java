@@ -8,7 +8,7 @@ public enum Environment {
     DEVELOPMENT("http://localhost:" + developmentPort()),
     
     /** For production. */
-    PRODUCTION("https://braintreegateway.com:443"),
+    PRODUCTION("https://www.braintreegateway.com:443"),
     
     /** For merchant's to use during their development and testing. */
     SANDBOX("https://sandbox.braintreegateway.com:443");
