@@ -62,15 +62,13 @@ public class HttpTest {
 
     @Test(expected=AuthenticationException.class)
     public void sslCertificateSuccessfulInSandbox() {
-        BraintreeGateway testGateway = new BraintreeGateway(Environment.SANDBOX, "", "", "");
-        Http http = new Http(testGateway.getAuthorizationHeader(), "https://sandbox.braintreegateway.com/merchants/test_merchant_id", "test suite");
+        Http http = new Http("", Environment.SANDBOX.baseURL, "test suite");
         http.get("/");
     }
     
     @Test(expected=AuthenticationException.class)
     public void sslCertificateSuccessfulInProduction() {
-        BraintreeGateway testGateway = new BraintreeGateway(Environment.PRODUCTION, "", "", "");
-        Http http = new Http(testGateway.getAuthorizationHeader(), "https://www.braintreegateway.com/merchants/test_merchant_id", "test suite");
+        Http http = new Http("", Environment.PRODUCTION.baseURL, "test suite");
         http.get("/");
     }
     

@@ -26,7 +26,7 @@ public class BraintreeGatewayTest {
     @Test
     public void productionBaseMerchantUrl() {
         BraintreeGateway config = new BraintreeGateway(Environment.PRODUCTION, "production_merchant_id", "publicKey", "privateKey");
-        Assert.assertEquals("https://braintreegateway.com:443/merchants/production_merchant_id", config.baseMerchantURL());
+        Assert.assertEquals("https://www.braintreegateway.com:443/merchants/production_merchant_id", config.baseMerchantURL());
     }
 
     @Test
