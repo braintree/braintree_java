@@ -11,6 +11,7 @@ import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Environment;
 import com.braintreegateway.exceptions.AuthenticationException;
+import com.braintreegateway.exceptions.AuthorizationException;
 
 public class HttpTest {
 
@@ -52,13 +53,27 @@ public class HttpTest {
         new Http("bad auth", gateway.baseMerchantURL(), "1.0.0").get("/");
     }
     
-    @Test
-    public void sslCertificateSuccessful() {
-        BraintreeGateway testGateway = new BraintreeGateway(Environment.DEVELOPMENT, "test_merchant_id", "test_public_key", "test_private_key");
-        Http http = new Http(testGateway.getAuthorizationHeader(), "https://qa-master.braintreegateway.com/merchants/test_merchant_id", "1.0.0");
-        http.get("/customers");
+    @Test(expected=AuthenticationException.class)
+    public void sslCertificateSuccessfulInQA() {
+        BraintreeGateway testGateway = new BraintreeGateway(Environment.DEVELOPMENT, "", "", "");
+        Http http = new Http(testGateway.getAuthorizationHeader(), "https://qa-master.braintreegateway.com/merchants/test_merchant_id", "test suite");
+        http.get("/");
     }
 
+    @Test(expected=AuthenticationException.class)
+    public void sslCertificateSuccessfulInSandbox() {
+        BraintreeGateway testGateway = new BraintreeGateway(Environment.SANDBOX, "", "", "");
+        Http http = new Http(testGateway.getAuthorizationHeader(), "https://sandbox.braintreegateway.com/merchants/test_merchant_id", "test suite");
+        http.get("/");
+    }
+    
+    @Test(expected=AuthenticationException.class)
+    public void sslCertificateSuccessfulInProduction() {
+        BraintreeGateway testGateway = new BraintreeGateway(Environment.PRODUCTION, "", "", "");
+        Http http = new Http(testGateway.getAuthorizationHeader(), "https://www.braintreegateway.com/merchants/test_merchant_id", "test suite");
+        http.get("/");
+    }
+    
     @Test
     public void sslBadCertificate() throws Exception {
         startSSLServer();
