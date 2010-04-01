@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 import junit.framework.Assert;
 
+import com.braintreegateway.Transaction.Status;
 import com.braintreegateway.util.Crypto;
 
 public class TestHelper {
@@ -39,6 +40,32 @@ public class TestHelper {
         String trContent = dataSections[1];
         Assert.assertEquals(trHash, new Crypto().hmacHash(configuration.privateKey, trContent));
     }
-
-
+    
+    public static boolean pagedCollectionContains(PagedCollection<Subscription> collection, Subscription item) {
+        for (Subscription subscription : collection.getItems()) {
+            if (subscription.getId().equals(item.getId())) {
+                return true;
+            }
+        }
+        
+        if (collection.isLastPage()) {
+            return false;
+        }
+        
+        return pagedCollectionContains(collection.getNextPage(), item);
+    }
+    
+    public static boolean pagedCollectionContainsStatus(PagedCollection<Transaction> collection, Status status) {
+        for (Transaction transaction : collection.getItems()) {
+            if (transaction.getStatus().equals(status)) {
+                return true;
+            }
+        }
+        
+        if (collection.isLastPage()) {
+            return false;
+        }
+        
+        return pagedCollectionContainsStatus(collection.getNextPage(), status);
+    }
 }

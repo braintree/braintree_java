@@ -23,6 +23,7 @@ import com.braintreegateway.util.TrUtilTest;
     NodeWrapperTest.class,
     QueryStringTest.class,
     StringUtilsTest.class,
+    SubscriptionSearchRequestTest.class,
     SubscriptionTest.class,
     TransactionRequestTest.class,
     TransactionTest.class,

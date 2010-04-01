@@ -437,6 +437,116 @@ public class SubscriptionTest {
     }
     
     @Test
+    public void searchOnPlanIdIs() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        Plan triallessPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(triallessPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            planId().is(trialPlan.getId());
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
+        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+    }
+    
+    @Test
+    public void searchOnPlanIdIsNot() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        Plan triallessPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(triallessPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            planId().isNot(trialPlan.getId());
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription2));
+        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription1));
+    }
+    
+    @Test
+    public void searchOnPlanIdEndsWith() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        Plan triallessPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(triallessPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            planId().endsWith("trial_plan");
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
+        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+    }
+    
+    @Test
+    public void searchOnPlanIdStartsWith() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        Plan triallessPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(triallessPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            planId().startsWith("integration_trial_p");
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
+        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+    }
+    
+    @Test
+    public void searchOnPlanIdContains() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        Plan triallessPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(triallessPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            planId().contains("trial_p");
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
+        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+    }
+    
+    @Test
     public void unrecognizedStatus() {
         String xml = "<subscription><status>foobar</status></subscription>";
         Subscription transaction = new Subscription(new NodeWrapper(xml));

@@ -790,16 +790,16 @@ public class TransactionTest {
     
     @Test
     public void allStatuses() {
-        Assert.assertEquals(Transaction.Status.AUTHORIZING,              gateway.transaction().search("authorizing").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.AUTHORIZED,               gateway.transaction().search("authorized").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.GATEWAY_REJECTED,         gateway.transaction().search("gateway_rejected").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.FAILED,                   gateway.transaction().search("failed").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.PROCESSOR_DECLINED,       gateway.transaction().search("processor_declined").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.SETTLED,                  gateway.transaction().search("settled").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.SETTLEMENT_FAILED,        gateway.transaction().search("settlement_failed").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, gateway.transaction().search("submitted_for_settlement").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.UNKNOWN,                  gateway.transaction().search("unknown").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.VOIDED,                   gateway.transaction().search("voided").getItems().get(0).getStatus());
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("authorizing"), Transaction.Status.AUTHORIZING);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("authorized"), Transaction.Status.AUTHORIZED);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("gateway_rejected"), Transaction.Status.GATEWAY_REJECTED);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("failed"), Transaction.Status.FAILED);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("processor_declined"), Transaction.Status.PROCESSOR_DECLINED);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("settled"), Transaction.Status.SETTLED);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("settlement_failed"), Transaction.Status.SETTLEMENT_FAILED);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("submitted_for_settlement"), Transaction.Status.SUBMITTED_FOR_SETTLEMENT);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("unknown"), Transaction.Status.UNKNOWN);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("voided"), Transaction.Status.VOIDED);
     }
     
     @Test
