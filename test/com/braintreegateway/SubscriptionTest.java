@@ -2,8 +2,10 @@
 package com.braintreegateway;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
@@ -14,6 +16,7 @@ import org.junit.Test;
 
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.Subscription.Status;
 
 public class SubscriptionTest {
 
@@ -544,6 +547,57 @@ public class SubscriptionTest {
         PagedCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
         Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+    }
+    
+    @Test
+    public void searchOnStatusIn() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        gateway.subscription().cancel(subscription2.getId());
+        
+        List<Status> statuses = new ArrayList<Status>();
+        statuses.add(Status.ACTIVE);
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            status().in(statuses);
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
+        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+    }
+    
+    @Test
+    public void searchOnStatusInWithMultipleStatuses() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        gateway.subscription().cancel(subscription2.getId());
+        
+        List<Status> statuses = new ArrayList<Status>();
+        statuses.add(Status.ACTIVE);
+        statuses.add(Status.CANCELED);
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            status().in(statuses);
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription2));
     }
     
     @Test

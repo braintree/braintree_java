@@ -1,13 +1,8 @@
 package com.braintreegateway;
 
 public class TextNode extends SearchNode {
-
-    private String nodeName;
-    private SubscriptionSearchRequest parent;
-
     public TextNode(String nodeName, SubscriptionSearchRequest parent) {
-        this.nodeName = nodeName;
-        this.parent = parent;
+        super(nodeName, parent);
     }
 
     public SubscriptionSearchRequest is(String value) {
@@ -28,10 +23,5 @@ public class TextNode extends SearchNode {
 
     public SubscriptionSearchRequest contains(String value) {
         return assembleCriteria("contains", value);
-    }
-    
-    private SubscriptionSearchRequest assembleCriteria(String operation, String value) {
-        this.parent.addCriteria(this.nodeName, new SearchCriteria(operation, value));
-        return this.parent;
     }
 }
