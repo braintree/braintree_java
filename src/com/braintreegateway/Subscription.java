@@ -31,7 +31,20 @@ public class Subscription {
     }
 
     public enum Status {
-        ACTIVE, CANCELED, PAST_DUE, UNRECOGNIZED
+        ACTIVE("Active"), 
+        CANCELED("Canceled"), 
+        PAST_DUE("Past Due"),
+        UNRECOGNIZED("Unrecognized");
+        
+        private final String name;
+        
+        Status(String name) {
+            this.name = name;
+        }
+        
+        public String toString() {
+            return name;
+        }
     }
 
     public Subscription(NodeWrapper node) {
