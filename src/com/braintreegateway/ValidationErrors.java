@@ -64,7 +64,12 @@ public class ValidationErrors {
      * @return a {@link ValidationErrors} object.
      */
     public ValidationErrors forObject(String objectName) {
-        return nestedErrors.get(StringUtils.dasherize(objectName));
+        ValidationErrors errorsOnObject = nestedErrors.get(StringUtils.dasherize(objectName));
+        if (errorsOnObject == null) {
+            return new ValidationErrors();
+        } else {
+            return errorsOnObject;
+        }
     }
 
     /**
