@@ -36,7 +36,11 @@ end
 
 desc "generate javadoc"
 task :javadoc do
-  sh "javadoc -sourcepath src -subpackages com.braintreegateway -d doc -overview overview.html"
+  excludes = [
+    "com.braintreegateway.util",
+    "com.braintreegateway.org"
+  ]
+  sh "javadoc -sourcepath src -subpackages com.braintreegateway -exclude #{excludes.join(":")} -d doc -overview overview.html"
 end
 
 def lib_classpath
