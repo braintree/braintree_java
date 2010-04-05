@@ -10,7 +10,6 @@ public class TransactionPager implements Pager<Transaction> {
         this.query = query;
     }
 
-    @Override
     public PagedCollection<Transaction> getPage(int page) {
         return gateway.search(query, page);
     }

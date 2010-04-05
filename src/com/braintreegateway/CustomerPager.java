@@ -8,7 +8,6 @@ public class CustomerPager implements Pager<Customer> {
         this.gateway = gateway;
     }
 
-    @Override
     public PagedCollection<Customer> getPage(int page) {
         return gateway.all(page);
     }
