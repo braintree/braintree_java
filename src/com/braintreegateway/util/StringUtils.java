@@ -35,7 +35,7 @@ public class StringUtils {
     }
     
     public static String nullIfEmpty(String str) {
-        return str == null || str.isEmpty() ? null : str;
+        return str == null || str.length() == 0 ? null : str;
     }
 
     public static String underscore(String str) {

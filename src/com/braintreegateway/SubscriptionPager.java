@@ -9,7 +9,6 @@ public class SubscriptionPager implements Pager<Subscription> {
         this.search = search;
     }
 
-    @Override
     public PagedCollection<Subscription> getPage(int page) {
         return gateway.search(search, page);
     }

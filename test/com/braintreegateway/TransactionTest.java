@@ -303,7 +303,6 @@ public class TransactionTest {
 
         List<Address> addresses = new ArrayList<Address>(customer.getAddresses());
         Collections.sort(addresses, new Comparator<Address>() {
-            @Override
             public int compare(Address left, Address right) {
                 return left.getFirstName().compareTo(right.getFirstName());
             }
