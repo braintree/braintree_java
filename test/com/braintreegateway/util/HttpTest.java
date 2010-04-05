@@ -10,7 +10,9 @@ import org.junit.Test;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Environment;
+import com.braintreegateway.TestHelper;
 import com.braintreegateway.exceptions.AuthenticationException;
+import com.braintreegateway.exceptions.DownForMaintenanceException;
 
 public class HttpTest {
 
@@ -69,6 +71,29 @@ public class HttpTest {
     public void sslCertificateSuccessfulInProduction() {
         Http http = new Http("", Environment.PRODUCTION.baseURL, "test suite");
         http.get("/");
+    }
+    
+    @Test(expected=DownForMaintenanceException.class)
+    public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingServerToServer() {
+        CustomerRequest request = new CustomerRequest();
+        new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), "1.0.0").put("/test/maintenance", request);
+    }
+    
+    @Test(expected=DownForMaintenanceException.class)
+    public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingTR() {
+        CustomerRequest request = new CustomerRequest();
+        CustomerRequest trParams = new CustomerRequest();
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.getConfiguration().baseMerchantURL + "/test/maintenance");
+        gateway.customer().confirmTransparentRedirect(queryString);
+    }
+    
+    @Test(expected=AuthenticationException.class)
+    public void authenticationExceptionRaisedWhenBadCredentialsUsingTR() {
+        CustomerRequest request = new CustomerRequest();
+        CustomerRequest trParams = new CustomerRequest();
+        BraintreeGateway gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "bad_public", "bad_private");
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.customer().transparentRedirectURLForCreate());
+        gateway.customer().confirmTransparentRedirect(queryString);
     }
     
     @Test

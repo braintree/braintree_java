@@ -1,10 +1,6 @@
 package com.braintreegateway;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -22,7 +18,6 @@ import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
@@ -77,14 +72,14 @@ public class TransactionTest {
         TransactionRequest trParams = new TransactionRequest().
             type(Transaction.Type.SALE);
 
-        String queryString = transactionViaTR(trParams, request, gateway.transaction().transparentRedirectURLForCreate());
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transaction().transparentRedirectURLForCreate());
         Result<Transaction> result = gateway.transaction().confirmTransparentRedirect(queryString);
         Assert.assertTrue(result.isSuccess());
     }
     
     @Test(expected = ForgedQueryStringException.class)
     public void createViaTransparentRedirectThrowsWhenQueryStringHasBeenTamperedWith() {
-        String queryString = transactionViaTR(new TransactionRequest(), new TransactionRequest(), gateway.transaction().transparentRedirectURLForCreate());
+        String queryString = TestHelper.simulateFormPostForTR(gateway, new TransactionRequest(), new TransactionRequest(), gateway.transaction().transparentRedirectURLForCreate());
         gateway.transaction().confirmTransparentRedirect(queryString + "this make it invalid");
     }
 
@@ -756,36 +751,6 @@ public class TransactionTest {
         
         Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_REFUND_UNLESS_SETTLED, 
                 result.getErrors().forObject("transaction").onField("base").get(0).getCode());
-    }
-
-    private String transactionViaTR(TransactionRequest trParams, Request request, String redirectURL) {
-        String response = "";
-        try {
-            String trData = gateway.trData(trParams, "http://example.com");
-            String postData = "tr_data=" + URLEncoder.encode(trData, "UTF-8") + "&";
-            postData += request.toQueryString();
-
-            URL url = new URL(redirectURL);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-            connection.addRequestProperty("Accept", "application/xml");
-            connection.addRequestProperty("User-Agent", "Braintree Java");
-            connection.addRequestProperty("X-ApiVersion", "1");
-            connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.getOutputStream().write(postData.getBytes("UTF-8"));
-            connection.getOutputStream().close();
-            if (connection.getResponseCode() == 422) {
-                connection.getErrorStream();
-            } else {
-                connection.getInputStream();
-            }
-            response = connection.getURL().getQuery();
-        } catch (IOException e) {
-            throw new UnexpectedException(e.getMessage());
-        }
-
-        return response;
     }
     
     @Test

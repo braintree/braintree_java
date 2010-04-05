@@ -1,9 +1,5 @@
 package com.braintreegateway;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -13,7 +9,6 @@ import org.junit.Test;
 
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.exceptions.UnexpectedException;
 
 public class CreditCardTest {
 
@@ -109,7 +104,7 @@ public class CreditCardTest {
             number("5105105105105100").
             expirationDate("05/12");
 
-        String queryString = creditCardViaTR(trParams, request, gateway.creditCard().transparentRedirectURLForCreate());
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.creditCard().transparentRedirectURLForCreate());
         Result<CreditCard> result = gateway.creditCard().confirmTransparentRedirect(queryString);
         Assert.assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
@@ -127,7 +122,7 @@ public class CreditCardTest {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest trParams = new CreditCardRequest().customerId(customer.getId());
         
-        String queryString = creditCardViaTR(trParams, new CreditCardRequest(), gateway.creditCard().transparentRedirectURLForCreate());
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, new CreditCardRequest(), gateway.creditCard().transparentRedirectURLForCreate());
         gateway.creditCard().confirmTransparentRedirect(queryString + "this makes it invalid");
     }
     
@@ -181,7 +176,7 @@ public class CreditCardTest {
         CreditCardRequest request = new CreditCardRequest().
             cardholderName("joe cool");
 
-        String queryString = creditCardViaTR(trParams, request, gateway.creditCard().transparentRedirectURLForUpdate());
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.creditCard().transparentRedirectURLForUpdate());
         Result<CreditCard> result = gateway.creditCard().confirmTransparentRedirect(queryString);
         Assert.assertTrue(result.isSuccess());
         CreditCard updatedCard = result.getTarget();
@@ -323,35 +318,5 @@ public class CreditCardTest {
         Assert.assertFalse(result.isSuccess());
         CreditCardVerification verification = result.getCreditCardVerification();
         Assert.assertEquals("processor_declined", verification.getStatus());
-    }
-
-    private String creditCardViaTR(Request trParams, CreditCardRequest request, String redirectURL) {
-        String response = "";
-        try {
-            String trData = gateway.trData(trParams, "http://example.com");
-            String postData = "tr_data=" + URLEncoder.encode(trData, "UTF-8") + "&";
-            postData += request.toQueryString();
-
-            URL url = new URL(redirectURL);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-            connection.addRequestProperty("Accept", "application/xml");
-            connection.addRequestProperty("User-Agent", "Braintree Java");
-            connection.addRequestProperty("X-ApiVersion", "1");
-            connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.getOutputStream().write(postData.getBytes("UTF-8"));
-            connection.getOutputStream().close();
-            if (connection.getResponseCode() == 422) {
-                connection.getErrorStream();
-            } else {
-                connection.getInputStream();
-            }
-            response = connection.getURL().getQuery();
-        } catch (IOException e) {
-            throw new UnexpectedException(e.getMessage());
-        }
-
-        return response;
     }
 }
