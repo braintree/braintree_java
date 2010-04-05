@@ -3,6 +3,9 @@ package com.braintreegateway;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Provides a fluent interface to build up requests around {@link Subscription} searches.
+ */
 public class SubscriptionSearchRequest extends Request {
     private Map<String, SearchCriteria> criteria;
     private Map<String, SearchCriteria> multiValueCriteria;
