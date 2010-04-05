@@ -1,3 +1,7 @@
+## 1.1.4
+
+* Added java 1.5 compatibility
+
 ## 1.1.3
 
 * Updated production URL
