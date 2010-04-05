@@ -731,7 +731,7 @@ public class TransactionTest {
     }
 
     private void settle(String transactionId) {
-        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), "1.0.0").put("/transactions/" + transactionId + "/settle");
+        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), gateway.getVersion()).put("/transactions/" + transactionId + "/settle");
         Assert.assertTrue(response.isSuccess());
     }
 
