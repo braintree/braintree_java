@@ -116,7 +116,6 @@ public class ValidationErrorsTest {
 
         List<ValidationError> validationErrors = new ArrayList<ValidationError>(errors.getAllDeepValidationErrors());
         Collections.sort(validationErrors, new Comparator<ValidationError>() {
-            @Override
             public int compare(ValidationError left, ValidationError right) {
                 return left.getCode().compareTo(right.getCode());
             }
