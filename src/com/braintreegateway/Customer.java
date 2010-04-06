@@ -97,6 +97,4 @@ public class Customer {
     public List<CreditCard> getCreditCards() {
         return Collections.unmodifiableList(creditCards);
     }
-
-
 }

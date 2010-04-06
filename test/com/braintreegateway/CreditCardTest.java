@@ -1,5 +1,6 @@
 package com.braintreegateway;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -254,6 +255,31 @@ public class CreditCardTest {
         Assert.assertEquals("2012", found.getExpirationYear());
         Assert.assertEquals("05/2012", found.getExpirationDate());
         Assert.assertEquals("5100", found.getLast4());
+    }
+    
+    @Test
+    public void findReturnsAssociatedSubscriptions() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest cardRequest = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12");
+        CreditCard card = gateway.creditCard().create(cardRequest).getTarget();
+        String id = "subscription-id-" + new Random().nextInt();
+        SubscriptionRequest subscriptionRequest = new SubscriptionRequest().
+            id(id).
+            planId("integration_trialless_plan").
+            paymentMethodToken(card.getToken()).
+            price(new BigDecimal("1.00"));
+        Subscription subscription = gateway.subscription().create(subscriptionRequest).getTarget();
+        
+        CreditCard foundCard = gateway.creditCard().find(card.getToken());
+        
+        Assert.assertEquals(subscription.getId(), foundCard.getSubscriptions().get(0).getId());
+        Assert.assertEquals(new BigDecimal("1.00"), foundCard.getSubscriptions().get(0).getPrice());
+        Assert.assertEquals("integration_trialless_plan", foundCard.getSubscriptions().get(0).getPlanId());
     }
 
     @Test(expected = NotFoundException.class)

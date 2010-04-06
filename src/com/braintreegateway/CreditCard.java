@@ -1,6 +1,8 @@
 package com.braintreegateway;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import com.braintreegateway.util.NodeWrapper;
 
@@ -16,6 +18,7 @@ public class CreditCard {
     private String last4;
     private String token;
     private Calendar updatedAt;
+    private List<Subscription> subscriptions;
 
     public CreditCard(NodeWrapper node) {
         token = node.findString("token");
@@ -31,6 +34,10 @@ public class CreditCard {
         NodeWrapper billingAddressResponse = node.findFirst("billing-address");
         if (billingAddressResponse != null) {
             billingAddress = new Address(billingAddressResponse);
+        }
+        subscriptions = new ArrayList<Subscription>();
+        for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
+            subscriptions.add(new Subscription(subscriptionResponse));
         }
     }
 
@@ -80,5 +87,9 @@ public class CreditCard {
 
     public Calendar getUpdatedAt() {
         return updatedAt;
+    }
+
+    public List<Subscription> getSubscriptions() {
+        return subscriptions;
     }
 }
