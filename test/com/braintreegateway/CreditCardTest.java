@@ -118,6 +118,58 @@ public class CreditCardTest {
         Assert.assertTrue(card.getToken() != null);
     }
 
+    @Test
+    public void createViaTransparentRedirectWithMakeDefaultFlagInTRParams() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+
+        CreditCardRequest request1 = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12");
+
+        gateway.creditCard().create(request1);
+
+        CreditCardRequest trParams = new CreditCardRequest().
+            customerId(customer.getId()).
+            options().
+                makeDefault(true).
+                done();
+
+        CreditCardRequest request2 = new CreditCardRequest().
+            number("5105105105105100").
+            expirationDate("05/12");
+
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request2, gateway.creditCard().transparentRedirectURLForCreate());
+        CreditCard card = gateway.creditCard().confirmTransparentRedirect(queryString).getTarget();
+        Assert.assertTrue(card.isDefault());
+    }
+
+    @Test
+    public void createViaTransparentRedirectWithMakeDefaultFlagInRequest() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+
+        CreditCardRequest request1 = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12");
+
+        gateway.creditCard().create(request1);
+
+        CreditCardRequest trParams = new CreditCardRequest().
+            customerId(customer.getId());
+
+        CreditCardRequest request2 = new CreditCardRequest().
+            number("5105105105105100").
+            expirationDate("05/12").
+            options().
+                makeDefault(true).
+                done();
+
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request2, gateway.creditCard().transparentRedirectURLForCreate());
+        CreditCard card = gateway.creditCard().confirmTransparentRedirect(queryString).getTarget();
+        Assert.assertTrue(card.isDefault());
+    }
+
     @Test(expected = ForgedQueryStringException.class)
     public void createViaTransparentRedirectThrowsWhenQueryStringHasBeenTamperedWith() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -145,7 +197,6 @@ public class CreditCardTest {
             options().
                 makeDefault(true).
                 done();
-
 
         CreditCard card1 = gateway.creditCard().create(request1).getTarget();
         CreditCard card2 = gateway.creditCard().create(request2).getTarget();

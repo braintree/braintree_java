@@ -105,12 +105,12 @@ public class CreditCardRequest extends Request {
     public String toQueryString(String root) {
         return new QueryString().
             append(parentBracketChildString(root, "billing_address"), billingAddressRequest).
-            append(parentBracketChildString(root, "options"), optionsRequest).
-            append(parentBracketChildString(root, "customer_id"), customerId).
             append(parentBracketChildString(root, "cardholder_name"), cardholderName).
+            append(parentBracketChildString(root, "customer_id"), customerId).
             append(parentBracketChildString(root, "cvv"), cvv).
-            append(parentBracketChildString(root, "number"), number).
             append(parentBracketChildString(root, "expiration_date"), expirationDate).
+            append(parentBracketChildString(root, "number"), number).
+            append(parentBracketChildString(root, "options"), optionsRequest).
             append(parentBracketChildString(root, "token"), token).
             append("payment_method_token", paymentMethodToken).
             toString();

@@ -33,6 +33,7 @@ public class OptionsRequest extends Request {
 
     public String toQueryString(String root) {
         return new QueryString().
+            append(parentBracketChildString(root, "make_default"), makeDefault).
             append(parentBracketChildString(root, "verify_card"), verifyCard).
             toString();
     }
