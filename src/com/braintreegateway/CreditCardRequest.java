@@ -12,6 +12,7 @@ public class CreditCardRequest extends Request {
     private String customerId;
     private String cvv;
     private String expirationDate;
+    private boolean isDefault;
     private String number;
     private OptionsRequest optionsRequest;
     private CustomerRequest parent;
@@ -42,6 +43,11 @@ public class CreditCardRequest extends Request {
 
     public CreditCardRequest cvv(String cvv) {
         this.cvv = cvv;
+        return this;
+    }
+
+    public CreditCardRequest isDefault(boolean isDefault) {
+        this.isDefault = isDefault;
         return this;
     }
 
@@ -91,6 +97,7 @@ public class CreditCardRequest extends Request {
         builder.append(buildXMLElement("customerId", customerId));
         builder.append(buildXMLElement("cardholderName", cardholderName));
         builder.append(buildXMLElement("cvv", cvv));
+        builder.append(buildXMLElement("default", isDefault));
         builder.append(buildXMLElement("number", number));
         builder.append(buildXMLElement("expirationDate", expirationDate));
         builder.append(buildXMLElement("token", token));
@@ -115,5 +122,4 @@ public class CreditCardRequest extends Request {
             append("payment_method_token", paymentMethodToken).
             toString();
     }
-
 }

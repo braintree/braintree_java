@@ -15,6 +15,7 @@ public class CreditCard {
     private Calendar createdAt;
     private String expirationMonth;
     private String expirationYear;
+    private boolean isDefault;
     private String last4;
     private String token;
     private Calendar updatedAt;
@@ -29,6 +30,7 @@ public class CreditCard {
         cardholderName = node.findString("cardholder-name");
         expirationMonth = node.findString("expiration-month");
         expirationYear = node.findString("expiration-year");
+        isDefault = node.findBoolean("default");
         last4 = node.findString("last-4");
         token = node.findString("token");
         NodeWrapper billingAddressResponse = node.findFirst("billing-address");
@@ -91,5 +93,9 @@ public class CreditCard {
 
     public List<Subscription> getSubscriptions() {
         return subscriptions;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
     }
 }

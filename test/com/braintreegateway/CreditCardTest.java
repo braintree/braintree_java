@@ -127,6 +127,31 @@ public class CreditCardTest {
         gateway.creditCard().confirmTransparentRedirect(queryString + "this makes it invalid");
     }
     
+    @Test 
+    public void createWithDefaultFlag() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+
+        CreditCardRequest request1 = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            number("5105105105105100").
+            expirationDate("05/12");
+
+        CreditCardRequest request2 = new CreditCardRequest().
+            customerId(customer.getId()).
+            isDefault(true).
+            cardholderName("John Doe").
+            number("5105105105105100").
+            expirationDate("05/12");
+
+
+        CreditCard card1 = gateway.creditCard().create(request1).getTarget();
+        CreditCard card2 = gateway.creditCard().create(request2).getTarget();
+        
+        Assert.assertFalse(gateway.creditCard().find(card1.getToken()).isDefault());
+        Assert.assertTrue(gateway.creditCard().find(card2.getToken()).isDefault());
+    }
+    
     @Test
     public void update() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -160,6 +185,29 @@ public class CreditCardTest {
         Assert.assertTrue(updatedCard.getToken() != card.getToken());
     }
 
+    @Test
+    public void updateWithDefaultFlag() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12");
+        
+        CreditCard card1 = gateway.creditCard().create(request).getTarget();
+        CreditCard card2 = gateway.creditCard().create(request).getTarget();
+        
+        Assert.assertTrue(card1.isDefault());
+        Assert.assertFalse(card2.isDefault());
+        
+        gateway.creditCard().update(card2.getToken(), new CreditCardRequest().isDefault(true));
+        Assert.assertFalse(gateway.creditCard().find(card1.getToken()).isDefault());
+        Assert.assertTrue(gateway.creditCard().find(card2.getToken()).isDefault());
+        
+        gateway.creditCard().update(card1.getToken(), new CreditCardRequest().isDefault(true));
+        Assert.assertTrue(gateway.creditCard().find(card1.getToken()).isDefault());
+        Assert.assertFalse(gateway.creditCard().find(card2.getToken()).isDefault());
+    }
+    
     @Test
     public void updateViaTransparentRedirect() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
