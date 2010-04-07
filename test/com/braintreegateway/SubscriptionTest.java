@@ -563,11 +563,8 @@ public class SubscriptionTest {
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
         gateway.subscription().cancel(subscription2.getId());
         
-        List<Status> statuses = new ArrayList<Status>();
-        statuses.add(Status.ACTIVE);
-        
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            status().in(statuses);
+            status().in(Status.ACTIVE);
         
         PagedCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
@@ -575,7 +572,7 @@ public class SubscriptionTest {
     }
     
     @Test
-    public void searchOnStatusInWithMultipleStatuses() {
+    public void searchOnStatusInWithMultipleStatusesAsList() {
         Plan trialPlan = Plan.PLAN_WITH_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
@@ -594,6 +591,28 @@ public class SubscriptionTest {
         
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
             status().in(statuses);
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription2));
+    }
+    
+    @Test
+    public void searchOnStatusInWithMultipleStatuses() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        gateway.subscription().cancel(subscription2.getId());
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            status().in(Status.ACTIVE, Status.CANCELED);
         
         PagedCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
