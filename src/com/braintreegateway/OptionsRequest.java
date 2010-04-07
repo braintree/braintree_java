@@ -5,7 +5,7 @@ import com.braintreegateway.util.QueryString;
 public class OptionsRequest extends Request {
     private CreditCardRequest parent;
     private String verifyCard;
-    private Boolean makeDefault;
+    private boolean makeDefault;
 
     public OptionsRequest(CreditCardRequest parent) {
         this.parent = parent;
@@ -24,7 +24,9 @@ public class OptionsRequest extends Request {
         StringBuilder builder = new StringBuilder();
         builder.append("<options>");
         builder.append(buildXMLElement("verifyCard", verifyCard));
-        builder.append(buildXMLElement("makeDefault", makeDefault));
+        if (makeDefault) {
+            builder.append(buildXMLElement("makeDefault", makeDefault));
+        }
         builder.append("</options>");
         return builder.toString();
     }
