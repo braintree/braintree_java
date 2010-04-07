@@ -139,10 +139,12 @@ public class CreditCardTest {
 
         CreditCardRequest request2 = new CreditCardRequest().
             customerId(customer.getId()).
-            isDefault(true).
             cardholderName("John Doe").
             number("5105105105105100").
-            expirationDate("05/12");
+            expirationDate("05/12").
+            options().
+                makeDefault(true).
+                done();
 
 
         CreditCard card1 = gateway.creditCard().create(request1).getTarget();
@@ -199,11 +201,11 @@ public class CreditCardTest {
         Assert.assertTrue(card1.isDefault());
         Assert.assertFalse(card2.isDefault());
         
-        gateway.creditCard().update(card2.getToken(), new CreditCardRequest().isDefault(true));
+        gateway.creditCard().update(card2.getToken(), new CreditCardRequest().options().makeDefault(true).done());
         Assert.assertFalse(gateway.creditCard().find(card1.getToken()).isDefault());
         Assert.assertTrue(gateway.creditCard().find(card2.getToken()).isDefault());
         
-        gateway.creditCard().update(card1.getToken(), new CreditCardRequest().isDefault(true));
+        gateway.creditCard().update(card1.getToken(), new CreditCardRequest().options().makeDefault(true).done());
         Assert.assertTrue(gateway.creditCard().find(card1.getToken()).isDefault());
         Assert.assertFalse(gateway.creditCard().find(card2.getToken()).isDefault());
     }

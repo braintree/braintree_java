@@ -5,6 +5,7 @@ import com.braintreegateway.util.QueryString;
 public class OptionsRequest extends Request {
     private CreditCardRequest parent;
     private String verifyCard;
+    private Boolean makeDefault;
 
     public OptionsRequest(CreditCardRequest parent) {
         this.parent = parent;
@@ -23,6 +24,7 @@ public class OptionsRequest extends Request {
         StringBuilder builder = new StringBuilder();
         builder.append("<options>");
         builder.append(buildXMLElement("verifyCard", verifyCard));
+        builder.append(buildXMLElement("makeDefault", makeDefault));
         builder.append("</options>");
         return builder.toString();
     }
@@ -35,5 +37,10 @@ public class OptionsRequest extends Request {
 
     public String toQueryString() {
         return toQueryString("options");
+    }
+
+    public OptionsRequest makeDefault(boolean makeDefault) {
+        this.makeDefault = makeDefault;
+        return this;
     }
 }
