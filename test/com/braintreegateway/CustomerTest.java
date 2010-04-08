@@ -167,7 +167,7 @@ public class CustomerTest {
                 cvv("123").
                 expirationDate("05/12").
                 options().
-                    verifyCard("true").
+                    verifyCard(true).
                     done().
                 done().
             lastName("Jones");
@@ -197,7 +197,7 @@ public class CustomerTest {
                 cvv("123").
                 expirationDate("05/12").
                 options().
-                    verifyCard("true").
+                    verifyCard(true).
                     done().
                 done().
             lastName("Jones");

@@ -421,7 +421,7 @@ public class CreditCardTest {
             number("4111111111111111").
             expirationDate("05/12").
             options().
-                verifyCard("true").
+                verifyCard(true).
                 done();
 
         Result<CreditCard> result = gateway.creditCard().create(request);
@@ -438,7 +438,7 @@ public class CreditCardTest {
             number("5105105105105100").
             expirationDate("05/12").
             options().
-                verifyCard("true").
+                verifyCard(true).
                 done();
 
         Result<CreditCard> result = gateway.creditCard().create(request);

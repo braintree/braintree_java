@@ -4,7 +4,7 @@ import com.braintreegateway.util.QueryString;
 
 public class OptionsRequest extends Request {
     private CreditCardRequest parent;
-    private String verifyCard;
+    private boolean verifyCard;
     private boolean makeDefault;
 
     public OptionsRequest(CreditCardRequest parent) {
@@ -15,7 +15,7 @@ public class OptionsRequest extends Request {
         return parent;
     }
 
-    public OptionsRequest verifyCard(String verifyCard) {
+    public OptionsRequest verifyCard(boolean verifyCard) {
         this.verifyCard = verifyCard;
         return this;
     }

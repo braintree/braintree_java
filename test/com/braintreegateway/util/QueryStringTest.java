@@ -73,7 +73,7 @@ public class QueryStringTest {
                 done().
             options().
                 makeDefault(true).
-                verifyCard("true").
+                verifyCard(true).
                 done();
 
         String actual = new QueryString().append("[credit_card]", request).toString();
