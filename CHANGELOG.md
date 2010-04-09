@@ -1,3 +1,11 @@
+## 1.2.0
+
+* Added option to change default credit card for a customer
+* Added subscription search
+* Return associated subscriptions when finding credit cards
+* Updated forObject to return an empty ValidationErrors object instead of null if there are no errors
+* Raise down for maintenance exception instead of forged query string when down for maintenance
+
 ## 1.1.4
 
 * Added java 1.5 compatibility
