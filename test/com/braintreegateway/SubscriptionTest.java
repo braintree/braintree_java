@@ -2,8 +2,10 @@
 package com.braintreegateway;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
@@ -14,6 +16,7 @@ import org.junit.Test;
 
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.Subscription.Status;
 
 public class SubscriptionTest {
 
@@ -68,6 +71,7 @@ public class SubscriptionTest {
         Assert.assertEquals(Subscription.Status.ACTIVE, subscription.getStatus());
         Assert.assertEquals(new Integer(0), subscription.getFailureCount());
         Assert.assertEquals(false, subscription.hasTrialPeriod());
+        Assert.assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
         
         TestHelper.assertDatesEqual(expectedBillingPeriodEndDate, subscription.getBillingPeriodEndDate());
         TestHelper.assertDatesEqual(expectedBillingPeriodStartDate, subscription.getBillingPeriodStartDate());
@@ -176,6 +180,22 @@ public class SubscriptionTest {
     }
     
     @Test
+    public void setMerchantAccountId() {
+        Plan plan = Plan.PLAN_WITH_TRIAL;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId()).
+            price(new BigDecimal("482.48")).
+            merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID);
+
+        Result<Subscription> createResult = gateway.subscription().create(request);
+        Assert.assertTrue(createResult.isSuccess());
+        Subscription subscription = createResult.getTarget();
+
+        Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
+    }
+    
+    @Test
     public void hasTransactionOnCreateWithNoTrial() {
         Plan plan = Plan.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
@@ -246,6 +266,26 @@ public class SubscriptionTest {
         
         Assert.assertEquals(newId, subscription.getId());
         Assert.assertNotNull(gateway.subscription().find(newId));
+    }
+    
+    @Test
+    public void updateMerchantAccountId() {
+        Plan plan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest createRequest = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId());
+
+        Result<Subscription> createResult = gateway.subscription().create(createRequest);
+        Assert.assertTrue(createResult.isSuccess());
+
+        SubscriptionRequest updateRequest = new SubscriptionRequest()
+            .merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID);
+        Result<Subscription> result = gateway.subscription().update(createResult.getTarget().getId(), updateRequest);
+
+        Assert.assertTrue(result.isSuccess());
+        Subscription subscription = result.getTarget();
+
+        Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
     }
 
     @Test
@@ -397,6 +437,186 @@ public class SubscriptionTest {
         Assert.assertTrue(cancelResult.isSuccess());
         Assert.assertEquals(Subscription.Status.CANCELED, cancelResult.getTarget().getStatus());
         Assert.assertEquals(Subscription.Status.CANCELED, gateway.subscription().find(createResult.getTarget().getId()).getStatus());
+    }
+    
+    @Test
+    public void searchOnPlanIdIs() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        Plan triallessPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(triallessPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            planId().is(trialPlan.getId());
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
+        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+    }
+    
+    @Test
+    public void searchOnPlanIdIsNot() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        Plan triallessPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(triallessPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            planId().isNot(trialPlan.getId());
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription2));
+        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription1));
+    }
+    
+    @Test
+    public void searchOnPlanIdEndsWith() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        Plan triallessPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(triallessPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            planId().endsWith("trial_plan");
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
+        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+    }
+    
+    @Test
+    public void searchOnPlanIdStartsWith() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        Plan triallessPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(triallessPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            planId().startsWith("integration_trial_p");
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
+        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+    }
+    
+    @Test
+    public void searchOnPlanIdContains() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        Plan triallessPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(triallessPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            planId().contains("trial_p");
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
+        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+    }
+    
+    @Test
+    public void searchOnStatusIn() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        gateway.subscription().cancel(subscription2.getId());
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            status().in(Status.ACTIVE);
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
+        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+    }
+    
+    @Test
+    public void searchOnStatusInWithMultipleStatusesAsList() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        gateway.subscription().cancel(subscription2.getId());
+        
+        List<Status> statuses = new ArrayList<Status>();
+        statuses.add(Status.ACTIVE);
+        statuses.add(Status.CANCELED);
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            status().in(statuses);
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription2));
+    }
+    
+    @Test
+    public void searchOnStatusInWithMultipleStatuses() {
+        Plan trialPlan = Plan.PLAN_WITH_TRIAL;
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(trialPlan.getId());
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        gateway.subscription().cancel(subscription2.getId());
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            status().in(Status.ACTIVE, Status.CANCELED);
+        
+        PagedCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
+        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription2));
     }
     
     @Test

@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 public class SubscriptionRequest extends Request {
     private Boolean hasTrialPeriod;
     private String id;
+    private String merchantAccountId;
     private String paymentMethodToken;
     private String planId;
     private BigDecimal price;
@@ -16,6 +17,11 @@ public class SubscriptionRequest extends Request {
     
     public SubscriptionRequest id(String id) {
         this.id = id;
+        return this;
+    }
+    
+    public SubscriptionRequest merchantAccountId(String merchantAccountId) {
+        this.merchantAccountId = merchantAccountId;
         return this;
     }
     
@@ -62,6 +68,7 @@ public class SubscriptionRequest extends Request {
         StringBuilder builder = new StringBuilder();
         builder.append("<subscription>");
         builder.append(buildXMLElement("id", id));
+        builder.append(buildXMLElement("merchantAccountId", merchantAccountId));
         builder.append(buildXMLElement("paymentMethodToken", paymentMethodToken));
         builder.append(buildXMLElement("planId", planId));
         builder.append(buildXMLElement("price", price));

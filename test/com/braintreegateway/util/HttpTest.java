@@ -10,7 +10,9 @@ import org.junit.Test;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Environment;
+import com.braintreegateway.TestHelper;
 import com.braintreegateway.exceptions.AuthenticationException;
+import com.braintreegateway.exceptions.DownForMaintenanceException;
 
 public class HttpTest {
 
@@ -23,60 +25,82 @@ public class HttpTest {
 
     @Test
     public void smokeTestGet() {
-        NodeWrapper node = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), "1.0.0").get("/customers/131866");
+        NodeWrapper node = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), gateway.getVersion()).get("/customers/131866");
         Assert.assertNotNull(node.findString("first-name"));
     }
 
     @Test
     public void smokeTestPostWithRequest() {
         CustomerRequest request = new CustomerRequest().firstName("Dan").lastName("Manges").company("Braintree");
-        NodeWrapper node = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), "1.0.0").post("/customers", request);
+        NodeWrapper node = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), gateway.getVersion()).post("/customers", request);
         Assert.assertEquals("Dan", node.findString("first-name"));
     }
 
     @Test
     public void smokeTestPut() {
         CustomerRequest request = new CustomerRequest().firstName("NewName");
-        NodeWrapper node = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), "1.0.0").put("/customers/131866", request);
+        NodeWrapper node = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), gateway.getVersion()).put("/customers/131866", request);
         Assert.assertEquals("NewName", node.findString("first-name"));
     }
 
     @Test
     public void smokeTestDelete() {
-        NodeWrapper node = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), "1.0.0").post("/customers", new CustomerRequest());
-        new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), "1.0.0").delete("/customers/" + node.findString("id"));
+        NodeWrapper node = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), gateway.getVersion()).post("/customers", new CustomerRequest());
+        new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), gateway.getVersion()).delete("/customers/" + node.findString("id"));
     }
     
     @Test(expected = AuthenticationException.class)
     public void authenticationException() {
-        new Http("bad auth", gateway.baseMerchantURL(), "1.0.0").get("/");
+        new Http("bad auth", gateway.baseMerchantURL(), gateway.getVersion()).get("/");
     }
     
-
     @Test(expected=AuthenticationException.class)
     public void sslCertificateSuccessfulInQA() {
         BraintreeGateway testGateway = new BraintreeGateway(Environment.DEVELOPMENT, "", "", "");
-        Http http = new Http(testGateway.getAuthorizationHeader(), "https://qa-master.braintreegateway.com/merchants/test_merchant_id", "test suite");
+        Http http = new Http(testGateway.getAuthorizationHeader(), "https://qa-master.braintreegateway.com/merchants/test_merchant_id", gateway.getVersion());
         http.get("/");
     }
 
     @Test(expected=AuthenticationException.class)
     public void sslCertificateSuccessfulInSandbox() {
-        Http http = new Http("", Environment.SANDBOX.baseURL, "test suite");
+        Http http = new Http("", Environment.SANDBOX.baseURL, gateway.getVersion());
         http.get("/");
     }
     
     @Test(expected=AuthenticationException.class)
     public void sslCertificateSuccessfulInProduction() {
-        Http http = new Http("", Environment.PRODUCTION.baseURL, "test suite");
+        Http http = new Http("", Environment.PRODUCTION.baseURL, gateway.getVersion());
         http.get("/");
+    }
+    
+    @Test(expected=DownForMaintenanceException.class)
+    public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingServerToServer() {
+        CustomerRequest request = new CustomerRequest();
+        new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), "1.0.0").put("/test/maintenance", request);
+    }
+    
+    @Test(expected=DownForMaintenanceException.class)
+    public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingTR() {
+        CustomerRequest request = new CustomerRequest();
+        CustomerRequest trParams = new CustomerRequest();
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.getConfiguration().baseMerchantURL + "/test/maintenance");
+        gateway.customer().confirmTransparentRedirect(queryString);
+    }
+    
+    @Test(expected=AuthenticationException.class)
+    public void authenticationExceptionRaisedWhenBadCredentialsUsingTR() {
+        CustomerRequest request = new CustomerRequest();
+        CustomerRequest trParams = new CustomerRequest();
+        BraintreeGateway gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "bad_public", "bad_private");
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.customer().transparentRedirectURLForCreate());
+        gateway.customer().confirmTransparentRedirect(queryString);
     }
     
     @Test
     public void sslBadCertificate() throws Exception {
         startSSLServer();
         try {
-            Http http = new Http(gateway.getAuthorizationHeader(), "https://localhost:9443", "1.0.0");
+            Http http = new Http(gateway.getAuthorizationHeader(), "https://localhost:9443", gateway.getVersion());
             http.get("/");
             Assert.fail();
         } catch (Exception e) {

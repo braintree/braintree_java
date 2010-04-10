@@ -11,9 +11,6 @@ public class TransparentRedirectRequest extends Request {
     private String id;
 
     public TransparentRedirectRequest(Configuration configuration, String queryString) {
-        if (!new TrUtil(configuration).isValidTrQueryString(queryString)) {
-            throw new ForgedQueryStringException();
-        }
         Map<String, String> paramMap = new HashMap<String, String>();
         String[] queryParams = queryString.split("&");
 
@@ -23,6 +20,10 @@ public class TransparentRedirectRequest extends Request {
         }
 
         Http.throwExceptionIfErrorStatusCode(Integer.valueOf(paramMap.get("http_status")));
+        
+        if (!new TrUtil(configuration).isValidTrQueryString(queryString)) {
+            throw new ForgedQueryStringException();
+        }
 
         id = paramMap.get("id");
     }

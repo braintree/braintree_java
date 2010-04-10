@@ -66,4 +66,18 @@ public class SubscriptionGateway {
         NodeWrapper node = http.put("/subscriptions/" + id, request);
         return new Result<Subscription>(node, Subscription.class);
     }
+    
+    /**
+     * Search for a {@link Subscription}.
+     * @param request the {@link SubscriptionSearchRequest}.
+     * @return a {@link Result}.
+     */
+    public PagedCollection<Subscription> search(SubscriptionSearchRequest search) {
+        return this.search(search, 1);
+    }
+
+    public PagedCollection<Subscription> search(SubscriptionSearchRequest search, int pageNumber) {
+        NodeWrapper node = http.post("/subscriptions/advanced_search?page=" + pageNumber, search);
+        return new PagedCollection<Subscription>(new SubscriptionPager(this, search), node, Subscription.class);
+    }
 }

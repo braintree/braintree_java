@@ -34,8 +34,13 @@ task :test => :compile_tests do
   sh "java -cp #{jar_name}:test-classes:#{lib_classpath} org.junit.runner.JUnitCore com.braintreegateway.AllTests"
 end
 
+desc "generate javadoc"
 task :javadoc do
-  sh "javadoc -sourcepath src -subpackages com.braintreegateway -d doc -overview overview.html"
+  excludes = [
+    "com.braintreegateway.util",
+    "com.braintreegateway.org"
+  ]
+  sh "javadoc -sourcepath src -subpackages com.braintreegateway -exclude #{excludes.join(":")} -d doc -overview overview.html"
 end
 
 def lib_classpath

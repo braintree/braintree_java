@@ -1,9 +1,15 @@
 package com.braintreegateway;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Calendar;
 
 import junit.framework.Assert;
 
+import com.braintreegateway.Transaction.Status;
+import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Crypto;
 
 public class TestHelper {
@@ -39,6 +45,62 @@ public class TestHelper {
         String trContent = dataSections[1];
         Assert.assertEquals(trHash, new Crypto().hmacHash(configuration.privateKey, trContent));
     }
+    
+    public static boolean pagedCollectionContains(PagedCollection<Subscription> collection, Subscription item) {
+        for (Subscription subscription : collection.getItems()) {
+            if (subscription.getId().equals(item.getId())) {
+                return true;
+            }
+        }
+        
+        if (collection.isLastPage()) {
+            return false;
+        }
+        
+        return pagedCollectionContains(collection.getNextPage(), item);
+    }
+    
+    public static boolean pagedCollectionContainsStatus(PagedCollection<Transaction> collection, Status status) {
+        for (Transaction transaction : collection.getItems()) {
+            if (transaction.getStatus().equals(status)) {
+                return true;
+            }
+        }
+        
+        if (collection.isLastPage()) {
+            return false;
+        }
+        
+        return pagedCollectionContainsStatus(collection.getNextPage(), status);
+    }
+    
+    public static String simulateFormPostForTR(BraintreeGateway gateway, Request trParams, Request request, String postUrl) {
+        String response = "";
+        try {
+            String trData = gateway.trData(trParams, "http://example.com");
+            String postData = "tr_data=" + URLEncoder.encode(trData, "UTF-8") + "&";
+            postData += request.toQueryString();
 
+            URL url = new URL(postUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            connection.addRequestProperty("Accept", "application/xml");
+            connection.addRequestProperty("User-Agent", "Braintree Java");
+            connection.addRequestProperty("X-ApiVersion", "1");
+            connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.getOutputStream().write(postData.getBytes("UTF-8"));
+            connection.getOutputStream().close();
+            if (connection.getResponseCode() == 422) {
+                connection.getErrorStream();
+            } else {
+                connection.getInputStream();
+            }
+            response = connection.getURL().getQuery();
+        } catch (IOException e) {
+            throw new UnexpectedException(e.getMessage());
+        }
 
+        return response;
+    }
 }

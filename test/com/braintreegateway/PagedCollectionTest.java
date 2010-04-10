@@ -19,6 +19,13 @@ public class PagedCollectionTest {
         PagedCollection<Transaction> pagedCollection = new PagedCollection<Transaction>(null, xmlFor(1, 13, 5), Transaction.class);
         Assert.assertEquals(3, pagedCollection.getTotalPages());
     }
+    
+    @Test
+    public void totalPagesForEmptySet() {
+        PagedCollection<Transaction> pagedCollection = new PagedCollection<Transaction>(null, xmlFor(1, 0, 50), Transaction.class);
+        Assert.assertEquals(1, pagedCollection.getTotalPages());
+        Assert.assertTrue(pagedCollection.isLastPage());
+    }   
 
     @Test
     public void isLastPageOnLastPage() {

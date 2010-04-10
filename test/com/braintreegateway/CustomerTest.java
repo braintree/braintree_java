@@ -1,9 +1,5 @@
 package com.braintreegateway;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +11,6 @@ import org.junit.Test;
 
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.exceptions.UnexpectedException;
 
 public class CustomerTest {
 
@@ -68,7 +63,7 @@ public class CustomerTest {
         CustomerRequest trParams = new CustomerRequest();
         CustomerRequest request = new CustomerRequest().firstName("John").lastName("Doe");
 
-        String queryString = customerViaTR(trParams, request, gateway.customer().transparentRedirectURLForCreate());
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.customer().transparentRedirectURLForCreate());
         Result<Customer> result = gateway.customer().confirmTransparentRedirect(queryString);
 
         Assert.assertTrue(result.isSuccess());
@@ -79,7 +74,7 @@ public class CustomerTest {
     
     @Test(expected = ForgedQueryStringException.class)
     public void createViaTransparentRedirectThrowsWhenQueryStringHasBeenTamperedWith() {
-        String queryString = customerViaTR(new CustomerRequest(), new CustomerRequest(), gateway.customer().transparentRedirectURLForCreate());
+        String queryString = TestHelper.simulateFormPostForTR(gateway, new CustomerRequest(), new CustomerRequest(), gateway.customer().transparentRedirectURLForCreate());
         gateway.customer().confirmTransparentRedirect(queryString + "this make it invalid");
     }
 
@@ -94,7 +89,7 @@ public class CustomerTest {
                 expirationDate("11/12").
                 done();
 
-        String queryString = customerViaTR(trParams, request, gateway.customer().transparentRedirectURLForCreate());
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.customer().transparentRedirectURLForCreate());
         Result<Customer> result = gateway.customer().confirmTransparentRedirect(queryString);
 
         Assert.assertTrue(result.isSuccess());
@@ -172,7 +167,7 @@ public class CustomerTest {
                 cvv("123").
                 expirationDate("05/12").
                 options().
-                    verifyCard("true").
+                    verifyCard(true).
                     done().
                 done().
             lastName("Jones");
@@ -202,7 +197,7 @@ public class CustomerTest {
                 cvv("123").
                 expirationDate("05/12").
                 options().
-                    verifyCard("true").
+                    verifyCard(true).
                     done().
                 done().
             lastName("Jones");
@@ -329,7 +324,7 @@ public class CustomerTest {
 
         CustomerRequest trParams = new CustomerRequest().customerId(createdCustomer.getId());
 
-        String queryString = customerViaTR(trParams, request, gateway.customer().transparentRedirectURLForUpdate());
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.customer().transparentRedirectURLForUpdate());
         Result<Customer> result = gateway.customer().confirmTransparentRedirect(queryString);
 
         Assert.assertTrue(result.isSuccess());
@@ -413,35 +408,6 @@ public class CustomerTest {
             Assert.fail();
         } catch (NotFoundException e) {
         }
-    }
-
-    private String customerViaTR(Request trParams, CustomerRequest request, String redirectURL) {
-        String response = "";
-        try {
-            String trData = gateway.trData(trParams, "http://example.com");
-            String postData = "tr_data=" + URLEncoder.encode(trData, "UTF-8") + "&";
-            postData += request.toQueryString();
-
-            URL url = new URL(redirectURL);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-            connection.addRequestProperty("Accept", "application/xml");
-            connection.addRequestProperty("User-Agent", "Braintree Java");
-            connection.addRequestProperty("X-ApiVersion", "1");
-            connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.getOutputStream().write(postData.getBytes("UTF-8"));
-            connection.getOutputStream().close();
-            if (connection.getResponseCode() == 422) {
-                connection.getErrorStream();
-            } else {
-                connection.getInputStream();
-            }
-            response = connection.getURL().getQuery();
-        } catch (IOException e) {
-            throw new UnexpectedException(e.getMessage());
-        }
-        return response;
     }
     
     @Test

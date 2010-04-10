@@ -1,9 +1,6 @@
 package com.braintreegateway;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -13,7 +10,6 @@ import org.junit.Test;
 
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.exceptions.UnexpectedException;
 
 public class CreditCardTest {
 
@@ -109,7 +105,7 @@ public class CreditCardTest {
             number("5105105105105100").
             expirationDate("05/12");
 
-        String queryString = creditCardViaTR(trParams, request, gateway.creditCard().transparentRedirectURLForCreate());
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.creditCard().transparentRedirectURLForCreate());
         Result<CreditCard> result = gateway.creditCard().confirmTransparentRedirect(queryString);
         Assert.assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
@@ -122,13 +118,91 @@ public class CreditCardTest {
         Assert.assertTrue(card.getToken() != null);
     }
 
+    @Test
+    public void createViaTransparentRedirectWithMakeDefaultFlagInTRParams() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+
+        CreditCardRequest request1 = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12");
+
+        gateway.creditCard().create(request1);
+
+        CreditCardRequest trParams = new CreditCardRequest().
+            customerId(customer.getId()).
+            options().
+                makeDefault(true).
+                done();
+
+        CreditCardRequest request2 = new CreditCardRequest().
+            number("5105105105105100").
+            expirationDate("05/12");
+
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request2, gateway.creditCard().transparentRedirectURLForCreate());
+        CreditCard card = gateway.creditCard().confirmTransparentRedirect(queryString).getTarget();
+        Assert.assertTrue(card.isDefault());
+    }
+
+    @Test
+    public void createViaTransparentRedirectWithMakeDefaultFlagInRequest() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+
+        CreditCardRequest request1 = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12");
+
+        gateway.creditCard().create(request1);
+
+        CreditCardRequest trParams = new CreditCardRequest().
+            customerId(customer.getId());
+
+        CreditCardRequest request2 = new CreditCardRequest().
+            number("5105105105105100").
+            expirationDate("05/12").
+            options().
+                makeDefault(true).
+                done();
+
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request2, gateway.creditCard().transparentRedirectURLForCreate());
+        CreditCard card = gateway.creditCard().confirmTransparentRedirect(queryString).getTarget();
+        Assert.assertTrue(card.isDefault());
+    }
+
     @Test(expected = ForgedQueryStringException.class)
     public void createViaTransparentRedirectThrowsWhenQueryStringHasBeenTamperedWith() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest trParams = new CreditCardRequest().customerId(customer.getId());
         
-        String queryString = creditCardViaTR(trParams, new CreditCardRequest(), gateway.creditCard().transparentRedirectURLForCreate());
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, new CreditCardRequest(), gateway.creditCard().transparentRedirectURLForCreate());
         gateway.creditCard().confirmTransparentRedirect(queryString + "this makes it invalid");
+    }
+    
+    @Test 
+    public void createWithDefaultFlag() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+
+        CreditCardRequest request1 = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            number("5105105105105100").
+            expirationDate("05/12");
+
+        CreditCardRequest request2 = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            number("5105105105105100").
+            expirationDate("05/12").
+            options().
+                makeDefault(true).
+                done();
+
+        CreditCard card1 = gateway.creditCard().create(request1).getTarget();
+        CreditCard card2 = gateway.creditCard().create(request2).getTarget();
+        
+        Assert.assertFalse(gateway.creditCard().find(card1.getToken()).isDefault());
+        Assert.assertTrue(gateway.creditCard().find(card2.getToken()).isDefault());
     }
     
     @Test
@@ -165,6 +239,29 @@ public class CreditCardTest {
     }
 
     @Test
+    public void updateWithDefaultFlag() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12");
+        
+        CreditCard card1 = gateway.creditCard().create(request).getTarget();
+        CreditCard card2 = gateway.creditCard().create(request).getTarget();
+        
+        Assert.assertTrue(card1.isDefault());
+        Assert.assertFalse(card2.isDefault());
+        
+        gateway.creditCard().update(card2.getToken(), new CreditCardRequest().options().makeDefault(true).done());
+        Assert.assertFalse(gateway.creditCard().find(card1.getToken()).isDefault());
+        Assert.assertTrue(gateway.creditCard().find(card2.getToken()).isDefault());
+        
+        gateway.creditCard().update(card1.getToken(), new CreditCardRequest().options().makeDefault(true).done());
+        Assert.assertTrue(gateway.creditCard().find(card1.getToken()).isDefault());
+        Assert.assertFalse(gateway.creditCard().find(card2.getToken()).isDefault());
+    }
+    
+    @Test
     public void updateViaTransparentRedirect() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest createRequest = new CreditCardRequest().
@@ -181,7 +278,7 @@ public class CreditCardTest {
         CreditCardRequest request = new CreditCardRequest().
             cardholderName("joe cool");
 
-        String queryString = creditCardViaTR(trParams, request, gateway.creditCard().transparentRedirectURLForUpdate());
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.creditCard().transparentRedirectURLForUpdate());
         Result<CreditCard> result = gateway.creditCard().confirmTransparentRedirect(queryString);
         Assert.assertTrue(result.isSuccess());
         CreditCard updatedCard = result.getTarget();
@@ -260,6 +357,31 @@ public class CreditCardTest {
         Assert.assertEquals("05/2012", found.getExpirationDate());
         Assert.assertEquals("5100", found.getLast4());
     }
+    
+    @Test
+    public void findReturnsAssociatedSubscriptions() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest cardRequest = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12");
+        CreditCard card = gateway.creditCard().create(cardRequest).getTarget();
+        String id = "subscription-id-" + new Random().nextInt();
+        SubscriptionRequest subscriptionRequest = new SubscriptionRequest().
+            id(id).
+            planId("integration_trialless_plan").
+            paymentMethodToken(card.getToken()).
+            price(new BigDecimal("1.00"));
+        Subscription subscription = gateway.subscription().create(subscriptionRequest).getTarget();
+        
+        CreditCard foundCard = gateway.creditCard().find(card.getToken());
+        
+        Assert.assertEquals(subscription.getId(), foundCard.getSubscriptions().get(0).getId());
+        Assert.assertEquals(new BigDecimal("1.00"), foundCard.getSubscriptions().get(0).getPrice());
+        Assert.assertEquals("integration_trialless_plan", foundCard.getSubscriptions().get(0).getPlanId());
+    }
 
     @Test(expected = NotFoundException.class)
     public void findWithBadToken() {
@@ -299,7 +421,7 @@ public class CreditCardTest {
             number("4111111111111111").
             expirationDate("05/12").
             options().
-                verifyCard("true").
+                verifyCard(true).
                 done();
 
         Result<CreditCard> result = gateway.creditCard().create(request);
@@ -316,42 +438,12 @@ public class CreditCardTest {
             number("5105105105105100").
             expirationDate("05/12").
             options().
-                verifyCard("true").
+                verifyCard(true).
                 done();
 
         Result<CreditCard> result = gateway.creditCard().create(request);
         Assert.assertFalse(result.isSuccess());
         CreditCardVerification verification = result.getCreditCardVerification();
         Assert.assertEquals("processor_declined", verification.getStatus());
-    }
-
-    private String creditCardViaTR(Request trParams, CreditCardRequest request, String redirectURL) {
-        String response = "";
-        try {
-            String trData = gateway.trData(trParams, "http://example.com");
-            String postData = "tr_data=" + URLEncoder.encode(trData, "UTF-8") + "&";
-            postData += request.toQueryString();
-
-            URL url = new URL(redirectURL);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-            connection.addRequestProperty("Accept", "application/xml");
-            connection.addRequestProperty("User-Agent", "Braintree Java");
-            connection.addRequestProperty("X-ApiVersion", "1");
-            connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.getOutputStream().write(postData.getBytes("UTF-8"));
-            connection.getOutputStream().close();
-            if (connection.getResponseCode() == 422) {
-                connection.getErrorStream();
-            } else {
-                connection.getInputStream();
-            }
-            response = connection.getURL().getQuery();
-        } catch (IOException e) {
-            throw new UnexpectedException(e.getMessage());
-        }
-
-        return response;
     }
 }

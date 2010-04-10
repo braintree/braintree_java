@@ -46,6 +46,12 @@ public class ValidationErrorsTest {
         Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryName").get(0).getCode());
         Assert.assertEquals("invalid country", errors.forObject("address").onField("country_name").get(0).getMessage());
     }
+    
+    @Test
+    public void forObjectOnNonExistingObject() {
+        ValidationErrors errors = new ValidationErrors();
+        Assert.assertEquals(0, errors.forObject("invalid").size());
+    }
 
     @Test
     public void forObjectAlsoWorksWithUnderscores() {
@@ -55,12 +61,6 @@ public class ValidationErrorsTest {
         ValidationErrors errors = new ValidationErrors();
         errors.addErrors("billing-address", addressErrors);
         Assert.assertEquals(ValidationErrorCode.ADDRESS_FIRST_NAME_IS_TOO_LONG, errors.forObject("billing_address").onField("name").get(0).getCode());
-    }
-
-    @Test
-    public void nonExistingObject() {
-        ValidationErrors errors = new ValidationErrors();
-        Assert.assertNull(errors.forObject("address"));
     }
 
     @Test

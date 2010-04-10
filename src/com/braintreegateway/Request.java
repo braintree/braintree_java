@@ -36,7 +36,16 @@ public abstract class Request {
             return String.format("<%s>%s</%s>", name, element == null ? "" : element.toString(), name);
         }
     }
-
+    
+    protected String buildXMLElement(String name, Object element, String type) {
+        if (element == null) {
+            return "";
+        } else if (element instanceof Request) {
+            return ((Request) element).toXML();
+        } else {
+            return String.format("<%s type=\"%s\">%s</%s>", name, type, element == null ? "" : element.toString(), name);
+        }
+    }
 
     protected Object buildQueryStringElement(String name, String value) {
         if (value != null) {

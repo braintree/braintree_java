@@ -1,10 +1,6 @@
 package com.braintreegateway;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -22,7 +18,6 @@ import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
@@ -77,14 +72,14 @@ public class TransactionTest {
         TransactionRequest trParams = new TransactionRequest().
             type(Transaction.Type.SALE);
 
-        String queryString = transactionViaTR(trParams, request, gateway.transaction().transparentRedirectURLForCreate());
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transaction().transparentRedirectURLForCreate());
         Result<Transaction> result = gateway.transaction().confirmTransparentRedirect(queryString);
         Assert.assertTrue(result.isSuccess());
     }
     
     @Test(expected = ForgedQueryStringException.class)
     public void createViaTransparentRedirectThrowsWhenQueryStringHasBeenTamperedWith() {
-        String queryString = transactionViaTR(new TransactionRequest(), new TransactionRequest(), gateway.transaction().transparentRedirectURLForCreate());
+        String queryString = TestHelper.simulateFormPostForTR(gateway, new TransactionRequest(), new TransactionRequest(), gateway.transaction().transparentRedirectURLForCreate());
         gateway.transaction().confirmTransparentRedirect(queryString + "this make it invalid");
     }
 
@@ -735,7 +730,7 @@ public class TransactionTest {
     }
 
     private void settle(String transactionId) {
-        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), "1.0.0").put("/transactions/" + transactionId + "/settle");
+        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), gateway.getVersion()).put("/transactions/" + transactionId + "/settle");
         Assert.assertTrue(response.isSuccess());
     }
 
@@ -756,49 +751,19 @@ public class TransactionTest {
         Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_REFUND_UNLESS_SETTLED, 
                 result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
-
-    private String transactionViaTR(TransactionRequest trParams, Request request, String redirectURL) {
-        String response = "";
-        try {
-            String trData = gateway.trData(trParams, "http://example.com");
-            String postData = "tr_data=" + URLEncoder.encode(trData, "UTF-8") + "&";
-            postData += request.toQueryString();
-
-            URL url = new URL(redirectURL);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-            connection.addRequestProperty("Accept", "application/xml");
-            connection.addRequestProperty("User-Agent", "Braintree Java");
-            connection.addRequestProperty("X-ApiVersion", "1");
-            connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.getOutputStream().write(postData.getBytes("UTF-8"));
-            connection.getOutputStream().close();
-            if (connection.getResponseCode() == 422) {
-                connection.getErrorStream();
-            } else {
-                connection.getInputStream();
-            }
-            response = connection.getURL().getQuery();
-        } catch (IOException e) {
-            throw new UnexpectedException(e.getMessage());
-        }
-
-        return response;
-    }
     
     @Test
     public void allStatuses() {
-        Assert.assertEquals(Transaction.Status.AUTHORIZING,              gateway.transaction().search("authorizing").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.AUTHORIZED,               gateway.transaction().search("authorized").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.GATEWAY_REJECTED,         gateway.transaction().search("gateway_rejected").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.FAILED,                   gateway.transaction().search("failed").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.PROCESSOR_DECLINED,       gateway.transaction().search("processor_declined").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.SETTLED,                  gateway.transaction().search("settled").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.SETTLEMENT_FAILED,        gateway.transaction().search("settlement_failed").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, gateway.transaction().search("submitted_for_settlement").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.UNKNOWN,                  gateway.transaction().search("unknown").getItems().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.VOIDED,                   gateway.transaction().search("voided").getItems().get(0).getStatus());
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("authorizing"), Transaction.Status.AUTHORIZING);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("authorized"), Transaction.Status.AUTHORIZED);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("gateway_rejected"), Transaction.Status.GATEWAY_REJECTED);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("failed"), Transaction.Status.FAILED);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("processor_declined"), Transaction.Status.PROCESSOR_DECLINED);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("settled"), Transaction.Status.SETTLED);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("settlement_failed"), Transaction.Status.SETTLEMENT_FAILED);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("submitted_for_settlement"), Transaction.Status.SUBMITTED_FOR_SETTLEMENT);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("unknown"), Transaction.Status.UNKNOWN);
+        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("voided"), Transaction.Status.VOIDED);
     }
     
     @Test

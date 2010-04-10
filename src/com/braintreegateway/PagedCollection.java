@@ -92,6 +92,10 @@ public class PagedCollection<T> {
      * Returns the total number of pages.
      */
     public int getTotalPages() {
+        if (totalItems == 0) {
+            return 1;
+        }
+        
         int totalPages = totalItems / pageSize;
         if (totalItems % pageSize != 0) {
             totalPages += 1;
