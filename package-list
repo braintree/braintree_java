@@ -1,5 +1,2 @@
 com.braintreegateway
 com.braintreegateway.exceptions
-com.braintreegateway.org.apache.commons.codec
-com.braintreegateway.org.apache.commons.codec.binary
-com.braintreegateway.util
