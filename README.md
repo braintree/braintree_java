@@ -31,7 +31,7 @@ The Braintree library provides integration access to the Braintree Gateway.
                     System.out.println("Error processing transaction:");
                     System.out.println("  Status: " + transaction.getStatus());
                     System.out.println("  Code: " + transaction.getProcessorResponseCode());
-                    System.out.println("  Code: " + transaction.getProcessorResponseText());
+                    System.out.println("  Text: " + transaction.getProcessorResponseText());
                 }
             } else {
                 for (ValidationError error : result.getErrors().getAllDeepValidationErrors()) {
