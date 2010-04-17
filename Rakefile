@@ -16,7 +16,7 @@ task :clean do
 end
 
 task :compile => :init do
-  sh "javac -target 1.5 -d classes -cp #{lib_classpath} -Xlint:deprecation #{src_files}"
+  sh "javac -1.5 -target 1.5 -d classes -cp #{lib_classpath} -Xlint:deprecation #{src_files}"
   cp "VERSION", "classes"
 end
 
@@ -25,7 +25,7 @@ task :jar => :compile do
 end
 
 task :compile_tests => [:init, :clean, :jar] do
-  sh "javac -target 1.5 -Xlint:deprecation -d test-classes -cp #{jar_name}:#{lib_classpath} #{test_files}"
+  sh "javac -1.5 -target 1.5 -Xlint:deprecation -d test-classes -cp #{jar_name}:#{lib_classpath} #{test_files}"
   cp_r "test/script", "test-classes"
   cp_r "test/ssl", "test-classes"
 end
