@@ -117,6 +117,7 @@ public class TransactionTest {
             amount(TransactionAmount.AUTHORIZE.amount).
             orderId("123").
             creditCard().
+                cardholderName("The Cardholder").
                 number(CreditCardNumber.VISA.number).
                 cvv("321").
                 expirationDate("05/2009").
@@ -170,6 +171,7 @@ public class TransactionTest {
         Assert.assertEquals("05", creditCard.getExpirationMonth());
         Assert.assertEquals("2009", creditCard.getExpirationYear());
         Assert.assertEquals("05/2009", creditCard.getExpirationDate());
+        Assert.assertEquals("The Cardholder", creditCard.getCardholderName());
 
         Assert.assertNull(transaction.getVaultCustomer(gateway));
         Customer customer = transaction.getCustomer();
