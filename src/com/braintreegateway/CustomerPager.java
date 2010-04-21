@@ -8,7 +8,7 @@ public class CustomerPager implements Pager<Customer> {
         this.gateway = gateway;
     }
 
-    public PagedCollection<Customer> getPage(int page) {
+    public ResourceCollection<Customer> getPage(int page) {
         return gateway.all(page);
     }
 

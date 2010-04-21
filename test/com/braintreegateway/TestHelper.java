@@ -49,7 +49,7 @@ public class TestHelper {
         Assert.assertEquals(trHash, new Crypto().hmacHash(configuration.privateKey, trContent));
     }
 
-    public static boolean includesSubscription(PagedCollection<Subscription> collection, Subscription item) {
+    public static boolean includesSubscription(ResourceCollection<Subscription> collection, Subscription item) {
         for (Subscription subscription : collection) {
             if (subscription.getId().equals(item.getId())) {
                 return true;
@@ -59,7 +59,7 @@ public class TestHelper {
         return false;
     }
 
-    public static boolean includesStatus(PagedCollection<Transaction> collection, Status status) {
+    public static boolean includesStatus(ResourceCollection<Transaction> collection, Status status) {
         for (Transaction transaction : collection) {
             if (transaction.getStatus().equals(status)) {
                 return true;

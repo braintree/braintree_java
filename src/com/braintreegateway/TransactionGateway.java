@@ -101,23 +101,23 @@ public class TransactionGateway {
     }
 
     /**
-     * Finds all Transactions that match the query and returns a {@link PagedCollection} for paging through them starting at the first page.
+     * Finds all Transactions that match the query and returns a {@link ResourceCollection} for paging through them starting at the first page.
      * Analogous to "basic search" in the control panel.
-     * @return a {@link PagedCollection}.
+     * @return a {@link ResourceCollection}.
      */
-    public PagedCollection<Transaction> search(String query) {
+    public ResourceCollection<Transaction> search(String query) {
         return search(query, 1);
     }
 
     /**
-     * Finds all Transactions that match the query and returns a {@link PagedCollection} for paging through them starting with the given page.
+     * Finds all Transactions that match the query and returns a {@link ResourceCollection} for paging through them starting with the given page.
      * Analogous to "basic search" in the control panel.
-     * @return a {@link PagedCollection}.
+     * @return a {@link ResourceCollection}.
      */
-    public PagedCollection<Transaction> search(String query, int pageNumber) {
+    public ResourceCollection<Transaction> search(String query, int pageNumber) {
         String queryString = new QueryString().append("q", query).append("page", pageNumber).toString();
         NodeWrapper response = http.get("/transactions/all/search?" + queryString);
-        return new PagedCollection<Transaction>(new TransactionPager(this, query), response, Transaction.class);
+        return new ResourceCollection<Transaction>(new TransactionPager(this, query), response, Transaction.class);
     }
 
     /**

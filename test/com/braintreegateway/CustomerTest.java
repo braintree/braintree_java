@@ -412,9 +412,9 @@ public class CustomerTest {
     
     @Test
     public void all() {
-        PagedCollection<Customer> pagedCollection = gateway.customer().all();
+        ResourceCollection<Customer> resourceCollection = gateway.customer().all();
 
-        Assert.assertTrue(pagedCollection.getApproximateSize() > 0);
-        Assert.assertNotNull(pagedCollection.getFirst());
+        Assert.assertTrue(resourceCollection.getApproximateSize() > 0);
+        Assert.assertNotNull(resourceCollection.getFirst());
     }
 }

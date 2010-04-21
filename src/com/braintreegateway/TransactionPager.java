@@ -10,7 +10,7 @@ public class TransactionPager implements Pager<Transaction> {
         this.query = query;
     }
 
-    public PagedCollection<Transaction> getPage(int page) {
+    public ResourceCollection<Transaction> getPage(int page) {
         return gateway.search(query, page);
     }
 

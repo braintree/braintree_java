@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import com.braintreegateway.util.NodeWrapper;
 
-public class PagedCollectionTest {
+public class ResourceCollectionTest {
 
     @Test
     public void getFirst() {
@@ -20,7 +20,7 @@ public class PagedCollectionTest {
                 "</credit-card-transactions>"
         );
        
-        PagedCollection<Transaction> pagedCollection = new PagedCollection<Transaction>(null, xml, Transaction.class);
-        Assert.assertEquals("abc", pagedCollection.getFirst().getId());
+        ResourceCollection<Transaction> resourceCollection = new ResourceCollection<Transaction>(null, xml, Transaction.class);
+        Assert.assertEquals("abc", resourceCollection.getFirst().getId());
     }
 }

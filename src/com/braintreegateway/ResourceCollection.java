@@ -13,30 +13,30 @@ import com.braintreegateway.util.NodeWrapper;
  *            type of object being paged, e.g. {@link Transaction} or
  *            {@link Customer}.
  */
-public class PagedCollection<T> implements Iterable<T> {
+public class ResourceCollection<T> implements Iterable<T> {
     
     private class PagedIterator<E> implements Iterator<E> {
-        private PagedCollection<E> pagedCollection;
+        private ResourceCollection<E> resourceCollection;
         private int index;
         
-        public PagedIterator(PagedCollection<E> pagedCollection) {
-            this.pagedCollection = pagedCollection;
+        public PagedIterator(ResourceCollection<E> resourceCollection) {
+            this.resourceCollection = resourceCollection;
             this.index = 0;
         }
         
         public boolean hasNext() {
-            if (pagedCollection.isLastPage() && index >= pagedCollection.getItems().size()) {
+            if (resourceCollection.isLastPage() && index >= resourceCollection.getItems().size()) {
                 return false;
             }
             return true;
         }
 
         public E next() {
-            if (index >= pagedCollection.getItems().size()) {
-                this.pagedCollection = pagedCollection.getNextPage();
+            if (index >= resourceCollection.getItems().size()) {
+                this.resourceCollection = resourceCollection.getNextPage();
                 index = 0;
             }
-            E item = this.pagedCollection.getItems().get(index);
+            E item = this.resourceCollection.getItems().get(index);
             index++;
             return item;
         }
@@ -52,7 +52,7 @@ public class PagedCollection<T> implements Iterable<T> {
     private int pageSize;
     private int totalItems;
 
-    public PagedCollection(Pager<T> pager, NodeWrapper response, Class<T> klass) {
+    public ResourceCollection(Pager<T> pager, NodeWrapper response, Class<T> klass) {
         this.pager = pager;
         currentPageNumber = response.findInteger("current-page-number");
         pageSize = response.findInteger("page-size");
@@ -94,10 +94,10 @@ public class PagedCollection<T> implements Iterable<T> {
     /**
      * Returns the next page of results.
      * 
-     * @return {@link PagedCollection} or null if the current page is the last
+     * @return {@link ResourceCollection} or null if the current page is the last
      *         page
      */
-    private PagedCollection<T> getNextPage() {
+    private ResourceCollection<T> getNextPage() {
         if (isLastPage()) {
             return null;
         }

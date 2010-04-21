@@ -682,7 +682,7 @@ public class TransactionTest {
 
     @Test
     public void basicSearch() {
-        PagedCollection<Transaction> collection = gateway.transaction().search("411111");
+        ResourceCollection<Transaction> collection = gateway.transaction().search("411111");
 
         Assert.assertTrue(collection.getApproximateSize() > 100);
         

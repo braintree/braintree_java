@@ -24,27 +24,27 @@ public class CustomerGateway {
     }
 
     /**
-     * Finds all Customers and returns a {@link PagedCollection} for paging
+     * Finds all Customers and returns a {@link ResourceCollection} for paging
      * through them starting at the first page.
      * 
-     * @return a {@link PagedCollection}.
+     * @return a {@link ResourceCollection}.
      */
-    public PagedCollection<Customer> all() {
+    public ResourceCollection<Customer> all() {
         return all(1);
     }
 
     /**
-     * Finds all Customers and returns a {@link PagedCollection} for paging
+     * Finds all Customers and returns a {@link ResourceCollection} for paging
      * through them starting at the given page.
      * 
      * @param pageNumber
      *            the starting page.
-     * @return a {@link PagedCollection}
+     * @return a {@link ResourceCollection}
      */
-    public PagedCollection<Customer> all(int pageNumber) {
+    public ResourceCollection<Customer> all(int pageNumber) {
         String queryString = new QueryString().append("page", pageNumber).toString();
         NodeWrapper response = http.get("/customers?" + queryString);
-        return new PagedCollection<Customer>(new CustomerPager(this), response, Customer.class);
+        return new ResourceCollection<Customer>(new CustomerPager(this), response, Customer.class);
     }
 
     /**
