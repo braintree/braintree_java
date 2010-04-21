@@ -326,8 +326,8 @@ public class TransactionTest {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
-        Transaction transaction = result.getTarget();
+        Assert.assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
 
         Assert.assertEquals(new BigDecimal("2000.00"), transaction.getAmount());
         Assert.assertEquals(Transaction.Status.PROCESSOR_DECLINED, transaction.getStatus());
@@ -345,7 +345,7 @@ public class TransactionTest {
     @Test
     public void saleWithCustomFields() {
         TransactionRequest request = new TransactionRequest().
-            amount(TransactionAmount.DECLINE.amount).
+            amount(TransactionAmount.AUTHORIZE.amount).
             customField("store_me", "custom value").
             customField("another_stored_field", "custom value2").
             creditCard().
@@ -394,7 +394,9 @@ public class TransactionTest {
         Result<Transaction> result = gateway.transaction().sale(request);
         Assert.assertFalse(result.isSuccess());
         List<ValidationError> errros = result.getErrors().forObject("transaction").onField("base");
-            
+
+        Assert.assertNull(result.getTransaction());
+        Assert.assertNull(result.getCreditCardVerification());
         Assert.assertEquals(2, errros.size());
         
         List<ValidationErrorCode> validationErrorCodes = new ArrayList<ValidationErrorCode>();
@@ -520,7 +522,7 @@ public class TransactionTest {
     @Test
     public void creditWithCustomFields() {
         TransactionRequest request = new TransactionRequest().
-            amount(TransactionAmount.DECLINE.amount).
+            amount(TransactionAmount.AUTHORIZE.amount).
             customField("store_me", "custom value").
             customField("another_stored_field", "custom value2").
             creditCard().

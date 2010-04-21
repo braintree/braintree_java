@@ -85,7 +85,7 @@ public class Http {
         connection.setRequestMethod(requestMethod.toString());
         connection.addRequestProperty("Accept", "application/xml");
         connection.addRequestProperty("User-Agent", "Braintree Java " + version);
-        connection.addRequestProperty("X-ApiVersion", "1");
+        connection.addRequestProperty("X-ApiVersion", "2");
         connection.addRequestProperty("Authorization", authorizationHeader);
         connection.addRequestProperty("Content-Type", "application/xml");
         connection.setDoOutput(true);
