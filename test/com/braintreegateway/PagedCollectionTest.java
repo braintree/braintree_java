@@ -9,45 +9,18 @@ import com.braintreegateway.util.NodeWrapper;
 public class PagedCollectionTest {
 
     @Test
-    public void totalPagesForEvenlyDivisibleTotal() {
-        PagedCollection<Transaction> pagedCollection = new PagedCollection<Transaction>(null, xmlFor(1, 20, 5), Transaction.class);
-        Assert.assertEquals(4, pagedCollection.getTotalPages());
-    }
-
-    @Test
-    public void totalPagesForNonEvenlyDivisibleTotal() {
-        PagedCollection<Transaction> pagedCollection = new PagedCollection<Transaction>(null, xmlFor(1, 13, 5), Transaction.class);
-        Assert.assertEquals(3, pagedCollection.getTotalPages());
-    }
-    
-    @Test
-    public void totalPagesForEmptySet() {
-        PagedCollection<Transaction> pagedCollection = new PagedCollection<Transaction>(null, xmlFor(1, 0, 50), Transaction.class);
-        Assert.assertEquals(1, pagedCollection.getTotalPages());
-        Assert.assertTrue(pagedCollection.isLastPage());
-    }   
-
-    @Test
-    public void isLastPageOnLastPage() {
-        PagedCollection<Transaction> pagedCollection = new PagedCollection<Transaction>(null, xmlFor(3, 150, 50), Transaction.class);
-        Assert.assertTrue(pagedCollection.isLastPage());
-    }
-
-    @Test
-    public void isLastPageNotOnLastPage() {
-        PagedCollection<Transaction> pagedCollection = new PagedCollection<Transaction>(null, xmlFor(3, 151, 50), Transaction.class);
-        Assert.assertFalse(pagedCollection.isLastPage());
-    }
-
-    @Test
-    public void getNextPageReturnsNullOnLastPage() {
-        PagedCollection<Transaction> pagedCollection = new PagedCollection<Transaction>(null, xmlFor(1, 50, 50), Transaction.class);
-        Assert.assertNull(pagedCollection.getNextPage());
-    }
-    
-    private NodeWrapper xmlFor(int currentPageNumber, int totalItems, int pageSize) {
-        String xml = "<top-level><current-page-number>" + currentPageNumber + "</current-page-number><total-items>"
-                + totalItems + "</total-items><page-size>" + pageSize + "</page-size></top-level>";
-        return new NodeWrapper(xml);
+    public void getFirst() {
+        NodeWrapper xml = new NodeWrapper("<credit-card-transactions type=\"collection\">" +
+                "<current-page-number type=\"integer\">1</current-page-number>" +
+                "<page-size type=\"integer\">50</page-size>" +
+                "<total-items type=\"integer\">1</total-items>" +
+                "<transaction><id>abc</id><billing /><credit-card /><customer /><shipping /></transaction>" +
+                "<transaction><id>def</id><billing /><credit-card /><customer /><shipping /></transaction>" +
+                "<transaction><id>ghi</id><billing /><credit-card /><customer /><shipping /></transaction>" +
+                "</credit-card-transactions>"
+        );
+       
+        PagedCollection<Transaction> pagedCollection = new PagedCollection<Transaction>(null, xml, Transaction.class);
+        Assert.assertEquals("abc", pagedCollection.getFirst().getId());
     }
 }

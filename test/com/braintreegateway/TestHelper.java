@@ -49,32 +49,24 @@ public class TestHelper {
         Assert.assertEquals(trHash, new Crypto().hmacHash(configuration.privateKey, trContent));
     }
 
-    public static boolean pagedCollectionContains(PagedCollection<Subscription> collection, Subscription item) {
-        for (Subscription subscription : collection.getItems()) {
+    public static boolean includesSubscription(PagedCollection<Subscription> collection, Subscription item) {
+        for (Subscription subscription : collection) {
             if (subscription.getId().equals(item.getId())) {
                 return true;
             }
         }
 
-        if (collection.isLastPage()) {
-            return false;
-        }
-
-        return pagedCollectionContains(collection.getNextPage(), item);
+        return false;
     }
 
-    public static boolean pagedCollectionContainsStatus(PagedCollection<Transaction> collection, Status status) {
-        for (Transaction transaction : collection.getItems()) {
+    public static boolean includesStatus(PagedCollection<Transaction> collection, Status status) {
+        for (Transaction transaction : collection) {
             if (transaction.getStatus().equals(status)) {
                 return true;
             }
         }
 
-        if (collection.isLastPage()) {
-            return false;
-        }
-
-        return pagedCollectionContainsStatus(collection.getNextPage(), status);
+        return false;
     }
 
     public static String simulateFormPostForTR(BraintreeGateway gateway, Request trParams, Request request, String postUrl) {

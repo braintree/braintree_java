@@ -457,8 +457,8 @@ public class SubscriptionTest {
             planId().is(trialPlan.getId());
         
         PagedCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
-        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
+        Assert.assertFalse(TestHelper.includesSubscription(results, subscription2));
     }
     
     @Test
@@ -479,8 +479,8 @@ public class SubscriptionTest {
             planId().isNot(trialPlan.getId());
         
         PagedCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription2));
-        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription1));
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription2));
+        Assert.assertFalse(TestHelper.includesSubscription(results, subscription1));
     }
     
     @Test
@@ -501,8 +501,8 @@ public class SubscriptionTest {
             planId().endsWith("trial_plan");
         
         PagedCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
-        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
+        Assert.assertFalse(TestHelper.includesSubscription(results, subscription2));
     }
     
     @Test
@@ -523,8 +523,8 @@ public class SubscriptionTest {
             planId().startsWith("integration_trial_p");
         
         PagedCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
-        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
+        Assert.assertFalse(TestHelper.includesSubscription(results, subscription2));
     }
     
     @Test
@@ -545,8 +545,8 @@ public class SubscriptionTest {
             planId().contains("trial_p");
         
         PagedCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
-        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
+        Assert.assertFalse(TestHelper.includesSubscription(results, subscription2));
     }
     
     @Test
@@ -567,8 +567,8 @@ public class SubscriptionTest {
             status().in(Status.ACTIVE);
         
         PagedCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
-        Assert.assertFalse(TestHelper.pagedCollectionContains(results, subscription2));
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
+        Assert.assertFalse(TestHelper.includesSubscription(results, subscription2));
     }
     
     @Test
@@ -593,8 +593,8 @@ public class SubscriptionTest {
             status().in(statuses);
         
         PagedCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
-        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription2));
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription2));
     }
     
     @Test
@@ -615,8 +615,8 @@ public class SubscriptionTest {
             status().in(Status.ACTIVE, Status.CANCELED);
         
         PagedCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription1));
-        Assert.assertTrue(TestHelper.pagedCollectionContains(results, subscription2));
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription2));
     }
     
     @Test

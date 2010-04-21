@@ -1,6 +1,7 @@
 package com.braintreegateway;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.braintreegateway.util.NodeWrapper;
@@ -12,7 +13,38 @@ import com.braintreegateway.util.NodeWrapper;
  *            type of object being paged, e.g. {@link Transaction} or
  *            {@link Customer}.
  */
-public class PagedCollection<T> {
+public class PagedCollection<T> implements Iterable<T> {
+    
+    private class PagedIterator<E> implements Iterator<E> {
+        private PagedCollection<E> pagedCollection;
+        private int index;
+        
+        public PagedIterator(PagedCollection<E> pagedCollection) {
+            this.pagedCollection = pagedCollection;
+            this.index = 0;
+        }
+        
+        public boolean hasNext() {
+            if (pagedCollection.isLastPage() && index >= pagedCollection.getItems().size()) {
+                return false;
+            }
+            return true;
+        }
+
+        public E next() {
+            if (index >= pagedCollection.getItems().size()) {
+                this.pagedCollection = pagedCollection.getNextPage();
+                index = 0;
+            }
+            E item = this.pagedCollection.getItems().get(index);
+            index++;
+            return item;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
 
     private int currentPageNumber;
     private List<T> items;
@@ -31,30 +63,31 @@ public class PagedCollection<T> {
             items.add(Result.newInstanceFromNode(klass, node));
         }
     }
-
+    
     /**
-     * Returns the page the collection is currently on.
-     */
-    public int getCurrentPageNumber() {
-        return currentPageNumber;
-    }
-
-    /**
-     * Returns the number of objects on the current page.
+     * Returns the approximate total size of the collection.
      * 
-     * @see #getPageSize()
+     * @return Approximate size of collection
      */
-    public int getCurrentPageSize() {
-        return items.size();
+    public int getApproximateSize() {
+        return totalItems;
     }
 
+    public Iterator<T> iterator() {
+        return new PagedIterator<T>(this);
+    }
+
+    public T getFirst() {
+        return items.get(0);
+    }
+    
     /**
      * Returns a list of the items for the current page.
      * 
      * @return List of objects being paged, e.g. {@link Transaction} or
      *         {@link Customer}.
      */
-    public List<T> getItems() {
+    private List<T> getItems() {
         return items;
     }
 
@@ -64,7 +97,7 @@ public class PagedCollection<T> {
      * @return {@link PagedCollection} or null if the current page is the last
      *         page
      */
-    public PagedCollection<T> getNextPage() {
+    private PagedCollection<T> getNextPage() {
         if (isLastPage()) {
             return null;
         }
@@ -72,26 +105,9 @@ public class PagedCollection<T> {
     }
 
     /**
-     * Returns the number of objects on each page. This value is always fixed,
-     * and does not change for pages with less items.
-     * 
-     * @see #getCurrentPageSize()
-     */
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    /**
-     * Returns the total number of items on all pages.
-     */
-    public int getTotalItems() {
-        return totalItems;
-    }
-
-    /**
      * Returns the total number of pages.
      */
-    public int getTotalPages() {
+    private int getTotalPages() {
         if (totalItems == 0) {
             return 1;
         }
@@ -106,7 +122,7 @@ public class PagedCollection<T> {
     /**
      * Returns whether or not this is the last page.
      */
-    public boolean isLastPage() {
+    private boolean isLastPage() {
         return currentPageNumber == getTotalPages();
     }
 }
