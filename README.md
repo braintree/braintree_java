@@ -12,7 +12,6 @@ The Braintree library provides integration access to the Braintree Gateway.
     import com.braintreegateway.*;
 
     public class BraintreeExample {
-
         public static void main(String[] args) {
             BraintreeGateway gateway = new BraintreeGateway(
                 Environment.SANDBOX,
@@ -21,18 +20,24 @@ The Braintree library provides integration access to the Braintree Gateway.
                 "the_private_key"
             );
 
+            TransactionRequest request = new TransactionRequest().
+                amount(new BigDecimal("1000.00")).
+                creditCard().
+                    number("4111111111111111").
+                    expirationDate("05/2009").
+                    done();
+
             Result<Transaction> result = gateway.transaction().sale(request);
 
             if (result.isSuccess()) {
                 Transaction transaction = result.getTarget();
-                if (Transaction.Status.AUTHORIZED.equals(transaction.getStatus())) {
-                    System.out.println("Success!: " + transaction.getId());
-                } else {
-                    System.out.println("Error processing transaction:");
-                    System.out.println("  Status: " + transaction.getStatus());
-                    System.out.println("  Code: " + transaction.getProcessorResponseCode());
-                    System.out.println("  Text: " + transaction.getProcessorResponseText());
-                }
+                System.out.println("Success!: " + transaction.getId());
+            } else if (result.getTransaction() != null) {
+                Transaction transaction = result.getTransaction();
+                System.out.println("Error processing transaction:");
+                System.out.println("  Status: " + transaction.getStatus());
+                System.out.println("  Code: " + transaction.getProcessorResponseCode());
+                System.out.println("  Text: " + transaction.getProcessorResponseText());
             } else {
                 for (ValidationError error : result.getErrors().getAllDeepValidationErrors()) {
                    System.out.println("Attribute: " + error.getAttribute());
