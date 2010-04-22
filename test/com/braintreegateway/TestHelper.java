@@ -81,8 +81,6 @@ public class TestHelper {
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");
             connection.addRequestProperty("Accept", "application/xml");
-            connection.addRequestProperty("User-Agent", "Braintree Java");
-            connection.addRequestProperty("X-ApiVersion", Configuration.apiVersion());
             connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.getOutputStream().write(postData.getBytes("UTF-8"));
             connection.getOutputStream().close();
