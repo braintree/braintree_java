@@ -8,6 +8,7 @@ import org.junit.Test;
 import com.braintreegateway.Configuration;
 import com.braintreegateway.CreditCardRequest;
 import com.braintreegateway.TestHelper;
+import com.braintreegateway.TransactionRequest;
 
 public class TrUtilTest {
 
@@ -35,5 +36,10 @@ public class TrUtilTest {
     public void isValidTrQueryStringForInvalidString() {
         String queryString = "http_status=200&id=6kdj469tw7yck32j&hash=99c9ff20cd7910a1c1e793ff9e3b2d15586dc6b8";
         Assert.assertFalse(new TrUtil(configuration).isValidTrQueryString(queryString));
+    }
+    
+    @Test
+    public void apiVersionIsCorrectInTrData() {
+        TestHelper.assertIncludes("api_version=2", new TrUtil(configuration).buildTrData(new TransactionRequest(), "http://google.com"));
     }
 }

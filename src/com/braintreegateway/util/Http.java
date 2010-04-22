@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import com.braintreegateway.Configuration;
 import com.braintreegateway.Request;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.AuthorizationException;
@@ -85,7 +86,7 @@ public class Http {
         connection.setRequestMethod(requestMethod.toString());
         connection.addRequestProperty("Accept", "application/xml");
         connection.addRequestProperty("User-Agent", "Braintree Java " + version);
-        connection.addRequestProperty("X-ApiVersion", "2");
+        connection.addRequestProperty("X-ApiVersion", Configuration.apiVersion());
         connection.addRequestProperty("Authorization", authorizationHeader);
         connection.addRequestProperty("Content-Type", "application/xml");
         connection.setDoOutput(true);
