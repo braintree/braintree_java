@@ -13,6 +13,8 @@ import com.braintreegateway.util.QueryString;
  * BraintreeGateway gateway = new BraintreeGateway(...);
  * gateway.customer().create(...)
  * </pre>
+ * 
+ * For more detailed information on {@link Customer Customers}, see <a href="http://www.braintreepaymentsolutions.com/gateway/customer-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/customer-api</a>
  */
 public class CustomerGateway {
     private Configuration configuration;

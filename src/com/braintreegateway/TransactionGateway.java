@@ -11,13 +11,15 @@ import com.braintreegateway.util.TrUtil;
 /**
  * Provides methods to interact with {@link Transaction Transactions}.
  * E.g. sales, credits, refunds, searches, etc.
- * This class does not need to be instantiated directly.  
+ * This class does not need to be instantiated directly.
  * Instead, use {@link BraintreeGateway#transaction()} to get an instance of this class:
  * 
  * <pre>
  * BraintreeGateway gateway = new BraintreeGateway(...);
  * gateway.transaction().create(...)
  * </pre>
+ * 
+ * For more detailed information on {@link Transaction Transactions}, see <a href="http://www.braintreepaymentsolutions.com/gateway/transaction-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/transaction-api</a>
  */
 public class TransactionGateway {
 
