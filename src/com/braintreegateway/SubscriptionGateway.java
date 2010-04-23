@@ -1,5 +1,8 @@
 package com.braintreegateway;
 
+import java.math.BigDecimal;
+
+import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
@@ -82,4 +85,20 @@ public class SubscriptionGateway {
         NodeWrapper node = http.post("/subscriptions/advanced_search?page=" + pageNumber, search);
         return new ResourceCollection<Subscription>(new SubscriptionPager(this, search), node, Subscription.class);
     }
+
+    private Result<Transaction> retryCharge(SubscriptionTransactionRequest txnRequest) {
+        NodeWrapper response = http.post("/transactions", txnRequest);
+        return new Result<Transaction>(response, Transaction.class);
+    }
+
+    public Result<Transaction> retryCharge(String subscriptionId) {
+       return retryCharge(new SubscriptionTransactionRequest().
+         subscriptionId(subscriptionId));
+    }
+
+    public Result<Transaction> retryCharge(String subscriptionId, BigDecimal amount) {
+        return retryCharge(new SubscriptionTransactionRequest().
+          subscriptionId(subscriptionId).
+          amount(amount));
+     }
 }
