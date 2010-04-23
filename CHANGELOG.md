@@ -1,3 +1,9 @@
+## 2.0.0
+
+* Updated isSuccess() on transaction results to return false on declined transactions
+* Search results now implement Iterable and will automatically paginate data
+* Added getCardholderName() to CreditCard
+
 ## 1.2.0
 
 * Added option to change default credit card for a customer

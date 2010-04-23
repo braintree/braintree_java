@@ -6,9 +6,11 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -117,6 +119,7 @@ public class TransactionTest {
             amount(TransactionAmount.AUTHORIZE.amount).
             orderId("123").
             creditCard().
+                cardholderName("The Cardholder").
                 number(CreditCardNumber.VISA.number).
                 cvv("321").
                 expirationDate("05/2009").
@@ -170,6 +173,7 @@ public class TransactionTest {
         Assert.assertEquals("05", creditCard.getExpirationMonth());
         Assert.assertEquals("2009", creditCard.getExpirationYear());
         Assert.assertEquals("05/2009", creditCard.getExpirationDate());
+        Assert.assertEquals("The Cardholder", creditCard.getCardholderName());
 
         Assert.assertNull(transaction.getVaultCustomer(gateway));
         Customer customer = transaction.getCustomer();
@@ -324,8 +328,8 @@ public class TransactionTest {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
-        Transaction transaction = result.getTarget();
+        Assert.assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
 
         Assert.assertEquals(new BigDecimal("2000.00"), transaction.getAmount());
         Assert.assertEquals(Transaction.Status.PROCESSOR_DECLINED, transaction.getStatus());
@@ -343,7 +347,7 @@ public class TransactionTest {
     @Test
     public void saleWithCustomFields() {
         TransactionRequest request = new TransactionRequest().
-            amount(TransactionAmount.DECLINE.amount).
+            amount(TransactionAmount.AUTHORIZE.amount).
             customField("store_me", "custom value").
             customField("another_stored_field", "custom value2").
             creditCard().
@@ -392,7 +396,9 @@ public class TransactionTest {
         Result<Transaction> result = gateway.transaction().sale(request);
         Assert.assertFalse(result.isSuccess());
         List<ValidationError> errros = result.getErrors().forObject("transaction").onField("base");
-            
+
+        Assert.assertNull(result.getTransaction());
+        Assert.assertNull(result.getCreditCardVerification());
         Assert.assertEquals(2, errros.size());
         
         List<ValidationErrorCode> validationErrorCodes = new ArrayList<ValidationErrorCode>();
@@ -518,7 +524,7 @@ public class TransactionTest {
     @Test
     public void creditWithCustomFields() {
         TransactionRequest request = new TransactionRequest().
-            amount(TransactionAmount.DECLINE.amount).
+            amount(TransactionAmount.AUTHORIZE.amount).
             customField("store_me", "custom value").
             customField("another_stored_field", "custom value2").
             creditCard().
@@ -676,39 +682,20 @@ public class TransactionTest {
 
     @Test
     public void basicSearch() {
-        PagedCollection<Transaction> pagedCollection = gateway.transaction().search("411111");
+        ResourceCollection<Transaction> collection = gateway.transaction().search("411111");
 
-        Assert.assertTrue(pagedCollection.getTotalItems() > 0);
-        Assert.assertTrue(pagedCollection.getPageSize() > 0);
-        Assert.assertEquals(1, pagedCollection.getCurrentPageNumber());
-        Assert.assertEquals("411111", pagedCollection.getItems().get(0).getCreditCard().getBin());
-    }
-
-    @Test
-    public void basicSearchWithPageNumber() {
-        PagedCollection<Transaction> pagedCollection = gateway.transaction().search("411111", 2);
-        Assert.assertEquals(2, pagedCollection.getCurrentPageNumber());
-    }
-
-    @Test
-    public void basicSearchCanTraversePages() {
-        PagedCollection<Transaction> pagedCollection = gateway.transaction().search("411111");
-        Assert.assertEquals(1, pagedCollection.getCurrentPageNumber());
-
-        PagedCollection<Transaction> nextPage = pagedCollection.getNextPage();
-        Assert.assertEquals(2, nextPage.getCurrentPageNumber());
-        Assert.assertNotSame(pagedCollection.getItems().get(0).getId(), nextPage.getItems().get(0).getId());
+        Assert.assertTrue(collection.getApproximateSize() > 100);
+        
+        List<String> items = new ArrayList<String>();
+        for (Transaction item : collection) {
+            items.add(item.getId());
+        }
+        
+        Set<String> uniqueItems = new HashSet<String>(items);
+        
+        Assert.assertEquals(uniqueItems.size(), collection.getApproximateSize());
     }
     
-    @Test
-    public void basicSearchUpdatesCurrentPageSizeOnLastPage() {
-        PagedCollection<Transaction> pagedCollection = gateway.transaction().search("411111");
-        Assert.assertEquals(pagedCollection.getCurrentPageSize(), pagedCollection.getPageSize());
-        
-        pagedCollection = gateway.transaction().search("411111", pagedCollection.getTotalPages());
-        Assert.assertTrue(pagedCollection.getCurrentPageSize() < pagedCollection.getPageSize());
-    }
-
     @Test
     public void refundTransaction() {
         TransactionRequest request = new TransactionRequest().
@@ -754,16 +741,16 @@ public class TransactionTest {
     
     @Test
     public void allStatuses() {
-        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("authorizing"), Transaction.Status.AUTHORIZING);
-        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("authorized"), Transaction.Status.AUTHORIZED);
-        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("gateway_rejected"), Transaction.Status.GATEWAY_REJECTED);
-        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("failed"), Transaction.Status.FAILED);
-        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("processor_declined"), Transaction.Status.PROCESSOR_DECLINED);
-        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("settled"), Transaction.Status.SETTLED);
-        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("settlement_failed"), Transaction.Status.SETTLEMENT_FAILED);
-        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("submitted_for_settlement"), Transaction.Status.SUBMITTED_FOR_SETTLEMENT);
-        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("unknown"), Transaction.Status.UNKNOWN);
-        TestHelper.pagedCollectionContainsStatus(gateway.transaction().search("voided"), Transaction.Status.VOIDED);
+        TestHelper.includesStatus(gateway.transaction().search("authorizing"), Transaction.Status.AUTHORIZING);
+        TestHelper.includesStatus(gateway.transaction().search("authorized"), Transaction.Status.AUTHORIZED);
+        TestHelper.includesStatus(gateway.transaction().search("gateway_rejected"), Transaction.Status.GATEWAY_REJECTED);
+        TestHelper.includesStatus(gateway.transaction().search("failed"), Transaction.Status.FAILED);
+        TestHelper.includesStatus(gateway.transaction().search("processor_declined"), Transaction.Status.PROCESSOR_DECLINED);
+        TestHelper.includesStatus(gateway.transaction().search("settled"), Transaction.Status.SETTLED);
+        TestHelper.includesStatus(gateway.transaction().search("settlement_failed"), Transaction.Status.SETTLEMENT_FAILED);
+        TestHelper.includesStatus(gateway.transaction().search("submitted_for_settlement"), Transaction.Status.SUBMITTED_FOR_SETTLEMENT);
+        TestHelper.includesStatus(gateway.transaction().search("unknown"), Transaction.Status.UNKNOWN);
+        TestHelper.includesStatus(gateway.transaction().search("voided"), Transaction.Status.VOIDED);
     }
     
     @Test

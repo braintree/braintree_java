@@ -41,6 +41,18 @@ public class SubscriptionSearchRequestTest {
     }
     
     @Test
+    public void toXMLEscapesXmlOnTextNodes() {
+        String expected = "<search><days_past_due><is>&lt;test&gt;</is></days_past_due></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().daysPastDue().is("<test>").toXML());
+    }
+    
+    @Test
+    public void toXMLEscapesXmlOnMultipleValueNodes() {
+        String expected = "<search><status type=\"array\"><item>&lt;a</item><item>b&amp;</item></status></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().status().in("<a", "b&").toXML());
+    }
+    
+    @Test
     public void statusReturnsCorrectStringRepresentation() {
         String expected = "<search><status type=\"array\"><item>Active</item><item>Canceled</item><item>Past Due</item></status></search>";
         List<Status> statuses = new ArrayList<Status>();

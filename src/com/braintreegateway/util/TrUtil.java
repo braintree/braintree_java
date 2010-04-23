@@ -19,7 +19,7 @@ public class TrUtil {
         Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         String dateString = String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", now);
 
-        String trContent = new QueryString().append("api_version", "1").append("public_key", configuration.publicKey)
+        String trContent = new QueryString().append("api_version", Configuration.apiVersion()).append("public_key", configuration.publicKey)
                 .append("redirect_url", redirectURL).append("time", dateString).toString();
 
         String requestQueryString = request.toQueryString();

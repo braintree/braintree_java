@@ -13,6 +13,8 @@ import com.braintreegateway.util.NodeWrapper;
  * BraintreeGateway gateway = new BraintreeGateway(...);
  * gateway.subscription().create(...)
  * </pre>
+ * 
+ * For more detailed information on {@link Subscription Subscriptions}, see <a href="http://www.braintreepaymentsolutions.com/gateway/subscription-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/subscription-api</a>
  */
 public class SubscriptionGateway {
 
@@ -72,12 +74,12 @@ public class SubscriptionGateway {
      * @param request the {@link SubscriptionSearchRequest}.
      * @return a {@link Result}.
      */
-    public PagedCollection<Subscription> search(SubscriptionSearchRequest search) {
+    public ResourceCollection<Subscription> search(SubscriptionSearchRequest search) {
         return this.search(search, 1);
     }
 
-    public PagedCollection<Subscription> search(SubscriptionSearchRequest search, int pageNumber) {
+    public ResourceCollection<Subscription> search(SubscriptionSearchRequest search, int pageNumber) {
         NodeWrapper node = http.post("/subscriptions/advanced_search?page=" + pageNumber, search);
-        return new PagedCollection<Subscription>(new SubscriptionPager(this, search), node, Subscription.class);
+        return new ResourceCollection<Subscription>(new SubscriptionPager(this, search), node, Subscription.class);
     }
 }

@@ -50,10 +50,10 @@ public class SubscriptionSearchRequest extends Request {
         StringBuilder builder = new StringBuilder();
         builder.append("<search>");
         for (String key : criteria.keySet()) {
-            builder.append(buildXMLElement(key, criteria.get(key).toXML()));
+            builder.append(wrapInXMLTag(key, criteria.get(key).toXML()));
         }
         for (String key : multiValueCriteria.keySet()) {
-            builder.append(buildXMLElement(key, multiValueCriteria.get(key).toXML(), "array"));
+            builder.append(wrapInXMLTag(key, multiValueCriteria.get(key).toXML(), "array"));
         }
         builder.append("</search>");
         return builder.toString();

@@ -9,7 +9,7 @@ public class SubscriptionPager implements Pager<Subscription> {
         this.search = search;
     }
 
-    public PagedCollection<Subscription> getPage(int page) {
+    public ResourceCollection<Subscription> getPage(int page) {
         return gateway.search(search, page);
     }
 }

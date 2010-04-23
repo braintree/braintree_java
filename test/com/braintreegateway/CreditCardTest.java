@@ -65,6 +65,20 @@ public class CreditCardTest {
     }
 
     @Test
+    public void createWithXmlCharacters() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("Special Chars <>&\"'").
+            number("5105105105105100").
+            expirationDate("05/12");
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        Assert.assertTrue(result.isSuccess());
+        CreditCard card = result.getTarget();
+        Assert.assertEquals("Special Chars <>&\"'", card.getCardholderName());
+    }
+
+    @Test
     public void createWithAddress() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().

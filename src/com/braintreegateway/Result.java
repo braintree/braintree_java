@@ -7,6 +7,7 @@ import com.braintreegateway.util.NodeWrapper;
 public class Result<T> {
 
     private CreditCardVerification creditCardVerification;
+    private Transaction transaction;
     private ValidationErrors errors;
     private Map<String, String> parameters;
     private T target;
@@ -35,13 +36,26 @@ public class Result<T> {
             this.target = newInstanceFromNode(klass, node);
         } else {
             this.errors = new ValidationErrors(node);
-            this.creditCardVerification = new CreditCardVerification(node);
+
+            NodeWrapper verificationNode = node.findFirst("verification");
+            if (verificationNode != null) {
+                this.creditCardVerification = new CreditCardVerification(verificationNode);
+            }
+
+            NodeWrapper transactionNode = node.findFirst("transaction");
+            if (transactionNode != null) {
+                this.transaction = new Transaction(transactionNode);
+            }
             this.parameters = node.findFirst("params").getFormParameters();
         }
     }
 
     public CreditCardVerification getCreditCardVerification() {
         return creditCardVerification;
+    }
+
+    public Transaction getTransaction() {
+        return transaction;
     }
 
     public ValidationErrors getErrors() {

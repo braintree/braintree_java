@@ -5,6 +5,13 @@ import org.junit.Test;
 
 public class CreditCardRequestTest {
     @Test
+    public void toXmlEscapesXmlChars() {
+        CreditCardRequest request = new CreditCardRequest().
+            cardholderName("Special Xml Chars <>&\"'");
+         Assert.assertEquals("<creditCard><cardholderName>Special Xml Chars &lt;&gt;&amp;&quot;&apos;</cardholderName></creditCard>", request.toXML());
+    }
+
+    @Test
     public void toQueryString() {
         CreditCardRequest request = new CreditCardRequest().
             cardholderName("Drew").

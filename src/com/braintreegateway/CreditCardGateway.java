@@ -12,6 +12,9 @@ import com.braintreegateway.util.NodeWrapper;
  * BraintreeGateway gateway = new BraintreeGateway(...);
  * gateway.creditCard().create(...)
  * </pre>
+ * 
+ * For more detailed information on {@link CreditCard CreditCards}, see <a href="http://www.braintreepaymentsolutions.com/gateway/credit-card-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/credit-card-api</a><br />
+ * For more detailed information on credit card verifications, see <a href="http://www.braintreepaymentsolutions.com/gateway/credit-card-verification-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/credit-card-verification-api</a>
  */
 public class CreditCardGateway {
     private Configuration configuration;

@@ -3,7 +3,6 @@ package com.braintreegateway;
 import java.net.URLEncoder;
 import java.util.Map;
 
-
 /**
  * Abstract class for fluent interface request builders.
  */
@@ -17,14 +16,15 @@ public abstract class Request {
     }
 
     protected String buildXMLElement(String name, Map<String, String> map) {
-      if (map == null) return "";
-      String xml = "";
-      xml += String.format("<%s>", name);
-      for (Map.Entry<String, String> entry : map.entrySet()) {
-        xml += String.format("<%s>%s</%s>", entry.getKey(), entry.getValue(), entry.getKey());
-      }
-      xml += String.format("</%s>", name);
-      return xml;
+        if (map == null)
+            return "";
+        String xml = "";
+        xml += String.format("<%s>", name);
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            xml += buildXMLElement(entry.getKey(), entry.getValue());
+        }
+        xml += String.format("</%s>", name);
+        return xml;
     }
 
     protected String buildXMLElement(String name, Object element) {
@@ -33,17 +33,7 @@ public abstract class Request {
         } else if (element instanceof Request) {
             return ((Request) element).toXML();
         } else {
-            return String.format("<%s>%s</%s>", name, element == null ? "" : element.toString(), name);
-        }
-    }
-    
-    protected String buildXMLElement(String name, Object element, String type) {
-        if (element == null) {
-            return "";
-        } else if (element instanceof Request) {
-            return ((Request) element).toXML();
-        } else {
-            return String.format("<%s type=\"%s\">%s</%s>", name, type, element == null ? "" : element.toString(), name);
+            return String.format("<%s>%s</%s>", xmlEscape(name), element == null ? "" : xmlEscape(element.toString()), xmlEscape(name));
         }
     }
 
@@ -61,5 +51,17 @@ public abstract class Request {
 
     protected String parentBracketChildString(String parent, String child) {
         return String.format("%s[%s]", parent, child);
+    }
+
+    protected String wrapInXMLTag(String tagName, String xml) {
+        return String.format("<%s>%s</%s>", tagName, xml, tagName);
+    }
+
+    protected String wrapInXMLTag(String tagName, String xml, String type) {
+        return String.format("<%s type=\"%s\">%s</%s>", tagName, type, xml, tagName);
+    }
+
+    protected String xmlEscape(String input) {
+        return input.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("'", "&apos;").replaceAll("\"", "&quot;");
     }
 }

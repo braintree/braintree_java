@@ -13,4 +13,10 @@ public class TransactionRequestTest {
 
         Assert.assertEquals("transaction%5Bcustomer%5D%5Bfirst_name%5D=Drew", request.toQueryString());
     }
+    
+    @Test
+    public void customFieldsEscapesKeysAndValues() {
+        TransactionRequest request = new TransactionRequest().customField("ke&y", "va<lue");
+        TestHelper.assertIncludes("<customFields><ke&amp;y>va&lt;lue</ke&amp;y></customFields>", request.toXML());
+    }
 }

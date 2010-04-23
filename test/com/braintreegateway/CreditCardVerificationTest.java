@@ -27,7 +27,8 @@ public class CreditCardVerificationTest {
         builder.append("  </errors>");
         builder.append("</api-error-response>");
 
-        CreditCardVerification verification = new CreditCardVerification(new NodeWrapper(builder.toString()));
+        NodeWrapper verificationNode = (new NodeWrapper(builder.toString())).findFirst("verification");
+        CreditCardVerification verification = new CreditCardVerification(verificationNode);
         Assert.assertEquals(null, verification.getAvsErrorResponseCode());
         Assert.assertEquals("I", verification.getAvsPostalCodeResponseCode());
         Assert.assertEquals("processor_declined", verification.getStatus());
@@ -35,25 +36,5 @@ public class CreditCardVerificationTest {
         Assert.assertEquals("I", verification.getAvsStreetAddressResponseCode());
         Assert.assertEquals("Do Not Honor", verification.getProcessorResponseText());
         Assert.assertEquals("M", verification.getCvvResponseCode());
-    }
-
-    @Test
-    public void constructFromResponseWithNoVerification() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        builder.append("<api-error-response>");
-        builder.append("  <errors>");
-        builder.append("    <errors type=\"array\"/>");
-        builder.append("  </errors>");
-        builder.append("</api-error-response>");
-
-        CreditCardVerification verification = new CreditCardVerification(new NodeWrapper(builder.toString()));
-        Assert.assertEquals(null, verification.getAvsErrorResponseCode());
-        Assert.assertEquals(null, verification.getAvsPostalCodeResponseCode());
-        Assert.assertEquals(null, verification.getStatus());
-        Assert.assertEquals(null, verification.getProcessorResponseCode());
-        Assert.assertEquals(null, verification.getAvsStreetAddressResponseCode());
-        Assert.assertEquals(null, verification.getProcessorResponseText());
-        Assert.assertEquals(null, verification.getCvvResponseCode());
     }
 }

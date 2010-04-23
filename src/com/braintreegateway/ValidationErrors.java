@@ -21,6 +21,8 @@ import com.braintreegateway.util.StringUtils;
  *   ValidationErrors errors = result.getErrors();
  *   Assert.assertEquals(ValidationErrorCode.TRANSACTION_AMOUNT_IS_REQUIRED, errors.forObject("transaction").onField("amount").get(0).getCode());
  *  </pre>
+ *  
+ *  For more detailed information on {@link ValidationErrors}, see <a href="http://www.braintreepaymentsolutions.com/gateway/validation-errors" target="_blank">http://www.braintreepaymentsolutions.com/gateway/validation-errors</a>
  */
 public class ValidationErrors {
 
