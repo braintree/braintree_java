@@ -319,6 +319,59 @@ public class TransactionTest {
     }
 
     @Test
+     public void saleWithVaultCustomerAndNewCreditCard() {
+        Customer customer = gateway.customer().create(new CustomerRequest().
+                firstName("Michael").
+                lastName("Angelo").
+                company("Some Company")
+         ).getTarget();
+
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            customerId(customer.getId()).
+            creditCard().
+                    cardholderName("Bob the Builder").
+                    number(SandboxValues.CreditCardNumber.VISA.number).
+                    expirationDate("05/2009").
+                    done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        Assert.assertEquals("Bob the Builder", transaction.getCreditCard().getCardholderName());
+        Assert.assertNull(transaction.getVaultCreditCard(gateway));
+     }
+
+     @Test
+     public void saleWithVaultCustomerAndNewCreditCardStoresInVault() {
+         Customer customer = gateway.customer().create(new CustomerRequest().
+                 firstName("Michael").
+                 lastName("Angelo").
+                 company("Some Company")
+          ).getTarget();
+
+         TransactionRequest request = new TransactionRequest().
+             amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+             customerId(customer.getId()).
+             creditCard().
+                     cardholderName("Bob the Builder").
+                     number(SandboxValues.CreditCardNumber.VISA.number).
+                     expirationDate("05/2009").
+                     done().
+              options().
+                  storeInVault(true).
+                  done();
+
+         Result<Transaction> result = gateway.transaction().sale(request);
+         Assert.assertTrue(result.isSuccess());
+         Transaction transaction = result.getTarget();
+
+         Assert.assertEquals("Bob the Builder", transaction.getCreditCard().getCardholderName());
+         Assert.assertEquals("Bob the Builder", transaction.getVaultCreditCard(gateway).getCardholderName());
+     }
+
+     @Test
     public void saleDeclined() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.DECLINE.amount).
