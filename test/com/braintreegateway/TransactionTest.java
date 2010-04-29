@@ -1272,13 +1272,13 @@ public class TransactionTest {
          Calendar createdAt = transaction.getCreatedAt();
          
          Calendar threeHoursEarlier = ((Calendar)createdAt.clone());
-         threeHoursEarlier.add(Calendar.HOUR, -3);
+         threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
          
          Calendar oneHourEarlier = ((Calendar)createdAt.clone());
-         oneHourEarlier.add(Calendar.HOUR, -1);
+         oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
          
          Calendar oneHourLater = ((Calendar)createdAt.clone());
-         oneHourLater.add(Calendar.HOUR, 1);
+         oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
          
          TransactionSearchRequest searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
@@ -1304,52 +1304,30 @@ public class TransactionTest {
 
          Assert.assertEquals(0, gateway.transaction().search(searchRequest).getApproximateSize());
      }
-
     
-//    [Test]
-//     public void Search_OnCreatedAt()
-//     {
-//         TransactionRequest request = new TransactionRequest
-//         {
-//             Amount = SandboxValues.TransactionAmount.AUTHORIZE,
-//             CreditCard = new CreditCardRequest
-//             {
-//                 Number = SandboxValues.CreditCardNumber.VISA,
-//                 ExpirationDate = "05/2010"
-//             }
-//         };
-//
-//         Transaction transaction = gateway.Transaction.Sale(request).Target;
-//
-//         DateTime createdAt = transaction.CreatedAt.Value;
-//         DateTime threeHoursEarlier = createdAt.AddHours(-3);
-//         DateTime oneHourEarlier = createdAt.AddHours(-1);
-//         DateTime oneHourLater = createdAt.AddHours(1);
-//
-//         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-//             Id.Is(transaction.Id).
-//             CreatedAt.Between(oneHourEarlier, oneHourLater);
-//
-//         Assert.AreEqual(1, gateway.Transaction.Search(searchRequest).ApproximateCount);
-//
-//         searchRequest = new TransactionSearchRequest().
-//             Id.Is(transaction.Id).
-//             CreatedAt.GreaterThanOrEqualTo(oneHourEarlier);
-//
-//         Assert.AreEqual(1, gateway.Transaction.Search(searchRequest).ApproximateCount);
-//
-//         searchRequest = new TransactionSearchRequest().
-//             Id.Is(transaction.Id).
-//             CreatedAt.LessThanOrEqualTo(oneHourLater);
-//
-//         Assert.AreEqual(1, gateway.Transaction.Search(searchRequest).ApproximateCount);
-//
-//         searchRequest = new TransactionSearchRequest().
-//             Id.Is(transaction.Id).
-//             CreatedAt.Between(threeHoursEarlier, oneHourEarlier);
-//
-//         Assert.AreEqual(0, gateway.Transaction.Search(searchRequest).ApproximateCount);
-//     }
+    @Test
+    public void searchOnCreatedAtUsingLocalTime() {
+        TransactionRequest request = new TransactionRequest().
+        amount(TransactionAmount.AUTHORIZE.amount).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2010").
+            done();
+
+         Transaction transaction = gateway.transaction().sale(request).getTarget();
+                  
+         Calendar oneHourEarlier = Calendar.getInstance();
+         oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+         
+         Calendar oneHourLater = Calendar.getInstance();
+         oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+         
+         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+             id().is(transaction.getId()).
+             createdAt().between(oneHourEarlier, oneHourLater);
+
+         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getApproximateSize());
+     }
 
     @Test
     public void refundTransaction() {
