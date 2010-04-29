@@ -3,7 +3,7 @@ package com.braintreegateway;
 import java.util.List;
 
 public class SearchNode<T extends SearchRequest> {
-    private Object nodeName;
+    protected Object nodeName;
     private T parent;
 
     public SearchNode(Object nodeName, T parent) {

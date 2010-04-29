@@ -138,10 +138,10 @@ public class TransactionSearchRequest extends SearchRequest {
     }
 
     public MultipleValueNode<TransactionSearchRequest> createdUsing() {
-        return new MultipleValueNode<TransactionSearchRequest>("created_using", this);
+        return new MultipleValueNode<TransactionSearchRequest>("created_using", this, Transaction.CreatedUsing.values());
     }
 
     public MultipleValueNode<TransactionSearchRequest> creditCardCustomerLocation() {
-        return new MultipleValueNode<TransactionSearchRequest>("credit_card_customer_location", this);
+        return new MultipleValueNode<TransactionSearchRequest>("credit_card_customer_location", this, CreditCard.CustomerLocation.values());
     }
 }
