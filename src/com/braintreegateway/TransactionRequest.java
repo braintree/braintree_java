@@ -1,3 +1,4 @@
+
 package com.braintreegateway;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ public class TransactionRequest extends Request {
     private String customerId;
     private CustomerRequest customerRequest;
     private Map<String, String> customFields;
+    private String merchantAccountId;
     private String orderId;
     private String paymentMethodToken;
     private String shippingAddressId;
@@ -55,6 +57,11 @@ public class TransactionRequest extends Request {
 
     public TransactionRequest customField(String apiName, String value) {
         customFields.put(apiName, value);
+        return this;
+    }
+
+    public TransactionRequest merchantAccountId(String merchantAccountId) {
+        this.merchantAccountId = merchantAccountId;
         return this;
     }
 
@@ -117,6 +124,7 @@ public class TransactionRequest extends Request {
         builder.append("<transaction>");
         builder.append(buildXMLElement("amount", amount));
         builder.append(buildXMLElement("customerId", customerId));
+        builder.append(buildXMLElement("merchantAccountId", merchantAccountId));
         builder.append(buildXMLElement("customFields", customFields));
         builder.append(buildXMLElement("orderId", orderId));
         builder.append(buildXMLElement("paymentMethodToken", paymentMethodToken));

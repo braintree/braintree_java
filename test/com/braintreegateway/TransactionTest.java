@@ -211,6 +211,39 @@ public class TransactionTest {
     }
 
     @Test
+    public void saleWithSpecifyingMerchantAccountId() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getMerchantAccountId());
+    }
+
+    @Test
+    public void saleWithoutSpecifyingMerchantAccountIdFallsBackToDefault() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        Assert.assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getMerchantAccountId());
+    }
+
+    @Test
     public void saleWithStoreInVaultAndSpecifyingToken() {
         String customerId = String.valueOf(new Random().nextInt());
         String paymentToken = String.valueOf(new Random().nextInt());
@@ -573,7 +606,40 @@ public class TransactionTest {
         Assert.assertEquals("2009", creditCard.getExpirationYear());
         Assert.assertEquals("05/2009", creditCard.getExpirationDate());
     }
+    
+    @Test
+    public void creditWithSpecifyingMerchantAccountId() {
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+            creditCard().
+                number(SandboxValues.CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
 
+        Result<Transaction> result = gateway.transaction().credit(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        
+        Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getMerchantAccountId());
+    }
+
+    @Test
+    public void creditWithoutSpecifyingMerchantAccountIdFallsBackToDefault() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().credit(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        Assert.assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getMerchantAccountId());
+    }
+    
     @Test
     public void creditWithCustomFields() {
         TransactionRequest request = new TransactionRequest().
