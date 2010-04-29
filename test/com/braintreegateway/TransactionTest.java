@@ -844,6 +844,78 @@ public class TransactionTest {
     }
     
     @Test
+    public void searchOnCreatedUsing() {
+         TransactionRequest request = new TransactionRequest().
+             amount(TransactionAmount.AUTHORIZE.amount).
+             creditCard().
+                 number(CreditCardNumber.VISA.number).
+                 expirationDate("05/2010").
+                 done();
+
+         Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+             id().is(transaction.getId()).
+             createdUsing().is(Transaction.CreatedUsing.FULL_INFORMATION);
+
+         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+
+         Assert.assertEquals(1, collection.getApproximateSize());
+
+         searchRequest = new TransactionSearchRequest().
+             id().is(transaction.getId()).
+             createdUsing().in(Transaction.CreatedUsing.FULL_INFORMATION, Transaction.CreatedUsing.TOKEN);
+
+         collection = gateway.transaction().search(searchRequest);
+
+         Assert.assertEquals(1, collection.getApproximateSize());
+
+         searchRequest = new TransactionSearchRequest().
+             id().is(transaction.getId()).
+             createdUsing().is(Transaction.CreatedUsing.TOKEN);
+
+         collection = gateway.transaction().search(searchRequest);
+
+         Assert.assertEquals(0, collection.getApproximateSize());
+     }
+    
+    @Test
+    public void searchOnCreditCardCustomerLocation() {
+         TransactionRequest request = new TransactionRequest().
+             amount(TransactionAmount.AUTHORIZE.amount).
+             creditCard().
+                 number(CreditCardNumber.VISA.number).
+                 expirationDate("05/2010").
+                 done();
+
+         Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+             id().is(transaction.getId()).
+             creditCardCustomerLocation().is(CreditCard.CustomerLocation.US);
+
+         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+
+         Assert.assertEquals(1, collection.getApproximateSize());
+
+         searchRequest = new TransactionSearchRequest().
+             id().is(transaction.getId()).
+             creditCardCustomerLocation().in(CreditCard.CustomerLocation.US, CreditCard.CustomerLocation.INTERNATIONAL);
+
+         collection = gateway.transaction().search(searchRequest);
+
+         Assert.assertEquals(1, collection.getApproximateSize());
+
+         searchRequest = new TransactionSearchRequest().
+             id().is(transaction.getId()).
+             creditCardCustomerLocation().is(CreditCard.CustomerLocation.INTERNATIONAL);
+
+         collection = gateway.transaction().search(searchRequest);
+
+         Assert.assertEquals(0, collection.getApproximateSize());
+     }
+    
+    @Test
     public void refundTransaction() {
         TransactionRequest request = new TransactionRequest().
         amount(TransactionAmount.AUTHORIZE.amount).

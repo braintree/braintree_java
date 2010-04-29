@@ -136,4 +136,12 @@ public class TransactionSearchRequest extends SearchRequest {
     public TextNode<TransactionSearchRequest> shippingStreetAddress() {
         return new TextNode<TransactionSearchRequest>("shipping_street_address", this);
     }
+
+    public MultipleValueNode<TransactionSearchRequest> createdUsing() {
+        return new MultipleValueNode<TransactionSearchRequest>("created_using", this);
+    }
+
+    public MultipleValueNode<TransactionSearchRequest> creditCardCustomerLocation() {
+        return new MultipleValueNode<TransactionSearchRequest>("credit_card_customer_location", this);
+    }
 }

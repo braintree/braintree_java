@@ -16,6 +16,21 @@ public class Transaction {
     public enum Type {
         CREDIT, SALE, UNRECOGNIZED;
     }
+    
+    public enum CreatedUsing {
+        FULL_INFORMATION("full_information"),
+        TOKEN("token");
+        
+        private final String name;
+        
+        CreatedUsing(String name) {
+            this.name = name;
+        }
+        
+        public String toString() {
+            return name;
+        }
+    }
 
     private BigDecimal amount;
     private Address billingAddress;

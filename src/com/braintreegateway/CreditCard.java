@@ -8,6 +8,21 @@ import com.braintreegateway.util.NodeWrapper;
 
 public class CreditCard {
 
+    public enum CustomerLocation {
+        US("us"),
+        INTERNATIONAL("international");
+        
+        private final String name;
+        
+        CustomerLocation(String name) {
+            this.name = name;
+        }
+        
+        public String toString() {
+            return name;
+        }
+    }
+    
     private Address billingAddress;
     private String bin;
     private String cardholderName;
