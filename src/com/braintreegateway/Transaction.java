@@ -39,6 +39,7 @@ public class Transaction {
     private Customer customer;
     private Map<String, String> customFields;
     private String id;
+    private String merchantAccountId;
     private String orderId;
     private String processorAuthorizationCode;
     private String processorResponseCode;
@@ -56,6 +57,7 @@ public class Transaction {
         customFields = node.findMap("custom-fields");
         customer = new Customer(node.findFirst("customer"));
         id = node.findString("id");
+        merchantAccountId = node.findString("merchant-account-id");
         orderId = node.findString("order-id");
         processorAuthorizationCode = node.findString("processor-authorization-code");
         processorResponseCode = node.findString("processor-response-code");
@@ -92,6 +94,10 @@ public class Transaction {
 
     public String getId() {
         return id;
+    }
+    
+    public String getMerchantAccountId() {
+        return merchantAccountId;
     }
 
     public String getOrderId() {

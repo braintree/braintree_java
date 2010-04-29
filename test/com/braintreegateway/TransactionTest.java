@@ -916,6 +916,114 @@ public class TransactionTest {
      }
     
     @Test
+    public void searchOnMerchantAccountId() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done();
+        
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            merchantAccountId().is(transaction.getMerchantAccountId());
+        
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        
+        Assert.assertEquals(1, collection.getApproximateSize());
+        
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            merchantAccountId().in(transaction.getMerchantAccountId(), "badmerchantaccountid");
+        
+        collection = gateway.transaction().search(searchRequest);
+        
+        Assert.assertEquals(1, collection.getApproximateSize());
+        
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            merchantAccountId().is("badmerchantaccountid");
+        
+        collection = gateway.transaction().search(searchRequest);
+        
+        Assert.assertEquals(0, collection.getApproximateSize());
+    }
+    
+    @Test
+    public void searchOnCreditCardType() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done();
+        
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCardType().is(CreditCard.CardType.VISA);
+        
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        
+        Assert.assertEquals(1, collection.getApproximateSize());
+        
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCardType().in(CreditCard.CardType.VISA, CreditCard.CardType.MASTER_CARD);
+        
+        collection = gateway.transaction().search(searchRequest);
+        
+        Assert.assertEquals(1, collection.getApproximateSize());
+        
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCardType().is(CreditCard.CardType.MASTER_CARD);
+        
+        collection = gateway.transaction().search(searchRequest);
+        
+        Assert.assertEquals(0, collection.getApproximateSize());
+    }
+
+    @Test
+    public void searchOnStatus() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done();
+        
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            status().is(Transaction.Status.AUTHORIZED);
+        
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        
+        Assert.assertEquals(1, collection.getApproximateSize());
+        
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            status().in(Transaction.Status.AUTHORIZED, Transaction.Status.GATEWAY_REJECTED);
+        
+        collection = gateway.transaction().search(searchRequest);
+        
+        Assert.assertEquals(1, collection.getApproximateSize());
+        
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            status().is(Transaction.Status.GATEWAY_REJECTED);
+        
+        collection = gateway.transaction().search(searchRequest);
+        
+        Assert.assertEquals(0, collection.getApproximateSize());
+    }
+
+    @Test
     public void refundTransaction() {
         TransactionRequest request = new TransactionRequest().
         amount(TransactionAmount.AUTHORIZE.amount).

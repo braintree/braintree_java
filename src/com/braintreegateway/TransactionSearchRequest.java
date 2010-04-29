@@ -144,4 +144,16 @@ public class TransactionSearchRequest extends SearchRequest {
     public MultipleValueNode<TransactionSearchRequest> creditCardCustomerLocation() {
         return new MultipleValueNode<TransactionSearchRequest>("credit_card_customer_location", this, CreditCard.CustomerLocation.values());
     }
+    
+    public MultipleValueNode<TransactionSearchRequest> merchantAccountId() {
+        return new MultipleValueNode<TransactionSearchRequest>("merchant_account_id", this);
+    }
+
+    public MultipleValueNode<TransactionSearchRequest> creditCardCardType() {
+        return new MultipleValueNode<TransactionSearchRequest>("credit_card_card_type", this, CreditCard.CardType.values());
+    }
+    
+    public MultipleValueNode<TransactionSearchRequest> status() {
+        return new MultipleValueNode<TransactionSearchRequest>("status", this, Transaction.Status.values());
+    }
 }
