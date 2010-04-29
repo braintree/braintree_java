@@ -1115,6 +1115,42 @@ public class TransactionTest {
         Assert.assertEquals(1, collection.getApproximateSize());
         Assert.assertEquals(creditTransaction.getId(), collection.getFirst().getId());
     }
+    
+    @Test
+    public void searchOnAmount() {
+        TransactionRequest request = new TransactionRequest().
+        amount(new BigDecimal("1000")).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2010").
+            done();
+
+         Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+             id().is(transaction.getId()).
+             amount().between(new BigDecimal("500"), new BigDecimal("1500"));
+
+         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getApproximateSize());
+         
+         searchRequest = new TransactionSearchRequest().
+             id().is(transaction.getId()).
+             amount().greaterThanOrEqual(new BigDecimal("500"));
+
+         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getApproximateSize());
+         
+         searchRequest = new TransactionSearchRequest().
+             id().is(transaction.getId()).
+             amount().lessThanOrEqual(new BigDecimal("1500"));
+
+         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getApproximateSize());
+         
+         searchRequest = new TransactionSearchRequest().
+             id().is(transaction.getId()).
+             amount().between(new BigDecimal("1300"), new BigDecimal("1500"));
+
+         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getApproximateSize());
+     }
 
     @Test
     public void refundTransaction() {

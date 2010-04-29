@@ -168,4 +168,8 @@ public class TransactionSearchRequest extends SearchRequest {
     public KeyValueNode<TransactionSearchRequest> refund() {
         return new KeyValueNode<TransactionSearchRequest>("refund", this);
     }
+
+    public RangeNode<TransactionSearchRequest> amount() {
+        return new RangeNode<TransactionSearchRequest>("amount", this);
+    }
 }

@@ -6,11 +6,11 @@ import java.util.List;
 public class MultipleValueNode<T extends SearchRequest> extends SearchNode<T> {
     private List<?> allowedValues;
     
-    public MultipleValueNode(Object nodeName, T parent) {
+    public MultipleValueNode(String nodeName, T parent) {
         super(nodeName, parent);
     }
     
-    public MultipleValueNode(Object nodeName, T parent, Object[] allowedValues) {
+    public MultipleValueNode(String nodeName, T parent, Object[] allowedValues) {
         super(nodeName, parent);
         this.allowedValues = Arrays.asList(allowedValues);
     }
