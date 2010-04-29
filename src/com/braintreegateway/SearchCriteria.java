@@ -5,7 +5,7 @@ import java.util.List;
 public class SearchCriteria extends Request {
     private String xml;
 
-    public SearchCriteria(String type, String value) {
+    public SearchCriteria(String type, Object value) {
         this.xml = buildXMLElement(type, value);
     }
 

@@ -40,7 +40,11 @@ public class NodeWrapperTest {
         NodeWrapper node = new NodeWrapper(xml);
         Calendar expected = new GregorianCalendar(2010, 1, 16);
         expected.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Assert.assertEquals(expected, node.findDate("created-at"));
+        Calendar actual = node.findDate("created-at");
+        Assert.assertEquals(2010, actual.get(Calendar.YEAR));
+        Assert.assertEquals(Calendar.FEBRUARY, actual.get(Calendar.MONTH));
+        Assert.assertEquals(16, actual.get(Calendar.DAY_OF_MONTH));
+        Assert.assertEquals(TimeZone.getTimeZone("UTC"), actual.getTimeZone());
     }
     
     @Test
@@ -58,7 +62,15 @@ public class NodeWrapperTest {
         expected.setTimeZone(TimeZone.getTimeZone("UTC"));
         expected.set(2010, 1, 16, 16, 32, 7);
         expected.set(Calendar.MILLISECOND, 0);
-        Assert.assertEquals(expected, node.findDateTime("created-at"));
+        Calendar actual = node.findDateTime("created-at");
+        
+        Assert.assertEquals(2010, actual.get(Calendar.YEAR));
+        Assert.assertEquals(Calendar.FEBRUARY, actual.get(Calendar.MONTH));
+        Assert.assertEquals(16, actual.get(Calendar.DAY_OF_MONTH));
+        Assert.assertEquals(16, actual.get(Calendar.HOUR_OF_DAY));
+        Assert.assertEquals(32, actual.get(Calendar.MINUTE));
+        Assert.assertEquals(07, actual.get(Calendar.SECOND));
+        Assert.assertEquals(TimeZone.getTimeZone("UTC"), actual.getTimeZone());
     }
 
     @Test

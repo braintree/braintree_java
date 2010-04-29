@@ -172,4 +172,8 @@ public class TransactionSearchRequest extends SearchRequest {
     public RangeNode<TransactionSearchRequest> amount() {
         return new RangeNode<TransactionSearchRequest>("amount", this);
     }
+
+    public DateRangeNode<TransactionSearchRequest> createdAt() {
+        return new DateRangeNode<TransactionSearchRequest>("created_at", this);
+    }
 }
