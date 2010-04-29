@@ -15,12 +15,12 @@ public class RangeNode<T extends SearchRequest> extends SearchNode<T> {
     }
 
     public T greaterThanOrEqual(BigDecimal min) {
-        parent.addCriteria(nodeName, new SearchCriteria("min", min.toString()));
+        parent.addRangeCriteria(nodeName, new SearchCriteria("min", min.toString()));
         return parent;
     }
 
     public T lessThanOrEqual(BigDecimal max) {
-        parent.addCriteria(nodeName, new SearchCriteria("max", max.toString()));
+        parent.addRangeCriteria(nodeName, new SearchCriteria("max", max.toString()));
         return parent;
     }
 

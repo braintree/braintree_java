@@ -15,12 +15,12 @@ public class DateRangeNode<T extends SearchRequest> extends SearchNode<T> {
     }
 
     public T greaterThanOrEqual(Calendar min) {
-        parent.addCriteria(nodeName, new SearchCriteria("min", min));
+        parent.addRangeCriteria(nodeName, new SearchCriteria("min", min));
         return parent;
     }
 
     public T lessThanOrEqual(Calendar max) {
-        parent.addCriteria(nodeName, new SearchCriteria("max", max));
+        parent.addRangeCriteria(nodeName, new SearchCriteria("max", max));
         return parent;
     }
 
