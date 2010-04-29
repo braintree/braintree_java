@@ -14,11 +14,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.Subscription.Status;
+import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.util.NodeWrapper;
 
 public class SubscriptionTest {
 

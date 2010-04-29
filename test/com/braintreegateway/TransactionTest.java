@@ -750,6 +750,100 @@ public class TransactionTest {
     }
     
     @Test
+    public void searchOnAllTextFields()
+    {
+        String creditCardToken = String.valueOf(new Random().nextInt());
+        String firstName = String.valueOf(new Random().nextInt());
+
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            creditCard().
+                number("4111111111111111").
+                expirationDate("05/2012").
+                cardholderName("Tom Smith").
+                token(creditCardToken).
+                done().
+            billingAddress().
+                company("Braintree").
+                countryName("United States of America").
+                extendedAddress("Suite 123").
+                firstName(firstName).
+                lastName("Smith").
+                locality("Chicago").
+                postalCode("12345").
+                region("IL").
+                streetAddress("123 Main St").
+                done().
+            customer().
+                company("Braintree").
+                email("smith@example.com").
+                fax("5551231234").
+                firstName("Tom").
+                lastName("Smith").
+                phone("5551231234").
+                website("http://example.com").
+                done().
+            options().
+                storeInVault(true).
+                done().
+            orderId("myorder").
+            shippingAddress().
+                company("Braintree P.S.").
+                countryName("Mexico").
+                extendedAddress("Apt 456").
+                firstName("Thomas").
+                lastName("Smithy").
+                locality("Braintree").
+                postalCode("54321").
+                region("MA").
+                streetAddress("456 Road").
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            billingCompany().is("Braintree").
+            billingCountryName().is("United States of America").
+            billingExtendedAddress().is("Suite 123").
+            billingFirstName().is(firstName).
+            billingLastName().is("Smith").
+            billingLocality().is("Chicago").
+            billingPostalCode().is("12345").
+            billingRegion().is("IL").
+            billingStreetAddress().is("123 Main St").
+            creditCardCardholderName().is("Tom Smith").
+            creditCardExpirationDate().is("05/2012").
+            creditCardNumber().is(CreditCardNumber.VISA.number).
+            currency().is("USD").
+            customerCompany().is("Braintree").
+            customerEmail().is("smith@example.com").
+            customerFax().is("5551231234").
+            customerFirstName().is("Tom").
+            customerId().is(transaction.getCustomer().getId()).
+            customerLastName().is("Smith").
+            customerPhone().is("5551231234").
+            customerWebsite().is("http://example.com").
+            orderId().is("myorder").
+            paymentMethodToken().is(creditCardToken).
+            processorAuthorizationCode().is(transaction.getProcessorAuthorizationCode()).
+            shippingCompany().is("Braintree P.S.").
+            shippingCountryName().is("Mexico").
+            shippingExtendedAddress().is("Apt 456").
+            shippingFirstName().is("Thomas").
+            shippingLastName().is("Smithy").
+            shippingLocality().is("Braintree").
+            shippingPostalCode().is("54321").
+            shippingRegion().is("MA").
+            shippingStreetAddress().is("456 Road");
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+
+        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(transaction.getId(), collection.getFirst().getId());
+    }
+    
+    @Test
     public void refundTransaction() {
         TransactionRequest request = new TransactionRequest().
         amount(TransactionAmount.AUTHORIZE.amount).

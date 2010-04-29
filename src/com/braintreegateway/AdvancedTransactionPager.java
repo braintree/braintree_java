@@ -1,15 +1,14 @@
 package com.braintreegateway;
 
-public class TransactionPager implements Pager<Transaction> {
-
+public class AdvancedTransactionPager implements Pager<Transaction> {
     private TransactionGateway gateway;
-    private String query;
+    private TransactionSearchRequest query;
 
-    public TransactionPager(TransactionGateway gateway, String query) {
+    public AdvancedTransactionPager(TransactionGateway gateway, TransactionSearchRequest query) {
         this.gateway = gateway;
         this.query = query;
     }
-
+    
     public ResourceCollection<Transaction> getPage(int page) {
         return gateway.search(query, page);
     }

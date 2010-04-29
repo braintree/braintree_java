@@ -2,7 +2,6 @@ package com.braintreegateway;
 
 import java.math.BigDecimal;
 
-import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 

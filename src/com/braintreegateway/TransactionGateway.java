@@ -111,6 +111,10 @@ public class TransactionGateway {
         return search(query, 1);
     }
 
+    public ResourceCollection<Transaction> search(TransactionSearchRequest searchRequest) {
+        return this.search(searchRequest, 1);
+    }
+
     /**
      * Finds all Transactions that match the query and returns a {@link ResourceCollection} for paging through them starting with the given page.
      * Analogous to "basic search" in the control panel.
@@ -120,6 +124,11 @@ public class TransactionGateway {
         String queryString = new QueryString().append("q", query).append("page", pageNumber).toString();
         NodeWrapper response = http.get("/transactions/all/search?" + queryString);
         return new ResourceCollection<Transaction>(new TransactionPager(this, query), response, Transaction.class);
+    }
+    
+    public ResourceCollection<Transaction> search(TransactionSearchRequest query, int pageNumber) {
+        NodeWrapper node = http.post("/transactions/advanced_search?page=" + pageNumber, query);
+        return new ResourceCollection<Transaction>(new AdvancedTransactionPager(this, query), node, Transaction.class);
     }
 
     /**
@@ -160,5 +169,4 @@ public class TransactionGateway {
         NodeWrapper response = http.put("/transactions/" + id + "/void");
         return new Result<Transaction>(response, Transaction.class);
     }
-
 }
