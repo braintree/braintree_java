@@ -14,7 +14,19 @@ public class Transaction {
     }
 
     public enum Type {
-        CREDIT, SALE, UNRECOGNIZED;
+        CREDIT("credit"),
+        SALE("sale"),
+        UNRECOGNIZED("unrecognized");
+        
+        private final String name;
+        
+        Type(String name) {
+            this.name = name;
+        }
+        
+        public String toString() {
+            return name;
+        }
     }
     
     public enum CreatedUsing {
@@ -24,6 +36,21 @@ public class Transaction {
         private final String name;
         
         CreatedUsing(String name) {
+            this.name = name;
+        }
+        
+        public String toString() {
+            return name;
+        }
+    }
+
+    public enum Source {
+        API("api"),
+        CONTROL_PANEL("control_panel");
+        
+        private final String name;
+        
+        Source(String name) {
             this.name = name;
         }
         

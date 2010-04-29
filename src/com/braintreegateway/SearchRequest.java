@@ -6,10 +6,12 @@ import java.util.Map;
 public class SearchRequest extends Request {
     private Map<String, SearchCriteria> criteria;
     private Map<String, SearchCriteria> multiValueCriteria;
+    private Map<String, String> keyValueCriteria;
     
     public SearchRequest() {
         this.criteria = new HashMap<String, SearchCriteria>();
         this.multiValueCriteria = new HashMap<String, SearchCriteria>();
+        this.keyValueCriteria = new HashMap<String, String>();
     }
     
     public void addCriteria(String nodeName, SearchCriteria searchCriteria) {
@@ -18,6 +20,10 @@ public class SearchRequest extends Request {
     
     public void addMultipleValueCriteria(String nodeName, SearchCriteria searchCriteria) {
         multiValueCriteria.put(nodeName, searchCriteria);
+    }
+    
+    public void addKeyValueCriteria(String nodeName, String value) {
+        keyValueCriteria.put(nodeName, value);
     }
     
     @Override
@@ -39,6 +45,9 @@ public class SearchRequest extends Request {
         }
         for (String key : multiValueCriteria.keySet()) {
             builder.append(wrapInXMLTag(key, multiValueCriteria.get(key).toXML(), "array"));
+        }
+        for (String key : keyValueCriteria.keySet()) {
+            builder.append(wrapInXMLTag(key, keyValueCriteria.get(key)));
         }
         builder.append("</search>");
         return builder.toString();

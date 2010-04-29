@@ -156,4 +156,16 @@ public class TransactionSearchRequest extends SearchRequest {
     public MultipleValueNode<TransactionSearchRequest> status() {
         return new MultipleValueNode<TransactionSearchRequest>("status", this, Transaction.Status.values());
     }
+
+    public MultipleValueNode<TransactionSearchRequest> source() {
+        return new MultipleValueNode<TransactionSearchRequest>("source", this, Transaction.Source.values());
+    }
+    
+    public MultipleValueNode<TransactionSearchRequest> type() {
+        return new MultipleValueNode<TransactionSearchRequest>("type", this, Transaction.Type.values());
+    }
+    
+    public KeyValueNode<TransactionSearchRequest> refund() {
+        return new KeyValueNode<TransactionSearchRequest>("refund", this);
+    }
 }

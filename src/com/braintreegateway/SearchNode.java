@@ -4,7 +4,7 @@ import java.util.List;
 
 public class SearchNode<T extends SearchRequest> {
     protected Object nodeName;
-    private T parent;
+    protected T parent;
 
     public SearchNode(Object nodeName, T parent) {
         this.nodeName = nodeName;

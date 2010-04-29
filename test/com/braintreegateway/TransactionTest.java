@@ -1022,6 +1022,99 @@ public class TransactionTest {
         
         Assert.assertEquals(0, collection.getApproximateSize());
     }
+    
+    @Test
+    public void searchOnSource() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done();
+        
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            source().is(Transaction.Source.API);
+        
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        
+        Assert.assertEquals(1, collection.getApproximateSize());
+        
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            source().in(Transaction.Source.API, Transaction.Source.CONTROL_PANEL);
+        
+        collection = gateway.transaction().search(searchRequest);
+        
+        Assert.assertEquals(1, collection.getApproximateSize());
+        
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            source().is(Transaction.Source.CONTROL_PANEL);
+        
+        collection = gateway.transaction().search(searchRequest);
+        
+        Assert.assertEquals(0, collection.getApproximateSize());
+    }
+    
+    @Test
+    public void searchOnType() {
+        String name = String.valueOf(new Random().nextInt());
+        
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                cardholderName(name).
+                done().
+            options().
+                submitForSettlement(true).
+                done();
+        
+        Transaction creditTransaction = gateway.transaction().credit(request).getTarget();
+        Transaction saleTransaction = gateway.transaction().sale(request).getTarget();
+        settle(saleTransaction.getId());
+        Transaction refundTransaction = gateway.transaction().refund(saleTransaction.getId()).getTarget();
+        
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            creditCardCardholderName().is(name).
+            type().is(Transaction.Type.CREDIT);
+        
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        
+        Assert.assertEquals(2, collection.getApproximateSize());
+        
+        searchRequest = new TransactionSearchRequest().
+            creditCardCardholderName().is(name).
+            type().is(Transaction.Type.SALE);
+    
+        collection = gateway.transaction().search(searchRequest);
+    
+        Assert.assertEquals(1, collection.getApproximateSize());
+        
+        searchRequest = new TransactionSearchRequest().
+            creditCardCardholderName().is(name).
+            type().is(Transaction.Type.CREDIT).
+            refund().is(true);
+        
+        collection = gateway.transaction().search(searchRequest);
+        
+        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(refundTransaction.getId(), collection.getFirst().getId());
+        
+        searchRequest = new TransactionSearchRequest().
+            creditCardCardholderName().is(name).
+            type().is(Transaction.Type.CREDIT).
+            refund().is(false);
+    
+        collection = gateway.transaction().search(searchRequest);
+    
+        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(creditTransaction.getId(), collection.getFirst().getId());
+    }
 
     @Test
     public void refundTransaction() {
