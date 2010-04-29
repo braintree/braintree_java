@@ -81,6 +81,12 @@ public class TransactionGateway {
         NodeWrapper response = http.post("/transactions/" + id + "/refund");
         return new Result<Transaction>(response, Transaction.class);
     }
+    
+    public Result<Transaction> refund(String id, BigDecimal amount) {
+        TransactionRequest request = new TransactionRequest().amount(amount);
+        NodeWrapper response = http.post("/transactions/" + id + "/refund", request);
+        return new Result<Transaction>(response, Transaction.class);
+    }
 
     /**
      * Creates a sale {@link Transaction}.

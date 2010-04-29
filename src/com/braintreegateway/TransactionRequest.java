@@ -125,7 +125,11 @@ public class TransactionRequest extends Request {
         builder.append(buildXMLElement("amount", amount));
         builder.append(buildXMLElement("customerId", customerId));
         builder.append(buildXMLElement("merchantAccountId", merchantAccountId));
-        builder.append(buildXMLElement("customFields", customFields));
+        
+        if (!customFields.isEmpty()) {
+            builder.append(buildXMLElement("customFields", customFields));
+        }
+        
         builder.append(buildXMLElement("orderId", orderId));
         builder.append(buildXMLElement("paymentMethodToken", paymentMethodToken));
         builder.append(buildXMLElement("shippingAddressId", shippingAddressId));

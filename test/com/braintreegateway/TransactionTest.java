@@ -1348,6 +1348,26 @@ public class TransactionTest {
         Assert.assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
         Assert.assertEquals(transaction.getAmount(), result.getTarget().getAmount());
     }
+    
+    @Test
+    public void refundTransactionWithPartialAmount() {
+        TransactionRequest request = new TransactionRequest().
+        amount(TransactionAmount.AUTHORIZE.amount).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done().
+        options().
+            submitForSettlement(true).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        settle(transaction.getId());
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)));
+        Assert.assertTrue(result.isSuccess());
+        Assert.assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
+        Assert.assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), result.getTarget().getAmount());
+    }
 
     private void settle(String transactionId) {
         NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), gateway.getVersion()).put("/transactions/" + transactionId + "/settle");
