@@ -910,6 +910,46 @@ public class TransactionTest {
     }
     
     @Test
+    public void searchOnTextNodeOperators() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            creditCard().
+                number("4111111111111111").
+                expirationDate("05/2012").
+                cardholderName("Tom Smith").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCardholderName().startsWith("Tom");
+        
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        Assert.assertEquals(1, collection.getApproximateSize());
+        
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCardholderName().endsWith("Smith");
+        
+        collection = gateway.transaction().search(searchRequest);
+        Assert.assertEquals(1, collection.getApproximateSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCardholderName().contains("m Sm");
+    
+        collection = gateway.transaction().search(searchRequest);
+        Assert.assertEquals(1, collection.getApproximateSize());
+    
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCardholderName().isNot("Tom Smith");
+
+        collection = gateway.transaction().search(searchRequest);
+        Assert.assertEquals(0, collection.getApproximateSize());
+    }
+    
+    @Test
     public void searchOnCreatedUsing() {
          TransactionRequest request = new TransactionRequest().
              amount(TransactionAmount.AUTHORIZE.amount).
