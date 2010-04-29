@@ -45,11 +45,11 @@ public class TransactionSearchRequest extends SearchRequest {
         return new TextNode<TransactionSearchRequest>("credit_card_cardholder_name", this);
     }
     
-    public TextNode<TransactionSearchRequest> creditCardExpirationDate() {
+    public EqualityNode<TransactionSearchRequest> creditCardExpirationDate() {
         return new TextNode<TransactionSearchRequest>("credit_card_expiration_date", this);
     }
     
-    public TextNode<TransactionSearchRequest> creditCardNumber() {
+    public PartialMatchNode<TransactionSearchRequest> creditCardNumber() {
         return new TextNode<TransactionSearchRequest>("credit_card_number", this);
     }
     
