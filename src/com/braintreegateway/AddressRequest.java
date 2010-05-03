@@ -52,6 +52,10 @@ public class AddressRequest extends Request {
         return this;
     }
 
+    protected String optionsXML() {
+        return "";
+    }
+
     public AddressRequest postalCode(String postalCode) {
         this.postalCode = postalCode;
         return this;
@@ -84,7 +88,7 @@ public class AddressRequest extends Request {
             append(parentBracketChildString(root, "street_address"), streetAddress).
             toString();
     }
-
+    
     @Override
     public String toXML() {
         StringBuilder builder = new StringBuilder();
@@ -98,6 +102,7 @@ public class AddressRequest extends Request {
         builder.append(buildXMLElement("postalCode", postalCode));
         builder.append(buildXMLElement("region", region));
         builder.append(buildXMLElement("streetAddress", streetAddress));
+        builder.append(optionsXML());
         builder.append(String.format("</%s>", this.tagName));
         return builder.toString();
     }

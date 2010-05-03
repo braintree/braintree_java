@@ -375,6 +375,34 @@ public class CreditCardTest {
     }
 
     @Test
+    public void updateWithBillingAddressUpdatesAddressWhenUpdateExistingIsTrue() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12").
+            billingAddress().
+                firstName("John").
+                done();
+        
+        CreditCard creditCard = gateway.creditCard().create(request).getTarget();
+
+        CreditCardRequest updateRequest = new CreditCardRequest().
+            billingAddress().
+                lastName("Jones").
+                options().
+                    updateExisting(true).
+                    done().
+                done();
+
+        CreditCard updatedCreditCard = gateway.creditCard().update(creditCard.getToken(), updateRequest).getTarget();
+
+        Assert.assertEquals("John", updatedCreditCard.getBillingAddress().getFirstName());
+        Assert.assertEquals("Jones", updatedCreditCard.getBillingAddress().getLastName());
+        Assert.assertEquals(creditCard.getBillingAddress().getId(), updatedCreditCard.getBillingAddress().getId());
+    }
+
+    @Test
     public void find() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
