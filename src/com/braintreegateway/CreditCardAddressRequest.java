@@ -1,8 +1,11 @@
 package com.braintreegateway;
 
+import com.braintreegateway.util.QueryString;
+
 public class CreditCardAddressRequest extends AddressRequest {
 
     private CreditCardRequest parent;
+    protected Request optionsRequest;
 
     public CreditCardAddressRequest(CreditCardRequest parent) {
         this.parent = parent;
@@ -51,6 +54,17 @@ public class CreditCardAddressRequest extends AddressRequest {
     public CreditCardAddressRequest postalCode(String postalCode) {
         super.postalCode(postalCode);
         return this;
+    }
+    
+    @Override
+    protected QueryString queryStringBody(String root) {
+        return super.queryStringBody(root).
+            append(parentBracketChildString(root, "options"), optionsRequest);
+    }
+    
+    @Override
+    protected String XMLBody() {
+        return super.XMLBody() + buildXMLElement("options", optionsRequest);
     }
 
     public CreditCardAddressRequest region(String region) {
