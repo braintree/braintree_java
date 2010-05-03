@@ -403,6 +403,39 @@ public class CreditCardTest {
     }
 
     @Test
+    public void updateWithBillingAddressUpdatesAddressWhenUpdateExistingIsTrueForTransparentRedirect() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12").
+            billingAddress().
+                firstName("John").
+                done();
+        
+        CreditCard creditCard = gateway.creditCard().create(request).getTarget();
+
+        CreditCardRequest trParams = new CreditCardRequest().
+            paymentMethodToken(creditCard.getToken()).
+            billingAddress().
+                options().
+                    updateExisting(true).
+                    done().
+                done();
+
+        CreditCardRequest updateRequest = new CreditCardRequest().
+            billingAddress().
+                lastName("Jones").
+                done();
+
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, updateRequest, gateway.creditCard().transparentRedirectURLForUpdate());
+        CreditCard updatedCard = gateway.creditCard().confirmTransparentRedirect(queryString).getTarget();
+        Assert.assertEquals("John", updatedCard.getBillingAddress().getFirstName());
+        Assert.assertEquals("Jones", updatedCard.getBillingAddress().getLastName());
+        Assert.assertEquals(creditCard.getBillingAddress().getId(), updatedCard.getBillingAddress().getId());
+    }
+
+    @Test
     public void find() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().

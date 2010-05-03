@@ -17,11 +17,12 @@ public class AddressRequest extends Request {
     private String streetAddress;
     private String company;
     protected String tagName;
+    protected Request optionsRequest;
 
     public AddressRequest() {
         this.tagName = "address";
     }
-    
+
     public AddressRequest company(String company) {
         this.company = company;
         return this;
@@ -52,10 +53,6 @@ public class AddressRequest extends Request {
         return this;
     }
 
-    protected String optionsXML() {
-        return "";
-    }
-
     public AddressRequest postalCode(String postalCode) {
         this.postalCode = postalCode;
         return this;
@@ -83,12 +80,13 @@ public class AddressRequest extends Request {
             append(parentBracketChildString(root, "country_name"), countryName).
             append(parentBracketChildString(root, "extended_address"), extendedAddress).
             append(parentBracketChildString(root, "locality"), locality).
+            append(parentBracketChildString(root, "options"), optionsRequest).
             append(parentBracketChildString(root, "postal_code"), postalCode).
             append(parentBracketChildString(root, "region"), region).
             append(parentBracketChildString(root, "street_address"), streetAddress).
             toString();
     }
-    
+
     @Override
     public String toXML() {
         StringBuilder builder = new StringBuilder();
@@ -102,7 +100,7 @@ public class AddressRequest extends Request {
         builder.append(buildXMLElement("postalCode", postalCode));
         builder.append(buildXMLElement("region", region));
         builder.append(buildXMLElement("streetAddress", streetAddress));
-        builder.append(optionsXML());
+        builder.append(buildXMLElement("options", optionsRequest));
         builder.append(String.format("</%s>", this.tagName));
         return builder.toString();
     }

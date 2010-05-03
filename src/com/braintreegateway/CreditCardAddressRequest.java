@@ -3,7 +3,6 @@ package com.braintreegateway;
 public class CreditCardAddressRequest extends AddressRequest {
 
     private CreditCardRequest parent;
-    private CreditCardAddressOptionsRequest optionsRequest;
 
     public CreditCardAddressRequest(CreditCardRequest parent) {
         this.parent = parent;
@@ -46,12 +45,7 @@ public class CreditCardAddressRequest extends AddressRequest {
 
     public CreditCardAddressOptionsRequest options() {
         this.optionsRequest = new CreditCardAddressOptionsRequest(this);
-        return optionsRequest;
-    }
-
-    @Override
-    protected String optionsXML() {
-        return buildXMLElement(optionsRequest);
+        return (CreditCardAddressOptionsRequest) optionsRequest;
     }
 
     public CreditCardAddressRequest postalCode(String postalCode) {

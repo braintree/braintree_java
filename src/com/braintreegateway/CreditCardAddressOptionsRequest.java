@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+import com.braintreegateway.util.QueryString;
+
 public class CreditCardAddressOptionsRequest extends Request {
 
     private CreditCardAddressRequest parent;
@@ -14,13 +16,15 @@ public class CreditCardAddressOptionsRequest extends Request {
     }
 
     @Override
-    public String toQueryString(String parent) {
-        return "";
+    public String toQueryString(String root) {
+        return new QueryString().
+            append(parentBracketChildString(root, "update_existing"), updateExisting).
+            toString();
     }
 
     @Override
     public String toQueryString() {
-        return "";
+        return toQueryString("options");
     }
 
     @Override
