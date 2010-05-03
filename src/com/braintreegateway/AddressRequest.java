@@ -12,19 +12,16 @@ public class AddressRequest extends Request {
     private String firstName;
     private String lastName;
     private String locality;
-    private CreditCardRequest parent;
     private String postalCode;
     private String region;
     private String streetAddress;
     private String company;
+    protected String tagName;
 
     public AddressRequest() {
+        this.tagName = "address";
     }
-
-    public AddressRequest(CreditCardRequest parent) {
-        this.parent = parent;
-    }
-
+    
     public AddressRequest company(String company) {
         this.company = company;
         return this;
@@ -71,8 +68,7 @@ public class AddressRequest extends Request {
     }
 
     public String toQueryString() {
-        String topLevelElementName = parent == null ? "address" : "billingAddress";
-        return toQueryString(topLevelElementName);
+        return toQueryString(this.tagName);
     }
 
     public String toQueryString(String root) {
@@ -88,12 +84,11 @@ public class AddressRequest extends Request {
             append(parentBracketChildString(root, "street_address"), streetAddress).
             toString();
     }
-    
+
     @Override
     public String toXML() {
         StringBuilder builder = new StringBuilder();
-        String topLevelElementName = parent == null ? "address" : "billingAddress";
-        builder.append(String.format("<%s>", topLevelElementName));
+        builder.append(String.format("<%s>", this.tagName));
         builder.append(buildXMLElement("firstName", firstName));
         builder.append(buildXMLElement("lastName", lastName));
         builder.append(buildXMLElement("company", company));
@@ -103,7 +98,7 @@ public class AddressRequest extends Request {
         builder.append(buildXMLElement("postalCode", postalCode));
         builder.append(buildXMLElement("region", region));
         builder.append(buildXMLElement("streetAddress", streetAddress));
-        builder.append(String.format("</%s>", topLevelElementName));
+        builder.append(String.format("</%s>", this.tagName));
         return builder.toString();
     }
 }

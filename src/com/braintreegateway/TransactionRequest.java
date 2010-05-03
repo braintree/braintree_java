@@ -13,7 +13,7 @@ import com.braintreegateway.util.QueryString;
  */
 public class TransactionRequest extends Request {
     private BigDecimal amount;
-    private NestedAddressRequest<TransactionRequest> billingAddressRequest;
+    private TransactionAddressRequest billingAddressRequest;
     private TransactionCreditCardRequest creditCardRequest;
     private String customerId;
     private CustomerRequest customerRequest;
@@ -22,7 +22,7 @@ public class TransactionRequest extends Request {
     private String orderId;
     private String paymentMethodToken;
     private String shippingAddressId;
-    private NestedAddressRequest<TransactionRequest> shippingAddressRequest;
+    private TransactionAddressRequest shippingAddressRequest;
     private TransactionOptionsRequest transactionOptionsRequest;
     private Type type;
 
@@ -35,8 +35,8 @@ public class TransactionRequest extends Request {
         return this;
     }
 
-    public NestedAddressRequest<TransactionRequest> billingAddress() {
-        billingAddressRequest = new NestedAddressRequest<TransactionRequest>(this, "billing");
+    public TransactionAddressRequest billingAddress() {
+        billingAddressRequest = new TransactionAddressRequest(this, "billing");
         return billingAddressRequest;
     }
 
@@ -80,8 +80,8 @@ public class TransactionRequest extends Request {
         return this;
     }
 
-    public NestedAddressRequest<TransactionRequest> shippingAddress() {
-        shippingAddressRequest = new NestedAddressRequest<TransactionRequest>(this, "shipping");
+    public TransactionAddressRequest shippingAddress() {
+        shippingAddressRequest = new TransactionAddressRequest(this, "shipping");
         return shippingAddressRequest;
     }
 

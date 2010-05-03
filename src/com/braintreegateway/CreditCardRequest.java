@@ -7,13 +7,13 @@ import com.braintreegateway.util.QueryString;
  * Provides a fluent interface to build up requests around {@link CreditCard CreditCards}.
  */
 public class CreditCardRequest extends Request {
-    private NestedAddressRequest<CreditCardRequest> billingAddressRequest;
+    private CreditCardAddressRequest billingAddressRequest;
     private String cardholderName;
     private String customerId;
     private String cvv;
     private String expirationDate;
     private String number;
-    private OptionsRequest optionsRequest;
+    private CreditCardOptionsRequest optionsRequest;
     private CustomerRequest parent;
     private String token;
     private String paymentMethodToken;
@@ -25,8 +25,8 @@ public class CreditCardRequest extends Request {
         this.parent = parent;
     }
 
-    public NestedAddressRequest<CreditCardRequest> billingAddress() {
-        billingAddressRequest = new NestedAddressRequest<CreditCardRequest>(this, "billingAddress");
+    public CreditCardAddressRequest billingAddress() {
+        billingAddressRequest = new CreditCardAddressRequest(this);
         return billingAddressRequest;
     }
 
@@ -67,8 +67,8 @@ public class CreditCardRequest extends Request {
         return this;
     }
 
-    public OptionsRequest options() {
-        this.optionsRequest = new OptionsRequest(this);
+    public CreditCardOptionsRequest options() {
+        this.optionsRequest = new CreditCardOptionsRequest(this);
         return optionsRequest;
     }
 

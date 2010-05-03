@@ -348,6 +348,31 @@ public class CreditCardTest {
         Assert.assertEquals("05/2012", updatedCard.getExpirationDate());
         Assert.assertEquals("5100", updatedCard.getLast4());
     }
+    
+    @Test
+    public void updateWithBillingAddressCreatesNewAddressByDefault() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12").
+            billingAddress().
+                firstName("John").
+                done();
+        
+        CreditCard creditCard = gateway.creditCard().create(request).getTarget();
+
+        CreditCardRequest updateRequest = new CreditCardRequest().
+            billingAddress().
+                lastName("Jones").
+                done();
+
+        CreditCard updatedCreditCard = gateway.creditCard().update(creditCard.getToken(), updateRequest).getTarget();
+
+        Assert.assertNull(updatedCreditCard.getBillingAddress().getFirstName());
+        Assert.assertEquals("Jones", updatedCreditCard.getBillingAddress().getLastName());
+        Assert.assertFalse(creditCard.getBillingAddress().getId().equals(updatedCreditCard.getBillingAddress().getId()));
+    }
 
     @Test
     public void find() {
