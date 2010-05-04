@@ -19,7 +19,7 @@ public class TransparentRedirectRequest extends Request {
             paramMap.put(items[0], items[1]);
         }
 
-        Http.throwExceptionIfErrorStatusCode(Integer.valueOf(paramMap.get("http_status")));
+        Http.throwExceptionIfErrorStatusCode(Integer.valueOf(paramMap.get("http_status")), paramMap.get("bt_message"));
         
         if (!new TrUtil(configuration).isValidTrQueryString(queryString)) {
             throw new ForgedQueryStringException();

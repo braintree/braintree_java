@@ -2,8 +2,10 @@ package com.braintreegateway.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 
 import com.braintreegateway.Configuration;
 import com.braintreegateway.Request;
@@ -65,7 +67,7 @@ public class Http {
                 connection.getOutputStream().write(postBody.getBytes("UTF-8"));
                 connection.getOutputStream().close();
             }
-            throwExceptionIfErrorStatusCode(connection.getResponseCode());
+            throwExceptionIfErrorStatusCode(connection.getResponseCode(), null);
             if (requestMethod.equals(RequestMethod.DELETE)) {
                 return null;
             }
@@ -93,13 +95,22 @@ public class Http {
         return connection;
     }
 
-    public static void throwExceptionIfErrorStatusCode(int statusCode) {
+    public static void throwExceptionIfErrorStatusCode(int statusCode, String message) {
+        String decodedMessage = null;
+        if (message != null) {
+            try {
+                decodedMessage = URLDecoder.decode(message, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        
         if (isErrorCode(statusCode)) {
             switch (statusCode) {
             case 401:
                 throw new AuthenticationException();
             case 403:
-                throw new AuthorizationException();
+                throw new AuthorizationException(decodedMessage);
             case 404:
                 throw new NotFoundException();
             case 500:
