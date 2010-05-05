@@ -8,6 +8,46 @@ import com.braintreegateway.util.NodeWrapper;
 
 public class CreditCard {
 
+    public enum CardType {
+        AMEX("American Express"),
+        CARTE_BLANCHE("Carte Blanche"),
+        CHINA_UNION_PAY("China UnionPay"),
+        DINERS_CLUB_INTERNATIONAL("Diners Club"),
+        DISCOVER("Discover"),
+        JCB("JCB"),
+        LASER("Laser"),
+        MAESTRO("Maestro"),
+        MASTER_CARD("MasterCard"),
+        SOLO("Solo"),
+        SWITCH("Switch"),
+        VISA("Visa");
+        
+        private final String name;
+        
+        CardType(String name) {
+            this.name = name;
+        }
+        
+        public String toString() {
+            return name;
+        }
+    }
+    
+    public enum CustomerLocation {
+        US("us"),
+        INTERNATIONAL("international");
+        
+        private final String name;
+        
+        CustomerLocation(String name) {
+            this.name = name;
+        }
+        
+        public String toString() {
+            return name;
+        }
+    }
+    
     private Address billingAddress;
     private String bin;
     private String cardholderName;

@@ -12,17 +12,14 @@ public class AddressRequest extends Request {
     private String firstName;
     private String lastName;
     private String locality;
-    private CreditCardRequest parent;
     private String postalCode;
     private String region;
     private String streetAddress;
     private String company;
+    protected String tagName;
 
     public AddressRequest() {
-    }
-
-    public AddressRequest(CreditCardRequest parent) {
-        this.parent = parent;
+        this.tagName = "address";
     }
 
     public AddressRequest company(String company) {
@@ -71,29 +68,37 @@ public class AddressRequest extends Request {
     }
 
     public String toQueryString() {
-        String topLevelElementName = parent == null ? "address" : "billingAddress";
-        return toQueryString(topLevelElementName);
+        return toQueryString(this.tagName);
     }
 
     public String toQueryString(String root) {
-        return new QueryString().
-            append(parentBracketChildString(root, "first_name"), firstName).
-            append(parentBracketChildString(root, "last_name"), lastName).
-            append(parentBracketChildString(root, "company"), company).
-            append(parentBracketChildString(root, "country_name"), countryName).
-            append(parentBracketChildString(root, "extended_address"), extendedAddress).
-            append(parentBracketChildString(root, "locality"), locality).
-            append(parentBracketChildString(root, "postal_code"), postalCode).
-            append(parentBracketChildString(root, "region"), region).
-            append(parentBracketChildString(root, "street_address"), streetAddress).
-            toString();
+        return queryStringBody(root).toString();
+    }
+    
+    protected QueryString queryStringBody(String root) {
+       return new QueryString().
+           append(parentBracketChildString(root, "first_name"), firstName).
+           append(parentBracketChildString(root, "last_name"), lastName).
+           append(parentBracketChildString(root, "company"), company).
+           append(parentBracketChildString(root, "country_name"), countryName).
+           append(parentBracketChildString(root, "extended_address"), extendedAddress).
+           append(parentBracketChildString(root, "locality"), locality).
+           append(parentBracketChildString(root, "postal_code"), postalCode).
+           append(parentBracketChildString(root, "region"), region).
+           append(parentBracketChildString(root, "street_address"), streetAddress);
     }
     
     @Override
     public String toXML() {
         StringBuilder builder = new StringBuilder();
-        String topLevelElementName = parent == null ? "address" : "billingAddress";
-        builder.append(String.format("<%s>", topLevelElementName));
+        builder.append(String.format("<%s>", this.tagName));
+        builder.append(XMLBody());
+        builder.append(String.format("</%s>", this.tagName));
+        return builder.toString();
+    }
+    
+    protected String XMLBody() {
+        StringBuilder builder = new StringBuilder();
         builder.append(buildXMLElement("firstName", firstName));
         builder.append(buildXMLElement("lastName", lastName));
         builder.append(buildXMLElement("company", company));
@@ -103,7 +108,6 @@ public class AddressRequest extends Request {
         builder.append(buildXMLElement("postalCode", postalCode));
         builder.append(buildXMLElement("region", region));
         builder.append(buildXMLElement("streetAddress", streetAddress));
-        builder.append(String.format("</%s>", topLevelElementName));
         return builder.toString();
     }
 }

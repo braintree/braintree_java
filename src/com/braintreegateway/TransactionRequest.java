@@ -1,3 +1,4 @@
+
 package com.braintreegateway;
 
 import java.math.BigDecimal;
@@ -12,15 +13,16 @@ import com.braintreegateway.util.QueryString;
  */
 public class TransactionRequest extends Request {
     private BigDecimal amount;
-    private NestedAddressRequest<TransactionRequest> billingAddressRequest;
+    private TransactionAddressRequest billingAddressRequest;
     private TransactionCreditCardRequest creditCardRequest;
     private String customerId;
     private CustomerRequest customerRequest;
     private Map<String, String> customFields;
+    private String merchantAccountId;
     private String orderId;
     private String paymentMethodToken;
     private String shippingAddressId;
-    private NestedAddressRequest<TransactionRequest> shippingAddressRequest;
+    private TransactionAddressRequest shippingAddressRequest;
     private TransactionOptionsRequest transactionOptionsRequest;
     private Type type;
 
@@ -33,8 +35,8 @@ public class TransactionRequest extends Request {
         return this;
     }
 
-    public NestedAddressRequest<TransactionRequest> billingAddress() {
-        billingAddressRequest = new NestedAddressRequest<TransactionRequest>(this, "billing");
+    public TransactionAddressRequest billingAddress() {
+        billingAddressRequest = new TransactionAddressRequest(this, "billing");
         return billingAddressRequest;
     }
 
@@ -58,6 +60,11 @@ public class TransactionRequest extends Request {
         return this;
     }
 
+    public TransactionRequest merchantAccountId(String merchantAccountId) {
+        this.merchantAccountId = merchantAccountId;
+        return this;
+    }
+
     public TransactionOptionsRequest options() {
         transactionOptionsRequest = new TransactionOptionsRequest(this);
         return transactionOptionsRequest;
@@ -73,8 +80,8 @@ public class TransactionRequest extends Request {
         return this;
     }
 
-    public NestedAddressRequest<TransactionRequest> shippingAddress() {
-        shippingAddressRequest = new NestedAddressRequest<TransactionRequest>(this, "shipping");
+    public TransactionAddressRequest shippingAddress() {
+        shippingAddressRequest = new TransactionAddressRequest(this, "shipping");
         return shippingAddressRequest;
     }
 
@@ -117,7 +124,12 @@ public class TransactionRequest extends Request {
         builder.append("<transaction>");
         builder.append(buildXMLElement("amount", amount));
         builder.append(buildXMLElement("customerId", customerId));
-        builder.append(buildXMLElement("customFields", customFields));
+        builder.append(buildXMLElement("merchantAccountId", merchantAccountId));
+        
+        if (!customFields.isEmpty()) {
+            builder.append(buildXMLElement("customFields", customFields));
+        }
+        
         builder.append(buildXMLElement("orderId", orderId));
         builder.append(buildXMLElement("paymentMethodToken", paymentMethodToken));
         builder.append(buildXMLElement("shippingAddressId", shippingAddressId));

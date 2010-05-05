@@ -2,12 +2,12 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.QueryString;
 
-public class OptionsRequest extends Request {
+public class CreditCardOptionsRequest extends Request {
     private CreditCardRequest parent;
     private boolean verifyCard;
     private boolean makeDefault;
 
-    public OptionsRequest(CreditCardRequest parent) {
+    public CreditCardOptionsRequest(CreditCardRequest parent) {
         this.parent = parent;
     }
 
@@ -15,7 +15,7 @@ public class OptionsRequest extends Request {
         return parent;
     }
 
-    public OptionsRequest verifyCard(boolean verifyCard) {
+    public CreditCardOptionsRequest verifyCard(boolean verifyCard) {
         this.verifyCard = verifyCard;
         return this;
     }
@@ -42,7 +42,7 @@ public class OptionsRequest extends Request {
         return toQueryString("options");
     }
 
-    public OptionsRequest makeDefault(boolean makeDefault) {
+    public CreditCardOptionsRequest makeDefault(boolean makeDefault) {
         this.makeDefault = makeDefault;
         return this;
     }

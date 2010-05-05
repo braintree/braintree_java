@@ -14,7 +14,49 @@ public class Transaction {
     }
 
     public enum Type {
-        CREDIT, SALE, UNRECOGNIZED;
+        CREDIT("credit"),
+        SALE("sale"),
+        UNRECOGNIZED("unrecognized");
+        
+        private final String name;
+        
+        Type(String name) {
+            this.name = name;
+        }
+        
+        public String toString() {
+            return name;
+        }
+    }
+    
+    public enum CreatedUsing {
+        FULL_INFORMATION("full_information"),
+        TOKEN("token");
+        
+        private final String name;
+        
+        CreatedUsing(String name) {
+            this.name = name;
+        }
+        
+        public String toString() {
+            return name;
+        }
+    }
+
+    public enum Source {
+        API("api"),
+        CONTROL_PANEL("control_panel");
+        
+        private final String name;
+        
+        Source(String name) {
+            this.name = name;
+        }
+        
+        public String toString() {
+            return name;
+        }
     }
 
     private BigDecimal amount;
@@ -24,6 +66,7 @@ public class Transaction {
     private Customer customer;
     private Map<String, String> customFields;
     private String id;
+    private String merchantAccountId;
     private String orderId;
     private String processorAuthorizationCode;
     private String processorResponseCode;
@@ -41,6 +84,7 @@ public class Transaction {
         customFields = node.findMap("custom-fields");
         customer = new Customer(node.findFirst("customer"));
         id = node.findString("id");
+        merchantAccountId = node.findString("merchant-account-id");
         orderId = node.findString("order-id");
         processorAuthorizationCode = node.findString("processor-authorization-code");
         processorResponseCode = node.findString("processor-response-code");
@@ -77,6 +121,10 @@ public class Transaction {
 
     public String getId() {
         return id;
+    }
+    
+    public String getMerchantAccountId() {
+        return merchantAccountId;
     }
 
     public String getOrderId() {

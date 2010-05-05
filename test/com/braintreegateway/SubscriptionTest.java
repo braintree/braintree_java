@@ -14,9 +14,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.braintreegateway.SandboxValues.TransactionAmount;
+import com.braintreegateway.Subscription.Status;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.Subscription.Status;
 
 public class SubscriptionTest {
 
@@ -632,5 +633,41 @@ public class SubscriptionTest {
         Subscription transaction = new Subscription(new NodeWrapper(xml));
         Assert.assertEquals(Subscription.DurationUnit.UNRECOGNIZED, transaction.getTrialDurationUnit());
     }
+
+    @Test
+    public void retryChargeWithAmount() {
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().status().in(Subscription.Status.PAST_DUE);
+        Subscription subscription = gateway.subscription().search(search).getFirst();
+
+        Result<Transaction> result = gateway.subscription().retryCharge(subscription.getId(), TransactionAmount.AUTHORIZE.amount);
+        
+        Assert.assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+        Assert.assertEquals(TransactionAmount.AUTHORIZE.amount, transaction.getAmount());
+        Assert.assertNotNull(transaction.getProcessorAuthorizationCode());
+        Assert.assertEquals(Transaction.Type.SALE, transaction.getType());
+        Assert.assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
+        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
+    }
     
+    @Test
+    public void retryChargeWithoutAmount() {
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().status().in(Subscription.Status.PAST_DUE);
+        Subscription subscription = gateway.subscription().search(search).getFirst();
+
+        Result<Transaction> result = gateway.subscription().retryCharge(subscription.getId());
+        
+        
+        Assert.assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+        Assert.assertEquals(subscription.getPrice(), transaction.getAmount());
+        Assert.assertNotNull(transaction.getProcessorAuthorizationCode());
+        Assert.assertEquals(Transaction.Type.SALE, transaction.getType());
+        Assert.assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
+        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
+    }
 }

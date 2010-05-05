@@ -1,7 +1,10 @@
 package com.braintreegateway;
 
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * Abstract class for fluent interface request builders.
@@ -32,6 +35,10 @@ public abstract class Request {
             return "";
         } else if (element instanceof Request) {
             return ((Request) element).toXML();
+        } else if (element instanceof Calendar) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            return String.format("<%s type=\"datetime\">%s</%s>", name, dateFormat.format(((Calendar) element).getTime()), name);
         } else {
             return String.format("<%s>%s</%s>", xmlEscape(name), element == null ? "" : xmlEscape(element.toString()), xmlEscape(name));
         }

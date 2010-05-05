@@ -3,16 +3,40 @@ package com.braintreegateway;
 import java.util.Arrays;
 import java.util.List;
 
-public class MultipleValueNode extends SearchNode {
-    public MultipleValueNode(String nodeName, SubscriptionSearchRequest parent) {
+public class MultipleValueNode<T extends SearchRequest> extends SearchNode<T> {
+    private List<?> allowedValues;
+    
+    public MultipleValueNode(String nodeName, T parent) {
         super(nodeName, parent);
     }
+    
+    public MultipleValueNode(String nodeName, T parent, Object[] allowedValues) {
+        super(nodeName, parent);
+        this.allowedValues = Arrays.asList(allowedValues);
+    }
 
-    public SubscriptionSearchRequest in(List<?> items) {
+    public T in(List<?> items) {
+        checkForValidItems(items);
         return assembleMultiValueCriteria(items);
     }
     
-    public SubscriptionSearchRequest in(Object... items) {
-        return assembleMultiValueCriteria(Arrays.asList(items));
+    public T in(Object... items) {
+        List<?> itemList = Arrays.asList(items);
+        checkForValidItems(itemList);
+        return assembleMultiValueCriteria(itemList);
+    }
+    
+    public T is(Object item) {
+        return in(item);
+    }
+    
+    private void checkForValidItems(List<?> items) {
+        if (allowedValues == null) return;
+
+        for (Object item : items) {
+            if (!allowedValues.contains(item)) {
+                throw new IllegalArgumentException(String.format("The %s node does not accept %s as a value.", nodeName, item));
+            }
+        }
     }
 }
