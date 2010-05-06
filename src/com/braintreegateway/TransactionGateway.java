@@ -1,11 +1,12 @@
 package com.braintreegateway;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.braintreegateway.Transaction.Type;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.util.QueryString;
 import com.braintreegateway.util.TrUtil;
 
 /**
@@ -109,33 +110,26 @@ public class TransactionGateway {
     }
 
     /**
-     * Finds all Transactions that match the query and returns a {@link ResourceCollection} for paging through them starting at the first page.
+     * Finds all Transactions that match the query and returns a {@link ResourceCollection} for paging through them starting with t
      * Analogous to "basic search" in the control panel.
+     * See: <a href="http://www.braintreepaymentsolutions.com/gateway/transaction-api#searching" target="_blank">http://www.braintr
      * @return a {@link ResourceCollection}.
      */
-    public ResourceCollection<Transaction> search(String query) {
-        return search(query, 1);
+    public ResourceCollection<Transaction> search(TransactionSearchRequest query) {
+        NodeWrapper node = http.post("/transactions/advanced_search_ids", query);
+        return new ResourceCollection<Transaction>(new AdvancedTransactionPager(this, query), node);
     }
 
-    public ResourceCollection<Transaction> search(TransactionSearchRequest searchRequest) {
-        return this.search(searchRequest, 1);
-    }
+    List<Transaction> fetchTransactions(TransactionSearchRequest query, List<String> ids) {
+        query.ids().in(ids);
+        NodeWrapper response = http.post("/transactions/advanced_search", query);
 
-    /**
-     * Finds all Transactions that match the query and returns a {@link ResourceCollection} for paging through them starting with the given page.
-     * Analogous to "basic search" in the control panel.
-     * See: <a href="http://www.braintreepaymentsolutions.com/gateway/transaction-api#searching" target="_blank">http://www.braintreepaymentsolutions.com/gateway/transaction-api</a>
-     * @return a {@link ResourceCollection}.
-     */
-    public ResourceCollection<Transaction> search(String query, int pageNumber) {
-        String queryString = new QueryString().append("q", query).append("page", pageNumber).toString();
-        NodeWrapper response = http.get("/transactions/all/search?" + queryString);
-        return new ResourceCollection<Transaction>(new TransactionPager(this, query), response, Transaction.class);
-    }
-    
-    public ResourceCollection<Transaction> search(TransactionSearchRequest query, int pageNumber) {
-        NodeWrapper node = http.post("/transactions/advanced_search?page=" + pageNumber, query);
-        return new ResourceCollection<Transaction>(new AdvancedTransactionPager(this, query), node, Transaction.class);
+        List<Transaction> items = new ArrayList<Transaction>();
+        for (NodeWrapper node : response.findAll("transaction")) {
+            items.add(new Transaction(node));
+        }
+        
+        return items;
     }
 
     /**

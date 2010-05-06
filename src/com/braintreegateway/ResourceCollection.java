@@ -17,26 +17,47 @@ public class ResourceCollection<T> implements Iterable<T> {
     
     private class PagedIterator<E> implements Iterator<E> {
         private ResourceCollection<E> resourceCollection;
+        private List<String> ids;
+        private int pageSize;
         private int index;
+        private int nextIndexToFetch;
+        private List<E> items;
         
         public PagedIterator(ResourceCollection<E> resourceCollection) {
             this.resourceCollection = resourceCollection;
+            this.ids = resourceCollection.ids;
+            this.pageSize = resourceCollection.pageSize;
             this.index = 0;
+            this.nextIndexToFetch = 0;
+            this.items = new ArrayList<E>();
+        }
+        
+        private List<String> nextBatchOfIds() {
+            int lastIdIndex = nextIndexToFetch + pageSize;
+            if (lastIdIndex > ids.size()) {
+                lastIdIndex = ids.size();
+            }
+
+            List<String> nextIds = ids.subList(nextIndexToFetch, lastIdIndex);
+            nextIndexToFetch = lastIdIndex;
+            
+            return nextIds;
         }
         
         public boolean hasNext() {
-            if (resourceCollection.isLastPage() && index >= resourceCollection.getItems().size()) {
-                return false;
+            if (nextIndexToFetch < ids.size() && index == items.size()) {
+                this.items = resourceCollection.pager.getPage(nextBatchOfIds());
+                this.index = 0;
             }
-            return true;
+            
+            if (index < items.size()) {
+                return true;
+            }
+            return false;
         }
 
         public E next() {
-            if (index >= resourceCollection.getItems().size()) {
-                this.resourceCollection = resourceCollection.getNextPage();
-                index = 0;
-            }
-            E item = this.resourceCollection.getItems().get(index);
+            E item = items.get(index);
             index++;
             return item;
         }
@@ -46,22 +67,14 @@ public class ResourceCollection<T> implements Iterable<T> {
         }
     }
 
-    private int currentPageNumber;
-    private List<T> items;
+    private List<String> ids;
     private Pager<T> pager;
     private int pageSize;
-    private int totalItems;
 
-    public ResourceCollection(Pager<T> pager, NodeWrapper response, Class<T> klass) {
+    public ResourceCollection(Pager<T> pager, NodeWrapper response) {
         this.pager = pager;
-        currentPageNumber = response.findInteger("current-page-number");
         pageSize = response.findInteger("page-size");
-        totalItems = response.findInteger("total-items");
-
-        items = new ArrayList<T>();
-        for (NodeWrapper node : response.findAll(klass.getSimpleName().toLowerCase())) {
-            items.add(Result.newInstanceFromNode(klass, node));
-        }
+        ids = response.findAllStrings("ids/*");
     }
     
     /**
@@ -69,8 +82,8 @@ public class ResourceCollection<T> implements Iterable<T> {
      * 
      * @return Approximate size of collection
      */
-    public int getApproximateSize() {
-        return totalItems;
+    public int getMaximumSize() {
+        return ids.size();
     }
 
     public Iterator<T> iterator() {
@@ -78,51 +91,6 @@ public class ResourceCollection<T> implements Iterable<T> {
     }
 
     public T getFirst() {
-        return items.get(0);
-    }
-    
-    /**
-     * Returns a list of the items for the current page.
-     * 
-     * @return List of objects being paged, e.g. {@link Transaction} or
-     *         {@link Customer}.
-     */
-    private List<T> getItems() {
-        return items;
-    }
-
-    /**
-     * Returns the next page of results.
-     * 
-     * @return {@link ResourceCollection} or null if the current page is the last
-     *         page
-     */
-    private ResourceCollection<T> getNextPage() {
-        if (isLastPage()) {
-            return null;
-        }
-        return pager.getPage(currentPageNumber + 1);
-    }
-
-    /**
-     * Returns the total number of pages.
-     */
-    private int getTotalPages() {
-        if (totalItems == 0) {
-            return 1;
-        }
-        
-        int totalPages = totalItems / pageSize;
-        if (totalItems % pageSize != 0) {
-            totalPages += 1;
-        }
-        return totalPages;
-    }
-
-    /**
-     * Returns whether or not this is the last page.
-     */
-    private boolean isLastPage() {
-        return currentPageNumber == getTotalPages();
+        return pager.getPage(ids.subList(0, 1)).get(0);
     }
 }

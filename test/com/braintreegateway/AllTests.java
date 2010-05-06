@@ -25,7 +25,6 @@ import com.braintreegateway.util.TrUtilTest;
     MultipleValueNodeTest.class,
     NodeWrapperTest.class,
     QueryStringTest.class,
-    ResourceCollectionTest.class,
     StringUtilsTest.class,
     SubscriptionSearchRequestTest.class,
     SubscriptionTest.class,

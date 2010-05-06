@@ -414,7 +414,7 @@ public class CustomerTest {
     public void all() {
         ResourceCollection<Customer> resourceCollection = gateway.customer().all();
 
-        Assert.assertTrue(resourceCollection.getApproximateSize() > 0);
+        Assert.assertTrue(resourceCollection.getMaximumSize() > 0);
         Assert.assertNotNull(resourceCollection.getFirst());
     }
 }

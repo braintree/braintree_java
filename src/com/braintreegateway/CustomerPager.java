@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+import java.util.List;
+
 public class CustomerPager implements Pager<Customer> {
 
     private CustomerGateway gateway;
@@ -8,8 +10,7 @@ public class CustomerPager implements Pager<Customer> {
         this.gateway = gateway;
     }
 
-    public ResourceCollection<Customer> getPage(int page) {
-        return gateway.all(page);
+    public List<Customer> getPage(List<String> ids) {
+        return gateway.fetchCustomers(ids);
     }
-
 }

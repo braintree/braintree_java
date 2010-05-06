@@ -6,11 +6,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -800,22 +798,6 @@ public class TransactionTest {
     }
 
     @Test
-    public void basicSearch() {
-        ResourceCollection<Transaction> collection = gateway.transaction().search("411111");
-
-        Assert.assertTrue(collection.getApproximateSize() > 100);
-        
-        List<String> items = new ArrayList<String>();
-        for (Transaction item : collection) {
-            items.add(item.getId());
-        }
-        
-        Set<String> uniqueItems = new HashSet<String>(items);
-        
-        Assert.assertEquals(uniqueItems.size(), collection.getApproximateSize());
-    }
-    
-    @Test
     public void searchOnAllTextFields()
     {
         String creditCardToken = String.valueOf(new Random().nextInt());
@@ -905,7 +887,7 @@ public class TransactionTest {
 
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(1, collection.getMaximumSize());
         Assert.assertEquals(transaction.getId(), collection.getFirst().getId());
     }
     
@@ -925,28 +907,28 @@ public class TransactionTest {
             creditCardCardholderName().startsWith("Tom");
         
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
-        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(1, collection.getMaximumSize());
         
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             creditCardCardholderName().endsWith("Smith");
         
         collection = gateway.transaction().search(searchRequest);
-        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(1, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             creditCardCardholderName().contains("m Sm");
     
         collection = gateway.transaction().search(searchRequest);
-        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(1, collection.getMaximumSize());
     
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             creditCardCardholderName().isNot("Tom Smith");
 
         collection = gateway.transaction().search(searchRequest);
-        Assert.assertEquals(0, collection.getApproximateSize());
+        Assert.assertEquals(0, collection.getMaximumSize());
     }
     
     @Test
@@ -966,7 +948,7 @@ public class TransactionTest {
 
          ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-         Assert.assertEquals(1, collection.getApproximateSize());
+         Assert.assertEquals(1, collection.getMaximumSize());
 
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
@@ -974,7 +956,7 @@ public class TransactionTest {
 
          collection = gateway.transaction().search(searchRequest);
 
-         Assert.assertEquals(1, collection.getApproximateSize());
+         Assert.assertEquals(1, collection.getMaximumSize());
 
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
@@ -982,7 +964,7 @@ public class TransactionTest {
 
          collection = gateway.transaction().search(searchRequest);
 
-         Assert.assertEquals(0, collection.getApproximateSize());
+         Assert.assertEquals(0, collection.getMaximumSize());
      }
     
     @Test
@@ -1002,7 +984,7 @@ public class TransactionTest {
 
          ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-         Assert.assertEquals(1, collection.getApproximateSize());
+         Assert.assertEquals(1, collection.getMaximumSize());
 
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
@@ -1010,7 +992,7 @@ public class TransactionTest {
 
          collection = gateway.transaction().search(searchRequest);
 
-         Assert.assertEquals(1, collection.getApproximateSize());
+         Assert.assertEquals(1, collection.getMaximumSize());
 
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
@@ -1018,7 +1000,7 @@ public class TransactionTest {
 
          collection = gateway.transaction().search(searchRequest);
 
-         Assert.assertEquals(0, collection.getApproximateSize());
+         Assert.assertEquals(0, collection.getMaximumSize());
      }
     
     @Test
@@ -1038,7 +1020,7 @@ public class TransactionTest {
         
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
         
-        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(1, collection.getMaximumSize());
         
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1046,7 +1028,7 @@ public class TransactionTest {
         
         collection = gateway.transaction().search(searchRequest);
         
-        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(1, collection.getMaximumSize());
         
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1054,7 +1036,7 @@ public class TransactionTest {
         
         collection = gateway.transaction().search(searchRequest);
         
-        Assert.assertEquals(0, collection.getApproximateSize());
+        Assert.assertEquals(0, collection.getMaximumSize());
     }
     
     @Test
@@ -1074,7 +1056,7 @@ public class TransactionTest {
         
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
         
-        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(1, collection.getMaximumSize());
         
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1082,7 +1064,7 @@ public class TransactionTest {
         
         collection = gateway.transaction().search(searchRequest);
         
-        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(1, collection.getMaximumSize());
         
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1090,7 +1072,7 @@ public class TransactionTest {
         
         collection = gateway.transaction().search(searchRequest);
         
-        Assert.assertEquals(0, collection.getApproximateSize());
+        Assert.assertEquals(0, collection.getMaximumSize());
     }
 
     @Test
@@ -1110,7 +1092,7 @@ public class TransactionTest {
         
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
         
-        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(1, collection.getMaximumSize());
         
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1118,7 +1100,7 @@ public class TransactionTest {
         
         collection = gateway.transaction().search(searchRequest);
         
-        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(1, collection.getMaximumSize());
         
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1126,7 +1108,7 @@ public class TransactionTest {
         
         collection = gateway.transaction().search(searchRequest);
         
-        Assert.assertEquals(0, collection.getApproximateSize());
+        Assert.assertEquals(0, collection.getMaximumSize());
     }
     
     @Test
@@ -1146,7 +1128,7 @@ public class TransactionTest {
         
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
         
-        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(1, collection.getMaximumSize());
         
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1154,7 +1136,7 @@ public class TransactionTest {
         
         collection = gateway.transaction().search(searchRequest);
         
-        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(1, collection.getMaximumSize());
         
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1162,7 +1144,7 @@ public class TransactionTest {
         
         collection = gateway.transaction().search(searchRequest);
         
-        Assert.assertEquals(0, collection.getApproximateSize());
+        Assert.assertEquals(0, collection.getMaximumSize());
     }
     
     @Test
@@ -1191,7 +1173,7 @@ public class TransactionTest {
         
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
         
-        Assert.assertEquals(2, collection.getApproximateSize());
+        Assert.assertEquals(2, collection.getMaximumSize());
         
         searchRequest = new TransactionSearchRequest().
             creditCardCardholderName().is(name).
@@ -1199,7 +1181,7 @@ public class TransactionTest {
     
         collection = gateway.transaction().search(searchRequest);
     
-        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(1, collection.getMaximumSize());
         
         searchRequest = new TransactionSearchRequest().
             creditCardCardholderName().is(name).
@@ -1208,7 +1190,7 @@ public class TransactionTest {
         
         collection = gateway.transaction().search(searchRequest);
         
-        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(1, collection.getMaximumSize());
         Assert.assertEquals(refundTransaction.getId(), collection.getFirst().getId());
         
         searchRequest = new TransactionSearchRequest().
@@ -1218,7 +1200,7 @@ public class TransactionTest {
     
         collection = gateway.transaction().search(searchRequest);
     
-        Assert.assertEquals(1, collection.getApproximateSize());
+        Assert.assertEquals(1, collection.getMaximumSize());
         Assert.assertEquals(creditTransaction.getId(), collection.getFirst().getId());
     }
     
@@ -1237,25 +1219,25 @@ public class TransactionTest {
              id().is(transaction.getId()).
              amount().between(new BigDecimal("500"), new BigDecimal("1500"));
 
-         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getApproximateSize());
+         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
          
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
              amount().greaterThanOrEqual(new BigDecimal("500"));
 
-         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getApproximateSize());
+         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
          
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
              amount().lessThanOrEqual(new BigDecimal("1500"));
 
-         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getApproximateSize());
+         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
          
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
              amount().between(new BigDecimal("1300"), new BigDecimal("1500"));
 
-         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getApproximateSize());
+         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
      }
 
     @Test
@@ -1284,25 +1266,25 @@ public class TransactionTest {
              id().is(transaction.getId()).
              createdAt().between(oneHourEarlier, oneHourLater);
 
-         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getApproximateSize());
+         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
          
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
              createdAt().greaterThanOrEqual(oneHourEarlier);
 
-         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getApproximateSize());
+         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
          
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
              createdAt().lessThanOrEqual(oneHourLater);
 
-         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getApproximateSize());
+         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
          
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
              createdAt().between(threeHoursEarlier, oneHourEarlier);
 
-         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getApproximateSize());
+         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
      }
     
     @Test
@@ -1326,7 +1308,7 @@ public class TransactionTest {
              id().is(transaction.getId()).
              createdAt().between(oneHourEarlier, oneHourLater);
 
-         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getApproximateSize());
+         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
      }
 
     @Test
@@ -1390,20 +1372,6 @@ public class TransactionTest {
         
         Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_REFUND_UNLESS_SETTLED, 
                 result.getErrors().forObject("transaction").onField("base").get(0).getCode());
-    }
-    
-    @Test
-    public void allStatuses() {
-        TestHelper.includesStatus(gateway.transaction().search("authorizing"), Transaction.Status.AUTHORIZING);
-        TestHelper.includesStatus(gateway.transaction().search("authorized"), Transaction.Status.AUTHORIZED);
-        TestHelper.includesStatus(gateway.transaction().search("gateway_rejected"), Transaction.Status.GATEWAY_REJECTED);
-        TestHelper.includesStatus(gateway.transaction().search("failed"), Transaction.Status.FAILED);
-        TestHelper.includesStatus(gateway.transaction().search("processor_declined"), Transaction.Status.PROCESSOR_DECLINED);
-        TestHelper.includesStatus(gateway.transaction().search("settled"), Transaction.Status.SETTLED);
-        TestHelper.includesStatus(gateway.transaction().search("settlement_failed"), Transaction.Status.SETTLEMENT_FAILED);
-        TestHelper.includesStatus(gateway.transaction().search("submitted_for_settlement"), Transaction.Status.SUBMITTED_FOR_SETTLEMENT);
-        TestHelper.includesStatus(gateway.transaction().search("unknown"), Transaction.Status.UNKNOWN);
-        TestHelper.includesStatus(gateway.transaction().search("voided"), Transaction.Status.VOIDED);
     }
     
     @Test

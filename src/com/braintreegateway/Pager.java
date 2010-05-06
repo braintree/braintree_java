@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+import java.util.List;
+
 public interface Pager<T> {
-    public ResourceCollection<T> getPage(int page);
+    public List<T> getPage(List<String> ids);
 }

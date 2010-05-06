@@ -1,6 +1,8 @@
 package com.braintreegateway;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
@@ -77,14 +79,22 @@ public class SubscriptionGateway {
      * @return a {@link Result}.
      */
     public ResourceCollection<Subscription> search(SubscriptionSearchRequest search) {
-        return this.search(search, 1);
+        NodeWrapper node = http.post("/subscriptions/advanced_search_ids", search);
+        return new ResourceCollection<Subscription>(new SubscriptionPager(this, search), node);
     }
 
-    public ResourceCollection<Subscription> search(SubscriptionSearchRequest search, int pageNumber) {
-        NodeWrapper node = http.post("/subscriptions/advanced_search?page=" + pageNumber, search);
-        return new ResourceCollection<Subscription>(new SubscriptionPager(this, search), node, Subscription.class);
-    }
+    List<Subscription> fetchSubscriptions(SubscriptionSearchRequest search, List<String> ids) {
+        search.ids().in(ids);
+        NodeWrapper response = http.post("/subscriptions/advanced_search", search);
 
+        List<Subscription> items = new ArrayList<Subscription>();
+        for (NodeWrapper node : response.findAll("subscription")) {
+            items.add(new Subscription(node));
+        }
+        
+        return items;
+    }
+        
     private Result<Transaction> retryCharge(SubscriptionTransactionRequest txnRequest) {
         NodeWrapper response = http.post("/transactions", txnRequest);
         return new Result<Transaction>(response, Transaction.class);

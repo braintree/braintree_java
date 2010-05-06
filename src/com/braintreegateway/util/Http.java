@@ -75,6 +75,7 @@ public class Http {
                     .getInputStream();
 
             String xml = StringUtils.inputStreamToString(responseStream);
+
             responseStream.close();
             return new NodeWrapper(xml);
         } catch (IOException e) {
