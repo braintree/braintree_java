@@ -124,6 +124,7 @@ public class TransactionGateway {
     /**
      * Finds all Transactions that match the query and returns a {@link ResourceCollection} for paging through them starting with the given page.
      * Analogous to "basic search" in the control panel.
+     * See: <a href="http://www.braintreepaymentsolutions.com/gateway/transaction-api#searching" target="_blank">http://www.braintreepaymentsolutions.com/gateway/transaction-api</a>
      * @return a {@link ResourceCollection}.
      */
     public ResourceCollection<Transaction> search(String query, int pageNumber) {
