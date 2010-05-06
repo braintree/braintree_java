@@ -117,7 +117,7 @@ public class TransactionGateway {
      */
     public ResourceCollection<Transaction> search(TransactionSearchRequest query) {
         NodeWrapper node = http.post("/transactions/advanced_search_ids", query);
-        return new ResourceCollection<Transaction>(new AdvancedTransactionPager(this, query), node);
+        return new ResourceCollection<Transaction>(new TransactionPager(this, query), node);
     }
 
     List<Transaction> fetchTransactions(TransactionSearchRequest query, List<String> ids) {
