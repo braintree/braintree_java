@@ -15,6 +15,7 @@ import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.ServerException;
 import com.braintreegateway.exceptions.UnexpectedException;
+import com.braintreegateway.exceptions.UpgradeRequiredException;
 
 public class Http {
 
@@ -114,6 +115,8 @@ public class Http {
                 throw new AuthorizationException(decodedMessage);
             case 404:
                 throw new NotFoundException();
+            case 426:
+                throw new UpgradeRequiredException();
             case 500:
                 throw new ServerException();
             case 503:
