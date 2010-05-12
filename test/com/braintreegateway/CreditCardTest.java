@@ -527,6 +527,24 @@ public class CreditCardTest {
         Result<CreditCard> result = gateway.creditCard().create(request);
         Assert.assertTrue(result.isSuccess());
     }
+    
+    @Test
+    public void verifyCreditCardAgainstSpecificMerchantAccount() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("4111111111111111").
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                verificationMerchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        Assert.assertTrue(result.isSuccess());
+    }
 
     @Test
     public void verifyInvalidCreditCard() {
