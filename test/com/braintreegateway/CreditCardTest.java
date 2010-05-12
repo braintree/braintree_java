@@ -535,7 +535,7 @@ public class CreditCardTest {
             customerId(customer.getId()).
             cardholderName("John Doe").
             cvv("123").
-            number("4111111111111111").
+            number("5105105105105100").
             expirationDate("05/12").
             options().
                 verifyCard(true).
@@ -543,7 +543,8 @@ public class CreditCardTest {
                 done();
 
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertTrue(result.isSuccess());
+        Assert.assertFalse(result.isSuccess());
+        Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, result.getCreditCardVerification().getMerchantAccountId());
     }
 
     @Test

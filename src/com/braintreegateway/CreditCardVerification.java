@@ -10,6 +10,7 @@ public class CreditCardVerification {
     private String cvvResponseCode;
     private String processorResponseCode;
     private String processorResponseText;
+    private String merchantAccountId;
     private String status;
 
     public CreditCardVerification(NodeWrapper node) {
@@ -19,6 +20,7 @@ public class CreditCardVerification {
         this.cvvResponseCode = node.findString("cvv-response-code");
         this.processorResponseCode = node.findString("processor-response-code");
         this.processorResponseText = node.findString("processor-response-text");
+        this.merchantAccountId = node.findString("merchant-account-id");
         this.status = node.findString("status");
     }
 
@@ -44,6 +46,10 @@ public class CreditCardVerification {
 
     public String getProcessorResponseText() {
         return processorResponseText;
+    }
+
+    public String getMerchantAccountId() {
+        return merchantAccountId;
     }
 
     public String getStatus() {
