@@ -73,6 +73,7 @@ public class Transaction {
     private String processorResponseText;
     private Address shippingAddress;
     private Status status;
+    private String subscriptionId;
     private Type type;
     private Calendar updatedAt;
 
@@ -91,6 +92,7 @@ public class Transaction {
         processorResponseText = node.findString("processor-response-text");
         shippingAddress = new Address(node.findFirst("shipping"));
         status = EnumUtils.findByName(Status.class, node.findString("status"));
+        subscriptionId = node.findString("subscription-id");
         type = EnumUtils.findByName(Type.class, node.findString("type"));
         updatedAt = node.findDateTime("updated-at");
     }
@@ -149,6 +151,10 @@ public class Transaction {
 
     public Status getStatus() {
         return status;
+    }
+
+    public String getSubscriptionId() {
+        return subscriptionId;
     }
 
     public Type getType() {

@@ -208,10 +208,12 @@ public class SubscriptionTest {
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
+        Transaction transaction = subscription.getTransactions().get(0);
         
         Assert.assertEquals(1, subscription.getTransactions().size());
-        Assert.assertEquals(new BigDecimal("482.48"), subscription.getTransactions().get(0).getAmount());
-        Assert.assertEquals(Transaction.Type.SALE, subscription.getTransactions().get(0).getType());
+        Assert.assertEquals(new BigDecimal("482.48"), transaction.getAmount());
+        Assert.assertEquals(Transaction.Type.SALE, transaction.getType());
+        Assert.assertEquals(subscription.getId(), transaction.getSubscriptionId());
     }   
     
     @Test
