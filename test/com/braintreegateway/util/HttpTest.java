@@ -13,7 +13,6 @@ import com.braintreegateway.Environment;
 import com.braintreegateway.TestHelper;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
-import com.braintreegateway.exceptions.UpgradeRequiredException;
 
 public class HttpTest {
 
@@ -95,11 +94,6 @@ public class HttpTest {
         BraintreeGateway gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "bad_public", "bad_private");
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.customer().transparentRedirectURLForCreate());
         gateway.customer().confirmTransparentRedirect(queryString);
-    }
-    
-    @Test(expected=UpgradeRequiredException.class)
-    public void throwUpgradeRequiredIfClientLibraryIsTooOld() {
-        new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), "1.0.0").get("/");
     }
     
     @Test
