@@ -89,6 +89,10 @@ public class TransactionSearchRequest extends SearchRequest {
         return new TextNode<TransactionSearchRequest>("customer_website", this);
     }
     
+    public MultipleValueNode<TransactionSearchRequest> ids() {
+        return new MultipleValueNode<TransactionSearchRequest>("ids", this);
+    }
+    
     public TextNode<TransactionSearchRequest> orderId() {
         return new TextNode<TransactionSearchRequest>("order_id", this);
     }

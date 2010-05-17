@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import com.braintreegateway.util.CryptoTest;
+import com.braintreegateway.util.EnumUtilsTest;
 import com.braintreegateway.util.HttpTest;
 import com.braintreegateway.util.NodeWrapperTest;
 import com.braintreegateway.util.QueryStringTest;
@@ -19,13 +20,16 @@ import com.braintreegateway.util.TrUtilTest;
     CreditCardVerificationTest.class,
     CryptoTest.class,
     CustomerTest.class,
+    EnumUtilsTest.class,
     HttpTest.class,
+    MultipleValueNodeTest.class,
     NodeWrapperTest.class,
     QueryStringTest.class,
     StringUtilsTest.class,
     SubscriptionSearchRequestTest.class,
     SubscriptionTest.class,
     TransactionRequestTest.class,
+    TransparentRedirectRequestTest.class,
     TransactionTest.class,
     TrUtilTest.class,
     ValidationErrorCodeTest.class,

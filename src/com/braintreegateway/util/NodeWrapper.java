@@ -59,6 +59,16 @@ public class NodeWrapper {
         }
     }
 
+    public List<String> findAllStrings(String expression) {
+        List<String> strings = new ArrayList<String>();
+        
+        for (NodeWrapper node : findAll(expression)) {
+            strings.add(node.findString("."));
+        }
+        
+        return strings;
+    }
+    
     public BigDecimal findBigDecimal(String expression) {
         String value = findString(expression);
         return value == null ? null : new BigDecimal(value);

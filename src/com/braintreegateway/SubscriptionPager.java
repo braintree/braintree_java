@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+import java.util.List;
+
 public class SubscriptionPager implements Pager<Subscription> {
     private SubscriptionGateway gateway;
     private SubscriptionSearchRequest search;
@@ -9,7 +11,7 @@ public class SubscriptionPager implements Pager<Subscription> {
         this.search = search;
     }
 
-    public ResourceCollection<Subscription> getPage(int page) {
-        return gateway.search(search, page);
+    public List<Subscription> getPage(List<String> ids) {
+        return gateway.fetchSubscriptions(search, ids);
     }
 }
