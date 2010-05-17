@@ -13,6 +13,7 @@ import com.braintreegateway.Environment;
 import com.braintreegateway.TestHelper;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
+import com.braintreegateway.exceptions.UpgradeRequiredException;
 
 public class HttpTest {
 
@@ -96,6 +97,11 @@ public class HttpTest {
         gateway.customer().confirmTransparentRedirect(queryString);
     }
     
+    @Test(expected=UpgradeRequiredException.class)
+    public void throwUpgradeRequiredIfClientLibraryIsTooOld() {
+        new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), "1.0.0").get("/");
+    }
+
     @Test
     public void sslBadCertificate() throws Exception {
         startSSLServer();
