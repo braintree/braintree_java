@@ -123,8 +123,8 @@ public class CustomerTest {
         Assert.assertTrue(result.isSuccess());
 
         Map<String, String> expected = new HashMap<String, String>();
-        expected.put("store-me", "custom value");
-        expected.put("another-stored-field", "custom value2");
+        expected.put("store_me", "custom value");
+        expected.put("another_stored_field", "custom value2");
 
         Customer customer = result.getTarget();
         Assert.assertEquals(expected, customer.getCustomFields());
