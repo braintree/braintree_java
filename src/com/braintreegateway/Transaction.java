@@ -60,11 +60,16 @@ public class Transaction {
     }
 
     private BigDecimal amount;
+    private String avsErrorResponseCode;
+    private String avsPostalCodeResponseCode;
+    private String avsStreetAddressResponseCode;
     private Address billingAddress;
     private Calendar createdAt;
     private CreditCard creditCard;
+    private String currencyIsoCode;
     private Customer customer;
     private Map<String, String> customFields;
+    private String cvvResponseCode;
     private String id;
     private String merchantAccountId;
     private String orderId;
@@ -79,11 +84,16 @@ public class Transaction {
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
+        avsErrorResponseCode = node.findString("avs-error-response-code");
+        avsPostalCodeResponseCode = node.findString("avs-postal-code-response-code");
+        avsStreetAddressResponseCode = node.findString("avs-street-address-response-code");
         billingAddress = new Address(node.findFirst("billing"));
         createdAt = node.findDateTime("created-at");
         creditCard = new CreditCard(node.findFirst("credit-card"));
+        currencyIsoCode = node.findString("currency-iso-code");
         customFields = node.findMap("custom-fields");
         customer = new Customer(node.findFirst("customer"));
+        cvvResponseCode = node.findString("cvv-response-code");
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
         orderId = node.findString("order-id");
@@ -100,6 +110,18 @@ public class Transaction {
     public BigDecimal getAmount() {
         return amount;
     }
+    
+    public String getAvsErrorResponseCode() {
+        return avsErrorResponseCode;
+    }
+    
+    public String getAvsPostalCodeResponseCode() {
+        return avsPostalCodeResponseCode;
+    }
+    
+    public String getAvsStreetAddressResponseCode() {
+        return avsStreetAddressResponseCode;
+    }
 
     public Address getBillingAddress() {
         return billingAddress;
@@ -112,9 +134,17 @@ public class Transaction {
     public CreditCard getCreditCard() {
         return creditCard;
     }
+    
+    public String getCurrencyIsoCode() {
+        return currencyIsoCode;
+    }
 
     public Customer getCustomer() {
         return customer;
+    }
+
+    public String getCvvResponseCode() {
+        return cvvResponseCode;
     }
 
     public Map<String, String> getCustomFields() {

@@ -97,6 +97,7 @@ public class TransactionTest {
         Transaction transaction = result.getTarget();
 
         Assert.assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
+        Assert.assertEquals("USD", transaction.getCurrencyIsoCode());
         Assert.assertNotNull(transaction.getProcessorAuthorizationCode());
         Assert.assertEquals(Transaction.Type.SALE, transaction.getType());
         Assert.assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
@@ -163,7 +164,10 @@ public class TransactionTest {
         Assert.assertEquals("123", transaction.getOrderId());
         Assert.assertNull(transaction.getVaultCreditCard(gateway));
         Assert.assertNull(transaction.getVaultCustomer(gateway));
-
+        Assert.assertNull(transaction.getAvsErrorResponseCode());
+        Assert.assertEquals("M", transaction.getAvsPostalCodeResponseCode());
+        Assert.assertEquals("M", transaction.getAvsStreetAddressResponseCode());
+        Assert.assertEquals("M", transaction.getCvvResponseCode());
         Assert.assertNull(transaction.getVaultCreditCard(gateway));
         CreditCard creditCard = transaction.getCreditCard();
         Assert.assertEquals("411111", creditCard.getBin());
