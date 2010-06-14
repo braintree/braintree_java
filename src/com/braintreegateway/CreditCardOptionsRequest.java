@@ -7,6 +7,7 @@ public class CreditCardOptionsRequest extends Request {
     private String verificationMerchantAccountId;
     private boolean verifyCard;
     private boolean makeDefault;
+    private String updateExistingToken;
 
     public CreditCardOptionsRequest(CreditCardRequest parent) {
         this.parent = parent;
@@ -25,6 +26,16 @@ public class CreditCardOptionsRequest extends Request {
         this.verifyCard = verifyCard;
         return this;
     }
+    
+    public CreditCardOptionsRequest makeDefault(boolean makeDefault) {
+        this.makeDefault = makeDefault;
+        return this;
+    }
+
+    public CreditCardOptionsRequest updateExistingToken(String token) {
+        this.updateExistingToken = token;
+        return this;
+    }
 
     public String toXML() {
         StringBuilder builder = new StringBuilder();
@@ -34,6 +45,7 @@ public class CreditCardOptionsRequest extends Request {
         if (makeDefault) {
             builder.append(buildXMLElement("makeDefault", makeDefault));
         }
+        builder.append(buildXMLElement("updateExistingToken", updateExistingToken));
         builder.append("</options>");
         return builder.toString();
     }
@@ -43,15 +55,11 @@ public class CreditCardOptionsRequest extends Request {
             append(parentBracketChildString(root, "make_default"), makeDefault).
             append(parentBracketChildString(root, "verify_card"), verifyCard).
             append(parentBracketChildString(root, "verification_merchant_account_id"), verificationMerchantAccountId).
+            append(parentBracketChildString(root, "update_existing_token"), updateExistingToken).
             toString();
     }
 
     public String toQueryString() {
         return toQueryString("options");
-    }
-
-    public CreditCardOptionsRequest makeDefault(boolean makeDefault) {
-        this.makeDefault = makeDefault;
-        return this;
     }
 }

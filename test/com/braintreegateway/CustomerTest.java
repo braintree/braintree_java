@@ -299,6 +299,53 @@ public class CustomerTest {
         Assert.assertEquals("555-555-5554", updatedCustomer.getPhone());
         Assert.assertEquals("http://getbraintree.com", updatedCustomer.getWebsite());
     }
+    
+    @Test
+    public void updateWithExistingCreditCardAndAddress() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Mark").
+            lastName("Jones").
+            company("Jones Co.").
+            email("mark.jones@example.com").
+            fax("419-555-1234").
+            phone("614-555-1234").
+            website("http://example.com").
+            creditCard().
+                number("4111111111111111").
+                expirationDate("12/12").
+                billingAddress().
+                    postalCode("44444").
+                    done().
+                done();
+        
+        Customer customer = gateway.customer().create(request).getTarget();
+        CreditCard creditCard = customer.getCreditCards().get(0);
+        
+        CustomerRequest updateRequest = new CustomerRequest().
+            firstName("Jane").
+            lastName("Doe").
+            creditCard().
+                expirationDate("10/10").
+                options().
+                    updateExistingToken(creditCard.getToken()).
+                    done().
+                billingAddress().
+                    postalCode("11111").
+                    options().
+                        updateExisting(true).
+                        done().
+                    done().
+                done();
+        
+        Customer updatedCustomer = gateway.customer().update(customer.getId(), updateRequest).getTarget();
+        CreditCard updatedCreditCard = updatedCustomer.getCreditCards().get(0);
+        Address updatedAddress = updatedCreditCard.getBillingAddress();
+        
+        Assert.assertEquals("Jane", updatedCustomer.getFirstName());
+        Assert.assertEquals("Doe", updatedCustomer.getLastName());
+        Assert.assertEquals("10/2010", updatedCreditCard.getExpirationDate());
+        Assert.assertEquals("11111", updatedAddress.getPostalCode());
+    }
 
     @Test
     public void updateViaTransparentRedirect() {
