@@ -1,7 +1,9 @@
 package com.braintreegateway;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 import com.braintreegateway.util.EnumUtils;
@@ -78,6 +80,7 @@ public class Transaction {
     private String processorResponseText;
     private Address shippingAddress;
     private Status status;
+    private List<StatusEvent> statusHistory;
     private String subscriptionId;
     private Type type;
     private Calendar updatedAt;
@@ -105,6 +108,12 @@ public class Transaction {
         subscriptionId = node.findString("subscription-id");
         type = EnumUtils.findByName(Type.class, node.findString("type"));
         updatedAt = node.findDateTime("updated-at");
+        
+        statusHistory = new ArrayList<StatusEvent>();
+        
+        for (NodeWrapper statusNode : node.findAll("status-history/status-event")) {
+            statusHistory.add(new StatusEvent(statusNode));
+        }
     }
 
     public BigDecimal getAmount() {
@@ -181,6 +190,10 @@ public class Transaction {
 
     public Status getStatus() {
         return status;
+    }
+
+    public List<StatusEvent> getStatusHistory() {
+        return statusHistory;
     }
 
     public String getSubscriptionId() {

@@ -743,6 +743,23 @@ public class TransactionTest {
         Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_BE_VOIDED, 
                 result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
+    
+    @Test
+    public void statusHistoryReturnsCorrectStatusEvents() {
+        TransactionRequest request = new TransactionRequest().
+        amount(TransactionAmount.AUTHORIZE.amount).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        Transaction settledTransaction = gateway.transaction().submitForSettlement(transaction.getId()).getTarget();
+
+        Assert.assertEquals(2, settledTransaction.getStatusHistory().size());
+        Assert.assertEquals(Transaction.Status.AUTHORIZED, settledTransaction.getStatusHistory().get(0).getStatus());
+        Assert.assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, settledTransaction.getStatusHistory().get(1).getStatus());
+    }
 
     @Test
     public void submitForSettlementWithoutAmount() {
