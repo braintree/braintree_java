@@ -78,6 +78,7 @@ public class Transaction {
     private String processorAuthorizationCode;
     private String processorResponseCode;
     private String processorResponseText;
+    private String refundId;
     private Address shippingAddress;
     private Status status;
     private List<StatusEvent> statusHistory;
@@ -103,6 +104,7 @@ public class Transaction {
         processorAuthorizationCode = node.findString("processor-authorization-code");
         processorResponseCode = node.findString("processor-response-code");
         processorResponseText = node.findString("processor-response-text");
+        refundId = node.findString("refund-id");
         shippingAddress = new Address(node.findFirst("shipping"));
         status = EnumUtils.findByName(Status.class, node.findString("status"));
         subscriptionId = node.findString("subscription-id");
@@ -184,6 +186,10 @@ public class Transaction {
         return processorResponseText;
     }
 
+    public String getRefundId() {
+        return refundId;
+    }
+    
     public Address getShippingAddress() {
         return shippingAddress;
     }

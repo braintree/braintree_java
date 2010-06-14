@@ -53,6 +53,8 @@ public class CreditCard {
     private String cardholderName;
     private String cardType;
     private Calendar createdAt;
+    private String customerId;
+    private String customerLocation;
     private String expirationMonth;
     private String expirationYear;
     private boolean isDefault;
@@ -68,6 +70,8 @@ public class CreditCard {
         bin = node.findString("bin");
         cardType = node.findString("card-type");
         cardholderName = node.findString("cardholder-name");
+        customerId = node.findString("customer-id");
+        customerLocation = node.findString("customer-location");
         expirationMonth = node.findString("expiration-month");
         expirationYear = node.findString("expiration-year");
         isDefault = node.findBoolean("default");
@@ -101,6 +105,14 @@ public class CreditCard {
 
     public Calendar getCreatedAt() {
         return createdAt;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public String getCustomerLocation() {
+        return customerLocation;
     }
 
     public String getExpirationDate() {

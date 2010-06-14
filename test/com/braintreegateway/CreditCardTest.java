@@ -53,6 +53,8 @@ public class CreditCardTest {
         CreditCard card = result.getTarget();
         Assert.assertEquals("John Doe", card.getCardholderName());
         Assert.assertEquals("MasterCard", card.getCardType());
+        Assert.assertEquals(customer.getId(), card.getCustomerId());
+        Assert.assertEquals("US", card.getCustomerLocation());
         Assert.assertEquals("510510", card.getBin());
         Assert.assertEquals("05", card.getExpirationMonth());
         Assert.assertEquals("2012", card.getExpirationYear());

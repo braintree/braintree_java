@@ -1343,13 +1343,16 @@ public class TransactionTest {
         options().
             submitForSettlement(true).
             done();
-        Transaction transaction = gateway.transaction().sale(request).getTarget();
-        settle(transaction.getId());
+        String transactionId = gateway.transaction().sale(request).getTarget().getId();
+        settle(transactionId);
 
-        Result<Transaction> result = gateway.transaction().refund(transaction.getId());
+        Result<Transaction> result = gateway.transaction().refund(transactionId);
+        Transaction originalTransaction = gateway.transaction().find(transactionId);
+        
         Assert.assertTrue(result.isSuccess());
         Assert.assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
-        Assert.assertEquals(transaction.getAmount(), result.getTarget().getAmount());
+        Assert.assertEquals(originalTransaction.getAmount(), result.getTarget().getAmount());
+        Assert.assertEquals(originalTransaction.getRefundId(), result.getTarget().getId());
     }
     
     @Test
