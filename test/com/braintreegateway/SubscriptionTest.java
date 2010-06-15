@@ -16,7 +16,6 @@ import org.junit.Test;
 
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.Subscription.Status;
-import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.NodeWrapper;
 
 public class SubscriptionTest {
