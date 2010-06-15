@@ -1,11 +1,7 @@
 package com.braintreegateway;
 
-import java.io.FileInputStream;
-
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.braintreegateway.util.StringUtils;
 
 public class BraintreeGatewayTest {
     @Test
@@ -35,11 +31,5 @@ public class BraintreeGatewayTest {
                 "integration_public_key", "integration_private_key");
         Assert.assertEquals("Basic aW50ZWdyYXRpb25fcHVibGljX2tleTppbnRlZ3JhdGlvbl9wcml2YXRlX2tleQ==", config
                 .getAuthorizationHeader());
-    }
-    
-    @Test
-    public void getVersion() throws Exception {
-        String expected = StringUtils.inputStreamToString(new FileInputStream("VERSION"));
-        Assert.assertEquals(expected.trim(), new BraintreeGateway(Environment.DEVELOPMENT, null, null, null).getVersion());
     }
 }

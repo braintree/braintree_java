@@ -1,9 +1,7 @@
 package com.braintreegateway;
 
-import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 import com.braintreegateway.util.Http;
-import com.braintreegateway.util.StringUtils;
 import com.braintreegateway.util.TrUtil;
 
 /**
@@ -48,6 +46,8 @@ import com.braintreegateway.util.TrUtil;
  */
 public class BraintreeGateway {
 
+    public static final String VERSION = "2.2.1";
+
     private Configuration configuration;
     private Environment environment;
     private Http http;
@@ -68,7 +68,7 @@ public class BraintreeGateway {
         this.publicKey = publicKey;
         this.privateKey = privateKey;
         this.configuration = new Configuration(baseMerchantURL(), publicKey, privateKey);
-        this.http = new Http(getAuthorizationHeader(), baseMerchantURL(), getVersion());
+        this.http = new Http(getAuthorizationHeader(), baseMerchantURL(), BraintreeGateway.VERSION);
     }
     
     /**
@@ -105,14 +105,6 @@ public class BraintreeGateway {
 
     public String getAuthorizationHeader() {
         return "Basic " + Base64.encodeBase64String((publicKey + ":" + privateKey).getBytes()).trim();
-    }
-
-    public String getVersion() {
-        try {
-            return StringUtils.getFileContents("VERSION").trim();
-        } catch (Exception e) {
-            throw new UnexpectedException("Cannot read VERSION file: " + e.getMessage());
-        }
     }
 
     /**
