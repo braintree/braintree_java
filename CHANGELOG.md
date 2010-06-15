@@ -1,3 +1,7 @@
+## 2.2.1
+
+ * Read VERSION from a constant instead of a VERSION file, which can conflict with other VERSION files in load path.
+
 ## 2.2.0
 
 * Prevent race condition when pulling back collection results -- search results represent the state of the data at the time the query was run
