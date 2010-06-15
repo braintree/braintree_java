@@ -356,22 +356,28 @@ public class SubscriptionTest {
     }
 
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void createWithBadPlanId() {
         SubscriptionRequest createRequest = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
             planId("noSuchPlanId");
 
-        gateway.subscription().create(createRequest);
+        Result<Subscription> result = gateway.subscription().create(createRequest);
+        Assert.assertFalse(result.isSuccess());
+        
+        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_PLAN_ID_IS_INVALID, result.getErrors().forObject("subscription").onField("planId").get(0).getCode());
     }
     
-    @Test(expected = NotFoundException.class)
+    @Test
     public void createWithBadPaymentMethod() {
         SubscriptionRequest createRequest = new SubscriptionRequest().
             paymentMethodToken("invalidToken").
             planId(Plan.PLAN_WITHOUT_TRIAL.getId());
 
-        gateway.subscription().create(createRequest);
+        Result<Subscription> result = gateway.subscription().create(createRequest);
+        Assert.assertFalse(result.isSuccess());
+        
+        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_PAYMENT_METHOD_TOKEN_IS_INVALID, result.getErrors().forObject("subscription").onField("paymentMethodToken").get(0).getCode());
     }
     
     @Test
