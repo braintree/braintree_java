@@ -10,10 +10,6 @@ public class StringUtils {
         return str == null ? null : str.replaceAll("([A-Z])", "-$0").replaceAll("_", "-").toLowerCase();
     }
 
-    public static String getFileContents(String filename) throws IOException {
-        return inputStreamToString(getClassLoader().getResourceAsStream(filename));
-    }
-
     public static String getFullPathOfFile(String filename) {
         return getClassLoader().getResource(filename).getFile();
     }
