@@ -17,9 +17,9 @@ end
 
 task :compile => :init do
   sh "javac -target 1.5 -d classes -cp #{lib_classpath} -Xlint:deprecation #{src_files}"
-  cp "VERSION", "classes"
 end
 
+desc "build a jar"
 task :jar => :compile do
   sh "jar cvf #{jar_name} -C classes . > /dev/null"
 end
@@ -60,5 +60,8 @@ def jar_name
 end
 
 def version
-  File.read('VERSION').strip
+  contents = File.read('src/com/braintreegateway/BraintreeGateway.java')
+  version = contents.slice(/VERSION = "(.*)"/, 1)
+  raise "Cannot read version" if version.empty?
+  version
 end
