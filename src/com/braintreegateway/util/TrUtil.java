@@ -20,7 +20,7 @@ public class TrUtil {
         String dateString = String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", now);
 
         String trContent = new QueryString().append("api_version", Configuration.apiVersion()).append("public_key", configuration.publicKey)
-                .append("redirect_url", redirectURL).append("time", dateString).toString();
+                .append("redirect_url", redirectURL).append("time", dateString).append("kind", request.getKind()).toString();
 
         String requestQueryString = request.toQueryString();
 
@@ -64,5 +64,9 @@ public class TrUtil {
             throw new RuntimeException(e);
         }
         return encodedKey + "=" + encodedValue;
+    }
+
+    public String url() {
+        return configuration.baseMerchantURL + "/transparent_redirect_requests";
     }
 }

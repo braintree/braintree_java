@@ -59,6 +59,11 @@ public class TransactionRequest extends Request {
         customFields.put(apiName, value);
         return this;
     }
+    
+    @Override
+    public String getKind() {
+        return "create_transaction";
+    }
 
     public TransactionRequest merchantAccountId(String merchantAccountId) {
         this.merchantAccountId = merchantAccountId;

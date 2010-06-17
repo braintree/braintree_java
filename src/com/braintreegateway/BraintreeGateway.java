@@ -123,6 +123,10 @@ public class BraintreeGateway {
         return new TransactionGateway(http, configuration);
     }
 
+    public TransparentRedirectGateway transparentRedirect() {
+        return new TransparentRedirectGateway(http, configuration);
+    }
+    
     /**
      * Returns encoded transparent redirect data for the given {@link Request} and redirect URL
      * @param trData the transparent redirect data as a {@link Request} object.

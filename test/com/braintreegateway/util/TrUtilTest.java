@@ -42,4 +42,9 @@ public class TrUtilTest {
     public void apiVersionIsCorrectInTrData() {
         TestHelper.assertIncludes("api_version=2", new TrUtil(configuration).buildTrData(new TransactionRequest(), "http://google.com"));
     }
+    
+    @Test
+    public void url() {
+        TestHelper.assertIncludes("baseMerchantURL/transparent_redirect_requests", new TrUtil(configuration).url());
+    }
 }

@@ -4,8 +4,11 @@ import java.net.URLEncoder;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import com.braintreegateway.SandboxValues.CreditCardNumber;
+import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.AuthorizationException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
@@ -15,7 +18,13 @@ import com.braintreegateway.exceptions.ServerException;
 import com.braintreegateway.exceptions.UnexpectedException;
 
 public class TransparentRedirectRequestTest {
+    private BraintreeGateway gateway;
 
+    @Before
+    public void createGateway() {
+        this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
+    }
+    
     @Test
     public void constructor() {
         Configuration configuration = new Configuration("baseMerchantURL", "integration_public_key", "integration_private_key");
@@ -77,4 +86,27 @@ public class TransparentRedirectRequestTest {
         Configuration configuration = new Configuration("baseMerchantURL", "integration_public_key", "integration_private_key");
         new TransparentRedirectRequest(configuration, "http_status=600&id=6kdj469tw7yck32j&hash=740633356f93384167d887de0c1d9745e3de8fb6");    
     }
+    
+    @Test
+    public void createTransactionFromTransparentRedirect() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            options().
+                storeInVault(true).
+                done();
+
+        TransactionRequest trParams = new TransactionRequest().
+            type(Transaction.Type.SALE);
+    
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
+        Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
+        Assert.assertTrue(result.isSuccess());
+        Assert.assertEquals(CreditCardNumber.VISA.number.substring(0, 6), result.getTarget().getCreditCard().getBin());
+        Assert.assertEquals(TransactionAmount.AUTHORIZE.amount, result.getTarget().getAmount());
+    }
+
 }
