@@ -1335,24 +1335,27 @@ public class TransactionTest {
     @Test
     public void refundTransaction() {
         TransactionRequest request = new TransactionRequest().
-        amount(TransactionAmount.AUTHORIZE.amount).
-        creditCard().
-            number(CreditCardNumber.VISA.number).
-            expirationDate("05/2008").
-            done().
-        options().
-            submitForSettlement(true).
-            done();
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
         String transactionId = gateway.transaction().sale(request).getTarget().getId();
         settle(transactionId);
 
         Result<Transaction> result = gateway.transaction().refund(transactionId);
+        Assert.assertTrue(result.isSuccess());
+
+        Transaction refund = result.getTarget();
         Transaction originalTransaction = gateway.transaction().find(transactionId);
         
-        Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
-        Assert.assertEquals(originalTransaction.getAmount(), result.getTarget().getAmount());
-        Assert.assertEquals(originalTransaction.getRefundId(), result.getTarget().getId());
+        Assert.assertEquals(Transaction.Type.CREDIT, refund.getType());
+        Assert.assertEquals(originalTransaction.getAmount(), refund.getAmount());
+        Assert.assertEquals(refund.getId(), originalTransaction.getRefundId());
+        Assert.assertEquals(originalTransaction.getId(), refund.getRefundedTransactionId());
     }
     
     @Test

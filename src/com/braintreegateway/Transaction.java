@@ -11,36 +11,16 @@ import com.braintreegateway.util.NodeWrapper;
 
 public class Transaction {
 
-    public enum Status {
-        AUTHORIZED, AUTHORIZING, FAILED, GATEWAY_REJECTED, PROCESSOR_DECLINED, SETTLED, SETTLEMENT_FAILED, SUBMITTED_FOR_SETTLEMENT, UNKNOWN, UNRECOGNIZED, VOIDED;
-    }
-
-    public enum Type {
-        CREDIT("credit"),
-        SALE("sale"),
-        UNRECOGNIZED("unrecognized");
-        
-        private final String name;
-        
-        Type(String name) {
-            this.name = name;
-        }
-        
-        public String toString() {
-            return name;
-        }
-    }
-    
     public enum CreatedUsing {
         FULL_INFORMATION("full_information"),
         TOKEN("token");
-        
+
         private final String name;
-        
+
         CreatedUsing(String name) {
             this.name = name;
         }
-        
+
         public String toString() {
             return name;
         }
@@ -49,13 +29,33 @@ public class Transaction {
     public enum Source {
         API("api"),
         CONTROL_PANEL("control_panel");
-        
+
         private final String name;
-        
+
         Source(String name) {
             this.name = name;
         }
-        
+
+        public String toString() {
+            return name;
+        }
+    }
+
+    public enum Status {
+        AUTHORIZED, AUTHORIZING, FAILED, GATEWAY_REJECTED, PROCESSOR_DECLINED, SETTLED, SETTLEMENT_FAILED, SUBMITTED_FOR_SETTLEMENT, UNKNOWN, UNRECOGNIZED, VOIDED;
+    }
+
+    public enum Type {
+        CREDIT("credit"),
+        SALE("sale"),
+        UNRECOGNIZED("unrecognized");
+
+        private final String name;
+
+        Type(String name) {
+            this.name = name;
+        }
+
         public String toString() {
             return name;
         }
@@ -78,6 +78,7 @@ public class Transaction {
     private String processorAuthorizationCode;
     private String processorResponseCode;
     private String processorResponseText;
+    private String refundedTransactionId;
     private String refundId;
     private Address shippingAddress;
     private Status status;
@@ -104,15 +105,16 @@ public class Transaction {
         processorAuthorizationCode = node.findString("processor-authorization-code");
         processorResponseCode = node.findString("processor-response-code");
         processorResponseText = node.findString("processor-response-text");
+        refundedTransactionId = node.findString("refunded-transaction-id");
         refundId = node.findString("refund-id");
         shippingAddress = new Address(node.findFirst("shipping"));
         status = EnumUtils.findByName(Status.class, node.findString("status"));
         subscriptionId = node.findString("subscription-id");
         type = EnumUtils.findByName(Type.class, node.findString("type"));
         updatedAt = node.findDateTime("updated-at");
-        
+
         statusHistory = new ArrayList<StatusEvent>();
-        
+
         for (NodeWrapper statusNode : node.findAll("status-history/status-event")) {
             statusHistory.add(new StatusEvent(statusNode));
         }
@@ -121,15 +123,15 @@ public class Transaction {
     public BigDecimal getAmount() {
         return amount;
     }
-    
+
     public String getAvsErrorResponseCode() {
         return avsErrorResponseCode;
     }
-    
+
     public String getAvsPostalCodeResponseCode() {
         return avsPostalCodeResponseCode;
     }
-    
+
     public String getAvsStreetAddressResponseCode() {
         return avsStreetAddressResponseCode;
     }
@@ -145,7 +147,7 @@ public class Transaction {
     public CreditCard getCreditCard() {
         return creditCard;
     }
-    
+
     public String getCurrencyIsoCode() {
         return currencyIsoCode;
     }
@@ -154,18 +156,18 @@ public class Transaction {
         return customer;
     }
 
-    public String getCvvResponseCode() {
-        return cvvResponseCode;
-    }
-
     public Map<String, String> getCustomFields() {
         return customFields;
+    }
+
+    public String getCvvResponseCode() {
+        return cvvResponseCode;
     }
 
     public String getId() {
         return id;
     }
-    
+
     public String getMerchantAccountId() {
         return merchantAccountId;
     }
@@ -186,10 +188,14 @@ public class Transaction {
         return processorResponseText;
     }
 
+    public String getRefundedTransactionId() {
+        return refundedTransactionId;
+    }
+
     public String getRefundId() {
         return refundId;
     }
-    
+
     public Address getShippingAddress() {
         return shippingAddress;
     }
