@@ -70,6 +70,15 @@ public class CustomerRequest extends Request {
         this.firstName = firstName;
         return this;
     }
+    
+    @Override
+    public String getKind() {
+        if (this.customerId == null) {
+            return "create_customer";
+        } else {
+            return "update_customer";
+        }
+    }
 
     public CustomerRequest lastName(String lastName) {
         this.lastName = lastName;

@@ -17,6 +17,10 @@ public class TransparentRedirectGateway {
         return new TrUtil(configuration).url();
     }
 
+    public Result<Customer> confirmCustomer(String queryString) {
+        return confirmTr(Customer.class, queryString);
+    }
+    
     public Result<Transaction> confirmTransaction(String queryString) {
         return confirmTr(Transaction.class, queryString);
     }

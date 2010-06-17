@@ -108,5 +108,36 @@ public class TransparentRedirectRequestTest {
         Assert.assertEquals(CreditCardNumber.VISA.number.substring(0, 6), result.getTarget().getCreditCard().getBin());
         Assert.assertEquals(TransactionAmount.AUTHORIZE.amount, result.getTarget().getAmount());
     }
-
+    
+    @Test
+    public void createCustomerFromTransparentRedirect() {
+        CustomerRequest request = new CustomerRequest().firstName("John");
+        CustomerRequest trParams = new CustomerRequest().lastName("Doe");
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
+        
+        Result<Customer> result = gateway.transparentRedirect().confirmCustomer(queryString);
+        
+        Assert.assertTrue(result.isSuccess());
+        Assert.assertEquals("John", result.getTarget().getFirstName());
+        Assert.assertEquals("Doe", result.getTarget().getLastName());
+    }
+    
+    @Test
+    public void updateCustomerFromTransparentRedirect() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("John").
+            lastName("Doe");
+        Customer customer = gateway.customer().create(request).getTarget();
+        
+        CustomerRequest updateRequest = new CustomerRequest().firstName("Jane");
+        CustomerRequest trParams = new CustomerRequest().customerId(customer.getId()).lastName("Dough");
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, updateRequest, gateway.transparentRedirect().url());
+        
+        Result<Customer> result = gateway.transparentRedirect().confirmCustomer(queryString);
+        
+        Assert.assertTrue(result.isSuccess());
+        Customer updatedCustomer = gateway.customer().find(customer.getId());
+        Assert.assertEquals("Jane", updatedCustomer.getFirstName());
+        Assert.assertEquals("Dough", updatedCustomer.getLastName());
+    }
 }
