@@ -140,4 +140,47 @@ public class TransparentRedirectRequestTest {
         Assert.assertEquals("Jane", updatedCustomer.getFirstName());
         Assert.assertEquals("Dough", updatedCustomer.getLastName());
     }
+    
+    @Test
+    public void createCreditCardFromTransparentRedirect() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest();
+        CreditCardRequest trParams = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("4111111111111111").
+            expirationDate("10/10");
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
+        
+        Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
+        
+        Assert.assertTrue(result.isSuccess());
+        Assert.assertEquals("411111", result.getTarget().getBin());
+        Assert.assertEquals("1111", result.getTarget().getLast4());
+        Assert.assertEquals("10/2010", result.getTarget().getExpirationDate());
+    }
+    
+    @Test
+    public void updateCreditCardFromTransparentRedirect() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12");
+        CreditCard card = gateway.creditCard().create(request).getTarget();
+        
+        CreditCardRequest updateRequest = new CreditCardRequest();
+        CreditCardRequest trParams = new CreditCardRequest().
+            paymentMethodToken(card.getToken()).
+            number("4111111111111111").
+            expirationDate("10/10");
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, updateRequest, gateway.transparentRedirect().url());
+        
+        Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
+        
+        Assert.assertTrue(result.isSuccess());
+        CreditCard updatedCreditCard = gateway.creditCard().find(card.getToken());
+        Assert.assertEquals("411111", updatedCreditCard.getBin());
+        Assert.assertEquals("1111", updatedCreditCard.getLast4());
+        Assert.assertEquals("10/2010", updatedCreditCard.getExpirationDate());
+    }
 }
