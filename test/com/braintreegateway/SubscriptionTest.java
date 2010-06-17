@@ -312,6 +312,35 @@ public class SubscriptionTest {
     }
 
     @Test
+    public void updatePaymentMethod() {
+        Plan originalPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest createRequest = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(originalPlan.getId());
+
+        Result<Subscription> createResult = gateway.subscription().create(createRequest);
+        Assert.assertTrue(createResult.isSuccess());
+        Subscription subscription = createResult.getTarget();
+
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12");
+
+        CreditCard newCreditCard = gateway.creditCard().create(request).getTarget();
+
+        SubscriptionRequest updateRequest = new SubscriptionRequest().paymentMethodToken(newCreditCard.getToken());
+        Result<Subscription> result = gateway.subscription().update(subscription.getId(), updateRequest);
+        
+        Assert.assertTrue(result.isSuccess());
+        subscription = result.getTarget();
+        
+        Assert.assertEquals(newCreditCard.getToken(), subscription.getPaymentMethodToken()); 
+    }
+    
+    @Test
     public void increasePriceAndTransaction() {
         Plan originalPlan = Plan.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest createRequest = new SubscriptionRequest().
