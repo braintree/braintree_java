@@ -6,6 +6,12 @@ import com.braintreegateway.util.StringUtils;
 import com.braintreegateway.util.TrUtil;
 
 public class TransparentRedirectGateway {
+    public static String CREATE_TRANSACTION = "create_transaction";
+    public static String CREATE_CUSTOMER = "create_customer";
+    public static String UPDATE_CUSTOMER = "update_customer";
+    public static String CREATE_PAYMENT_METHOD = "create_payment_method";
+    public static String UPDATE_PAYMENT_METHOD = "update_payment_method";
+    
     private Http http;
     private Configuration configuration;
     

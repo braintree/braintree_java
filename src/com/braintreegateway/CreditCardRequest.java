@@ -61,9 +61,9 @@ public class CreditCardRequest extends Request {
     @Override
     public String getKind() {
         if (this.paymentMethodToken == null) {
-            return "create_payment_method";
+            return TransparentRedirectGateway.CREATE_PAYMENT_METHOD;
         } else {
-            return "update_payment_method";
+            return TransparentRedirectGateway.UPDATE_PAYMENT_METHOD;
         }
     }
 
