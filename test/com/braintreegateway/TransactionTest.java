@@ -21,7 +21,7 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
-
+@SuppressWarnings("deprecation")
 public class TransactionTest {
 
     private BraintreeGateway gateway;

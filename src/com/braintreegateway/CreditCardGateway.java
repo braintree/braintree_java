@@ -39,14 +39,9 @@ public class CreditCardGateway {
     }
 
     /**
-     * Confirms the transparent redirect request and creates a
-     * {@link CreditCard} based on the parameters submitted with the transparent
-     * redirect.
-     * 
-     * @param queryString
-     *            the queryString of the transparent redirect.
-     * @return a {@link Result}.
+     * Please use gateway.transparentRedirect().confirmCreditCard() instead
      */
+    @Deprecated
     public Result<CreditCard> confirmTransparentRedirect(String queryString) {
         TransparentRedirectRequest trRequest = new TransparentRedirectRequest(configuration, queryString);
         NodeWrapper node = http.post("/payment_methods/all/confirm_transparent_redirect_request", trRequest);
@@ -90,19 +85,17 @@ public class CreditCardGateway {
     }
 
     /**
-     * Returns the transparent redirect URL for creating a {@link CreditCard}.
-     * 
-     * @return a URL as a String.
+     * Please use gateway.transparentRedirect().url() instead
      */
+    @Deprecated
     public String transparentRedirectURLForCreate() {
         return configuration.baseMerchantURL + "/payment_methods/all/create_via_transparent_redirect_request";
     }
 
     /**
-     * Returns the transparent redirect URL for updating a {@link CreditCard}.
-     * 
-     * @return a URL as a String.
+     * Please use gateway.transparentRedirect().url() instead
      */
+    @Deprecated
     public String transparentRedirectURLForUpdate() {
         return configuration.baseMerchantURL + "/payment_methods/all/update_via_transparent_redirect_request";
     }

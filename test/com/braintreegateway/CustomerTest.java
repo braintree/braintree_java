@@ -12,6 +12,7 @@ import org.junit.Test;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
 
+@SuppressWarnings("deprecation")
 public class CustomerTest {
 
     private BraintreeGateway gateway;

@@ -15,6 +15,7 @@ import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
 
+@SuppressWarnings("deprecation")
 public class HttpTest {
 
     private BraintreeGateway gateway;
@@ -88,6 +89,14 @@ public class HttpTest {
         gateway.customer().confirmTransparentRedirect(queryString);
     }
     
+    @Test(expected=DownForMaintenanceException.class)
+    public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingNewTR() {
+        CustomerRequest request = new CustomerRequest();
+        CustomerRequest trParams = new CustomerRequest();
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.getConfiguration().baseMerchantURL + "/test/maintenance");
+        gateway.transparentRedirect().confirmCustomer(queryString);
+    }
+    
     @Test(expected=AuthenticationException.class)
     public void authenticationExceptionRaisedWhenBadCredentialsUsingTR() {
         CustomerRequest request = new CustomerRequest();
@@ -95,6 +104,15 @@ public class HttpTest {
         BraintreeGateway gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "bad_public", "bad_private");
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.customer().transparentRedirectURLForCreate());
         gateway.customer().confirmTransparentRedirect(queryString);
+    }
+
+    @Test(expected=AuthenticationException.class)
+    public void authenticationExceptionRaisedWhenBadCredentialsUsingNewTR() {
+        CustomerRequest request = new CustomerRequest();
+        CustomerRequest trParams = new CustomerRequest();
+        BraintreeGateway gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "bad_public", "bad_private");
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
+        gateway.transparentRedirect().confirmCustomer(queryString);
     }
     
     @Test(expected=UpgradeRequiredException.class)
