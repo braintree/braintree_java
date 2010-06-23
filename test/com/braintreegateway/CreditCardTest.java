@@ -586,4 +586,24 @@ public class CreditCardTest {
         Set<String> uniqueTokens = new HashSet<String>(tokens);
         Assert.assertEquals(expiredCards.getMaximumSize(), uniqueTokens.size());
     }
+    
+    @Test
+    public void expiringBetween() {
+        Calendar start = Calendar.getInstance();
+        start.set(2010, 0, 1);
+        Calendar end = Calendar.getInstance();
+        end.set(2010, 11, 31);
+        
+        ResourceCollection<CreditCard> expiredCards = gateway.creditCard().expiringBetween(start, end);
+        Assert.assertTrue(expiredCards.getMaximumSize() > 0);
+        
+        List<String> tokens = new ArrayList<String>();
+        for (CreditCard card : expiredCards) {
+            Assert.assertEquals("2010", card.getExpirationYear());
+            tokens.add(card.getToken());
+        }
+
+        Set<String> uniqueTokens = new HashSet<String>(tokens);
+        Assert.assertEquals(expiredCards.getMaximumSize(), uniqueTokens.size());
+    }
 }

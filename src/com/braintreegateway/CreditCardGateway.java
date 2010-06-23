@@ -1,7 +1,10 @@
 package com.braintreegateway;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
@@ -139,5 +142,39 @@ public class CreditCardGateway {
         }
 
         return items;
+    }
+
+    /**
+     * Returns a {@link ResourceCollection} of all credit cards expiring between
+     * the given calendars.
+     *
+     * @return a {@link ResourceCollection}.
+     */
+    public ResourceCollection<CreditCard> expiringBetween(Calendar start, Calendar end) {
+        String queryString = dateQueryString(start, end);
+        NodeWrapper response = http.post("/payment_methods/all/expiring_ids?" + queryString);
+        return new ResourceCollection<CreditCard>(new ExpiringCreditCardPager(this, queryString), response);
+    }
+
+    List<CreditCard> fetchExpiringCreditCards(List<String> ids, String queryString) {
+        CustomerSearchRequest query = new CustomerSearchRequest().ids().in(ids);
+
+        NodeWrapper response = http.post("/payment_methods/all/expiring?" + queryString, query);
+
+        List<CreditCard> items = new ArrayList<CreditCard>();
+        for (NodeWrapper node : response.findAll("credit-card")) {
+            items.add(new CreditCard(node));
+        }
+
+        return items;
+    }
+
+    private String dateQueryString(Calendar start, Calendar end) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMyyyy");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String formattedStart = dateFormat.format(start.getTime());
+        String formattedEnd = dateFormat.format(end.getTime());
+
+        return String.format("start=%s&end=%s", formattedStart, formattedEnd);
     }
 }
