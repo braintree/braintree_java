@@ -38,7 +38,7 @@ public class CustomerGateway {
     }
 
     List<Customer> fetchCustomers(List<String> ids) {
-        CustomerSearchRequest query = new CustomerSearchRequest().ids().in(ids);
+        IdsSearchRequest query = new IdsSearchRequest().ids().in(ids);
         
         NodeWrapper response = http.post("/customers/advanced_search", query);
 

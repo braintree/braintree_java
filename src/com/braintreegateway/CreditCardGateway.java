@@ -132,7 +132,7 @@ public class CreditCardGateway {
     }
 
     List<CreditCard> fetchExpiredCreditCards(List<String> ids) {
-        CustomerSearchRequest query = new CustomerSearchRequest().ids().in(ids);
+        IdsSearchRequest query = new IdsSearchRequest().ids().in(ids);
 
         NodeWrapper response = http.post("/payment_methods/all/expired", query);
 
@@ -157,7 +157,7 @@ public class CreditCardGateway {
     }
 
     List<CreditCard> fetchExpiringCreditCards(List<String> ids, String queryString) {
-        CustomerSearchRequest query = new CustomerSearchRequest().ids().in(ids);
+        IdsSearchRequest query = new IdsSearchRequest().ids().in(ids);
 
         NodeWrapper response = http.post("/payment_methods/all/expiring?" + queryString, query);
 
