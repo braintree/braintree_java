@@ -1,5 +1,8 @@
 package com.braintreegateway;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
@@ -13,8 +16,15 @@ import com.braintreegateway.util.NodeWrapper;
  * gateway.creditCard().create(...)
  * </pre>
  * 
- * For more detailed information on {@link CreditCard CreditCards}, see <a href="http://www.braintreepaymentsolutions.com/gateway/credit-card-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/credit-card-api</a><br />
- * For more detailed information on credit card verifications, see <a href="http://www.braintreepaymentsolutions.com/gateway/credit-card-verification-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/credit-card-verification-api</a>
+ * For more detailed information on {@link CreditCard CreditCards}, see <a
+ * href="http://www.braintreepaymentsolutions.com/gateway/credit-card-api"
+ * target
+ * ="_blank">http://www.braintreepaymentsolutions.com/gateway/credit-card-api
+ * </a><br />
+ * For more detailed information on credit card verifications, see <a href=
+ * "http://www.braintreepaymentsolutions.com/gateway/credit-card-verification-api"
+ * target="_blank">http://www.braintreepaymentsolutions.com/gateway/credit-card-
+ * verification-api</a>
  */
 public class CreditCardGateway {
     private Configuration configuration;
@@ -106,5 +116,23 @@ public class CreditCardGateway {
     public Result<CreditCard> update(String token, CreditCardRequest request) {
         NodeWrapper node = http.put("/payment_methods/" + token, request);
         return new Result<CreditCard>(node, CreditCard.class);
+    }
+
+    public ResourceCollection<CreditCard> expired() {
+        NodeWrapper response = http.post("/payment_methods/all/expired_ids");
+        return new ResourceCollection<CreditCard>(new ExpiredCreditCardPager(this), response);
+    }
+
+    List<CreditCard> fetchExpiredCreditCards(List<String> ids) {
+        CustomerSearchRequest query = new CustomerSearchRequest().ids().in(ids);
+
+        NodeWrapper response = http.post("/payment_methods/all/expired", query);
+
+        List<CreditCard> items = new ArrayList<CreditCard>();
+        for (NodeWrapper node : response.findAll("credit-card")) {
+            items.add(new CreditCard(node));
+        }
+
+        return items;
     }
 }

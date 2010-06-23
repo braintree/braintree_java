@@ -1,8 +1,12 @@
 package com.braintreegateway;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -566,5 +570,20 @@ public class CreditCardTest {
         Assert.assertFalse(result.isSuccess());
         CreditCardVerification verification = result.getCreditCardVerification();
         Assert.assertEquals("processor_declined", verification.getStatus());
+    }
+    
+    @Test
+    public void expiredSearch() {
+        ResourceCollection<CreditCard> expiredCards = gateway.creditCard().expired();
+        Assert.assertTrue(expiredCards.getMaximumSize() > 0);
+        
+        List<String> tokens = new ArrayList<String>();
+        for (CreditCard card : expiredCards) {
+            Assert.assertTrue(card.isExpired());
+            tokens.add(card.getToken());
+        }
+
+        Set<String> uniqueTokens = new HashSet<String>(tokens);
+        Assert.assertEquals(expiredCards.getMaximumSize(), uniqueTokens.size());
     }
 }
