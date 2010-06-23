@@ -118,6 +118,11 @@ public class CreditCardGateway {
         return new Result<CreditCard>(node, CreditCard.class);
     }
 
+    /**
+     * Returns a {@link ResourceCollection} of all expired credit cards.
+     * 
+     * @return a {@link ResourceCollection}.
+     */
     public ResourceCollection<CreditCard> expired() {
         NodeWrapper response = http.post("/payment_methods/all/expired_ids");
         return new ResourceCollection<CreditCard>(new ExpiredCreditCardPager(this), response);

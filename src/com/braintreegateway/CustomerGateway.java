@@ -28,8 +28,7 @@ public class CustomerGateway {
     }
 
     /**
-     * Finds all Customers and returns a {@link ResourceCollection} for paging
-     * through them starting at the first page.
+     * Finds all Customers and returns a {@link ResourceCollection}.
      * 
      * @return a {@link ResourceCollection}.
      */
