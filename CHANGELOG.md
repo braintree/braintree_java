@@ -1,3 +1,7 @@
+## 2.3.1
+
+* Fixed a bug in confirming TransparentRedirect when returning an Error result
+
 ## 2.3.0
 
 * Added unified TransparentRedirect url and confirm methods and deprecated old methods
