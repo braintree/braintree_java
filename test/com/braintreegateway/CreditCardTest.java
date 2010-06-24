@@ -571,6 +571,7 @@ public class CreditCardTest {
         Assert.assertFalse(result.isSuccess());
         CreditCardVerification verification = result.getCreditCardVerification();
         Assert.assertEquals("processor_declined", verification.getStatus());
+        Assert.assertEquals("Do Not Honor", result.getMessage());
     }
     
     @Test
