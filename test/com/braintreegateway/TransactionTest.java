@@ -21,7 +21,7 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
-
+@SuppressWarnings("deprecation")
 public class TransactionTest {
 
     private BraintreeGateway gateway;
@@ -97,6 +97,7 @@ public class TransactionTest {
         Transaction transaction = result.getTarget();
 
         Assert.assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
+        Assert.assertEquals("USD", transaction.getCurrencyIsoCode());
         Assert.assertNotNull(transaction.getProcessorAuthorizationCode());
         Assert.assertEquals(Transaction.Type.SALE, transaction.getType());
         Assert.assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
@@ -163,7 +164,10 @@ public class TransactionTest {
         Assert.assertEquals("123", transaction.getOrderId());
         Assert.assertNull(transaction.getVaultCreditCard(gateway));
         Assert.assertNull(transaction.getVaultCustomer(gateway));
-
+        Assert.assertNull(transaction.getAvsErrorResponseCode());
+        Assert.assertEquals("M", transaction.getAvsPostalCodeResponseCode());
+        Assert.assertEquals("M", transaction.getAvsStreetAddressResponseCode());
+        Assert.assertEquals("M", transaction.getCvvResponseCode());
         Assert.assertNull(transaction.getVaultCreditCard(gateway));
         CreditCard creditCard = transaction.getCreditCard();
         Assert.assertEquals("411111", creditCard.getBin());
@@ -443,8 +447,8 @@ public class TransactionTest {
         Transaction transaction = result.getTarget();
 
         Map<String, String> expected = new HashMap<String, String>();
-        expected.put("store-me", "custom value");
-        expected.put("another-stored-field", "custom value2");
+        expected.put("store_me", "custom value");
+        expected.put("another_stored_field", "custom value2");
 
         Assert.assertEquals(expected, transaction.getCustomFields());
     }
@@ -653,8 +657,8 @@ public class TransactionTest {
         Transaction transaction = result.getTarget();
 
         Map<String, String> expected = new HashMap<String, String>();
-        expected.put("store-me", "custom value");
-        expected.put("another-stored-field", "custom value2");
+        expected.put("store_me", "custom value");
+        expected.put("another_stored_field", "custom value2");
 
         Assert.assertEquals(expected, transaction.getCustomFields());
     }
@@ -738,6 +742,23 @@ public class TransactionTest {
         Assert.assertFalse(result.isSuccess());
         Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_BE_VOIDED, 
                 result.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
+    
+    @Test
+    public void statusHistoryReturnsCorrectStatusEvents() {
+        TransactionRequest request = new TransactionRequest().
+        amount(TransactionAmount.AUTHORIZE.amount).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        Transaction settledTransaction = gateway.transaction().submitForSettlement(transaction.getId()).getTarget();
+
+        Assert.assertEquals(2, settledTransaction.getStatusHistory().size());
+        Assert.assertEquals(Transaction.Status.AUTHORIZED, settledTransaction.getStatusHistory().get(0).getStatus());
+        Assert.assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, settledTransaction.getStatusHistory().get(1).getStatus());
     }
 
     @Test
@@ -1314,21 +1335,27 @@ public class TransactionTest {
     @Test
     public void refundTransaction() {
         TransactionRequest request = new TransactionRequest().
-        amount(TransactionAmount.AUTHORIZE.amount).
-        creditCard().
-            number(CreditCardNumber.VISA.number).
-            expirationDate("05/2008").
-            done().
-        options().
-            submitForSettlement(true).
-            done();
-        Transaction transaction = gateway.transaction().sale(request).getTarget();
-        settle(transaction.getId());
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
+        String transactionId = gateway.transaction().sale(request).getTarget().getId();
+        settle(transactionId);
 
-        Result<Transaction> result = gateway.transaction().refund(transaction.getId());
+        Result<Transaction> result = gateway.transaction().refund(transactionId);
         Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
-        Assert.assertEquals(transaction.getAmount(), result.getTarget().getAmount());
+
+        Transaction refund = result.getTarget();
+        Transaction originalTransaction = gateway.transaction().find(transactionId);
+        
+        Assert.assertEquals(Transaction.Type.CREDIT, refund.getType());
+        Assert.assertEquals(originalTransaction.getAmount(), refund.getAmount());
+        Assert.assertEquals(refund.getId(), originalTransaction.getRefundId());
+        Assert.assertEquals(originalTransaction.getId(), refund.getRefundedTransactionId());
     }
     
     @Test

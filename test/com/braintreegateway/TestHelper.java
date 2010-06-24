@@ -72,7 +72,7 @@ public class TestHelper {
     public static String simulateFormPostForTR(BraintreeGateway gateway, Request trParams, Request request, String postUrl) {
         String response = "";
         try {
-            String trData = gateway.trData(trParams, "http://example.com");
+            String trData = gateway.transparentRedirect().trData(trParams, "http://example.com");
             String postData = "tr_data=" + URLEncoder.encode(trData, "UTF-8") + "&";
             postData += request.toQueryString();
 

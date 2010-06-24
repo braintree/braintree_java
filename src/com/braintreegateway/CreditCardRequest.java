@@ -57,6 +57,15 @@ public class CreditCardRequest extends Request {
     public String getCustomerId() {
         return customerId;
     }
+    
+    @Override
+    public String getKind() {
+        if (this.paymentMethodToken == null) {
+            return TransparentRedirectGateway.CREATE_PAYMENT_METHOD;
+        } else {
+            return TransparentRedirectGateway.UPDATE_PAYMENT_METHOD;
+        }
+    }
 
     public String getToken() {
         return token;

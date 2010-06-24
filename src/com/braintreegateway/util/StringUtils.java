@@ -5,9 +5,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class StringUtils {
-
+    public static <T> String classToXMLName(Class<T> klass) {
+        return dasherize(klass.getSimpleName()).toLowerCase();
+    }
+    
     public static String dasherize(String str) {
-        return str == null ? null : str.replaceAll("([A-Z])", "-$0").replaceAll("_", "-").toLowerCase();
+        return str == null ? null : str.replaceAll("([a-z])([A-Z])", "$1-$2").replaceAll("_", "-").toLowerCase();
     }
 
     public static String getFullPathOfFile(String filename) {
@@ -37,5 +40,4 @@ public class StringUtils {
     public static String underscore(String str) {
         return str == null ? null : str.replaceAll("([A-Z])", "_$0").replaceAll("-", "_").toLowerCase();
     }
-    
 }

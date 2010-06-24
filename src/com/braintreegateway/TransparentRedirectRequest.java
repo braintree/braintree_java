@@ -27,6 +27,10 @@ public class TransparentRedirectRequest extends Request {
 
         id = paramMap.get("id");
     }
+    
+    public String getId() {
+        return id;
+    }
 
     public String toXML() {
         StringBuilder builder = new StringBuilder();

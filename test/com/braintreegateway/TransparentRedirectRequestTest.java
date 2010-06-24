@@ -15,7 +15,6 @@ import com.braintreegateway.exceptions.ServerException;
 import com.braintreegateway.exceptions.UnexpectedException;
 
 public class TransparentRedirectRequestTest {
-
     @Test
     public void constructor() {
         Configuration configuration = new Configuration("baseMerchantURL", "integration_public_key", "integration_private_key");

@@ -8,7 +8,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.braintreegateway.util.StringUtils;
+import com.braintreegateway.CreditCard;
+import com.braintreegateway.Transaction;
 
 public class StringUtilsTest {
 
@@ -46,6 +47,11 @@ public class StringUtilsTest {
     public void dasherizeWorksForCamelCaseString() {
         Assert.assertEquals("first-name", StringUtils.dasherize("firstName"));
     }
+    
+    @Test
+    public void dasherizeWorksForCamelCaseStringWithLeadingUppercaseLetter() {
+        Assert.assertEquals("first-name", StringUtils.dasherize("FirstName"));
+    }
 
     @Test
     public void dasherizeWorksForUnderscoreString() {
@@ -77,5 +83,11 @@ public class StringUtilsTest {
     public void streamToStringForMultilineStrings() throws IOException {
         InputStream inputStream = new ByteArrayInputStream("foo\r\nbar\nbaz".getBytes());
         Assert.assertEquals("foo\r\nbar\nbaz", StringUtils.inputStreamToString(inputStream));
+    }
+    
+    @Test
+    public void classToXMLName() {
+        Assert.assertEquals("credit-card", StringUtils.classToXMLName(CreditCard.class));
+        Assert.assertEquals("transaction", StringUtils.classToXMLName(Transaction.class));
     }
 }

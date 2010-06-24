@@ -21,45 +21,48 @@ public class CreditCard {
         SOLO("Solo"),
         SWITCH("Switch"),
         VISA("Visa");
-        
+
         private final String name;
-        
+
         CardType(String name) {
             this.name = name;
         }
-        
+
         public String toString() {
             return name;
         }
     }
-    
+
     public enum CustomerLocation {
-        US("us"),
-        INTERNATIONAL("international");
-        
+        INTERNATIONAL("international"),
+        US("us");
+
         private final String name;
-        
+
         CustomerLocation(String name) {
             this.name = name;
         }
-        
+
         public String toString() {
             return name;
         }
     }
-    
+
     private Address billingAddress;
     private String bin;
     private String cardholderName;
     private String cardType;
     private Calendar createdAt;
+    private String customerId;
+    private String customerLocation;
     private String expirationMonth;
     private String expirationYear;
     private boolean isDefault;
+    private boolean isExpired;
     private String last4;
+    private List<Subscription> subscriptions;
     private String token;
     private Calendar updatedAt;
-    private List<Subscription> subscriptions;
 
     public CreditCard(NodeWrapper node) {
         token = node.findString("token");
@@ -68,9 +71,12 @@ public class CreditCard {
         bin = node.findString("bin");
         cardType = node.findString("card-type");
         cardholderName = node.findString("cardholder-name");
+        customerId = node.findString("customer-id");
+        customerLocation = node.findString("customer-location");
         expirationMonth = node.findString("expiration-month");
         expirationYear = node.findString("expiration-year");
         isDefault = node.findBoolean("default");
+        isExpired = node.findBoolean("expired");
         last4 = node.findString("last-4");
         token = node.findString("token");
         NodeWrapper billingAddressResponse = node.findFirst("billing-address");
@@ -103,6 +109,14 @@ public class CreditCard {
         return createdAt;
     }
 
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public String getCustomerLocation() {
+        return customerLocation;
+    }
+
     public String getExpirationDate() {
         return expirationMonth + "/" + expirationYear;
     }
@@ -123,6 +137,10 @@ public class CreditCard {
         return getBin() + "******" + getLast4();
     }
 
+    public List<Subscription> getSubscriptions() {
+        return subscriptions;
+    }
+
     public String getToken() {
         return token;
     }
@@ -131,11 +149,11 @@ public class CreditCard {
         return updatedAt;
     }
 
-    public List<Subscription> getSubscriptions() {
-        return subscriptions;
-    }
-
     public boolean isDefault() {
         return isDefault;
+    }
+
+    public boolean isExpired() {
+        return isExpired;
     }
 }

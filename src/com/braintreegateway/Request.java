@@ -13,7 +13,11 @@ public abstract class Request {
     public abstract String toXML();
     public abstract String toQueryString(String parent);
     public abstract String toQueryString();
-
+    
+    public String getKind() {
+        return null;
+    }
+    
     protected String buildXMLElement(Object element) {
         return buildXMLElement("", element);
     }

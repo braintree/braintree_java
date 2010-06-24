@@ -70,6 +70,15 @@ public class CustomerRequest extends Request {
         this.firstName = firstName;
         return this;
     }
+    
+    @Override
+    public String getKind() {
+        if (this.customerId == null) {
+            return TransparentRedirectGateway.CREATE_CUSTOMER;
+        } else {
+            return TransparentRedirectGateway.UPDATE_CUSTOMER;
+        }
+    }
 
     public CustomerRequest lastName(String lastName) {
         this.lastName = lastName;

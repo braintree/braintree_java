@@ -28,8 +28,7 @@ public class CustomerGateway {
     }
 
     /**
-     * Finds all Customers and returns a {@link ResourceCollection} for paging
-     * through them starting at the first page.
+     * Finds all Customers and returns a {@link ResourceCollection}.
      * 
      * @return a {@link ResourceCollection}.
      */
@@ -39,7 +38,7 @@ public class CustomerGateway {
     }
 
     List<Customer> fetchCustomers(List<String> ids) {
-        CustomerSearchRequest query = new CustomerSearchRequest().ids().in(ids);
+        IdsSearchRequest query = new IdsSearchRequest().ids().in(ids);
         
         NodeWrapper response = http.post("/customers/advanced_search", query);
 
@@ -52,13 +51,9 @@ public class CustomerGateway {
     }
     
     /**
-     * Confirms the transparent redirect request and creates a {@link Customer}
-     * based on the parameters submitted with the transparent redirect.
-     * 
-     * @param queryString
-     *            the queryString of the transparent redirect.
-     * @return a {@link Result}.
+     * Please use gateway.transparentRedirect().confirmCustomer() instead
      */
+    @Deprecated
     public Result<Customer> confirmTransparentRedirect(String queryString) {
         TransparentRedirectRequest trRequest = new TransparentRedirectRequest(configuration, queryString);
         NodeWrapper node = http.post("/customers/all/confirm_transparent_redirect_request", trRequest);
@@ -102,19 +97,17 @@ public class CustomerGateway {
     }
 
     /**
-     * Returns the transparent redirect URL for creating a {@link Customer}.
-     * 
-     * @return a URL as a String.
+     * Please use gateway.transparentRedirect().url() instead
      */
+    @Deprecated
     public String transparentRedirectURLForCreate() {
         return configuration.baseMerchantURL + "/customers/all/create_via_transparent_redirect_request";
     }
 
     /**
-     * Returns the transparent redirect URL for updating a {@link Customer}.
-     * 
-     * @return a URL as a String.
+     * Please use gateway.transparentRedirect().url() instead
      */
+    @Deprecated
     public String transparentRedirectURLForUpdate() {
         return configuration.baseMerchantURL + "/customers/all/update_via_transparent_redirect_request";
     }

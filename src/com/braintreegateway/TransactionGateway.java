@@ -33,11 +33,9 @@ public class TransactionGateway {
     }
 
     /**
-     * Confirms the transparent redirect request and creates a {@link Transaction} based on the parameters
-     * submitted with the transparent redirect.
-     * @param queryString the queryString of the transparent redirect.
-     * @return a {@link Result}.
+     * Please use gateway.transparentRedirect().confirmTransaction() instead
      */
+    @Deprecated
     public Result<Transaction> confirmTransparentRedirect(String queryString) {
         TransparentRedirectRequest trRequest = new TransparentRedirectRequest(configuration, queryString);
         NodeWrapper node = http.post("/transactions/all/confirm_transparent_redirect_request", trRequest);
@@ -110,9 +108,8 @@ public class TransactionGateway {
     }
 
     /**
-     * Finds all Transactions that match the query and returns a {@link ResourceCollection} for paging through them starting with t
-     * Analogous to "basic search" in the control panel.
-     * See: <a href="http://www.braintreepaymentsolutions.com/gateway/transaction-api#searching" target="_blank">http://www.braintr
+     * Finds all Transactions that match the query and returns a {@link ResourceCollection}.
+     * See: <a href="http://www.braintreepaymentsolutions.com/gateway/transaction-api#searching" target="_blank">http://www.braintreepaymentsolutions.com/gateway/transaction-api#searching</a>
      * @return a {@link ResourceCollection}.
      */
     public ResourceCollection<Transaction> search(TransactionSearchRequest query) {
@@ -154,9 +151,9 @@ public class TransactionGateway {
     }
 
     /**
-     * Returns the transparent redirect URL for creating a {@link Transaction}.
-     * @return a URL as a String.
+     * Please use gateway.transparentRedirect().url() instead
      */
+    @Deprecated
     public String transparentRedirectURLForCreate() {
         return configuration.baseMerchantURL + "/transactions/all/create_via_transparent_redirect_request";
     }

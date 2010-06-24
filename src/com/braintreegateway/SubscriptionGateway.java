@@ -75,12 +75,12 @@ public class SubscriptionGateway {
     
     /**
      * Search for a {@link Subscription}.
-     * @param request the {@link SubscriptionSearchRequest}.
+     * @param searchRequest the {@link SubscriptionSearchRequest}.
      * @return a {@link Result}.
      */
-    public ResourceCollection<Subscription> search(SubscriptionSearchRequest search) {
-        NodeWrapper node = http.post("/subscriptions/advanced_search_ids", search);
-        return new ResourceCollection<Subscription>(new SubscriptionPager(this, search), node);
+    public ResourceCollection<Subscription> search(SubscriptionSearchRequest searchRequest) {
+        NodeWrapper node = http.post("/subscriptions/advanced_search_ids", searchRequest);
+        return new ResourceCollection<Subscription>(new SubscriptionPager(this, searchRequest), node);
     }
 
     List<Subscription> fetchSubscriptions(SubscriptionSearchRequest search, List<String> ids) {

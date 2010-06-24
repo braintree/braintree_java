@@ -16,7 +16,6 @@ import org.junit.Test;
 
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.Subscription.Status;
-import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.NodeWrapper;
 
 public class SubscriptionTest {
@@ -208,10 +207,12 @@ public class SubscriptionTest {
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
+        Transaction transaction = subscription.getTransactions().get(0);
         
         Assert.assertEquals(1, subscription.getTransactions().size());
-        Assert.assertEquals(new BigDecimal("482.48"), subscription.getTransactions().get(0).getAmount());
-        Assert.assertEquals(Transaction.Type.SALE, subscription.getTransactions().get(0).getType());
+        Assert.assertEquals(new BigDecimal("482.48"), transaction.getAmount());
+        Assert.assertEquals(Transaction.Type.SALE, transaction.getType());
+        Assert.assertEquals(subscription.getId(), transaction.getSubscriptionId());
     }   
     
     @Test
@@ -311,6 +312,35 @@ public class SubscriptionTest {
     }
 
     @Test
+    public void updatePaymentMethod() {
+        Plan originalPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest createRequest = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(originalPlan.getId());
+
+        Result<Subscription> createResult = gateway.subscription().create(createRequest);
+        Assert.assertTrue(createResult.isSuccess());
+        Subscription subscription = createResult.getTarget();
+
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12");
+
+        CreditCard newCreditCard = gateway.creditCard().create(request).getTarget();
+
+        SubscriptionRequest updateRequest = new SubscriptionRequest().paymentMethodToken(newCreditCard.getToken());
+        Result<Subscription> result = gateway.subscription().update(subscription.getId(), updateRequest);
+        
+        Assert.assertTrue(result.isSuccess());
+        subscription = result.getTarget();
+        
+        Assert.assertEquals(newCreditCard.getToken(), subscription.getPaymentMethodToken()); 
+    }
+    
+    @Test
     public void increasePriceAndTransaction() {
         Plan originalPlan = Plan.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest createRequest = new SubscriptionRequest().
@@ -354,22 +384,28 @@ public class SubscriptionTest {
     }
 
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void createWithBadPlanId() {
         SubscriptionRequest createRequest = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
             planId("noSuchPlanId");
 
-        gateway.subscription().create(createRequest);
+        Result<Subscription> result = gateway.subscription().create(createRequest);
+        Assert.assertFalse(result.isSuccess());
+        
+        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_PLAN_ID_IS_INVALID, result.getErrors().forObject("subscription").onField("planId").get(0).getCode());
     }
     
-    @Test(expected = NotFoundException.class)
+    @Test
     public void createWithBadPaymentMethod() {
         SubscriptionRequest createRequest = new SubscriptionRequest().
             paymentMethodToken("invalidToken").
             planId(Plan.PLAN_WITHOUT_TRIAL.getId());
 
-        gateway.subscription().create(createRequest);
+        Result<Subscription> result = gateway.subscription().create(createRequest);
+        Assert.assertFalse(result.isSuccess());
+        
+        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_PAYMENT_METHOD_TOKEN_IS_INVALID, result.getErrors().forObject("subscription").onField("paymentMethodToken").get(0).getCode());
     }
     
     @Test

@@ -1,8 +1,12 @@
 package com.braintreegateway;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -11,6 +15,7 @@ import org.junit.Test;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
 
+@SuppressWarnings("deprecation")
 public class CreditCardTest {
 
     private BraintreeGateway gateway;
@@ -53,6 +58,8 @@ public class CreditCardTest {
         CreditCard card = result.getTarget();
         Assert.assertEquals("John Doe", card.getCardholderName());
         Assert.assertEquals("MasterCard", card.getCardType());
+        Assert.assertEquals(customer.getId(), card.getCustomerId());
+        Assert.assertEquals("US", card.getCustomerLocation());
         Assert.assertEquals("510510", card.getBin());
         Assert.assertEquals("05", card.getExpirationMonth());
         Assert.assertEquals("2012", card.getExpirationYear());
@@ -527,6 +534,25 @@ public class CreditCardTest {
         Result<CreditCard> result = gateway.creditCard().create(request);
         Assert.assertTrue(result.isSuccess());
     }
+    
+    @Test
+    public void verifyCreditCardAgainstSpecificMerchantAccount() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                verificationMerchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        Assert.assertFalse(result.isSuccess());
+        Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, result.getCreditCardVerification().getMerchantAccountId());
+    }
 
     @Test
     public void verifyInvalidCreditCard() {
@@ -545,5 +571,40 @@ public class CreditCardTest {
         Assert.assertFalse(result.isSuccess());
         CreditCardVerification verification = result.getCreditCardVerification();
         Assert.assertEquals("processor_declined", verification.getStatus());
+    }
+    
+    @Test
+    public void expiredSearch() {
+        ResourceCollection<CreditCard> expiredCards = gateway.creditCard().expired();
+        Assert.assertTrue(expiredCards.getMaximumSize() > 0);
+        
+        List<String> tokens = new ArrayList<String>();
+        for (CreditCard card : expiredCards) {
+            Assert.assertTrue(card.isExpired());
+            tokens.add(card.getToken());
+        }
+
+        Set<String> uniqueTokens = new HashSet<String>(tokens);
+        Assert.assertEquals(expiredCards.getMaximumSize(), uniqueTokens.size());
+    }
+    
+    @Test
+    public void expiringBetween() {
+        Calendar start = Calendar.getInstance();
+        start.set(2010, 0, 1);
+        Calendar end = Calendar.getInstance();
+        end.set(2010, 11, 31);
+        
+        ResourceCollection<CreditCard> expiredCards = gateway.creditCard().expiringBetween(start, end);
+        Assert.assertTrue(expiredCards.getMaximumSize() > 0);
+        
+        List<String> tokens = new ArrayList<String>();
+        for (CreditCard card : expiredCards) {
+            Assert.assertEquals("2010", card.getExpirationYear());
+            tokens.add(card.getToken());
+        }
+
+        Set<String> uniqueTokens = new HashSet<String>(tokens);
+        Assert.assertEquals(expiredCards.getMaximumSize(), uniqueTokens.size());
     }
 }

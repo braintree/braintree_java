@@ -1,6 +1,15 @@
+## 2.3.0
+
+* Added unified TransparentRedirect url and confirm methods and deprecated old methods
+* Added methods to CreditCardGateway to allow searching on expiring and expired credit cards
+* Allow credit card verification against a specified merchant account
+* Added ability to update a customer, credit card, and billing address in one request
+* Allow updating the payment method token on a subscription
+* Added methods to navigate between a Transaction and its refund (in both directions)
+
 ## 2.2.1
 
- * Read VERSION from a constant instead of a VERSION file, which can conflict with other VERSION files in load path.
+* Read VERSION from a constant instead of a VERSION file, which can conflict with other VERSION files in load path.
 
 ## 2.2.0
 
