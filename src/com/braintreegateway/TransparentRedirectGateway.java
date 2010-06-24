@@ -43,7 +43,7 @@ public class TransparentRedirectGateway {
     private <T> Result<T> confirmTr(Class<T> klass, String queryString) {
         TransparentRedirectRequest trRequest = new TransparentRedirectRequest(configuration, queryString);
         NodeWrapper node = http.post("/transparent_redirect_requests/" + trRequest.getId() + "/confirm", trRequest);
-        if (!node.getElementName().equals(StringUtils.classToXMLName(klass))) {
+        if (!node.getElementName().equals(StringUtils.classToXMLName(klass)) && !node.getElementName().equals("api-error-response")) {
             throw new IllegalArgumentException("You attemped to confirm a " + StringUtils.classToXMLName(klass) + ", but received a " + node.getElementName() + ".");
         }
         

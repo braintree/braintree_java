@@ -126,4 +126,14 @@ public class TransparentRedirectTest {
             Assert.assertEquals("You attemped to confirm a transaction, but received a customer.", e.getMessage());
         }
     }
+    
+    @Test
+    public void errorNotRaisedWhenReceivingApiErrorResponse() {
+        TransactionRequest invalidRequest = new TransactionRequest();
+        TransactionRequest trParams = new TransactionRequest().type(Transaction.Type.SALE);
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, invalidRequest, gateway.transparentRedirect().url());
+        Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
+        Assert.assertFalse(result.isSuccess());
+        Assert.assertTrue(result.getErrors().deepSize() > 0);
+    }
 }
