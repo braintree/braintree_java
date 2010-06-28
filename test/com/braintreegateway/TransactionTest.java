@@ -1414,4 +1414,64 @@ public class TransactionTest {
         Transaction transaction = new Transaction(new NodeWrapper(xml));
         Assert.assertEquals(Transaction.Type.UNRECOGNIZED, transaction.getType());
     }
+    
+    @Test
+    public void gatewayRejectedOnCvv() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key"); 
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                cvv("200").
+                done();
+
+        Result<Transaction> result = processingRulesGateway.transaction().sale(request);
+        Assert.assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        Assert.assertEquals(Transaction.GatewayRejectionReason.CVV, transaction.getGatewayRejectionReason());
+    }
+    
+    @Test
+    public void gatewayRejectedOnAvs() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key"); 
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            billingAddress().
+                postalCode("20001").
+                done().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = processingRulesGateway.transaction().sale(request);
+        Assert.assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        Assert.assertEquals(Transaction.GatewayRejectionReason.AVS, transaction.getGatewayRejectionReason());
+    }    
+    
+    @Test
+    public void gatewayRejectedOnAvsAndCvv() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key"); 
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            billingAddress().
+                postalCode("20001").
+                done().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                cvv("200").
+                done();
+
+        Result<Transaction> result = processingRulesGateway.transaction().sale(request);
+        Assert.assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        Assert.assertEquals(Transaction.GatewayRejectionReason.AVS_AND_CVV, transaction.getGatewayRejectionReason());
+    }
+
 }
