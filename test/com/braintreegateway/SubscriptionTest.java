@@ -216,6 +216,19 @@ public class SubscriptionTest {
     }   
     
     @Test
+    public void hasTransactionOnCreateWhenTransactionFails() {
+        Plan plan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId()).
+            price(SandboxValues.TransactionAmount.DECLINE.amount);
+        
+        Result<Subscription> result = gateway.subscription().create(request);
+        Assert.assertFalse(result.isSuccess());
+        Assert.assertEquals(Transaction.Status.PROCESSOR_DECLINED, result.getTransaction().getStatus());
+    }   
+    
+    @Test
     public void hasNoTransactionOnCreateWithATrial() {
         Plan plan = Plan.PLAN_WITH_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
