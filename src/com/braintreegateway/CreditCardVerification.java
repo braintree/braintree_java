@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+import com.braintreegateway.Transaction.GatewayRejectionReason;
+import com.braintreegateway.util.EnumUtils;
 import com.braintreegateway.util.NodeWrapper;
 
 public class CreditCardVerification {
@@ -8,6 +10,7 @@ public class CreditCardVerification {
     private String avsPostalCodeResponseCode;
     private String avsStreetAddressResponseCode;
     private String cvvResponseCode;
+    private GatewayRejectionReason gatewayRejectionReason;
     private String processorResponseCode;
     private String processorResponseText;
     private String merchantAccountId;
@@ -18,6 +21,7 @@ public class CreditCardVerification {
         this.avsPostalCodeResponseCode = node.findString("avs-postal-code-response-code");
         this.avsStreetAddressResponseCode = node.findString("avs-street-address-response-code");
         this.cvvResponseCode = node.findString("cvv-response-code");
+        this.gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"));
         this.processorResponseCode = node.findString("processor-response-code");
         this.processorResponseText = node.findString("processor-response-text");
         this.merchantAccountId = node.findString("merchant-account-id");
@@ -38,6 +42,10 @@ public class CreditCardVerification {
 
     public String getCvvResponseCode() {
         return cvvResponseCode;
+    }
+    
+    public GatewayRejectionReason getGatewayRejectionReason() {
+        return gatewayRejectionReason;
     }
 
     public String getProcessorResponseCode() {

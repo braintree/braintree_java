@@ -572,6 +572,28 @@ public class CreditCardTest {
         CreditCardVerification verification = result.getCreditCardVerification();
         Assert.assertEquals("processor_declined", verification.getStatus());
         Assert.assertEquals("Do Not Honor", result.getMessage());
+        Assert.assertNull(verification.getGatewayRejectionReason());
+    }
+    
+    @Test
+    public void verificationExposesgatewayRejectionReason() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("200").
+            number("4111111111111111").
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        Assert.assertFalse(result.isSuccess());
+        CreditCardVerification verification = result.getCreditCardVerification();
+
+        Assert.assertEquals(Transaction.GatewayRejectionReason.CVV, verification.getGatewayRejectionReason());
     }
     
     @Test
@@ -594,7 +616,7 @@ public class CreditCardTest {
         Calendar start = Calendar.getInstance();
         start.set(2010, 0, 1);
         Calendar end = Calendar.getInstance();
-        end.set(2010, 11, 31);
+        end.set(2010, 11, 30);
         
         ResourceCollection<CreditCard> expiredCards = gateway.creditCard().expiringBetween(start, end);
         Assert.assertTrue(expiredCards.getMaximumSize() > 0);
