@@ -16,6 +16,9 @@ import com.braintreegateway.util.NodeWrapper;
 public class Address {
 
     private String company;
+    private String countryCodeAlpha2;
+    private String countryCodeAlpha3;
+    private String countryCodeNumeric;
     private String countryName;
     private Calendar createdAt;
     private String customerId;
@@ -31,6 +34,9 @@ public class Address {
 
     public Address(NodeWrapper node) {
         company = node.findString("company");
+        countryCodeAlpha2 = node.findString("country-code-alpha2");
+        countryCodeAlpha3 = node.findString("country-code-alpha3");
+        countryCodeNumeric = node.findString("country-code-numeric");
         countryName = node.findString("country-name");
         createdAt = node.findDateTime("created-at");
         customerId = node.findString("customer-id");
@@ -47,6 +53,19 @@ public class Address {
 
     public String getCompany() {
         return company;
+    }
+    
+
+    public String getCountryCodeAlpha2() {
+        return countryCodeAlpha2;
+    }
+    
+    public String getCountryCodeAlpha3() {
+        return countryCodeAlpha3;
+    }
+    
+    public String getCountryCodeNumeric() {
+        return countryCodeNumeric;
     }
 
     public String getCountryName() {

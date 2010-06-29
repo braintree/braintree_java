@@ -7,6 +7,9 @@ import com.braintreegateway.util.QueryString;
  */
 public class AddressRequest extends Request {
 
+    private String countryCodeAlpha2;
+    private String countryCodeAlpha3;
+    private String countryCodeNumeric;
     private String countryName;
     private String extendedAddress;
     private String firstName;
@@ -24,6 +27,21 @@ public class AddressRequest extends Request {
 
     public AddressRequest company(String company) {
         this.company = company;
+        return this;
+    }
+    
+    public AddressRequest countryCodeAlpha2(String countryCodeAlpha2) {
+        this.countryCodeAlpha2 = countryCodeAlpha2;
+        return this;
+    }
+    
+    public AddressRequest countryCodeAlpha3(String countryCodeAlpha3) {
+        this.countryCodeAlpha3 = countryCodeAlpha3;
+        return this;
+    }
+    
+    public AddressRequest countryCodeNumeric(String countryCodeNumeric) {
+        this.countryCodeNumeric = countryCodeNumeric;
         return this;
     }
 
@@ -81,6 +99,9 @@ public class AddressRequest extends Request {
            append(parentBracketChildString(root, "last_name"), lastName).
            append(parentBracketChildString(root, "company"), company).
            append(parentBracketChildString(root, "country_name"), countryName).
+           append(parentBracketChildString(root, "countryCodeAlpha2"), countryCodeAlpha2).
+           append(parentBracketChildString(root, "countryCodeAlpha3"), countryCodeAlpha3).
+           append(parentBracketChildString(root, "countryCodeNumeric"), countryCodeNumeric).
            append(parentBracketChildString(root, "extended_address"), extendedAddress).
            append(parentBracketChildString(root, "locality"), locality).
            append(parentBracketChildString(root, "postal_code"), postalCode).
@@ -103,6 +124,9 @@ public class AddressRequest extends Request {
         builder.append(buildXMLElement("lastName", lastName));
         builder.append(buildXMLElement("company", company));
         builder.append(buildXMLElement("countryName", countryName));
+        builder.append(buildXMLElement("countryCodeAlpha2", countryCodeAlpha2));
+        builder.append(buildXMLElement("countryCodeAlpha3", countryCodeAlpha3));
+        builder.append(buildXMLElement("countryCodeNumeric", countryCodeNumeric));
         builder.append(buildXMLElement("extendedAddress", extendedAddress));
         builder.append(buildXMLElement("locality", locality));
         builder.append(buildXMLElement("postalCode", postalCode));
