@@ -225,6 +225,9 @@ public class CustomerTest {
                     region("Illinois").
                     postalCode("60607").
                     countryName("United States of America").
+                    countryCodeAlpha2("US").
+                    countryCodeAlpha3("USA").
+                    countryCodeNumeric("840").
                     done().
                 done().
             lastName("Jones");
@@ -250,6 +253,9 @@ public class CustomerTest {
         Assert.assertEquals("Illinois", billingAddress.getRegion());
         Assert.assertEquals("60607", billingAddress.getPostalCode());
         Assert.assertEquals("United States of America", billingAddress.getCountryName());
+        Assert.assertEquals("US", billingAddress.getCountryCodeAlpha2());
+        Assert.assertEquals("USA", billingAddress.getCountryCodeAlpha3());
+        Assert.assertEquals("840", billingAddress.getCountryCodeNumeric());
 
         Assert.assertEquals(1, customer.getAddresses().size());
         Address address = customer.getAddresses().get(0);
@@ -259,6 +265,87 @@ public class CustomerTest {
         Assert.assertEquals("Illinois", address.getRegion());
         Assert.assertEquals("60607", address.getPostalCode());
         Assert.assertEquals("United States of America", address.getCountryName());
+    }
+    
+    @Test
+    public void createWithCreditCardAndBillingAddressWithErrors() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Fred").
+            creditCard().
+                cardholderName("Fred Jones").
+                number("5105105105105100").
+                cvv("123").
+                expirationDate("05/12").
+                billingAddress().
+                    countryName("United States of America").
+                    countryCodeAlpha2("MX").
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        Assert.assertFalse(result.isSuccess());
+        Assert.assertEquals(
+            ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY,
+            result.getErrors().forObject("customer").forObject("creditCard").forObject("billingAddress").onField("base").get(0).getCode()
+        );
+    }
+    
+    @Test
+    public void createCustomerFromTransparentRedirect() {
+        CustomerRequest request = new CustomerRequest().firstName("John");
+        CustomerRequest trParams = new CustomerRequest().
+            lastName("Fred").
+            creditCard().
+                cardholderName("Fred Jones").
+                number("5105105105105100").
+                cvv("123").
+                expirationDate("05/12").
+                billingAddress().
+                    countryName("United States of America").
+                    countryCodeAlpha2("US").
+                    countryCodeAlpha3("USA").
+                    countryCodeNumeric("840").
+                    done().
+                done();
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
+        
+        Result<Customer> result = gateway.transparentRedirect().confirmCustomer(queryString);
+        
+        Assert.assertTrue(result.isSuccess());
+        Assert.assertEquals("John", result.getTarget().getFirstName());
+        Assert.assertEquals("Fred", result.getTarget().getLastName());
+
+        Assert.assertEquals("United States of America", result.getTarget().getCreditCards().get(0).getBillingAddress().getCountryName());
+        Assert.assertEquals("US", result.getTarget().getCreditCards().get(0).getBillingAddress().getCountryCodeAlpha2());
+        Assert.assertEquals("USA", result.getTarget().getCreditCards().get(0).getBillingAddress().getCountryCodeAlpha3());
+        Assert.assertEquals("840", result.getTarget().getCreditCards().get(0).getBillingAddress().getCountryCodeNumeric());
+    }
+    
+    @Test
+    public void createCustomerFromTransparentRedirectWithErrors() {
+        CustomerRequest request = new CustomerRequest().firstName("John");
+        CustomerRequest trParams = new CustomerRequest().
+            lastName("Fred").
+            creditCard().
+                cardholderName("Fred Jones").
+                number("5105105105105100").
+                cvv("123").
+                expirationDate("05/12").
+                billingAddress().
+                    countryName("United States of America").
+                    countryCodeAlpha2("MX").
+                    done().
+                done();
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
+        
+        Result<Customer> result = gateway.transparentRedirect().confirmCustomer(queryString);
+        
+        Assert.assertFalse(result.isSuccess());
+        
+        Assert.assertEquals(
+            ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY,
+            result.getErrors().forObject("customer").forObject("creditCard").forObject("billingAddress").onField("base").get(0).getCode()
+        );
     }
 
     @Test
@@ -332,6 +419,10 @@ public class CustomerTest {
                     done().
                 billingAddress().
                     postalCode("11111").
+                    countryName("Kiribati").
+                    countryCodeAlpha2("KI").
+                    countryCodeAlpha3("KIR").
+                    countryCodeNumeric("296").
                     options().
                         updateExisting(true).
                         done().
@@ -346,6 +437,48 @@ public class CustomerTest {
         Assert.assertEquals("Doe", updatedCustomer.getLastName());
         Assert.assertEquals("10/2010", updatedCreditCard.getExpirationDate());
         Assert.assertEquals("11111", updatedAddress.getPostalCode());
+        Assert.assertEquals("Kiribati", updatedAddress.getCountryName());
+        Assert.assertEquals("KI", updatedAddress.getCountryCodeAlpha2());
+        Assert.assertEquals("KIR", updatedAddress.getCountryCodeAlpha3());
+        Assert.assertEquals("296", updatedAddress.getCountryCodeNumeric());
+    }
+    
+    @Test
+    public void updateWithExistingCreditCardAndAddressAndValidationErrors() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Mark").
+            lastName("Jones").
+            company("Jones Co.").
+            email("mark.jones@example.com").
+            fax("419-555-1234").
+            phone("614-555-1234").
+            website("http://example.com").
+            creditCard().
+                number("4111111111111111").
+                expirationDate("12/12").
+                billingAddress().
+                    postalCode("44444").
+                    done().
+                done();
+        
+        Customer customer = gateway.customer().create(request).getTarget();
+        
+        CustomerRequest updateRequest = new CustomerRequest().
+            firstName("Janie").
+            lastName("Dylan").
+            creditCard().
+                billingAddress().
+                    countryCodeAlpha2("KI").
+                    countryCodeAlpha3("USA").
+                    done().
+                done();
+        
+        Result<Customer> result = gateway.customer().update(customer.getId(), updateRequest);
+        Assert.assertFalse(result.isSuccess());
+        Assert.assertEquals(
+            ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY,
+            result.getErrors().forObject("customer").forObject("creditCard").forObject("billingAddress").onField("base").get(0).getCode()
+        );
     }
     
     @Test
@@ -434,6 +567,100 @@ public class CustomerTest {
         Assert.assertEquals("555-555-5555", customer.getFax());
         Assert.assertEquals("555-555-5554", customer.getPhone());
         Assert.assertEquals("http://getbraintree.com", customer.getWebsite());
+    }
+    
+    @Test
+    public void updateCustomerFromTransparentRedirectWithAddress() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("John").
+            lastName("Doe").
+            creditCard().
+                number("4111111111111111").
+                expirationDate("12/12").
+                billingAddress().
+                    countryName("United States of America").
+                    countryCodeAlpha2("US").
+                    countryCodeAlpha3("USA").
+                    countryCodeNumeric("840").
+                    done().
+                done();
+        
+        Customer customer = gateway.customer().create(request).getTarget();
+        
+        CustomerRequest updateRequest = new CustomerRequest().
+            firstName("Jane");
+        
+        CustomerRequest trParams = new CustomerRequest().
+            customerId(customer.getId()).
+            lastName("Dough").
+            creditCard().
+                options().
+                    updateExistingToken(customer.getCreditCards().get(0).getToken()).
+                    done().
+                billingAddress().
+                    countryName("Mexico").
+                    countryCodeAlpha2("MX").
+                    countryCodeAlpha3("MEX").
+                    countryCodeNumeric("484").
+                    options().
+                        updateExisting(true).
+                        done().
+                    done().
+                done();
+        
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, updateRequest, gateway.transparentRedirect().url());
+        
+        Result<Customer> result = gateway.transparentRedirect().confirmCustomer(queryString);
+        
+        Assert.assertTrue(result.isSuccess());
+        Customer updatedCustomer = gateway.customer().find(customer.getId());
+        Assert.assertEquals("Jane", updatedCustomer.getFirstName());
+        Assert.assertEquals("Dough", updatedCustomer.getLastName());
+        Assert.assertEquals("Mexico", updatedCustomer.getCreditCards().get(0).getBillingAddress().getCountryName());
+        Assert.assertEquals("MX", updatedCustomer.getCreditCards().get(0).getBillingAddress().getCountryCodeAlpha2());
+        Assert.assertEquals("MEX", updatedCustomer.getCreditCards().get(0).getBillingAddress().getCountryCodeAlpha3());
+        Assert.assertEquals("484", updatedCustomer.getCreditCards().get(0).getBillingAddress().getCountryCodeNumeric());
+    }
+    
+    @Test
+    public void updateCustomerFromTransparentRedirectWithAddressWithErrors() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("John").
+            lastName("Doe").
+            creditCard().
+                number("4111111111111111").
+                expirationDate("12/12").
+                billingAddress().
+                    countryName("United States of America").
+                    countryCodeAlpha2("US").
+                    countryCodeAlpha3("USA").
+                    countryCodeNumeric("840").
+                    done().
+                done();
+        
+        Customer customer = gateway.customer().create(request).getTarget();
+        
+        CustomerRequest updateRequest = new CustomerRequest().
+            firstName("Jane");
+        
+        CustomerRequest trParams = new CustomerRequest().
+            customerId(customer.getId()).
+            creditCard().
+                billingAddress().
+                    countryCodeAlpha2("MX").
+                    countryCodeAlpha3("USA").
+                    done().
+                done();
+        
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, updateRequest, gateway.transparentRedirect().url());
+        
+        Result<Customer> result = gateway.transparentRedirect().confirmCustomer(queryString);
+        
+        Assert.assertFalse(result.isSuccess());
+        Assert.assertEquals(
+            ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY,
+            result.getErrors().forObject("customer").forObject("creditCard").forObject("billingAddress").onField("base").get(0).getCode()
+        );
     }
 
     @Test
