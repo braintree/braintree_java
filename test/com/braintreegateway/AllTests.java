@@ -25,13 +25,15 @@ import com.braintreegateway.util.TrUtilTest;
     MultipleValueNodeTest.class,
     NodeWrapperTest.class,
     QueryStringTest.class,
+    ResourceCollectionTest.class,
     StringUtilsTest.class,
     SubscriptionSearchRequestTest.class,
     SubscriptionTest.class,
-    TransactionRequestTest.class,
-    TransparentRedirectRequestTest.class,
-    TransactionTest.class,
     TrUtilTest.class,
+    TransactionRequestTest.class,
+    TransactionTest.class,
+    TransparentRedirectRequestTest.class,
+    TransparentRedirectTest.class,
     ValidationErrorCodeTest.class,
     ValidationErrorsTest.class
 })
