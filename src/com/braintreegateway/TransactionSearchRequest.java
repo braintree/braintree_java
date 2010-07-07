@@ -105,6 +105,10 @@ public class TransactionSearchRequest extends SearchRequest {
         return new TextNode<TransactionSearchRequest>("processor_authorization_code", this);
     }
     
+    public TextNode<TransactionSearchRequest> settlementBatchId() {
+        return new TextNode<TransactionSearchRequest>("settlement_batch_id", this);
+    }
+    
     public TextNode<TransactionSearchRequest> shippingCompany() {
         return new TextNode<TransactionSearchRequest>("shipping_company", this);
     }

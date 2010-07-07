@@ -958,6 +958,7 @@ public class TransactionTest {
                 done().
             options().
                 storeInVault(true).
+                submitForSettlement(true).
                 done().
             orderId("myorder").
             shippingAddress().
@@ -973,7 +974,9 @@ public class TransactionTest {
                 done();
 
         Transaction transaction = gateway.transaction().sale(request).getTarget();
-
+        settle(transaction.getId());
+        transaction = gateway.transaction().find(transaction.getId());
+        
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             billingCompany().is("Braintree").
@@ -1000,6 +1003,7 @@ public class TransactionTest {
             orderId().is("myorder").
             paymentMethodToken().is(creditCardToken).
             processorAuthorizationCode().is(transaction.getProcessorAuthorizationCode()).
+            settlementBatchId().is(transaction.getSettlementBatchId()).
             shippingCompany().is("Braintree P.S.").
             shippingCountryName().is("Mexico").
             shippingExtendedAddress().is("Apt 456").

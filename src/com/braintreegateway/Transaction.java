@@ -99,6 +99,7 @@ public class Transaction {
     private String processorResponseText;
     private String refundedTransactionId;
     private String refundId;
+    private String settlementBatchId;
     private Address shippingAddress;
     private Status status;
     private List<StatusEvent> statusHistory;
@@ -127,6 +128,7 @@ public class Transaction {
         processorResponseText = node.findString("processor-response-text");
         refundedTransactionId = node.findString("refunded-transaction-id");
         refundId = node.findString("refund-id");
+        settlementBatchId = node.findString("settlement-batch-id");
         shippingAddress = new Address(node.findFirst("shipping"));
         status = EnumUtils.findByName(Status.class, node.findString("status"));
         subscriptionId = node.findString("subscription-id");
@@ -218,6 +220,10 @@ public class Transaction {
 
     public String getRefundId() {
         return refundId;
+    }
+    
+    public String getSettlementBatchId() {
+        return settlementBatchId;
     }
 
     public Address getShippingAddress() {
