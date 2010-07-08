@@ -1,7 +1,5 @@
 package com.braintreegateway;
 
-import com.braintreegateway.util.QueryString;
-
 public class CreditCardAddressOptionsRequest extends Request {
 
     private CreditCardAddressRequest parent;
@@ -15,27 +13,25 @@ public class CreditCardAddressOptionsRequest extends Request {
         return parent;
     }
 
-    @Override
-    public String toQueryString(String root) {
-        return new QueryString().
-            append(parentBracketChildString(root, "update_existing"), updateExisting).
-            toString();
-    }
-
-    @Override
     public String toQueryString() {
         return toQueryString("options");
     }
 
+    public String toQueryString(String root) {
+        return buildRequest(root).toQueryString();
+    }
+    
     @Override
     public String toXML() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<options>");
-        builder.append(buildXMLElement("updateExisting", updateExisting));
-        builder.append("</options>");
-        return builder.toString();
+        return buildRequest("options").toXML();
     }
-
+    
+    protected RequestBuilder buildRequest(String root) {
+        return new RequestBuilder(root).
+            addElement("updateExisting", updateExisting);
+    }
+    
+    
     public CreditCardAddressOptionsRequest updateExisting(boolean updateExisting) {
         this.updateExisting = updateExisting;
         return this;

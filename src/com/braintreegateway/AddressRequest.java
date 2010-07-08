@@ -97,7 +97,7 @@ public class AddressRequest extends Request {
         return buildRequest(this.tagName).toXML();
     }
     
-    public RequestBuilder buildRequest(String root) {
+    protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
             addElement("firstName", firstName).
             addElement("lastName", lastName).
