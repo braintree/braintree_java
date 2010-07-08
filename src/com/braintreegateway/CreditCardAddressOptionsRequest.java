@@ -12,6 +12,11 @@ public class CreditCardAddressOptionsRequest extends Request {
     public CreditCardAddressRequest done() {
         return parent;
     }
+    
+    public CreditCardAddressOptionsRequest updateExisting(boolean updateExisting) {
+        this.updateExisting = updateExisting;
+        return this;
+    }
 
     public String toQueryString() {
         return toQueryString("options");
@@ -30,11 +35,4 @@ public class CreditCardAddressOptionsRequest extends Request {
         return new RequestBuilder(root).
             addElement("updateExisting", updateExisting);
     }
-    
-    
-    public CreditCardAddressOptionsRequest updateExisting(boolean updateExisting) {
-        this.updateExisting = updateExisting;
-        return this;
-    }
-
 }
