@@ -35,10 +35,10 @@ public class RequestBuilder {
     public String toQueryString() {
         QueryString queryString = new QueryString();
         for (Map.Entry<String, String> entry : topLevelElements.entrySet()) {
-            queryString.append(parentBracketChildString(parent, StringUtils.underscore(entry.getKey())), entry.getValue());
+            queryString.append(StringUtils.underscore(entry.getKey()), entry.getValue());
         }
         for (Map.Entry<String, Object> entry : elements.entrySet()) {
-            queryString.append(parentBracketChildString(parent, StringUtils.underscore(entry.getKey())), entry.getValue());
+            queryString.append(parentBracketChildString(StringUtils.underscore(parent), StringUtils.underscore(entry.getKey())), entry.getValue());
         }
         return queryString.toString();
     }

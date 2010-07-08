@@ -77,6 +77,6 @@ public class QueryStringTest {
                 done();
 
         String actual = new QueryString().append("[credit_card]", request).toString();
-        Assert.assertEquals("%5Bcredit_card%5D%5Bbilling_address%5D%5Bcompany%5D=Braintree&%5Bcredit_card%5D%5Bcardholder_name%5D=Drew&%5Bcredit_card%5D%5Bcvv%5D=123&%5Bcredit_card%5D%5Boptions%5D%5Bmake_default%5D=true&%5Bcredit_card%5D%5Boptions%5D%5Bverify_card%5D=true", actual);
+        Assert.assertEquals("%5Bcredit_card%5D%5Bcardholder_name%5D=Drew&%5Bcredit_card%5D%5Bcvv%5D=123&%5Bcredit_card%5D%5Bbilling_address%5D%5Bcompany%5D=Braintree&%5Bcredit_card%5D%5Boptions%5D%5Bmake_default%5D=true&%5Bcredit_card%5D%5Boptions%5D%5Bverify_card%5D=true", actual);
     }
 }

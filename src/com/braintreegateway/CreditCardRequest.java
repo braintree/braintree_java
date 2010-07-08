@@ -1,8 +1,5 @@
 package com.braintreegateway;
 
-import com.braintreegateway.util.QueryString;
-
-
 /**
  * Provides a fluent interface to build up requests around {@link CreditCard CreditCards}.
  */
@@ -93,35 +90,28 @@ public class CreditCardRequest extends Request {
 
     @Override
     public String toXML() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<creditCard>");
-        builder.append(buildXMLElement(billingAddressRequest));
-        builder.append(buildXMLElement(optionsRequest));
-        builder.append(buildXMLElement("customerId", customerId));
-        builder.append(buildXMLElement("cardholderName", cardholderName));
-        builder.append(buildXMLElement("cvv", cvv));
-        builder.append(buildXMLElement("number", number));
-        builder.append(buildXMLElement("expirationDate", expirationDate));
-        builder.append(buildXMLElement("token", token));
-        builder.append("</creditCard>");
-        return builder.toString();
+        return buildRequest("creditCard").toXML();
     }
 
     public String toQueryString() {
-        return toQueryString("credit_card");
+        return toQueryString("creditCard");
     }
 
     public String toQueryString(String root) {
-        return new QueryString().
-            append(parentBracketChildString(root, "billing_address"), billingAddressRequest).
-            append(parentBracketChildString(root, "cardholder_name"), cardholderName).
-            append(parentBracketChildString(root, "customer_id"), customerId).
-            append(parentBracketChildString(root, "cvv"), cvv).
-            append(parentBracketChildString(root, "expiration_date"), expirationDate).
-            append(parentBracketChildString(root, "number"), number).
-            append(parentBracketChildString(root, "options"), optionsRequest).
-            append(parentBracketChildString(root, "token"), token).
-            append("payment_method_token", paymentMethodToken).
-            toString();
+        return buildRequest(root).
+            addTopLevelElement("payment_method_token", paymentMethodToken).
+            toQueryString();
+    }
+    
+    protected RequestBuilder buildRequest(String root) {
+        return new RequestBuilder(root).
+            addElement("billingAddress", billingAddressRequest).
+            addElement("options", optionsRequest).
+            addElement("customerId", customerId).
+            addElement("cardholderName", cardholderName).
+            addElement("cvv", cvv).
+            addElement("number", number).
+            addElement("expirationDate", expirationDate).
+            addElement("token", token);
     }
 }
