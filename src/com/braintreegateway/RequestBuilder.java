@@ -52,24 +52,12 @@ public class RequestBuilder {
         builder.append(String.format("</%s>", parent));
         return builder.toString();
     }
-    
-    
+     
     protected String buildXMLElement(Object element) {
         return buildXMLElement("", element);
     }
 
-    protected String buildXMLElement(String name, Map<String, String> map) {
-        if (map == null)
-            return "";
-        String xml = "";
-        xml += String.format("<%s>", name);
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            xml += buildXMLElement(entry.getKey(), entry.getValue());
-        }
-        xml += String.format("</%s>", name);
-        return xml;
-    }
-
+    @SuppressWarnings("unchecked")
     protected String buildXMLElement(String name, Object element) {
         if (element == null) {
             return "";
@@ -79,9 +67,23 @@ public class RequestBuilder {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             return String.format("<%s type=\"datetime\">%s</%s>", name, dateFormat.format(((Calendar) element).getTime()), name);
+        } else if (element instanceof Map<?, ?>) {
+            return formatAsXML(name, (Map<String, String>) element);
         } else {
             return String.format("<%s>%s</%s>", xmlEscape(name), element == null ? "" : xmlEscape(element.toString()), xmlEscape(name));
         }
+    }
+    
+    protected String formatAsXML(String name, Map<String, String> map) {
+        if (map == null)
+            return "";
+        String xml = "";
+        xml += String.format("<%s>", name);
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            xml += buildXMLElement(entry.getKey(), entry.getValue());
+        }
+        xml += String.format("</%s>", name);
+        return xml;
     }
 
     protected Object buildQueryStringElement(String name, String value) {
