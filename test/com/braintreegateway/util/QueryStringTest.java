@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import com.braintreegateway.CreditCardRequest;
 import com.braintreegateway.Request;
+import com.braintreegateway.TestHelper;
 import com.braintreegateway.util.QueryString;
 
 public class QueryStringTest {
@@ -51,7 +52,8 @@ public class QueryStringTest {
             append("[credit_card]", request).
             toString();
 
-        Assert.assertEquals("%5Bcredit_card%5D%5Bcardholder_name%5D=Drew&%5Bcredit_card%5D%5Bcvv%5D=123", actual);
+        TestHelper.assertIncludes("%5Bcredit_card%5D%5Bcardholder_name%5D=Drew", actual);
+        TestHelper.assertIncludes("%5Bcredit_card%5D%5Bcvv%5D=123", actual);
     }
 
     @Test
@@ -60,7 +62,9 @@ public class QueryStringTest {
         map.put("name", "john");
         map.put("age", "15");
         String actual = new QueryString().append("transaction[custom_fields]", map).toString();
-        Assert.assertEquals("transaction%5Bcustom_fields%5D%5Bage%5D=15&transaction%5Bcustom_fields%5D%5Bname%5D=john", actual);
+        
+        TestHelper.assertIncludes("transaction%5Bcustom_fields%5D%5Bage%5D=15", actual);
+        TestHelper.assertIncludes("transaction%5Bcustom_fields%5D%5Bname%5D=john", actual);
     }
 
     @Test
@@ -77,6 +81,11 @@ public class QueryStringTest {
                 done();
 
         String actual = new QueryString().append("[credit_card]", request).toString();
-        Assert.assertEquals("%5Bcredit_card%5D%5Bcardholder_name%5D=Drew&%5Bcredit_card%5D%5Bcvv%5D=123&%5Bcredit_card%5D%5Bbilling_address%5D%5Bcompany%5D=Braintree&%5Bcredit_card%5D%5Boptions%5D%5Bmake_default%5D=true&%5Bcredit_card%5D%5Boptions%5D%5Bverify_card%5D=true", actual);
+        
+        TestHelper.assertIncludes("%5Bcredit_card%5D%5Bcardholder_name%5D=Drew", actual);
+        TestHelper.assertIncludes("%5Bcredit_card%5D%5Bcvv%5D=123", actual);
+        TestHelper.assertIncludes("%5Bcredit_card%5D%5Bbilling_address%5D%5Bcompany%5D=Braintree", actual);
+        TestHelper.assertIncludes("%5Bcredit_card%5D%5Boptions%5D%5Bmake_default%5D=true", actual);
+        TestHelper.assertIncludes("%5Bcredit_card%5D%5Boptions%5D%5Bverify_card%5D=true", actual);
     }
 }
