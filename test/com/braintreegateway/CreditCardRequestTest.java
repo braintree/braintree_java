@@ -18,7 +18,7 @@ public class CreditCardRequestTest {
             billingAddress().
                 region("Chicago").
                 done();
-        Assert.assertEquals("credit_card%5Bbilling_address%5D%5Bregion%5D=Chicago&credit_card%5Bcardholder_name%5D=Drew", request.toQueryString());
+        Assert.assertEquals("credit_card%5Bcardholder_name%5D=Drew&credit_card%5Bbilling_address%5D%5Bregion%5D=Chicago", request.toQueryString());
     }
 
     @Test
@@ -28,6 +28,6 @@ public class CreditCardRequestTest {
             billingAddress().
                 region("Chicago").
                 done();
-        Assert.assertEquals("customer%5Bcredit_card%5D%5Bbilling_address%5D%5Bregion%5D=Chicago&customer%5Bcredit_card%5D%5Bcardholder_name%5D=Drew", request.toQueryString("customer[credit_card]"));
+        Assert.assertEquals("customer%5Bcredit_card%5D%5Bcardholder_name%5D=Drew&customer%5Bcredit_card%5D%5Bbilling_address%5D%5Bregion%5D=Chicago", request.toQueryString("customer[credit_card]"));
     }
 }

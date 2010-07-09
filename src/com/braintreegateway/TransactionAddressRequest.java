@@ -19,6 +19,21 @@ public class TransactionAddressRequest extends AddressRequest {
         return this;
     }
 
+    public TransactionAddressRequest countryCodeAlpha2(String countryCodeAlpha2) {
+        super.countryCodeAlpha2(countryCodeAlpha2);
+        return this;
+    }
+
+    public TransactionAddressRequest countryCodeAlpha3(String countryCodeAlpha3) {
+        super.countryCodeAlpha3(countryCodeAlpha3);
+        return this;
+    }
+
+    public TransactionAddressRequest countryCodeNumeric(String countryCodeNumeric) {
+        super.countryCodeNumeric(countryCodeNumeric);
+        return this;
+    }
+
     public TransactionAddressRequest extendedAddress(String extendedAddress) {
         super.extendedAddress(extendedAddress);
         return this;

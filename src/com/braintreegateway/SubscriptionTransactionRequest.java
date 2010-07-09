@@ -14,32 +14,30 @@ public class SubscriptionTransactionRequest extends Request {
         return this;
     }
 
-    @Override
-    public String toQueryString(String parent) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String toQueryString() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String toXML() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<transaction>");
-        builder.append(buildXMLElement("amount", amount));
-        builder.append(buildXMLElement("subscriptionId", subscriptionId));
-        builder.append(buildXMLElement("type", Type.SALE.toString().toLowerCase()));
-        builder.append("</transaction>");
-        return builder.toString();
-    }
-
     public SubscriptionTransactionRequest subscriptionId(String subscriptionId) {
         this.subscriptionId = subscriptionId;
         return this;
     }
+    
+    @Override
+    public String toQueryString(String parent) {
+        return "not implemented";
+    }
 
+    @Override
+    public String toQueryString() {
+        return "not implemented";
+    }
+
+    @Override
+    public String toXML() {
+        return buildRequest("transaction").toXML();
+    }
+
+    protected RequestBuilder buildRequest(String root) {
+        return new RequestBuilder(root).
+            addElement("amount", amount).
+            addElement("subscriptionId", subscriptionId).
+            addElement("type", Type.SALE.toString().toLowerCase());
+    }
 }

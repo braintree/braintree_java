@@ -53,20 +53,20 @@ public class SearchRequest extends Request {
         builder.append("<search>");
         
         for (String key : criteria.keySet()) {
-            builder.append(wrapInXMLTag(key, criteria.get(key).toXML()));
+            builder.append(RequestBuilder.wrapInXMLTag(key, criteria.get(key).toXML()));
         }
         for (String key : rangeCriteria.keySet()) {
-            builder.append(String.format("<%s>", xmlEscape(key)));
+            builder.append(String.format("<%s>", RequestBuilder.xmlEscape(key)));
             for (SearchCriteria criterium : rangeCriteria.get(key)) {
                 builder.append(criterium.toXML());
             }
-            builder.append(String.format("</%s>", xmlEscape(key)));
+            builder.append(String.format("</%s>", RequestBuilder.xmlEscape(key)));
         }
         for (String key : multiValueCriteria.keySet()) {
-            builder.append(wrapInXMLTag(key, multiValueCriteria.get(key).toXML(), "array"));
+            builder.append(RequestBuilder.wrapInXMLTag(key, multiValueCriteria.get(key).toXML(), "array"));
         }
         for (String key : keyValueCriteria.keySet()) {
-            builder.append(wrapInXMLTag(key, keyValueCriteria.get(key)));
+            builder.append(RequestBuilder.wrapInXMLTag(key, keyValueCriteria.get(key)));
         }
         builder.append("</search>");
         return builder.toString();

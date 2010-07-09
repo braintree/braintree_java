@@ -10,6 +10,7 @@ public class Result<T> {
     private Transaction transaction;
     private ValidationErrors errors;
     private Map<String, String> parameters;
+    private String message;
     private T target;
 
     @SuppressWarnings("unchecked")
@@ -47,6 +48,7 @@ public class Result<T> {
                 this.transaction = new Transaction(transactionNode);
             }
             this.parameters = node.findFirst("params").getFormParameters();
+            this.message = node.findString("message");
         }
     }
 
@@ -72,5 +74,9 @@ public class Result<T> {
 
     public boolean isSuccess() {
         return errors == null;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

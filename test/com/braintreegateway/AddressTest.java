@@ -31,7 +31,10 @@ public class AddressTest {
             locality("Chicago").
             region("Illinois").
             postalCode("60607").
-            countryName("United States of America");
+            countryName("United States of America").
+            countryCodeAlpha2("US").
+            countryCodeAlpha3("USA").
+            countryCodeNumeric("840");
 
         Result<Address> createResult = gateway.address().create(customer.getId(), request);
         Assert.assertTrue(createResult.isSuccess());
@@ -45,6 +48,9 @@ public class AddressTest {
         Assert.assertEquals("Illinois", address.getRegion());
         Assert.assertEquals("60607", address.getPostalCode());
         Assert.assertEquals("United States of America", address.getCountryName());
+        Assert.assertEquals("US", address.getCountryCodeAlpha2());
+        Assert.assertEquals("USA", address.getCountryCodeAlpha3());
+        Assert.assertEquals("840", address.getCountryCodeNumeric());
         Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), address.getCreatedAt().get(Calendar.YEAR));
         Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), address.getUpdatedAt().get(Calendar.YEAR));
     }
@@ -70,7 +76,10 @@ public class AddressTest {
             locality("Bartlett").
             region("Mass").
             postalCode("12345").
-            countryName("Mexico");
+            countryName("Mexico").
+            countryCodeAlpha2("MX").
+            countryCodeAlpha3("MEX").
+            countryCodeNumeric("484");
 
         Result<Address> updateResult = gateway.address().update(address.getCustomerId(), address.getId(), updateRequest);
         Assert.assertTrue(updateResult.isSuccess());
@@ -82,6 +91,9 @@ public class AddressTest {
         Assert.assertEquals("Mass", updatedAddress.getRegion());
         Assert.assertEquals("12345", updatedAddress.getPostalCode());
         Assert.assertEquals("Mexico", updatedAddress.getCountryName());
+        Assert.assertEquals("MX", updatedAddress.getCountryCodeAlpha2());
+        Assert.assertEquals("MEX", updatedAddress.getCountryCodeAlpha3());
+        Assert.assertEquals("484", updatedAddress.getCountryCodeNumeric());
     }
 
     @Test
@@ -127,13 +139,53 @@ public class AddressTest {
     public void validationErrors() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         AddressRequest request = new AddressRequest().
-            countryName("United States of Hammer");
+            countryName("Tunisia").
+            countryCodeAlpha2("US");
 
         Result<Address> createResult = gateway.address().create(customer.getId(), request);
         Assert.assertFalse(createResult.isSuccess());
         Assert.assertNull(createResult.getTarget());
         ValidationErrors errors = createResult.getErrors();
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryName").get(0).getCode());
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY, errors.forObject("address").onField("base").get(0).getCode());
+    }
+    
+    @Test
+    public void validationErrorsOnCountryCodeAlpha2() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        AddressRequest request = new AddressRequest().
+            countryCodeAlpha2("ZZ");
+
+        Result<Address> createResult = gateway.address().create(customer.getId(), request);
+        Assert.assertFalse(createResult.isSuccess());
+        Assert.assertNull(createResult.getTarget());
+        ValidationErrors errors = createResult.getErrors();
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryCodeAlpha2").get(0).getCode());
+    }
+    
+    @Test
+    public void validationErrorsOnCountryCodeAlpha3() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        AddressRequest request = new AddressRequest().
+            countryCodeAlpha3("ZZZ");
+
+        Result<Address> createResult = gateway.address().create(customer.getId(), request);
+        Assert.assertFalse(createResult.isSuccess());
+        Assert.assertNull(createResult.getTarget());
+        ValidationErrors errors = createResult.getErrors();
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA3_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryCodeAlpha3").get(0).getCode());
+    }
+    
+    @Test
+    public void validationErrorsOnCountryCodeNumeric() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        AddressRequest request = new AddressRequest().
+            countryCodeNumeric("000");
+
+        Result<Address> createResult = gateway.address().create(customer.getId(), request);
+        Assert.assertFalse(createResult.isSuccess());
+        Assert.assertNull(createResult.getTarget());
+        ValidationErrors errors = createResult.getErrors();
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_NUMERIC_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryCodeNumeric").get(0).getCode());
     }
 
     @Test

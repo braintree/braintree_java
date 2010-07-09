@@ -1,7 +1,5 @@
 package com.braintreegateway;
 
-import com.braintreegateway.util.QueryString;
-
 public class CreditCardOptionsRequest extends Request {
     private CreditCardRequest parent;
     private String verificationMerchantAccountId;
@@ -38,28 +36,27 @@ public class CreditCardOptionsRequest extends Request {
     }
 
     public String toXML() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<options>");
-        builder.append(buildXMLElement("verifyCard", verifyCard));
-        builder.append(buildXMLElement("verificationMerchantAccountId", verificationMerchantAccountId));
-        if (makeDefault) {
-            builder.append(buildXMLElement("makeDefault", makeDefault));
-        }
-        builder.append(buildXMLElement("updateExistingToken", updateExistingToken));
-        builder.append("</options>");
-        return builder.toString();
-    }
-
-    public String toQueryString(String root) {
-        return new QueryString().
-            append(parentBracketChildString(root, "make_default"), makeDefault).
-            append(parentBracketChildString(root, "verify_card"), verifyCard).
-            append(parentBracketChildString(root, "verification_merchant_account_id"), verificationMerchantAccountId).
-            append(parentBracketChildString(root, "update_existing_token"), updateExistingToken).
-            toString();
+        return buildRequest("options").toXML();
     }
 
     public String toQueryString() {
         return toQueryString("options");
+    }
+    
+    public String toQueryString(String root) {
+        return buildRequest(root).toQueryString();
+    }
+    
+    protected RequestBuilder buildRequest(String root) {
+        RequestBuilder builder = new RequestBuilder(root);
+        
+        builder.addElement("verifyCard", verifyCard);
+        builder.addElement("verificationMerchantAccountId", verificationMerchantAccountId);
+        if (makeDefault) {
+            builder.addElement("makeDefault", makeDefault);
+        }
+        builder.addElement("updateExistingToken", updateExistingToken);
+        
+        return builder;
     }
 }

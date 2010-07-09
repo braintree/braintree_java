@@ -142,6 +142,9 @@ public class TransactionTest {
                 region("IL").
                 postalCode("60622").
                 countryName("United States of America").
+                countryCodeAlpha2("US").
+                countryCodeAlpha3("USA").
+                countryCodeNumeric("840").
                 done().
             shippingAddress().
                 firstName("Andrew").
@@ -153,6 +156,9 @@ public class TransactionTest {
                 region("MA").
                 postalCode("60103").
                 countryName("Mexico").
+                countryCodeAlpha2("MX").
+                countryCodeAlpha3("MEX").
+                countryCodeNumeric("484").
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
@@ -198,6 +204,9 @@ public class TransactionTest {
         Assert.assertEquals("IL", billing.getRegion());
         Assert.assertEquals("60622", billing.getPostalCode());
         Assert.assertEquals("United States of America", billing.getCountryName());
+        Assert.assertEquals("US", billing.getCountryCodeAlpha2());
+        Assert.assertEquals("USA", billing.getCountryCodeAlpha3());
+        Assert.assertEquals("840", billing.getCountryCodeNumeric());
 
         Assert.assertNull(transaction.getVaultShippingAddress(gateway));
         Address shipping = transaction.getShippingAddress();
@@ -210,6 +219,9 @@ public class TransactionTest {
         Assert.assertEquals("MA", shipping.getRegion());
         Assert.assertEquals("60103", shipping.getPostalCode());
         Assert.assertEquals("Mexico", shipping.getCountryName());
+        Assert.assertEquals("MX", shipping.getCountryCodeAlpha2());
+        Assert.assertEquals("MEX", shipping.getCountryCodeAlpha3());
+        Assert.assertEquals("484", shipping.getCountryCodeNumeric());
     }
 
     @Test
@@ -454,6 +466,35 @@ public class TransactionTest {
     }
 
     @Test
+    public void saleWithValidationErrorsOnAddress() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.DECLINE.amount).
+            customField("unkown_custom_field", "custom value").
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            billingAddress().
+                countryName("No such country").
+                countryCodeAlpha2("zz").
+                countryCodeAlpha3("zzz").
+                countryCodeNumeric("000").
+                done();
+            
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertFalse(result.isSuccess());
+        
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, 
+                result.getErrors().forObject("transaction").forObject("billing").onField("countryName").get(0).getCode());
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED, 
+                result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha2").get(0).getCode());
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA3_IS_NOT_ACCEPTED, 
+            result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha3").get(0).getCode());
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_NUMERIC_IS_NOT_ACCEPTED, 
+            result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeNumeric").get(0).getCode());
+    }
+
+    @Test
     public void saleWithUnregisteredCustomField() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.DECLINE.amount).
@@ -582,6 +623,69 @@ public class TransactionTest {
         Transaction transaction = result.getTarget();
 
         Assert.assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
+    }
+    
+    @Test
+    public void createTransactionFromTransparentRedirectWithAddress() {
+        TransactionRequest request = new TransactionRequest();
+        
+        TransactionRequest trParams = new TransactionRequest().
+        amount(TransactionAmount.AUTHORIZE.amount).
+            type(Transaction.Type.SALE).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            billingAddress().
+                countryName("United States of America").
+                countryCodeAlpha2("US").
+                countryCodeAlpha3("USA").
+                countryCodeNumeric("840").
+                done();
+    
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
+        Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
+        
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        
+        Assert.assertEquals("United States of America", transaction.getBillingAddress().getCountryName());
+        Assert.assertEquals("US", transaction.getBillingAddress().getCountryCodeAlpha2());
+        Assert.assertEquals("USA", transaction.getBillingAddress().getCountryCodeAlpha3());
+        Assert.assertEquals("840", transaction.getBillingAddress().getCountryCodeNumeric());
+    }
+    
+    @Test
+    public void createTransactionFromTransparentRedirectWithAddressWithErrors() {
+        TransactionRequest request = new TransactionRequest();
+        
+        TransactionRequest trParams = new TransactionRequest().
+        amount(TransactionAmount.AUTHORIZE.amount).
+            type(Transaction.Type.SALE).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            billingAddress().
+                countryName("Foo bar!").
+                countryCodeAlpha2("zz").
+                countryCodeAlpha3("zzz").
+                countryCodeNumeric("000").
+                done();
+    
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
+        Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
+        
+        Assert.assertFalse(result.isSuccess());
+
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, 
+                result.getErrors().forObject("transaction").forObject("billing").onField("countryName").get(0).getCode());
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED, 
+                result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha2").get(0).getCode());
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA3_IS_NOT_ACCEPTED, 
+            result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha3").get(0).getCode());
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_NUMERIC_IS_NOT_ACCEPTED, 
+            result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeNumeric").get(0).getCode());
     }
 
     @Test
@@ -1414,4 +1518,64 @@ public class TransactionTest {
         Transaction transaction = new Transaction(new NodeWrapper(xml));
         Assert.assertEquals(Transaction.Type.UNRECOGNIZED, transaction.getType());
     }
+    
+    @Test
+    public void gatewayRejectedOnCvv() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key"); 
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                cvv("200").
+                done();
+
+        Result<Transaction> result = processingRulesGateway.transaction().sale(request);
+        Assert.assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        Assert.assertEquals(Transaction.GatewayRejectionReason.CVV, transaction.getGatewayRejectionReason());
+    }
+    
+    @Test
+    public void gatewayRejectedOnAvs() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key"); 
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            billingAddress().
+                postalCode("20001").
+                done().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = processingRulesGateway.transaction().sale(request);
+        Assert.assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        Assert.assertEquals(Transaction.GatewayRejectionReason.AVS, transaction.getGatewayRejectionReason());
+    }    
+    
+    @Test
+    public void gatewayRejectedOnAvsAndCvv() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key"); 
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            billingAddress().
+                postalCode("20001").
+                done().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                cvv("200").
+                done();
+
+        Result<Transaction> result = processingRulesGateway.transaction().sale(request);
+        Assert.assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        Assert.assertEquals(Transaction.GatewayRejectionReason.AVS_AND_CVV, transaction.getGatewayRejectionReason());
+    }
+
 }

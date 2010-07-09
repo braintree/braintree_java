@@ -42,7 +42,7 @@ public class Transaction {
     }
 
     public enum Status {
-        AUTHORIZED, AUTHORIZING, FAILED, GATEWAY_REJECTED, PROCESSOR_DECLINED, SETTLED, SETTLEMENT_FAILED, SUBMITTED_FOR_SETTLEMENT, UNKNOWN, UNRECOGNIZED, VOIDED;
+        AUTHORIZED, AUTHORIZING, FAILED, GATEWAY_REJECTED, PROCESSOR_DECLINED, SETTLED, SETTLEMENT_FAILED, SUBMITTED_FOR_SETTLEMENT, UNRECOGNIZED, VOIDED;
     }
 
     public enum Type {
@@ -60,6 +60,24 @@ public class Transaction {
             return name;
         }
     }
+    
+    public enum GatewayRejectionReason {
+        AVS("avs"),
+        AVS_AND_CVV("avs_and_cvv"),
+        CVV("cvv"),
+        DUPLICATE("duplicate");
+
+        private final String name;
+
+        GatewayRejectionReason(String name) {
+            this.name = name;
+        }
+
+        public String toString() {
+            return name;
+        }
+    }
+
 
     private BigDecimal amount;
     private String avsErrorResponseCode;
@@ -70,6 +88,7 @@ public class Transaction {
     private CreditCard creditCard;
     private String currencyIsoCode;
     private Customer customer;
+    private GatewayRejectionReason gatewayRejectionReason;
     private Map<String, String> customFields;
     private String cvvResponseCode;
     private String id;
@@ -99,6 +118,7 @@ public class Transaction {
         customFields = node.findMap("custom-fields");
         customer = new Customer(node.findFirst("customer"));
         cvvResponseCode = node.findString("cvv-response-code");
+        gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"));
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
         orderId = node.findString("order-id");
@@ -154,6 +174,10 @@ public class Transaction {
 
     public Customer getCustomer() {
         return customer;
+    }
+    
+    public GatewayRejectionReason getGatewayRejectionReason() {
+        return gatewayRejectionReason;
     }
 
     public Map<String, String> getCustomFields() {

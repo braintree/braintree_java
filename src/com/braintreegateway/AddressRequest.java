@@ -1,12 +1,14 @@
 package com.braintreegateway;
 
-import com.braintreegateway.util.QueryString;
 
 /**
  * Provides a fluent interface to build up requests around {@link Address Addresses}.
  */
 public class AddressRequest extends Request {
 
+    private String countryCodeAlpha2;
+    private String countryCodeAlpha3;
+    private String countryCodeNumeric;
     private String countryName;
     private String extendedAddress;
     private String firstName;
@@ -24,6 +26,21 @@ public class AddressRequest extends Request {
 
     public AddressRequest company(String company) {
         this.company = company;
+        return this;
+    }
+    
+    public AddressRequest countryCodeAlpha2(String countryCodeAlpha2) {
+        this.countryCodeAlpha2 = countryCodeAlpha2;
+        return this;
+    }
+    
+    public AddressRequest countryCodeAlpha3(String countryCodeAlpha3) {
+        this.countryCodeAlpha3 = countryCodeAlpha3;
+        return this;
+    }
+    
+    public AddressRequest countryCodeNumeric(String countryCodeNumeric) {
+        this.countryCodeNumeric = countryCodeNumeric;
         return this;
     }
 
@@ -72,42 +89,27 @@ public class AddressRequest extends Request {
     }
 
     public String toQueryString(String root) {
-        return queryStringBody(root).toString();
-    }
-    
-    protected QueryString queryStringBody(String root) {
-       return new QueryString().
-           append(parentBracketChildString(root, "first_name"), firstName).
-           append(parentBracketChildString(root, "last_name"), lastName).
-           append(parentBracketChildString(root, "company"), company).
-           append(parentBracketChildString(root, "country_name"), countryName).
-           append(parentBracketChildString(root, "extended_address"), extendedAddress).
-           append(parentBracketChildString(root, "locality"), locality).
-           append(parentBracketChildString(root, "postal_code"), postalCode).
-           append(parentBracketChildString(root, "region"), region).
-           append(parentBracketChildString(root, "street_address"), streetAddress);
+        return buildRequest(root).toQueryString();
     }
     
     @Override
     public String toXML() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(String.format("<%s>", this.tagName));
-        builder.append(XMLBody());
-        builder.append(String.format("</%s>", this.tagName));
-        return builder.toString();
+        return buildRequest(this.tagName).toXML();
     }
     
-    protected String XMLBody() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(buildXMLElement("firstName", firstName));
-        builder.append(buildXMLElement("lastName", lastName));
-        builder.append(buildXMLElement("company", company));
-        builder.append(buildXMLElement("countryName", countryName));
-        builder.append(buildXMLElement("extendedAddress", extendedAddress));
-        builder.append(buildXMLElement("locality", locality));
-        builder.append(buildXMLElement("postalCode", postalCode));
-        builder.append(buildXMLElement("region", region));
-        builder.append(buildXMLElement("streetAddress", streetAddress));
-        return builder.toString();
+    protected RequestBuilder buildRequest(String root) {
+        return new RequestBuilder(root).
+            addElement("firstName", firstName).
+            addElement("lastName", lastName).
+            addElement("company", company).
+            addElement("countryName", countryName).
+            addElement("countryCodeAlpha2", countryCodeAlpha2).
+            addElement("countryCodeAlpha3", countryCodeAlpha3).
+            addElement("countryCodeNumeric", countryCodeNumeric).
+            addElement("extendedAddress", extendedAddress).
+            addElement("locality", locality).
+            addElement("postalCode", postalCode).
+            addElement("region", region).
+            addElement("streetAddress", streetAddress);
     }
 }
