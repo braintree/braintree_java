@@ -68,18 +68,18 @@ public class RequestBuilder {
             dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             return String.format("<%s type=\"datetime\">%s</%s>", name, dateFormat.format(((Calendar) element).getTime()), name);
         } else if (element instanceof Map<?, ?>) {
-            return formatAsXML(name, (Map<String, String>) element);
+            return formatAsXML(name, (Map<String, Object>) element);
         } else {
             return String.format("<%s>%s</%s>", xmlEscape(name), element == null ? "" : xmlEscape(element.toString()), xmlEscape(name));
         }
     }
     
-    protected static String formatAsXML(String name, Map<String, String> map) {
+    protected static String formatAsXML(String name, Map<String, Object> map) {
         if (map == null)
             return "";
         String xml = "";
         xml += String.format("<%s>", name);
-        for (Map.Entry<String, String> entry : map.entrySet()) {
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
             xml += buildXMLElement(entry.getKey(), entry.getValue());
         }
         xml += String.format("</%s>", name);

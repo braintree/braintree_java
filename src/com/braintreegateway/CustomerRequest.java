@@ -118,20 +118,20 @@ public class CustomerRequest extends Request {
     }
     
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root);
+        RequestBuilder builder = new RequestBuilder(root).
+            addElement("company", company).
+            addElement("email", email).
+            addElement("fax", fax).
+            addElement("firstName", firstName).
+            addElement("id", id).
+            addElement("lastName", lastName).
+            addElement("phone", phone).
+            addElement("website", website).
+            addElement("creditCard", creditCardRequest);
         
-        builder.addElement("company", company);
-        builder.addElement("email", email);
-        builder.addElement("fax", fax);
-        builder.addElement("firstName", firstName);
-        builder.addElement("id", id);
-        builder.addElement("lastName", lastName);
-        builder.addElement("phone", phone);
-        builder.addElement("website", website);
         if (customFields.size() > 0) {
             builder.addElement("customFields", customFields);
         }
-        builder.addElement("creditCard", creditCardRequest);
 
         return builder;
     }
