@@ -1,4 +1,3 @@
-
 package com.braintreegateway;
 
 import java.math.BigDecimal;
@@ -6,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.braintreegateway.Transaction.Type;
-import com.braintreegateway.util.QueryString;
 
 /**
  * Provides a fluent interface to build up requests around {@link Transaction Transactions}.
@@ -94,29 +92,14 @@ public class TransactionRequest extends Request {
         this.shippingAddressId = shippingAddressId;
         return this;
     }
+    
+    public TransactionRequest type(Type type) {
+        this.type = type;
+        return this;
+    }
 
     public String toQueryString(String root) {
-        QueryString queryString = new QueryString().
-            append(parentBracketChildString(root, "credit_card"), creditCardRequest).
-            append(parentBracketChildString(root, "customer"), customerRequest).
-            append(parentBracketChildString(root, "billing"), billingAddressRequest).
-            append(parentBracketChildString(root, "shipping"), shippingAddressRequest).
-            append(parentBracketChildString(root, "options"), transactionOptionsRequest).
-            append(parentBracketChildString(root, "amount"), amount).
-            append(parentBracketChildString(root, "customer_id"), customerId).
-            append(parentBracketChildString(root, "order_id"), orderId).
-            append(parentBracketChildString(root, "payment_method_token"), paymentMethodToken).
-            append(parentBracketChildString(root, "shipping_address_id"), shippingAddressId);
-
-        if (type != null) {
-            queryString.append(parentBracketChildString(root, "type"), type.toString().toLowerCase());
-        }
-
-        if (!customFields.isEmpty()) {
-            queryString.append(parentBracketChildString(root, "custom_fields"), customFields);
-        }
-
-        return queryString.toString();
+        return buildRequest(root).toQueryString();
     }
 
     public String toQueryString() {
@@ -125,33 +108,30 @@ public class TransactionRequest extends Request {
 
     @Override
     public String toXML() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<transaction>");
-        builder.append(buildXMLElement("amount", amount));
-        builder.append(buildXMLElement("customerId", customerId));
-        builder.append(buildXMLElement("merchantAccountId", merchantAccountId));
+        return buildRequest("transaction").toXML();
+    }
+    
+    protected RequestBuilder buildRequest(String root) {
+        RequestBuilder builder = new RequestBuilder(root).     
+            addElement("amount", amount).
+            addElement("customerId", customerId).
+            addElement("merchantAccountId", merchantAccountId).
+            addElement("orderId", orderId).
+            addElement("paymentMethodToken", paymentMethodToken).
+            addElement("shippingAddressId", shippingAddressId).
+            addElement("creditCard", creditCardRequest).
+            addElement("customer", customerRequest).
+            addElement("billing", billingAddressRequest).
+            addElement("shipping", shippingAddressRequest).
+            addElement("options", transactionOptionsRequest);
         
         if (!customFields.isEmpty()) {
-            builder.append(buildXMLElement("customFields", customFields));
+            builder.addElement("customFields", customFields);
+        }
+        if (type != null) {
+            builder.addElement("type", type.toString().toLowerCase());
         }
         
-        builder.append(buildXMLElement("orderId", orderId));
-        builder.append(buildXMLElement("paymentMethodToken", paymentMethodToken));
-        builder.append(buildXMLElement("shippingAddressId", shippingAddressId));
-        if (type != null) {
-            builder.append(buildXMLElement("type", type.toString().toLowerCase()));
-        }
-        builder.append(buildXMLElement(creditCardRequest));
-        builder.append(buildXMLElement(customerRequest));
-        builder.append(buildXMLElement(billingAddressRequest));
-        builder.append(buildXMLElement(shippingAddressRequest));
-        builder.append(buildXMLElement(transactionOptionsRequest));
-        builder.append("</transaction>");
-        return builder.toString();
-    }
-
-    public TransactionRequest type(Type type) {
-        this.type = type;
-        return this;
+        return builder;
     }
 }

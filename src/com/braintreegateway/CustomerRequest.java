@@ -1,9 +1,7 @@
 package com.braintreegateway;
 
-import java.util.Map;
 import java.util.HashMap;
-
-import com.braintreegateway.util.QueryString;
+import java.util.Map;
 
 
 /**
@@ -106,22 +104,7 @@ public class CustomerRequest extends Request {
 
     @Override
     public String toXML() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<customer>");
-        builder.append(buildXMLElement("company", company));
-        builder.append(buildXMLElement("email", email));
-        builder.append(buildXMLElement("fax", fax));
-        builder.append(buildXMLElement("firstName", firstName));
-        builder.append(buildXMLElement("id", id));
-        builder.append(buildXMLElement("lastName", lastName));
-        builder.append(buildXMLElement("phone", phone));
-        builder.append(buildXMLElement("website", website));
-        if (customFields.size() > 0) {
-            builder.append(buildXMLElement("customFields", customFields));
-        }
-        builder.append(buildXMLElement(creditCardRequest));
-        builder.append("</customer>");
-        return builder.toString();
+        return buildRequest("customer").toXML();
     }
 
     public String toQueryString() {
@@ -129,20 +112,27 @@ public class CustomerRequest extends Request {
     }
 
     public String toQueryString(String root) {
-        QueryString queryString = new QueryString().
-            append("customer_id", customerId).
-            append(parentBracketChildString(root, "credit_card"), creditCardRequest).
-            append(parentBracketChildString(root, "company"), company).
-            append(parentBracketChildString(root, "email"), email).
-            append(parentBracketChildString(root, "fax"), fax).
-            append(parentBracketChildString(root, "first_name"), firstName).
-            append(parentBracketChildString(root, "id"), id).
-            append(parentBracketChildString(root, "last_name"), lastName).
-            append(parentBracketChildString(root, "phone"), phone).
-            append(parentBracketChildString(root, "website"), website);
-            if (customFields.size() > 0) {
-                queryString.append(parentBracketChildString(root, "custom_fields"), customFields);
-            }
-            return queryString.toString();
+        return buildRequest(root).
+            addTopLevelElement("customerId", customerId).
+            toQueryString();
+    }
+    
+    protected RequestBuilder buildRequest(String root) {
+        RequestBuilder builder = new RequestBuilder(root).
+            addElement("company", company).
+            addElement("email", email).
+            addElement("fax", fax).
+            addElement("firstName", firstName).
+            addElement("id", id).
+            addElement("lastName", lastName).
+            addElement("phone", phone).
+            addElement("website", website).
+            addElement("creditCard", creditCardRequest);
+        
+        if (customFields.size() > 0) {
+            builder.addElement("customFields", customFields);
+        }
+
+        return builder;
     }
 }

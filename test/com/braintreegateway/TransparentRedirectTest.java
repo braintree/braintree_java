@@ -39,6 +39,26 @@ public class TransparentRedirectTest {
     }
     
     @Test
+    public void createTransactionFromTransparentRedirectSpecifyingMerchantAccountId() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        TransactionRequest trParams = new TransactionRequest().
+            type(Transaction.Type.SALE).
+            merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID);
+    
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
+        Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
+        
+        Assert.assertTrue(result.isSuccess());
+        Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, result.getTarget().getMerchantAccountId());
+    }
+    
+    @Test
     public void createCustomerFromTransparentRedirect() {
         CustomerRequest request = new CustomerRequest().firstName("John");
         CustomerRequest trParams = new CustomerRequest().lastName("Doe");

@@ -1,7 +1,5 @@
 package com.braintreegateway;
 
-import com.braintreegateway.util.QueryString;
-
 public class TransactionCreditCardRequest extends Request {
     private String cardholderName;
     private String cvv;
@@ -61,32 +59,25 @@ public class TransactionCreditCardRequest extends Request {
 
     @Override
     public String toXML() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<creditCard>");
-        builder.append(buildXMLElement("cardholderName", cardholderName));
-        builder.append(buildXMLElement("cvv", cvv));
-        builder.append(buildXMLElement("number", number));
-        builder.append(buildXMLElement("expirationDate", expirationDate));
-        builder.append(buildXMLElement("expirationMonth", expirationMonth));
-        builder.append(buildXMLElement("expirationYear", expirationYear));
-        builder.append(buildXMLElement("token", token));
-        builder.append("</creditCard>");
-        return builder.toString();
+        return buildRequest("creditCard").toXML();
     }
 
     public String toQueryString(String root) {
-        return new QueryString().
-            append(parentBracketChildString(root, "cardholder_name"), cardholderName).
-            append(parentBracketChildString(root, "cvv"), cvv).
-            append(parentBracketChildString(root, "number"), number).
-            append(parentBracketChildString(root, "expiration_date"), expirationDate).
-            append(parentBracketChildString(root, "expiration_month"), expirationMonth).
-            append(parentBracketChildString(root, "expiration_year"), expirationYear).
-            append(parentBracketChildString(root, "token"), token).
-            toString();
+        return buildRequest(root).toQueryString();
     }
 
     public String toQueryString() {
-        return toQueryString("credit_card");
+        return toQueryString("creditCard");
+    }
+    
+    protected RequestBuilder buildRequest(String root) {
+        return new RequestBuilder(root).
+            addElement("cardholderName", cardholderName).
+            addElement("cvv", cvv).
+            addElement("number", number).
+            addElement("expirationDate", expirationDate).
+            addElement("expirationMonth", expirationMonth).
+            addElement("expirationYear", expirationYear).
+            addElement("token", token);
     }
 }

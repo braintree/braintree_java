@@ -1,3 +1,10 @@
+## 2.4.0
+
+* Added unified message to result objects
+* Added ability to specify country using countryName, countryCodeAlpha2, countryCodeAlpha3, or countryCodeNumeric (see [ISO_3166-1](http://en.wikipedia.org/wiki/ISO_3166-1))
+* Added gatewayRejectionReason to Transaction and Verification
+* When creating a Subscription, return failed transaction on the Result if the initial transaction is not successful
+
 ## 2.3.1
 
 * Fixed a bug in confirming TransparentRedirect when returning an Error result
