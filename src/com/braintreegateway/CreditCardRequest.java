@@ -99,7 +99,7 @@ public class CreditCardRequest extends Request {
 
     public String toQueryString(String root) {
         return buildRequest(root).
-            addTopLevelElement("payment_method_token", paymentMethodToken).
+            addTopLevelElement("paymentMethodToken", paymentMethodToken).
             toQueryString();
     }
     
