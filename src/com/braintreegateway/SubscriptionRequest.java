@@ -62,22 +62,26 @@ public class SubscriptionRequest extends Request {
     public String toQueryString(String root) {
         return "not implemented";
     }
-    
+
     @Override
     public String toXML() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<subscription>");
-        builder.append(buildXMLElement("id", id));
-        builder.append(buildXMLElement("merchantAccountId", merchantAccountId));
-        builder.append(buildXMLElement("paymentMethodToken", paymentMethodToken));
-        builder.append(buildXMLElement("planId", planId));
-        builder.append(buildXMLElement("price", price));
-        builder.append(buildXMLElement("trialPeriod", hasTrialPeriod));
-        builder.append(buildXMLElement("trialDuration", trialDuration));
+        return buildRequest("subscription").toXML();
+    }
+
+    protected RequestBuilder buildRequest(String root) {
+        RequestBuilder builder = new RequestBuilder(root).
+            addElement("id", id).
+            addElement("merchantAccountId", merchantAccountId).
+            addElement("paymentMethodToken", paymentMethodToken).
+            addElement("planId", planId).
+            addElement("price", price).
+            addElement("trialPeriod", hasTrialPeriod).
+            addElement("trialDuration", trialDuration);
+
         if (trialDurationUnit != null) {
-            builder.append(buildXMLElement("trialDurationUnit", trialDurationUnit.toString().toLowerCase()));
+            builder.addElement("trialDurationUnit", trialDurationUnit.toString().toLowerCase());
         }
-        builder.append("</subscription>");
-        return builder.toString();
+
+        return builder;
     }
 }
