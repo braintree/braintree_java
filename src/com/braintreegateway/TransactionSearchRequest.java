@@ -181,7 +181,35 @@ public class TransactionSearchRequest extends SearchRequest {
         return new RangeNode<TransactionSearchRequest>("amount", this);
     }
 
+    public DateRangeNode<TransactionSearchRequest> authorizedAt() {
+        return new DateRangeNode<TransactionSearchRequest>("authorized_at", this);
+    }
+    
     public DateRangeNode<TransactionSearchRequest> createdAt() {
         return new DateRangeNode<TransactionSearchRequest>("created_at", this);
+    }
+    
+    public DateRangeNode<TransactionSearchRequest> failedAt() {
+        return new DateRangeNode<TransactionSearchRequest>("failed_at", this);
+    }
+    
+    public DateRangeNode<TransactionSearchRequest> gatewayRejectedAt() {
+        return new DateRangeNode<TransactionSearchRequest>("gateway_rejected_at", this);
+    }
+    
+    public DateRangeNode<TransactionSearchRequest> processorDeclinedAt() {
+        return new DateRangeNode<TransactionSearchRequest>("processor_declined_at", this);
+    }
+    
+    public DateRangeNode<TransactionSearchRequest> settledAt() {
+        return new DateRangeNode<TransactionSearchRequest>("settled_at", this);
+    }
+    
+    public DateRangeNode<TransactionSearchRequest> submittedForSettlementAt() {
+        return new DateRangeNode<TransactionSearchRequest>("submitted_for_settlement_at", this);
+    }
+    
+    public DateRangeNode<TransactionSearchRequest> voidedAt() {
+        return new DateRangeNode<TransactionSearchRequest>("voided_at", this);
     }
 }

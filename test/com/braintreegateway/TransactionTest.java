@@ -1419,26 +1419,390 @@ public class TransactionTest {
     @Test
     public void searchOnCreatedAtUsingLocalTime() {
         TransactionRequest request = new TransactionRequest().
-        amount(TransactionAmount.AUTHORIZE.amount).
-        creditCard().
-            number(CreditCardNumber.VISA.number).
-            expirationDate("05/2010").
-            done();
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done();
 
-         Transaction transaction = gateway.transaction().sale(request).getTarget();
-                  
-         Calendar oneHourEarlier = Calendar.getInstance();
-         oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
-         
-         Calendar oneHourLater = Calendar.getInstance();
-         oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
-         
-         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-             id().is(transaction.getId()).
-             createdAt().between(oneHourEarlier, oneHourLater);
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
 
-         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
-     }
+        Calendar oneHourEarlier = Calendar.getInstance();
+        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+
+        Calendar oneHourLater = Calendar.getInstance();
+        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            createdAt().between(oneHourEarlier, oneHourLater);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    @Test
+    public void searchOnAuthorizedAt() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        Calendar threeHoursEarlier = Calendar.getInstance();
+        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+
+        Calendar oneHourEarlier = Calendar.getInstance();
+        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+
+        Calendar oneHourLater = Calendar.getInstance();
+        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            authorizedAt().between(oneHourEarlier, oneHourLater);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            authorizedAt().greaterThanOrEqual(oneHourEarlier);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            authorizedAt().lessThanOrEqual(oneHourLater);
+        
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            authorizedAt().between(threeHoursEarlier, oneHourEarlier);
+
+        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+    
+    @Test
+    public void searchOnFailedAt() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.FAILED.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTransaction();
+
+        Calendar threeHoursEarlier = Calendar.getInstance();
+        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+
+        Calendar oneHourEarlier = Calendar.getInstance();
+        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+
+        Calendar oneHourLater = Calendar.getInstance();
+        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            failedAt().between(oneHourEarlier, oneHourLater);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            failedAt().greaterThanOrEqual(oneHourEarlier);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            failedAt().lessThanOrEqual(oneHourLater);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            failedAt().between(threeHoursEarlier, oneHourEarlier);
+
+        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+    
+    @Test
+    public void searchOnGatewayRejectedAt() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key"); 
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                cvv("200").
+                done();
+
+        Transaction transaction = processingRulesGateway.transaction().sale(request).getTransaction();
+
+        Calendar threeHoursEarlier = Calendar.getInstance();
+        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+
+        Calendar oneHourEarlier = Calendar.getInstance();
+        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+
+        Calendar oneHourLater = Calendar.getInstance();
+        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            gatewayRejectedAt().between(oneHourEarlier, oneHourLater);
+
+        Assert.assertEquals(1, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            gatewayRejectedAt().greaterThanOrEqual(oneHourEarlier);
+
+        Assert.assertEquals(1, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            gatewayRejectedAt().lessThanOrEqual(oneHourLater);
+
+        Assert.assertEquals(1, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            gatewayRejectedAt().between(threeHoursEarlier, oneHourEarlier);
+
+        Assert.assertEquals(0, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
+    }
+    
+    @Test
+    public void searchOnProcessorDeclinedAt() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.DECLINE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTransaction();
+
+        Calendar threeHoursEarlier = Calendar.getInstance();
+        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+
+        Calendar oneHourEarlier = Calendar.getInstance();
+        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+
+        Calendar oneHourLater = Calendar.getInstance();
+        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            processorDeclinedAt().between(oneHourEarlier, oneHourLater);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            processorDeclinedAt().greaterThanOrEqual(oneHourEarlier);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            processorDeclinedAt().lessThanOrEqual(oneHourLater);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            processorDeclinedAt().between(threeHoursEarlier, oneHourEarlier);
+
+        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+    
+    @Test
+    public void searchOnSettledAt() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        settle(transaction.getId());
+        transaction = gateway.transaction().find(transaction.getId());
+
+        Calendar threeHoursEarlier = Calendar.getInstance();
+        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+
+        Calendar oneHourEarlier = Calendar.getInstance();
+        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+
+        Calendar oneHourLater = Calendar.getInstance();
+        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            settledAt().between(oneHourEarlier, oneHourLater);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            settledAt().greaterThanOrEqual(oneHourEarlier);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            settledAt().lessThanOrEqual(oneHourLater);
+        
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            settledAt().between(threeHoursEarlier, oneHourEarlier);
+
+        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    @Test
+    public void searchOnSubmittedForSettlementAt() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        Calendar threeHoursEarlier = Calendar.getInstance();
+        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+
+        Calendar oneHourEarlier = Calendar.getInstance();
+        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+
+        Calendar oneHourLater = Calendar.getInstance();
+        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            submittedForSettlementAt().between(oneHourEarlier, oneHourLater);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            submittedForSettlementAt().greaterThanOrEqual(oneHourEarlier);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            submittedForSettlementAt().lessThanOrEqual(oneHourLater);
+        
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            submittedForSettlementAt().between(threeHoursEarlier, oneHourEarlier);
+
+        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+    
+    @Test
+    public void searchOnVoidedAt() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        transaction = gateway.transaction().voidTransaction(transaction.getId()).getTarget();
+
+        Calendar threeHoursEarlier = Calendar.getInstance();
+        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+
+        Calendar oneHourEarlier = Calendar.getInstance();
+        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+
+        Calendar oneHourLater = Calendar.getInstance();
+        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            voidedAt().between(oneHourEarlier, oneHourLater);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            voidedAt().greaterThanOrEqual(oneHourEarlier);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            voidedAt().lessThanOrEqual(oneHourLater);
+        
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            voidedAt().between(threeHoursEarlier, oneHourEarlier);
+
+        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+    
+    @Test
+    public void searchOnMultipleStatusAtFields() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        Calendar threeHoursEarlier = Calendar.getInstance();
+        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+
+        Calendar oneHourEarlier = Calendar.getInstance();
+        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+
+        Calendar oneHourLater = Calendar.getInstance();
+        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            authorizedAt().between(oneHourEarlier, oneHourLater).
+            submittedForSettlementAt().between(oneHourEarlier, oneHourLater);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            authorizedAt().between(threeHoursEarlier, oneHourEarlier).
+            submittedForSettlementAt().between(threeHoursEarlier, oneHourEarlier);
+
+        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
 
     @Test
     public void refundTransaction() {
