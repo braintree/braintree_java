@@ -53,12 +53,12 @@ public class RequestBuilder {
         return builder.toString();
     }
      
-    protected String buildXMLElement(Object element) {
+    protected static String buildXMLElement(Object element) {
         return buildXMLElement("", element);
     }
 
     @SuppressWarnings("unchecked")
-    protected String buildXMLElement(String name, Object element) {
+    protected static String buildXMLElement(String name, Object element) {
         if (element == null) {
             return "";
         } else if (element instanceof Request) {
@@ -74,7 +74,7 @@ public class RequestBuilder {
         }
     }
     
-    protected String formatAsXML(String name, Map<String, String> map) {
+    protected static String formatAsXML(String name, Map<String, String> map) {
         if (map == null)
             return "";
         String xml = "";
@@ -86,7 +86,7 @@ public class RequestBuilder {
         return xml;
     }
 
-    protected Object buildQueryStringElement(String name, String value) {
+    protected static Object buildQueryStringElement(String name, String value) {
         if (value != null) {
             try {
                 return String.format("%s=%s&", URLEncoder.encode(name, "UTF-8"), URLEncoder.encode(value, "UTF-8"));
@@ -98,19 +98,19 @@ public class RequestBuilder {
         }
     }
 
-    protected String parentBracketChildString(String parent, String child) {
+    protected static String parentBracketChildString(String parent, String child) {
         return String.format("%s[%s]", parent, child);
     }
 
-    protected String wrapInXMLTag(String tagName, String xml) {
+    protected static String wrapInXMLTag(String tagName, String xml) {
         return String.format("<%s>%s</%s>", tagName, xml, tagName);
     }
 
-    protected String wrapInXMLTag(String tagName, String xml, String type) {
+    protected static String wrapInXMLTag(String tagName, String xml, String type) {
         return String.format("<%s type=\"%s\">%s</%s>", tagName, type, xml, tagName);
     }
 
-    protected String xmlEscape(String input) {
+    protected static String xmlEscape(String input) {
         return input.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("'", "&apos;").replaceAll("\"", "&quot;");
     }
 }
