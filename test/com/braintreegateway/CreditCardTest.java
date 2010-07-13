@@ -704,7 +704,7 @@ public class CreditCardTest {
         Result<CreditCard> result = gateway.creditCard().create(request);
         Assert.assertFalse(result.isSuccess());
         CreditCardVerification verification = result.getCreditCardVerification();
-        Assert.assertEquals("processor_declined", verification.getStatus());
+        Assert.assertEquals(CreditCardVerification.Status.PROCESSOR_DECLINED, verification.getStatus());
         Assert.assertEquals("Do Not Honor", result.getMessage());
         Assert.assertNull(verification.getGatewayRejectionReason());
     }

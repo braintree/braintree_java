@@ -31,7 +31,7 @@ public class CreditCardVerificationTest {
         CreditCardVerification verification = new CreditCardVerification(verificationNode);
         Assert.assertEquals(null, verification.getAvsErrorResponseCode());
         Assert.assertEquals("I", verification.getAvsPostalCodeResponseCode());
-        Assert.assertEquals("processor_declined", verification.getStatus());
+        Assert.assertEquals(CreditCardVerification.Status.PROCESSOR_DECLINED, verification.getStatus());
         Assert.assertEquals("2000", verification.getProcessorResponseCode());
         Assert.assertEquals("I", verification.getAvsStreetAddressResponseCode());
         Assert.assertEquals("Do Not Honor", verification.getProcessorResponseText());

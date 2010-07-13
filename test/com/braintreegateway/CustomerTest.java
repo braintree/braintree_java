@@ -206,7 +206,7 @@ public class CustomerTest {
         Result<Customer> result = gateway.customer().create(request);
         Assert.assertFalse(result.isSuccess());
         CreditCardVerification verification = result.getCreditCardVerification();
-        Assert.assertEquals("processor_declined", verification.getStatus());
+        Assert.assertEquals(CreditCardVerification.Status.PROCESSOR_DECLINED, verification.getStatus());
     }
 
     @Test

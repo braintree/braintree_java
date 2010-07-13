@@ -6,6 +6,10 @@ import com.braintreegateway.util.NodeWrapper;
 
 public class CreditCardVerification {
 
+    public enum Status {
+        FAILED, GATEWAY_REJECTED, PROCESSOR_DECLINED, UNRECOGNIZED, VERIFIED
+    }
+
     private String avsErrorResponseCode;
     private String avsPostalCodeResponseCode;
     private String avsStreetAddressResponseCode;
@@ -14,7 +18,7 @@ public class CreditCardVerification {
     private String processorResponseCode;
     private String processorResponseText;
     private String merchantAccountId;
-    private String status;
+    private Status status;
 
     public CreditCardVerification(NodeWrapper node) {
         this.avsErrorResponseCode = node.findString("avs-error-response-code");
@@ -25,7 +29,7 @@ public class CreditCardVerification {
         this.processorResponseCode = node.findString("processor-response-code");
         this.processorResponseText = node.findString("processor-response-text");
         this.merchantAccountId = node.findString("merchant-account-id");
-        this.status = node.findString("status");
+        this.status = EnumUtils.findByName(Status.class, node.findString("status"));
     }
 
     public String getAvsErrorResponseCode() {
@@ -60,7 +64,7 @@ public class CreditCardVerification {
         return merchantAccountId;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 }
