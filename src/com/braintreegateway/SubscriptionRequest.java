@@ -9,6 +9,8 @@ public class SubscriptionRequest extends Request {
     private Boolean hasTrialPeriod;
     private String id;
     private String merchantAccountId;
+    private Boolean neverExpires;
+    private Integer numberOfBillingCycles;
     private String paymentMethodToken;
     private String planId;
     private BigDecimal price;
@@ -22,6 +24,16 @@ public class SubscriptionRequest extends Request {
     
     public SubscriptionRequest merchantAccountId(String merchantAccountId) {
         this.merchantAccountId = merchantAccountId;
+        return this;
+    }
+
+    public SubscriptionRequest neverExpires(boolean neverExpires) {
+        this.neverExpires = neverExpires;
+        return this;
+    }
+    
+    public SubscriptionRequest numberOfBillingCycles(Integer numberOfBillingCycles) {
+        this.numberOfBillingCycles = numberOfBillingCycles;
         return this;
     }
     
@@ -72,6 +84,8 @@ public class SubscriptionRequest extends Request {
         RequestBuilder builder = new RequestBuilder(root).
             addElement("id", id).
             addElement("merchantAccountId", merchantAccountId).
+            addElement("neverExpires", neverExpires).
+            addElement("numberOfBillingCycles", numberOfBillingCycles).
             addElement("paymentMethodToken", paymentMethodToken).
             addElement("planId", planId).
             addElement("price", price).

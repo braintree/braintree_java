@@ -18,6 +18,7 @@ public class Subscription {
     private String id;
     private String merchantAccountId;
     private Calendar nextBillingDate;
+    private Integer numberOfBillingCycles;
     private String paymentMethodToken;
     private String planId;
     private BigDecimal price;
@@ -32,7 +33,8 @@ public class Subscription {
 
     public enum Status {
         ACTIVE("Active"), 
-        CANCELED("Canceled"), 
+        CANCELED("Canceled"),  
+        EXPIRED("Expired"),
         PAST_DUE("Past Due"),
         UNRECOGNIZED("Unrecognized");
         
@@ -55,6 +57,7 @@ public class Subscription {
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
         nextBillingDate = node.findDate("next-billing-date");
+        numberOfBillingCycles = node.findInteger("number-of-billing-cycles");
         paymentMethodToken = node.findString("payment-method-token");
         planId = node.findString("plan-id");
         price = node.findBigDecimal("price");
@@ -94,6 +97,10 @@ public class Subscription {
 
     public Calendar getNextBillingDate() {
         return nextBillingDate;
+    }
+    
+    public Integer getNumberOfBillingCycles() {
+        return numberOfBillingCycles;
     }
 
     public String getPaymentMethodToken() {

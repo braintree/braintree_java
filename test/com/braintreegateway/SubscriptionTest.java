@@ -162,6 +162,73 @@ public class SubscriptionTest {
     }
     
     @Test
+    public void overridePlanNumberOfBillingCycles() {
+        Plan plan = Plan.PLAN_WITH_TRIAL;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId());
+            
+        Subscription subscription = gateway.subscription().create(request).getTarget();
+        Assert.assertEquals(plan.getNumberOfBillingCycles(), subscription.getNumberOfBillingCycles());
+        
+        SubscriptionRequest overrideRequest = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId()).
+            numberOfBillingCycles(10);
+        
+        Subscription overriddenSubsription = gateway.subscription().create(overrideRequest).getTarget();
+        Assert.assertEquals(new Integer(10), overriddenSubsription.getNumberOfBillingCycles());
+    }
+    
+    @Test
+    public void setNeverExpires() {
+        Plan plan = Plan.PLAN_WITH_TRIAL;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId()).
+            neverExpires(true);
+            
+        Subscription subscription = gateway.subscription().create(request).getTarget();
+        Assert.assertNull(subscription.getNumberOfBillingCycles());
+    }
+    
+    @Test
+    public void setNumberOfBillingCyclesAndUpdateToNeverExpire() {
+        Plan plan = Plan.PLAN_WITH_TRIAL;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId()).
+            numberOfBillingCycles(10);
+            
+        Subscription subscription = gateway.subscription().create(request).getTarget();
+        
+        SubscriptionRequest updateRequest = new SubscriptionRequest().
+            neverExpires(true);
+        
+        Subscription updatedSubscription = gateway.subscription().update(subscription.getId(), updateRequest).getTarget();
+        
+        Assert.assertNull(updatedSubscription.getNumberOfBillingCycles());
+    }
+    
+    @Test
+    public void setNumberOfBillingCyclesAndUpdate() {
+        Plan plan = Plan.PLAN_WITH_TRIAL;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId()).
+            numberOfBillingCycles(10);
+            
+        Subscription subscription = gateway.subscription().create(request).getTarget();
+        
+        SubscriptionRequest updateRequest = new SubscriptionRequest().
+            numberOfBillingCycles(14);
+        
+        Subscription updatedSubscription = gateway.subscription().update(subscription.getId(), updateRequest).getTarget();
+        
+        Assert.assertEquals(new Integer(14), updatedSubscription.getNumberOfBillingCycles());
+    }
+    
+    @Test
     public void setId() {
         Plan plan = Plan.PLAN_WITH_TRIAL;
         String newId = "new-id-" + new Random().nextInt(); 
@@ -619,6 +686,18 @@ public class SubscriptionTest {
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
         Assert.assertFalse(TestHelper.includesSubscription(results, subscription2));
+    }
+    
+    @Test
+    public void searchOnStatusExpired() {
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            status().in(Status.EXPIRED);
+        ResourceCollection<Subscription> results = gateway.subscription().search(search);
+        
+        Assert.assertTrue(results.getMaximumSize() > 0);
+        for (Subscription subscription : results) {
+            Assert.assertEquals(Status.EXPIRED, subscription.getStatus());
+        }
     }
     
     @Test
