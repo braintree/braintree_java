@@ -4,6 +4,8 @@ package com.braintreegateway;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,13 @@ import com.braintreegateway.Subscription.Status;
 import com.braintreegateway.util.NodeWrapper;
 
 public class SubscriptionTest {
+
+    private final class ModificationComparator implements Comparator<Modification> {
+        @Override
+        public int compare(Modification left, Modification right) {
+            return left.getAmount().compareTo(right.getAmount());
+        }
+    }
 
     private BraintreeGateway gateway;
     private Customer customer;
@@ -310,6 +319,41 @@ public class SubscriptionTest {
         Assert.assertEquals(0, subscription.getTransactions().size());
     }
     
+    
+    @Test
+    public void createInheritsAddOnsAndDiscountsFromPlan() {
+        Plan plan = Plan.ADD_ON_DISCOUNT_PLAN;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId());
+            
+        Result<Subscription> result = gateway.subscription().create(request);
+        Assert.assertTrue(result.isSuccess());
+        Subscription subscription = result.getTarget();
+
+        List<AddOn> addOns = subscription.getAddOns();
+        Collections.sort(addOns, new ModificationComparator());
+
+        Assert.assertEquals(2, addOns.size());
+
+        Assert.assertEquals(new BigDecimal("10.00"), addOns.get(0).getAmount());
+        Assert.assertEquals(new Integer(1), addOns.get(0).getQuantity());
+        
+        Assert.assertEquals(new BigDecimal("20.00"), addOns.get(1).getAmount());
+        Assert.assertEquals(new Integer(1), addOns.get(1).getQuantity());
+        
+        List<Discount> discounts = subscription.getDiscounts();
+        Collections.sort(discounts, new ModificationComparator());
+        
+        Assert.assertEquals(2, discounts.size());
+
+        Assert.assertEquals(new BigDecimal("7.00"), discounts.get(0).getAmount());
+        Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
+        
+        Assert.assertEquals(new BigDecimal("11.00"), discounts.get(1).getAmount());
+        Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
+    }
+
     @Test
     public void find() {
         Plan plan = Plan.PLAN_WITHOUT_TRIAL;
