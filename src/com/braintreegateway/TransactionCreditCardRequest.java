@@ -62,10 +62,12 @@ public class TransactionCreditCardRequest extends Request {
         return buildRequest("creditCard").toXML();
     }
 
+    @Override
     public String toQueryString(String root) {
         return buildRequest(root).toQueryString();
     }
 
+    @Override
     public String toQueryString() {
         return toQueryString("creditCard");
     }

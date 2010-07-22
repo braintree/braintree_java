@@ -18,10 +18,12 @@ public class CreditCardAddressOptionsRequest extends Request {
         return this;
     }
 
+    @Override
     public String toQueryString() {
         return toQueryString("options");
     }
 
+    @Override
     public String toQueryString(String root) {
         return buildRequest(root).toQueryString();
     }

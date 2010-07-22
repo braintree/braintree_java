@@ -28,6 +28,7 @@ public class CreditCard {
             this.name = name;
         }
 
+        @Override
         public String toString() {
             return name;
         }
@@ -43,6 +44,7 @@ public class CreditCard {
             this.name = name;
         }
 
+        @Override
         public String toString() {
             return name;
         }

@@ -107,10 +107,12 @@ public class CustomerRequest extends Request {
         return buildRequest("customer").toXML();
     }
 
+    @Override
     public String toQueryString() {
         return toQueryString("customer");
     }
 
+    @Override
     public String toQueryString(String root) {
         return buildRequest(root).
             addTopLevelElement("customerId", customerId).

@@ -84,10 +84,12 @@ public class AddressRequest extends Request {
         return this;
     }
 
+    @Override
     public String toQueryString() {
         return toQueryString(this.tagName);
     }
 
+    @Override
     public String toQueryString(String root) {
         return buildRequest(root).toQueryString();
     }

@@ -21,6 +21,7 @@ public class Transaction {
             this.name = name;
         }
 
+        @Override
         public String toString() {
             return name;
         }
@@ -36,6 +37,7 @@ public class Transaction {
             this.name = name;
         }
 
+        @Override
         public String toString() {
             return name;
         }
@@ -56,6 +58,7 @@ public class Transaction {
             this.name = name;
         }
 
+        @Override
         public String toString() {
             return name;
         }
@@ -73,6 +76,7 @@ public class Transaction {
             this.name = name;
         }
 
+        @Override
         public String toString() {
             return name;
         }
