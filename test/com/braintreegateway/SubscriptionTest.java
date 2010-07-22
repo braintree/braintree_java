@@ -353,6 +353,52 @@ public class SubscriptionTest {
         Assert.assertEquals(new BigDecimal("11.00"), discounts.get(1).getAmount());
         Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
     }
+    
+    @Test
+    public void createOverridesInheritedAddOnsAndDiscounts() {
+        Plan plan = Plan.ADD_ON_DISCOUNT_PLAN;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId()).
+            addOns().
+                update().
+                    existingId("increase_10").
+                    amount(new BigDecimal("30.00")).
+                    done().
+                done().
+            discounts().
+                update().
+                    existingId("discount_7").
+                    amount(new BigDecimal("15.00")).
+                    done().
+                done();
+            
+        Result<Subscription> result = gateway.subscription().create(request);
+        Assert.assertTrue(result.isSuccess());
+        Subscription subscription = result.getTarget();
+
+        List<AddOn> addOns = subscription.getAddOns();
+        Collections.sort(addOns, new ModificationComparator());
+
+        Assert.assertEquals(2, addOns.size());
+
+        Assert.assertEquals(new BigDecimal("20.00"), addOns.get(0).getAmount());
+        Assert.assertEquals(new Integer(1), addOns.get(0).getQuantity());
+        
+        Assert.assertEquals(new BigDecimal("30.00"), addOns.get(1).getAmount());
+        Assert.assertEquals(new Integer(1), addOns.get(1).getQuantity());
+        
+        List<Discount> discounts = subscription.getDiscounts();
+        Collections.sort(discounts, new ModificationComparator());
+        
+        Assert.assertEquals(2, discounts.size());
+
+        Assert.assertEquals(new BigDecimal("11.00"), discounts.get(0).getAmount());
+        Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
+        
+        Assert.assertEquals(new BigDecimal("15.00"), discounts.get(1).getAmount());
+        Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
+    }
 
     @Test
     public void find() {

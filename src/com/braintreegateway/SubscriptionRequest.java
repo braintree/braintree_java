@@ -3,7 +3,8 @@ package com.braintreegateway;
 import java.math.BigDecimal;
 
 /**
- * Provides a fluent interface to build up requests around {@link Subscription Subscriptions}.
+ * Provides a fluent interface to build up requests around {@link Subscription
+ * Subscriptions}.
  */
 public class SubscriptionRequest extends Request {
     private Boolean hasTrialPeriod;
@@ -16,12 +17,24 @@ public class SubscriptionRequest extends Request {
     private BigDecimal price;
     private Integer trialDuration;
     private Subscription.DurationUnit trialDurationUnit;
-    
+    private ModificationsRequest addOnsRequest;
+    private ModificationsRequest discountsRequest;
+
     public SubscriptionRequest id(String id) {
         this.id = id;
         return this;
     }
-    
+
+    public ModificationsRequest addOns() {
+        addOnsRequest = new ModificationsRequest(this, "addOns");
+        return addOnsRequest;
+    }
+
+    public ModificationsRequest discounts() {
+        discountsRequest = new ModificationsRequest(this, "discounts");
+        return discountsRequest;
+    }
+
     public SubscriptionRequest merchantAccountId(String merchantAccountId) {
         this.merchantAccountId = merchantAccountId;
         return this;
@@ -31,42 +44,42 @@ public class SubscriptionRequest extends Request {
         this.neverExpires = neverExpires;
         return this;
     }
-    
+
     public SubscriptionRequest numberOfBillingCycles(Integer numberOfBillingCycles) {
         this.numberOfBillingCycles = numberOfBillingCycles;
         return this;
     }
-    
+
     public SubscriptionRequest paymentMethodToken(String token) {
         this.paymentMethodToken = token;
         return this;
     }
-    
+
     public SubscriptionRequest planId(String id) {
         this.planId = id;
         return this;
     }
-    
+
     public SubscriptionRequest price(BigDecimal price) {
         this.price = price;
         return this;
     }
-    
+
     public SubscriptionRequest trialDuration(int trialDuration) {
         this.trialDuration = trialDuration;
         return this;
     }
-    
+
     public SubscriptionRequest trialDurationUnit(Subscription.DurationUnit trialDurationUnit) {
         this.trialDurationUnit = trialDurationUnit;
         return this;
     }
-   
+
     public SubscriptionRequest trialPeriod(boolean hasTrialPeriod) {
         this.hasTrialPeriod = hasTrialPeriod;
         return this;
     }
-    
+
     public String toQueryString() {
         return "not implemented";
     }
@@ -83,6 +96,8 @@ public class SubscriptionRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root).
             addElement("id", id).
+            addElement("addOns", addOnsRequest).
+            addElement("discounts", discountsRequest).
             addElement("merchantAccountId", merchantAccountId).
             addElement("neverExpires", neverExpires).
             addElement("numberOfBillingCycles", numberOfBillingCycles).
