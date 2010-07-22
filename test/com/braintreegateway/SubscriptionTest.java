@@ -23,7 +23,6 @@ import com.braintreegateway.util.NodeWrapper;
 public class SubscriptionTest {
 
     private final class ModificationComparator implements Comparator<Modification> {
-        @Override
         public int compare(Modification left, Modification right) {
             return left.getAmount().compareTo(right.getAmount());
         }
