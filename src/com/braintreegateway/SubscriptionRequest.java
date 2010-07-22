@@ -80,14 +80,6 @@ public class SubscriptionRequest extends Request {
         return this;
     }
 
-    public String toQueryString() {
-        return "not implemented";
-    }
-
-    public String toQueryString(String root) {
-        return "not implemented";
-    }
-
     @Override
     public String toXML() {
         return buildRequest("subscription").toXML();

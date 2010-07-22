@@ -27,16 +27,6 @@ public class ModificationRequest extends Request {
     }
 
     @Override
-    public String toQueryString() {
-        return "not implemented";
-    }
-
-    @Override
-    public String toQueryString(String root) {
-        return "not implemented";
-    }
-
-    @Override
     public String toXML() {
         return RequestBuilder.wrapInXMLTag("update", buildRequest("modification").toXML(), "array");
     }

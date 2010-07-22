@@ -20,16 +20,6 @@ public class ModificationsRequest extends Request {
     }
 
     @Override
-    public String toQueryString() {
-        return "not implemented";
-    }
-
-    @Override
-    public String toQueryString(String root) {
-        return "not implemented";
-    }
-
-    @Override
     public String toXML() {
         return buildRequest(name).toXML();
     }

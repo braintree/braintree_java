@@ -4,14 +4,22 @@ package com.braintreegateway;
  * Abstract class for fluent interface request builders.
  */
 public abstract class Request {
-    public abstract String toXML();
-    public abstract String toQueryString(String parent);
-    public abstract String toQueryString();
-    
+    public String toXML() {
+        throw new UnsupportedOperationException();
+    }
+
+    public String toQueryString(String parent) {
+        throw new UnsupportedOperationException();
+    }
+
+    public String toQueryString() {
+        throw new UnsupportedOperationException();
+    }
+
     public String getKind() {
         return null;
     }
-    
+
     protected String buildXMLElement(Object element) {
         return RequestBuilder.buildXMLElement(element);
     }
