@@ -639,6 +639,64 @@ public class SubscriptionTest {
         Assert.assertEquals(1, subscription.getTransactions().size());
     }
 
+    @Test
+    public void updateAddOnsAndDiscounts() {
+        Plan plan = Plan.ADD_ON_DISCOUNT_PLAN;
+        SubscriptionRequest createRequest = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId());
+        Subscription subscription = gateway.subscription().create(createRequest).getTarget();
+        
+        SubscriptionRequest request = new SubscriptionRequest().
+            addOns().
+                update("increase_10").
+                    amount(new BigDecimal("30.00")).
+                    quantity(9).
+                    done().
+                remove("increase_20").
+                add().
+                    inheritedFromId("increase_30").
+                    amount(new BigDecimal("31.00")).
+                    quantity(7).
+                    done().
+                done().
+            discounts().
+                update("discount_7").
+                    amount(new BigDecimal("15.00")).
+                    done().
+                remove("discount_11").
+                add().
+                    inheritedFromId("discount_15").
+                    amount(new BigDecimal("23.00")).
+                    done().
+                done();
+            
+        Result<Subscription> result = gateway.subscription().update(subscription.getId(), request);
+        Assert.assertTrue(result.isSuccess());
+        Subscription updatedSubscription = result.getTarget();
+
+        List<AddOn> addOns = updatedSubscription.getAddOns();
+        Collections.sort(addOns, new SortModificationsByPrice());
+
+        Assert.assertEquals(2, addOns.size());
+
+        Assert.assertEquals(new BigDecimal("30.00"), addOns.get(0).getAmount());
+        Assert.assertEquals(new Integer(9), addOns.get(0).getQuantity());
+        
+        Assert.assertEquals(new BigDecimal("31.00"), addOns.get(1).getAmount());
+        Assert.assertEquals(new Integer(7), addOns.get(1).getQuantity());
+        
+        List<Discount> discounts = updatedSubscription.getDiscounts();
+        Collections.sort(discounts, new SortModificationsByPrice());
+        
+        Assert.assertEquals(2, discounts.size());
+
+        Assert.assertEquals(new BigDecimal("15.00"), discounts.get(0).getAmount());
+        Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
+        
+        Assert.assertEquals(new BigDecimal("23.00"), discounts.get(1).getAmount());
+        Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
+    }
 
     @Test
     public void createWithBadPlanId() {
