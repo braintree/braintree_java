@@ -2,19 +2,17 @@ package com.braintreegateway;
 
 import java.math.BigDecimal;
 
-public class UpdateModificationRequest extends Request {
+public class UpdateModificationRequest extends ModificationRequest {
 
-    private BigDecimal amount;
     private String existingId;
-    private ModificationsRequest parent;
-    private Integer quantity;
 
     public UpdateModificationRequest(ModificationsRequest parent) {
-        this.parent = parent;
+        super(parent);
     }
 
+    @Override
     public UpdateModificationRequest amount(BigDecimal amount) {
-        this.amount = amount;
+        super.amount(amount);
         return this;
     }
 
@@ -23,24 +21,14 @@ public class UpdateModificationRequest extends Request {
         return this;
     }
 
-    public ModificationsRequest done() {
-        return parent;
-    }
-
+    @Override
     public UpdateModificationRequest quantity(int quantity) {
-        this.quantity = quantity;
+        super.quantity(quantity);
         return this;
     }
 
     @Override
-    public String toXML() {
-        return buildRequest("modification").toXML();
-    }
-
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("amount", amount).
-            addElement("existingId", existingId).
-            addElement("quantity", quantity);
+        return super.buildRequest(root).addElement("existingId", existingId);
     }
 }
