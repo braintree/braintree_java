@@ -319,7 +319,24 @@ public class SubscriptionTest {
         Assert.assertEquals(0, subscription.getTransactions().size());
     }
     
-    
+    @Test
+    public void createInheritsNoAddOnsAndDiscountsWhenOptionIsPassed() {
+        Plan plan = Plan.ADD_ON_DISCOUNT_PLAN;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId()).
+            options().
+                doNotInheritAddOnsOrDiscounts(true).
+                done();
+            
+        Result<Subscription> result = gateway.subscription().create(request);
+        Assert.assertTrue(result.isSuccess());
+        Subscription subscription = result.getTarget();
+
+        Assert.assertEquals(0, subscription.getAddOns().size());
+        Assert.assertEquals(0, subscription.getDiscounts().size());
+    }
+
     @Test
     public void createInheritsAddOnsAndDiscountsFromPlan() {
         Plan plan = Plan.ADD_ON_DISCOUNT_PLAN;
@@ -353,7 +370,7 @@ public class SubscriptionTest {
         Assert.assertEquals(new BigDecimal("11.00"), discounts.get(1).getAmount());
         Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
     }
-    
+
     @Test
     public void createOverridesInheritedAddOnsAndDiscounts() {
         Plan plan = Plan.ADD_ON_DISCOUNT_PLAN;

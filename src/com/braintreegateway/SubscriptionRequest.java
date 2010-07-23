@@ -12,6 +12,7 @@ public class SubscriptionRequest extends Request {
     private String merchantAccountId;
     private Boolean neverExpires;
     private Integer numberOfBillingCycles;
+    private SubscriptionOptionsRequest options;
     private String paymentMethodToken;
     private String planId;
     private BigDecimal price;
@@ -48,6 +49,11 @@ public class SubscriptionRequest extends Request {
     public SubscriptionRequest numberOfBillingCycles(Integer numberOfBillingCycles) {
         this.numberOfBillingCycles = numberOfBillingCycles;
         return this;
+    }
+
+    public SubscriptionOptionsRequest options() {
+        options = new SubscriptionOptionsRequest(this);
+        return options;
     }
 
     public SubscriptionRequest paymentMethodToken(String token) {
@@ -93,6 +99,7 @@ public class SubscriptionRequest extends Request {
             addElement("merchantAccountId", merchantAccountId).
             addElement("neverExpires", neverExpires).
             addElement("numberOfBillingCycles", numberOfBillingCycles).
+            addElement("options", options).
             addElement("paymentMethodToken", paymentMethodToken).
             addElement("planId", planId).
             addElement("price", price).
