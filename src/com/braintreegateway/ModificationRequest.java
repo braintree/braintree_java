@@ -28,7 +28,7 @@ public class ModificationRequest extends Request {
 
     @Override
     public String toXML() {
-        return RequestBuilder.wrapInXMLTag("update", buildRequest("modification").toXML(), "array");
+        return buildRequest("modification").toXML();
     }
 
     protected RequestBuilder buildRequest(String root) {

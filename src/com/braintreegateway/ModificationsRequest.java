@@ -1,13 +1,17 @@
 package com.braintreegateway;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ModificationsRequest extends Request {
-    private ModificationRequest modificationRequest;
     private SubscriptionRequest parent;
     private String name;
+    private List<ModificationRequest> updates;
 
     public ModificationsRequest(SubscriptionRequest parent, String name) {
         this.name = name;
         this.parent = parent;
+        this.updates = new ArrayList<ModificationRequest>();
     }
 
     public SubscriptionRequest done() {
@@ -15,7 +19,8 @@ public class ModificationsRequest extends Request {
     }
 
     public ModificationRequest update() {
-        modificationRequest = new ModificationRequest(this);
+        ModificationRequest modificationRequest = new ModificationRequest(this);
+        updates.add(modificationRequest);
         return modificationRequest;
     }
 
@@ -26,6 +31,6 @@ public class ModificationsRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
-            addElement("update", modificationRequest);
+            addElement("update", updates);
     }
 }

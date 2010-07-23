@@ -4,6 +4,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -69,6 +70,12 @@ public class RequestBuilder {
             return String.format("<%s type=\"datetime\">%s</%s>", name, dateFormat.format(((Calendar) element).getTime()), name);
         } else if (element instanceof Map<?, ?>) {
             return formatAsXML(name, (Map<String, Object>) element);
+        } else if (element instanceof List<?>) {
+            String xml = "";
+            for (Object item : (List<Object>) element) {
+                xml += buildXMLElement(name, item);
+            }
+            return wrapInXMLTag(name, xml, "array");
         } else {
             return String.format("<%s>%s</%s>", xmlEscape(name), element == null ? "" : xmlEscape(element.toString()), xmlEscape(name));
         }

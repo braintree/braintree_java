@@ -364,11 +364,19 @@ public class SubscriptionTest {
                     existingId("increase_10").
                     amount(new BigDecimal("30.00")).
                     done().
+                update().
+                    existingId("increase_20").
+                    amount(new BigDecimal("40.00")).
+                    done().
                 done().
             discounts().
                 update().
                     existingId("discount_7").
                     amount(new BigDecimal("15.00")).
+                    done().
+                update().
+                    existingId("discount_11").
+                    amount(new BigDecimal("23.00")).
                     done().
                 done();
             
@@ -381,10 +389,10 @@ public class SubscriptionTest {
 
         Assert.assertEquals(2, addOns.size());
 
-        Assert.assertEquals(new BigDecimal("20.00"), addOns.get(0).getAmount());
+        Assert.assertEquals(new BigDecimal("30.00"), addOns.get(0).getAmount());
         Assert.assertEquals(new Integer(1), addOns.get(0).getQuantity());
         
-        Assert.assertEquals(new BigDecimal("30.00"), addOns.get(1).getAmount());
+        Assert.assertEquals(new BigDecimal("40.00"), addOns.get(1).getAmount());
         Assert.assertEquals(new Integer(1), addOns.get(1).getQuantity());
         
         List<Discount> discounts = subscription.getDiscounts();
@@ -392,10 +400,10 @@ public class SubscriptionTest {
         
         Assert.assertEquals(2, discounts.size());
 
-        Assert.assertEquals(new BigDecimal("11.00"), discounts.get(0).getAmount());
+        Assert.assertEquals(new BigDecimal("15.00"), discounts.get(0).getAmount());
         Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
         
-        Assert.assertEquals(new BigDecimal("15.00"), discounts.get(1).getAmount());
+        Assert.assertEquals(new BigDecimal("23.00"), discounts.get(1).getAmount());
         Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
     }
 
