@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class AddModificationRequest extends ModificationRequest {
 
-    private String id;
+    private String inheritedFromId;
 
     public AddModificationRequest(ModificationsRequest parent) {
         super(parent);
@@ -16,8 +16,8 @@ public class AddModificationRequest extends ModificationRequest {
         return this;
     }
 
-    public AddModificationRequest id(String id) {
-        this.id = id;
+    public AddModificationRequest inheritedFromId(String inheritedFromId) {
+        this.inheritedFromId = inheritedFromId;
         return this;
     }
 
@@ -29,6 +29,6 @@ public class AddModificationRequest extends ModificationRequest {
 
     @Override
     protected RequestBuilder buildRequest(String root) {
-        return super.buildRequest(root).addElement("id", id);
+        return super.buildRequest(root).addElement("inheritedFromId", inheritedFromId);
     }
 }

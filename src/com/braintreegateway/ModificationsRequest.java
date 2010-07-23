@@ -38,8 +38,8 @@ public class ModificationsRequest extends Request {
         return this;
     }
 
-    public UpdateModificationRequest update() {
-        UpdateModificationRequest updateModificationRequest = new UpdateModificationRequest(this);
+    public UpdateModificationRequest update(String existingId) {
+        UpdateModificationRequest updateModificationRequest = new UpdateModificationRequest(this, existingId);
         updates.add(updateModificationRequest);
         return updateModificationRequest;
     }

@@ -361,23 +361,19 @@ public class SubscriptionTest {
             paymentMethodToken(creditCard.getToken()).
             planId(plan.getId()).
             addOns().
-                update().
-                    existingId("increase_10").
+                update("increase_10").
                     amount(new BigDecimal("30.00")).
                     quantity(9).
                     done().
-                update().
-                    existingId("increase_20").
+                update("increase_20").
                     amount(new BigDecimal("40.00")).
                     done().
                 done().
             discounts().
-                update().
-                    existingId("discount_7").
+                update("discount_7").
                     amount(new BigDecimal("15.00")).
                     done().
-                update().
-                    existingId("discount_11").
+                update("discount_11").
                     amount(new BigDecimal("23.00")).
                     done().
                 done();
@@ -461,7 +457,7 @@ public class SubscriptionTest {
             addOns().
                 remove("increase_10", "increase_20").
                 add().
-                    id("increase_30").
+                    inheritedFromId("increase_30").
                     amount(new BigDecimal("40.00")).
                     quantity(3).
                     done().
@@ -469,7 +465,7 @@ public class SubscriptionTest {
             discounts().
                 remove("discount_7", "discount_11").
                 add().
-                    id("discount_15").
+                    inheritedFromId("discount_15").
                     amount(new BigDecimal("17.00")).
                     quantity(2).
                     done().

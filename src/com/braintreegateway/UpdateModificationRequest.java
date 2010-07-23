@@ -6,18 +6,14 @@ public class UpdateModificationRequest extends ModificationRequest {
 
     private String existingId;
 
-    public UpdateModificationRequest(ModificationsRequest parent) {
+    public UpdateModificationRequest(ModificationsRequest parent, String existingId) {
         super(parent);
+        this.existingId = existingId;
     }
 
     @Override
     public UpdateModificationRequest amount(BigDecimal amount) {
         super.amount(amount);
-        return this;
-    }
-
-    public UpdateModificationRequest existingId(String existingId) {
-        this.existingId = existingId;
         return this;
     }
 
