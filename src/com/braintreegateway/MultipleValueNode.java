@@ -21,9 +21,7 @@ public class MultipleValueNode<T extends SearchRequest> extends SearchNode<T> {
     }
     
     public T in(Object... items) {
-        List<?> itemList = Arrays.asList(items);
-        checkForValidItems(itemList);
-        return assembleMultiValueCriteria(itemList);
+        return in(Arrays.asList(items));
     }
     
     public T is(Object item) {

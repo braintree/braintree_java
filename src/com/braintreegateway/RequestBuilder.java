@@ -73,7 +73,7 @@ public class RequestBuilder {
         } else if (element instanceof List<?>) {
             String xml = "";
             for (Object item : (List<Object>) element) {
-                xml += buildXMLElement(name, item);
+                xml += buildXMLElement("item", item);
             }
             return wrapInXMLTag(name, xml, "array");
         } else {

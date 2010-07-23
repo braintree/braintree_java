@@ -3,6 +3,7 @@ package com.braintreegateway;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -405,6 +406,49 @@ public class SubscriptionTest {
         
         Assert.assertEquals(new BigDecimal("23.00"), discounts.get(1).getAmount());
         Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
+    }
+    
+    @Test
+    public void createRemovesInheritedAddOnsAndDiscounts() {
+        Plan plan = Plan.ADD_ON_DISCOUNT_PLAN;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId()).
+            addOns().
+                remove("increase_10", "increase_20").
+                done().
+            discounts().
+                remove("discount_7", "discount_11").
+                done();
+            
+        Result<Subscription> result = gateway.subscription().create(request);
+        Assert.assertTrue(result.isSuccess());
+        Subscription subscription = result.getTarget();
+
+        Assert.assertEquals(0, subscription.getAddOns().size());
+        Assert.assertEquals(0, subscription.getDiscounts().size());
+    }
+
+    @Test
+    public void createRemovesInheritedAddOnsAndDiscountsWithListsOrChaining() {
+        Plan plan = Plan.ADD_ON_DISCOUNT_PLAN;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId()).
+            addOns().
+                remove(Arrays.asList(new String[] { "increase_10", "increase_20" })).
+                done().
+            discounts().
+                remove("discount_7").
+                remove("discount_11").
+                done();
+            
+        Result<Subscription> result = gateway.subscription().create(request);
+        Assert.assertTrue(result.isSuccess());
+        Subscription subscription = result.getTarget();
+
+        Assert.assertEquals(0, subscription.getAddOns().size());
+        Assert.assertEquals(0, subscription.getDiscounts().size());
     }
 
     @Test
