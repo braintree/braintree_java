@@ -42,6 +42,7 @@ public class Subscription {
     private Boolean hasTrialPeriod;
     private String id;
     private String merchantAccountId;
+    private boolean neverExpires;
     private Calendar nextBillingDate;
     private Integer numberOfBillingCycles;
     private String paymentMethodToken;
@@ -67,6 +68,7 @@ public class Subscription {
         firstBillingDate = node.findDate("first-billing-date");
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
+        neverExpires = node.findBoolean("never-expires");
         nextBillingDate = node.findDate("next-billing-date");
         numberOfBillingCycles = node.findInteger("number-of-billing-cycles");
         paymentMethodToken = node.findString("payment-method-token");
@@ -152,5 +154,9 @@ public class Subscription {
 
     public Boolean hasTrialPeriod() {
         return hasTrialPeriod;
+    }
+
+    public boolean neverExpires() {
+        return neverExpires;
     }
 }

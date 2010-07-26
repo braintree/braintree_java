@@ -187,6 +187,7 @@ public class SubscriptionTest {
         
         Subscription overriddenSubsription = gateway.subscription().create(overrideRequest).getTarget();
         Assert.assertEquals(new Integer(10), overriddenSubsription.getNumberOfBillingCycles());
+        Assert.assertFalse(overriddenSubsription.neverExpires());
     }
     
     @Test
@@ -199,6 +200,7 @@ public class SubscriptionTest {
             
         Subscription subscription = gateway.subscription().create(request).getTarget();
         Assert.assertNull(subscription.getNumberOfBillingCycles());
+        Assert.assertTrue(subscription.neverExpires());
     }
     
     @Test
