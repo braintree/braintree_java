@@ -724,6 +724,37 @@ public class SubscriptionTest {
         Assert.assertEquals(new BigDecimal("23.00"), discounts.get(1).getAmount());
         Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
     }
+    
+    @Test
+    public void updateCanReplaceAllAddOnsAndDiscounts() {
+        Plan plan = Plan.ADD_ON_DISCOUNT_PLAN;
+        SubscriptionRequest createRequest = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId());
+        Subscription subscription = gateway.subscription().create(createRequest).getTarget();
+        
+        SubscriptionRequest request = new SubscriptionRequest().
+            addOns().
+                add().
+                    inheritedFromId("increase_30").
+                    done().
+                done().
+            discounts().
+                add().
+                    inheritedFromId("discount_15").
+                    done().
+                done().
+            options().
+                replaceAllAddOnsAndDiscounts(true).
+                done();
+            
+        Result<Subscription> result = gateway.subscription().update(subscription.getId(), request);
+        Assert.assertTrue(result.isSuccess());
+        Subscription updatedSubscription = result.getTarget();
+
+        Assert.assertEquals(1, updatedSubscription.getAddOns().size());
+        Assert.assertEquals(1, updatedSubscription.getDiscounts().size());
+    }
 
     @Test
     public void createWithBadPlanId() {

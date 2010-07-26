@@ -3,6 +3,7 @@ package com.braintreegateway;
 public class SubscriptionOptionsRequest extends Request {
     private Boolean doNotInheritAddOnsOrDiscounts;
     private SubscriptionRequest parent;
+    private Boolean replaceAllAddOnsAndDiscounts;
 
     public SubscriptionOptionsRequest(SubscriptionRequest parent) {
         this.parent = parent;
@@ -12,8 +13,13 @@ public class SubscriptionOptionsRequest extends Request {
         return parent;
     }
 
-    public SubscriptionOptionsRequest doNotInheritAddOnsOrDiscounts(boolean doNotInheritAddOnsOrDiscounts) {
+    public SubscriptionOptionsRequest doNotInheritAddOnsOrDiscounts(Boolean doNotInheritAddOnsOrDiscounts) {
         this.doNotInheritAddOnsOrDiscounts = doNotInheritAddOnsOrDiscounts;
+        return this;
+    }
+
+    public SubscriptionOptionsRequest replaceAllAddOnsAndDiscounts(Boolean replaceAllAddonsAndDiscounts) {
+        this.replaceAllAddOnsAndDiscounts = replaceAllAddonsAndDiscounts;
         return this;
     }
 
@@ -24,6 +30,7 @@ public class SubscriptionOptionsRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
-            addElement("doNotInheritAddOnsOrDiscounts", doNotInheritAddOnsOrDiscounts);
+            addElement("doNotInheritAddOnsOrDiscounts", doNotInheritAddOnsOrDiscounts).
+            addElement("replaceAllAddOnsAndDiscounts", replaceAllAddOnsAndDiscounts);
     }
 }
