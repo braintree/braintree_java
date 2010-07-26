@@ -357,9 +357,13 @@ public class SubscriptionTest {
 
         Assert.assertEquals(new BigDecimal("10.00"), addOns.get(0).getAmount());
         Assert.assertEquals(new Integer(1), addOns.get(0).getQuantity());
+        Assert.assertTrue(addOns.get(0).neverExpires());
+        Assert.assertNull(addOns.get(0).getNumberOfBillingCycles());
         
         Assert.assertEquals(new BigDecimal("20.00"), addOns.get(1).getAmount());
         Assert.assertEquals(new Integer(1), addOns.get(1).getQuantity());
+        Assert.assertTrue(addOns.get(1).neverExpires());
+        Assert.assertNull(addOns.get(1).getNumberOfBillingCycles());
         
         List<Discount> discounts = subscription.getDiscounts();
         Collections.sort(discounts, new SortModificationsByPrice());
@@ -368,9 +372,13 @@ public class SubscriptionTest {
 
         Assert.assertEquals(new BigDecimal("7.00"), discounts.get(0).getAmount());
         Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
+        Assert.assertTrue(discounts.get(0).neverExpires());
+        Assert.assertNull(discounts.get(0).getNumberOfBillingCycles());
         
         Assert.assertEquals(new BigDecimal("11.00"), discounts.get(1).getAmount());
         Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
+        Assert.assertTrue(discounts.get(1).neverExpires());
+        Assert.assertNull(discounts.get(1).getNumberOfBillingCycles());
     }
 
     @Test
