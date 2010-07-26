@@ -76,6 +76,7 @@ public class SubscriptionTest {
         Assert.assertEquals(creditCard.getToken(), subscription.getPaymentMethodToken());
         Assert.assertEquals(plan.getId(), subscription.getPlanId());
         Assert.assertEquals(plan.getPrice(), subscription.getPrice());
+        Assert.assertEquals(new BigDecimal("12.34"), subscription.getNextBillAmount());
         Assert.assertTrue(subscription.getId().matches("^\\w{6}$"));
         Assert.assertEquals(Subscription.Status.ACTIVE, subscription.getStatus());
         Assert.assertEquals(new Integer(0), subscription.getFailureCount());
