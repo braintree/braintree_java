@@ -10,33 +10,37 @@ import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.StringUtils;
 
 /**
- * Represents a collection of (nested) validation errors. Query for validation errors by object and field.  For Example:
+ * Represents a collection of (nested) validation errors. Query for validation
+ * errors by object and field. For Example:
  * 
- *  <pre>
+ * <pre>
  *  TransactionRequest request = new TransactionRequest().
  *      amount(null).
- *
  *   Result<Transaction> result = gateway.transaction().sale(request);
  *   Assert.assertFalse(result.isSuccess());
  *   ValidationErrors errors = result.getErrors();
  *   Assert.assertEquals(ValidationErrorCode.TRANSACTION_AMOUNT_IS_REQUIRED, errors.forObject("transaction").onField("amount").get(0).getCode());
- *  </pre>
- *  
- *  For more detailed information on {@link ValidationErrors}, see <a href="http://www.braintreepaymentsolutions.com/gateway/validation-errors" target="_blank">http://www.braintreepaymentsolutions.com/gateway/validation-errors</a>
+ * </pre>
+ * 
+ * For more detailed information on {@link ValidationErrors}, see <a
+ * href="http://www.braintreepaymentsolutions.com/gateway/validation-errors"
+ * target
+ * ="_blank">http://www.braintreepaymentsolutions.com/gateway/validation-errors
+ * </a>
  */
 public class ValidationErrors {
 
     private List<ValidationError> errors;
     private Map<String, ValidationErrors> nestedErrors;
 
-    public ValidationErrors(NodeWrapper node) {
-        this();
-        populateErrors(node);
-    }
-
     public ValidationErrors() {
         errors = new ArrayList<ValidationError>();
         nestedErrors = new HashMap<String, ValidationErrors>();
+    }
+
+    public ValidationErrors(NodeWrapper node) {
+        this();
+        populateErrors(node);
     }
 
     public void addError(ValidationError error) {
@@ -49,6 +53,7 @@ public class ValidationErrors {
 
     /**
      * Returns the number of errors on this object and all nested objects.
+     * 
      * @see #size()
      * @return the number of errors.
      */
@@ -60,9 +65,17 @@ public class ValidationErrors {
         return size;
     }
 
+    public ValidationErrors forIndex(int index) {
+        return forObject("index_" + index);
+    }
+
     /**
-     * Returns a {@link ValidationErrors} representing nested errors for the given ojbectName.
-     * @param objectName the name of the object with nested validation errors, e.g. customer or creditCard.
+     * Returns a {@link ValidationErrors} representing nested errors for the
+     * given ojbectName.
+     * 
+     * @param objectName
+     *            the name of the object with nested validation errors, e.g.
+     *            customer or creditCard.
      * @return a {@link ValidationErrors} object.
      */
     public ValidationErrors forObject(String objectName) {
@@ -75,8 +88,35 @@ public class ValidationErrors {
     }
 
     /**
+     * Returns a List of all of the {@link ValidationError} on this object and
+     * all nested objects.
+     * 
+     * @return a List of {@link ValidationError} objects.
+     */
+    public List<ValidationError> getAllDeepValidationErrors() {
+        List<ValidationError> result = new ArrayList<ValidationError>(errors);
+        for (ValidationErrors validationErrors : nestedErrors.values()) {
+            result.addAll(validationErrors.getAllDeepValidationErrors());
+        }
+        return result;
+    }
+
+    /**
+     * Returns a List of all of the {@link ValidationError} objects at the
+     * current nesting level.
+     * 
+     * @return a List of {@link ValidationError} objects.
+     */
+    public List<ValidationError> getAllValidationErrors() {
+        return Collections.unmodifiableList(new ArrayList<ValidationError>(errors));
+    }
+
+    /**
      * Returns a List of {@link ValidationError} objects for the given field.
-     * @param fieldName the name of the field with errors, e.g. amount or expirationDate.
+     * 
+     * @param fieldName
+     *            the name of the field with errors, e.g. amount or
+     *            expirationDate.
      * @return a List of {@link ValidationError} objects
      */
     public List<ValidationError> onField(String fieldName) {
@@ -87,15 +127,6 @@ public class ValidationErrors {
             }
         }
         return list;
-    }
-
-    /**
-     * Returns the number of errors on this object at the current nesting level.
-     * @see #deepSize()
-     * @return the number of errors.
-     */
-    public int size() {
-        return errors.size();
     }
 
     private void populateErrors(NodeWrapper node) {
@@ -122,22 +153,12 @@ public class ValidationErrors {
     }
 
     /**
-     * Returns a List of all of the {@link ValidationError} objects at the current nesting level.
-     * @return a List of {@link ValidationError} objects.
+     * Returns the number of errors on this object at the current nesting level.
+     * 
+     * @see #deepSize()
+     * @return the number of errors.
      */
-    public List<ValidationError> getAllValidationErrors() {
-        return Collections.unmodifiableList(new ArrayList<ValidationError>(errors));
-    }
-
-    /**
-     * Returns a List of all of the {@link ValidationError} on this object and all nested objects. 
-     * @return a List of {@link ValidationError} objects.
-     */
-    public List<ValidationError> getAllDeepValidationErrors() {
-        List<ValidationError> result = new ArrayList<ValidationError>(errors);
-        for (ValidationErrors validationErrors : nestedErrors.values()) {
-            result.addAll(validationErrors.getAllDeepValidationErrors());
-        }
-        return result;
+    public int size() {
+        return errors.size();
     }
 }

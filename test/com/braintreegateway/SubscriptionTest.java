@@ -513,6 +513,30 @@ public class SubscriptionTest {
         Assert.assertEquals(new BigDecimal("17.00"), subscription.getDiscounts().get(0).getAmount());
         Assert.assertEquals(new Integer(2), subscription.getDiscounts().get(0).getQuantity());
     }
+    
+    @Test
+    public void createWithBadQuantityCorrectlyParsesValidationErrors() {
+        Plan plan = Plan.ADD_ON_DISCOUNT_PLAN;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId()).
+            addOns().
+                update("addon_7").
+                    amount(new BigDecimal("-15")).
+                    done().
+                update("discount_7").
+                    quantity(-10).
+                    done().
+                done();
+            
+        Result<Subscription> result = gateway.subscription().create(request);
+        Assert.assertFalse(result.isSuccess());
+
+        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_MODIFICATION_AMOUNT_IS_INVALID,
+            result.getErrors().forObject("subscription").forObject("addOns").forObject("update").forIndex(0).onField("amount").get(0).getCode());
+        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_MODIFICATION_QUANTITY_IS_INVALID,
+            result.getErrors().forObject("subscription").forObject("addOns").forObject("update").forIndex(1).onField("quantity").get(0).getCode());
+    }
 
     @Test
     public void find() {
