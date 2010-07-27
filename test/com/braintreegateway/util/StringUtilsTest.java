@@ -32,14 +32,19 @@ public class StringUtilsTest {
     public void underscoreWorksForDasherizedString() {
         Assert.assertEquals("first_name", StringUtils.underscore("first-name"));
     }
+    
+    @Test
+    public void underscoreWorksForPascalCasedString() {
+        Assert.assertEquals("first_name", StringUtils.underscore("FirstName"));
+    }
 
     @Test
-    public void dasherizeRetursNullForNullString() {
+    public void dasherizeReturnsNullForNullString() {
         Assert.assertNull(StringUtils.dasherize(null));
     }
 
     @Test
-    public void dasherizeRetursAlreadyUnderscoredString() {
+    public void dasherizeReturnsAlreadyDasherizedString() {
         Assert.assertEquals("foo-bar", StringUtils.dasherize("foo-bar"));
     }
 
