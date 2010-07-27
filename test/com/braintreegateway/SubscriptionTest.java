@@ -23,9 +23,9 @@ import com.braintreegateway.util.NodeWrapper;
 
 public class SubscriptionTest {
 
-    private final class SortModificationsByPrice implements Comparator<Modification> {
+    private final class CompareModificationsById implements Comparator<Modification> {
         public int compare(Modification left, Modification right) {
-            return left.getAmount().compareTo(right.getAmount());
+            return left.getId().compareTo(right.getId());
         }
     }
 
@@ -352,31 +352,35 @@ public class SubscriptionTest {
         Subscription subscription = result.getTarget();
 
         List<AddOn> addOns = subscription.getAddOns();
-        Collections.sort(addOns, new SortModificationsByPrice());
+        Collections.sort(addOns, new CompareModificationsById());
 
         Assert.assertEquals(2, addOns.size());
 
+        Assert.assertEquals("increase_10", addOns.get(0).getId());
         Assert.assertEquals(new BigDecimal("10.00"), addOns.get(0).getAmount());
         Assert.assertEquals(new Integer(1), addOns.get(0).getQuantity());
         Assert.assertTrue(addOns.get(0).neverExpires());
         Assert.assertNull(addOns.get(0).getNumberOfBillingCycles());
         
+        Assert.assertEquals("increase_20", addOns.get(1).getId());
         Assert.assertEquals(new BigDecimal("20.00"), addOns.get(1).getAmount());
         Assert.assertEquals(new Integer(1), addOns.get(1).getQuantity());
         Assert.assertTrue(addOns.get(1).neverExpires());
         Assert.assertNull(addOns.get(1).getNumberOfBillingCycles());
         
         List<Discount> discounts = subscription.getDiscounts();
-        Collections.sort(discounts, new SortModificationsByPrice());
+        Collections.sort(discounts, new CompareModificationsById());
         
         Assert.assertEquals(2, discounts.size());
-
-        Assert.assertEquals(new BigDecimal("7.00"), discounts.get(0).getAmount());
+        
+        Assert.assertEquals("discount_11", discounts.get(0).getId());
+        Assert.assertEquals(new BigDecimal("11.00"), discounts.get(0).getAmount());
         Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
         Assert.assertTrue(discounts.get(0).neverExpires());
         Assert.assertNull(discounts.get(0).getNumberOfBillingCycles());
-        
-        Assert.assertEquals(new BigDecimal("11.00"), discounts.get(1).getAmount());
+
+        Assert.assertEquals("discount_7", discounts.get(1).getId());
+        Assert.assertEquals(new BigDecimal("7.00"), discounts.get(1).getAmount());
         Assert.assertEquals(new Integer(1), discounts.get(1).getQuantity());
         Assert.assertTrue(discounts.get(1).neverExpires());
         Assert.assertNull(discounts.get(1).getNumberOfBillingCycles());
@@ -411,26 +415,30 @@ public class SubscriptionTest {
         Subscription subscription = result.getTarget();
 
         List<AddOn> addOns = subscription.getAddOns();
-        Collections.sort(addOns, new SortModificationsByPrice());
+        Collections.sort(addOns, new CompareModificationsById());
 
         Assert.assertEquals(2, addOns.size());
 
+        Assert.assertEquals("increase_10", addOns.get(0).getId());
         Assert.assertEquals(new BigDecimal("30.00"), addOns.get(0).getAmount());
         Assert.assertEquals(new Integer(9), addOns.get(0).getQuantity());
         
+        Assert.assertEquals("increase_20", addOns.get(1).getId());
         Assert.assertEquals(new BigDecimal("40.00"), addOns.get(1).getAmount());
         Assert.assertEquals(new Integer(1), addOns.get(1).getQuantity());
         
         List<Discount> discounts = subscription.getDiscounts();
-        Collections.sort(discounts, new SortModificationsByPrice());
+        Collections.sort(discounts, new CompareModificationsById());
         
         Assert.assertEquals(2, discounts.size());
 
-        Assert.assertEquals(new BigDecimal("15.00"), discounts.get(0).getAmount());
+        Assert.assertEquals("discount_11", discounts.get(0).getId());
+        Assert.assertEquals(new BigDecimal("23.00"), discounts.get(0).getAmount());
         Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
-        
-        Assert.assertEquals(new BigDecimal("23.00"), discounts.get(1).getAmount());
-        Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
+
+        Assert.assertEquals("discount_7", discounts.get(1).getId());
+        Assert.assertEquals(new BigDecimal("15.00"), discounts.get(1).getAmount());
+        Assert.assertEquals(new Integer(1), discounts.get(1).getQuantity());
     }
     
     @Test
@@ -728,7 +736,7 @@ public class SubscriptionTest {
         Subscription updatedSubscription = result.getTarget();
 
         List<AddOn> addOns = updatedSubscription.getAddOns();
-        Collections.sort(addOns, new SortModificationsByPrice());
+        Collections.sort(addOns, new CompareModificationsById());
 
         Assert.assertEquals(2, addOns.size());
 
@@ -739,15 +747,17 @@ public class SubscriptionTest {
         Assert.assertEquals(new Integer(7), addOns.get(1).getQuantity());
         
         List<Discount> discounts = updatedSubscription.getDiscounts();
-        Collections.sort(discounts, new SortModificationsByPrice());
+        Collections.sort(discounts, new CompareModificationsById());
         
         Assert.assertEquals(2, discounts.size());
 
-        Assert.assertEquals(new BigDecimal("15.00"), discounts.get(0).getAmount());
+        Assert.assertEquals("discount_15", discounts.get(0).getId());
+        Assert.assertEquals(new BigDecimal("23.00"), discounts.get(0).getAmount());
         Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
-        
-        Assert.assertEquals(new BigDecimal("23.00"), discounts.get(1).getAmount());
-        Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
+
+        Assert.assertEquals("discount_7", discounts.get(1).getId());
+        Assert.assertEquals(new BigDecimal("15.00"), discounts.get(1).getAmount());
+        Assert.assertEquals(new Integer(1), discounts.get(1).getQuantity());
     }
     
     @Test
