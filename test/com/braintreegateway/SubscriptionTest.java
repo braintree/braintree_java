@@ -377,7 +377,7 @@ public class SubscriptionTest {
         Assert.assertNull(discounts.get(0).getNumberOfBillingCycles());
         
         Assert.assertEquals(new BigDecimal("11.00"), discounts.get(1).getAmount());
-        Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
+        Assert.assertEquals(new Integer(1), discounts.get(1).getQuantity());
         Assert.assertTrue(discounts.get(1).neverExpires());
         Assert.assertNull(discounts.get(1).getNumberOfBillingCycles());
     }
