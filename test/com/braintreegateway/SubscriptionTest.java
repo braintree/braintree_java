@@ -657,7 +657,7 @@ public class SubscriptionTest {
     }
     
     @Test
-    public void increasePriceAndTransaction() {
+    public void createAProrationTransactionOnPriceIncreaseWhenFlagIsNotPassed() {
         Plan originalPlan = Plan.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest createRequest = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
@@ -676,6 +676,58 @@ public class SubscriptionTest {
         
         Assert.assertEquals(new BigDecimal("4.56"), subscription.getPrice());
         Assert.assertEquals(2, subscription.getTransactions().size());
+    }
+    
+    @Test
+    public void createAProrationTransactionOnPriceIncreaseWhenProrationFlagIsTrue() {
+        Plan originalPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest createRequest = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(originalPlan.getId()).
+            price(new BigDecimal("1.23"));
+
+        Result<Subscription> createResult = gateway.subscription().create(createRequest);
+        Assert.assertTrue(createResult.isSuccess());
+        Subscription subscription = createResult.getTarget();
+        
+        SubscriptionRequest updateRequest = new SubscriptionRequest().
+        price(new BigDecimal("4.56")).
+        options().
+            prorateCharges(true).
+            done();
+        Result<Subscription> result = gateway.subscription().update(subscription.getId(), updateRequest);
+        
+        Assert.assertTrue(result.isSuccess());
+        subscription = result.getTarget();
+        
+        Assert.assertEquals(new BigDecimal("4.56"), subscription.getPrice());
+        Assert.assertEquals(2, subscription.getTransactions().size());
+    }
+    
+    @Test
+    public void doNotCreateAProrationTransactionOnPriceIncreaseWhenProrationFlagIsFalse() {
+        Plan originalPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest createRequest = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(originalPlan.getId()).
+            price(new BigDecimal("1.23"));
+
+        Result<Subscription> createResult = gateway.subscription().create(createRequest);
+        Assert.assertTrue(createResult.isSuccess());
+        Subscription subscription = createResult.getTarget();
+        
+        SubscriptionRequest updateRequest = new SubscriptionRequest().
+            price(new BigDecimal("4.56")).
+            options().
+                prorateCharges(false).
+                done();
+        Result<Subscription> result = gateway.subscription().update(subscription.getId(), updateRequest);
+        
+        Assert.assertTrue(result.isSuccess());
+        subscription = result.getTarget();
+        
+        Assert.assertEquals(new BigDecimal("4.56"), subscription.getPrice());
+        Assert.assertEquals(1, subscription.getTransactions().size());
     }
 
     @Test

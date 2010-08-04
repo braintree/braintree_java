@@ -3,6 +3,7 @@ package com.braintreegateway;
 public class SubscriptionOptionsRequest extends Request {
     private Boolean doNotInheritAddOnsOrDiscounts;
     private SubscriptionRequest parent;
+    private Boolean prorateCharges;
     private Boolean replaceAllAddOnsAndDiscounts;
 
     public SubscriptionOptionsRequest(SubscriptionRequest parent) {
@@ -15,6 +16,11 @@ public class SubscriptionOptionsRequest extends Request {
 
     public SubscriptionOptionsRequest doNotInheritAddOnsOrDiscounts(Boolean doNotInheritAddOnsOrDiscounts) {
         this.doNotInheritAddOnsOrDiscounts = doNotInheritAddOnsOrDiscounts;
+        return this;
+    }
+
+    public SubscriptionOptionsRequest prorateCharges(Boolean prorateCharges) {
+        this.prorateCharges = prorateCharges;
         return this;
     }
 
@@ -31,6 +37,7 @@ public class SubscriptionOptionsRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
             addElement("doNotInheritAddOnsOrDiscounts", doNotInheritAddOnsOrDiscounts).
+            addElement("prorateCharges", prorateCharges).
             addElement("replaceAllAddOnsAndDiscounts", replaceAllAddOnsAndDiscounts);
     }
 }
