@@ -27,13 +27,13 @@ public class SubscriptionSearchRequestTest {
     @Test
     public void daysPastDueXmlGreaterThanOrEqualOperator() {
         String expected = "<search><days_past_due><min>42</min></days_past_due></search>";
-        Assert.assertEquals(expected, new SubscriptionSearchRequest().daysPastDue().greaterThanOrEqual(42).toXML());
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().daysPastDue().greaterThanOrEqualTo(42).toXML());
     }
 
     @Test
     public void daysPastDueXmlLessThanOrEqualOperator() {
         String expected = "<search><days_past_due><max>42</max></days_past_due></search>";
-        Assert.assertEquals(expected, new SubscriptionSearchRequest().daysPastDue().lessThanOrEqual(42).toXML());
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().daysPastDue().lessThanOrEqualTo(42).toXML());
     }
 
     @Test
@@ -51,13 +51,13 @@ public class SubscriptionSearchRequestTest {
     @Test
     public void billingCyclesRemainingLessThanOrEqualOperator() {
         String expected = "<search><billing_cycles_remaining><max>42</max></billing_cycles_remaining></search>";
-        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().lessThanOrEqual(42).toXML());
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().lessThanOrEqualTo(42).toXML());
     }
 
     @Test
     public void billingCyclesRemainingGreaterThanOrEqualOperator() {
         String expected = "<search><billing_cycles_remaining><min>42</min></billing_cycles_remaining></search>";
-        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().greaterThanOrEqual(42)
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().greaterThanOrEqualTo(42)
                 .toXML());
     }
 
@@ -160,17 +160,32 @@ public class SubscriptionSearchRequestTest {
                 .toXML());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
-    public void priceXmlGreaterThanOrEqualOperator() {
+    public void priceXmlDeprecatedGreaterThanOrEqualOperator() {
         String expected = "<search><price><min>5</min></price></search>";
         Assert.assertEquals(expected, new SubscriptionSearchRequest().price().greaterThanOrEqual(new BigDecimal(5))
                 .toXML());
     }
 
     @Test
-    public void priceXmlLessThanOrEqualOperator() {
+    public void priceXmlGreaterThanOrEqualToOperator() {
+        String expected = "<search><price><min>5</min></price></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().price().greaterThanOrEqualTo(new BigDecimal(5))
+                .toXML());
+    }
+
+    @SuppressWarnings("deprecation")
+    @Test
+    public void priceXmlDeprecatedLessThanOrEqualOperator() {
         String expected = "<search><price><max>5</max></price></search>";
         Assert.assertEquals(expected, new SubscriptionSearchRequest().price().lessThanOrEqual(new BigDecimal(5)).toXML());
+    }
+
+    @Test
+    public void priceXmlLessThanOrEqualToOperator() {
+        String expected = "<search><price><max>5</max></price></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().price().lessThanOrEqualTo(new BigDecimal(5)).toXML());
     }
 
     @Test
