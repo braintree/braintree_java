@@ -16,11 +16,11 @@ public class SubscriptionSearchRequest extends SearchRequest {
         return new TextNode<SubscriptionSearchRequest>("days_past_due", this);
     }
 
-    public MultipleValueNode<SubscriptionSearchRequest> ids() {
-        return new MultipleValueNode<SubscriptionSearchRequest>("ids", this);
+    public MultipleValueNode<SubscriptionSearchRequest, String> ids() {
+        return new MultipleValueNode<SubscriptionSearchRequest, String>("ids", this);
     }
 
-    public MultipleValueNode<SubscriptionSearchRequest> status() {
-        return new MultipleValueNode<SubscriptionSearchRequest>("status", this);
+    public MultipleValueNode<SubscriptionSearchRequest, Subscription.Status> status() {
+        return new MultipleValueNode<SubscriptionSearchRequest, Subscription.Status>("status", this);
     }    
 }

@@ -48,8 +48,8 @@ public class SubscriptionSearchRequestTest {
     
     @Test
     public void toXMLEscapesXmlOnMultipleValueNodes() {
-        String expected = "<search><status type=\"array\"><item>&lt;a</item><item>b&amp;</item></status></search>";
-        Assert.assertEquals(expected, new SubscriptionSearchRequest().status().in("<a", "b&").toXML());
+        String expected = "<search><ids type=\"array\"><item>&lt;a</item><item>b&amp;</item></ids></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().ids().in("<a", "b&").toXML());
     }
     
     @Test
