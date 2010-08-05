@@ -31,7 +31,7 @@ task :compile_tests => [:init, :clean, :jar] do
 end
 
 task :test => :compile_tests do
-  sh "java -cp #{jar_name}:test-classes:#{lib_classpath} org.junit.runner.JUnitCore com.braintreegateway.AllTests"
+  sh "ant test"
 end
 
 desc "generate javadoc"
