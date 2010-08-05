@@ -36,6 +36,7 @@ public class Subscription {
     private ArrayList<AddOn> addOns;
     private Calendar billingPeriodEndDate;
     private Calendar billingPeriodStartDate;
+    private Integer daysPastDue;
     private ArrayList<Discount> discounts;
     private Integer failureCount;
     private Calendar firstBillingDate;
@@ -61,6 +62,7 @@ public class Subscription {
         }
         billingPeriodEndDate = node.findDate("billing-period-end-date");
         billingPeriodStartDate = node.findDate("billing-period-start-date");
+        daysPastDue = node.findInteger("days-past-due");
         discounts = new ArrayList<Discount>();
         for (NodeWrapper discountResponse : node.findAll("discounts/discount")) {
             discounts.add(new Discount(discountResponse));
@@ -96,6 +98,10 @@ public class Subscription {
 
     public Calendar getBillingPeriodStartDate() {
         return billingPeriodStartDate;
+    }
+
+    public Integer getDaysPastDue() {
+        return daysPastDue;
     }
 
     public List<Discount> getDiscounts() {

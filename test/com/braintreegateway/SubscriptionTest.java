@@ -961,6 +961,18 @@ public class SubscriptionTest {
     }
 
     @Test
+    public void searchOnDaysPastDue() {        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            daysPastDue().between(2, 10);
+        ResourceCollection<Subscription> results = gateway.subscription().search(search);
+
+        Assert.assertTrue(results.getMaximumSize() > 0);
+        for (Subscription subscription : results) {
+            Assert.assertTrue(subscription.getDaysPastDue() >= 2 && subscription.getDaysPastDue() <= 10);
+        }
+    }
+
+    @Test
     public void searchOnIdIs() {
         Random rand = new Random();
         SubscriptionRequest request1 = new SubscriptionRequest().

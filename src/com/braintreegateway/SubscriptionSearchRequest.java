@@ -9,8 +9,8 @@ public class SubscriptionSearchRequest extends SearchRequest {
         super();
     }
 
-    public TextNode<SubscriptionSearchRequest> daysPastDue() {
-        return new TextNode<SubscriptionSearchRequest>("days_past_due", this);
+    public RangeNode<SubscriptionSearchRequest> daysPastDue() {
+        return new RangeNode<SubscriptionSearchRequest>("days_past_due", this);
     }
 
     public TextNode<SubscriptionSearchRequest> id() {
