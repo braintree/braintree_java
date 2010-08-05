@@ -2,7 +2,7 @@ package com.braintreegateway;
 
 import java.net.URLEncoder;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 

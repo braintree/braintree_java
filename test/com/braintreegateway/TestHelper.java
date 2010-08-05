@@ -6,7 +6,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Calendar;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import com.braintreegateway.Transaction.Status;
 import com.braintreegateway.exceptions.UnexpectedException;

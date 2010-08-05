@@ -1029,16 +1029,19 @@ public class SubscriptionTest {
         Plan triallessPlan = Plan.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId());
+            planId(trialPlan.getId()).
+            price(new BigDecimal(7));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
         
         SubscriptionRequest request2 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(triallessPlan.getId());
+            planId(triallessPlan.getId()).
+            price(new BigDecimal(7));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
         
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            planId().is(trialPlan.getId());
+            planId().is(trialPlan.getId()).
+            price().is(new BigDecimal(7));
         
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1051,16 +1054,19 @@ public class SubscriptionTest {
         Plan triallessPlan = Plan.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId());
+            planId(trialPlan.getId()).
+            price(new BigDecimal(8));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
         
         SubscriptionRequest request2 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(triallessPlan.getId());
+            planId(triallessPlan.getId()).
+            price(new BigDecimal(8));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
         
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            planId().isNot(trialPlan.getId());
+            planId().isNot(trialPlan.getId()).
+            price().is(new BigDecimal(8));
         
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription2));
@@ -1073,16 +1079,19 @@ public class SubscriptionTest {
         Plan triallessPlan = Plan.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId());
+            planId(trialPlan.getId()).
+            price(new BigDecimal(9));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
         
         SubscriptionRequest request2 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(triallessPlan.getId());
+            planId(triallessPlan.getId()).
+            price(new BigDecimal(9));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
         
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            planId().endsWith("trial_plan");
+            planId().endsWith("trial_plan").
+            price().is(new BigDecimal(9));
         
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1095,16 +1104,19 @@ public class SubscriptionTest {
         Plan triallessPlan = Plan.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId());
+            planId(trialPlan.getId()).
+            price(new BigDecimal(10));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
         
         SubscriptionRequest request2 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(triallessPlan.getId());
+            planId(triallessPlan.getId()).
+            price(new BigDecimal(10));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
         
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            planId().startsWith("integration_trial_p");
+            planId().startsWith("integration_trial_p").
+            price().is(new BigDecimal(10));
         
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1117,16 +1129,19 @@ public class SubscriptionTest {
         Plan triallessPlan = Plan.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId());
+            planId(trialPlan.getId()).
+            price(new BigDecimal(11));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
         
         SubscriptionRequest request2 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(triallessPlan.getId());
+            planId(triallessPlan.getId()).
+            price(new BigDecimal(11));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
         
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            planId().contains("trial_p");
+            planId().contains("trial_p").
+            price().is(new BigDecimal(11));
         
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1168,17 +1183,20 @@ public class SubscriptionTest {
         Plan trialPlan = Plan.PLAN_WITH_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId());
+            planId(trialPlan.getId()).
+            price(new BigDecimal(12));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
         
         SubscriptionRequest request2 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId());
+            planId(trialPlan.getId()).
+            price(new BigDecimal(12));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
         gateway.subscription().cancel(subscription2.getId());
         
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            status().in(Status.ACTIVE);
+            status().in(Status.ACTIVE).
+            price().is(new BigDecimal(12));
         
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1202,12 +1220,14 @@ public class SubscriptionTest {
         Plan trialPlan = Plan.PLAN_WITH_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId());
+            planId(trialPlan.getId()).
+            price(new BigDecimal(13));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
         
         SubscriptionRequest request2 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId());
+            planId(trialPlan.getId()).
+            price(new BigDecimal(13));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
         gateway.subscription().cancel(subscription2.getId());
         
@@ -1216,7 +1236,8 @@ public class SubscriptionTest {
         statuses.add(Status.CANCELED);
         
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            status().in(statuses);
+            status().in(statuses).
+            price().is(new BigDecimal(13));
         
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1228,17 +1249,20 @@ public class SubscriptionTest {
         Plan trialPlan = Plan.PLAN_WITH_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId());
+            planId(trialPlan.getId()).
+            price(new BigDecimal(14));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
         
         SubscriptionRequest request2 = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId());
+            planId(trialPlan.getId()).
+            price(new BigDecimal(14));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
         gateway.subscription().cancel(subscription2.getId());
         
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            status().in(Status.ACTIVE, Status.CANCELED);
+            status().in(Status.ACTIVE, Status.CANCELED).
+            price().is(new BigDecimal(14));
         
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
