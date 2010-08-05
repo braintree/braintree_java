@@ -1120,7 +1120,37 @@ public class SubscriptionTest {
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
         Assert.assertFalse(TestHelper.includesSubscription(results, subscription2));
     }
-    
+
+    @Test
+    public void searchOnPlanIdIn() {
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITH_TRIAL.getId()).
+            price(new BigDecimal(6));
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITHOUT_TRIAL.getId()).
+            price(new BigDecimal(6));
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        
+        SubscriptionRequest request3 = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.ADD_ON_DISCOUNT_PLAN.getId()).
+            price(new BigDecimal(6));
+        Subscription subscription3 = gateway.subscription().create(request3).getTarget();
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            planId().in(Plan.PLAN_WITH_TRIAL.getId(), Plan.PLAN_WITHOUT_TRIAL.getId()).
+            price().is(new BigDecimal(6));
+        
+        ResourceCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription2));
+        Assert.assertFalse(TestHelper.includesSubscription(results, subscription3));
+    }
+ 
     @Test
     public void searchOnStatusIn() {
         Plan trialPlan = Plan.PLAN_WITH_TRIAL;

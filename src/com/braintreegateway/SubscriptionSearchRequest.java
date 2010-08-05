@@ -25,8 +25,8 @@ public class SubscriptionSearchRequest extends SearchRequest {
         return new MultipleValueNode<SubscriptionSearchRequest, String>("merchant_account_id", this);
     }
 
-    public TextNode<SubscriptionSearchRequest> planId() {
-        return new TextNode<SubscriptionSearchRequest>("plan_id", this);
+    public MultipleValueOrTextNode<SubscriptionSearchRequest, String> planId() {
+        return new MultipleValueOrTextNode<SubscriptionSearchRequest, String>("plan_id", this);
     }
 
     public RangeNode<SubscriptionSearchRequest> price() {

@@ -41,31 +41,32 @@ public class SubscriptionSearchRequestTest {
         String expected = "<search><days_past_due><contains>42</contains></days_past_due></search>";
         Assert.assertEquals(expected, new SubscriptionSearchRequest().daysPastDue().contains("42").toXML());
     }
-    
+
     @Test
     public void billingCyclesRemainingIsOperator() {
         String expected = "<search><billing_cycles_remaining><is>42</is></billing_cycles_remaining></search>";
-        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().is(42).toXML());        
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().is(42).toXML());
     }
-    
+
     @Test
     public void billingCyclesRemainingBetweenOperator() {
         String expected = "<search><billing_cycles_remaining><min>1</min><max>2</max></billing_cycles_remaining></search>";
-        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().between(1, 2).toXML());        
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().between(1, 2).toXML());
     }
 
     @Test
     public void billingCyclesRemainingLessThanOrEqualOperator() {
         String expected = "<search><billing_cycles_remaining><max>42</max></billing_cycles_remaining></search>";
-        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().lessThanOrEqual(42).toXML());        
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().lessThanOrEqual(42).toXML());
     }
 
     @Test
     public void billingCyclesRemainingGreaterThanOrEqualOperator() {
         String expected = "<search><billing_cycles_remaining><min>42</min></billing_cycles_remaining></search>";
-        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().greaterThanOrEqual(42).toXML());        
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().greaterThanOrEqual(42)
+                .toXML());
     }
-    
+
     @Test
     public void idXmlIsOperator() {
         String expected = "<search><id><is>42</is></id></search>";
@@ -113,6 +114,49 @@ public class SubscriptionSearchRequestTest {
         String[] items = new String[] { "42", "43" };
         String expected = "<search><merchant_account_id type=\"array\"><item>42</item><item>43</item></merchant_account_id></search>";
         Assert.assertEquals(expected, new SubscriptionSearchRequest().merchantAccountId().in(Arrays.asList(items)).toXML());
+    }
+
+    @Test
+    public void planIdXmlIsOperator() {
+        String expected = "<search><plan_id><is>42</is></plan_id></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().planId().is("42").toXML());
+    }
+
+    @Test
+    public void planIdXmlIsNotOperator() {
+        String expected = "<search><plan_id><is_not>42</is_not></plan_id></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().planId().isNot("42").toXML());
+    }
+
+    @Test
+    public void planIdXmlStartsWithOperator() {
+        String expected = "<search><plan_id><starts_with>42</starts_with></plan_id></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().planId().startsWith("42").toXML());
+    }
+
+    @Test
+    public void planIdXmlEndsWithOperator() {
+        String expected = "<search><plan_id><ends_with>42</ends_with></plan_id></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().planId().endsWith("42").toXML());
+    }
+
+    @Test
+    public void planIdXmlContainsOperator() {
+        String expected = "<search><plan_id><contains>42</contains></plan_id></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().planId().contains("42").toXML());
+    }
+
+    @Test
+    public void plantIdXmlInVarargsOperator() {
+        String expected = "<search><plan_id type=\"array\"><item>42</item><item>43</item></plan_id></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().planId().in("42", "43").toXML());
+    }
+
+    @Test
+    public void planIdXmlInListOperator() {
+        String[] items = new String[] { "42", "43" };
+        String expected = "<search><plan_id type=\"array\"><item>42</item><item>43</item></plan_id></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().planId().in(Arrays.asList(items)).toXML());
     }
 
     @Test
