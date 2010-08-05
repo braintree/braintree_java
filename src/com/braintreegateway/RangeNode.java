@@ -9,19 +9,54 @@ public class RangeNode<T extends SearchRequest> extends SearchNode<T> {
     }
 
     public T between(BigDecimal min, BigDecimal max) {
+        return between(min.toString(), max.toString());
+    }
+
+    public T between(int min, int max) {
+        return between(String.valueOf(min), String.valueOf(max));
+    }
+
+    public T between(String min, String max) {
         greaterThanOrEqual(min);
         lessThanOrEqual(max);
         return parent;
     }
 
     public T greaterThanOrEqual(BigDecimal min) {
-        parent.addRangeCriteria(nodeName, new SearchCriteria("min", min.toString()));
+        return greaterThanOrEqual(min.toString());
+    }
+
+    public T greaterThanOrEqual(int min) {
+        return greaterThanOrEqual(String.valueOf(min));
+    }
+
+    public T greaterThanOrEqual(String min) {
+        parent.addRangeCriteria(nodeName, new SearchCriteria("min", min));
         return parent;
     }
 
     public T lessThanOrEqual(BigDecimal max) {
-        parent.addRangeCriteria(nodeName, new SearchCriteria("max", max.toString()));
+        return lessThanOrEqual(max.toString());
+    }
+
+    public T lessThanOrEqual(int max) {
+        return lessThanOrEqual(String.valueOf(max));
+    }
+
+    public T lessThanOrEqual(String max) {
+        parent.addRangeCriteria(nodeName, new SearchCriteria("max", max));
         return parent;
     }
 
+    public T is(BigDecimal value) {
+        return is(value.toString());
+    }
+
+    public T is(int value) {
+        return is(String.valueOf(value));
+    }
+
+    public T is(String value) {
+        return assembleCriteria("is", value);
+    }
 }

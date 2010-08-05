@@ -36,4 +36,8 @@ public class SubscriptionSearchRequest extends SearchRequest {
     public MultipleValueNode<SubscriptionSearchRequest, Subscription.Status> status() {
         return new MultipleValueNode<SubscriptionSearchRequest, Subscription.Status>("status", this);
     }
+
+    public RangeNode<SubscriptionSearchRequest> billingCyclesRemaining() {
+        return new RangeNode<SubscriptionSearchRequest>("billing_cycles_remaining", this);
+    }
 }

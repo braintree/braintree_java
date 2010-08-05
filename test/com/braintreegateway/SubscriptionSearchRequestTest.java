@@ -41,7 +41,31 @@ public class SubscriptionSearchRequestTest {
         String expected = "<search><days_past_due><contains>42</contains></days_past_due></search>";
         Assert.assertEquals(expected, new SubscriptionSearchRequest().daysPastDue().contains("42").toXML());
     }
+    
+    @Test
+    public void billingCyclesRemainingIsOperator() {
+        String expected = "<search><billing_cycles_remaining><is>42</is></billing_cycles_remaining></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().is(42).toXML());        
+    }
+    
+    @Test
+    public void billingCyclesRemainingBetweenOperator() {
+        String expected = "<search><billing_cycles_remaining><min>1</min><max>2</max></billing_cycles_remaining></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().between(1, 2).toXML());        
+    }
 
+    @Test
+    public void billingCyclesRemainingLessThanOrEqualOperator() {
+        String expected = "<search><billing_cycles_remaining><max>42</max></billing_cycles_remaining></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().lessThanOrEqual(42).toXML());        
+    }
+
+    @Test
+    public void billingCyclesRemainingGreaterThanOrEqualOperator() {
+        String expected = "<search><billing_cycles_remaining><min>42</min></billing_cycles_remaining></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().billingCyclesRemaining().greaterThanOrEqual(42).toXML());        
+    }
+    
     @Test
     public void idXmlIsOperator() {
         String expected = "<search><id><is>42</is></id></search>";
@@ -109,6 +133,12 @@ public class SubscriptionSearchRequestTest {
     public void priceXmlLessThanOrEqualOperator() {
         String expected = "<search><price><max>5</max></price></search>";
         Assert.assertEquals(expected, new SubscriptionSearchRequest().price().lessThanOrEqual(new BigDecimal(5)).toXML());
+    }
+
+    @Test
+    public void priceXmlIsOperator() {
+        String expected = "<search><price><is>5</is></price></search>";
+        Assert.assertEquals(expected, new SubscriptionSearchRequest().price().is(new BigDecimal(5)).toXML());
     }
 
     @Test

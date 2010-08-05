@@ -934,6 +934,31 @@ public class SubscriptionTest {
         Assert.assertEquals(Subscription.Status.CANCELED, cancelResult.getTarget().getStatus());
         Assert.assertEquals(Subscription.Status.CANCELED, gateway.subscription().find(createResult.getTarget().getId()).getStatus());
     }
+    
+    @Test
+    public void searchOnBillingCyclesRemaining() {
+        SubscriptionRequest request12 = new SubscriptionRequest().
+            numberOfBillingCycles(12).
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITH_TRIAL.getId()).
+            price(new BigDecimal(5));
+        Subscription subscription12 = gateway.subscription().create(request12).getTarget();
+        
+        SubscriptionRequest request11 = new SubscriptionRequest().
+            numberOfBillingCycles(11).
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITH_TRIAL.getId()).
+            price(new BigDecimal(5));
+        Subscription subscription11 = gateway.subscription().create(request11).getTarget();
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            billingCyclesRemaining().is(12).
+            price().is(new BigDecimal(5));
+        
+        ResourceCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription12));
+        Assert.assertFalse(TestHelper.includesSubscription(results, subscription11));        
+    }
 
     @Test
     public void searchOnIdIs() {
@@ -954,7 +979,7 @@ public class SubscriptionTest {
         
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
             id().startsWith("find_me").
-            price().between(new BigDecimal(2), new BigDecimal(2));
+            price().is(new BigDecimal(2));
         
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -979,7 +1004,7 @@ public class SubscriptionTest {
         
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
             merchantAccountId().is(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
-            price().between(new BigDecimal(3), new BigDecimal(3));
+            price().is(new BigDecimal(3));
         
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscriptionNonDefaultMerchantAccount));
