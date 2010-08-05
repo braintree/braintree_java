@@ -934,7 +934,58 @@ public class SubscriptionTest {
         Assert.assertEquals(Subscription.Status.CANCELED, cancelResult.getTarget().getStatus());
         Assert.assertEquals(Subscription.Status.CANCELED, gateway.subscription().find(createResult.getTarget().getId()).getStatus());
     }
-    
+
+    @Test
+    public void searchOnIdIs() {
+        Random rand = new Random();
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            id("find_me" + rand.nextInt()).
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITH_TRIAL.getId()).
+            price(new BigDecimal(2));
+        Subscription subscription1 = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            id("do_not_find_me" + rand.nextInt()).
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITH_TRIAL.getId()).
+            price(new BigDecimal(2));
+        Subscription subscription2 = gateway.subscription().create(request2).getTarget();
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            id().startsWith("find_me").
+            price().between(new BigDecimal(2), new BigDecimal(2));
+        
+        ResourceCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
+        Assert.assertFalse(TestHelper.includesSubscription(results, subscription2));
+    }
+
+    @Test
+    public void searchOnMerchantAccountIdIs() {
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            merchantAccountId(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID).
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITH_TRIAL.getId()).
+            price(new BigDecimal(3));
+        Subscription subscriptionDefaultMerchantAccount = gateway.subscription().create(request1).getTarget();
+
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITH_TRIAL.getId()).
+            price(new BigDecimal(3));
+        Subscription subscriptionNonDefaultMerchantAccount = gateway.subscription().create(request2).getTarget();
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            merchantAccountId().is(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+            price().between(new BigDecimal(3), new BigDecimal(3));
+        
+        ResourceCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscriptionNonDefaultMerchantAccount));
+        Assert.assertFalse(TestHelper.includesSubscription(results, subscriptionDefaultMerchantAccount));
+    }
+
     @Test
     public void searchOnPlanIdIs() {
         Plan trialPlan = Plan.PLAN_WITH_TRIAL;
