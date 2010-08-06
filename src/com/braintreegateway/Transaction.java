@@ -27,6 +27,24 @@ public class Transaction {
         }
     }
 
+    public enum GatewayRejectionReason {
+        AVS("avs"),
+        AVS_AND_CVV("avs_and_cvv"),
+        CVV("cvv"),
+        DUPLICATE("duplicate");
+
+        private final String name;
+
+        GatewayRejectionReason(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
     public enum Source {
         API("api"),
         CONTROL_PANEL("control_panel");
@@ -63,26 +81,8 @@ public class Transaction {
             return name;
         }
     }
-    
-    public enum GatewayRejectionReason {
-        AVS("avs"),
-        AVS_AND_CVV("avs_and_cvv"),
-        CVV("cvv"),
-        DUPLICATE("duplicate");
 
-        private final String name;
-
-        GatewayRejectionReason(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
-
-
+    private ArrayList<AddOn> addOns;
     private BigDecimal amount;
     private String avsErrorResponseCode;
     private String avsPostalCodeResponseCode;
@@ -92,9 +92,10 @@ public class Transaction {
     private CreditCard creditCard;
     private String currencyIsoCode;
     private Customer customer;
-    private GatewayRejectionReason gatewayRejectionReason;
     private Map<String, String> customFields;
     private String cvvResponseCode;
+    private ArrayList<Discount> discounts;
+    private GatewayRejectionReason gatewayRejectionReason;
     private String id;
     private String merchantAccountId;
     private String orderId;
@@ -123,7 +124,8 @@ public class Transaction {
         customFields = node.findMap("custom-fields");
         customer = new Customer(node.findFirst("customer"));
         cvvResponseCode = node.findString("cvv-response-code");
-        gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"));
+        gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node
+            .findString("gateway-rejection-reason"));
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
         orderId = node.findString("order-id");
@@ -140,10 +142,23 @@ public class Transaction {
         updatedAt = node.findDateTime("updated-at");
 
         statusHistory = new ArrayList<StatusEvent>();
-
         for (NodeWrapper statusNode : node.findAll("status-history/status-event")) {
             statusHistory.add(new StatusEvent(statusNode));
         }
+
+        addOns = new ArrayList<AddOn>();
+        for (NodeWrapper addOnResponse : node.findAll("add-ons/add-on")) {
+            addOns.add(new AddOn(addOnResponse));
+        }
+
+        discounts = new ArrayList<Discount>();
+        for (NodeWrapper discountResponse : node.findAll("discounts/discount")) {
+            discounts.add(new Discount(discountResponse));
+        }
+    }
+
+    public ArrayList<AddOn> getAddOns() {
+        return addOns;
     }
 
     public BigDecimal getAmount() {
@@ -181,10 +196,6 @@ public class Transaction {
     public Customer getCustomer() {
         return customer;
     }
-    
-    public GatewayRejectionReason getGatewayRejectionReason() {
-        return gatewayRejectionReason;
-    }
 
     public Map<String, String> getCustomFields() {
         return customFields;
@@ -192,6 +203,14 @@ public class Transaction {
 
     public String getCvvResponseCode() {
         return cvvResponseCode;
+    }
+
+    public ArrayList<Discount> getDiscounts() {
+        return discounts;
+    }
+
+    public GatewayRejectionReason getGatewayRejectionReason() {
+        return gatewayRejectionReason;
     }
 
     public String getId() {
@@ -225,7 +244,7 @@ public class Transaction {
     public String getRefundId() {
         return refundId;
     }
-    
+
     public String getSettlementBatchId() {
         return settlementBatchId;
     }

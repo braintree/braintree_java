@@ -5,6 +5,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Calendar;
+import java.util.Comparator;
 
 import org.junit.Assert;
 
@@ -13,6 +14,12 @@ import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Crypto;
 
 public class TestHelper {
+
+    public static final class CompareModificationsById implements Comparator<Modification> {
+        public int compare(Modification left, Modification right) {
+            return left.getId().compareTo(right.getId());
+        }
+    }
 
     public static void assertDatesEqual(Calendar first, Calendar second) {
         if (first == null && second != null) {

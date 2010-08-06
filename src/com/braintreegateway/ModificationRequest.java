@@ -5,8 +5,10 @@ import java.math.BigDecimal;
 public class ModificationRequest extends Request {
 
     private BigDecimal amount;
+    private Integer numberOfBillingCycles;
     private ModificationsRequest parent;
     private Integer quantity;
+    private Boolean neverExpires;
 
     public ModificationRequest(ModificationsRequest parent) {
         this.parent = parent;
@@ -19,6 +21,16 @@ public class ModificationRequest extends Request {
 
     public ModificationsRequest done() {
         return parent;
+    }
+
+    public ModificationRequest numberOfBillingCycles(int numberOfBillingCycles) {
+        this.numberOfBillingCycles = numberOfBillingCycles;
+        return this;
+    }
+
+    public ModificationRequest neverExpires(boolean neverExpires) {
+        this.neverExpires = neverExpires;
+        return this;
     }
 
     public ModificationRequest quantity(int quantity) {
@@ -34,6 +46,8 @@ public class ModificationRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
             addElement("amount", amount).
+            addElement("neverExpires", neverExpires).
+            addElement("numberOfBillingCycles", numberOfBillingCycles).
             addElement("quantity", quantity);
     }
 }

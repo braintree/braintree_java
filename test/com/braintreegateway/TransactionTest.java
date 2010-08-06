@@ -1946,4 +1946,67 @@ public class TransactionTest {
         Assert.assertEquals(Transaction.GatewayRejectionReason.AVS_AND_CVV, transaction.getGatewayRejectionReason());
     }
 
+    @Test
+    public void snapshotAddOnsAndDiscountsFromSubscription() {
+        CustomerRequest customerRequest = new CustomerRequest().
+            creditCard().
+                number("5105105105105100").
+                expirationDate("05/12").
+                done();
+        CreditCard creditCard = gateway.customer().create(customerRequest).getTarget().getCreditCards().get(0);
+
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITHOUT_TRIAL.getId()).
+            addOns().
+                add().
+                    amount(new BigDecimal("11.00")).
+                    inheritedFromId("increase_10").
+                    numberOfBillingCycles(5).
+                    quantity(2).
+                    done().
+                add().
+                    amount(new BigDecimal("21.00")).
+                    inheritedFromId("increase_20").
+                    numberOfBillingCycles(6).
+                    quantity(3).
+                    done().
+                done().
+            discounts().
+                add().
+                    amount(new BigDecimal("7.50")).
+                    inheritedFromId("discount_7").
+                    neverExpires(true).
+                    quantity(2).
+                    done().
+                done();
+
+        Transaction transaction = gateway.subscription().create(request).getTarget().getTransactions().get(0);
+
+        List<AddOn> addOns = transaction.getAddOns();
+        Collections.sort(addOns, new TestHelper.CompareModificationsById());
+
+        Assert.assertEquals(2, addOns.size());
+
+        Assert.assertEquals("increase_10", addOns.get(0).getId());
+        Assert.assertEquals(new BigDecimal("11.00"), addOns.get(0).getAmount());
+        Assert.assertEquals(new Integer(5), addOns.get(0).getNumberOfBillingCycles());
+        Assert.assertEquals(new Integer(2), addOns.get(0).getQuantity());
+        Assert.assertFalse(addOns.get(0).neverExpires());
+
+        Assert.assertEquals("increase_20", addOns.get(1).getId());
+        Assert.assertEquals(new BigDecimal("21.00"), addOns.get(1).getAmount());
+        Assert.assertEquals(new Integer(6), addOns.get(1).getNumberOfBillingCycles());
+        Assert.assertEquals(new Integer(3), addOns.get(1).getQuantity());
+        Assert.assertFalse(addOns.get(1).neverExpires());
+
+        List<Discount> discounts = transaction.getDiscounts();
+        Assert.assertEquals(1, discounts.size());
+
+        Assert.assertEquals("discount_7", discounts.get(0).getId());
+        Assert.assertEquals(new BigDecimal("7.50"), discounts.get(0).getAmount());
+        Assert.assertNull(discounts.get(0).getNumberOfBillingCycles());
+        Assert.assertEquals(new Integer(2), discounts.get(0).getQuantity());
+        Assert.assertTrue(discounts.get(0).neverExpires());
+    }
 }

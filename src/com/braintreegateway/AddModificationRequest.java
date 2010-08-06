@@ -22,6 +22,18 @@ public class AddModificationRequest extends ModificationRequest {
     }
 
     @Override
+    public AddModificationRequest neverExpires(boolean neverExpires) {
+        super.neverExpires(neverExpires);
+        return this;
+    }
+
+    @Override
+    public AddModificationRequest numberOfBillingCycles(int numberOfBillingCycles) {
+        super.numberOfBillingCycles(numberOfBillingCycles);
+        return this;
+    }
+
+    @Override
     public AddModificationRequest quantity(int quantity) {
         super.quantity(quantity);
         return this;

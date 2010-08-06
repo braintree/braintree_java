@@ -1,4 +1,3 @@
-
 package com.braintreegateway;
 
 import java.math.BigDecimal;
@@ -6,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +20,6 @@ import com.braintreegateway.Subscription.Status;
 import com.braintreegateway.util.NodeWrapper;
 
 public class SubscriptionTest {
-
-    private final class CompareModificationsById implements Comparator<Modification> {
-        public int compare(Modification left, Modification right) {
-            return left.getId().compareTo(right.getId());
-        }
-    }
 
     private BraintreeGateway gateway;
     private Customer customer;
@@ -352,7 +344,7 @@ public class SubscriptionTest {
         Subscription subscription = result.getTarget();
 
         List<AddOn> addOns = subscription.getAddOns();
-        Collections.sort(addOns, new CompareModificationsById());
+        Collections.sort(addOns, new TestHelper.CompareModificationsById());
 
         Assert.assertEquals(2, addOns.size());
 
@@ -369,7 +361,7 @@ public class SubscriptionTest {
         Assert.assertNull(addOns.get(1).getNumberOfBillingCycles());
         
         List<Discount> discounts = subscription.getDiscounts();
-        Collections.sort(discounts, new CompareModificationsById());
+        Collections.sort(discounts, new TestHelper.CompareModificationsById());
         
         Assert.assertEquals(2, discounts.size());
         
@@ -415,7 +407,7 @@ public class SubscriptionTest {
         Subscription subscription = result.getTarget();
 
         List<AddOn> addOns = subscription.getAddOns();
-        Collections.sort(addOns, new CompareModificationsById());
+        Collections.sort(addOns, new TestHelper.CompareModificationsById());
 
         Assert.assertEquals(2, addOns.size());
 
@@ -428,7 +420,7 @@ public class SubscriptionTest {
         Assert.assertEquals(new Integer(1), addOns.get(1).getQuantity());
         
         List<Discount> discounts = subscription.getDiscounts();
-        Collections.sort(discounts, new CompareModificationsById());
+        Collections.sort(discounts, new TestHelper.CompareModificationsById());
         
         Assert.assertEquals(2, discounts.size());
 
@@ -788,7 +780,7 @@ public class SubscriptionTest {
         Subscription updatedSubscription = result.getTarget();
 
         List<AddOn> addOns = updatedSubscription.getAddOns();
-        Collections.sort(addOns, new CompareModificationsById());
+        Collections.sort(addOns, new TestHelper.CompareModificationsById());
 
         Assert.assertEquals(2, addOns.size());
 
@@ -799,7 +791,7 @@ public class SubscriptionTest {
         Assert.assertEquals(new Integer(7), addOns.get(1).getQuantity());
         
         List<Discount> discounts = updatedSubscription.getDiscounts();
-        Collections.sort(discounts, new CompareModificationsById());
+        Collections.sort(discounts, new TestHelper.CompareModificationsById());
         
         Assert.assertEquals(2, discounts.size());
 
