@@ -18,7 +18,7 @@ public class UpdateModificationRequest extends ModificationRequest {
     }
 
     @Override
-    public UpdateModificationRequest neverExpires(boolean neverExpires) {
+    public UpdateModificationRequest neverExpires(Boolean neverExpires) {
         super.neverExpires(neverExpires);
         return this;
     }
@@ -30,7 +30,7 @@ public class UpdateModificationRequest extends ModificationRequest {
     }
 
     @Override
-    public UpdateModificationRequest quantity(int quantity) {
+    public UpdateModificationRequest quantity(Integer quantity) {
         super.quantity(quantity);
         return this;
     }

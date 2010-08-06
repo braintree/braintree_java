@@ -28,12 +28,12 @@ public class ModificationRequest extends Request {
         return this;
     }
 
-    public ModificationRequest neverExpires(boolean neverExpires) {
+    public ModificationRequest neverExpires(Boolean neverExpires) {
         this.neverExpires = neverExpires;
         return this;
     }
 
-    public ModificationRequest quantity(int quantity) {
+    public ModificationRequest quantity(Integer quantity) {
         this.quantity = quantity;
         return this;
     }

@@ -41,7 +41,7 @@ public class SubscriptionRequest extends Request {
         return this;
     }
 
-    public SubscriptionRequest neverExpires(boolean neverExpires) {
+    public SubscriptionRequest neverExpires(Boolean neverExpires) {
         this.neverExpires = neverExpires;
         return this;
     }
@@ -71,7 +71,7 @@ public class SubscriptionRequest extends Request {
         return this;
     }
 
-    public SubscriptionRequest trialDuration(int trialDuration) {
+    public SubscriptionRequest trialDuration(Integer trialDuration) {
         this.trialDuration = trialDuration;
         return this;
     }
@@ -81,7 +81,7 @@ public class SubscriptionRequest extends Request {
         return this;
     }
 
-    public SubscriptionRequest trialPeriod(boolean hasTrialPeriod) {
+    public SubscriptionRequest trialPeriod(Boolean hasTrialPeriod) {
         this.hasTrialPeriod = hasTrialPeriod;
         return this;
     }

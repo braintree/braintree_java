@@ -3,8 +3,8 @@ package com.braintreegateway;
 public class CreditCardOptionsRequest extends Request {
     private CreditCardRequest parent;
     private String verificationMerchantAccountId;
-    private boolean verifyCard;
-    private boolean makeDefault;
+    private Boolean verifyCard;
+    private Boolean makeDefault;
     private String updateExistingToken;
 
     public CreditCardOptionsRequest(CreditCardRequest parent) {
@@ -20,12 +20,12 @@ public class CreditCardOptionsRequest extends Request {
         return this;
     }
 
-    public CreditCardOptionsRequest verifyCard(boolean verifyCard) {
+    public CreditCardOptionsRequest verifyCard(Boolean verifyCard) {
         this.verifyCard = verifyCard;
         return this;
     }
     
-    public CreditCardOptionsRequest makeDefault(boolean makeDefault) {
+    public CreditCardOptionsRequest makeDefault(Boolean makeDefault) {
         this.makeDefault = makeDefault;
         return this;
     }
@@ -55,7 +55,7 @@ public class CreditCardOptionsRequest extends Request {
         
         builder.addElement("verifyCard", verifyCard);
         builder.addElement("verificationMerchantAccountId", verificationMerchantAccountId);
-        if (makeDefault) {
+        if (makeDefault != null && makeDefault.booleanValue()) {
             builder.addElement("makeDefault", makeDefault);
         }
         builder.addElement("updateExistingToken", updateExistingToken);

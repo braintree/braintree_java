@@ -3,7 +3,7 @@ package com.braintreegateway;
 public class CreditCardAddressOptionsRequest extends Request {
 
     private CreditCardAddressRequest parent;
-    private boolean updateExisting;
+    private Boolean updateExisting;
 
     public CreditCardAddressOptionsRequest(CreditCardAddressRequest parent) {
         this.parent = parent;
@@ -13,7 +13,7 @@ public class CreditCardAddressOptionsRequest extends Request {
         return parent;
     }
     
-    public CreditCardAddressOptionsRequest updateExisting(boolean updateExisting) {
+    public CreditCardAddressOptionsRequest updateExisting(Boolean updateExisting) {
         this.updateExisting = updateExisting;
         return this;
     }

@@ -1,17 +1,17 @@
 package com.braintreegateway;
 
 public class TransactionOptionsRequest extends Request {
-    private boolean addBillingAddressToPaymentMethod;
+    private Boolean addBillingAddressToPaymentMethod;
     private TransactionRequest parent;
-    private boolean storeInVault;
-    private boolean storeShippingAddressInVault;
-    private boolean submitForSettlement;
+    private Boolean storeInVault;
+    private Boolean storeShippingAddressInVault;
+    private Boolean submitForSettlement;
 
     public TransactionOptionsRequest(TransactionRequest parent) {
         this.parent = parent;
     }
 
-    public TransactionOptionsRequest addBillingAddressToPaymentMethod(boolean addBillingAddressToPaymentMethod) {
+    public TransactionOptionsRequest addBillingAddressToPaymentMethod(Boolean addBillingAddressToPaymentMethod) {
         this.addBillingAddressToPaymentMethod = addBillingAddressToPaymentMethod;
         return this;
     }
@@ -20,17 +20,17 @@ public class TransactionOptionsRequest extends Request {
         return parent;
     }
 
-    public TransactionOptionsRequest storeInVault(boolean storeInVault) {
+    public TransactionOptionsRequest storeInVault(Boolean storeInVault) {
         this.storeInVault = storeInVault;
         return this;
     }
 
-    public TransactionOptionsRequest storeShippingAddressInVault(boolean storeShippingAddressInVault) {
+    public TransactionOptionsRequest storeShippingAddressInVault(Boolean storeShippingAddressInVault) {
         this.storeShippingAddressInVault = storeShippingAddressInVault;
         return this;
     }
 
-    public TransactionOptionsRequest submitForSettlement(boolean submitForSettlement) {
+    public TransactionOptionsRequest submitForSettlement(Boolean submitForSettlement) {
         this.submitForSettlement = submitForSettlement;
         return this;
     }
