@@ -23,7 +23,7 @@ public class ModificationRequest extends Request {
         return parent;
     }
 
-    public ModificationRequest numberOfBillingCycles(int numberOfBillingCycles) {
+    public ModificationRequest numberOfBillingCycles(Integer numberOfBillingCycles) {
         this.numberOfBillingCycles = numberOfBillingCycles;
         return this;
     }

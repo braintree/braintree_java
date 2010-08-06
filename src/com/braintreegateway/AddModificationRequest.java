@@ -28,7 +28,7 @@ public class AddModificationRequest extends ModificationRequest {
     }
 
     @Override
-    public AddModificationRequest numberOfBillingCycles(int numberOfBillingCycles) {
+    public AddModificationRequest numberOfBillingCycles(Integer numberOfBillingCycles) {
         super.numberOfBillingCycles(numberOfBillingCycles);
         return this;
     }

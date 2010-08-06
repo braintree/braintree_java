@@ -18,6 +18,18 @@ public class UpdateModificationRequest extends ModificationRequest {
     }
 
     @Override
+    public UpdateModificationRequest neverExpires(boolean neverExpires) {
+        super.neverExpires(neverExpires);
+        return this;
+    }
+
+    @Override
+    public UpdateModificationRequest numberOfBillingCycles(Integer numberOfBillingCycles) {
+        super.numberOfBillingCycles(numberOfBillingCycles);
+        return this;
+    }
+
+    @Override
     public UpdateModificationRequest quantity(int quantity) {
         super.quantity(quantity);
         return this;

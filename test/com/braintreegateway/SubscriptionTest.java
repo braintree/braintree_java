@@ -387,6 +387,7 @@ public class SubscriptionTest {
             addOns().
                 update("increase_10").
                     amount(new BigDecimal("30.00")).
+                    numberOfBillingCycles(3).
                     quantity(9).
                     done().
                 update("increase_20").
@@ -396,6 +397,7 @@ public class SubscriptionTest {
             discounts().
                 update("discount_7").
                     amount(new BigDecimal("15.00")).
+                    neverExpires(true).
                     done().
                 update("discount_11").
                     amount(new BigDecimal("23.00")).
@@ -413,6 +415,8 @@ public class SubscriptionTest {
 
         Assert.assertEquals("increase_10", addOns.get(0).getId());
         Assert.assertEquals(new BigDecimal("30.00"), addOns.get(0).getAmount());
+        Assert.assertEquals(new Integer(3), addOns.get(0).getNumberOfBillingCycles());
+        Assert.assertFalse(addOns.get(0).neverExpires());
         Assert.assertEquals(new Integer(9), addOns.get(0).getQuantity());
         
         Assert.assertEquals("increase_20", addOns.get(1).getId());
@@ -426,6 +430,8 @@ public class SubscriptionTest {
 
         Assert.assertEquals("discount_11", discounts.get(0).getId());
         Assert.assertEquals(new BigDecimal("23.00"), discounts.get(0).getAmount());
+        Assert.assertNull(discounts.get(0).getNumberOfBillingCycles());
+        Assert.assertTrue(discounts.get(0).neverExpires());
         Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
 
         Assert.assertEquals("discount_7", discounts.get(1).getId());
@@ -487,6 +493,8 @@ public class SubscriptionTest {
                 add().
                     inheritedFromId("increase_30").
                     amount(new BigDecimal("40.00")).
+                    neverExpires(false).
+                    numberOfBillingCycles(6).
                     quantity(3).
                     done().
                 done().
@@ -495,6 +503,8 @@ public class SubscriptionTest {
                 add().
                     inheritedFromId("discount_15").
                     amount(new BigDecimal("17.00")).
+                    neverExpires(true).
+                    numberOfBillingCycles(null).
                     quantity(2).
                     done().
                 done();
@@ -506,11 +516,15 @@ public class SubscriptionTest {
         Assert.assertEquals(1, subscription.getAddOns().size());
 
         Assert.assertEquals(new BigDecimal("40.00"), subscription.getAddOns().get(0).getAmount());
+        Assert.assertEquals(new Integer(6), subscription.getAddOns().get(0).getNumberOfBillingCycles());
+        Assert.assertFalse(subscription.getAddOns().get(0).neverExpires());
         Assert.assertEquals(new Integer(3), subscription.getAddOns().get(0).getQuantity());
         
         Assert.assertEquals(1, subscription.getDiscounts().size());
 
         Assert.assertEquals(new BigDecimal("17.00"), subscription.getDiscounts().get(0).getAmount());
+        Assert.assertNull(subscription.getDiscounts().get(0).getNumberOfBillingCycles());
+        Assert.assertTrue(subscription.getDiscounts().get(0).neverExpires());
         Assert.assertEquals(new Integer(2), subscription.getDiscounts().get(0).getQuantity());
     }
     
