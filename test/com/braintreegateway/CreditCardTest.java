@@ -15,7 +15,6 @@ import org.junit.Test;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
 
-@SuppressWarnings("deprecation")
 public class CreditCardTest {
 
     private BraintreeGateway gateway;
@@ -26,12 +25,14 @@ public class CreditCardTest {
                 "integration_private_key");
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void transparentRedirectURLForCreate() {
         Assert.assertEquals(gateway.baseMerchantURL() + "/payment_methods/all/create_via_transparent_redirect_request",
                 gateway.creditCard().transparentRedirectURLForCreate());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void transparentRedirectURLForUpdate() {
         Assert.assertEquals(gateway.baseMerchantURL() + "/payment_methods/all/update_via_transparent_redirect_request",
@@ -121,6 +122,7 @@ public class CreditCardTest {
         Assert.assertEquals("840", billingAddress.getCountryCodeNumeric());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void createViaTransparentRedirect() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -174,6 +176,7 @@ public class CreditCardTest {
         Assert.assertEquals("533", result.getTarget().getBillingAddress().getCountryCodeNumeric());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void createViaTransparentRedirectWithMakeDefaultFlagInTRParams() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -200,6 +203,7 @@ public class CreditCardTest {
         Assert.assertTrue(card.isDefault());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void createViaTransparentRedirectWithMakeDefaultFlagInRequest() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -246,6 +250,7 @@ public class CreditCardTest {
         Assert.assertEquals(ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY, result.getErrors().forObject("creditCard").forObject("billingAddress").onField("base").get(0).getCode());
     }
 
+    @SuppressWarnings("deprecation")
     @Test(expected = ForgedQueryStringException.class)
     public void createViaTransparentRedirectThrowsWhenQueryStringHasBeenTamperedWith() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -349,6 +354,7 @@ public class CreditCardTest {
         Assert.assertFalse(gateway.creditCard().find(card2.getToken()).isDefault());
     }
     
+    @SuppressWarnings("deprecation")
     @Test
     public void updateViaTransparentRedirect() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -543,6 +549,7 @@ public class CreditCardTest {
         Assert.assertEquals(creditCard.getBillingAddress().getId(), updatedCreditCard.getBillingAddress().getId());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void updateWithBillingAddressUpdatesAddressWhenUpdateExistingIsTrueForTransparentRedirect() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
