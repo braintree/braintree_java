@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -53,16 +52,16 @@ public class SubscriptionTest {
         Assert.assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
-        Calendar expectedBillingPeriodEndDate = new GregorianCalendar();
+        Calendar expectedBillingPeriodEndDate = Calendar.getInstance();
         expectedBillingPeriodEndDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
         expectedBillingPeriodEndDate.roll(Calendar.MONTH, plan.getBillingFrequency());
         expectedBillingPeriodEndDate.add(Calendar.DAY_OF_MONTH, -1);
-        Calendar expectedNextBillingDate = new GregorianCalendar();
+        Calendar expectedNextBillingDate = Calendar.getInstance();
         expectedNextBillingDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
         expectedNextBillingDate.roll(Calendar.MONTH, plan.getBillingFrequency());
-        Calendar expectedBillingPeriodStartDate = new GregorianCalendar();
+        Calendar expectedBillingPeriodStartDate = Calendar.getInstance();
         expectedBillingPeriodStartDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
-        Calendar expectedFirstDate = new GregorianCalendar();
+        Calendar expectedFirstDate = Calendar.getInstance();
         expectedFirstDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
         
         Assert.assertEquals(creditCard.getToken(), subscription.getPaymentMethodToken());
@@ -92,7 +91,7 @@ public class SubscriptionTest {
         Assert.assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
-        Calendar expectedFirstAndNextBillingDate = new GregorianCalendar();
+        Calendar expectedFirstAndNextBillingDate = Calendar.getInstance();
         expectedFirstAndNextBillingDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
         expectedFirstAndNextBillingDate.add(Calendar.DAY_OF_MONTH, plan.getTrialDuration());
 

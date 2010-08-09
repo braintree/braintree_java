@@ -2,14 +2,11 @@ package com.braintreegateway.util;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.braintreegateway.util.NodeWrapper;
 
 public class NodeWrapperTest {
 
@@ -38,7 +35,8 @@ public class NodeWrapperTest {
     public void findDate() {
         String xml = "<toplevel><created-at type=\"date\">2010-02-16</created-at></toplevel>";
         NodeWrapper node = new NodeWrapper(xml);
-        Calendar expected = new GregorianCalendar(2010, 1, 16);
+        Calendar expected = Calendar.getInstance();
+        expected.set(2010, 1, 16);
         expected.setTimeZone(TimeZone.getTimeZone("UTC"));
         Calendar actual = node.findDate("created-at");
         Assert.assertEquals(2010, actual.get(Calendar.YEAR));
