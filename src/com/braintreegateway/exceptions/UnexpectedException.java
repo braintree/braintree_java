@@ -1,6 +1,6 @@
 package com.braintreegateway.exceptions;
 
-public class UnexpectedException extends RuntimeException {
+public class UnexpectedException extends BraintreeException {
 
     private static final long serialVersionUID = 1L;
 
