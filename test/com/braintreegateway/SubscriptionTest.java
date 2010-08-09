@@ -233,6 +233,84 @@ public class SubscriptionTest {
     }
     
     @Test
+    public void inheritBillingDayOfMonth() {
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.BILLING_DAY_OF_MONTH_PLAN.getId());
+            
+        Result<Subscription> createResult = gateway.subscription().create(request);
+        Assert.assertTrue(createResult.isSuccess());
+        Subscription subscription = createResult.getTarget();
+
+        Assert.assertEquals(new Integer(5), subscription.getBillingDayOfMonth());
+    }
+
+    @Test
+    public void overrideBillingDayOfMonth() {
+        SubscriptionRequest request = new SubscriptionRequest().
+            billingDayOfMonth(19).
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.BILLING_DAY_OF_MONTH_PLAN.getId());
+            
+        Result<Subscription> createResult = gateway.subscription().create(request);
+        Assert.assertTrue(createResult.isSuccess());
+        Subscription subscription = createResult.getTarget();
+
+        Assert.assertEquals(new Integer(19), subscription.getBillingDayOfMonth());
+    }
+    
+    @Test
+    public void overrideBillingDayOfMonthWithStartImmediately() {
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.BILLING_DAY_OF_MONTH_PLAN.getId()).
+            options().
+                startImmediately(true).
+                done();
+            
+        Result<Subscription> createResult = gateway.subscription().create(request);
+        Assert.assertTrue(createResult.isSuccess());
+        Subscription subscription = createResult.getTarget();
+
+        Assert.assertEquals(1, subscription.getTransactions().size());
+    }
+    
+    @Test
+    public void setFirstBillingDate() {
+        Calendar firstBillingDate = Calendar.getInstance();
+        firstBillingDate.add(Calendar.DAY_OF_MONTH, 3);
+
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.BILLING_DAY_OF_MONTH_PLAN.getId()).
+            firstBillingDate(firstBillingDate);
+        
+        Result<Subscription> createResult = gateway.subscription().create(request);
+        Assert.assertTrue(createResult.isSuccess());
+        Subscription subscription = createResult.getTarget();
+    
+        TestHelper.assertDatesEqual(firstBillingDate, subscription.getFirstBillingDate());
+        Assert.assertEquals(Subscription.Status.PENDING, subscription.getStatus());
+    }
+    
+    @Test
+    public void setFirstBillingDateInThePast() {
+        Calendar firstBillingDate = Calendar.getInstance();
+        firstBillingDate.add(Calendar.DAY_OF_MONTH, -3);
+
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.BILLING_DAY_OF_MONTH_PLAN.getId()).
+            firstBillingDate(firstBillingDate);
+        
+        Result<Subscription> createResult = gateway.subscription().create(request);
+        Assert.assertFalse(createResult.isSuccess());
+    
+        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_FIRST_BILLING_DATE_CANNOT_BE_IN_THE_PAST,
+            createResult.getErrors().forObject("subscription").onField("firstBillingDate").get(0).getCode());
+    }
+
+    @Test
     public void setId() {
         Plan plan = Plan.PLAN_WITH_TRIAL;
         String newId = "new-id-" + new Random().nextInt(); 

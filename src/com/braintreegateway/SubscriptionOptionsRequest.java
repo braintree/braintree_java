@@ -5,6 +5,7 @@ public class SubscriptionOptionsRequest extends Request {
     private SubscriptionRequest parent;
     private Boolean prorateCharges;
     private Boolean replaceAllAddOnsAndDiscounts;
+    private Boolean startImmediately;
 
     public SubscriptionOptionsRequest(SubscriptionRequest parent) {
         this.parent = parent;
@@ -29,6 +30,11 @@ public class SubscriptionOptionsRequest extends Request {
         return this;
     }
 
+    public SubscriptionOptionsRequest startImmediately(Boolean startImmediately) {
+        this.startImmediately = startImmediately;
+        return this;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("options").toXML();
@@ -38,6 +44,7 @@ public class SubscriptionOptionsRequest extends Request {
         return new RequestBuilder(root).
             addElement("doNotInheritAddOnsOrDiscounts", doNotInheritAddOnsOrDiscounts).
             addElement("prorateCharges", prorateCharges).
-            addElement("replaceAllAddOnsAndDiscounts", replaceAllAddOnsAndDiscounts);
+            addElement("replaceAllAddOnsAndDiscounts", replaceAllAddOnsAndDiscounts).
+            addElement("startImmediately", startImmediately);
     }
 }

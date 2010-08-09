@@ -1,12 +1,17 @@
 package com.braintreegateway;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 
 /**
  * Provides a fluent interface to build up requests around {@link Subscription
  * Subscriptions}.
  */
 public class SubscriptionRequest extends Request {
+    private ModificationsRequest addOnsRequest;
+    private Integer billingDayOfMonth;
+    private ModificationsRequest discountsRequest;
+    private Calendar firstBillingDate;
     private Boolean hasTrialPeriod;
     private String id;
     private String merchantAccountId;
@@ -18,22 +23,30 @@ public class SubscriptionRequest extends Request {
     private BigDecimal price;
     private Integer trialDuration;
     private Subscription.DurationUnit trialDurationUnit;
-    private ModificationsRequest addOnsRequest;
-    private ModificationsRequest discountsRequest;
-
-    public SubscriptionRequest id(String id) {
-        this.id = id;
-        return this;
-    }
 
     public ModificationsRequest addOns() {
         addOnsRequest = new ModificationsRequest(this, "addOns");
         return addOnsRequest;
     }
 
+    public SubscriptionRequest billingDayOfMonth(Integer billingDayOfMonth) {
+        this.billingDayOfMonth = billingDayOfMonth;
+        return this;
+    }
+
     public ModificationsRequest discounts() {
         discountsRequest = new ModificationsRequest(this, "discounts");
         return discountsRequest;
+    }
+
+    public SubscriptionRequest firstBillingDate(Calendar firstBillingDate) {
+        this.firstBillingDate = firstBillingDate;
+        return this;
+    }
+
+    public SubscriptionRequest id(String id) {
+        this.id = id;
+        return this;
     }
 
     public SubscriptionRequest merchantAccountId(String merchantAccountId) {
@@ -71,6 +84,11 @@ public class SubscriptionRequest extends Request {
         return this;
     }
 
+    @Override
+    public String toXML() {
+        return buildRequest("subscription").toXML();
+    }
+
     public SubscriptionRequest trialDuration(Integer trialDuration) {
         this.trialDuration = trialDuration;
         return this;
@@ -86,16 +104,13 @@ public class SubscriptionRequest extends Request {
         return this;
     }
 
-    @Override
-    public String toXML() {
-        return buildRequest("subscription").toXML();
-    }
-
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root).
             addElement("id", id).
             addElement("addOns", addOnsRequest).
+            addElement("billingDayOfMonth", billingDayOfMonth).
             addElement("discounts", discountsRequest).
+            addElement("firstBillingDate", firstBillingDate).
             addElement("merchantAccountId", merchantAccountId).
             addElement("neverExpires", neverExpires).
             addElement("numberOfBillingCycles", numberOfBillingCycles).

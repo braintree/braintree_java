@@ -14,6 +14,7 @@ public class Plan {
     
     public static final Plan PLAN_WITHOUT_TRIAL = new Plan("Plan for integration tests -- without a trial", "integration_trialless_plan", 12, new BigDecimal("12.34"), 1, false);
     public static final Plan PLAN_WITH_TRIAL = new Plan("Plan for integration tests -- with a trial", "integration_trial_plan", 12, new BigDecimal("43.21"), 1, true, 2, Subscription.DurationUnit.DAY);
+    public static final Plan BILLING_DAY_OF_MONTH_PLAN = new Plan("Plan for integration tests -- with billing day of month", "integration_plan_with_billing_day_of_month", 12, new BigDecimal("8.88"), 1, false);
     public static final Plan ADD_ON_DISCOUNT_PLAN = new Plan("Plan for integration tests -- with add-ons and discounts", "integration_plan_with_add_ons_and_discounts", 12, new BigDecimal("9.99"), 1, true, 2, Subscription.DurationUnit.DAY);
     
     public Plan(String description, String id, int numberOfBillingCycles, BigDecimal price, int billingFrequency, boolean trialPeriod, int trialDuration, Subscription.DurationUnit trialDurationUnit) {

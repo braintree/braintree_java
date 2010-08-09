@@ -19,6 +19,7 @@ public class Subscription {
         CANCELED("Canceled"),
         EXPIRED("Expired"),
         PAST_DUE("Past Due"),
+        PENDING("Pending"),
         UNRECOGNIZED("Unrecognized");
 
         private final String name;
@@ -34,6 +35,7 @@ public class Subscription {
     }
 
     private ArrayList<AddOn> addOns;
+    private Integer billingDayOfMonth;
     private Calendar billingPeriodEndDate;
     private Calendar billingPeriodStartDate;
     private Integer daysPastDue;
@@ -60,6 +62,7 @@ public class Subscription {
         for (NodeWrapper addOnResponse : node.findAll("add-ons/add-on")) {
             addOns.add(new AddOn(addOnResponse));
         }
+        billingDayOfMonth = node.findInteger("billing-day-of-month");
         billingPeriodEndDate = node.findDate("billing-period-end-date");
         billingPeriodStartDate = node.findDate("billing-period-start-date");
         daysPastDue = node.findInteger("days-past-due");
@@ -90,6 +93,10 @@ public class Subscription {
 
     public List<AddOn> getAddOns() {
         return addOns;
+    }
+
+    public Integer getBillingDayOfMonth() {
+        return billingDayOfMonth;
     }
 
     public Calendar getBillingPeriodEndDate() {
