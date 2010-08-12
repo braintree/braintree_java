@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.Subscription.Status;
+import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
 public class SubscriptionTest {
@@ -1368,11 +1369,15 @@ public class SubscriptionTest {
 
     @Test
     public void retryChargeWithAmount() {
-        SubscriptionSearchRequest search = new SubscriptionSearchRequest().status().in(Subscription.Status.PAST_DUE);
-        Subscription subscription = gateway.subscription().search(search).getFirst();
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITHOUT_TRIAL.getId());
+
+        Subscription subscription = gateway.subscription().create(request).getTarget();
+
+        makePastDue(subscription, 1);
 
         Result<Transaction> result = gateway.subscription().retryCharge(subscription.getId(), TransactionAmount.AUTHORIZE.amount);
-        
         Assert.assertTrue(result.isSuccess());
 
         Transaction transaction = result.getTarget();
@@ -1386,12 +1391,14 @@ public class SubscriptionTest {
     
     @Test
     public void retryChargeWithoutAmount() {
-        SubscriptionSearchRequest search = new SubscriptionSearchRequest().status().in(Subscription.Status.PAST_DUE);
-        Subscription subscription = gateway.subscription().search(search).getFirst();
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITHOUT_TRIAL.getId());
 
+        Subscription subscription = gateway.subscription().create(request).getTarget();
+        makePastDue(subscription, 1);
+        
         Result<Transaction> result = gateway.subscription().retryCharge(subscription.getId());
-        
-        
         Assert.assertTrue(result.isSuccess());
 
         Transaction transaction = result.getTarget();
@@ -1401,5 +1408,10 @@ public class SubscriptionTest {
         Assert.assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
         Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
         Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
+    }
+    
+    private void makePastDue(Subscription subscription, int numberOfDaysPastDue) {
+        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), BraintreeGateway.VERSION).put("/subscriptions/" + subscription.getId() + "/make_past_due?days_past_due=" + numberOfDaysPastDue);
+        Assert.assertTrue(response.isSuccess());
     }
 }
