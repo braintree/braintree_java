@@ -1,3 +1,21 @@
+## 2.5.0
+
+* Added AddOns/Discounts
+* Enhanced Subscription search
+* Enhanced Transaction search
+* Added AddOn/Discount details to Transactions that were created from a Subscription
+* Added an enum for CreditCardVerification statuses
+* Added EXPIRED and PENDING statuses to Subscription
+* Allowed prorateCharges to be specified on Subscription update
+* Renamed search methods greaterThanOrEqual and lessThanOrEqual to greaterThanOrEqualTo and lessThanOrEqualTo -- deprecated old methods
+* All Braintree Exceptions now inherit from BraintreeException superclass
+* Added new properties to Subscription:
+  * billingDayOfMonth
+  * daysPastDue
+  * firstBillingDate
+  * neverExpires
+  * numberOfBillingCycles
+
 ## 2.4.0
 
 * Added unified message to result objects
