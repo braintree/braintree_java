@@ -32,16 +32,19 @@ public class TransparentRedirectRequest extends Request {
         return id;
     }
 
+    @Override
     public String toXML() {
         StringBuilder builder = new StringBuilder();
         builder.append(buildXMLElement("id", id));
         return builder.toString();
     }
 
+    @Override
     public String toQueryString(String parent) {
         return null;
     }
 
+    @Override
     public String toQueryString() {
         return null;
     }

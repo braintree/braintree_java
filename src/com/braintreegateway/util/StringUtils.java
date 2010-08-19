@@ -38,6 +38,6 @@ public class StringUtils {
     }
 
     public static String underscore(String str) {
-        return str == null ? null : str.replaceAll("([A-Z])", "_$0").replaceAll("-", "_").toLowerCase();
+        return str == null ? null : str.replaceAll("([a-z])([A-Z])", "$1_$2").replaceAll("-", "_").toLowerCase();
     }
 }

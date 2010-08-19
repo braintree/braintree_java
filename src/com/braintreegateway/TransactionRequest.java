@@ -98,10 +98,12 @@ public class TransactionRequest extends Request {
         return this;
     }
 
+    @Override
     public String toQueryString(String root) {
         return buildRequest(root).toQueryString();
     }
 
+    @Override
     public String toQueryString() {
         return toQueryString("transaction");
     }

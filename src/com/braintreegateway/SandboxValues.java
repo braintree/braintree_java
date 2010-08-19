@@ -17,7 +17,7 @@ public class SandboxValues {
     }
 
     public enum TransactionAmount {
-        AUTHORIZE("1000.00"), DECLINE("2000.00");
+        AUTHORIZE("1000.00"), DECLINE("2000.00"), FAILED("3000.00");
 
         public BigDecimal amount;
 

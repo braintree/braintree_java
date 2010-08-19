@@ -93,10 +93,12 @@ public class CreditCardRequest extends Request {
         return buildRequest("creditCard").toXML();
     }
 
+    @Override
     public String toQueryString() {
         return toQueryString("creditCard");
     }
 
+    @Override
     public String toQueryString(String root) {
         return buildRequest(root).
             addTopLevelElement("paymentMethodToken", paymentMethodToken).

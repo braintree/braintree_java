@@ -17,6 +17,7 @@ public class SearchCriteria extends Request {
         this.xml = builder.toString();
     }
 
+    @Override
     public String toXML() {
         return this.xml;
     }

@@ -1,0 +1,21 @@
+<project default="test">
+  <target name="test">
+    <junit haltonerror="yes">
+      <classpath>
+        <pathelement location="test-classes"/>
+        <fileset dir=".">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
+
+      <formatter type="brief" usefile="false"/>
+
+      <batchtest fork="yes">
+        <fileset dir="test">
+          <include name="**/*Test*.java"/>
+          <exclude name="**/TestHelper.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+</project>

@@ -89,8 +89,8 @@ public class TransactionSearchRequest extends SearchRequest {
         return new TextNode<TransactionSearchRequest>("customer_website", this);
     }
     
-    public MultipleValueNode<TransactionSearchRequest> ids() {
-        return new MultipleValueNode<TransactionSearchRequest>("ids", this);
+    public MultipleValueNode<TransactionSearchRequest, String> ids() {
+        return new MultipleValueNode<TransactionSearchRequest, String>("ids", this);
     }
     
     public TextNode<TransactionSearchRequest> orderId() {
@@ -103,6 +103,10 @@ public class TransactionSearchRequest extends SearchRequest {
     
     public TextNode<TransactionSearchRequest> processorAuthorizationCode() {
         return new TextNode<TransactionSearchRequest>("processor_authorization_code", this);
+    }
+    
+    public TextNode<TransactionSearchRequest> settlementBatchId() {
+        return new TextNode<TransactionSearchRequest>("settlement_batch_id", this);
     }
     
     public TextNode<TransactionSearchRequest> shippingCompany() {
@@ -141,32 +145,32 @@ public class TransactionSearchRequest extends SearchRequest {
         return new TextNode<TransactionSearchRequest>("shipping_street_address", this);
     }
 
-    public MultipleValueNode<TransactionSearchRequest> createdUsing() {
-        return new MultipleValueNode<TransactionSearchRequest>("created_using", this, Transaction.CreatedUsing.values());
+    public MultipleValueNode<TransactionSearchRequest, Transaction.CreatedUsing> createdUsing() {
+        return new MultipleValueNode<TransactionSearchRequest, Transaction.CreatedUsing>("created_using", this);
     }
 
-    public MultipleValueNode<TransactionSearchRequest> creditCardCustomerLocation() {
-        return new MultipleValueNode<TransactionSearchRequest>("credit_card_customer_location", this, CreditCard.CustomerLocation.values());
+    public MultipleValueNode<TransactionSearchRequest, CreditCard.CustomerLocation> creditCardCustomerLocation() {
+        return new MultipleValueNode<TransactionSearchRequest, CreditCard.CustomerLocation>("credit_card_customer_location", this);
     }
     
-    public MultipleValueNode<TransactionSearchRequest> merchantAccountId() {
-        return new MultipleValueNode<TransactionSearchRequest>("merchant_account_id", this);
+    public MultipleValueNode<TransactionSearchRequest, String> merchantAccountId() {
+        return new MultipleValueNode<TransactionSearchRequest, String>("merchant_account_id", this);
     }
 
-    public MultipleValueNode<TransactionSearchRequest> creditCardCardType() {
-        return new MultipleValueNode<TransactionSearchRequest>("credit_card_card_type", this, CreditCard.CardType.values());
+    public MultipleValueNode<TransactionSearchRequest, CreditCard.CardType> creditCardCardType() {
+        return new MultipleValueNode<TransactionSearchRequest, CreditCard.CardType>("credit_card_card_type", this);
     }
     
-    public MultipleValueNode<TransactionSearchRequest> status() {
-        return new MultipleValueNode<TransactionSearchRequest>("status", this, Transaction.Status.values());
+    public MultipleValueNode<TransactionSearchRequest, Transaction.Status> status() {
+        return new MultipleValueNode<TransactionSearchRequest, Transaction.Status>("status", this);
     }
 
-    public MultipleValueNode<TransactionSearchRequest> source() {
-        return new MultipleValueNode<TransactionSearchRequest>("source", this, Transaction.Source.values());
+    public MultipleValueNode<TransactionSearchRequest, Transaction.Source> source() {
+        return new MultipleValueNode<TransactionSearchRequest, Transaction.Source>("source", this);
     }
     
-    public MultipleValueNode<TransactionSearchRequest> type() {
-        return new MultipleValueNode<TransactionSearchRequest>("type", this, Transaction.Type.values());
+    public MultipleValueNode<TransactionSearchRequest, Transaction.Type> type() {
+        return new MultipleValueNode<TransactionSearchRequest, Transaction.Type>("type", this);
     }
     
     public KeyValueNode<TransactionSearchRequest> refund() {
@@ -177,7 +181,35 @@ public class TransactionSearchRequest extends SearchRequest {
         return new RangeNode<TransactionSearchRequest>("amount", this);
     }
 
+    public DateRangeNode<TransactionSearchRequest> authorizedAt() {
+        return new DateRangeNode<TransactionSearchRequest>("authorized_at", this);
+    }
+    
     public DateRangeNode<TransactionSearchRequest> createdAt() {
         return new DateRangeNode<TransactionSearchRequest>("created_at", this);
+    }
+    
+    public DateRangeNode<TransactionSearchRequest> failedAt() {
+        return new DateRangeNode<TransactionSearchRequest>("failed_at", this);
+    }
+    
+    public DateRangeNode<TransactionSearchRequest> gatewayRejectedAt() {
+        return new DateRangeNode<TransactionSearchRequest>("gateway_rejected_at", this);
+    }
+    
+    public DateRangeNode<TransactionSearchRequest> processorDeclinedAt() {
+        return new DateRangeNode<TransactionSearchRequest>("processor_declined_at", this);
+    }
+    
+    public DateRangeNode<TransactionSearchRequest> settledAt() {
+        return new DateRangeNode<TransactionSearchRequest>("settled_at", this);
+    }
+    
+    public DateRangeNode<TransactionSearchRequest> submittedForSettlementAt() {
+        return new DateRangeNode<TransactionSearchRequest>("submitted_for_settlement_at", this);
+    }
+    
+    public DateRangeNode<TransactionSearchRequest> voidedAt() {
+        return new DateRangeNode<TransactionSearchRequest>("voided_at", this);
     }
 }
