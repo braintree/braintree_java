@@ -247,6 +247,9 @@ public class Transaction {
         return refundedTransactionId;
     }
     
+    /**
+     * Please use Transaction.getRefundIds() instead
+     */
     @Deprecated
     public String getRefundId() {
         return refundId;
