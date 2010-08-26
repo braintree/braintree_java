@@ -1807,6 +1807,7 @@ public class TransactionTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void refundTransaction() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -1850,6 +1851,33 @@ public class TransactionTest {
         Assert.assertTrue(result.isSuccess());
         Assert.assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
         Assert.assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), result.getTarget().getAmount());
+    }
+
+    @Test
+    public void refundMultipleTransactionsWithPartialAmounts() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        settle(transaction.getId());
+
+        Transaction refund1 = gateway.transaction().refund(transaction.getId(), TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2))).getTarget();
+        Assert.assertEquals(Transaction.Type.CREDIT, refund1.getType());
+        Assert.assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), refund1.getAmount());
+        
+        Transaction refund2 = gateway.transaction().refund(transaction.getId(), TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2))).getTarget();
+        Assert.assertEquals(Transaction.Type.CREDIT, refund2.getType());
+        Assert.assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), refund2.getAmount());
+        
+        transaction = gateway.transaction().find(transaction.getId());
+        Assert.assertTrue(TestHelper.listIncludes(transaction.getRefundIds(), refund1.getId()));
+        Assert.assertTrue(TestHelper.listIncludes(transaction.getRefundIds(), refund1.getId()));
     }
 
     private void settle(String transactionId) {
