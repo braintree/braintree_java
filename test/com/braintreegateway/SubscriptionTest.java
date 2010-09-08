@@ -1045,14 +1045,22 @@ public class SubscriptionTest {
     }
 
     @Test
-    public void searchOnDaysPastDue() {        
+    public void searchOnDaysPastDue() {
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITH_TRIAL.getId());
+            
+        Subscription subscription = gateway.subscription().create(request).getTarget();
+
+        makePastDue(subscription, 3);
+
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
             daysPastDue().between(2, 10);
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
 
         Assert.assertTrue(results.getMaximumSize() > 0);
-        for (Subscription subscription : results) {
-            Assert.assertTrue(subscription.getDaysPastDue() >= 2 && subscription.getDaysPastDue() <= 10);
+        for (Subscription foundSubscription : results) {
+            Assert.assertTrue(foundSubscription.getDaysPastDue() >= 2 && foundSubscription.getDaysPastDue() <= 10);
         }
     }
 
