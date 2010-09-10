@@ -64,10 +64,12 @@ public class SubscriptionTest {
         expectedBillingPeriodStartDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
         Calendar expectedFirstDate = Calendar.getInstance();
         expectedFirstDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
+        Calendar expectedPaidThroughDate = expectedBillingPeriodEndDate;
         
         Assert.assertEquals(creditCard.getToken(), subscription.getPaymentMethodToken());
         Assert.assertEquals(plan.getId(), subscription.getPlanId());
         Assert.assertEquals(plan.getPrice(), subscription.getPrice());
+        Assert.assertEquals(new BigDecimal("0.00"), subscription.getBalance());
         Assert.assertEquals(new BigDecimal("12.34"), subscription.getNextBillAmount());
         Assert.assertTrue(subscription.getId().matches("^\\w{6}$"));
         Assert.assertEquals(Subscription.Status.ACTIVE, subscription.getStatus());
@@ -77,6 +79,7 @@ public class SubscriptionTest {
         
         TestHelper.assertDatesEqual(expectedBillingPeriodEndDate, subscription.getBillingPeriodEndDate());
         TestHelper.assertDatesEqual(expectedBillingPeriodStartDate, subscription.getBillingPeriodStartDate());
+        TestHelper.assertDatesEqual(expectedPaidThroughDate, subscription.getPaidThroughDate());
         TestHelper.assertDatesEqual(expectedNextBillingDate, subscription.getNextBillingDate());
         TestHelper.assertDatesEqual(expectedFirstDate, subscription.getFirstBillingDate());
     }
