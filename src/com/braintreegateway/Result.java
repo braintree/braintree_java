@@ -8,6 +8,7 @@ public class Result<T> {
 
     private CreditCardVerification creditCardVerification;
     private Transaction transaction;
+    private Subscription subscription;
     private ValidationErrors errors;
     private Map<String, String> parameters;
     private String message;
@@ -47,6 +48,10 @@ public class Result<T> {
             if (transactionNode != null) {
                 this.transaction = new Transaction(transactionNode);
             }
+            NodeWrapper subscriptionNode = node.findFirst("subscription");
+            if (subscriptionNode != null) {
+                this.subscription = new Subscription(subscriptionNode);
+            }
             this.parameters = node.findFirst("params").getFormParameters();
             this.message = node.findString("message");
         }
@@ -54,6 +59,10 @@ public class Result<T> {
 
     public CreditCardVerification getCreditCardVerification() {
         return creditCardVerification;
+    }
+
+    public Subscription getSubscription() {
+        return subscription;
     }
 
     public Transaction getTransaction() {

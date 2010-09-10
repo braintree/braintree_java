@@ -816,6 +816,65 @@ public class SubscriptionTest {
         Assert.assertEquals(new BigDecimal("4.56"), subscription.getPrice());
         Assert.assertEquals(1, subscription.getTransactions().size());
     }
+    
+    @Test
+    public void doNotUpdateIfReverting() {
+        Plan originalPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest createRequest = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(originalPlan.getId()).
+            price(new BigDecimal("1.23"));
+
+        Result<Subscription> createResult = gateway.subscription().create(createRequest);
+        Assert.assertTrue(createResult.isSuccess());
+        Subscription createdSubscription = createResult.getTarget();
+        
+        SubscriptionRequest updateRequest = new SubscriptionRequest().
+            price(new BigDecimal("2100")).
+            options().
+                prorateCharges(true).
+                revertSubscriptionOnProrationFailure(true).
+                done();
+        Result<Subscription> result = gateway.subscription().update(createdSubscription.getId(), updateRequest);
+        
+        Assert.assertFalse(result.isSuccess());
+        Subscription subscription = result.getSubscription();
+        
+        Assert.assertEquals(createdSubscription.getTransactions().size() + 1, subscription.getTransactions().size());
+        Assert.assertEquals(Transaction.Status.PROCESSOR_DECLINED, subscription.getTransactions().get(0).getStatus());
+
+        Assert.assertEquals(new BigDecimal("0.00"), subscription.getBalance());
+        Assert.assertEquals(new BigDecimal("1.23"), subscription.getPrice());
+    }
+
+    @Test
+    public void UpdateIfNotReverting() {
+        Plan originalPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest createRequest = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(originalPlan.getId()).
+            price(new BigDecimal("1.23"));
+
+        Result<Subscription> createResult = gateway.subscription().create(createRequest);
+        Assert.assertTrue(createResult.isSuccess());
+        Subscription createdSubscription = createResult.getTarget();
+        
+        SubscriptionRequest updateRequest = new SubscriptionRequest().
+            price(new BigDecimal("2100")).
+            options().
+                prorateCharges(true).
+                revertSubscriptionOnProrationFailure(false).
+                done();
+        Result<Subscription> result = gateway.subscription().update(createdSubscription.getId(), updateRequest);
+        
+        Assert.assertTrue(result.isSuccess());
+        Subscription subscription = result.getTarget();
+        Assert.assertEquals(createdSubscription.getTransactions().size() + 1, subscription.getTransactions().size());
+        Assert.assertEquals(Transaction.Status.PROCESSOR_DECLINED, subscription.getTransactions().get(0).getStatus());
+
+        Assert.assertEquals(subscription.getTransactions().get(0).getAmount(), subscription.getBalance());
+        Assert.assertEquals(new BigDecimal("2100.00"), subscription.getPrice());
+    }
 
     @Test
     public void dontIncreasePriceAndDontAddTransaction() {
