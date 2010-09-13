@@ -49,6 +49,7 @@ public class Subscription {
     private boolean neverExpires;
     private BigDecimal nextBillAmount;
     private Calendar nextBillingDate;
+    private BigDecimal nextBillingPeriodAmount;
     private Integer numberOfBillingCycles;
     private Calendar paidThroughDate;
     private String paymentMethodToken;
@@ -80,6 +81,7 @@ public class Subscription {
         neverExpires = node.findBoolean("never-expires");
         nextBillAmount = node.findBigDecimal("next-bill-amount");
         nextBillingDate = node.findDate("next-billing-date");
+        nextBillingPeriodAmount = node.findBigDecimal("next-billing-period-amount");
         numberOfBillingCycles = node.findInteger("number-of-billing-cycles");
         paidThroughDate = node.findDate("paid-through-date");
         paymentMethodToken = node.findString("payment-method-token");
@@ -139,12 +141,17 @@ public class Subscription {
         return merchantAccountId;
     }
 
+    @Deprecated
     public BigDecimal getNextBillAmount() {
         return nextBillAmount;
     }
 
     public Calendar getNextBillingDate() {
         return nextBillingDate;
+    }
+    
+    public BigDecimal getNextBillingPeriodAmount() {
+        return nextBillingPeriodAmount;
     }
 
     public Integer getNumberOfBillingCycles() {

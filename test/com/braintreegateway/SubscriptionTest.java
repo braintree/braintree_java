@@ -42,6 +42,7 @@ public class SubscriptionTest {
         this.creditCard = customer.getCreditCards().get(0);
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void createSimpleSubscriptionWithoutTrial() {
         Plan plan = Plan.PLAN_WITHOUT_TRIAL;
@@ -71,6 +72,7 @@ public class SubscriptionTest {
         Assert.assertEquals(plan.getPrice(), subscription.getPrice());
         Assert.assertEquals(new BigDecimal("0.00"), subscription.getBalance());
         Assert.assertEquals(new BigDecimal("12.34"), subscription.getNextBillAmount());
+        Assert.assertEquals(new BigDecimal("12.34"), subscription.getNextBillingPeriodAmount());
         Assert.assertTrue(subscription.getId().matches("^\\w{6}$"));
         Assert.assertEquals(Subscription.Status.ACTIVE, subscription.getStatus());
         Assert.assertEquals(new Integer(0), subscription.getFailureCount());
