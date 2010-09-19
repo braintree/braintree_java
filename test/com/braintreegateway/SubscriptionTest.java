@@ -284,6 +284,7 @@ public class SubscriptionTest {
     public void setFirstBillingDate() {
         Calendar firstBillingDate = Calendar.getInstance();
         firstBillingDate.add(Calendar.DAY_OF_MONTH, 3);
+        firstBillingDate.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         SubscriptionRequest request = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
