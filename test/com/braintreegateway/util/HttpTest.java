@@ -14,6 +14,7 @@ import com.braintreegateway.TestHelper;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
+import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 
 @SuppressWarnings("deprecation")
 public class HttpTest {
@@ -53,7 +54,8 @@ public class HttpTest {
     
     @Test(expected = AuthenticationException.class)
     public void authenticationException() {
-        new Http("bad auth", gateway.baseMerchantURL(), BraintreeGateway.VERSION).get("/");
+        String authHeader = "Basic " + Base64.encodeBase64String(("bad_public_key:bad_private_key").getBytes()).trim();
+        new Http(authHeader, gateway.baseMerchantURL(), BraintreeGateway.VERSION).get("/");
     }
     
     @Test(expected=AuthenticationException.class)
