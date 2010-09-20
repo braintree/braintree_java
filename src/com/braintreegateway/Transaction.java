@@ -82,7 +82,7 @@ public class Transaction {
         }
     }
 
-    private ArrayList<AddOn> addOns;
+    private List<AddOn> addOns;
     private BigDecimal amount;
     private String avsErrorResponseCode;
     private String avsPostalCodeResponseCode;
@@ -94,7 +94,7 @@ public class Transaction {
     private Customer customer;
     private Map<String, String> customFields;
     private String cvvResponseCode;
-    private ArrayList<Discount> discounts;
+    private List<Discount> discounts;
     private GatewayRejectionReason gatewayRejectionReason;
     private String id;
     private String merchantAccountId;
@@ -104,6 +104,7 @@ public class Transaction {
     private String processorResponseText;
     private String refundedTransactionId;
     private String refundId;
+    private List<String> refundIds;
     private String settlementBatchId;
     private Address shippingAddress;
     private Status status;
@@ -141,6 +142,11 @@ public class Transaction {
         type = EnumUtils.findByName(Type.class, node.findString("type"));
         updatedAt = node.findDateTime("updated-at");
 
+        refundIds = new ArrayList<String>();
+        for (NodeWrapper refundIdNode : node.findAll("refund-ids/item")) {
+            refundIds.add(refundIdNode.findString("."));
+        }
+        
         statusHistory = new ArrayList<StatusEvent>();
         for (NodeWrapper statusNode : node.findAll("status-history/status-event")) {
             statusHistory.add(new StatusEvent(statusNode));
@@ -157,7 +163,7 @@ public class Transaction {
         }
     }
 
-    public ArrayList<AddOn> getAddOns() {
+    public List<AddOn> getAddOns() {
         return addOns;
     }
 
@@ -205,7 +211,7 @@ public class Transaction {
         return cvvResponseCode;
     }
 
-    public ArrayList<Discount> getDiscounts() {
+    public List<Discount> getDiscounts() {
         return discounts;
     }
 
@@ -240,9 +246,17 @@ public class Transaction {
     public String getRefundedTransactionId() {
         return refundedTransactionId;
     }
-
+    
+    /**
+     * Please use Transaction.getRefundIds() instead
+     */
+    @Deprecated
     public String getRefundId() {
         return refundId;
+    }
+    
+    public List<String> getRefundIds() {
+        return refundIds;
     }
 
     public String getSettlementBatchId() {

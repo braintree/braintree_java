@@ -6,6 +6,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Comparator;
+import java.util.List;
 
 import org.junit.Assert;
 
@@ -56,6 +57,15 @@ public class TestHelper {
         Assert.assertEquals(trHash, new Crypto().hmacHash(configuration.privateKey, trContent));
     }
 
+    public static boolean listIncludes(List<? extends Object> list, Object expectedItem) {
+        for (Object item : list) {
+            if (item.equals(expectedItem)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public static boolean includesSubscription(ResourceCollection<Subscription> collection, Subscription item) {
         for (Subscription subscription : collection) {
             if (subscription.getId().equals(item.getId())) {

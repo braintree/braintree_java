@@ -42,6 +42,7 @@ public class SubscriptionTest {
         this.creditCard = customer.getCreditCards().get(0);
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void createSimpleSubscriptionWithoutTrial() {
         Plan plan = Plan.PLAN_WITHOUT_TRIAL;
@@ -64,11 +65,14 @@ public class SubscriptionTest {
         expectedBillingPeriodStartDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
         Calendar expectedFirstDate = Calendar.getInstance();
         expectedFirstDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
+        Calendar expectedPaidThroughDate = expectedBillingPeriodEndDate;
         
         Assert.assertEquals(creditCard.getToken(), subscription.getPaymentMethodToken());
         Assert.assertEquals(plan.getId(), subscription.getPlanId());
         Assert.assertEquals(plan.getPrice(), subscription.getPrice());
+        Assert.assertEquals(new BigDecimal("0.00"), subscription.getBalance());
         Assert.assertEquals(new BigDecimal("12.34"), subscription.getNextBillAmount());
+        Assert.assertEquals(new BigDecimal("12.34"), subscription.getNextBillingPeriodAmount());
         Assert.assertTrue(subscription.getId().matches("^\\w{6}$"));
         Assert.assertEquals(Subscription.Status.ACTIVE, subscription.getStatus());
         Assert.assertEquals(new Integer(0), subscription.getFailureCount());
@@ -77,6 +81,7 @@ public class SubscriptionTest {
         
         TestHelper.assertDatesEqual(expectedBillingPeriodEndDate, subscription.getBillingPeriodEndDate());
         TestHelper.assertDatesEqual(expectedBillingPeriodStartDate, subscription.getBillingPeriodStartDate());
+        TestHelper.assertDatesEqual(expectedPaidThroughDate, subscription.getPaidThroughDate());
         TestHelper.assertDatesEqual(expectedNextBillingDate, subscription.getNextBillingDate());
         TestHelper.assertDatesEqual(expectedFirstDate, subscription.getFirstBillingDate());
     }
@@ -279,6 +284,7 @@ public class SubscriptionTest {
     public void setFirstBillingDate() {
         Calendar firstBillingDate = Calendar.getInstance();
         firstBillingDate.add(Calendar.DAY_OF_MONTH, 3);
+        firstBillingDate.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         SubscriptionRequest request = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
@@ -813,6 +819,65 @@ public class SubscriptionTest {
         Assert.assertEquals(new BigDecimal("4.56"), subscription.getPrice());
         Assert.assertEquals(1, subscription.getTransactions().size());
     }
+    
+    @Test
+    public void doNotUpdateIfReverting() {
+        Plan originalPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest createRequest = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(originalPlan.getId()).
+            price(new BigDecimal("1.23"));
+
+        Result<Subscription> createResult = gateway.subscription().create(createRequest);
+        Assert.assertTrue(createResult.isSuccess());
+        Subscription createdSubscription = createResult.getTarget();
+        
+        SubscriptionRequest updateRequest = new SubscriptionRequest().
+            price(new BigDecimal("2100")).
+            options().
+                prorateCharges(true).
+                revertSubscriptionOnProrationFailure(true).
+                done();
+        Result<Subscription> result = gateway.subscription().update(createdSubscription.getId(), updateRequest);
+        
+        Assert.assertFalse(result.isSuccess());
+        Subscription subscription = result.getSubscription();
+        
+        Assert.assertEquals(createdSubscription.getTransactions().size() + 1, subscription.getTransactions().size());
+        Assert.assertEquals(Transaction.Status.PROCESSOR_DECLINED, subscription.getTransactions().get(0).getStatus());
+
+        Assert.assertEquals(new BigDecimal("0.00"), subscription.getBalance());
+        Assert.assertEquals(new BigDecimal("1.23"), subscription.getPrice());
+    }
+
+    @Test
+    public void UpdateIfNotReverting() {
+        Plan originalPlan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest createRequest = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(originalPlan.getId()).
+            price(new BigDecimal("1.23"));
+
+        Result<Subscription> createResult = gateway.subscription().create(createRequest);
+        Assert.assertTrue(createResult.isSuccess());
+        Subscription createdSubscription = createResult.getTarget();
+        
+        SubscriptionRequest updateRequest = new SubscriptionRequest().
+            price(new BigDecimal("2100")).
+            options().
+                prorateCharges(true).
+                revertSubscriptionOnProrationFailure(false).
+                done();
+        Result<Subscription> result = gateway.subscription().update(createdSubscription.getId(), updateRequest);
+        
+        Assert.assertTrue(result.isSuccess());
+        Subscription subscription = result.getTarget();
+        Assert.assertEquals(createdSubscription.getTransactions().size() + 1, subscription.getTransactions().size());
+        Assert.assertEquals(Transaction.Status.PROCESSOR_DECLINED, subscription.getTransactions().get(0).getStatus());
+
+        Assert.assertEquals(subscription.getTransactions().get(0).getAmount(), subscription.getBalance());
+        Assert.assertEquals(new BigDecimal("2100.00"), subscription.getPrice());
+    }
 
     @Test
     public void dontIncreasePriceAndDontAddTransaction() {
@@ -1045,14 +1110,22 @@ public class SubscriptionTest {
     }
 
     @Test
-    public void searchOnDaysPastDue() {        
+    public void searchOnDaysPastDue() {
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITH_TRIAL.getId());
+            
+        Subscription subscription = gateway.subscription().create(request).getTarget();
+
+        makePastDue(subscription, 3);
+
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
             daysPastDue().between(2, 10);
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
 
         Assert.assertTrue(results.getMaximumSize() > 0);
-        for (Subscription subscription : results) {
-            Assert.assertTrue(subscription.getDaysPastDue() >= 2 && subscription.getDaysPastDue() <= 10);
+        for (Subscription foundSubscription : results) {
+            Assert.assertTrue(foundSubscription.getDaysPastDue() >= 2 && foundSubscription.getDaysPastDue() <= 10);
         }
     }
 

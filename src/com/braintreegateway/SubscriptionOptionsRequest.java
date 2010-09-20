@@ -5,6 +5,7 @@ public class SubscriptionOptionsRequest extends Request {
     private SubscriptionRequest parent;
     private Boolean prorateCharges;
     private Boolean replaceAllAddOnsAndDiscounts;
+    private Boolean revertSubscriptionOnProrationFailure;
     private Boolean startImmediately;
 
     public SubscriptionOptionsRequest(SubscriptionRequest parent) {
@@ -30,6 +31,11 @@ public class SubscriptionOptionsRequest extends Request {
         return this;
     }
 
+    public SubscriptionOptionsRequest revertSubscriptionOnProrationFailure(Boolean revertSubscriptionOnProrationFailure) {
+      this.revertSubscriptionOnProrationFailure = revertSubscriptionOnProrationFailure;
+      return this;
+    }
+
     public SubscriptionOptionsRequest startImmediately(Boolean startImmediately) {
         this.startImmediately = startImmediately;
         return this;
@@ -45,6 +51,7 @@ public class SubscriptionOptionsRequest extends Request {
             addElement("doNotInheritAddOnsOrDiscounts", doNotInheritAddOnsOrDiscounts).
             addElement("prorateCharges", prorateCharges).
             addElement("replaceAllAddOnsAndDiscounts", replaceAllAddOnsAndDiscounts).
+            addElement("revertSubscriptionOnProrationFailure", revertSubscriptionOnProrationFailure).
             addElement("startImmediately", startImmediately);
     }
 }

@@ -35,6 +35,7 @@ public class Subscription {
     }
 
     private ArrayList<AddOn> addOns;
+    private BigDecimal balance;
     private Integer billingDayOfMonth;
     private Calendar billingPeriodEndDate;
     private Calendar billingPeriodStartDate;
@@ -48,7 +49,9 @@ public class Subscription {
     private boolean neverExpires;
     private BigDecimal nextBillAmount;
     private Calendar nextBillingDate;
+    private BigDecimal nextBillingPeriodAmount;
     private Integer numberOfBillingCycles;
+    private Calendar paidThroughDate;
     private String paymentMethodToken;
     private String planId;
     private BigDecimal price;
@@ -62,6 +65,7 @@ public class Subscription {
         for (NodeWrapper addOnResponse : node.findAll("add-ons/add-on")) {
             addOns.add(new AddOn(addOnResponse));
         }
+        balance = node.findBigDecimal("balance");
         billingDayOfMonth = node.findInteger("billing-day-of-month");
         billingPeriodEndDate = node.findDate("billing-period-end-date");
         billingPeriodStartDate = node.findDate("billing-period-start-date");
@@ -77,7 +81,9 @@ public class Subscription {
         neverExpires = node.findBoolean("never-expires");
         nextBillAmount = node.findBigDecimal("next-bill-amount");
         nextBillingDate = node.findDate("next-billing-date");
+        nextBillingPeriodAmount = node.findBigDecimal("next-billing-period-amount");
         numberOfBillingCycles = node.findInteger("number-of-billing-cycles");
+        paidThroughDate = node.findDate("paid-through-date");
         paymentMethodToken = node.findString("payment-method-token");
         planId = node.findString("plan-id");
         price = node.findBigDecimal("price");
@@ -95,6 +101,10 @@ public class Subscription {
         return addOns;
     }
 
+    public BigDecimal getBalance() {
+        return balance;
+    }
+    
     public Integer getBillingDayOfMonth() {
         return billingDayOfMonth;
     }
@@ -131,6 +141,7 @@ public class Subscription {
         return merchantAccountId;
     }
 
+    @Deprecated
     public BigDecimal getNextBillAmount() {
         return nextBillAmount;
     }
@@ -138,9 +149,17 @@ public class Subscription {
     public Calendar getNextBillingDate() {
         return nextBillingDate;
     }
+    
+    public BigDecimal getNextBillingPeriodAmount() {
+        return nextBillingPeriodAmount;
+    }
 
     public Integer getNumberOfBillingCycles() {
         return numberOfBillingCycles;
+    }
+    
+    public Calendar getPaidThroughDate() {
+        return paidThroughDate;
     }
 
     public String getPaymentMethodToken() {

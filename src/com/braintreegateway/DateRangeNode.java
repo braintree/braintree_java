@@ -9,19 +9,28 @@ public class DateRangeNode<T extends SearchRequest> extends SearchNode<T> {
     }
 
     public T between(Calendar min, Calendar max) {
-        greaterThanOrEqual(min);
-        lessThanOrEqual(max);
+        greaterThanOrEqualTo(min);
+        lessThanOrEqualTo(max);
         return parent;
     }
 
+    @Deprecated
     public T greaterThanOrEqual(Calendar min) {
+        return greaterThanOrEqualTo(min);
+    }
+
+    @Deprecated
+    public T lessThanOrEqual(Calendar max) {
+        return lessThanOrEqualTo(max);
+    }
+
+    public T greaterThanOrEqualTo(Calendar min) {
         parent.addRangeCriteria(nodeName, new SearchCriteria("min", min));
         return parent;
     }
-
-    public T lessThanOrEqual(Calendar max) {
+    
+    public T lessThanOrEqualTo(Calendar max) {
         parent.addRangeCriteria(nodeName, new SearchCriteria("max", max));
         return parent;
     }
-
 }

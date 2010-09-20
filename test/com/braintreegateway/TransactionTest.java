@@ -21,7 +21,6 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
-@SuppressWarnings("deprecation")
 public class TransactionTest {
 
     private BraintreeGateway gateway;
@@ -31,6 +30,7 @@ public class TransactionTest {
         this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void transparentRedirectURLForCreate() {
         Assert.assertEquals(gateway.baseMerchantURL() + "/transactions/all/create_via_transparent_redirect_request",
@@ -57,6 +57,7 @@ public class TransactionTest {
         Assert.assertTrue(trData.contains("credit"));
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void createViaTransparentRedirect() {
         TransactionRequest request = new TransactionRequest().
@@ -77,6 +78,7 @@ public class TransactionTest {
         Assert.assertTrue(result.isSuccess());
     }
     
+    @SuppressWarnings("deprecation")
     @Test(expected = ForgedQueryStringException.class)
     public void createViaTransparentRedirectThrowsWhenQueryStringHasBeenTamperedWith() {
         String queryString = TestHelper.simulateFormPostForTR(gateway, new TransactionRequest(), new TransactionRequest(), gateway.transaction().transparentRedirectURLForCreate());
@@ -1352,13 +1354,13 @@ public class TransactionTest {
          
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
-             amount().greaterThanOrEqual(new BigDecimal("500"));
+             amount().greaterThanOrEqualTo(new BigDecimal("500"));
 
          Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
          
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
-             amount().lessThanOrEqual(new BigDecimal("1500"));
+             amount().lessThanOrEqualTo(new BigDecimal("1500"));
 
          Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
          
@@ -1399,13 +1401,13 @@ public class TransactionTest {
          
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
-             createdAt().greaterThanOrEqual(oneHourEarlier);
+             createdAt().greaterThanOrEqualTo(oneHourEarlier);
 
          Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
          
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
-             createdAt().lessThanOrEqual(oneHourLater);
+             createdAt().lessThanOrEqualTo(oneHourLater);
 
          Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
          
@@ -1468,13 +1470,13 @@ public class TransactionTest {
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            authorizedAt().greaterThanOrEqual(oneHourEarlier);
+            authorizedAt().greaterThanOrEqualTo(oneHourEarlier);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            authorizedAt().lessThanOrEqual(oneHourLater);
+            authorizedAt().lessThanOrEqualTo(oneHourLater);
         
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
@@ -1513,13 +1515,13 @@ public class TransactionTest {
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            failedAt().greaterThanOrEqual(oneHourEarlier);
+            failedAt().greaterThanOrEqualTo(oneHourEarlier);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            failedAt().lessThanOrEqual(oneHourLater);
+            failedAt().lessThanOrEqualTo(oneHourLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
@@ -1560,13 +1562,13 @@ public class TransactionTest {
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            gatewayRejectedAt().greaterThanOrEqual(oneHourEarlier);
+            gatewayRejectedAt().greaterThanOrEqualTo(oneHourEarlier);
 
         Assert.assertEquals(1, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            gatewayRejectedAt().lessThanOrEqual(oneHourLater);
+            gatewayRejectedAt().lessThanOrEqualTo(oneHourLater);
 
         Assert.assertEquals(1, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
 
@@ -1605,13 +1607,13 @@ public class TransactionTest {
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            processorDeclinedAt().greaterThanOrEqual(oneHourEarlier);
+            processorDeclinedAt().greaterThanOrEqualTo(oneHourEarlier);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            processorDeclinedAt().lessThanOrEqual(oneHourLater);
+            processorDeclinedAt().lessThanOrEqualTo(oneHourLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
@@ -1655,13 +1657,13 @@ public class TransactionTest {
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            settledAt().greaterThanOrEqual(oneHourEarlier);
+            settledAt().greaterThanOrEqualTo(oneHourEarlier);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            settledAt().lessThanOrEqual(oneHourLater);
+            settledAt().lessThanOrEqualTo(oneHourLater);
         
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
@@ -1703,13 +1705,13 @@ public class TransactionTest {
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            submittedForSettlementAt().greaterThanOrEqual(oneHourEarlier);
+            submittedForSettlementAt().greaterThanOrEqualTo(oneHourEarlier);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            submittedForSettlementAt().lessThanOrEqual(oneHourLater);
+            submittedForSettlementAt().lessThanOrEqualTo(oneHourLater);
         
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
@@ -1749,13 +1751,13 @@ public class TransactionTest {
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            voidedAt().greaterThanOrEqual(oneHourEarlier);
+            voidedAt().greaterThanOrEqualTo(oneHourEarlier);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            voidedAt().lessThanOrEqual(oneHourLater);
+            voidedAt().lessThanOrEqualTo(oneHourLater);
         
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
@@ -1805,6 +1807,7 @@ public class TransactionTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void refundTransaction() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -1848,6 +1851,33 @@ public class TransactionTest {
         Assert.assertTrue(result.isSuccess());
         Assert.assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
         Assert.assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), result.getTarget().getAmount());
+    }
+
+    @Test
+    public void refundMultipleTransactionsWithPartialAmounts() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        settle(transaction.getId());
+
+        Transaction refund1 = gateway.transaction().refund(transaction.getId(), TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2))).getTarget();
+        Assert.assertEquals(Transaction.Type.CREDIT, refund1.getType());
+        Assert.assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), refund1.getAmount());
+        
+        Transaction refund2 = gateway.transaction().refund(transaction.getId(), TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2))).getTarget();
+        Assert.assertEquals(Transaction.Type.CREDIT, refund2.getType());
+        Assert.assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), refund2.getAmount());
+        
+        transaction = gateway.transaction().find(transaction.getId());
+        Assert.assertTrue(TestHelper.listIncludes(transaction.getRefundIds(), refund1.getId()));
+        Assert.assertTrue(TestHelper.listIncludes(transaction.getRefundIds(), refund1.getId()));
     }
 
     private void settle(String transactionId) {
