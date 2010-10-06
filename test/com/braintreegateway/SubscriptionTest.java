@@ -1156,6 +1156,38 @@ public class SubscriptionTest {
     }
 
     @Test
+    public void searchOnInTrialPeriod() {
+        Random rand = new Random();
+        SubscriptionRequest request1 = new SubscriptionRequest().
+            id("find_me" + rand.nextInt()).
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITH_TRIAL.getId()).
+            price(new BigDecimal(2));
+        Subscription subscriptionWithTrial = gateway.subscription().create(request1).getTarget();
+        
+        SubscriptionRequest request2 = new SubscriptionRequest().
+            id("do_not_find_me" + rand.nextInt()).
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITHOUT_TRIAL.getId()).
+            price(new BigDecimal(2));
+        Subscription subscriptionWithoutTrial = gateway.subscription().create(request2).getTarget();
+        
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            inTrialPeriod().is(true);
+        
+        ResourceCollection<Subscription> subscriptionsWithTrialPeriods = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.includesSubscription(subscriptionsWithTrialPeriods, subscriptionWithTrial));
+        Assert.assertFalse(TestHelper.includesSubscription(subscriptionsWithTrialPeriods, subscriptionWithoutTrial));
+
+        search = new SubscriptionSearchRequest().
+            inTrialPeriod().is(false);
+        
+        ResourceCollection<Subscription> subscriptionsWithoutTrialPeriods = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.includesSubscription(subscriptionsWithoutTrialPeriods, subscriptionWithoutTrial));
+        Assert.assertFalse(TestHelper.includesSubscription(subscriptionsWithoutTrialPeriods, subscriptionWithTrial));
+    }
+
+    @Test
     public void searchOnMerchantAccountIdIs() {
         SubscriptionRequest request1 = new SubscriptionRequest().
             merchantAccountId(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID).
