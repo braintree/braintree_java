@@ -1516,7 +1516,7 @@ public class SubscriptionTest {
     }
     
     private void makePastDue(Subscription subscription, int numberOfDaysPastDue) {
-        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), BraintreeGateway.VERSION).put("/subscriptions/" + subscription.getId() + "/make_past_due?days_past_due=" + numberOfDaysPastDue);
+        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).put("/subscriptions/" + subscription.getId() + "/make_past_due?days_past_due=" + numberOfDaysPastDue);
         Assert.assertTrue(response.isSuccess());
     }
 }

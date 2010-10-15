@@ -68,7 +68,7 @@ public class BraintreeGateway {
         this.publicKey = publicKey;
         this.privateKey = privateKey;
         this.configuration = new Configuration(baseMerchantURL(), publicKey, privateKey);
-        this.http = new Http(getAuthorizationHeader(), baseMerchantURL(), BraintreeGateway.VERSION);
+        this.http = new Http(getAuthorizationHeader(), baseMerchantURL(), environment.certificateFilenames, BraintreeGateway.VERSION);
     }
     
     /**

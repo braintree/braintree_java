@@ -6,6 +6,17 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
 
 import com.braintreegateway.Configuration;
 import com.braintreegateway.Request;
@@ -25,11 +36,13 @@ public class Http {
 
     private String authorizationHeader;
     private String baseMerchantURL;
+    private String[] certificateFilenames;
     private String version;
 
-    public Http(String authorizationHeader, String baseMerchantURL, String version) {
+    public Http(String authorizationHeader, String baseMerchantURL, String[] certificateFilenames, String version) {
         this.authorizationHeader = authorizationHeader;
         this.baseMerchantURL = baseMerchantURL;
+        this.certificateFilenames = certificateFilenames;
         this.version = version;
     }
 
@@ -64,6 +77,11 @@ public class Http {
     private NodeWrapper httpRequest(RequestMethod requestMethod, String url, String postBody) {
         try {
             HttpURLConnection connection = buildConnection(requestMethod, url);
+            
+            if (connection instanceof HttpsURLConnection) {
+                ((HttpsURLConnection) connection).setSSLSocketFactory(getSSLSocketFactory());
+            }
+            
             if (postBody != null) {
                 connection.getOutputStream().write(postBody.getBytes("UTF-8"));
                 connection.getOutputStream().close();
@@ -72,14 +90,40 @@ public class Http {
             if (requestMethod.equals(RequestMethod.DELETE)) {
                 return null;
             }
-            InputStream responseStream = connection.getResponseCode() == 422 ? connection.getErrorStream() : connection
-                    .getInputStream();
+            InputStream responseStream = connection.getResponseCode() == 422 ? connection.getErrorStream() : connection.getInputStream();
 
             String xml = StringUtils.inputStreamToString(responseStream);
 
             responseStream.close();
             return new NodeWrapper(xml);
         } catch (IOException e) {
+            throw new UnexpectedException(e.getMessage());
+        }
+    }
+    
+    private SSLSocketFactory getSSLSocketFactory() {
+        try {
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(null);
+            
+            for (String certificateFilename : certificateFilenames) {
+                CertificateFactory cf = CertificateFactory.getInstance("X.509");
+                InputStream certStream = Http.class.getClassLoader().getResourceAsStream("ssl/" + certificateFilename);
+
+                Certificate cert = cf.generateCertificate(certStream);
+                keyStore.setCertificateEntry("braintree", cert);
+            }
+
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            kmf.init(keyStore, null);
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(keyStore);
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init((KeyManager[]) kmf.getKeyManagers(), tmf.getTrustManagers(), SecureRandom.getInstance("SHA1PRNG"));
+
+            return sslContext.getSocketFactory();
+        } catch (Exception e) {
             throw new UnexpectedException(e.getMessage());
         }
     }

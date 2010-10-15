@@ -5,18 +5,20 @@ package com.braintreegateway;
  */
 public enum Environment {
     /** For Braintree internal development. */
-    DEVELOPMENT("http://localhost:" + developmentPort()),
+    DEVELOPMENT("http://localhost:" + developmentPort(), new String[] {}),
     
     /** For production. */
-    PRODUCTION("https://www.braintreegateway.com:443"),
+    PRODUCTION("https://www.braintreegateway.com:443", new String[] {"www_braintreegateway_com.ca.der", "securetrust.ca.der"}),
     
     /** For merchant's to use during their development and testing. */
-    SANDBOX("https://sandbox.braintreegateway.com:443");
+    SANDBOX("https://sandbox.braintreegateway.com:443", new String[] {"sandbox_braintreegateway_com.ca.der"});
 
     public final String baseURL;
+    public final String[] certificateFilenames;
 
-    private Environment(String baseURL) {
+    private Environment(String baseURL, String[] certificateFilenames) {
         this.baseURL = baseURL;
+        this.certificateFilenames = certificateFilenames;
     }
 
     private static String developmentPort() {
