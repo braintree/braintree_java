@@ -111,7 +111,7 @@ public class Http {
                 InputStream certStream = Http.class.getClassLoader().getResourceAsStream("ssl/" + certificateFilename);
 
                 Certificate cert = cf.generateCertificate(certStream);
-                keyStore.setCertificateEntry("braintree", cert);
+                keyStore.setCertificateEntry(certificateFilename, cert);
             }
 
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
