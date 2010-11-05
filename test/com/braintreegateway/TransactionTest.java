@@ -1881,7 +1881,7 @@ public class TransactionTest {
     }
 
     private void settle(String transactionId) {
-        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), BraintreeGateway.VERSION).put("/transactions/" + transactionId + "/settle");
+        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).put("/transactions/" + transactionId + "/settle");
         Assert.assertTrue(response.isSuccess());
     }
 

@@ -17,6 +17,7 @@ end
 
 task :compile => :init do
   sh "javac -target 1.5 -d classes -cp #{lib_classpath} -Xlint:deprecation #{src_files}"
+  cp_r "ssl", "classes"
 end
 
 desc "build a jar"

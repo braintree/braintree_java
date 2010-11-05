@@ -122,6 +122,26 @@ public class CreditCardTest {
         Assert.assertEquals("840", billingAddress.getCountryCodeNumeric());
     }
 
+    @Test
+    public void createWithExistingAddress() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        Address address = gateway.address().create(customer.getId(), new AddressRequest().postalCode("11111")).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            billingAddressId(address.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12");
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        Assert.assertTrue(result.isSuccess());
+        CreditCard card = result.getTarget();
+
+        Address billingAddress = card.getBillingAddress();
+        Assert.assertEquals(address.getId(), billingAddress.getId());
+        Assert.assertEquals("11111", billingAddress.getPostalCode());
+    }
+
     @SuppressWarnings("deprecation")
     @Test
     public void createViaTransparentRedirect() {

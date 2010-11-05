@@ -1,3 +1,8 @@
+## 2.6.1
+
+* Added billingAddressId to CreditCardRequest
+* Allow searching on Subscriptions that are currently in a trial period using inTrialPeriod
+
 ## 2.6.0
 
 * Added ability to perform multiple partial refunds on Transactions

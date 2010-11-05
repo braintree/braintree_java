@@ -21,6 +21,10 @@ public class SubscriptionSearchRequest extends SearchRequest {
         return new MultipleValueNode<SubscriptionSearchRequest, String>("ids", this);
     }
 
+    public MultipleValueNode<SubscriptionSearchRequest, Boolean> inTrialPeriod() {
+        return new MultipleValueNode<SubscriptionSearchRequest, Boolean>("in_trial_period", this);
+    }
+
     public MultipleValueNode<SubscriptionSearchRequest, String> merchantAccountId() {
         return new MultipleValueNode<SubscriptionSearchRequest, String>("merchant_account_id", this);
     }

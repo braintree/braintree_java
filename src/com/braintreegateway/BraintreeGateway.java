@@ -46,7 +46,7 @@ import com.braintreegateway.util.TrUtil;
  */
 public class BraintreeGateway {
 
-    public static final String VERSION = "2.6.0";
+    public static final String VERSION = "2.6.1";
 
     private Configuration configuration;
     private Environment environment;
@@ -68,7 +68,7 @@ public class BraintreeGateway {
         this.publicKey = publicKey;
         this.privateKey = privateKey;
         this.configuration = new Configuration(baseMerchantURL(), publicKey, privateKey);
-        this.http = new Http(getAuthorizationHeader(), baseMerchantURL(), BraintreeGateway.VERSION);
+        this.http = new Http(getAuthorizationHeader(), baseMerchantURL(), environment.certificateFilenames, BraintreeGateway.VERSION);
     }
     
     /**
