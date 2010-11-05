@@ -442,7 +442,29 @@ public class CustomerTest {
         Assert.assertEquals("KIR", updatedAddress.getCountryCodeAlpha3());
         Assert.assertEquals("296", updatedAddress.getCountryCodeNumeric());
     }
-    
+
+     @Test
+    public void updateWithNewCreditCardAndExistingAddress() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        AddressRequest addressRequest = new AddressRequest().
+            firstName("John");
+        Address address = gateway.address().create(customer.getId(), addressRequest).getTarget();
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            creditCard().
+                number("4111111111111111").
+                expirationDate("12/12").
+                billingAddressId(address.getId()).
+                done();
+
+        Customer updatedCustomer = gateway.customer().update(customer.getId(), updateRequest).getTarget();
+
+        Address updatedAddress = updatedCustomer.getCreditCards().get(0).getBillingAddress();
+
+        Assert.assertEquals(address.getId(), updatedAddress.getId());
+        Assert.assertEquals("John", updatedAddress.getFirstName());
+    }
+
     @Test
     public void updateWithExistingCreditCardAndAddressAndValidationErrors() {
         CustomerRequest request = new CustomerRequest().
