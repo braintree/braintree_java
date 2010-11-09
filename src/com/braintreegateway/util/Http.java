@@ -138,6 +138,7 @@ public class Http {
         connection.addRequestProperty("Authorization", authorizationHeader);
         connection.addRequestProperty("Content-Type", "application/xml");
         connection.setDoOutput(true);
+        connection.setReadTimeout(60000);
         return connection;
     }
 
