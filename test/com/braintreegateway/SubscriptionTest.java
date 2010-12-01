@@ -56,11 +56,11 @@ public class SubscriptionTest {
 
         Calendar expectedBillingPeriodEndDate = Calendar.getInstance();
         expectedBillingPeriodEndDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
-        expectedBillingPeriodEndDate.roll(Calendar.MONTH, plan.getBillingFrequency());
+        expectedBillingPeriodEndDate.add(Calendar.MONTH, plan.getBillingFrequency());
         expectedBillingPeriodEndDate.add(Calendar.DAY_OF_MONTH, -1);
         Calendar expectedNextBillingDate = Calendar.getInstance();
         expectedNextBillingDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
-        expectedNextBillingDate.roll(Calendar.MONTH, plan.getBillingFrequency());
+        expectedNextBillingDate.add(Calendar.MONTH, plan.getBillingFrequency());
         Calendar expectedBillingPeriodStartDate = Calendar.getInstance();
         expectedBillingPeriodStartDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
         Calendar expectedFirstDate = Calendar.getInstance();
