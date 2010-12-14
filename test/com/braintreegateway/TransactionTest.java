@@ -628,6 +628,50 @@ public class TransactionTest {
     }
     
     @Test
+    public void saleWithDescriptor() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            descriptor().
+                name("123*123456789012345678").
+                phone("3334445555").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        Assert.assertEquals("123*123456789012345678", transaction.getDescriptor().getName());
+        Assert.assertEquals("3334445555", transaction.getDescriptor().getPhone());
+    }
+ 
+    @Test
+    public void saleWithDescriptorValidation() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            descriptor().
+                name("badcompanyname12*badproduct12").
+                phone("%bad4445555").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertFalse(result.isSuccess());
+
+        Assert.assertEquals(ValidationErrorCode.TRANSACTION_DESCRIPTOR_NAME_FORMAT_IS_INVALID, 
+            result.getErrors().forObject("transaction").forObject("descriptor").onField("name").get(0).getCode());
+
+        Assert.assertEquals(ValidationErrorCode.TRANSACTION_DESCRIPTOR_PHONE_FORMAT_IS_INVALID, 
+            result.getErrors().forObject("transaction").forObject("descriptor").onField("phone").get(0).getCode());
+    }
+
+    @Test
     public void createTransactionFromTransparentRedirectWithAddress() {
         TransactionRequest request = new TransactionRequest();
         
@@ -1905,14 +1949,14 @@ public class TransactionTest {
     
     @Test
     public void unrecognizedStatus() {
-        String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><shipping/><type>sale</type></transaction>";
+        String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><descriptor/><shipping/><type>sale</type></transaction>";
         Transaction transaction = new Transaction(new NodeWrapper(xml));
         Assert.assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
     }
 
     @Test
     public void unrecognizedType() {
-        String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><shipping/><type>sale</type></transaction>";
+        String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><descriptor/><shipping/><type>sale</type></transaction>";
         Transaction transaction = new Transaction(new NodeWrapper(xml));
         Assert.assertEquals(Transaction.Type.UNRECOGNIZED, transaction.getType());
     }

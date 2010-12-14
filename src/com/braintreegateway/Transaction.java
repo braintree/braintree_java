@@ -94,6 +94,7 @@ public class Transaction {
     private Customer customer;
     private Map<String, String> customFields;
     private String cvvResponseCode;
+    private Descriptor descriptor;
     private List<Discount> discounts;
     private GatewayRejectionReason gatewayRejectionReason;
     private String id;
@@ -125,6 +126,7 @@ public class Transaction {
         customFields = node.findMap("custom-fields");
         customer = new Customer(node.findFirst("customer"));
         cvvResponseCode = node.findString("cvv-response-code");
+        descriptor = new Descriptor(node.findFirst("descriptor"));
         gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node
             .findString("gateway-rejection-reason"));
         id = node.findString("id");
@@ -146,7 +148,7 @@ public class Transaction {
         for (NodeWrapper refundIdNode : node.findAll("refund-ids/item")) {
             refundIds.add(refundIdNode.findString("."));
         }
-        
+
         statusHistory = new ArrayList<StatusEvent>();
         for (NodeWrapper statusNode : node.findAll("status-history/status-event")) {
             statusHistory.add(new StatusEvent(statusNode));
@@ -211,6 +213,10 @@ public class Transaction {
         return cvvResponseCode;
     }
 
+    public Descriptor getDescriptor() {
+        return descriptor;
+    }
+
     public List<Discount> getDiscounts() {
         return discounts;
     }
@@ -246,7 +252,7 @@ public class Transaction {
     public String getRefundedTransactionId() {
         return refundedTransactionId;
     }
-    
+
     /**
      * Please use Transaction.getRefundIds() instead
      */
@@ -254,7 +260,7 @@ public class Transaction {
     public String getRefundId() {
         return refundId;
     }
-    
+
     public List<String> getRefundIds() {
         return refundIds;
     }

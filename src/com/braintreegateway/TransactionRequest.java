@@ -20,6 +20,7 @@ public class TransactionRequest extends Request {
     private String orderId;
     private String paymentMethodToken;
     private String shippingAddressId;
+    private TransactionDescriptorRequest descriptorRequest;
     private TransactionAddressRequest shippingAddressRequest;
     private TransactionOptionsRequest transactionOptionsRequest;
     private Type type;
@@ -58,6 +59,11 @@ public class TransactionRequest extends Request {
         return this;
     }
     
+    public TransactionDescriptorRequest descriptor() {
+        descriptorRequest = new TransactionDescriptorRequest(this);
+        return descriptorRequest;
+    }
+
     @Override
     public String getKind() {
         return TransparentRedirectGateway.CREATE_TRANSACTION;
@@ -87,20 +93,10 @@ public class TransactionRequest extends Request {
         shippingAddressRequest = new TransactionAddressRequest(this, "shipping");
         return shippingAddressRequest;
     }
-
+    
     public TransactionRequest shippingAddressId(String shippingAddressId) {
         this.shippingAddressId = shippingAddressId;
         return this;
-    }
-    
-    public TransactionRequest type(Type type) {
-        this.type = type;
-        return this;
-    }
-
-    @Override
-    public String toQueryString(String root) {
-        return buildRequest(root).toQueryString();
     }
 
     @Override
@@ -109,10 +105,20 @@ public class TransactionRequest extends Request {
     }
 
     @Override
+    public String toQueryString(String root) {
+        return buildRequest(root).toQueryString();
+    }
+
+    @Override
     public String toXML() {
         return buildRequest("transaction").toXML();
     }
     
+    public TransactionRequest type(Type type) {
+        this.type = type;
+        return this;
+    }
+
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root).     
             addElement("amount", amount).
@@ -123,6 +129,7 @@ public class TransactionRequest extends Request {
             addElement("shippingAddressId", shippingAddressId).
             addElement("creditCard", creditCardRequest).
             addElement("customer", customerRequest).
+            addElement("descriptor", descriptorRequest).
             addElement("billing", billingAddressRequest).
             addElement("shipping", shippingAddressRequest).
             addElement("options", transactionOptionsRequest);
