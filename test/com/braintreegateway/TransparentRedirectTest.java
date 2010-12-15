@@ -59,6 +59,31 @@ public class TransparentRedirectTest {
     }
     
     @Test
+    public void createTransactionFromTransparentRedirectSpecifyingDescriptor() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        TransactionRequest trParams = new TransactionRequest().
+            type(Transaction.Type.SALE).
+            descriptor().
+                name("123*123456789012345678").
+                phone("3334445555").
+                done();
+    
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
+        Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
+        
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        Assert.assertEquals("123*123456789012345678", transaction.getDescriptor().getName());
+        Assert.assertEquals("3334445555", transaction.getDescriptor().getPhone());
+    }
+    
+    @Test
     public void createCustomerFromTransparentRedirect() {
         CustomerRequest request = new CustomerRequest().firstName("John");
         CustomerRequest trParams = new CustomerRequest().lastName("Doe");

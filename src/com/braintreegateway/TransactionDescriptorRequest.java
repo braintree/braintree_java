@@ -33,11 +33,6 @@ public class TransactionDescriptorRequest extends Request {
         return buildRequest(root).toQueryString();
     }
 
-    @Override
-    public String toQueryString() {
-        return toQueryString("descriptor");
-    }
-
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
             addElement("name", name).
