@@ -19,10 +19,13 @@ public class TransactionRequest extends Request {
     private String merchantAccountId;
     private String orderId;
     private String paymentMethodToken;
+    private String purchaseOrderNumber;
     private String shippingAddressId;
     private TransactionDescriptorRequest descriptorRequest;
     private TransactionAddressRequest shippingAddressRequest;
     private TransactionOptionsRequest transactionOptionsRequest;
+    private BigDecimal taxAmount;
+    private Boolean taxExempt;
     private Type type;
 
     public TransactionRequest() {
@@ -88,6 +91,11 @@ public class TransactionRequest extends Request {
         this.paymentMethodToken = paymentMethodToken;
         return this;
     }
+    
+    public TransactionRequest purchaseOrderNumber(String purchaseOrderNumber) {
+        this.purchaseOrderNumber = purchaseOrderNumber;
+        return this;
+    }
 
     public TransactionAddressRequest shippingAddress() {
         shippingAddressRequest = new TransactionAddressRequest(this, "shipping");
@@ -96,6 +104,16 @@ public class TransactionRequest extends Request {
     
     public TransactionRequest shippingAddressId(String shippingAddressId) {
         this.shippingAddressId = shippingAddressId;
+        return this;
+    }
+    
+    public TransactionRequest taxAmount(BigDecimal taxAmount) {
+        this.taxAmount = taxAmount;
+        return this;
+    }
+    
+    public TransactionRequest taxExempt(Boolean taxExempt) {
+        this.taxExempt = taxExempt;
         return this;
     }
 
@@ -126,6 +144,9 @@ public class TransactionRequest extends Request {
             addElement("merchantAccountId", merchantAccountId).
             addElement("orderId", orderId).
             addElement("paymentMethodToken", paymentMethodToken).
+            addElement("purchaseOrderNumber", purchaseOrderNumber).
+            addElement("taxAmount", taxAmount).
+            addElement("taxExempt", taxExempt).
             addElement("shippingAddressId", shippingAddressId).
             addElement("creditCard", creditCardRequest).
             addElement("customer", customerRequest).

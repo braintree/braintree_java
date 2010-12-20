@@ -176,6 +176,7 @@ public class TransactionTest {
         Assert.assertEquals("M", transaction.getAvsPostalCodeResponseCode());
         Assert.assertEquals("M", transaction.getAvsStreetAddressResponseCode());
         Assert.assertEquals("M", transaction.getCvvResponseCode());
+        Assert.assertFalse(transaction.isTaxExempt());
         Assert.assertNull(transaction.getVaultCreditCard(gateway));
         CreditCard creditCard = transaction.getCreditCard();
         Assert.assertEquals("411111", creditCard.getBin());
@@ -669,6 +670,44 @@ public class TransactionTest {
 
         Assert.assertEquals(ValidationErrorCode.TRANSACTION_DESCRIPTOR_PHONE_FORMAT_IS_INVALID, 
             result.getErrors().forObject("transaction").forObject("descriptor").onField("phone").get(0).getCode());
+    }
+    
+    @Test
+    public void saleWithLevel2() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            taxAmount(new BigDecimal("10.00")).
+            taxExempt(true).
+            purchaseOrderNumber("12345");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        Assert.assertEquals(new BigDecimal("10.00"), transaction.getTaxAmount());
+        Assert.assertTrue(transaction.isTaxExempt());
+        Assert.assertEquals("12345", transaction.getPurchaseOrderNumber());
+    }
+    
+    @Test
+    public void saleWithLevel2Validations() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            purchaseOrderNumber("aaaaaaaaaaaaaaaaaa");
+        
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertFalse(result.isSuccess());
+
+        Assert.assertEquals(ValidationErrorCode.TRANSACTION_PURCHASE_ORDER_NUMBER_IS_TOO_LONG, 
+            result.getErrors().forObject("transaction").onField("purchaseOrderNumber").get(0).getCode());
     }
 
     @Test

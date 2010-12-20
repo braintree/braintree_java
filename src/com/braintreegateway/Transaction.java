@@ -103,6 +103,7 @@ public class Transaction {
     private String processorAuthorizationCode;
     private String processorResponseCode;
     private String processorResponseText;
+    private String purchaseOrderNumber;
     private String refundedTransactionId;
     private String refundId;
     private List<String> refundIds;
@@ -111,6 +112,8 @@ public class Transaction {
     private Status status;
     private List<StatusEvent> statusHistory;
     private String subscriptionId;
+    private BigDecimal taxAmount;
+    private Boolean taxExempt;
     private Type type;
     private Calendar updatedAt;
 
@@ -135,12 +138,15 @@ public class Transaction {
         processorAuthorizationCode = node.findString("processor-authorization-code");
         processorResponseCode = node.findString("processor-response-code");
         processorResponseText = node.findString("processor-response-text");
+        purchaseOrderNumber = node.findString("purchase-order-number");
         refundedTransactionId = node.findString("refunded-transaction-id");
         refundId = node.findString("refund-id");
         settlementBatchId = node.findString("settlement-batch-id");
         shippingAddress = new Address(node.findFirst("shipping"));
         status = EnumUtils.findByName(Status.class, node.findString("status"));
         subscriptionId = node.findString("subscription-id");
+        taxAmount = node.findBigDecimal("tax-amount");
+        taxExempt = node.findBoolean("tax-exempt");
         type = EnumUtils.findByName(Type.class, node.findString("type"));
         updatedAt = node.findDateTime("updated-at");
 
@@ -248,6 +254,10 @@ public class Transaction {
     public String getProcessorResponseText() {
         return processorResponseText;
     }
+    
+    public String getPurchaseOrderNumber() {
+        return purchaseOrderNumber;
+    }
 
     public String getRefundedTransactionId() {
         return refundedTransactionId;
@@ -284,6 +294,10 @@ public class Transaction {
     public String getSubscriptionId() {
         return subscriptionId;
     }
+    
+    public BigDecimal getTaxAmount() {
+        return taxAmount;
+    }
 
     public Type getType() {
         return type;
@@ -319,5 +333,9 @@ public class Transaction {
             return null;
         }
         return gateway.address().find(customer.getId(), shippingAddress.getId());
+    }
+    
+    public Boolean isTaxExempt() {
+        return taxExempt;
     }
 }
