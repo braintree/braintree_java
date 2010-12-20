@@ -354,6 +354,105 @@ public class CustomerTest {
         Customer foundCustomer = gateway.customer().find(customer.getId());
         Assert.assertEquals(customer.getId(), foundCustomer.getId());
     }
+    
+    @Test
+    public void searchOnAllTextFields()
+    {
+        String creditCardToken = String.valueOf(new Random().nextInt());
+
+        CustomerRequest request = new CustomerRequest().
+            firstName("Timmy").
+            lastName("O'Toole").
+            company("O'Toole and Sons").
+            email("timmy@example.com").
+            website("http://example.com").
+            fax("3145551234").
+            phone("5551231234").
+            creditCard().
+                number("4111111111111111").
+                expirationDate("05/2010").
+                token(creditCardToken).
+                billingAddress().
+                    firstName("Thomas").
+                    lastName("Otool").
+                    streetAddress("1 E Main St").
+                    extendedAddress("Suite 3").
+                    locality("Chicago").
+                    region("Illinois").
+                    postalCode("60622").
+                    countryName("United States of America").
+                    done().
+                done();
+
+        Customer customer = gateway.customer().create(request).getTarget();
+        
+        CustomerSearchRequest searchRequest = new CustomerSearchRequest().
+            id().is(customer.getId()).
+            firstName().is("Timmy").
+            lastName().is("O'Toole").
+            company().is("O'Toole and Sons").
+            email().is("timmy@example.com").
+            phone().is("5551231234").
+            fax().is("3145551234").
+            website().is("http://example.com").
+            addressFirstName().is("Thomas").
+            addressLastName().is("Otool").
+            addressStreetAddress().is("1 E Main St").
+            addressPostalCode().is("60622").
+            addressExtendedAddress().is("Suite 3").
+            addressLocality().is("Chicago").
+            addressRegion().is("Illinois").
+            paymentMethodToken().is(creditCardToken).
+            creditCardExpirationDate().is("05/2010");
+
+        ResourceCollection<Customer> collection = gateway.customer().search(searchRequest);
+
+        Assert.assertEquals(1, collection.getMaximumSize());
+        Assert.assertEquals(customer.getId(), collection.getFirst().getId());
+    }
+    
+    @Test
+    public void searchOnCreatedAt() {
+        CustomerRequest request = new CustomerRequest();
+
+         Customer customer = gateway.customer().create(request).getTarget();
+
+         Calendar createdAt = customer.getCreatedAt();
+         
+         Calendar threeHoursEarlier = ((Calendar)createdAt.clone());
+         threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+         
+         Calendar oneHourEarlier = ((Calendar)createdAt.clone());
+         oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+         
+         Calendar oneHourLater = ((Calendar)createdAt.clone());
+         oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+         
+         CustomerSearchRequest searchRequest = new CustomerSearchRequest().
+             id().is(customer.getId()).
+             createdAt().between(oneHourEarlier, oneHourLater);
+
+         Assert.assertEquals(1, gateway.customer().search(searchRequest).getMaximumSize());
+         
+         searchRequest = new CustomerSearchRequest().
+             id().is(customer.getId()).
+             createdAt().greaterThanOrEqualTo(oneHourEarlier);
+
+         Assert.assertEquals(1, gateway.customer().search(searchRequest).getMaximumSize());
+         
+         searchRequest = new CustomerSearchRequest().
+             id().is(customer.getId()).
+             createdAt().lessThanOrEqualTo(oneHourLater);
+
+         Assert.assertEquals(1, gateway.customer().search(searchRequest).getMaximumSize());
+         
+         searchRequest = new CustomerSearchRequest().
+             id().is(customer.getId()).
+             createdAt().between(threeHoursEarlier, oneHourEarlier);
+
+         Assert.assertEquals(0, gateway.customer().search(searchRequest).getMaximumSize());
+     }
+
 
     @Test
     public void update() {
