@@ -50,7 +50,7 @@ public class TransactionSearchRequest extends SearchRequest {
     }
     
     public PartialMatchNode<TransactionSearchRequest> creditCardNumber() {
-        return new TextNode<TransactionSearchRequest>("credit_card_number", this);
+        return new PartialMatchNode<TransactionSearchRequest>("credit_card_number", this);
     }
     
     public TextNode<TransactionSearchRequest> currency() {

@@ -403,6 +403,7 @@ public class CustomerTest {
             addressLocality().is("Chicago").
             addressRegion().is("Illinois").
             paymentMethodToken().is(creditCardToken).
+            creditCardNumber().is("4111111111111111").
             creditCardExpirationDate().is("05/2010");
 
         ResourceCollection<Customer> collection = gateway.customer().search(searchRequest);

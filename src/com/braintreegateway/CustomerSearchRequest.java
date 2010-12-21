@@ -72,6 +72,10 @@ public class CustomerSearchRequest extends SearchRequest {
     public MultipleValueNode<CustomerSearchRequest, String> ids() {
         return new MultipleValueNode<CustomerSearchRequest, String>("ids", this);
     }
+    
+    public PartialMatchNode<CustomerSearchRequest> creditCardNumber() {
+        return new PartialMatchNode<CustomerSearchRequest>("credit_card_number", this);
+    }
 
     public DateRangeNode<CustomerSearchRequest> createdAt() {
         return new DateRangeNode<CustomerSearchRequest>("created_at", this);
