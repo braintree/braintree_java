@@ -29,12 +29,16 @@ public class CustomerSearchRequest extends SearchRequest {
         return new TextNode<CustomerSearchRequest>("address_street_address", this);
     }
 
+    public TextNode<CustomerSearchRequest> cardholderName() {
+        return new TextNode<CustomerSearchRequest>("cardholder_name", this);
+    }
+
     public TextNode<CustomerSearchRequest> company() {
         return new TextNode<CustomerSearchRequest>("company", this);
     }
 
-    public TextNode<CustomerSearchRequest> creditCardExpirationDate() {
-        return new TextNode<CustomerSearchRequest>("credit_card_expiration_date", this);
+    public EqualityNode<CustomerSearchRequest> creditCardExpirationDate() {
+        return new EqualityNode<CustomerSearchRequest>("credit_card_expiration_date", this);
     }
 
     public TextNode<CustomerSearchRequest> email() {

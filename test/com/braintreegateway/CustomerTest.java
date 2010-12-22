@@ -369,6 +369,7 @@ public class CustomerTest {
             fax("3145551234").
             phone("5551231234").
             creditCard().
+                cardholderName("Tim Toole").
                 number("4111111111111111").
                 expirationDate("05/2010").
                 token(creditCardToken).
@@ -403,6 +404,7 @@ public class CustomerTest {
             addressLocality().is("Chicago").
             addressRegion().is("Illinois").
             paymentMethodToken().is(creditCardToken).
+            cardholderName().is("Tim Toole").
             creditCardNumber().is("4111111111111111").
             creditCardExpirationDate().is("05/2010");
 
