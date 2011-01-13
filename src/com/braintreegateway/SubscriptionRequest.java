@@ -10,6 +10,7 @@ import java.util.Calendar;
 public class SubscriptionRequest extends Request {
     private ModificationsRequest addOnsRequest;
     private Integer billingDayOfMonth;
+    private SubscriptionDescriptorRequest descriptorRequest;
     private ModificationsRequest discountsRequest;
     private Calendar firstBillingDate;
     private Boolean hasTrialPeriod;
@@ -32,6 +33,11 @@ public class SubscriptionRequest extends Request {
     public SubscriptionRequest billingDayOfMonth(Integer billingDayOfMonth) {
         this.billingDayOfMonth = billingDayOfMonth;
         return this;
+    }
+
+    public SubscriptionDescriptorRequest descriptor() {
+        descriptorRequest = new SubscriptionDescriptorRequest(this);
+        return descriptorRequest;
     }
 
     public ModificationsRequest discounts() {
@@ -109,6 +115,7 @@ public class SubscriptionRequest extends Request {
             addElement("id", id).
             addElement("addOns", addOnsRequest).
             addElement("billingDayOfMonth", billingDayOfMonth).
+            addElement("descriptor", descriptorRequest).
             addElement("discounts", discountsRequest).
             addElement("firstBillingDate", firstBillingDate).
             addElement("merchantAccountId", merchantAccountId).

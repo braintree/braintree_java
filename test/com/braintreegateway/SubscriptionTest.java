@@ -993,6 +993,32 @@ public class SubscriptionTest {
     }
 
     @Test
+    public void updateWithDescriptor() {
+        Plan plan = Plan.PLAN_WITH_TRIAL;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId()).
+            numberOfBillingCycles(10).
+            descriptor().
+                name("123*123456789012345678").
+                phone("3334445555").
+                done();
+
+        Subscription subscription = gateway.subscription().create(request).getTarget();
+
+        SubscriptionRequest updateRequest = new SubscriptionRequest().
+            descriptor().
+                name("999*99").
+                phone("9999999").
+                done();
+
+        Subscription updatedSubscription = gateway.subscription().update(subscription.getId(), updateRequest).getTarget();
+
+        Assert.assertEquals("999*99", updatedSubscription.getDescriptor().getName());
+        Assert.assertEquals("9999999", updatedSubscription.getDescriptor().getPhone());
+    }
+
+    @Test
     public void createWithBadPlanId() {
         SubscriptionRequest createRequest = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
@@ -1015,7 +1041,48 @@ public class SubscriptionTest {
         
         Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_PAYMENT_METHOD_TOKEN_IS_INVALID, result.getErrors().forObject("subscription").onField("paymentMethodToken").get(0).getCode());
     }
-    
+
+    @Test
+    public void createWithDescriptor() {
+        Plan plan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId()).
+            descriptor().
+                name("123*123456789012345678").
+                phone("3334445555").
+                done();
+
+        Result<Subscription> createResult = gateway.subscription().create(request);
+        Assert.assertTrue(createResult.isSuccess());
+
+        Subscription subscription = createResult.getTarget();
+        Assert.assertEquals("123*123456789012345678", subscription.getDescriptor().getName());
+        Assert.assertEquals("3334445555", subscription.getDescriptor().getPhone());
+
+        Transaction transaction = subscription.getTransactions().get(0);
+        Assert.assertEquals("123*123456789012345678", transaction.getDescriptor().getName());
+        Assert.assertEquals("3334445555", transaction.getDescriptor().getPhone());
+    }
+
+    @Test
+    public void createWithDescriptorValidation() {
+        SubscriptionRequest request = new SubscriptionRequest().
+            descriptor().
+                name("xxxx").
+                phone("xxx").
+                done();
+
+        Result<Subscription> result = gateway.subscription().create(request);
+        Assert.assertFalse(result.isSuccess());
+
+        Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_NAME_FORMAT_IS_INVALID, 
+            result.getErrors().forObject("subscription").forObject("descriptor").onField("name").get(0).getCode());
+
+        Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_PHONE_FORMAT_IS_INVALID, 
+            result.getErrors().forObject("subscription").forObject("descriptor").onField("phone").get(0).getCode());
+    }
+
     @Test
     public void validationErrorsOnCreate() {
         Plan plan = Plan.PLAN_WITHOUT_TRIAL;

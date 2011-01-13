@@ -665,10 +665,10 @@ public class TransactionTest {
         Result<Transaction> result = gateway.transaction().sale(request);
         Assert.assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_DESCRIPTOR_NAME_FORMAT_IS_INVALID, 
+        Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_NAME_FORMAT_IS_INVALID, 
             result.getErrors().forObject("transaction").forObject("descriptor").onField("name").get(0).getCode());
 
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_DESCRIPTOR_PHONE_FORMAT_IS_INVALID, 
+        Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_PHONE_FORMAT_IS_INVALID, 
             result.getErrors().forObject("transaction").forObject("descriptor").onField("phone").get(0).getCode());
     }
     

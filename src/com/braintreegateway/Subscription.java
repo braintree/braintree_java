@@ -40,6 +40,7 @@ public class Subscription {
     private Calendar billingPeriodEndDate;
     private Calendar billingPeriodStartDate;
     private Integer daysPastDue;
+    private Descriptor descriptor;
     private ArrayList<Discount> discounts;
     private Integer failureCount;
     private Calendar firstBillingDate;
@@ -70,6 +71,9 @@ public class Subscription {
         billingPeriodEndDate = node.findDate("billing-period-end-date");
         billingPeriodStartDate = node.findDate("billing-period-start-date");
         daysPastDue = node.findInteger("days-past-due");
+        if (node.findFirst("descriptor") != null) {
+            descriptor = new Descriptor(node.findFirst("descriptor"));
+        }
         discounts = new ArrayList<Discount>();
         for (NodeWrapper discountResponse : node.findAll("discounts/discount")) {
             discounts.add(new Discount(discountResponse));
@@ -119,6 +123,10 @@ public class Subscription {
 
     public Integer getDaysPastDue() {
         return daysPastDue;
+    }
+
+    public Descriptor getDescriptor() {
+        return descriptor;
     }
 
     public List<Discount> getDiscounts() {
