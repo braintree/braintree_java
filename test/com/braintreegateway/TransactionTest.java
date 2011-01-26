@@ -176,6 +176,7 @@ public class TransactionTest {
         Assert.assertEquals("M", transaction.getAvsPostalCodeResponseCode());
         Assert.assertEquals("M", transaction.getAvsStreetAddressResponseCode());
         Assert.assertEquals("M", transaction.getCvvResponseCode());
+        Assert.assertFalse(transaction.isTaxExempt());
         Assert.assertNull(transaction.getVaultCreditCard(gateway));
         CreditCard creditCard = transaction.getCreditCard();
         Assert.assertEquals("411111", creditCard.getBin());
@@ -627,6 +628,88 @@ public class TransactionTest {
         Assert.assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
     }
     
+    @Test
+    public void saleWithDescriptor() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            descriptor().
+                name("123*123456789012345678").
+                phone("3334445555").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        Assert.assertEquals("123*123456789012345678", transaction.getDescriptor().getName());
+        Assert.assertEquals("3334445555", transaction.getDescriptor().getPhone());
+    }
+ 
+    @Test
+    public void saleWithDescriptorValidation() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            descriptor().
+                name("badcompanyname12*badproduct12").
+                phone("%bad4445555").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertFalse(result.isSuccess());
+
+        Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_NAME_FORMAT_IS_INVALID, 
+            result.getErrors().forObject("transaction").forObject("descriptor").onField("name").get(0).getCode());
+
+        Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_PHONE_FORMAT_IS_INVALID, 
+            result.getErrors().forObject("transaction").forObject("descriptor").onField("phone").get(0).getCode());
+    }
+    
+    @Test
+    public void saleWithLevel2() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            taxAmount(new BigDecimal("10.00")).
+            taxExempt(true).
+            purchaseOrderNumber("12345");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        Assert.assertEquals(new BigDecimal("10.00"), transaction.getTaxAmount());
+        Assert.assertTrue(transaction.isTaxExempt());
+        Assert.assertEquals("12345", transaction.getPurchaseOrderNumber());
+    }
+    
+    @Test
+    public void saleWithLevel2Validations() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            purchaseOrderNumber("aaaaaaaaaaaaaaaaaa");
+        
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertFalse(result.isSuccess());
+
+        Assert.assertEquals(ValidationErrorCode.TRANSACTION_PURCHASE_ORDER_NUMBER_IS_TOO_LONG, 
+            result.getErrors().forObject("transaction").onField("purchaseOrderNumber").get(0).getCode());
+    }
+
     @Test
     public void createTransactionFromTransparentRedirectWithAddress() {
         TransactionRequest request = new TransactionRequest();
@@ -1905,14 +1988,14 @@ public class TransactionTest {
     
     @Test
     public void unrecognizedStatus() {
-        String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><shipping/><type>sale</type></transaction>";
+        String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><descriptor/><shipping/><type>sale</type></transaction>";
         Transaction transaction = new Transaction(new NodeWrapper(xml));
         Assert.assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
     }
 
     @Test
     public void unrecognizedType() {
-        String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><shipping/><type>sale</type></transaction>";
+        String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><descriptor/><shipping/><type>sale</type></transaction>";
         Transaction transaction = new Transaction(new NodeWrapper(xml));
         Assert.assertEquals(Transaction.Type.UNRECOGNIZED, transaction.getType());
     }

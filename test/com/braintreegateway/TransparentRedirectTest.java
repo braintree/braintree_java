@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+import java.math.BigDecimal;
+
 import org.junit.Assert;
 
 import org.junit.Before;
@@ -56,6 +58,56 @@ public class TransparentRedirectTest {
         
         Assert.assertTrue(result.isSuccess());
         Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, result.getTarget().getMerchantAccountId());
+    }
+    
+    @Test
+    public void createTransactionFromTransparentRedirectSpecifyingDescriptor() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        TransactionRequest trParams = new TransactionRequest().
+            type(Transaction.Type.SALE).
+            descriptor().
+                name("123*123456789012345678").
+                phone("3334445555").
+                done();
+    
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
+        Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
+        
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        Assert.assertEquals("123*123456789012345678", transaction.getDescriptor().getName());
+        Assert.assertEquals("3334445555", transaction.getDescriptor().getPhone());
+    }
+    
+    @Test
+    public void createTransactionFromTransparentRedirectSpecifyingLevel2Attributes() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        TransactionRequest trParams = new TransactionRequest().
+            type(Transaction.Type.SALE).
+            taxAmount(new BigDecimal("10.00")).
+            taxExempt(true).
+            purchaseOrderNumber("12345");
+    
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
+        Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
+        
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        Assert.assertEquals(new BigDecimal("10.00"), transaction.getTaxAmount());
+        Assert.assertTrue(transaction.isTaxExempt());
+        Assert.assertEquals("12345", transaction.getPurchaseOrderNumber());
     }
     
     @Test

@@ -34,12 +34,11 @@ public class CustomerGateway {
      */
     public ResourceCollection<Customer> all() {
         NodeWrapper response = http.post("/customers/advanced_search_ids");
-        return new ResourceCollection<Customer>(new CustomerPager(this), response);
+        return new ResourceCollection<Customer>(new CustomerPager(this, new CustomerSearchRequest()), response);
     }
 
-    List<Customer> fetchCustomers(List<String> ids) {
-        IdsSearchRequest query = new IdsSearchRequest().ids().in(ids);
-        
+    List<Customer> fetchCustomers(CustomerSearchRequest query, List<String> ids) {
+        query.ids().in(ids);
         NodeWrapper response = http.post("/customers/advanced_search", query);
 
         List<Customer> items = new ArrayList<Customer>();
@@ -94,6 +93,16 @@ public class CustomerGateway {
      */
     public Customer find(String id) {
         return new Customer(http.get("/customers/" + id));
+    }
+
+    /**
+     * Finds all Transactions that match the query and returns a {@link ResourceCollection}.
+     * See: <a href="http://www.braintreepaymentsolutions.com/gateway/transaction-api#searching" target="_blank">http://www.braintreepaymentsolutions.com/gateway/transaction-api#searching</a>
+     * @return a {@link ResourceCollection}.
+     */
+    public ResourceCollection<Customer> search(CustomerSearchRequest query) {
+        NodeWrapper node = http.post("/customers/advanced_search_ids", query);
+        return new ResourceCollection<Customer>(new CustomerPager(this, query), node);
     }
 
     /**
