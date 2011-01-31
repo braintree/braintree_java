@@ -95,6 +95,7 @@ public class TestHelper {
 
             URL url = new URL(postUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setInstanceFollowRedirects(false);
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");
             connection.addRequestProperty("Accept", "application/xml");
@@ -106,7 +107,8 @@ public class TestHelper {
             } else {
                 connection.getInputStream();
             }
-            response = connection.getURL().getQuery();
+
+            response = new URL(connection.getHeaderField("Location")).getQuery();
         } catch (IOException e) {
             throw new UnexpectedException(e.getMessage());
         }
