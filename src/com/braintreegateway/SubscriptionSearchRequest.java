@@ -29,6 +29,10 @@ public class SubscriptionSearchRequest extends SearchRequest {
         return new MultipleValueNode<SubscriptionSearchRequest, String>("merchant_account_id", this);
     }
 
+    public DateRangeNode<SubscriptionSearchRequest> nextBillingDate() {
+        return new DateRangeNode<SubscriptionSearchRequest>("next_billing_date", this);
+    }
+
     public MultipleValueOrTextNode<SubscriptionSearchRequest, String> planId() {
         return new MultipleValueOrTextNode<SubscriptionSearchRequest, String>("plan_id", this);
     }
@@ -39,6 +43,10 @@ public class SubscriptionSearchRequest extends SearchRequest {
 
     public MultipleValueNode<SubscriptionSearchRequest, Subscription.Status> status() {
         return new MultipleValueNode<SubscriptionSearchRequest, Subscription.Status>("status", this);
+    }
+    
+    public TextNode<SubscriptionSearchRequest> transactionId() {
+        return new TextNode<SubscriptionSearchRequest>("transaction-id", this);
     }
 
     public RangeNode<SubscriptionSearchRequest> billingCyclesRemaining() {

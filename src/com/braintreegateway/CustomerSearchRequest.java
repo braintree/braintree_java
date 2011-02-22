@@ -1,6 +1,10 @@
 package com.braintreegateway;
 
 public class CustomerSearchRequest extends SearchRequest {
+    public TextNode<CustomerSearchRequest> addressCountryName() {
+        return new TextNode<CustomerSearchRequest>("address_country_name", this);
+    }
+
     public TextNode<CustomerSearchRequest> addressExtendedAddress() {
         return new TextNode<CustomerSearchRequest>("address_extended_address", this);
     }

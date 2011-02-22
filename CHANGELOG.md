@@ -1,3 +1,9 @@
+## 2.8.0
+
+* Added nextBillingDate and transactionId to subscription search
+* Added addressCountryName to customer search
+* Added new error codes
+
 ## 2.7.0
 
 * Added Customer search

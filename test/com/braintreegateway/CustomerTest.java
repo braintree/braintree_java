@@ -403,6 +403,7 @@ public class CustomerTest {
             addressExtendedAddress().is("Suite 3").
             addressLocality().is("Chicago").
             addressRegion().is("Illinois").
+            addressCountryName().is("United States of America").
             paymentMethodToken().is(creditCardToken).
             cardholderName().is("Tim Toole").
             creditCardNumber().is("4111111111111111").
