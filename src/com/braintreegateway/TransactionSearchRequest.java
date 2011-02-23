@@ -181,6 +181,10 @@ public class TransactionSearchRequest extends SearchRequest {
         return new RangeNode<TransactionSearchRequest>("amount", this);
     }
 
+    public DateRangeNode<TransactionSearchRequest> authorizationExpiredAt() {
+        return new DateRangeNode<TransactionSearchRequest>("authorization_expired_at", this);
+    }
+    
     public DateRangeNode<TransactionSearchRequest> authorizedAt() {
         return new DateRangeNode<TransactionSearchRequest>("authorized_at", this);
     }

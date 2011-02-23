@@ -1326,6 +1326,16 @@ public class TransactionTest {
     }
     
     @Test
+    public void searchOnAuthorizationExpiredStatus() {
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            status().is(Transaction.Status.AUTHORIZATION_EXPIRED);
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+
+        Assert.assertTrue(collection.getMaximumSize() > 0);
+        Assert.assertEquals(Transaction.Status.AUTHORIZATION_EXPIRED, collection.getFirst().getStatus());
+    }
+
+    @Test
     public void searchOnSource() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -1523,6 +1533,31 @@ public class TransactionTest {
             createdAt().between(oneHourEarlier, oneHourLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+    
+    @Test
+    public void searchOnAuthorizationExpiredAt() {
+        Calendar threeHoursEarlier = Calendar.getInstance();
+        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+
+        Calendar oneHourEarlier = Calendar.getInstance();
+        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+
+        Calendar oneHourLater = Calendar.getInstance();
+        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            authorizationExpiredAt().between(oneHourEarlier, oneHourLater);
+
+        ResourceCollection<Transaction> results = gateway.transaction().search(searchRequest);
+        
+        Assert.assertTrue(results.getMaximumSize() > 0);
+        Assert.assertEquals(Transaction.Status.AUTHORIZATION_EXPIRED, results.getFirst().getStatus());
+
+        searchRequest = new TransactionSearchRequest().
+            authorizationExpiredAt().between(threeHoursEarlier, oneHourEarlier);
+
+        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
