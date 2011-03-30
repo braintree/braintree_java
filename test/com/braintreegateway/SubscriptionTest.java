@@ -87,6 +87,21 @@ public class SubscriptionTest {
     }
     
     @Test
+    public void createReturnsTransactionWithSubscriptionBillingPeriod() {
+        Plan plan = Plan.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(plan.getId());
+
+        Result<Subscription> createResult = gateway.subscription().create(request);
+        Assert.assertTrue(createResult.isSuccess());
+        Subscription subscription = createResult.getTarget();
+        Transaction transaction = subscription.getTransactions().get(0);
+        Assert.assertEquals(subscription.getBillingPeriodStartDate(), transaction.getSubscription().getBillingPeriodStartDate());
+        Assert.assertEquals(subscription.getBillingPeriodEndDate(), transaction.getSubscription().getBillingPeriodEndDate());
+    }
+    
+    @Test
     public void createSimpleSubscriptionWithTrial() {
         Plan plan = Plan.PLAN_WITH_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().

@@ -2023,14 +2023,14 @@ public class TransactionTest {
     
     @Test
     public void unrecognizedStatus() {
-        String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><descriptor/><shipping/><type>sale</type></transaction>";
+        String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><type>sale</type></transaction>";
         Transaction transaction = new Transaction(new NodeWrapper(xml));
         Assert.assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
     }
 
     @Test
     public void unrecognizedType() {
-        String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><descriptor/><shipping/><type>sale</type></transaction>";
+        String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><type>sale</type></transaction>";
         Transaction transaction = new Transaction(new NodeWrapper(xml));
         Assert.assertEquals(Transaction.Type.UNRECOGNIZED, transaction.getType());
     }
