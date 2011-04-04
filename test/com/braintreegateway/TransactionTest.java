@@ -322,6 +322,61 @@ public class TransactionTest {
         Assert.assertEquals("Jane", transaction.getVaultCustomer(gateway).getFirstName());
     }
 
+    @Test
+    public void saleWithStoreInVaultOnSuccessWhenTransactionSucceeds() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            customer().
+                firstName("Jane").
+                done().
+            options().
+                storeInVaultOnSuccess(true).
+            done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        CreditCard creditCard = transaction.getCreditCard();
+        Assert.assertNotNull(creditCard.getToken());
+        Assert.assertEquals("05/2009", transaction.getVaultCreditCard(gateway).getExpirationDate());
+
+        Customer customer = transaction.getCustomer();
+        Assert.assertNotNull(customer.getId());
+        Assert.assertEquals("Jane", transaction.getVaultCustomer(gateway).getFirstName());
+    }
+
+    @Test
+    public void saleWithStoreInVaultOnSuccessWhenTransactionFails() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.DECLINE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            customer().
+                firstName("Jane").
+                done().
+            options().
+                storeInVaultOnSuccess(true).
+            done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        CreditCard creditCard = transaction.getCreditCard();
+        Assert.assertNull(creditCard.getToken());
+        Assert.assertNull(transaction.getVaultCreditCard(gateway));
+
+        Customer customer = transaction.getCustomer();
+        Assert.assertNull(customer.getId());
+        Assert.assertNull(transaction.getVaultCustomer(gateway));
+    }
 
     @Test
     public void saleWithStoreInVaultForBillingAndShipping() {
