@@ -619,6 +619,31 @@ public class TransactionTest {
     }
 
     @Test
+    public void saleWithPaymentMethodTokenAndCvv() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12");
+        CreditCard creditCard = gateway.creditCard().create(creditCardRequest).getTarget();
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodToken(creditCard.getToken()).
+            creditCard().cvv("301").done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        Assert.assertEquals(creditCard.getToken(), transaction.getCreditCard().getToken());
+        Assert.assertEquals("510510", transaction.getCreditCard().getBin());
+        Assert.assertEquals("05/2012", transaction.getCreditCard().getExpirationDate());
+        Assert.assertEquals("S", transaction.getCvvResponseCode());
+    }
+
+    
+    @Test
     public void saleUsesShippingAddressFromVault() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
 
