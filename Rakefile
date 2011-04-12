@@ -29,7 +29,7 @@ task :compile_tests => [:init, :clean, :jar] do
 end
 
 task :test => :compile_tests do
-  sh "echo `which ant` && ant test"
+  sh "ant test"
 end
 
 desc "generate javadoc"
