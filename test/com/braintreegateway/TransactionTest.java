@@ -38,6 +38,11 @@ public class TransactionTest {
     }
 
     @Test
+    public void javaVersion() {
+        System.out.println("JAVA VERSION: " + System.getProperty("java.version"));
+    }
+
+    @Test
     public void trData() {
         String trData = gateway.trData(new TransactionRequest(), "http://example.com");
         TestHelper.assertValidTrData(gateway.getConfiguration(), trData);
