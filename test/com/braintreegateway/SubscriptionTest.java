@@ -1016,7 +1016,7 @@ public class SubscriptionTest {
             numberOfBillingCycles(10).
             descriptor().
                 name("123*123456789012345678").
-                phone("3334445555").
+                phone("1234567890").
                 done();
 
         Subscription subscription = gateway.subscription().create(request).getTarget();
@@ -1024,13 +1024,13 @@ public class SubscriptionTest {
         SubscriptionRequest updateRequest = new SubscriptionRequest().
             descriptor().
                 name("999*99").
-                phone("9999999").
+                phone("1234567891").
                 done();
 
         Subscription updatedSubscription = gateway.subscription().update(subscription.getId(), updateRequest).getTarget();
 
         Assert.assertEquals("999*99", updatedSubscription.getDescriptor().getName());
-        Assert.assertEquals("9999999", updatedSubscription.getDescriptor().getPhone());
+        Assert.assertEquals("1234567891", updatedSubscription.getDescriptor().getPhone());
     }
 
     @Test
