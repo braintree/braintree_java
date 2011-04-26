@@ -1,6 +1,3 @@
-require "rubygems"
-load File.dirname(__FILE__) + "/cruise.rake"
-
 task :default => :test
 
 task :init do

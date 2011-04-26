@@ -112,6 +112,7 @@ public class Transaction {
     private Status status;
     private List<StatusEvent> statusHistory;
     private String subscriptionId;
+    private Subscription subscription;
     private BigDecimal taxAmount;
     private Boolean taxExempt;
     private Type type;
@@ -144,6 +145,7 @@ public class Transaction {
         settlementBatchId = node.findString("settlement-batch-id");
         shippingAddress = new Address(node.findFirst("shipping"));
         status = EnumUtils.findByName(Status.class, node.findString("status"));
+        subscription = new Subscription(node.findFirst("subscription"));
         subscriptionId = node.findString("subscription-id");
         taxAmount = node.findBigDecimal("tax-amount");
         taxExempt = node.findBoolean("tax-exempt");
@@ -293,6 +295,10 @@ public class Transaction {
 
     public String getSubscriptionId() {
         return subscriptionId;
+    }
+    
+    public Subscription getSubscription() {
+        return subscription;
     }
     
     public BigDecimal getTaxAmount() {

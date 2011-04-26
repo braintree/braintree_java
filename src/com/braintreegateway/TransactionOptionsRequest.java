@@ -4,6 +4,7 @@ public class TransactionOptionsRequest extends Request {
     private Boolean addBillingAddressToPaymentMethod;
     private TransactionRequest parent;
     private Boolean storeInVault;
+    private Boolean storeInVaultOnSuccess;
     private Boolean storeShippingAddressInVault;
     private Boolean submitForSettlement;
 
@@ -22,6 +23,11 @@ public class TransactionOptionsRequest extends Request {
 
     public TransactionOptionsRequest storeInVault(Boolean storeInVault) {
         this.storeInVault = storeInVault;
+        return this;
+    }
+
+    public TransactionOptionsRequest storeInVaultOnSuccess(Boolean storeInVaultOnSuccess) {
+        this.storeInVaultOnSuccess = storeInVaultOnSuccess;
         return this;
     }
 
@@ -44,15 +50,16 @@ public class TransactionOptionsRequest extends Request {
     public String toQueryString() {
         return toQueryString("options");
     }
-    
+
     @Override
     public String toQueryString(String root) {
         return buildRequest(root).toQueryString();
     }
-    
+
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
             addElement("storeInVault", storeInVault).
+            addElement("storeInVaultOnSuccess", storeInVaultOnSuccess).
             addElement("addBillingAddressToPaymentMethod", addBillingAddressToPaymentMethod).
             addElement("storeShippingAddressInVault", storeShippingAddressInVault).
             addElement("submitForSettlement", submitForSettlement);

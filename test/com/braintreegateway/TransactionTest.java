@@ -322,6 +322,61 @@ public class TransactionTest {
         Assert.assertEquals("Jane", transaction.getVaultCustomer(gateway).getFirstName());
     }
 
+    @Test
+    public void saleWithStoreInVaultOnSuccessWhenTransactionSucceeds() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            customer().
+                firstName("Jane").
+                done().
+            options().
+                storeInVaultOnSuccess(true).
+            done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        CreditCard creditCard = transaction.getCreditCard();
+        Assert.assertNotNull(creditCard.getToken());
+        Assert.assertEquals("05/2009", transaction.getVaultCreditCard(gateway).getExpirationDate());
+
+        Customer customer = transaction.getCustomer();
+        Assert.assertNotNull(customer.getId());
+        Assert.assertEquals("Jane", transaction.getVaultCustomer(gateway).getFirstName());
+    }
+
+    @Test
+    public void saleWithStoreInVaultOnSuccessWhenTransactionFails() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.DECLINE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            customer().
+                firstName("Jane").
+                done().
+            options().
+                storeInVaultOnSuccess(true).
+            done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        CreditCard creditCard = transaction.getCreditCard();
+        Assert.assertNull(creditCard.getToken());
+        Assert.assertNull(transaction.getVaultCreditCard(gateway));
+
+        Customer customer = transaction.getCustomer();
+        Assert.assertNull(customer.getId());
+        Assert.assertNull(transaction.getVaultCustomer(gateway));
+    }
 
     @Test
     public void saleWithStoreInVaultForBillingAndShipping() {
@@ -563,6 +618,31 @@ public class TransactionTest {
         Assert.assertEquals("05/2012", transaction.getCreditCard().getExpirationDate());
     }
 
+    @Test
+    public void saleWithPaymentMethodTokenAndCvv() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12");
+        CreditCard creditCard = gateway.creditCard().create(creditCardRequest).getTarget();
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodToken(creditCard.getToken()).
+            creditCard().cvv("301").done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        Assert.assertEquals(creditCard.getToken(), transaction.getCreditCard().getToken());
+        Assert.assertEquals("510510", transaction.getCreditCard().getBin());
+        Assert.assertEquals("05/2012", transaction.getCreditCard().getExpirationDate());
+        Assert.assertEquals("S", transaction.getCvvResponseCode());
+    }
+
+    
     @Test
     public void saleUsesShippingAddressFromVault() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -1477,36 +1557,36 @@ public class TransactionTest {
 
          Calendar createdAt = transaction.getCreatedAt();
          
-         Calendar threeHoursEarlier = ((Calendar)createdAt.clone());
-         threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+         Calendar threeDaysEarlier = ((Calendar)createdAt.clone());
+         threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
          
-         Calendar oneHourEarlier = ((Calendar)createdAt.clone());
-         oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+         Calendar oneDayEarlier = ((Calendar)createdAt.clone());
+         oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
          
-         Calendar oneHourLater = ((Calendar)createdAt.clone());
-         oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+         Calendar oneDayLater = ((Calendar)createdAt.clone());
+         oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
          
          TransactionSearchRequest searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
-             createdAt().between(oneHourEarlier, oneHourLater);
+             createdAt().between(oneDayEarlier, oneDayLater);
 
          Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
          
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
-             createdAt().greaterThanOrEqualTo(oneHourEarlier);
+             createdAt().greaterThanOrEqualTo(oneDayEarlier);
 
          Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
          
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
-             createdAt().lessThanOrEqualTo(oneHourLater);
+             createdAt().lessThanOrEqualTo(oneDayLater);
 
          Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
          
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
-             createdAt().between(threeHoursEarlier, oneHourEarlier);
+             createdAt().between(threeDaysEarlier, oneDayEarlier);
 
          Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
      }
@@ -1522,32 +1602,32 @@ public class TransactionTest {
 
         Transaction transaction = gateway.transaction().sale(request).getTarget();
 
-        Calendar oneHourEarlier = Calendar.getInstance();
-        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+        Calendar oneDayEarlier = Calendar.getInstance();
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
 
-        Calendar oneHourLater = Calendar.getInstance();
-        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+        Calendar oneDayLater = Calendar.getInstance();
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            createdAt().between(oneHourEarlier, oneHourLater);
+            createdAt().between(oneDayEarlier, oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
     }
     
     @Test
     public void searchOnAuthorizationExpiredAt() {
-        Calendar threeHoursEarlier = Calendar.getInstance();
-        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+        Calendar threeDaysEarlier = Calendar.getInstance();
+        threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
 
-        Calendar oneHourEarlier = Calendar.getInstance();
-        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+        Calendar oneDayEarlier = Calendar.getInstance();
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
 
-        Calendar oneHourLater = Calendar.getInstance();
-        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+        Calendar oneDayLater = Calendar.getInstance();
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-            authorizationExpiredAt().between(oneHourEarlier, oneHourLater);
+            authorizationExpiredAt().between(oneDayEarlier, oneDayLater);
 
         ResourceCollection<Transaction> results = gateway.transaction().search(searchRequest);
         
@@ -1555,7 +1635,7 @@ public class TransactionTest {
         Assert.assertEquals(Transaction.Status.AUTHORIZATION_EXPIRED, results.getFirst().getStatus());
 
         searchRequest = new TransactionSearchRequest().
-            authorizationExpiredAt().between(threeHoursEarlier, oneHourEarlier);
+            authorizationExpiredAt().between(threeDaysEarlier, oneDayEarlier);
 
         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
@@ -1571,36 +1651,36 @@ public class TransactionTest {
 
         Transaction transaction = gateway.transaction().sale(request).getTarget();
 
-        Calendar threeHoursEarlier = Calendar.getInstance();
-        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+        Calendar threeDaysEarlier = Calendar.getInstance();
+        threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
 
-        Calendar oneHourEarlier = Calendar.getInstance();
-        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+        Calendar oneDayEarlier = Calendar.getInstance();
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
 
-        Calendar oneHourLater = Calendar.getInstance();
-        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+        Calendar oneDayLater = Calendar.getInstance();
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            authorizedAt().between(oneHourEarlier, oneHourLater);
+            authorizedAt().between(oneDayEarlier, oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            authorizedAt().greaterThanOrEqualTo(oneHourEarlier);
+            authorizedAt().greaterThanOrEqualTo(oneDayEarlier);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            authorizedAt().lessThanOrEqualTo(oneHourLater);
+            authorizedAt().lessThanOrEqualTo(oneDayLater);
         
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            authorizedAt().between(threeHoursEarlier, oneHourEarlier);
+            authorizedAt().between(threeDaysEarlier, oneDayEarlier);
 
         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
@@ -1616,36 +1696,36 @@ public class TransactionTest {
 
         Transaction transaction = gateway.transaction().sale(request).getTransaction();
 
-        Calendar threeHoursEarlier = Calendar.getInstance();
-        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+        Calendar threeDaysEarlier = Calendar.getInstance();
+        threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
 
-        Calendar oneHourEarlier = Calendar.getInstance();
-        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+        Calendar oneDayEarlier = Calendar.getInstance();
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
 
-        Calendar oneHourLater = Calendar.getInstance();
-        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+        Calendar oneDayLater = Calendar.getInstance();
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            failedAt().between(oneHourEarlier, oneHourLater);
+            failedAt().between(oneDayEarlier, oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            failedAt().greaterThanOrEqualTo(oneHourEarlier);
+            failedAt().greaterThanOrEqualTo(oneDayEarlier);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            failedAt().lessThanOrEqualTo(oneHourLater);
+            failedAt().lessThanOrEqualTo(oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            failedAt().between(threeHoursEarlier, oneHourEarlier);
+            failedAt().between(threeDaysEarlier, oneDayEarlier);
 
         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
@@ -1663,36 +1743,36 @@ public class TransactionTest {
 
         Transaction transaction = processingRulesGateway.transaction().sale(request).getTransaction();
 
-        Calendar threeHoursEarlier = Calendar.getInstance();
-        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+        Calendar threeDaysEarlier = Calendar.getInstance();
+        threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
 
-        Calendar oneHourEarlier = Calendar.getInstance();
-        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+        Calendar oneDayEarlier = Calendar.getInstance();
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
 
-        Calendar oneHourLater = Calendar.getInstance();
-        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+        Calendar oneDayLater = Calendar.getInstance();
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            gatewayRejectedAt().between(oneHourEarlier, oneHourLater);
+            gatewayRejectedAt().between(oneDayEarlier, oneDayLater);
 
         Assert.assertEquals(1, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            gatewayRejectedAt().greaterThanOrEqualTo(oneHourEarlier);
+            gatewayRejectedAt().greaterThanOrEqualTo(oneDayEarlier);
 
         Assert.assertEquals(1, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            gatewayRejectedAt().lessThanOrEqualTo(oneHourLater);
+            gatewayRejectedAt().lessThanOrEqualTo(oneDayLater);
 
         Assert.assertEquals(1, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            gatewayRejectedAt().between(threeHoursEarlier, oneHourEarlier);
+            gatewayRejectedAt().between(threeDaysEarlier, oneDayEarlier);
 
         Assert.assertEquals(0, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
     }
@@ -1708,36 +1788,36 @@ public class TransactionTest {
 
         Transaction transaction = gateway.transaction().sale(request).getTransaction();
 
-        Calendar threeHoursEarlier = Calendar.getInstance();
-        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+        Calendar threeDaysEarlier = Calendar.getInstance();
+        threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
 
-        Calendar oneHourEarlier = Calendar.getInstance();
-        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+        Calendar oneDayEarlier = Calendar.getInstance();
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
 
-        Calendar oneHourLater = Calendar.getInstance();
-        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+        Calendar oneDayLater = Calendar.getInstance();
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            processorDeclinedAt().between(oneHourEarlier, oneHourLater);
+            processorDeclinedAt().between(oneDayEarlier, oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            processorDeclinedAt().greaterThanOrEqualTo(oneHourEarlier);
+            processorDeclinedAt().greaterThanOrEqualTo(oneDayEarlier);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            processorDeclinedAt().lessThanOrEqualTo(oneHourLater);
+            processorDeclinedAt().lessThanOrEqualTo(oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            processorDeclinedAt().between(threeHoursEarlier, oneHourEarlier);
+            processorDeclinedAt().between(threeDaysEarlier, oneDayEarlier);
 
         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
@@ -1758,36 +1838,36 @@ public class TransactionTest {
         settle(transaction.getId());
         transaction = gateway.transaction().find(transaction.getId());
 
-        Calendar threeHoursEarlier = Calendar.getInstance();
-        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+        Calendar threeDaysEarlier = Calendar.getInstance();
+        threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
 
-        Calendar oneHourEarlier = Calendar.getInstance();
-        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+        Calendar oneDayEarlier = Calendar.getInstance();
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
 
-        Calendar oneHourLater = Calendar.getInstance();
-        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+        Calendar oneDayLater = Calendar.getInstance();
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            settledAt().between(oneHourEarlier, oneHourLater);
+            settledAt().between(oneDayEarlier, oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            settledAt().greaterThanOrEqualTo(oneHourEarlier);
+            settledAt().greaterThanOrEqualTo(oneDayEarlier);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            settledAt().lessThanOrEqualTo(oneHourLater);
+            settledAt().lessThanOrEqualTo(oneDayLater);
         
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            settledAt().between(threeHoursEarlier, oneHourEarlier);
+            settledAt().between(threeDaysEarlier, oneDayEarlier);
 
         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
@@ -1806,36 +1886,36 @@ public class TransactionTest {
 
         Transaction transaction = gateway.transaction().sale(request).getTarget();
 
-        Calendar threeHoursEarlier = Calendar.getInstance();
-        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+        Calendar threeDaysEarlier = Calendar.getInstance();
+        threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
 
-        Calendar oneHourEarlier = Calendar.getInstance();
-        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+        Calendar oneDayEarlier = Calendar.getInstance();
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
 
-        Calendar oneHourLater = Calendar.getInstance();
-        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+        Calendar oneDayLater = Calendar.getInstance();
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            submittedForSettlementAt().between(oneHourEarlier, oneHourLater);
+            submittedForSettlementAt().between(oneDayEarlier, oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            submittedForSettlementAt().greaterThanOrEqualTo(oneHourEarlier);
+            submittedForSettlementAt().greaterThanOrEqualTo(oneDayEarlier);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            submittedForSettlementAt().lessThanOrEqualTo(oneHourLater);
+            submittedForSettlementAt().lessThanOrEqualTo(oneDayLater);
         
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            submittedForSettlementAt().between(threeHoursEarlier, oneHourEarlier);
+            submittedForSettlementAt().between(threeDaysEarlier, oneDayEarlier);
 
         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
@@ -1852,36 +1932,36 @@ public class TransactionTest {
         Transaction transaction = gateway.transaction().sale(request).getTarget();
         transaction = gateway.transaction().voidTransaction(transaction.getId()).getTarget();
 
-        Calendar threeHoursEarlier = Calendar.getInstance();
-        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+        Calendar threeDaysEarlier = Calendar.getInstance();
+        threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
 
-        Calendar oneHourEarlier = Calendar.getInstance();
-        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+        Calendar oneDayEarlier = Calendar.getInstance();
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
 
-        Calendar oneHourLater = Calendar.getInstance();
-        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+        Calendar oneDayLater = Calendar.getInstance();
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            voidedAt().between(oneHourEarlier, oneHourLater);
+            voidedAt().between(oneDayEarlier, oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            voidedAt().greaterThanOrEqualTo(oneHourEarlier);
+            voidedAt().greaterThanOrEqualTo(oneDayEarlier);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            voidedAt().lessThanOrEqualTo(oneHourLater);
+            voidedAt().lessThanOrEqualTo(oneDayLater);
         
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            voidedAt().between(threeHoursEarlier, oneHourEarlier);
+            voidedAt().between(threeDaysEarlier, oneDayEarlier);
 
         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
@@ -1900,26 +1980,26 @@ public class TransactionTest {
 
         Transaction transaction = gateway.transaction().sale(request).getTarget();
 
-        Calendar threeHoursEarlier = Calendar.getInstance();
-        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+        Calendar threeDaysEarlier = Calendar.getInstance();
+        threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
 
-        Calendar oneHourEarlier = Calendar.getInstance();
-        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+        Calendar oneDayEarlier = Calendar.getInstance();
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
 
-        Calendar oneHourLater = Calendar.getInstance();
-        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+        Calendar oneDayLater = Calendar.getInstance();
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            authorizedAt().between(oneHourEarlier, oneHourLater).
-            submittedForSettlementAt().between(oneHourEarlier, oneHourLater);
+            authorizedAt().between(oneDayEarlier, oneDayLater).
+            submittedForSettlementAt().between(oneDayEarlier, oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            authorizedAt().between(threeHoursEarlier, oneHourEarlier).
-            submittedForSettlementAt().between(threeHoursEarlier, oneHourEarlier);
+            authorizedAt().between(threeDaysEarlier, oneDayEarlier).
+            submittedForSettlementAt().between(threeDaysEarlier, oneDayEarlier);
 
         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
@@ -2023,14 +2103,14 @@ public class TransactionTest {
     
     @Test
     public void unrecognizedStatus() {
-        String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><descriptor/><shipping/><type>sale</type></transaction>";
+        String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><type>sale</type></transaction>";
         Transaction transaction = new Transaction(new NodeWrapper(xml));
         Assert.assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
     }
 
     @Test
     public void unrecognizedType() {
-        String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><descriptor/><shipping/><type>sale</type></transaction>";
+        String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><type>sale</type></transaction>";
         Transaction transaction = new Transaction(new NodeWrapper(xml));
         Assert.assertEquals(Transaction.Type.UNRECOGNIZED, transaction.getType());
     }
