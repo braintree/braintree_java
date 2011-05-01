@@ -18,7 +18,7 @@ import com.braintreegateway.util.NodeWrapper;
  * gateway.subscription().create(...)
  * </pre>
  * 
- * For more detailed information on {@link Subscription Subscriptions}, see <a href="http://www.braintreepaymentsolutions.com/gateway/subscription-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/subscription-api</a>
+ * For more detailed information on {@link Subscription Subscriptions}, see <a href="http://www.braintreepayments.com/gateway/subscription-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/subscription-api</a>
  */
 public class SubscriptionGateway {
 
