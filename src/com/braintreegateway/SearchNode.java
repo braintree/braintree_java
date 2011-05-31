@@ -12,12 +12,20 @@ public class SearchNode<T extends SearchRequest> {
     }
 
     protected T assembleCriteria(String operation, String value) {
-        this.parent.addCriteria(this.nodeName, new SearchCriteria(operation, value));
+        this.parent.addCriteria(this.nodeName, new SearchCriteria(operation, defaultWithEmptyString(value)));
         return this.parent;
     }
     
     protected T assembleMultiValueCriteria(List<?> items) {
         this.parent.addMultipleValueCriteria(this.nodeName, new SearchCriteria(items));
         return this.parent;
+    }
+    
+    private String defaultWithEmptyString(String value) {
+    	if (value == null) {
+    		return "";
+    	} else {
+    		return value;
+    	}
     }
 }

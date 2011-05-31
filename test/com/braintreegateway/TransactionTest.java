@@ -1226,6 +1226,25 @@ public class TransactionTest {
     }
     
     @Test
+    public void searchOnNullValue() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            creditCard().
+                number("4111111111111111").
+                expirationDate("05/2012").
+                cardholderName("Tom Smith").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCardholderName().is(null);
+        
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        Assert.assertEquals(1, collection.getMaximumSize());
+    }
+    
+    @Test
     public void searchOnCreatedUsing() {
          TransactionRequest request = new TransactionRequest().
              amount(TransactionAmount.AUTHORIZE.amount).
