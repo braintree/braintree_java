@@ -1644,6 +1644,20 @@ public class SubscriptionTest {
         Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
     }
     
+    @Test
+    public void pastDueSubscriptionReportsCorrectStatus() {
+        SubscriptionRequest request = new SubscriptionRequest().
+            paymentMethodToken(creditCard.getToken()).
+            planId(Plan.PLAN_WITHOUT_TRIAL.getId());
+
+        Subscription subscription = gateway.subscription().create(request).getTarget();
+
+        makePastDue(subscription, 1);
+
+        Subscription foundSubscription = gateway.subscription().find(subscription.getId());
+        Assert.assertEquals(Status.PAST_DUE, foundSubscription.getStatus());
+    }
+
     private void makePastDue(Subscription subscription, int numberOfDaysPastDue) {
         NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).put("/subscriptions/" + subscription.getId() + "/make_past_due?days_past_due=" + numberOfDaysPastDue);
         Assert.assertTrue(response.isSuccess());
