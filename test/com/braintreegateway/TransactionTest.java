@@ -132,7 +132,7 @@ public class TransactionTest {
                 email("dan@example.com").
                 phone("419-555-1234").
                 fax("419-555-1235").
-                website("http://braintreepaymentsolutions.com").
+                website("http://braintreepayments.com").
                 done().
             billingAddress().
                 firstName("Carl").
@@ -194,7 +194,7 @@ public class TransactionTest {
         Assert.assertEquals("dan@example.com", customer.getEmail());
         Assert.assertEquals("419-555-1234", customer.getPhone());
         Assert.assertEquals("419-555-1235", customer.getFax());
-        Assert.assertEquals("http://braintreepaymentsolutions.com", customer.getWebsite());
+        Assert.assertEquals("http://braintreepayments.com", customer.getWebsite());
 
         Assert.assertNull(transaction.getVaultBillingAddress(gateway));
         Address billing = transaction.getBillingAddress();
@@ -1223,6 +1223,25 @@ public class TransactionTest {
 
         collection = gateway.transaction().search(searchRequest);
         Assert.assertEquals(0, collection.getMaximumSize());
+    }
+    
+    @Test
+    public void searchOnNullValue() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            creditCard().
+                number("4111111111111111").
+                expirationDate("05/2012").
+                cardholderName("Tom Smith").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCardholderName().is(null);
+        
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        Assert.assertEquals(1, collection.getMaximumSize());
     }
     
     @Test

@@ -20,13 +20,13 @@ import com.braintreegateway.util.NodeWrapper;
  * </pre>
  * 
  * For more detailed information on {@link CreditCard CreditCards}, see <a
- * href="http://www.braintreepaymentsolutions.com/gateway/credit-card-api"
+ * href="http://www.braintreepayments.com/gateway/credit-card-api"
  * target
- * ="_blank">http://www.braintreepaymentsolutions.com/gateway/credit-card-api
+ * ="_blank">http://www.braintreepayments.com/gateway/credit-card-api
  * </a><br />
  * For more detailed information on credit card verifications, see <a href=
- * "http://www.braintreepaymentsolutions.com/gateway/credit-card-verification-api"
- * target="_blank">http://www.braintreepaymentsolutions.com/gateway/credit-card-
+ * "http://www.braintreepayments.com/gateway/credit-card-verification-api"
+ * target="_blank">http://www.braintreepayments.com/gateway/credit-card-
  * verification-api</a>
  */
 public class CreditCardGateway {

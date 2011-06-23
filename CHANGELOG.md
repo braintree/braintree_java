@@ -1,3 +1,7 @@
+## 2.10.1
+
+* Correctly report PAST_DUE status on Subscriptions.
+
 ## 2.10.0
 
 * Added subscription to Transaction

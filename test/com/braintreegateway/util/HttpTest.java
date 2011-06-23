@@ -57,13 +57,6 @@ public class HttpTest {
         String authHeader = "Basic " + Base64.encodeBase64String(("bad_public_key:bad_private_key").getBytes()).trim();
         new Http(authHeader, gateway.baseMerchantURL(), Environment.SANDBOX.certificateFilenames, BraintreeGateway.VERSION).get("/");
     }
-    
-    @Test(expected=AuthenticationException.class)
-    public void sslCertificateSuccessfulInQA() {
-        BraintreeGateway testGateway = new BraintreeGateway(Environment.DEVELOPMENT, "", "", "");
-        Http http = new Http(testGateway.getAuthorizationHeader(), "https://qa-master.braintreegateway.com/merchants/test_merchant_id", Environment.SANDBOX.certificateFilenames, BraintreeGateway.VERSION);
-        http.get("/");
-    }
 
     @Test(expected=AuthenticationException.class)
     public void sslCertificateSuccessfulInSandbox() {

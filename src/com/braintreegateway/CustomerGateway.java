@@ -16,7 +16,7 @@ import com.braintreegateway.util.NodeWrapper;
  * gateway.customer().create(...)
  * </pre>
  * 
- * For more detailed information on {@link Customer Customers}, see <a href="http://www.braintreepaymentsolutions.com/gateway/customer-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/customer-api</a>
+ * For more detailed information on {@link Customer Customers}, see <a href="http://www.braintreepayments.com/gateway/customer-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/customer-api</a>
  */
 public class CustomerGateway {
     private Configuration configuration;
@@ -97,7 +97,7 @@ public class CustomerGateway {
 
     /**
      * Finds all Transactions that match the query and returns a {@link ResourceCollection}.
-     * See: <a href="http://www.braintreepaymentsolutions.com/gateway/transaction-api#searching" target="_blank">http://www.braintreepaymentsolutions.com/gateway/transaction-api#searching</a>
+     * See: <a href="http://www.braintreepayments.com/gateway/transaction-api#searching" target="_blank">http://www.braintreepaymentsolutions.com/gateway/transaction-api#searching</a>
      * @return a {@link ResourceCollection}.
      */
     public ResourceCollection<Customer> search(CustomerSearchRequest query) {

@@ -10,6 +10,7 @@ import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
+import java.util.zip.GZIPInputStream;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManager;
@@ -92,6 +93,9 @@ public class Http {
             }
             InputStream responseStream = connection.getResponseCode() == 422 ? connection.getErrorStream() : connection.getInputStream();
 
+            if ("gzip".equalsIgnoreCase(connection.getContentEncoding())) {
+                responseStream = new GZIPInputStream(responseStream);
+            }
             String xml = StringUtils.inputStreamToString(responseStream);
 
             responseStream.close();
@@ -136,6 +140,7 @@ public class Http {
         connection.addRequestProperty("User-Agent", "Braintree Java " + version);
         connection.addRequestProperty("X-ApiVersion", Configuration.apiVersion());
         connection.addRequestProperty("Authorization", authorizationHeader);
+        connection.addRequestProperty("Accept-Encoding", "gzip");
         connection.addRequestProperty("Content-Type", "application/xml");
         connection.setDoOutput(true);
         connection.setReadTimeout(60000);

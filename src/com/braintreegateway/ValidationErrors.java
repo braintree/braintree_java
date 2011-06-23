@@ -23,9 +23,9 @@ import com.braintreegateway.util.StringUtils;
  * </pre>
  * 
  * For more detailed information on {@link ValidationErrors}, see <a
- * href="http://www.braintreepaymentsolutions.com/gateway/validation-errors"
+ * href="http://www.braintreepayments.com/gateway/validation-errors"
  * target
- * ="_blank">http://www.braintreepaymentsolutions.com/gateway/validation-errors
+ * ="_blank">http://www.braintreepayments.com/gateway/validation-errors
  * </a>
  */
 public class ValidationErrors {

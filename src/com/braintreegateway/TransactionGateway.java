@@ -20,7 +20,7 @@ import com.braintreegateway.util.TrUtil;
  * gateway.transaction().create(...)
  * </pre>
  * 
- * For more detailed information on {@link Transaction Transactions}, see <a href="http://www.braintreepaymentsolutions.com/gateway/transaction-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/transaction-api</a>
+ * For more detailed information on {@link Transaction Transactions}, see <a href="http://www.braintreepayments.com/gateway/transaction-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/transaction-api</a>
  */
 public class TransactionGateway {
 
@@ -109,7 +109,7 @@ public class TransactionGateway {
 
     /**
      * Finds all Transactions that match the query and returns a {@link ResourceCollection}.
-     * See: <a href="http://www.braintreepaymentsolutions.com/gateway/transaction-api#searching" target="_blank">http://www.braintreepaymentsolutions.com/gateway/transaction-api#searching</a>
+     * See: <a href="http://www.braintreepayments.com/gateway/transaction-api#searching" target="_blank">http://www.braintreepaymentsolutions.com/gateway/transaction-api#searching</a>
      * @return a {@link ResourceCollection}.
      */
     public ResourceCollection<Transaction> search(TransactionSearchRequest query) {
