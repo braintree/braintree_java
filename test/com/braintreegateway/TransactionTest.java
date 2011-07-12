@@ -506,7 +506,7 @@ public class TransactionTest {
     public void saleWithCustomFields() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
-            customField("store_me", "custom value").
+            customField("storeMe", "custom value").
             customField("another_stored_field", "custom value2").
             creditCard().
                 number(CreditCardNumber.VISA.number).
