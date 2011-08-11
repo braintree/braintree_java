@@ -18,7 +18,6 @@ import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
 public class TransactionTest {
@@ -1139,7 +1138,7 @@ public class TransactionTest {
                 done();
 
         Transaction transaction = gateway.transaction().sale(request).getTarget();
-        settle(transaction.getId());
+        TestHelper.settle(gateway, transaction.getId());
         transaction = gateway.transaction().find(transaction.getId());
         
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
@@ -1487,7 +1486,7 @@ public class TransactionTest {
         
         Transaction creditTransaction = gateway.transaction().credit(request).getTarget();
         Transaction saleTransaction = gateway.transaction().sale(request).getTarget();
-        settle(saleTransaction.getId());
+        TestHelper.settle(gateway, saleTransaction.getId());
         Transaction refundTransaction = gateway.transaction().refund(saleTransaction.getId()).getTarget();
         
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
@@ -1854,7 +1853,7 @@ public class TransactionTest {
                 done();
 
         Transaction transaction = gateway.transaction().sale(request).getTarget();
-        settle(transaction.getId());
+        TestHelper.settle(gateway, transaction.getId());
         transaction = gateway.transaction().find(transaction.getId());
 
         Calendar threeDaysEarlier = Calendar.getInstance();
@@ -2036,7 +2035,7 @@ public class TransactionTest {
                 submitForSettlement(true).
                 done();
         String transactionId = gateway.transaction().sale(request).getTarget().getId();
-        settle(transactionId);
+        TestHelper.settle(gateway, transactionId);
 
         Result<Transaction> result = gateway.transaction().refund(transactionId);
         Assert.assertTrue(result.isSuccess());
@@ -2062,7 +2061,7 @@ public class TransactionTest {
             submitForSettlement(true).
             done();
         Transaction transaction = gateway.transaction().sale(request).getTarget();
-        settle(transaction.getId());
+        TestHelper.settle(gateway, transaction.getId());
 
         Result<Transaction> result = gateway.transaction().refund(transaction.getId(), TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)));
         Assert.assertTrue(result.isSuccess());
@@ -2082,7 +2081,7 @@ public class TransactionTest {
                 submitForSettlement(true).
                 done();
         Transaction transaction = gateway.transaction().sale(request).getTarget();
-        settle(transaction.getId());
+        TestHelper.settle(gateway, transaction.getId());
 
         Transaction refund1 = gateway.transaction().refund(transaction.getId(), TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2))).getTarget();
         Assert.assertEquals(Transaction.Type.CREDIT, refund1.getType());
@@ -2095,11 +2094,6 @@ public class TransactionTest {
         transaction = gateway.transaction().find(transaction.getId());
         Assert.assertTrue(TestHelper.listIncludes(transaction.getRefundIds(), refund1.getId()));
         Assert.assertTrue(TestHelper.listIncludes(transaction.getRefundIds(), refund1.getId()));
-    }
-
-    private void settle(String transactionId) {
-        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).put("/transactions/" + transactionId + "/settle");
-        Assert.assertTrue(response.isSuccess());
     }
 
     @Test

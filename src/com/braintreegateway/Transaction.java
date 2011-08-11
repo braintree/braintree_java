@@ -127,7 +127,7 @@ public class Transaction {
         createdAt = node.findDateTime("created-at");
         creditCard = new CreditCard(node.findFirst("credit-card"));
         currencyIsoCode = node.findString("currency-iso-code");
-        customFields = node.findMap("custom-fields");
+        customFields = node.findMap("custom-fields/*");
         customer = new Customer(node.findFirst("customer"));
         cvvResponseCode = node.findString("cvv-response-code");
         descriptor = new Descriptor(node.findFirst("descriptor"));

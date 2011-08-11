@@ -13,6 +13,8 @@ import org.junit.Assert;
 import com.braintreegateway.Transaction.Status;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Crypto;
+import com.braintreegateway.util.Http;
+import com.braintreegateway.util.NodeWrapper;
 
 public class TestHelper {
 
@@ -84,6 +86,11 @@ public class TestHelper {
         }
 
         return false;
+    }
+    
+    public static void settle(BraintreeGateway gateway, String transactionId) {
+        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).put("/transactions/" + transactionId + "/settle");
+        Assert.assertTrue(response.isSuccess());
     }
 
     public static String simulateFormPostForTR(BraintreeGateway gateway, Request trParams, Request request, String postUrl) {

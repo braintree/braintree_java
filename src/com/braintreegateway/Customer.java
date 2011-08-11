@@ -35,7 +35,7 @@ public class Customer {
         website = node.findString("website");
         createdAt = node.findDateTime("created-at");
         updatedAt = node.findDateTime("updated-at");
-        customFields = node.findMap("custom-field");
+        customFields = node.findMap("custom-fields/*");
         creditCards = new ArrayList<CreditCard>();
         for (NodeWrapper creditCardResponse : node.findAll("credit-cards/credit-card")) {
             creditCards.add(new CreditCard(creditCardResponse));
