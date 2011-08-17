@@ -71,6 +71,7 @@ public class SubscriptionTest {
         Assert.assertEquals(plan.getId(), subscription.getPlanId());
         Assert.assertEquals(plan.getPrice(), subscription.getPrice());
         Assert.assertEquals(new BigDecimal("0.00"), subscription.getBalance());
+        Assert.assertEquals(new Integer(1), subscription.getCurrentBillingCycle());
         Assert.assertEquals(new BigDecimal("12.34"), subscription.getNextBillAmount());
         Assert.assertEquals(new BigDecimal("12.34"), subscription.getNextBillingPeriodAmount());
         Assert.assertTrue(subscription.getId().matches("^\\w{6}$"));
@@ -124,6 +125,7 @@ public class SubscriptionTest {
         
         Assert.assertEquals(null, subscription.getBillingPeriodStartDate());        
         Assert.assertEquals(null, subscription.getBillingPeriodEndDate());
+        Assert.assertEquals(new Integer(0), subscription.getCurrentBillingCycle());
 
         Assert.assertEquals(new Integer(0), subscription.getFailureCount());
         Assert.assertEquals(true, subscription.hasTrialPeriod());

@@ -5,3 +5,6 @@
 /test-classes
 .DS_Store
 /tags
+.idea
+out/
+*.iml
