@@ -1,6 +1,6 @@
 <project default="test">
   <target name="test">
-    <junit haltonerror="yes">
+    <junit haltonerror="yes" fork="yes" forkmode="once">
       <classpath>
         <pathelement location="test-classes"/>
         <fileset dir=".">
@@ -10,7 +10,7 @@
 
       <formatter type="brief" usefile="false"/>
 
-      <batchtest fork="yes">
+      <batchtest>
         <fileset dir="test">
           <include name="**/*Test*.java"/>
           <exclude name="**/TestHelper.java"/>
