@@ -4,10 +4,16 @@ import java.math.BigDecimal;
 
 public class TransactionCloneRequest extends Request {
     private BigDecimal amount;
+    private TransactionOptionsCloneRequest transactionOptionsCloneRequest;
 
     public TransactionCloneRequest amount(BigDecimal amount) {
         this.amount = amount;
         return this;
+    }
+
+    public TransactionOptionsCloneRequest options() {
+        transactionOptionsCloneRequest = new TransactionOptionsCloneRequest(this);
+        return transactionOptionsCloneRequest;
     }
 
     @Override
@@ -17,7 +23,8 @@ public class TransactionCloneRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root).
-            addElement("amount", amount);
+            addElement("amount", amount).
+            addElement("options", transactionOptionsCloneRequest);
 
         return builder;
     }
