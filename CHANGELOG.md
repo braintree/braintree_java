@@ -1,3 +1,7 @@
+## 2.11.0
+
+* Added SettlementBatchSummary
+
 ## 2.10.1
 
 * Correctly report PAST_DUE status on Subscriptions.
