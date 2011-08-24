@@ -46,7 +46,7 @@ import com.braintreegateway.util.TrUtil;
  */
 public class BraintreeGateway {
 
-    public static final String VERSION = "2.10.1";
+    public static final String VERSION = "2.11.0";
 
     private Configuration configuration;
     private Environment environment;
@@ -135,5 +135,9 @@ public class BraintreeGateway {
      */
     public String trData(Request trData, String redirectURL) {
         return new TrUtil(configuration).buildTrData(trData, redirectURL);
+    }
+
+    public SettlementBatchSummaryGateway settlementBatchSummary() {
+        return new SettlementBatchSummaryGateway(http);
     }
 }

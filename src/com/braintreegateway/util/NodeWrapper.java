@@ -186,8 +186,8 @@ public class NodeWrapper {
     public Map<String, String> findMap(String expression) {
         Map<String, String> map = new HashMap<String, String>();
 
-        for (NodeWrapper customFieldNode : findAll("custom-fields/*")) {
-            map.put(StringUtils.underscore(customFieldNode.getElementName()), customFieldNode.findString("."));
+        for (NodeWrapper mapNode : findAll(expression)) {
+            map.put(StringUtils.underscore(mapNode.getElementName()), mapNode.findString("."));
         }
 
         return map;

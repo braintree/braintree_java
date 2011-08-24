@@ -26,6 +26,8 @@ public class Result<T> {
             return (T) new Subscription(node);
         } else if (klass == Transaction.class) {
             return (T) new Transaction(node);
+        } else if (klass == SettlementBatchSummary.class){
+            return (T) new SettlementBatchSummary(node);
         }
         throw new IllegalArgumentException("Unknown klass: " + klass);
     }
