@@ -2277,7 +2277,7 @@ public class TransactionTest {
 
         SubscriptionRequest request = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(Plan.PLAN_WITHOUT_TRIAL.getId()).
+            planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId()).
             addOns().
                 add().
                     amount(new BigDecimal("11.00")).
