@@ -129,7 +129,7 @@ public class SubscriptionTest {
         Assert.assertEquals(new Integer(0), subscription.getFailureCount());
         Assert.assertEquals(true, subscription.hasTrialPeriod());
         Assert.assertEquals(plan.getTrialDuration(), subscription.getTrialDuration());
-        Assert.assertEquals(plan.getTrialDurationUnit(), subscription.getTrialDurationUnit());
+        Assert.assertEquals(plan.getTrialDurationUnit().toString(), subscription.getTrialDurationUnit().toString());
 
         TestHelper.assertDatesEqual(expectedFirstAndNextBillingDate, subscription.getNextBillingDate());
         TestHelper.assertDatesEqual(expectedFirstAndNextBillingDate, subscription.getFirstBillingDate());
