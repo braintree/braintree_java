@@ -35,7 +35,7 @@ public class Plan {
         id = node.findString("id");
         addOns = new ArrayList<AddOn>();
 
-        for (NodeWrapper addOnResponse : node.findAll("add-ons/modification")) {
+        for (NodeWrapper addOnResponse : node.findAll("add-ons/add-on")) {
             addOns.add(new AddOn(addOnResponse));
         }
         merchantId = node.findString("merchant-id");
@@ -45,7 +45,7 @@ public class Plan {
         currencyIsoCode = node.findString("currency-iso-code");
         description = node.findString("description");
         discounts = new ArrayList<Discount>();
-        for (NodeWrapper discountResponse : node.findAll("discounts/modification")) {
+        for (NodeWrapper discountResponse : node.findAll("discounts/discount")) {
             discounts.add(new Discount(discountResponse));
         }
         name = node.findString("name");

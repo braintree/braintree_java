@@ -20,7 +20,7 @@ public class AddOnGateway {
 
         List<AddOn> addOns = new ArrayList<AddOn>();
 
-        for (NodeWrapper addOnResponse : node.findAll("modification")) {
+        for (NodeWrapper addOnResponse : node.findAll("add-on")) {
             addOns.add(new AddOn(addOnResponse));
         }
 

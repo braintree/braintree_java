@@ -21,13 +21,13 @@ public class DiscountTest {
 
     @Test
     public void returnsAllDiscounts() {
-        String discountId = "an_add_on_id" + String.valueOf(new Random().nextInt());
+        String discountId = "a_discount_id" + String.valueOf(new Random().nextInt());
         FakeModificationRequest discountRequest = new FakeModificationRequest()
                 .amount(new BigDecimal("100.00"))
-                .description("java test add-on description")
+                .description("java test discount description")
                 .id(discountId)
-                .kind("add_on")
-                .name("java test add-on name")
+                .kind("discount")
+                .name("java test discount name")
                 .neverExpires(false)
                 .numberOfBillingCycles(12);
         http.post("/modifications/create_modification_for_tests", discountRequest);
@@ -42,9 +42,9 @@ public class DiscountTest {
         }
 
         Assert.assertEquals(new BigDecimal("100.00"), actualDiscount.getAmount());
-        Assert.assertEquals("java test add-on description", actualDiscount.getDescription());
-        Assert.assertEquals("add_on", actualDiscount.getKind());
-        Assert.assertEquals("java test add-on name", actualDiscount.getName());
+        Assert.assertEquals("java test discount description", actualDiscount.getDescription());
+        Assert.assertEquals("discount", actualDiscount.getKind());
+        Assert.assertEquals("java test discount name", actualDiscount.getName());
         Assert.assertEquals(false, actualDiscount.neverExpires());
         Assert.assertEquals(new Integer("12"), actualDiscount.getNumberOfBillingCycles());
     }

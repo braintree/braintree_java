@@ -16,11 +16,11 @@ public class DiscountGateway {
     }
 
     public List<Discount> all() {
-        NodeWrapper node = http.get("/add_ons");
+        NodeWrapper node = http.get("/discounts");
 
         List<Discount> discounts = new ArrayList<Discount>();
 
-        for (NodeWrapper discountResponse : node.findAll("modification")) {
+        for (NodeWrapper discountResponse : node.findAll("discount")) {
             discounts.add(new Discount(discountResponse));
         }
 
