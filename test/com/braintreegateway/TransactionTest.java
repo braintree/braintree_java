@@ -107,7 +107,7 @@ public class TransactionTest {
         Assert.assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
     
-        TransactionCloneRequest cloneRequest = new TransactionCloneRequest().amount(new BigDecimal("123.45"));
+        TransactionCloneRequest cloneRequest = new TransactionCloneRequest().amount(new BigDecimal("123.45")).options().submitForSettlement(false).done();
         Result<Transaction> cloneResult = gateway.transaction().cloneTransaction(transaction.getId(), cloneRequest);
         Assert.assertTrue(cloneResult.isSuccess());
         Transaction cloneTransaction = result.getTarget();
@@ -161,6 +161,8 @@ public class TransactionTest {
 
         Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_CLONE_CREDIT, 
                 cloneResult.getErrors().forObject("transaction").onField("base").get(0).getCode());
+        Assert.assertEquals(ValidationErrorCode.TRANSACTION_OPTIONS_SUBMIT_FOR_SETTLEMENT_IS_REQUIRED_FOR_CLONING,
+                cloneResult.getErrors().forObject("transaction").onField("submitForSettlement").get(0).getCode());
     }
 
     @Test
