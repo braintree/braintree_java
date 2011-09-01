@@ -2,6 +2,7 @@ package com.braintreegateway;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 public class SettlementBatchSummaryRequest extends Request {
@@ -21,17 +22,21 @@ public class SettlementBatchSummaryRequest extends Request {
         this.settlementDate = settlementDate;
         return this;
     }
-    
+
 
     protected RequestBuilder buildRequest(String root) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         RequestBuilder request = new RequestBuilder(root);
-        request.addElement("settlement-date",  dateFormat.format(settlementDate.getTime()));
+        request.addElement("settlement-date", dateString(settlementDate));
         if (groupByCustomField != null) {
             request.addElement("group-by-custom-field", groupByCustomField);            
         }
         return request;
+    }
+
+    public static String dateString(Calendar settlementDate) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setCalendar(settlementDate);
+        return dateFormat.format(settlementDate.getTime());
     }
 
     public SettlementBatchSummaryRequest groupByCustomField(String groupByCustomField) {
