@@ -2,6 +2,7 @@ package com.braintreegateway;
 
 import java.util.Calendar;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,9 +14,11 @@ import com.braintreegateway.SandboxValues.TransactionAmount;
 public class SettlementBatchSummaryTest {
     
     private BraintreeGateway gateway;
+    private TimeZone eastern_timezone;
 
     @Before
     public void createGateway() {
+        this.eastern_timezone = TimeZone.getTimeZone("America/New_York");
         this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
     }
     
@@ -27,7 +30,25 @@ public class SettlementBatchSummaryTest {
         Result<SettlementBatchSummary> result = gateway.settlementBatchSummary().generate(settlementDate);
         Assert.assertTrue(result.isSuccess());
     }
-    
+
+    @Test
+    public void formatsDateString() {
+        Calendar time = Calendar.getInstance();
+        time.clear();
+        time.set(2011, 7, 31);
+        Assert.assertEquals(SettlementBatchSummaryRequest.dateString(time), "2011-08-31");
+    }
+
+
+    @Test
+    public void formatsDateStringOnBoundary() {
+        TimeZone tz = TimeZone.getTimeZone("America/New_York");
+        Calendar time = Calendar.getInstance(tz);
+        time.clear();
+        time.set(2011, 7, 31, 23, 00);
+        Assert.assertEquals(SettlementBatchSummaryRequest.dateString(time), "2011-08-31");
+    }
+
     @Test
     public void returnsDataForTheGivenSettlementDate() {
         TransactionRequest request = new TransactionRequest().
@@ -46,7 +67,7 @@ public class SettlementBatchSummaryTest {
         
         TestHelper.settle(gateway, result.getTarget().getId());
         
-        Result<SettlementBatchSummary> summaryResult = gateway.settlementBatchSummary().generate(Calendar.getInstance());
+        Result<SettlementBatchSummary> summaryResult = gateway.settlementBatchSummary().generate(Calendar.getInstance(eastern_timezone));
         Assert.assertTrue(summaryResult.isSuccess());
         
         Assert.assertTrue(summaryResult.getTarget().getRecords().size() > 0);
@@ -76,8 +97,8 @@ public class SettlementBatchSummaryTest {
         Assert.assertTrue(result.isSuccess());
         
         TestHelper.settle(gateway, result.getTarget().getId());
-        
-        Result<SettlementBatchSummary> summaryResult = gateway.settlementBatchSummary().generate(Calendar.getInstance(), "store_me");
+
+        Result<SettlementBatchSummary> summaryResult = gateway.settlementBatchSummary().generate(Calendar.getInstance(eastern_timezone), "store_me");
         Assert.assertTrue(summaryResult.isSuccess());
         
         Assert.assertTrue(summaryResult.getTarget().getRecords().size() > 0);
