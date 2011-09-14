@@ -1,11 +1,9 @@
 package com.braintreegateway;
 
-import com.braintreegateway.util.NodeWrapper;
-
-import java.math.BigDecimal;
+import com.braintreegateway.util.NodeWrapperFactory;
 
 public class PlanFixture {
-    public static final Plan PLAN_WITHOUT_TRIAL = new Plan(new NodeWrapper(
+    public static final Plan PLAN_WITHOUT_TRIAL = new Plan(NodeWrapperFactory.instance.create(
                 "<plan>" +
                 "<billing-day-of-month>1</billing-day-of-month>" +
                 "<billing-frequency>1</billing-frequency>" +
@@ -20,7 +18,7 @@ public class PlanFixture {
                 "<trial-period>false</trial-period>" +
                 "</plan>"));
 
-    public static final Plan PLAN_WITH_TRIAL = new Plan(new NodeWrapper(
+    public static final Plan PLAN_WITH_TRIAL = new Plan(NodeWrapperFactory.instance.create(
                 "<plan>" +
                 "<billing-day-of-month>1</billing-day-of-month>" +
                 "<billing-frequency>2</billing-frequency>" +
@@ -35,7 +33,7 @@ public class PlanFixture {
                 "<trial-period>true</trial-period>" +
                 "</plan>"));
 
-    public static final Plan BILLING_DAY_OF_MONTH_PLAN = new Plan(new NodeWrapper(
+    public static final Plan BILLING_DAY_OF_MONTH_PLAN = new Plan(NodeWrapperFactory.instance.create(
                 "<plan>" +
                 "<billing-day-of-month>1</billing-day-of-month>" +
                 "<billing-frequency>2</billing-frequency>" +
@@ -50,7 +48,7 @@ public class PlanFixture {
                 "<trial-period>false</trial-period>" +
                 "</plan>"));
 
-    public static final Plan ADD_ON_DISCOUNT_PLAN = new Plan(new NodeWrapper(
+    public static final Plan ADD_ON_DISCOUNT_PLAN = new Plan(NodeWrapperFactory.instance.create(
                 "<plan>" +
                 "<billing-day-of-month>1</billing-day-of-month>" +
                 "<billing-frequency>2</billing-frequency>" +

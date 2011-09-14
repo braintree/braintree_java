@@ -99,7 +99,7 @@ public class Http {
             String xml = StringUtils.inputStreamToString(responseStream);
 
             responseStream.close();
-            return new NodeWrapper(xml);
+            return NodeWrapperFactory.instance.create(xml);
         } catch (IOException e) {
             throw new UnexpectedException(e.getMessage());
         }

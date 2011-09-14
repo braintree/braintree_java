@@ -95,4 +95,19 @@ public class StringUtilsTest {
         Assert.assertEquals("credit-card", StringUtils.classToXMLName(CreditCard.class));
         Assert.assertEquals("transaction", StringUtils.classToXMLName(Transaction.class));
     }
+    @Test
+      public void join() throws Exception
+      {
+        String result = StringUtils.join(",", "one", "two", "three");
+        Assert.assertEquals("one,two,three", result);
+        result = StringUtils.join(",", "one", "two", "three");
+        Assert.assertEquals("one,two,three", result);
+
+        result = StringUtils.join(",");
+        Assert.assertEquals("", result);
+
+        result = StringUtils.join(",", "one");
+        Assert.assertEquals("one", result);
+      }
+
 }

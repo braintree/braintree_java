@@ -40,4 +40,29 @@ public class StringUtils {
     public static String underscore(String str) {
         return str == null ? null : str.replaceAll("([a-z])([A-Z])", "$1_$2").replaceAll("-", "_").toLowerCase();
     }
+    public static String join(Object[] tokens, String delimiter)
+     {
+       if(tokens.length == 0)
+         return "";
+
+       StringBuilder joined = new StringBuilder();
+
+       boolean first = true;
+       for(Object token : tokens)
+       {
+         if(!first)
+           joined.append(delimiter);
+         else
+           first = false;
+         joined.append(token);
+       }
+
+       return joined.toString();
+     }
+
+     public static String join(String delimiter, Object... tokens)
+     {
+       return join(tokens, delimiter);
+     }
+
 }
