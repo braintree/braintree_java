@@ -84,20 +84,6 @@ public class XmlNodeWrapper extends NodeWrapper {
         return node.getNodeName();
     }
 
-    public boolean isSuccess() {
-        return getElementName() != "api-error-response";
-    }
-
-    public Map<String, String> findMap(String expression) {
-        Map<String, String> map = new HashMap<String, String>();
-
-        for (NodeWrapper mapNode : findAll(expression)) {
-            map.put(StringUtils.underscore(mapNode.getElementName()), mapNode.findString("."));
-        }
-
-        return map;
-    }
-
     private boolean isSameNode(XmlNodeWrapper other) {
         return node.isSameNode(other.node);
     }
