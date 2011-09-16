@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
 
+import com.braintreegateway.org.apache.commons.codec.binary.StringUtils;
+import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -326,9 +328,9 @@ public class SubscriptionTest {
         
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertFalse(createResult.isSuccess());
-    
-        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_FIRST_BILLING_DATE_CANNOT_BE_IN_THE_PAST,
-            createResult.getErrors().forObject("subscription").onField("firstBillingDate").get(0).getCode());
+
+        List<ValidationError> errors = createResult.getErrors().forObject("subscription").onField("firstBillingDate");
+        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_FIRST_BILLING_DATE_CANNOT_BE_IN_THE_PAST, errors.get(0).getCode());
     }
 
     @Test
@@ -1146,7 +1148,6 @@ public class SubscriptionTest {
         Assert.assertFalse(createResult.isSuccess());
         Assert.assertNull(createResult.getTarget());
         Map<String, String> parameters = createResult.getParameters();
-        Assert.assertEquals(creditCard.getToken(), parameters.get("payment_method_token"));
         Assert.assertEquals(plan.getId(), parameters.get("plan_id"));
         Assert.assertEquals("invalid id", parameters.get("id"));
     }
@@ -1590,14 +1591,14 @@ public class SubscriptionTest {
     @Test
     public void unrecognizedStatus() {
         String xml = "<subscription><status>foobar</status></subscription>";
-        Subscription transaction = new Subscription(new NodeWrapper(xml));
+        Subscription transaction = new Subscription(NodeWrapperFactory.instance.create(xml));
         Assert.assertEquals(Subscription.Status.UNRECOGNIZED, transaction.getStatus());
     }
 
     @Test
     public void unrecognizedDurationUnit() {
         String xml = "<subscription><trial-duration-unit>foobar</trial-duration-unit></subscription>";
-        Subscription transaction = new Subscription(new NodeWrapper(xml));
+        Subscription transaction = new Subscription(NodeWrapperFactory.instance.create(xml));
         Assert.assertEquals(Subscription.DurationUnit.UNRECOGNIZED, transaction.getTrialDurationUnit());
     }
 

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +19,6 @@ import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.util.NodeWrapper;
 
 public class TransactionTest {
 
@@ -2117,14 +2117,14 @@ public class TransactionTest {
     @Test
     public void unrecognizedStatus() {
         String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><type>sale</type></transaction>";
-        Transaction transaction = new Transaction(new NodeWrapper(xml));
+        Transaction transaction = new Transaction(NodeWrapperFactory.instance.create(xml));
         Assert.assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
     }
 
     @Test
     public void unrecognizedType() {
         String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><type>sale</type></transaction>";
-        Transaction transaction = new Transaction(new NodeWrapper(xml));
+        Transaction transaction = new Transaction(NodeWrapperFactory.instance.create(xml));
         Assert.assertEquals(Transaction.Type.UNRECOGNIZED, transaction.getType());
     }
     

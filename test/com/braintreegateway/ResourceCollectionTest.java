@@ -3,6 +3,7 @@ package com.braintreegateway;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Assert;
 
 import org.junit.Test;
@@ -25,7 +26,7 @@ public class ResourceCollectionTest {
 
     @Test
     public void getFirst() {
-        NodeWrapper xml = new NodeWrapper("<search-results>" +
+        NodeWrapper xml = NodeWrapperFactory.instance.create("<search-results>" +
                 "<page-size>2</page-size>" +
                 "<ids type=\"array\">" +
                     "<items>0</items>" +
