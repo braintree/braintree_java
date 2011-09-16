@@ -46,7 +46,7 @@ import com.braintreegateway.util.TrUtil;
  */
 public class BraintreeGateway {
 
-    public static final String VERSION = "2.11.1";
+    public static final String VERSION = "2.12.0";
 
     private Configuration configuration;
     private Environment environment;

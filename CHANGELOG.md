@@ -1,3 +1,7 @@
+## 2.12.0
+
+* Implemented new NodeWrapper (SimpleNodeWrapper) that is much faster than the previous xpath implementation.
+
 ## 2.11.1
 
 * Fixed a bug in SettlementBatchSummary that may have requested the wrong date when using a timezone other than UTC.

@@ -331,8 +331,7 @@ public class SubscriptionTest {
         Assert.assertFalse(createResult.isSuccess());
 
         List<ValidationError> errors = createResult.getErrors().forObject("subscription").onField("firstBillingDate");
-        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_FIRST_BILLING_DATE_CANNOT_BE_IN_THE_PAST,
-            errors.get(0).getCode());
+        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_FIRST_BILLING_DATE_CANNOT_BE_IN_THE_PAST, errors.get(0).getCode());
     }
 
     @Test
