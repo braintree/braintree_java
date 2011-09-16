@@ -9,19 +9,25 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.StringReader;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MapNodeWrapper extends NodeWrapper {
-    private Map<String, Object> map;
-    private String name;
 
-    private MapNodeWrapper() {
+    private static SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+
+    private String name;
+    private Map<String, String> attributes = new HashMap<String, String>();
+    private List<Object> content = new LinkedList<Object>();
+
+    private MapNodeWrapper(String name) {
+        this.name = name;
     }
 
     public static MapNodeWrapper parse(String xml) {
         try {
             InputSource source = new InputSource(new StringReader(xml));
-            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-            SAXParser parser = parserFactory.newSAXParser();
+            SAXParser parser = saxParserFactory.newSAXParser();
             MapNodeHandler handler = new MapNodeHandler();
             parser.parse(source, handler);
             return handler.root;
@@ -32,21 +38,77 @@ public class MapNodeWrapper extends NodeWrapper {
 
     @Override
     public List<NodeWrapper> findAll(String expression) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        String[] paths = expression.split("/");
+        LinkedList<String> tokens = new LinkedList<String>(Arrays.asList(paths));
+        List<NodeWrapper> nodes = new LinkedList<NodeWrapper>();
+        findAll(tokens, nodes);
+        return nodes;
+    }
+
+    private void findAll(LinkedList<String> tokens, List<NodeWrapper> nodes) {
+        if (tokens.isEmpty())
+            nodes.add(this);
+        else {
+            String first = tokens.getFirst();
+            if (".".equals(first))
+                findAll(restOf(tokens), nodes);
+            for (MapNodeWrapper node : childNodes()) {
+                if ("*".equals(first) || first.equals(node.name))
+                    node.findAll(restOf(tokens), nodes);
+            }
+        }
+    }
+
+    private MapNodeWrapper find(LinkedList<String> tokens) {
+        if (tokens.isEmpty())
+            return this;
+        else {
+            String first = tokens.getFirst();
+            if (".".equals(first))
+                return find(restOf(tokens));
+            for (MapNodeWrapper node : childNodes()) {
+                if ("*".equals(first) || first.equals(node.name))
+                    return node.find(restOf(tokens));
+            }
+            return null;
+        }
+    }
+
+    private MapNodeWrapper find(String expression) {
+        String[] paths = expression.split("/");
+        LinkedList<String> tokens = new LinkedList<String>(Arrays.asList(paths));
+
+        return find(tokens);
+    }
+
+    private LinkedList<String> restOf(LinkedList<String> tokens) {
+        LinkedList<String> newTokens = new LinkedList<String>(tokens);
+        newTokens.removeFirst();
+        return newTokens;
     }
 
     @Override
     public NodeWrapper findFirst(String expression) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return find(expression);
     }
 
     @Override
     public String findString(String expression) {
-        Object value = map.get(expression);
-        if (value == null)
+        MapNodeWrapper node = find(expression);
+        if (node == null)
             return null;
         else
-            return value.toString();
+            return node.stringValue();
+    }
+
+    private String stringValue() {
+        if (content.size() == 1 && content.get(0) == null)
+            return null;
+        String value = "";
+        for (Object o : content) {
+            value += o.toString();
+        }
+        return value.trim();
     }
 
     @Override
@@ -54,71 +116,79 @@ public class MapNodeWrapper extends NodeWrapper {
         return name;
     }
 
-    @Override
-    public boolean isSuccess() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Map<String, String> findMap(String expression) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    private List<MapNodeWrapper> childNodes() {
+        List<MapNodeWrapper> nodes = new LinkedList<MapNodeWrapper>();
+        for (Object o : content) {
+            if (o instanceof MapNodeWrapper)
+                nodes.add((MapNodeWrapper) o);
+        }
+        return nodes;
     }
 
     @Override
     public Map<String, String> getFormParameters() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        Map<String, String> params = new HashMap<String, String>();
+        for (MapNodeWrapper node : childNodes()) {
+            node.buildParams("", params);
+        }
+        return params;
     }
 
-    public Map<String, Object> getMap() {
-        return map;
+    private void buildParams(String prefix, Map<String, String> params) {
+        List<MapNodeWrapper> childNodes = childNodes();
+        String newPrefix = "".equals(prefix) ? StringUtils.underscore(name) : prefix + "[" + StringUtils.underscore(name) + "]";
+        if (childNodes.isEmpty())
+            params.put(newPrefix, stringValue());
+        else {
+            for (MapNodeWrapper childNode : childNodes)
+                childNode.buildParams(newPrefix, params);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "<" + name +
+                (attributes.isEmpty() ? "" : " attributes=" + StringUtils.toString(attributes)) +
+                " content=" + StringUtils.toString(content) + ">";
     }
 
     private static class MapNodeHandler extends DefaultHandler {
-        private Stack<Object> stack = new Stack<Object>();
-        public MapNodeWrapper root;
+        private static Pattern NON_WHITE_SPACE = Pattern.compile("\\S");
 
-        private MapNodeHandler() {
-            root = new MapNodeWrapper();
-        }
+        private Stack<MapNodeWrapper> stack = new Stack<MapNodeWrapper>();
+        public MapNodeWrapper root;
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-            boolean first = stack.empty();
-            if(first)
-                stack.push(qName);
+            MapNodeWrapper node = new MapNodeWrapper(qName);
 
-            if(stack.peek() instanceof String)
-                stack.push(new HashMap<String, Object>());
+            for (int i = 0; i < attributes.getLength(); i++)
+                node.attributes.put(attributes.getQName(i), attributes.getValue(i));
 
-            if(!first)
-                stack.push(qName);
+            if ("true".equals(node.attributes.get("nil")))
+                node.content.add(null);
 
-            if("array".equals(attributes.getValue("type")))
-                stack.push(new ArrayList<Object>());
+            if (!stack.isEmpty())
+                stack.peek().content.add(node);
+
+            stack.push(node);
         }
 
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
-            Object value = stack.pop();
-            String key = (String)stack.pop();
-            if(stack.empty())
-            {
-                root.name = key;
-                root.map = (HashMap<String, Object>)value;
-            }
-            else
-            {
-                Object collection = stack.peek();
-                if(collection instanceof Map)
-                    ((HashMap<String, Object>) collection).put(key, value);
-                else
-                    ((List<Object>)collection).add(value);
-            }
+            MapNodeWrapper pop = stack.pop();
+            if (stack.isEmpty())
+                root = pop;
         }
 
         @Override
         public void characters(char[] chars, int start, int length) throws SAXException {
-            stack.push(new String(chars, start, length));
+            String value = new String(chars, start, length);
+
+            Matcher matcher = NON_WHITE_SPACE.matcher(value);
+            if (value.length() > 0 && matcher.find()) {
+                stack.peek().content.add(value);
+            }
         }
     }
 }

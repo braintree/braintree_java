@@ -3,6 +3,7 @@ package com.braintreegateway.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.*;
 
 public class StringUtils {
     public static <T> String classToXMLName(Class<T> klass) {
@@ -65,4 +66,36 @@ public class StringUtils {
        return join(tokens, delimiter);
      }
 
+    public static String mapToString(Map<String, Object> map) {
+        LinkedList<String> pairs = new LinkedList<String>();
+        ArrayList<String> keyList = new ArrayList<String>(map.keySet());
+        Collections.sort(keyList);
+        for (String s : keyList)
+        {
+            Object value = map.get(s);
+            String valueStr = toString(value);
+            pairs.add(s + ": " + valueStr);
+        }
+
+        return "{" + join(", ", pairs.toArray()) + "}";
+    }
+
+    public static String toString(Object value) {
+        if(value instanceof Map)
+            return mapToString((Map<String, Object>) value);
+        else if(value instanceof List)
+            return listToString((List<Object>) value);
+        else if(value == null)
+            return "null";
+        else
+            return value.toString().trim();
+    }
+
+    public static String listToString(List<Object> value) {
+        String[] valueStrings = new String[value.size()];
+        for (int i = 0; i < valueStrings.length; i++) {
+            valueStrings[i] = toString(value.get(i));
+        }
+        return "[" + join(", ", valueStrings) + "]";
+    }
 }

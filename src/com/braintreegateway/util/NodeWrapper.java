@@ -76,9 +76,19 @@ public abstract class NodeWrapper {
 
     public abstract String getElementName(); //TODO MDM Rename to getName
 
-    public abstract boolean isSuccess();
+    public boolean isSuccess() {
+        return getElementName() != "api-error-response";
+    }
 
-    public abstract Map<String, String> findMap(String expression);
+    public Map<String, String> findMap(String expression) {
+        Map<String, String> map = new HashMap<String, String>();
+
+        for (NodeWrapper mapNode : findAll(expression)) {
+            map.put(StringUtils.underscore(mapNode.getElementName()), mapNode.findString("."));
+        }
+
+        return map;
+    }
 
     public abstract Map<String, String> getFormParameters();
 }
