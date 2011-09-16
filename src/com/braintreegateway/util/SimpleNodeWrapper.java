@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MapNodeWrapper extends NodeWrapper {
+public class SimpleNodeWrapper extends NodeWrapper {
 
     private static SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 
@@ -20,11 +20,11 @@ public class MapNodeWrapper extends NodeWrapper {
     private Map<String, String> attributes = new HashMap<String, String>();
     private List<Object> content = new LinkedList<Object>();
 
-    private MapNodeWrapper(String name) {
+    private SimpleNodeWrapper(String name) {
         this.name = name;
     }
 
-    public static MapNodeWrapper parse(String xml) {
+    public static SimpleNodeWrapper parse(String xml) {
         try {
             InputSource source = new InputSource(new StringReader(xml));
             SAXParser parser = saxParserFactory.newSAXParser();
@@ -52,21 +52,21 @@ public class MapNodeWrapper extends NodeWrapper {
             String first = tokens.getFirst();
             if (".".equals(first))
                 findAll(restOf(tokens), nodes);
-            for (MapNodeWrapper node : childNodes()) {
+            for (SimpleNodeWrapper node : childNodes()) {
                 if ("*".equals(first) || first.equals(node.name))
                     node.findAll(restOf(tokens), nodes);
             }
         }
     }
 
-    private MapNodeWrapper find(LinkedList<String> tokens) {
+    private SimpleNodeWrapper find(LinkedList<String> tokens) {
         if (tokens.isEmpty())
             return this;
         else {
             String first = tokens.getFirst();
             if (".".equals(first))
                 return find(restOf(tokens));
-            for (MapNodeWrapper node : childNodes()) {
+            for (SimpleNodeWrapper node : childNodes()) {
                 if ("*".equals(first) || first.equals(node.name))
                     return node.find(restOf(tokens));
             }
@@ -74,7 +74,7 @@ public class MapNodeWrapper extends NodeWrapper {
         }
     }
 
-    private MapNodeWrapper find(String expression) {
+    private SimpleNodeWrapper find(String expression) {
         String[] paths = expression.split("/");
         LinkedList<String> tokens = new LinkedList<String>(Arrays.asList(paths));
 
@@ -94,7 +94,7 @@ public class MapNodeWrapper extends NodeWrapper {
 
     @Override
     public String findString(String expression) {
-        MapNodeWrapper node = find(expression);
+        SimpleNodeWrapper node = find(expression);
         if (node == null)
             return null;
         else
@@ -116,11 +116,11 @@ public class MapNodeWrapper extends NodeWrapper {
         return name;
     }
 
-    private List<MapNodeWrapper> childNodes() {
-        List<MapNodeWrapper> nodes = new LinkedList<MapNodeWrapper>();
+    private List<SimpleNodeWrapper> childNodes() {
+        List<SimpleNodeWrapper> nodes = new LinkedList<SimpleNodeWrapper>();
         for (Object o : content) {
-            if (o instanceof MapNodeWrapper)
-                nodes.add((MapNodeWrapper) o);
+            if (o instanceof SimpleNodeWrapper)
+                nodes.add((SimpleNodeWrapper) o);
         }
         return nodes;
     }
@@ -128,19 +128,19 @@ public class MapNodeWrapper extends NodeWrapper {
     @Override
     public Map<String, String> getFormParameters() {
         Map<String, String> params = new HashMap<String, String>();
-        for (MapNodeWrapper node : childNodes()) {
+        for (SimpleNodeWrapper node : childNodes()) {
             node.buildParams("", params);
         }
         return params;
     }
 
     private void buildParams(String prefix, Map<String, String> params) {
-        List<MapNodeWrapper> childNodes = childNodes();
+        List<SimpleNodeWrapper> childNodes = childNodes();
         String newPrefix = "".equals(prefix) ? StringUtils.underscore(name) : prefix + "[" + StringUtils.underscore(name) + "]";
         if (childNodes.isEmpty())
             params.put(newPrefix, stringValue());
         else {
-            for (MapNodeWrapper childNode : childNodes)
+            for (SimpleNodeWrapper childNode : childNodes)
                 childNode.buildParams(newPrefix, params);
         }
     }
@@ -155,12 +155,12 @@ public class MapNodeWrapper extends NodeWrapper {
     private static class MapNodeHandler extends DefaultHandler {
         private static Pattern NON_WHITE_SPACE = Pattern.compile("\\S");
 
-        private Stack<MapNodeWrapper> stack = new Stack<MapNodeWrapper>();
-        public MapNodeWrapper root;
+        private Stack<SimpleNodeWrapper> stack = new Stack<SimpleNodeWrapper>();
+        public SimpleNodeWrapper root;
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-            MapNodeWrapper node = new MapNodeWrapper(qName);
+            SimpleNodeWrapper node = new SimpleNodeWrapper(qName);
 
             for (int i = 0; i < attributes.getLength(); i++)
                 node.attributes.put(attributes.getQName(i), attributes.getValue(i));
@@ -176,7 +176,7 @@ public class MapNodeWrapper extends NodeWrapper {
 
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
-            MapNodeWrapper pop = stack.pop();
+            SimpleNodeWrapper pop = stack.pop();
             if (stack.isEmpty())
                 root = pop;
         }

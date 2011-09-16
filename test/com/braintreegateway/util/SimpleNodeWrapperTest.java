@@ -5,18 +5,17 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class MapNodeWrapperTest {
+public class SimpleNodeWrapperTest {
 
     @Test
     public void getsHashFromSimpleXML() {
-        MapNodeWrapper node = MapNodeWrapper.parse("<parent><child>value</child></parent>");
+        SimpleNodeWrapper node = SimpleNodeWrapper.parse("<parent><child>value</child></parent>");
 
         String actual = StringUtils.toString(node);
         assertEquals("<parent content=[<child content=[value]>]>", actual);
@@ -25,7 +24,7 @@ public class MapNodeWrapperTest {
 
     @Test
     public void parsingFullXmlDoc() {
-        MapNodeWrapper node = MapNodeWrapper.parse("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        SimpleNodeWrapper node = SimpleNodeWrapper.parse("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<add-on>\n" +
                 "  <amount>100.00</amount>\n" +
                 "  <foo nil='true'></foo>\n" +
@@ -36,7 +35,7 @@ public class MapNodeWrapperTest {
 
     @Test
     public void parsingXmlWithListAtRoot() {
-        MapNodeWrapper node = MapNodeWrapper.parse("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        SimpleNodeWrapper node = SimpleNodeWrapper.parse("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<add-ons type=\"array\">\n" +
                 "  <add-on>\n" +
                 "    <amount>10.00</amount>\n" +
@@ -48,7 +47,7 @@ public class MapNodeWrapperTest {
 
     @Test
     public void parsingXmlWithNilValuesWithoutNilAttr() {
-        MapNodeWrapper node = MapNodeWrapper.parse("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        SimpleNodeWrapper node = SimpleNodeWrapper.parse("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<customer>\n" +
                 "  <id>884969</id>\n" +
                 "  <merchant-id>integration_merchant_id</merchant-id>\n" +
@@ -63,7 +62,7 @@ public class MapNodeWrapperTest {
     @Test
     public void moreNestedXml() {
         String xml = "<toplevel><foo type='array'><bar><greeting>hi</greeting><salutation>bye</salutation></bar><bar><greeting>hello</greeting></bar></foo></toplevel>";
-        MapNodeWrapper node = MapNodeWrapper.parse(xml);
+        SimpleNodeWrapper node = SimpleNodeWrapper.parse(xml);
         assertEquals("toplevel", node.getElementName());
         assertEquals("<toplevel content=[<foo attributes={type: array} content=[" +
                 "<bar content=[<greeting content=[hi]>, <salutation content=[bye]>]>, " +
@@ -72,35 +71,35 @@ public class MapNodeWrapperTest {
 
     @Test
     public void findDot() {
-        NodeWrapper node = MapNodeWrapper.parse("<toplevel>bar</toplevel>");
+        NodeWrapper node = SimpleNodeWrapper.parse("<toplevel>bar</toplevel>");
         assertEquals("bar", node.findString("."));
     }
 
     @Test
     public void findString() {
         String xml = "<toplevel><foo>bar</foo></toplevel>";
-        NodeWrapper node = MapNodeWrapper.parse(xml);
+        NodeWrapper node = SimpleNodeWrapper.parse(xml);
         assertEquals("bar", node.findString("foo"));
     }
 
     @Test
     public void findStringForNull() {
         String xml = "<toplevel><foo nil='true'></foo></toplevel>";
-        NodeWrapper node = MapNodeWrapper.parse(xml);
+        NodeWrapper node = SimpleNodeWrapper.parse(xml);
         assertEquals(null, node.findString("foo"));
     }
 
     @Test
     public void findStringWithNoMatchingElements() {
         String xml = "<toplevel><foo>bar</foo></toplevel>";
-        NodeWrapper node = MapNodeWrapper.parse(xml);
+        NodeWrapper node = SimpleNodeWrapper.parse(xml);
         assertEquals(null, node.findString("blah"));
     }
 
     @Test
     public void findDate() {
         String xml = "<toplevel><created-at type=\"date\">2010-02-16</created-at></toplevel>";
-        NodeWrapper node = MapNodeWrapper.parse(xml);
+        NodeWrapper node = SimpleNodeWrapper.parse(xml);
         Calendar expected = Calendar.getInstance();
         expected.set(2010, 1, 16);
         expected.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -114,14 +113,14 @@ public class MapNodeWrapperTest {
     @Test
     public void findDateWithNoMatchingElement() {
         String xml = "<toplevel><foo>bar</foo></toplevel>";
-        NodeWrapper node = MapNodeWrapper.parse(xml);
+        NodeWrapper node = SimpleNodeWrapper.parse(xml);
         assertEquals(null, node.findDate("created-at"));
     }
 
     @Test
     public void findDateTime() {
         String xml = "<toplevel><created-at type=\"datetime\">2010-02-16T16:32:07Z</created-at></toplevel>";
-        NodeWrapper node = MapNodeWrapper.parse(xml);
+        NodeWrapper node = SimpleNodeWrapper.parse(xml);
         Calendar expected = Calendar.getInstance();
         expected.setTimeZone(TimeZone.getTimeZone("UTC"));
         expected.set(2010, 1, 16, 16, 32, 7);
@@ -140,35 +139,35 @@ public class MapNodeWrapperTest {
     @Test
     public void findDateTimeWithNoMatchingElement() {
         String xml = "<toplevel><foo>bar</foo></toplevel>";
-        NodeWrapper node = MapNodeWrapper.parse(xml);
+        NodeWrapper node = SimpleNodeWrapper.parse(xml);
         assertEquals(null, node.findDateTime("created-at"));
     }
 
     @Test
     public void findBigDecimal() {
         String xml = "<toplevel><amount>12.59</amount></toplevel>";
-        NodeWrapper response = MapNodeWrapper.parse(xml);
+        NodeWrapper response = SimpleNodeWrapper.parse(xml);
         assertEquals(new BigDecimal("12.59"), response.findBigDecimal("amount"));
     }
 
     @Test
     public void findBigDecimalWithNoMatchingElement() {
         String xml = "<toplevel><amount>12.59</amount></toplevel>";
-        NodeWrapper response = MapNodeWrapper.parse(xml);
+        NodeWrapper response = SimpleNodeWrapper.parse(xml);
         assertEquals(null, response.findBigDecimal("price"));
     }
 
     @Test
     public void findInteger() {
         String xml = "<toplevel><foo>4</foo></toplevel>";
-        NodeWrapper node = MapNodeWrapper.parse(xml);
+        NodeWrapper node = SimpleNodeWrapper.parse(xml);
         assertEquals(new Integer(4), node.findInteger("foo"));
     }
 
     @Test
     public void findIntegerWithNoMatchingElements() {
         String xml = "<toplevel><foo>4</foo></toplevel>";
-        NodeWrapper node = MapNodeWrapper.parse(xml);
+        NodeWrapper node = SimpleNodeWrapper.parse(xml);
         assertEquals(null, node.findInteger("blah"));
     }
 
@@ -178,14 +177,14 @@ public class MapNodeWrapperTest {
                 "  <bin>510510</bin>\n" +
                 "  <cardholder-name>Special Chars &lt;&gt;&amp;&quot;'</cardholder-name>\n" +
                 "</credit-card>";
-        NodeWrapper node = MapNodeWrapper.parse(xml);
+        NodeWrapper node = SimpleNodeWrapper.parse(xml);
         assertEquals("Special Chars <>&\"'", node.findString("cardholder-name"));
     }
 
     @Test
     public void findAll() {
         String xml = "<toplevel><foo type='array'><bar><greeting>hi</greeting></bar><bar><greeting>hello</greeting></bar></foo></toplevel>";
-        NodeWrapper node = MapNodeWrapper.parse(xml);
+        NodeWrapper node = SimpleNodeWrapper.parse(xml);
         List<NodeWrapper> nodes = node.findAll("foo/bar");
         assertEquals(2, nodes.size());
         assertEquals("hi", nodes.get(0).findString("greeting"));
@@ -195,7 +194,7 @@ public class MapNodeWrapperTest {
     @Test
     public void findAllWithStar() {
         String xml = "<toplevel><foo type='array'><bar><greeting>hi</greeting></bar><bar><greeting>hello</greeting></bar></foo></toplevel>";
-        NodeWrapper node = MapNodeWrapper.parse(xml);
+        NodeWrapper node = SimpleNodeWrapper.parse(xml);
         List<NodeWrapper> nodes = node.findAll("foo/*");
         assertEquals(2, nodes.size());
         assertEquals("hi", nodes.get(0).findString("greeting"));
@@ -205,20 +204,20 @@ public class MapNodeWrapperTest {
     @Test
     public void findAllWithNoMatchingElement() {
         String xml = "<toplevel></toplevel>";
-        assertTrue(MapNodeWrapper.parse(xml).findAll("foo/bar").isEmpty());
+        assertTrue(SimpleNodeWrapper.parse(xml).findAll("foo/bar").isEmpty());
     }
 
     @Test
     public void findFirst() {
         String xml = "<toplevel><foo type='array'><bar><greeting>hi</greeting></bar><bar><greeting>hello</greeting></bar></foo></toplevel>";
-        NodeWrapper node = MapNodeWrapper.parse(xml).findFirst("foo/bar");
+        NodeWrapper node = SimpleNodeWrapper.parse(xml).findFirst("foo/bar");
         assertEquals("hi", node.findString("greeting"));
     }
 
     @Test
     public void findFirstWithNoMatchingElement() {
         String xml = "<toplevel></toplevel>";
-        assertNull(MapNodeWrapper.parse(xml).findFirst("foo/bar"));
+        assertNull(SimpleNodeWrapper.parse(xml).findFirst("foo/bar"));
     }
 
     @Test
@@ -230,7 +229,7 @@ public class MapNodeWrapperTest {
                 "    <plan-id>integration_trialless_plan</plan-id>\n" +
                 "  </params>\n" +
                 "</api-error-response>";
-        MapNodeWrapper node = MapNodeWrapper.parse(xml);
+        SimpleNodeWrapper node = SimpleNodeWrapper.parse(xml);
         assertEquals("{id: invalid id, payment_method_token: 99s6, plan_id: integration_trialless_plan}",
                 StringUtils.toString(node.findFirst("params").getFormParameters()));
         assertEquals("{params[id]: invalid id, params[payment_method_token]: 99s6, params[plan_id]: integration_trialless_plan}",
@@ -247,7 +246,7 @@ public class MapNodeWrapperTest {
                 "    <id>invalid id</id>\n" +
                 "  </ps>\n" +
                 "</api-error-response>";
-        MapNodeWrapper node = MapNodeWrapper.parse(xml);
+        SimpleNodeWrapper node = SimpleNodeWrapper.parse(xml);
         assertEquals("{child[grandchild]: sonny, id: invalid id}",
                 StringUtils.toString(node.findFirst("ps").getFormParameters()));
     }
