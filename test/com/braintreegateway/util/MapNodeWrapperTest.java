@@ -173,6 +173,16 @@ public class MapNodeWrapperTest {
     }
 
     @Test
+    public void handleXmlCharactersCorrectly() {
+        String xml = "<credit-card>\n" +
+                "  <bin>510510</bin>\n" +
+                "  <cardholder-name>Special Chars &lt;&gt;&amp;&quot;'</cardholder-name>\n" +
+                "</credit-card>";
+        NodeWrapper node = MapNodeWrapper.parse(xml);
+        assertEquals("Special Chars <>&\"'", node.findString("cardholder-name"));
+    }
+
+    @Test
     public void findAll() {
         String xml = "<toplevel><foo type='array'><bar><greeting>hi</greeting></bar><bar><greeting>hello</greeting></bar></foo></toplevel>";
         NodeWrapper node = MapNodeWrapper.parse(xml);

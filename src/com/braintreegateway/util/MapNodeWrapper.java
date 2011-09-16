@@ -9,6 +9,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.StringReader;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MapNodeWrapper extends NodeWrapper {
 
@@ -21,7 +23,6 @@ public class MapNodeWrapper extends NodeWrapper {
     }
 
     public static MapNodeWrapper parse(String xml) {
-        System.out.println("xml = " + xml);
         try {
             InputSource source = new InputSource(new StringReader(xml));
             SAXParserFactory parserFactory = SAXParserFactory.newInstance();
@@ -153,6 +154,7 @@ public class MapNodeWrapper extends NodeWrapper {
     private static class MapNodeHandler extends DefaultHandler {
         private Stack<MapNodeWrapper> stack = new Stack<MapNodeWrapper>();
         public MapNodeWrapper root;
+        private Pattern NON_WHITE_SPACE = Pattern.compile("\\S");
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -164,7 +166,7 @@ public class MapNodeWrapper extends NodeWrapper {
             if ("true".equals(node.attributes.get("nil")))
                 node.content.add(null);
 
-            if (!stack.empty())
+            if (!stack.isEmpty())
                 stack.peek().content.add(node);
 
             stack.push(node);
@@ -172,16 +174,17 @@ public class MapNodeWrapper extends NodeWrapper {
 
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
-
             MapNodeWrapper pop = stack.pop();
-            if (stack.empty())
+            if (stack.isEmpty())
                 root = pop;
         }
 
         @Override
         public void characters(char[] chars, int start, int length) throws SAXException {
-            String value = new String(chars, start, length).replaceAll("[\n\r\t]", "");
-            if (value.length() > 0) {
+            String value = new String(chars, start, length);
+
+            Matcher matcher = NON_WHITE_SPACE.matcher(value);
+            if (value.length() > 0 && matcher.find()) {
                 stack.peek().content.add(value);
             }
         }
