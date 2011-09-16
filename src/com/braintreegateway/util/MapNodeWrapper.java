@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 
 public class MapNodeWrapper extends NodeWrapper {
 
+    private static SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+
     private String name;
     private Map<String, String> attributes = new HashMap<String, String>();
     private List<Object> content = new LinkedList<Object>();
@@ -25,8 +27,7 @@ public class MapNodeWrapper extends NodeWrapper {
     public static MapNodeWrapper parse(String xml) {
         try {
             InputSource source = new InputSource(new StringReader(xml));
-            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-            SAXParser parser = parserFactory.newSAXParser();
+            SAXParser parser = saxParserFactory.newSAXParser();
             MapNodeHandler handler = new MapNodeHandler();
             parser.parse(source, handler);
             return handler.root;
@@ -152,9 +153,10 @@ public class MapNodeWrapper extends NodeWrapper {
     }
 
     private static class MapNodeHandler extends DefaultHandler {
+        private static Pattern NON_WHITE_SPACE = Pattern.compile("\\S");
+
         private Stack<MapNodeWrapper> stack = new Stack<MapNodeWrapper>();
         public MapNodeWrapper root;
-        private Pattern NON_WHITE_SPACE = Pattern.compile("\\S");
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
