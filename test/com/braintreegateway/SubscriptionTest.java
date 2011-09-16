@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
 
+import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -1590,14 +1591,14 @@ public class SubscriptionTest {
     @Test
     public void unrecognizedStatus() {
         String xml = "<subscription><status>foobar</status></subscription>";
-        Subscription transaction = new Subscription(new NodeWrapper(xml));
+        Subscription transaction = new Subscription(NodeWrapperFactory.instance.create(xml));
         Assert.assertEquals(Subscription.Status.UNRECOGNIZED, transaction.getStatus());
     }
 
     @Test
     public void unrecognizedDurationUnit() {
         String xml = "<subscription><trial-duration-unit>foobar</trial-duration-unit></subscription>";
-        Subscription transaction = new Subscription(new NodeWrapper(xml));
+        Subscription transaction = new Subscription(NodeWrapperFactory.instance.create(xml));
         Assert.assertEquals(Subscription.DurationUnit.UNRECOGNIZED, transaction.getTrialDurationUnit());
     }
 

@@ -1,5 +1,6 @@
 package com.braintreegateway;
 
+import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Assert;
 
 import org.junit.Test;
@@ -27,7 +28,7 @@ public class CreditCardVerificationTest {
         builder.append("  </errors>");
         builder.append("</api-error-response>");
 
-        NodeWrapper verificationNode = (new NodeWrapper(builder.toString())).findFirst("verification");
+        NodeWrapper verificationNode = (NodeWrapperFactory.instance.create(builder.toString())).findFirst("verification");
         CreditCardVerification verification = new CreditCardVerification(verificationNode);
         Assert.assertEquals(null, verification.getAvsErrorResponseCode());
         Assert.assertEquals("I", verification.getAvsPostalCodeResponseCode());
