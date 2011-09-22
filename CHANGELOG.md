@@ -1,3 +1,7 @@
+## 2.12.1
+
+* Update README to include Maven repository documentation
+
 ## 2.12.0
 
 * Implemented new NodeWrapper (SimpleNodeWrapper) that is much faster than the previous xpath implementation.
