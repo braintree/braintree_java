@@ -1,7 +1,6 @@
 ## 2.12.0
 
 * Implemented new NodeWrapper (SimpleNodeWrapper) that is much faster than the previous xpath implementation.
-* Introduced maven repo
 
 ## 2.11.1
 
