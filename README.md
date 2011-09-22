@@ -53,6 +53,24 @@ The Braintree library provides integration access to the Braintree Gateway.
 
  * [Official documentation](http://www.braintreepayments.com/docs/java)
 
+## Maven
+
+### In repositories:
+
+     <repository>
+       <id>braintree</id>
+       <name>Braintree</name>
+       <url>http://braintree.github.com/braintree_java/releases</url>
+     </repository>
+
+### In dependencies
+
+    <dependency>
+      <groupId>com.braintreegateway</groupId>
+      <artifactId>braintree-java</artifactId>
+      <version>PUT VERSION NUMBER HERE</version>
+    </dependency>
+
 ## License
 
 See the LICENSE file.

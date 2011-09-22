@@ -65,7 +65,7 @@ def version
 end
 
 namespace :maven do
-  def mvn_cmd
+  def mvn_cmd(version, jar_name)
     cmd = "mvn org.apache.maven.plugins:maven-install-plugin:2.3.1:install-file"
     cmd << " -Dfile=\"#{jar_name}\""
     cmd << " -DgroupId=com.braintreegateway"
@@ -81,12 +81,15 @@ namespace :maven do
   task :release => %w{jar} do
     raise "ERROR!!! You must be in release branch to release to maven" unless `git branch`.include?("* release")
     begin
+      jar_version = version
+      jar_file_name = jar_name
       system "git checkout gh-pages"
       raise "ERROR!!! failed to checkout gh-pages branch" unless `git branch`.include?("* gh-pages")
       system "git pull"
-      puts "Releasing jar: #{jar_name} ******************"
-      system mvn_cmd
-      system "git commit -am 'adding #{jar_name} to maven releases'"
+      puts "Releasing jar: #{jar_file_name} ******************"
+      system mvn_cmd(jar_version, jar_file_name)
+      system "git add releases"
+      system "git commit -am 'adding #{jar_file_name} to maven releases'"
       system "git push github gh-pages"
     ensure
       system "git checkout release"
