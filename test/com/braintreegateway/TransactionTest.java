@@ -161,8 +161,6 @@ public class TransactionTest {
 
         Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_CLONE_CREDIT, 
                 cloneResult.getErrors().forObject("transaction").onField("base").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_OPTIONS_SUBMIT_FOR_SETTLEMENT_IS_REQUIRED_FOR_CLONING,
-                cloneResult.getErrors().forObject("transaction").onField("submitForSettlement").get(0).getCode());
     }
 
     @Test
