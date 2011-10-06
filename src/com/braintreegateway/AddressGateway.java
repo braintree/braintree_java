@@ -1,5 +1,6 @@
 package com.braintreegateway;
 
+import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
@@ -50,6 +51,9 @@ public class AddressGateway {
      * @return the {@link Address} or raises a {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Address find(String customerId, String id) {
+        if(customerId == null || customerId.trim().equals("") || id == null || id.trim().equals(""))
+            throw new NotFoundException();
+
         return new Address(http.get("/customers/" + customerId + "/addresses/" + id));
     }
 

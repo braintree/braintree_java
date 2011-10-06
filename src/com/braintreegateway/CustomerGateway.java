@@ -3,6 +3,7 @@ package com.braintreegateway;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
@@ -92,6 +93,9 @@ public class CustomerGateway {
      *         {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Customer find(String id) {
+        if(id == null || id.trim().equals(""))
+            throw new NotFoundException();
+
         return new Customer(http.get("/customers/" + id));
     }
 

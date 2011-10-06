@@ -1052,6 +1052,11 @@ public class TransactionTest {
         gateway.transaction().find("badId");
     }
 
+    @Test(expected = NotFoundException.class)
+    public void findWithWhitespaceId() {
+        gateway.transaction().find(" ");
+    }
+
     @Test
     public void voidVoidsTheTransaction() {
         TransactionRequest request = new TransactionRequest().

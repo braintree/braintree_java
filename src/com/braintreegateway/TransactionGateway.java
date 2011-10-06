@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.braintreegateway.Transaction.Type;
+import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.TrUtil;
@@ -73,6 +74,8 @@ public class TransactionGateway {
      * @return the {@link Transaction} or raises a {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Transaction find(String id) {
+        if(id == null || id.trim().equals(""))
+            throw new NotFoundException();
         return new Transaction(http.get("/transactions/" + id));
     }
 
