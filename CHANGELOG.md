@@ -1,3 +1,8 @@
+## 2.13.0
+
+* Added ability to retrieve all Plans, Addons, and Discounts
+* Added Transaction cloning
+
 ## 2.12.1
 
 * Update README to include Maven repository documentation

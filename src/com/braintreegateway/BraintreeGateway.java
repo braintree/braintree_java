@@ -46,7 +46,7 @@ import com.braintreegateway.util.TrUtil;
  */
 public class BraintreeGateway {
 
-    public static final String VERSION = "2.12.1";
+    public static final String VERSION = "2.13.0";
 
     private Configuration configuration;
     private Environment environment;
@@ -88,6 +88,14 @@ public class BraintreeGateway {
     }
 
     /**
+     * Returns an {@link AddOnGateway} for interacting with {@link AddOn} objects.
+     * @return an {@link AddOnGateway}.
+     */
+    public AddOnGateway addOn() {
+        return new AddOnGateway(http, configuration);
+    }
+
+    /**
      * Returns an {@link CreditCardGateway} for interacting with {@link CreditCard} objects.
      * @return an {@link CreditCardGateway}.
      */
@@ -101,6 +109,22 @@ public class BraintreeGateway {
      */
     public CustomerGateway customer() {
         return new CustomerGateway(http, configuration);
+    }
+
+    /**
+     * Returns an {@link DiscountGateway} for interacting with {@link Discount} objects.
+     * @return an {@link DiscountGateway}.
+     */
+    public DiscountGateway discount() {
+        return new DiscountGateway(http, configuration);
+    }
+
+    /**
+     * Returns an {@link PlanGateway} for interacting with {@link Plan} objects.
+     * @return an {@link PlanGateway}.
+     */
+    public PlanGateway plan() {
+        return new PlanGateway(http, configuration);
     }
 
     public String getAuthorizationHeader() {

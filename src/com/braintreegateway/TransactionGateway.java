@@ -32,6 +32,11 @@ public class TransactionGateway {
         this.configuration = configuration;
     }
 
+    public Result<Transaction> cloneTransaction(String id, TransactionCloneRequest request) {
+        NodeWrapper response = http.post("/transactions/" + id + "/clone", request);
+        return new Result<Transaction>(response, Transaction.class);
+    }
+    
     /**
      * Please use gateway.transparentRedirect().confirmTransaction() instead
      */

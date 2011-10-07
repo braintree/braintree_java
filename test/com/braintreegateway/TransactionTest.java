@@ -83,6 +83,85 @@ public class TransactionTest {
         String queryString = TestHelper.simulateFormPostForTR(gateway, new TransactionRequest(), new TransactionRequest(), gateway.transaction().transparentRedirectURLForCreate());
         gateway.transaction().confirmTransparentRedirect(queryString + "this make it invalid");
     }
+    
+    @Test
+    public void cloneTransaction() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            orderId("123").
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            customer().
+                firstName("Dan").
+                done().
+            billingAddress().
+                firstName("Carl").
+                done().
+            shippingAddress().
+                firstName("Andrew").
+                done();
+    
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+    
+        TransactionCloneRequest cloneRequest = new TransactionCloneRequest().amount(new BigDecimal("123.45")).options().submitForSettlement(false).done();
+        Result<Transaction> cloneResult = gateway.transaction().cloneTransaction(transaction.getId(), cloneRequest);
+        Assert.assertTrue(cloneResult.isSuccess());
+        Transaction cloneTransaction = result.getTarget();
+        
+        Assert.assertEquals("123", cloneTransaction.getOrderId());
+        Assert.assertEquals("411111******1111", cloneTransaction.getCreditCard().getMaskedNumber());
+        Assert.assertEquals("Dan", cloneTransaction.getCustomer().getFirstName());
+        Assert.assertEquals("Carl", cloneTransaction.getBillingAddress().getFirstName());
+        Assert.assertEquals("Andrew", cloneTransaction.getShippingAddress().getFirstName());
+    }
+
+    @Test
+    public void cloneTransactionAndSubmitForSettlement() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            orderId("123").
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        TransactionCloneRequest cloneRequest = new TransactionCloneRequest().amount(new BigDecimal("123.45")).options().submitForSettlement(true).done();
+        Result<Transaction> cloneResult = gateway.transaction().cloneTransaction(transaction.getId(), cloneRequest);
+        Assert.assertTrue(cloneResult.isSuccess());
+        Transaction cloneTransaction = cloneResult.getTarget();
+
+        Assert.assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, cloneTransaction.getStatus());
+    }
+
+    @Test
+    public void cloneTransactionWithValidationErrors() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+    
+        Result<Transaction> result = gateway.transaction().credit(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+    
+        TransactionCloneRequest cloneRequest = new TransactionCloneRequest().amount(new BigDecimal("123.45"));
+        Result<Transaction> cloneResult = gateway.transaction().cloneTransaction(transaction.getId(), cloneRequest);
+        Assert.assertFalse(cloneResult.isSuccess());
+        
+
+        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_CLONE_CREDIT, 
+                cloneResult.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
 
     @Test
     public void sale() {
@@ -2198,7 +2277,7 @@ public class TransactionTest {
 
         SubscriptionRequest request = new SubscriptionRequest().
             paymentMethodToken(creditCard.getToken()).
-            planId(Plan.PLAN_WITHOUT_TRIAL.getId()).
+            planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId()).
             addOns().
                 add().
                     amount(new BigDecimal("11.00")).
