@@ -657,6 +657,16 @@ public class CreditCardTest {
     }
 
     @Test
+    public void findWithEmptyIds() {
+        try {
+            gateway.creditCard().find(" ");
+            Assert.fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+        }
+    }
+
+
+    @Test
     public void delete() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().

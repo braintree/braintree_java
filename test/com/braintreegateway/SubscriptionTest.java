@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
 
+import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.org.apache.commons.codec.binary.StringUtils;
 import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Assert;
@@ -26,13 +27,13 @@ public class SubscriptionTest {
     private BraintreeGateway gateway;
     private Customer customer;
     private CreditCard creditCard;
-    
+
     @Before
     public void createGateway() {
         this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
         CustomerRequest request = new CustomerRequest();
         request.
-            creditCard().
+                creditCard().
                 cardholderName("Fred Jones").
                 number("5105105105105100").
                 expirationDate("05/12").
@@ -49,8 +50,8 @@ public class SubscriptionTest {
     public void createSimpleSubscriptionWithoutTrial() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertTrue(createResult.isSuccess());
@@ -92,8 +93,8 @@ public class SubscriptionTest {
     public void createReturnsTransactionWithSubscriptionBillingPeriod() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertTrue(createResult.isSuccess());
@@ -107,8 +108,8 @@ public class SubscriptionTest {
     public void createSimpleSubscriptionWithTrial() {
         Plan plan = PlanFixture.PLAN_WITH_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertTrue(createResult.isSuccess());
@@ -141,11 +142,11 @@ public class SubscriptionTest {
     public void overridePlanAddTrial() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            trialPeriod(true).
-            trialDuration(2).
-            trialDurationUnit(Subscription.DurationUnit.MONTH);
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                trialPeriod(true).
+                trialDuration(2).
+                trialDurationUnit(Subscription.DurationUnit.MONTH);
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertTrue(createResult.isSuccess());
@@ -160,9 +161,9 @@ public class SubscriptionTest {
     public void overridePlanRemoveTrial() {
         Plan plan = PlanFixture.PLAN_WITH_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            trialPeriod(false);
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                trialPeriod(false);
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertTrue(createResult.isSuccess());
@@ -175,9 +176,9 @@ public class SubscriptionTest {
     public void overridePlanPrice() {
         Plan plan = PlanFixture.PLAN_WITH_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            price(new BigDecimal("482.48"));
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                price(new BigDecimal("482.48"));
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertTrue(createResult.isSuccess());
@@ -190,16 +191,16 @@ public class SubscriptionTest {
     public void overridePlanNumberOfBillingCycles() {
         Plan plan = PlanFixture.PLAN_WITH_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId());
 
         Subscription subscription = gateway.subscription().create(request).getTarget();
         Assert.assertEquals(plan.getNumberOfBillingCycles(), subscription.getNumberOfBillingCycles());
 
         SubscriptionRequest overrideRequest = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            numberOfBillingCycles(10);
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                numberOfBillingCycles(10);
 
         Subscription overriddenSubsription = gateway.subscription().create(overrideRequest).getTarget();
         Assert.assertEquals(new Integer(10), overriddenSubsription.getNumberOfBillingCycles());
@@ -210,9 +211,9 @@ public class SubscriptionTest {
     public void setNeverExpires() {
         Plan plan = PlanFixture.PLAN_WITH_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            neverExpires(true);
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                neverExpires(true);
 
         Subscription subscription = gateway.subscription().create(request).getTarget();
         Assert.assertNull(subscription.getNumberOfBillingCycles());
@@ -223,14 +224,14 @@ public class SubscriptionTest {
     public void setNumberOfBillingCyclesAndUpdateToNeverExpire() {
         Plan plan = PlanFixture.PLAN_WITH_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            numberOfBillingCycles(10);
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                numberOfBillingCycles(10);
 
         Subscription subscription = gateway.subscription().create(request).getTarget();
 
         SubscriptionRequest updateRequest = new SubscriptionRequest().
-            neverExpires(true);
+                neverExpires(true);
 
         Subscription updatedSubscription = gateway.subscription().update(subscription.getId(), updateRequest).getTarget();
 
@@ -241,14 +242,14 @@ public class SubscriptionTest {
     public void setNumberOfBillingCyclesAndUpdate() {
         Plan plan = PlanFixture.PLAN_WITH_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            numberOfBillingCycles(10);
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                numberOfBillingCycles(10);
 
         Subscription subscription = gateway.subscription().create(request).getTarget();
 
         SubscriptionRequest updateRequest = new SubscriptionRequest().
-            numberOfBillingCycles(14);
+                numberOfBillingCycles(14);
 
         Subscription updatedSubscription = gateway.subscription().update(subscription.getId(), updateRequest).getTarget();
 
@@ -258,8 +259,8 @@ public class SubscriptionTest {
     @Test
     public void inheritBillingDayOfMonth() {
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.BILLING_DAY_OF_MONTH_PLAN.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.BILLING_DAY_OF_MONTH_PLAN.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertTrue(createResult.isSuccess());
@@ -271,9 +272,9 @@ public class SubscriptionTest {
     @Test
     public void overrideBillingDayOfMonth() {
         SubscriptionRequest request = new SubscriptionRequest().
-            billingDayOfMonth(19).
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.BILLING_DAY_OF_MONTH_PLAN.getId());
+                billingDayOfMonth(19).
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.BILLING_DAY_OF_MONTH_PLAN.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertTrue(createResult.isSuccess());
@@ -285,9 +286,9 @@ public class SubscriptionTest {
     @Test
     public void overrideBillingDayOfMonthWithStartImmediately() {
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.BILLING_DAY_OF_MONTH_PLAN.getId()).
-            options().
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.BILLING_DAY_OF_MONTH_PLAN.getId()).
+                options().
                 startImmediately(true).
                 done();
 
@@ -305,9 +306,9 @@ public class SubscriptionTest {
         firstBillingDate.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.BILLING_DAY_OF_MONTH_PLAN.getId()).
-            firstBillingDate(firstBillingDate);
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.BILLING_DAY_OF_MONTH_PLAN.getId()).
+                firstBillingDate(firstBillingDate);
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertTrue(createResult.isSuccess());
@@ -323,9 +324,9 @@ public class SubscriptionTest {
         firstBillingDate.add(Calendar.DAY_OF_MONTH, -3);
 
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.BILLING_DAY_OF_MONTH_PLAN.getId()).
-            firstBillingDate(firstBillingDate);
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.BILLING_DAY_OF_MONTH_PLAN.getId()).
+                firstBillingDate(firstBillingDate);
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertFalse(createResult.isSuccess());
@@ -339,10 +340,10 @@ public class SubscriptionTest {
         Plan plan = PlanFixture.PLAN_WITH_TRIAL;
         String newId = "new-id-" + new Random().nextInt();
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            price(new BigDecimal("482.48")).
-            id(newId);
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                price(new BigDecimal("482.48")).
+                id(newId);
 
 
         Result<Subscription> createResult = gateway.subscription().create(request);
@@ -356,10 +357,10 @@ public class SubscriptionTest {
     public void setMerchantAccountId() {
         Plan plan = PlanFixture.PLAN_WITH_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            price(new BigDecimal("482.48")).
-            merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID);
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                price(new BigDecimal("482.48")).
+                merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID);
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertTrue(createResult.isSuccess());
@@ -372,9 +373,9 @@ public class SubscriptionTest {
     public void hasTransactionOnCreateWithNoTrial() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            price(new BigDecimal("482.48"));
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                price(new BigDecimal("482.48"));
 
 
         Result<Subscription> createResult = gateway.subscription().create(request);
@@ -392,9 +393,9 @@ public class SubscriptionTest {
     public void hasTransactionOnCreateWhenTransactionFails() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            price(SandboxValues.TransactionAmount.DECLINE.amount);
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                price(SandboxValues.TransactionAmount.DECLINE.amount);
 
         Result<Subscription> result = gateway.subscription().create(request);
         Assert.assertFalse(result.isSuccess());
@@ -405,8 +406,8 @@ public class SubscriptionTest {
     public void hasNoTransactionOnCreateWithATrial() {
         Plan plan = PlanFixture.PLAN_WITH_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId());
 
 
         Result<Subscription> createResult = gateway.subscription().create(request);
@@ -420,9 +421,9 @@ public class SubscriptionTest {
     public void createInheritsNoAddOnsAndDiscountsWhenOptionIsPassed() {
         Plan plan = PlanFixture.ADD_ON_DISCOUNT_PLAN;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            options().
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                options().
                 doNotInheritAddOnsOrDiscounts(true).
                 done();
 
@@ -438,8 +439,8 @@ public class SubscriptionTest {
     public void createInheritsAddOnsAndDiscountsFromPlan() {
         Plan plan = PlanFixture.ADD_ON_DISCOUNT_PLAN;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId());
 
         Result<Subscription> result = gateway.subscription().create(request);
         Assert.assertTrue(result.isSuccess());
@@ -484,26 +485,26 @@ public class SubscriptionTest {
     public void createOverridesInheritedAddOnsAndDiscounts() {
         Plan plan = PlanFixture.ADD_ON_DISCOUNT_PLAN;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            addOns().
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                addOns().
                 update("increase_10").
-                    amount(new BigDecimal("30.00")).
-                    numberOfBillingCycles(3).
-                    quantity(9).
-                    done().
-                update("increase_20").
-                    amount(new BigDecimal("40.00")).
-                    done().
+                amount(new BigDecimal("30.00")).
+                numberOfBillingCycles(3).
+                quantity(9).
                 done().
-            discounts().
+                update("increase_20").
+                amount(new BigDecimal("40.00")).
+                done().
+                done().
+                discounts().
                 update("discount_7").
-                    amount(new BigDecimal("15.00")).
-                    neverExpires(true).
-                    done().
+                amount(new BigDecimal("15.00")).
+                neverExpires(true).
+                done().
                 update("discount_11").
-                    amount(new BigDecimal("23.00")).
-                    done().
+                amount(new BigDecimal("23.00")).
+                done().
                 done();
 
         Result<Subscription> result = gateway.subscription().create(request);
@@ -545,12 +546,12 @@ public class SubscriptionTest {
     public void createRemovesInheritedAddOnsAndDiscounts() {
         Plan plan = PlanFixture.ADD_ON_DISCOUNT_PLAN;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            addOns().
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                addOns().
                 remove("increase_10", "increase_20").
                 done().
-            discounts().
+                discounts().
                 remove("discount_7", "discount_11").
                 done();
 
@@ -566,12 +567,12 @@ public class SubscriptionTest {
     public void createRemovesInheritedAddOnsAndDiscountsWithListsOrChaining() {
         Plan plan = PlanFixture.ADD_ON_DISCOUNT_PLAN;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            addOns().
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                addOns().
                 remove(Arrays.asList("increase_10", "increase_20")).
                 done().
-            discounts().
+                discounts().
                 remove("discount_7").
                 remove("discount_11").
                 done();
@@ -588,27 +589,27 @@ public class SubscriptionTest {
     public void createAddsNewAddOnsAndDiscounts() {
         Plan plan = PlanFixture.ADD_ON_DISCOUNT_PLAN;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            addOns().
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                addOns().
                 remove("increase_10", "increase_20").
                 add().
-                    inheritedFromId("increase_30").
-                    amount(new BigDecimal("40.00")).
-                    neverExpires(false).
-                    numberOfBillingCycles(6).
-                    quantity(3).
-                    done().
+                inheritedFromId("increase_30").
+                amount(new BigDecimal("40.00")).
+                neverExpires(false).
+                numberOfBillingCycles(6).
+                quantity(3).
                 done().
-            discounts().
+                done().
+                discounts().
                 remove("discount_7", "discount_11").
                 add().
-                    inheritedFromId("discount_15").
-                    amount(new BigDecimal("17.00")).
-                    neverExpires(true).
-                    numberOfBillingCycles(null).
-                    quantity(2).
-                    done().
+                inheritedFromId("discount_15").
+                amount(new BigDecimal("17.00")).
+                neverExpires(true).
+                numberOfBillingCycles(null).
+                quantity(2).
+                done().
                 done();
 
         Result<Subscription> result = gateway.subscription().create(request);
@@ -634,32 +635,32 @@ public class SubscriptionTest {
     public void createWithBadQuantityCorrectlyParsesValidationErrors() {
         Plan plan = PlanFixture.ADD_ON_DISCOUNT_PLAN;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            addOns().
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                addOns().
                 update("addon_7").
-                    amount(new BigDecimal("-15")).
-                    done().
+                amount(new BigDecimal("-15")).
+                done().
                 update("discount_7").
-                    quantity(-10).
-                    done().
+                quantity(-10).
+                done().
                 done();
 
         Result<Subscription> result = gateway.subscription().create(request);
         Assert.assertFalse(result.isSuccess());
 
         Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_MODIFICATION_AMOUNT_IS_INVALID,
-            result.getErrors().forObject("subscription").forObject("addOns").forObject("update").forIndex(0).onField("amount").get(0).getCode());
+                result.getErrors().forObject("subscription").forObject("addOns").forObject("update").forIndex(0).onField("amount").get(0).getCode());
         Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_MODIFICATION_QUANTITY_IS_INVALID,
-            result.getErrors().forObject("subscription").forObject("addOns").forObject("update").forIndex(1).onField("quantity").get(0).getCode());
+                result.getErrors().forObject("subscription").forObject("addOns").forObject("update").forIndex(1).onField("quantity").get(0).getCode());
     }
 
     @Test
     public void find() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest createRequest = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
         Assert.assertTrue(createResult.isSuccess());
@@ -672,18 +673,28 @@ public class SubscriptionTest {
     }
 
     @Test
+    public void findWithEmptyIds() {
+        try {
+            gateway.subscription().find(" ");
+            Assert.fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+        }
+
+    }
+
+    @Test
     public void updateId() {
         String oldId = "old-id-" + new Random().nextInt();
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest createRequest = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            id(oldId);
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                id(oldId);
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
         Assert.assertTrue(createResult.isSuccess());
 
-        String newId ="new-id-" + new Random().nextInt();
+        String newId = "new-id-" + new Random().nextInt();
         SubscriptionRequest updateRequest = new SubscriptionRequest().id(newId);
         Result<Subscription> result = gateway.subscription().update(oldId, updateRequest);
 
@@ -698,14 +709,14 @@ public class SubscriptionTest {
     public void updateMerchantAccountId() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest createRequest = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
         Assert.assertTrue(createResult.isSuccess());
 
         SubscriptionRequest updateRequest = new SubscriptionRequest()
-            .merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID);
+                .merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID);
         Result<Subscription> result = gateway.subscription().update(createResult.getTarget().getId(), updateRequest);
 
         Assert.assertTrue(result.isSuccess());
@@ -718,8 +729,8 @@ public class SubscriptionTest {
     public void updatePlan() {
         Plan originalPlan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest createRequest = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(originalPlan.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(originalPlan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
         Assert.assertTrue(createResult.isSuccess());
@@ -739,19 +750,19 @@ public class SubscriptionTest {
     public void updatePaymentMethod() {
         Plan originalPlan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest createRequest = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(originalPlan.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(originalPlan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
         Assert.assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
         CreditCardRequest request = new CreditCardRequest().
-            customerId(customer.getId()).
-            cardholderName("John Doe").
-            cvv("123").
-            number("5105105105105100").
-            expirationDate("05/12");
+                customerId(customer.getId()).
+                cardholderName("John Doe").
+                cvv("123").
+                number("5105105105105100").
+                expirationDate("05/12");
 
         CreditCard newCreditCard = gateway.creditCard().create(request).getTarget();
 
@@ -768,9 +779,9 @@ public class SubscriptionTest {
     public void createAProrationTransactionOnPriceIncreaseWhenFlagIsNotPassed() {
         Plan originalPlan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest createRequest = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(originalPlan.getId()).
-            price(new BigDecimal("1.23"));
+                paymentMethodToken(creditCard.getToken()).
+                planId(originalPlan.getId()).
+                price(new BigDecimal("1.23"));
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
         Assert.assertTrue(createResult.isSuccess());
@@ -790,19 +801,19 @@ public class SubscriptionTest {
     public void createAProrationTransactionOnPriceIncreaseWhenProrationFlagIsTrue() {
         Plan originalPlan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest createRequest = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(originalPlan.getId()).
-            price(new BigDecimal("1.23"));
+                paymentMethodToken(creditCard.getToken()).
+                planId(originalPlan.getId()).
+                price(new BigDecimal("1.23"));
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
         Assert.assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
         SubscriptionRequest updateRequest = new SubscriptionRequest().
-        price(new BigDecimal("4.56")).
-        options().
-            prorateCharges(true).
-            done();
+                price(new BigDecimal("4.56")).
+                options().
+                prorateCharges(true).
+                done();
         Result<Subscription> result = gateway.subscription().update(subscription.getId(), updateRequest);
 
         Assert.assertTrue(result.isSuccess());
@@ -816,17 +827,17 @@ public class SubscriptionTest {
     public void doNotCreateAProrationTransactionOnPriceIncreaseWhenProrationFlagIsFalse() {
         Plan originalPlan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest createRequest = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(originalPlan.getId()).
-            price(new BigDecimal("1.23"));
+                paymentMethodToken(creditCard.getToken()).
+                planId(originalPlan.getId()).
+                price(new BigDecimal("1.23"));
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
         Assert.assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
         SubscriptionRequest updateRequest = new SubscriptionRequest().
-            price(new BigDecimal("4.56")).
-            options().
+                price(new BigDecimal("4.56")).
+                options().
                 prorateCharges(false).
                 done();
         Result<Subscription> result = gateway.subscription().update(subscription.getId(), updateRequest);
@@ -842,17 +853,17 @@ public class SubscriptionTest {
     public void doNotUpdateIfReverting() {
         Plan originalPlan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest createRequest = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(originalPlan.getId()).
-            price(new BigDecimal("1.23"));
+                paymentMethodToken(creditCard.getToken()).
+                planId(originalPlan.getId()).
+                price(new BigDecimal("1.23"));
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
         Assert.assertTrue(createResult.isSuccess());
         Subscription createdSubscription = createResult.getTarget();
 
         SubscriptionRequest updateRequest = new SubscriptionRequest().
-            price(new BigDecimal("2100")).
-            options().
+                price(new BigDecimal("2100")).
+                options().
                 prorateCharges(true).
                 revertSubscriptionOnProrationFailure(true).
                 done();
@@ -872,17 +883,17 @@ public class SubscriptionTest {
     public void UpdateIfNotReverting() {
         Plan originalPlan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest createRequest = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(originalPlan.getId()).
-            price(new BigDecimal("1.23"));
+                paymentMethodToken(creditCard.getToken()).
+                planId(originalPlan.getId()).
+                price(new BigDecimal("1.23"));
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
         Assert.assertTrue(createResult.isSuccess());
         Subscription createdSubscription = createResult.getTarget();
 
         SubscriptionRequest updateRequest = new SubscriptionRequest().
-            price(new BigDecimal("2100")).
-            options().
+                price(new BigDecimal("2100")).
+                options().
                 prorateCharges(true).
                 revertSubscriptionOnProrationFailure(false).
                 done();
@@ -901,8 +912,8 @@ public class SubscriptionTest {
     public void dontIncreasePriceAndDontAddTransaction() {
         Plan originalPlan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest createRequest = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(originalPlan.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(originalPlan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
         Assert.assertTrue(createResult.isSuccess());
@@ -922,32 +933,32 @@ public class SubscriptionTest {
     public void updateAddOnsAndDiscounts() {
         Plan plan = PlanFixture.ADD_ON_DISCOUNT_PLAN;
         SubscriptionRequest createRequest = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId());
         Subscription subscription = gateway.subscription().create(createRequest).getTarget();
 
         SubscriptionRequest request = new SubscriptionRequest().
-            addOns().
+                addOns().
                 update("increase_10").
-                    amount(new BigDecimal("30.00")).
-                    quantity(9).
-                    done().
+                amount(new BigDecimal("30.00")).
+                quantity(9).
+                done().
                 remove("increase_20").
                 add().
-                    inheritedFromId("increase_30").
-                    amount(new BigDecimal("31.00")).
-                    quantity(7).
-                    done().
+                inheritedFromId("increase_30").
+                amount(new BigDecimal("31.00")).
+                quantity(7).
                 done().
-            discounts().
+                done().
+                discounts().
                 update("discount_7").
-                    amount(new BigDecimal("15.00")).
-                    done().
+                amount(new BigDecimal("15.00")).
+                done().
                 remove("discount_11").
                 add().
-                    inheritedFromId("discount_15").
-                    amount(new BigDecimal("23.00")).
-                    done().
+                inheritedFromId("discount_15").
+                amount(new BigDecimal("23.00")).
+                done().
                 done();
 
         Result<Subscription> result = gateway.subscription().update(subscription.getId(), request);
@@ -983,22 +994,22 @@ public class SubscriptionTest {
     public void updateCanReplaceAllAddOnsAndDiscounts() {
         Plan plan = PlanFixture.ADD_ON_DISCOUNT_PLAN;
         SubscriptionRequest createRequest = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId());
         Subscription subscription = gateway.subscription().create(createRequest).getTarget();
 
         SubscriptionRequest request = new SubscriptionRequest().
-            addOns().
+                addOns().
                 add().
-                    inheritedFromId("increase_30").
-                    done().
+                inheritedFromId("increase_30").
                 done().
-            discounts().
+                done().
+                discounts().
                 add().
-                    inheritedFromId("discount_15").
-                    done().
+                inheritedFromId("discount_15").
                 done().
-            options().
+                done().
+                options().
                 replaceAllAddOnsAndDiscounts(true).
                 done();
 
@@ -1014,10 +1025,10 @@ public class SubscriptionTest {
     public void updateWithDescriptor() {
         Plan plan = PlanFixture.PLAN_WITH_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            numberOfBillingCycles(10).
-            descriptor().
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                numberOfBillingCycles(10).
+                descriptor().
                 name("123*123456789012345678").
                 phone("1234567890").
                 done();
@@ -1025,7 +1036,7 @@ public class SubscriptionTest {
         Subscription subscription = gateway.subscription().create(request).getTarget();
 
         SubscriptionRequest updateRequest = new SubscriptionRequest().
-            descriptor().
+                descriptor().
                 name("999*99").
                 phone("1234567891").
                 done();
@@ -1039,8 +1050,8 @@ public class SubscriptionTest {
     @Test
     public void createWithBadPlanId() {
         SubscriptionRequest createRequest = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId("noSuchPlanId");
+                paymentMethodToken(creditCard.getToken()).
+                planId("noSuchPlanId");
 
         Result<Subscription> result = gateway.subscription().create(createRequest);
         Assert.assertFalse(result.isSuccess());
@@ -1051,8 +1062,8 @@ public class SubscriptionTest {
     @Test
     public void createWithBadPaymentMethod() {
         SubscriptionRequest createRequest = new SubscriptionRequest().
-            paymentMethodToken("invalidToken").
-            planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId());
+                paymentMethodToken("invalidToken").
+                planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId());
 
         Result<Subscription> result = gateway.subscription().create(createRequest);
         Assert.assertFalse(result.isSuccess());
@@ -1064,9 +1075,9 @@ public class SubscriptionTest {
     public void createWithDescriptor() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            descriptor().
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                descriptor().
                 name("123*123456789012345678").
                 phone("3334445555").
                 done();
@@ -1086,7 +1097,7 @@ public class SubscriptionTest {
     @Test
     public void createWithDescriptorValidation() {
         SubscriptionRequest request = new SubscriptionRequest().
-            descriptor().
+                descriptor().
                 name("xxxx").
                 phone("xxx").
                 done();
@@ -1095,19 +1106,19 @@ public class SubscriptionTest {
         Assert.assertFalse(result.isSuccess());
 
         Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_NAME_FORMAT_IS_INVALID,
-            result.getErrors().forObject("subscription").forObject("descriptor").onField("name").get(0).getCode());
+                result.getErrors().forObject("subscription").forObject("descriptor").onField("name").get(0).getCode());
 
         Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_PHONE_FORMAT_IS_INVALID,
-            result.getErrors().forObject("subscription").forObject("descriptor").onField("phone").get(0).getCode());
+                result.getErrors().forObject("subscription").forObject("descriptor").onField("phone").get(0).getCode());
     }
 
     @Test
     public void validationErrorsOnCreate() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            id("invalid id");
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                id("invalid id");
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertFalse(createResult.isSuccess());
@@ -1120,8 +1131,8 @@ public class SubscriptionTest {
     public void validationErrorsOnUpdate() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertTrue(createResult.isSuccess());
@@ -1137,13 +1148,14 @@ public class SubscriptionTest {
 
 
     }
+
     @Test
     public void getParamsOnError() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            id("invalid id");
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                id("invalid id");
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         Assert.assertFalse(createResult.isSuccess());
@@ -1157,8 +1169,8 @@ public class SubscriptionTest {
     public void cancel() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         Result<Subscription> cancelResult = gateway.subscription().cancel(createResult.getTarget().getId());
@@ -1171,22 +1183,22 @@ public class SubscriptionTest {
     @Test
     public void searchOnBillingCyclesRemaining() {
         SubscriptionRequest request12 = new SubscriptionRequest().
-            numberOfBillingCycles(12).
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
-            price(new BigDecimal(5));
+                numberOfBillingCycles(12).
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
+                price(new BigDecimal(5));
         Subscription subscription12 = gateway.subscription().create(request12).getTarget();
 
         SubscriptionRequest request11 = new SubscriptionRequest().
-            numberOfBillingCycles(11).
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
-            price(new BigDecimal(5));
+                numberOfBillingCycles(11).
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
+                price(new BigDecimal(5));
         Subscription subscription11 = gateway.subscription().create(request11).getTarget();
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            billingCyclesRemaining().is(12).
-            price().is(new BigDecimal(5));
+                billingCyclesRemaining().is(12).
+                price().is(new BigDecimal(5));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription12));
@@ -1196,15 +1208,15 @@ public class SubscriptionTest {
     @Test
     public void searchOnDaysPastDue() {
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITH_TRIAL.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITH_TRIAL.getId());
 
         Subscription subscription = gateway.subscription().create(request).getTarget();
 
         makePastDue(subscription, 3);
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            daysPastDue().between(2, 10);
+                daysPastDue().between(2, 10);
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
 
         Assert.assertTrue(results.getMaximumSize() > 0);
@@ -1217,22 +1229,22 @@ public class SubscriptionTest {
     public void searchOnIdIs() {
         Random rand = new Random();
         SubscriptionRequest request1 = new SubscriptionRequest().
-            id("find_me" + rand.nextInt()).
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
-            price(new BigDecimal(2));
+                id("find_me" + rand.nextInt()).
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
+                price(new BigDecimal(2));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
 
         SubscriptionRequest request2 = new SubscriptionRequest().
-            id("do_not_find_me" + rand.nextInt()).
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
-            price(new BigDecimal(2));
+                id("do_not_find_me" + rand.nextInt()).
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
+                price(new BigDecimal(2));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            id().startsWith("find_me").
-            price().is(new BigDecimal(2));
+                id().startsWith("find_me").
+                price().is(new BigDecimal(2));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1243,28 +1255,28 @@ public class SubscriptionTest {
     public void searchOnInTrialPeriod() {
         Random rand = new Random();
         SubscriptionRequest request1 = new SubscriptionRequest().
-            id("find_me" + rand.nextInt()).
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
-            price(new BigDecimal(2));
+                id("find_me" + rand.nextInt()).
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
+                price(new BigDecimal(2));
         Subscription subscriptionWithTrial = gateway.subscription().create(request1).getTarget();
 
         SubscriptionRequest request2 = new SubscriptionRequest().
-            id("do_not_find_me" + rand.nextInt()).
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId()).
-            price(new BigDecimal(2));
+                id("do_not_find_me" + rand.nextInt()).
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId()).
+                price(new BigDecimal(2));
         Subscription subscriptionWithoutTrial = gateway.subscription().create(request2).getTarget();
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            inTrialPeriod().is(true);
+                inTrialPeriod().is(true);
 
         ResourceCollection<Subscription> subscriptionsWithTrialPeriods = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(subscriptionsWithTrialPeriods, subscriptionWithTrial));
         Assert.assertFalse(TestHelper.includesSubscription(subscriptionsWithTrialPeriods, subscriptionWithoutTrial));
 
         search = new SubscriptionSearchRequest().
-            inTrialPeriod().is(false);
+                inTrialPeriod().is(false);
 
         ResourceCollection<Subscription> subscriptionsWithoutTrialPeriods = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(subscriptionsWithoutTrialPeriods, subscriptionWithoutTrial));
@@ -1274,22 +1286,22 @@ public class SubscriptionTest {
     @Test
     public void searchOnMerchantAccountIdIs() {
         SubscriptionRequest request1 = new SubscriptionRequest().
-            merchantAccountId(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID).
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
-            price(new BigDecimal(3));
+                merchantAccountId(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID).
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
+                price(new BigDecimal(3));
         Subscription subscriptionDefaultMerchantAccount = gateway.subscription().create(request1).getTarget();
 
         SubscriptionRequest request2 = new SubscriptionRequest().
-            merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
-            price(new BigDecimal(3));
+                merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
+                price(new BigDecimal(3));
         Subscription subscriptionNonDefaultMerchantAccount = gateway.subscription().create(request2).getTarget();
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            merchantAccountId().is(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
-            price().is(new BigDecimal(3));
+                merchantAccountId().is(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                price().is(new BigDecimal(3));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscriptionNonDefaultMerchantAccount));
@@ -1299,12 +1311,12 @@ public class SubscriptionTest {
     @Test
     public void searchOnNextBillingDate() {
         SubscriptionRequest request1 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITH_TRIAL.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITH_TRIAL.getId());
 
         SubscriptionRequest request2 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId());
 
         Subscription trialSubscription = gateway.subscription().create(request1).getTarget();
         Subscription triallessSubscription = gateway.subscription().create(request2).getTarget();
@@ -1313,7 +1325,7 @@ public class SubscriptionTest {
         expectedNextBillingDate.add(Calendar.DAY_OF_MONTH, 5);
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            nextBillingDate().greaterThanOrEqualTo(expectedNextBillingDate);
+                nextBillingDate().greaterThanOrEqualTo(expectedNextBillingDate);
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
 
         Assert.assertTrue(TestHelper.includesSubscription(results, triallessSubscription));
@@ -1325,20 +1337,20 @@ public class SubscriptionTest {
         Plan trialPlan = PlanFixture.PLAN_WITH_TRIAL;
         Plan triallessPlan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId()).
-            price(new BigDecimal(7));
+                paymentMethodToken(creditCard.getToken()).
+                planId(trialPlan.getId()).
+                price(new BigDecimal(7));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
 
         SubscriptionRequest request2 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(triallessPlan.getId()).
-            price(new BigDecimal(7));
+                paymentMethodToken(creditCard.getToken()).
+                planId(triallessPlan.getId()).
+                price(new BigDecimal(7));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            planId().is(trialPlan.getId()).
-            price().is(new BigDecimal(7));
+                planId().is(trialPlan.getId()).
+                price().is(new BigDecimal(7));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1350,20 +1362,20 @@ public class SubscriptionTest {
         Plan trialPlan = PlanFixture.PLAN_WITH_TRIAL;
         Plan triallessPlan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId()).
-            price(new BigDecimal(8));
+                paymentMethodToken(creditCard.getToken()).
+                planId(trialPlan.getId()).
+                price(new BigDecimal(8));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
 
         SubscriptionRequest request2 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(triallessPlan.getId()).
-            price(new BigDecimal(8));
+                paymentMethodToken(creditCard.getToken()).
+                planId(triallessPlan.getId()).
+                price(new BigDecimal(8));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            planId().isNot(trialPlan.getId()).
-            price().is(new BigDecimal(8));
+                planId().isNot(trialPlan.getId()).
+                price().is(new BigDecimal(8));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription2));
@@ -1375,20 +1387,20 @@ public class SubscriptionTest {
         Plan trialPlan = PlanFixture.PLAN_WITH_TRIAL;
         Plan triallessPlan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId()).
-            price(new BigDecimal(9));
+                paymentMethodToken(creditCard.getToken()).
+                planId(trialPlan.getId()).
+                price(new BigDecimal(9));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
 
         SubscriptionRequest request2 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(triallessPlan.getId()).
-            price(new BigDecimal(9));
+                paymentMethodToken(creditCard.getToken()).
+                planId(triallessPlan.getId()).
+                price(new BigDecimal(9));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            planId().endsWith("trial_plan").
-            price().is(new BigDecimal(9));
+                planId().endsWith("trial_plan").
+                price().is(new BigDecimal(9));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1400,20 +1412,20 @@ public class SubscriptionTest {
         Plan trialPlan = PlanFixture.PLAN_WITH_TRIAL;
         Plan triallessPlan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId()).
-            price(new BigDecimal(10));
+                paymentMethodToken(creditCard.getToken()).
+                planId(trialPlan.getId()).
+                price(new BigDecimal(10));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
 
         SubscriptionRequest request2 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(triallessPlan.getId()).
-            price(new BigDecimal(10));
+                paymentMethodToken(creditCard.getToken()).
+                planId(triallessPlan.getId()).
+                price(new BigDecimal(10));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            planId().startsWith("integration_trial_p").
-            price().is(new BigDecimal(10));
+                planId().startsWith("integration_trial_p").
+                price().is(new BigDecimal(10));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1425,20 +1437,20 @@ public class SubscriptionTest {
         Plan trialPlan = PlanFixture.PLAN_WITH_TRIAL;
         Plan triallessPlan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId()).
-            price(new BigDecimal(11));
+                paymentMethodToken(creditCard.getToken()).
+                planId(trialPlan.getId()).
+                price(new BigDecimal(11));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
 
         SubscriptionRequest request2 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(triallessPlan.getId()).
-            price(new BigDecimal(11));
+                paymentMethodToken(creditCard.getToken()).
+                planId(triallessPlan.getId()).
+                price(new BigDecimal(11));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            planId().contains("trial_p").
-            price().is(new BigDecimal(11));
+                planId().contains("trial_p").
+                price().is(new BigDecimal(11));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1448,26 +1460,26 @@ public class SubscriptionTest {
     @Test
     public void searchOnPlanIdIn() {
         SubscriptionRequest request1 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
-            price(new BigDecimal(6));
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
+                price(new BigDecimal(6));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
 
         SubscriptionRequest request2 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId()).
-            price(new BigDecimal(6));
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId()).
+                price(new BigDecimal(6));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
 
         SubscriptionRequest request3 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.ADD_ON_DISCOUNT_PLAN.getId()).
-            price(new BigDecimal(6));
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.ADD_ON_DISCOUNT_PLAN.getId()).
+                price(new BigDecimal(6));
         Subscription subscription3 = gateway.subscription().create(request3).getTarget();
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            planId().in(PlanFixture.PLAN_WITH_TRIAL.getId(), PlanFixture.PLAN_WITHOUT_TRIAL.getId()).
-            price().is(new BigDecimal(6));
+                planId().in(PlanFixture.PLAN_WITH_TRIAL.getId(), PlanFixture.PLAN_WITHOUT_TRIAL.getId()).
+                price().is(new BigDecimal(6));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1479,21 +1491,21 @@ public class SubscriptionTest {
     public void searchOnStatusIn() {
         Plan trialPlan = PlanFixture.PLAN_WITH_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId()).
-            price(new BigDecimal(12));
+                paymentMethodToken(creditCard.getToken()).
+                planId(trialPlan.getId()).
+                price(new BigDecimal(12));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
 
         SubscriptionRequest request2 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId()).
-            price(new BigDecimal(12));
+                paymentMethodToken(creditCard.getToken()).
+                planId(trialPlan.getId()).
+                price(new BigDecimal(12));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
         gateway.subscription().cancel(subscription2.getId());
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            status().in(Status.ACTIVE).
-            price().is(new BigDecimal(12));
+                status().in(Status.ACTIVE).
+                price().is(new BigDecimal(12));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1503,7 +1515,7 @@ public class SubscriptionTest {
     @Test
     public void searchOnStatusExpired() {
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            status().in(Status.EXPIRED);
+                status().in(Status.EXPIRED);
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
 
         Assert.assertTrue(results.getMaximumSize() > 0);
@@ -1516,15 +1528,15 @@ public class SubscriptionTest {
     public void searchOnStatusInWithMultipleStatusesAsList() {
         Plan trialPlan = PlanFixture.PLAN_WITH_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId()).
-            price(new BigDecimal(13));
+                paymentMethodToken(creditCard.getToken()).
+                planId(trialPlan.getId()).
+                price(new BigDecimal(13));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
 
         SubscriptionRequest request2 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId()).
-            price(new BigDecimal(13));
+                paymentMethodToken(creditCard.getToken()).
+                planId(trialPlan.getId()).
+                price(new BigDecimal(13));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
         gateway.subscription().cancel(subscription2.getId());
 
@@ -1533,8 +1545,8 @@ public class SubscriptionTest {
         statuses.add(Status.CANCELED);
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            status().in(statuses).
-            price().is(new BigDecimal(13));
+                status().in(statuses).
+                price().is(new BigDecimal(13));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1545,21 +1557,21 @@ public class SubscriptionTest {
     public void searchOnStatusInWithMultipleStatuses() {
         Plan trialPlan = PlanFixture.PLAN_WITH_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId()).
-            price(new BigDecimal(14));
+                paymentMethodToken(creditCard.getToken()).
+                planId(trialPlan.getId()).
+                price(new BigDecimal(14));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
 
         SubscriptionRequest request2 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(trialPlan.getId()).
-            price(new BigDecimal(14));
+                paymentMethodToken(creditCard.getToken()).
+                planId(trialPlan.getId()).
+                price(new BigDecimal(14));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
         gateway.subscription().cancel(subscription2.getId());
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            status().in(Status.ACTIVE, Status.CANCELED).
-            price().is(new BigDecimal(14));
+                status().in(Status.ACTIVE, Status.CANCELED).
+                price().is(new BigDecimal(14));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1570,19 +1582,19 @@ public class SubscriptionTest {
     public void searchOnTransactionId() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request1 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            price(new BigDecimal(14));
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                price(new BigDecimal(14));
         Subscription subscription1 = gateway.subscription().create(request1).getTarget();
 
         SubscriptionRequest request2 = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(plan.getId()).
-            price(new BigDecimal(14));
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
+                price(new BigDecimal(14));
         Subscription subscription2 = gateway.subscription().create(request2).getTarget();
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-            transactionId().is(subscription1.getTransactions().get(0).getId());
+                transactionId().is(subscription1.getTransactions().get(0).getId());
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
         Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
@@ -1606,8 +1618,8 @@ public class SubscriptionTest {
     @Test
     public void retryChargeWithAmount() {
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId());
 
         Subscription subscription = gateway.subscription().create(request).getTarget();
 
@@ -1628,8 +1640,8 @@ public class SubscriptionTest {
     @Test
     public void retryChargeWithoutAmount() {
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId());
 
         Subscription subscription = gateway.subscription().create(request).getTarget();
         makePastDue(subscription, 1);
@@ -1649,8 +1661,8 @@ public class SubscriptionTest {
     @Test
     public void pastDueSubscriptionReportsCorrectStatus() {
         SubscriptionRequest request = new SubscriptionRequest().
-            paymentMethodToken(creditCard.getToken()).
-            planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId());
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId());
 
         Subscription subscription = gateway.subscription().create(request).getTarget();
 

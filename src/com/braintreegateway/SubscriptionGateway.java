@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
@@ -59,6 +60,8 @@ public class SubscriptionGateway {
      * @return the {@link Subscription} or raises a {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Subscription find(String id) {
+        if(id == null || id.trim().equals(""))
+            throw new NotFoundException();
         return new Subscription(http.get("/subscriptions/" + id));
     }
 

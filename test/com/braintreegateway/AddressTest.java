@@ -111,6 +111,21 @@ public class AddressTest {
     }
 
     @Test
+    public void findWithEmptyIds() {
+        try {
+            gateway.address().find(" ", "address_id");
+            Assert.fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+        }
+
+        try {
+            gateway.address().find("customer_id", " ");
+            Assert.fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+        }
+    }
+
+    @Test
     public void delete() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         AddressRequest request = new AddressRequest().

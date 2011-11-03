@@ -354,6 +354,16 @@ public class CustomerTest {
         Customer foundCustomer = gateway.customer().find(customer.getId());
         Assert.assertEquals(customer.getId(), foundCustomer.getId());
     }
+    @Test
+    public void findWithEmptyIds() {
+        try {
+            gateway.customer().find(" ");
+            Assert.fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+        }
+
+    }
+
     
     @Test
     public void searchOnAllTextFields()

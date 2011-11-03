@@ -6,8 +6,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 
+import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 
 /**
  * Provides methods to create, delete, find, and update {@link CreditCard}
@@ -81,6 +83,9 @@ public class CreditCardGateway {
      *         {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public CreditCard find(String token) {
+        if(token.trim().equals("") || token == null)
+            throw new NotFoundException();
+
         return new CreditCard(http.get("/payment_methods/" + token));
     }
 
