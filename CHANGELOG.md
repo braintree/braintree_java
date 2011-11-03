@@ -1,3 +1,7 @@
+## 2.13.1
+
+* Added error message for merchant accounts that do not support refunds
+
 ## 2.13.0
 
 * Added ability to retrieve all Plans, Addons, and Discounts
