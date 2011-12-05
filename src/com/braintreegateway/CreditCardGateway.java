@@ -9,7 +9,6 @@ import java.util.TimeZone;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 
 /**
  * Provides methods to create, delete, find, and update {@link CreditCard}

@@ -1,6 +1,5 @@
 package com.braintreegateway.util;
 
-import javax.swing.event.ListSelectionEvent;
 import java.util.*;
 
 public class MapUtils {
