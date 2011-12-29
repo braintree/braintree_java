@@ -76,14 +76,14 @@ public class TransactionTest {
         Result<Transaction> result = gateway.transaction().confirmTransparentRedirect(queryString);
         Assert.assertTrue(result.isSuccess());
     }
-    
+
     @SuppressWarnings("deprecation")
     @Test(expected = ForgedQueryStringException.class)
     public void createViaTransparentRedirectThrowsWhenQueryStringHasBeenTamperedWith() {
         String queryString = TestHelper.simulateFormPostForTR(gateway, new TransactionRequest(), new TransactionRequest(), gateway.transaction().transparentRedirectURLForCreate());
         gateway.transaction().confirmTransparentRedirect(queryString + "this make it invalid");
     }
-    
+
     @Test
     public void cloneTransaction() {
         TransactionRequest request = new TransactionRequest().
@@ -102,16 +102,16 @@ public class TransactionTest {
             shippingAddress().
                 firstName("Andrew").
                 done();
-    
+
         Result<Transaction> result = gateway.transaction().sale(request);
         Assert.assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
-    
+
         TransactionCloneRequest cloneRequest = new TransactionCloneRequest().amount(new BigDecimal("123.45")).options().submitForSettlement(false).done();
         Result<Transaction> cloneResult = gateway.transaction().cloneTransaction(transaction.getId(), cloneRequest);
         Assert.assertTrue(cloneResult.isSuccess());
         Transaction cloneTransaction = result.getTarget();
-        
+
         Assert.assertEquals("123", cloneTransaction.getOrderId());
         Assert.assertEquals("411111******1111", cloneTransaction.getCreditCard().getMaskedNumber());
         Assert.assertEquals("Dan", cloneTransaction.getCustomer().getFirstName());
@@ -149,17 +149,17 @@ public class TransactionTest {
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2009").
                 done();
-    
+
         Result<Transaction> result = gateway.transaction().credit(request);
         Assert.assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
-    
+
         TransactionCloneRequest cloneRequest = new TransactionCloneRequest().amount(new BigDecimal("123.45"));
         Result<Transaction> cloneResult = gateway.transaction().cloneTransaction(transaction.getId(), cloneRequest);
         Assert.assertFalse(cloneResult.isSuccess());
-        
 
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_CLONE_CREDIT, 
+
+        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_CLONE_CREDIT,
                 cloneResult.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 
@@ -616,17 +616,17 @@ public class TransactionTest {
                 countryCodeAlpha3("zzz").
                 countryCodeNumeric("000").
                 done();
-            
+
         Result<Transaction> result = gateway.transaction().sale(request);
         Assert.assertFalse(result.isSuccess());
-        
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, 
+
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED,
                 result.getErrors().forObject("transaction").forObject("billing").onField("countryName").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED, 
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED,
                 result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha2").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA3_IS_NOT_ACCEPTED, 
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA3_IS_NOT_ACCEPTED,
             result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha3").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_NUMERIC_IS_NOT_ACCEPTED, 
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_NUMERIC_IS_NOT_ACCEPTED,
             result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeNumeric").get(0).getCode());
     }
 
@@ -642,10 +642,10 @@ public class TransactionTest {
         Result<Transaction> result = gateway.transaction().sale(request);
         Assert.assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CUSTOM_FIELD_IS_INVALID, 
+        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CUSTOM_FIELD_IS_INVALID,
                 result.getErrors().forObject("transaction").onField("customFields").get(0).getCode());
     }
-    
+
     @Test
     public void saleWithMultipleValidationErrorsOnSameField() {
         TransactionRequest request = new TransactionRequest().
@@ -665,7 +665,7 @@ public class TransactionTest {
         Assert.assertNull(result.getTransaction());
         Assert.assertNull(result.getCreditCardVerification());
         Assert.assertEquals(2, errros.size());
-        
+
         List<ValidationErrorCode> validationErrorCodes = new ArrayList<ValidationErrorCode>();
         validationErrorCodes.add(errros.get(0).getCode());
         validationErrorCodes.add(errros.get(1).getCode());
@@ -720,7 +720,7 @@ public class TransactionTest {
         Assert.assertEquals("S", transaction.getCvvResponseCode());
     }
 
-    
+
     @Test
     public void saleUsesShippingAddressFromVault() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -785,7 +785,7 @@ public class TransactionTest {
 
         Assert.assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
     }
-    
+
     @Test
     public void saleWithDescriptor() {
         TransactionRequest request = new TransactionRequest().
@@ -806,7 +806,7 @@ public class TransactionTest {
         Assert.assertEquals("123*123456789012345678", transaction.getDescriptor().getName());
         Assert.assertEquals("3334445555", transaction.getDescriptor().getPhone());
     }
- 
+
     @Test
     public void saleWithDescriptorValidation() {
         TransactionRequest request = new TransactionRequest().
@@ -823,13 +823,13 @@ public class TransactionTest {
         Result<Transaction> result = gateway.transaction().sale(request);
         Assert.assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_NAME_FORMAT_IS_INVALID, 
+        Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_NAME_FORMAT_IS_INVALID,
             result.getErrors().forObject("transaction").forObject("descriptor").onField("name").get(0).getCode());
 
-        Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_PHONE_FORMAT_IS_INVALID, 
+        Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_PHONE_FORMAT_IS_INVALID,
             result.getErrors().forObject("transaction").forObject("descriptor").onField("phone").get(0).getCode());
     }
-    
+
     @Test
     public void saleWithLevel2() {
         TransactionRequest request = new TransactionRequest().
@@ -850,9 +850,9 @@ public class TransactionTest {
         Assert.assertTrue(transaction.isTaxExempt());
         Assert.assertEquals("12345", transaction.getPurchaseOrderNumber());
     }
-    
+
     @Test
-    public void saleWithLevel2Validations() {
+    public void saleWithTooLongPurchaseOrderNumber() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
@@ -860,18 +860,35 @@ public class TransactionTest {
                 expirationDate("05/2009").
                 done().
             purchaseOrderNumber("aaaaaaaaaaaaaaaaaa");
-        
+
         Result<Transaction> result = gateway.transaction().sale(request);
         Assert.assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_PURCHASE_ORDER_NUMBER_IS_TOO_LONG, 
+        Assert.assertEquals(ValidationErrorCode.TRANSACTION_PURCHASE_ORDER_NUMBER_IS_TOO_LONG,
+            result.getErrors().forObject("transaction").onField("purchaseOrderNumber").get(0).getCode());
+    }
+
+    @Test
+    public void saleWithInvalidPurchaseOrderNumber() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            purchaseOrderNumber("\u00c3\u009f\u00c3\u00a5\u00e2\u0088\u0082");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertFalse(result.isSuccess());
+
+        Assert.assertEquals(ValidationErrorCode.TRANSACTION_PURCHASE_ORDER_NUMBER_IS_INVALID,
             result.getErrors().forObject("transaction").onField("purchaseOrderNumber").get(0).getCode());
     }
 
     @Test
     public void createTransactionFromTransparentRedirectWithAddress() {
         TransactionRequest request = new TransactionRequest();
-        
+
         TransactionRequest trParams = new TransactionRequest().
         amount(TransactionAmount.AUTHORIZE.amount).
             type(Transaction.Type.SALE).
@@ -885,23 +902,23 @@ public class TransactionTest {
                 countryCodeAlpha3("USA").
                 countryCodeNumeric("840").
                 done();
-    
+
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
         Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
-        
+
         Assert.assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
-        
+
         Assert.assertEquals("United States of America", transaction.getBillingAddress().getCountryName());
         Assert.assertEquals("US", transaction.getBillingAddress().getCountryCodeAlpha2());
         Assert.assertEquals("USA", transaction.getBillingAddress().getCountryCodeAlpha3());
         Assert.assertEquals("840", transaction.getBillingAddress().getCountryCodeNumeric());
     }
-    
+
     @Test
     public void createTransactionFromTransparentRedirectWithAddressWithErrors() {
         TransactionRequest request = new TransactionRequest();
-        
+
         TransactionRequest trParams = new TransactionRequest().
         amount(TransactionAmount.AUTHORIZE.amount).
             type(Transaction.Type.SALE).
@@ -915,19 +932,19 @@ public class TransactionTest {
                 countryCodeAlpha3("zzz").
                 countryCodeNumeric("000").
                 done();
-    
+
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
         Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
-        
+
         Assert.assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, 
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED,
                 result.getErrors().forObject("transaction").forObject("billing").onField("countryName").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED, 
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED,
                 result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha2").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA3_IS_NOT_ACCEPTED, 
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA3_IS_NOT_ACCEPTED,
             result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha3").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_NUMERIC_IS_NOT_ACCEPTED, 
+        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_NUMERIC_IS_NOT_ACCEPTED,
             result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeNumeric").get(0).getCode());
     }
 
@@ -955,7 +972,7 @@ public class TransactionTest {
         Assert.assertEquals("2009", creditCard.getExpirationYear());
         Assert.assertEquals("05/2009", creditCard.getExpirationDate());
     }
-    
+
     @Test
     public void creditWithSpecifyingMerchantAccountId() {
         TransactionRequest request = new TransactionRequest().
@@ -969,7 +986,7 @@ public class TransactionTest {
         Result<Transaction> result = gateway.transaction().credit(request);
         Assert.assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
-        
+
         Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getMerchantAccountId());
     }
 
@@ -988,7 +1005,7 @@ public class TransactionTest {
 
         Assert.assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getMerchantAccountId());
     }
-    
+
     @Test
     public void creditWithCustomFields() {
         TransactionRequest request = new TransactionRequest().
@@ -1092,10 +1109,10 @@ public class TransactionTest {
         Result<Transaction> result = gateway.transaction().voidTransaction(transaction.getId());
 
         Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_BE_VOIDED, 
+        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_BE_VOIDED,
                 result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
-    
+
     @Test
     public void statusHistoryReturnsCorrectStatusEvents() {
         TransactionRequest request = new TransactionRequest().
@@ -1161,7 +1178,7 @@ public class TransactionTest {
         Result<Transaction> result = gateway.transaction().submitForSettlement(transaction.getId());
 
         Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_SUBMIT_FOR_SETTLEMENT, 
+        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_SUBMIT_FOR_SETTLEMENT,
                 result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 
@@ -1224,7 +1241,7 @@ public class TransactionTest {
         Transaction transaction = gateway.transaction().sale(request).getTarget();
         TestHelper.settle(gateway, transaction.getId());
         transaction = gateway.transaction().find(transaction.getId());
-        
+
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             billingCompany().is("Braintree").
@@ -1267,7 +1284,7 @@ public class TransactionTest {
         Assert.assertEquals(1, collection.getMaximumSize());
         Assert.assertEquals(transaction.getId(), collection.getFirst().getId());
     }
-    
+
     @Test
     public void searchOnTextNodeOperators() {
         TransactionRequest request = new TransactionRequest().
@@ -1278,28 +1295,28 @@ public class TransactionTest {
                 cardholderName("Tom Smith").
                 done();
         Transaction transaction = gateway.transaction().sale(request).getTarget();
-        
+
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             creditCardCardholderName().startsWith("Tom");
-        
+
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
         Assert.assertEquals(1, collection.getMaximumSize());
-        
+
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             creditCardCardholderName().endsWith("Smith");
-        
+
         collection = gateway.transaction().search(searchRequest);
         Assert.assertEquals(1, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             creditCardCardholderName().contains("m Sm");
-    
+
         collection = gateway.transaction().search(searchRequest);
         Assert.assertEquals(1, collection.getMaximumSize());
-    
+
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             creditCardCardholderName().isNot("Tom Smith");
@@ -1307,7 +1324,7 @@ public class TransactionTest {
         collection = gateway.transaction().search(searchRequest);
         Assert.assertEquals(0, collection.getMaximumSize());
     }
-    
+
     @Test
     public void searchOnNullValue() {
         TransactionRequest request = new TransactionRequest().
@@ -1318,15 +1335,15 @@ public class TransactionTest {
                 cardholderName("Tom Smith").
                 done();
         Transaction transaction = gateway.transaction().sale(request).getTarget();
-        
+
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             creditCardCardholderName().is(null);
-        
+
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
         Assert.assertEquals(1, collection.getMaximumSize());
     }
-    
+
     @Test
     public void searchOnCreatedUsing() {
          TransactionRequest request = new TransactionRequest().
@@ -1362,7 +1379,7 @@ public class TransactionTest {
 
          Assert.assertEquals(0, collection.getMaximumSize());
      }
-    
+
     @Test
     public void searchOnCreditCardCustomerLocation() {
          TransactionRequest request = new TransactionRequest().
@@ -1398,7 +1415,7 @@ public class TransactionTest {
 
          Assert.assertEquals(0, collection.getMaximumSize());
      }
-    
+
     @Test
     public void searchOnMerchantAccountId() {
         TransactionRequest request = new TransactionRequest().
@@ -1407,34 +1424,34 @@ public class TransactionTest {
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2010").
                 done();
-        
+
         Transaction transaction = gateway.transaction().sale(request).getTarget();
-        
+
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             merchantAccountId().is(transaction.getMerchantAccountId());
-        
+
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
-        
+
         Assert.assertEquals(1, collection.getMaximumSize());
-        
+
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             merchantAccountId().in(transaction.getMerchantAccountId(), "badmerchantaccountid");
-        
+
         collection = gateway.transaction().search(searchRequest);
-        
+
         Assert.assertEquals(1, collection.getMaximumSize());
-        
+
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             merchantAccountId().is("badmerchantaccountid");
-        
+
         collection = gateway.transaction().search(searchRequest);
-        
+
         Assert.assertEquals(0, collection.getMaximumSize());
     }
-    
+
     @Test
     public void searchOnCreditCardType() {
         TransactionRequest request = new TransactionRequest().
@@ -1443,31 +1460,31 @@ public class TransactionTest {
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2010").
                 done();
-        
+
         Transaction transaction = gateway.transaction().sale(request).getTarget();
-        
+
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             creditCardCardType().is(CreditCard.CardType.VISA);
-        
+
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
-        
+
         Assert.assertEquals(1, collection.getMaximumSize());
-        
+
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             creditCardCardType().in(CreditCard.CardType.VISA, CreditCard.CardType.MASTER_CARD);
-        
+
         collection = gateway.transaction().search(searchRequest);
-        
+
         Assert.assertEquals(1, collection.getMaximumSize());
-        
+
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             creditCardCardType().is(CreditCard.CardType.MASTER_CARD);
-        
+
         collection = gateway.transaction().search(searchRequest);
-        
+
         Assert.assertEquals(0, collection.getMaximumSize());
     }
 
@@ -1479,34 +1496,34 @@ public class TransactionTest {
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2010").
                 done();
-        
+
         Transaction transaction = gateway.transaction().sale(request).getTarget();
-        
+
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             status().is(Transaction.Status.AUTHORIZED);
-        
+
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
-        
+
         Assert.assertEquals(1, collection.getMaximumSize());
-        
+
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             status().in(Transaction.Status.AUTHORIZED, Transaction.Status.GATEWAY_REJECTED);
-        
+
         collection = gateway.transaction().search(searchRequest);
-        
+
         Assert.assertEquals(1, collection.getMaximumSize());
-        
+
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             status().is(Transaction.Status.GATEWAY_REJECTED);
-        
+
         collection = gateway.transaction().search(searchRequest);
-        
+
         Assert.assertEquals(0, collection.getMaximumSize());
     }
-    
+
     @Test
     public void searchOnAuthorizationExpiredStatus() {
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
@@ -1525,38 +1542,38 @@ public class TransactionTest {
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2010").
                 done();
-        
+
         Transaction transaction = gateway.transaction().sale(request).getTarget();
-        
+
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             source().is(Transaction.Source.API);
-        
+
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
-        
+
         Assert.assertEquals(1, collection.getMaximumSize());
-        
+
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             source().in(Transaction.Source.API, Transaction.Source.CONTROL_PANEL);
-        
+
         collection = gateway.transaction().search(searchRequest);
-        
+
         Assert.assertEquals(1, collection.getMaximumSize());
-        
+
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             source().is(Transaction.Source.CONTROL_PANEL);
-        
+
         collection = gateway.transaction().search(searchRequest);
-        
+
         Assert.assertEquals(0, collection.getMaximumSize());
     }
-    
+
     @Test
     public void searchOnType() {
         String name = String.valueOf(new Random().nextInt());
-        
+
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
@@ -1567,49 +1584,49 @@ public class TransactionTest {
             options().
                 submitForSettlement(true).
                 done();
-        
+
         Transaction creditTransaction = gateway.transaction().credit(request).getTarget();
         Transaction saleTransaction = gateway.transaction().sale(request).getTarget();
         TestHelper.settle(gateway, saleTransaction.getId());
         Transaction refundTransaction = gateway.transaction().refund(saleTransaction.getId()).getTarget();
-        
+
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             creditCardCardholderName().is(name).
             type().is(Transaction.Type.CREDIT);
-        
+
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
-        
+
         Assert.assertEquals(2, collection.getMaximumSize());
-        
+
         searchRequest = new TransactionSearchRequest().
             creditCardCardholderName().is(name).
             type().is(Transaction.Type.SALE);
-    
+
         collection = gateway.transaction().search(searchRequest);
-    
+
         Assert.assertEquals(1, collection.getMaximumSize());
-        
+
         searchRequest = new TransactionSearchRequest().
             creditCardCardholderName().is(name).
             type().is(Transaction.Type.CREDIT).
             refund().is(true);
-        
+
         collection = gateway.transaction().search(searchRequest);
-        
+
         Assert.assertEquals(1, collection.getMaximumSize());
         Assert.assertEquals(refundTransaction.getId(), collection.getFirst().getId());
-        
+
         searchRequest = new TransactionSearchRequest().
             creditCardCardholderName().is(name).
             type().is(Transaction.Type.CREDIT).
             refund().is(false);
-    
+
         collection = gateway.transaction().search(searchRequest);
-    
+
         Assert.assertEquals(1, collection.getMaximumSize());
         Assert.assertEquals(creditTransaction.getId(), collection.getFirst().getId());
     }
-    
+
     @Test
     public void searchOnAmount() {
         TransactionRequest request = new TransactionRequest().
@@ -1626,19 +1643,19 @@ public class TransactionTest {
              amount().between(new BigDecimal("500"), new BigDecimal("1500"));
 
          Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
-         
+
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
              amount().greaterThanOrEqualTo(new BigDecimal("500"));
 
          Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
-         
+
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
              amount().lessThanOrEqualTo(new BigDecimal("1500"));
 
          Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
-         
+
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
              amount().between(new BigDecimal("1300"), new BigDecimal("1500"));
@@ -1658,41 +1675,41 @@ public class TransactionTest {
          Transaction transaction = gateway.transaction().sale(request).getTarget();
 
          Calendar createdAt = transaction.getCreatedAt();
-         
+
          Calendar threeDaysEarlier = ((Calendar)createdAt.clone());
          threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
-         
+
          Calendar oneDayEarlier = ((Calendar)createdAt.clone());
          oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
-         
+
          Calendar oneDayLater = ((Calendar)createdAt.clone());
          oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
-         
+
          TransactionSearchRequest searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
              createdAt().between(oneDayEarlier, oneDayLater);
 
          Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
-         
+
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
              createdAt().greaterThanOrEqualTo(oneDayEarlier);
 
          Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
-         
+
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
              createdAt().lessThanOrEqualTo(oneDayLater);
 
          Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
-         
+
          searchRequest = new TransactionSearchRequest().
              id().is(transaction.getId()).
              createdAt().between(threeDaysEarlier, oneDayEarlier);
 
          Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
      }
-    
+
     @Test
     public void searchOnCreatedAtUsingLocalTime() {
         TransactionRequest request = new TransactionRequest().
@@ -1716,7 +1733,7 @@ public class TransactionTest {
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
     }
-    
+
     @Test
     public void searchOnAuthorizationExpiredAt() {
         Calendar threeDaysEarlier = Calendar.getInstance();
@@ -1732,7 +1749,7 @@ public class TransactionTest {
             authorizationExpiredAt().between(oneDayEarlier, oneDayLater);
 
         ResourceCollection<Transaction> results = gateway.transaction().search(searchRequest);
-        
+
         Assert.assertTrue(results.getMaximumSize() > 0);
         Assert.assertEquals(Transaction.Status.AUTHORIZATION_EXPIRED, results.getFirst().getStatus());
 
@@ -1777,7 +1794,7 @@ public class TransactionTest {
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             authorizedAt().lessThanOrEqualTo(oneDayLater);
-        
+
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
@@ -1786,7 +1803,7 @@ public class TransactionTest {
 
         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
-    
+
     @Test
     public void searchOnFailedAt() {
         TransactionRequest request = new TransactionRequest().
@@ -1831,10 +1848,10 @@ public class TransactionTest {
 
         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
-    
+
     @Test
     public void searchOnGatewayRejectedAt() {
-        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key"); 
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
@@ -1878,7 +1895,7 @@ public class TransactionTest {
 
         Assert.assertEquals(0, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
     }
-    
+
     @Test
     public void searchOnProcessorDeclinedAt() {
         TransactionRequest request = new TransactionRequest().
@@ -1923,7 +1940,7 @@ public class TransactionTest {
 
         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
-    
+
     @Test
     public void searchOnSettledAt() {
         TransactionRequest request = new TransactionRequest().
@@ -1964,7 +1981,7 @@ public class TransactionTest {
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             settledAt().lessThanOrEqualTo(oneDayLater);
-        
+
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
@@ -2012,7 +2029,7 @@ public class TransactionTest {
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             submittedForSettlementAt().lessThanOrEqualTo(oneDayLater);
-        
+
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
@@ -2021,7 +2038,7 @@ public class TransactionTest {
 
         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
-    
+
     @Test
     public void searchOnVoidedAt() {
         TransactionRequest request = new TransactionRequest().
@@ -2058,7 +2075,7 @@ public class TransactionTest {
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             voidedAt().lessThanOrEqualTo(oneDayLater);
-        
+
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
@@ -2067,7 +2084,7 @@ public class TransactionTest {
 
         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
-    
+
     @Test
     public void searchOnMultipleStatusAtFields() {
         TransactionRequest request = new TransactionRequest().
@@ -2126,13 +2143,13 @@ public class TransactionTest {
 
         Transaction refund = result.getTarget();
         Transaction originalTransaction = gateway.transaction().find(transactionId);
-        
+
         Assert.assertEquals(Transaction.Type.CREDIT, refund.getType());
         Assert.assertEquals(originalTransaction.getAmount(), refund.getAmount());
         Assert.assertEquals(refund.getId(), originalTransaction.getRefundId());
         Assert.assertEquals(originalTransaction.getId(), refund.getRefundedTransactionId());
     }
-    
+
     @Test
     public void refundTransactionWithPartialAmount() {
         TransactionRequest request = new TransactionRequest().
@@ -2170,11 +2187,11 @@ public class TransactionTest {
         Transaction refund1 = gateway.transaction().refund(transaction.getId(), TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2))).getTarget();
         Assert.assertEquals(Transaction.Type.CREDIT, refund1.getType());
         Assert.assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), refund1.getAmount());
-        
+
         Transaction refund2 = gateway.transaction().refund(transaction.getId(), TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2))).getTarget();
         Assert.assertEquals(Transaction.Type.CREDIT, refund2.getType());
         Assert.assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), refund2.getAmount());
-        
+
         transaction = gateway.transaction().find(transaction.getId());
         Assert.assertTrue(TestHelper.listIncludes(transaction.getRefundIds(), refund1.getId()));
         Assert.assertTrue(TestHelper.listIncludes(transaction.getRefundIds(), refund1.getId()));
@@ -2193,11 +2210,11 @@ public class TransactionTest {
 
         Result<Transaction> result = gateway.transaction().refund(transaction.getId());
         Assert.assertFalse(result.isSuccess());
-        
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_REFUND_UNLESS_SETTLED, 
+
+        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_REFUND_UNLESS_SETTLED,
                 result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
-    
+
     @Test
     public void unrecognizedStatus() {
         String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><type>sale</type></transaction>";
@@ -2211,10 +2228,10 @@ public class TransactionTest {
         Transaction transaction = new Transaction(NodeWrapperFactory.instance.create(xml));
         Assert.assertEquals(Transaction.Type.UNRECOGNIZED, transaction.getType());
     }
-    
+
     @Test
     public void gatewayRejectedOnCvv() {
-        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key"); 
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
@@ -2229,10 +2246,10 @@ public class TransactionTest {
 
         Assert.assertEquals(Transaction.GatewayRejectionReason.CVV, transaction.getGatewayRejectionReason());
     }
-    
+
     @Test
     public void gatewayRejectedOnAvs() {
-        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key"); 
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             billingAddress().
@@ -2248,11 +2265,11 @@ public class TransactionTest {
         Transaction transaction = result.getTransaction();
 
         Assert.assertEquals(Transaction.GatewayRejectionReason.AVS, transaction.getGatewayRejectionReason());
-    }    
-    
+    }
+
     @Test
     public void gatewayRejectedOnAvsAndCvv() {
-        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key"); 
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             billingAddress().
