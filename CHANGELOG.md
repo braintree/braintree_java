@@ -1,3 +1,7 @@
+## 2.13.2
+
+* Added error code for invalid purchase order number
+
 ## 2.13.1
 
 * Added error message for merchant accounts that do not support refunds

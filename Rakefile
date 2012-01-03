@@ -24,7 +24,7 @@ end
 
 task :compile_tests => [:init, :clean, :jar] do
   sh "javac -target 1.5 -Xlint:deprecation -d test-classes -cp #{jar_name}:#{lib_classpath} #{test_files}"
-  cp_r "test/script", "test-classes"
+  cp_r "test/script", "test-classes", :preserve => true
   cp_r "test/ssl", "test-classes"
 end
 
