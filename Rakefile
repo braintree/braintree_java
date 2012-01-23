@@ -1,3 +1,5 @@
+ENV['TEST_JDK_VERSION'] ||= "1.5"
+
 task :default => :test
 
 task :init do
@@ -13,7 +15,7 @@ task :clean do
 end
 
 task :compile => :init do
-  sh "javac -target 1.5 -d classes -cp #{lib_classpath} -Xlint:deprecation #{src_files}"
+  sh "javac -target #{ENV['TEST_JDK_VERSION']} -d classes -cp #{lib_classpath} -Xlint:deprecation #{src_files}"
   cp_r "ssl", "classes"
 end
 
@@ -23,7 +25,7 @@ task :jar => :compile do
 end
 
 task :compile_tests => [:init, :clean, :jar] do
-  sh "javac -target 1.5 -Xlint:deprecation -d test-classes -cp #{jar_name}:#{lib_classpath} #{test_files}"
+  sh "javac -target #{ENV['TEST_JDK_VERSION']} -Xlint:deprecation -d test-classes -cp #{jar_name}:#{lib_classpath} #{test_files}"
   cp_r "test/script", "test-classes", :preserve => true
   cp_r "test/ssl", "test-classes"
 end
