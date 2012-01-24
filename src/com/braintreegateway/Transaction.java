@@ -100,6 +100,7 @@ public class Transaction {
     private String id;
     private String merchantAccountId;
     private String orderId;
+    private String planId;
     private String processorAuthorizationCode;
     private String processorResponseCode;
     private String processorResponseText;
@@ -136,6 +137,7 @@ public class Transaction {
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
         orderId = node.findString("order-id");
+        planId = node.findString("plan-id");
         processorAuthorizationCode = node.findString("processor-authorization-code");
         processorResponseCode = node.findString("processor-response-code");
         processorResponseText = node.findString("processor-response-text");
@@ -243,6 +245,10 @@ public class Transaction {
 
     public String getOrderId() {
         return orderId;
+    }
+
+    public String getPlanId() {
+        return planId;
     }
 
     public String getProcessorAuthorizationCode() {

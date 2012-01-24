@@ -2289,7 +2289,7 @@ public class TransactionTest {
     }
 
     @Test
-    public void snapshotAddOnsAndDiscountsFromSubscription() {
+    public void snapshotPlanIdAddOnsAndDiscountsFromSubscription() {
         CustomerRequest customerRequest = new CustomerRequest().
             creditCard().
                 number("5105105105105100").
@@ -2324,6 +2324,8 @@ public class TransactionTest {
                 done();
 
         Transaction transaction = gateway.subscription().create(request).getTarget().getTransactions().get(0);
+
+        Assert.assertEquals(PlanFixture.PLAN_WITHOUT_TRIAL.getId(), transaction.getPlanId());
 
         List<AddOn> addOns = transaction.getAddOns();
         Collections.sort(addOns, new TestHelper.CompareModificationsById());
