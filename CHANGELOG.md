@@ -1,3 +1,7 @@
+## 2.13.4
+
+* Exposes plan_id on transactions
+
 ## 2.13.3
 
 * Adds new certificates for sandbox environment
