@@ -1,7 +1,9 @@
 package com.braintreegateway;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -389,6 +391,32 @@ public class CustomerTest {
 
     }
 
+    @Test
+    public void findDuplicateCreditCardsGivenPaymentMethodToken()
+    {
+        CustomerRequest request = new CustomerRequest().
+                creditCard().
+                    number("4012000033330026").
+                    expirationDate("05/2010").
+                    done();
+
+        Customer jim = gateway.customer().create(request.firstName("Jim")).getTarget();
+        Customer joe = gateway.customer().create(request.firstName("Joe")).getTarget();
+
+        CustomerSearchRequest searchRequest = new CustomerSearchRequest().
+            paymentMethodTokenWithDuplicates().is(jim.getCreditCards().get(0).getToken());
+
+        ResourceCollection<Customer> collection = gateway.customer().search(searchRequest);
+
+        List<String> customerIds = new ArrayList<String>();
+        for (Customer customer : collection)
+        {
+            customerIds.add(customer.getId());
+        }
+
+        Assert.assertTrue(customerIds.contains(jim.getId()));
+        Assert.assertTrue(customerIds.contains(joe.getId()));
+    }
     
     @Test
     public void searchOnAllTextFields()
