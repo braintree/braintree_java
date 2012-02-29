@@ -789,37 +789,6 @@ public class CreditCardTest {
 
         Assert.assertEquals(Transaction.GatewayRejectionReason.CVV, verification.getGatewayRejectionReason());
     }
-
-    @Test
-    public void duplicateSearch() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-
-        CreditCardRequest request = new CreditCardRequest().
-                customerId(customer.getId()).
-                cardholderName("John Doe").
-                cvv("200").
-              number("4012000033330026").
-                expirationDate("05/12").
-                options().
-                    done();
-
-        Result<CreditCard> result = gateway.creditCard().create(request);
-        CreditCard card1 = result.getTarget();
-        result = gateway.creditCard().create(request);
-        CreditCard card2 = result.getTarget();
-
-        ResourceCollection<CreditCard> duplicatedCards = gateway.creditCard().duplicates(card1.getToken());
-        Assert.assertTrue(duplicatedCards.getMaximumSize() > 0);
-
-        List<String> tokens = new ArrayList<String>();
-        for (CreditCard card : duplicatedCards) {
-            tokens.add(card.getToken());
-        }
-
-        Set<String> uniqueTokens = new HashSet<String>(tokens);
-        Assert.assertTrue(uniqueTokens.contains(card1.getToken()));
-        Assert.assertTrue(uniqueTokens.contains(card2.getToken()));
-    }
     
     @Test
     public void expiredSearch() {

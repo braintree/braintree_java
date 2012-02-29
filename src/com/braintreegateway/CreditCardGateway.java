@@ -119,16 +119,6 @@ public class CreditCardGateway {
     }
 
     /**
-     * Returns a {@link ResourceCollection} of all duplicated credit cards.
-     *
-     * @return a {@link ResourceCollection}.
-     */
-    public ResourceCollection<CreditCard> duplicates(String token) {
-        NodeWrapper response = http.post("/payment_methods/" + token + "/duplicate_ids");
-        return new ResourceCollection<CreditCard>(new DuplicateCreditCardPager(this, token), response);
-    }
-
-    /**
      * Returns a {@link ResourceCollection} of all expired credit cards.
      * 
      * @return a {@link ResourceCollection}.
@@ -136,19 +126,6 @@ public class CreditCardGateway {
     public ResourceCollection<CreditCard> expired() {
         NodeWrapper response = http.post("/payment_methods/all/expired_ids");
         return new ResourceCollection<CreditCard>(new ExpiredCreditCardPager(this), response);
-    }
-
-    List<CreditCard> fetchDuplicateCreditCards(List<String> ids, String token) {
-        IdsSearchRequest query = new IdsSearchRequest().ids().in(ids);
-
-        NodeWrapper response = http.post("/payment_methods/" + token + "/duplicates");
-
-        List<CreditCard> items = new ArrayList<CreditCard>();
-        for (NodeWrapper node : response.findAll("credit-card")) {
-            items.add(new CreditCard(node));
-        }
-
-        return items;
     }
 
     List<CreditCard> fetchExpiredCreditCards(List<String> ids) {
