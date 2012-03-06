@@ -10,3 +10,4 @@
 .idea
 out/
 *.iml
+.metadata/

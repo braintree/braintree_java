@@ -76,6 +76,10 @@ public class CustomerSearchRequest extends SearchRequest {
     public TextNode<CustomerSearchRequest> website() {
         return new TextNode<CustomerSearchRequest>("website", this);
     }
+
+    public IsNode<CustomerSearchRequest> paymentMethodTokenWithDuplicates() {
+        return new IsNode<CustomerSearchRequest>("payment_method_token_with_duplicates", this);
+    }
     
     public MultipleValueNode<CustomerSearchRequest, String> ids() {
         return new MultipleValueNode<CustomerSearchRequest, String>("ids", this);

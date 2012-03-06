@@ -690,6 +690,29 @@ public class CreditCardTest {
     }
 
     @Test
+    public void checkDuplicateCreditCard() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("4012000033330026").
+            expirationDate("05/12").
+            options().
+                failOnDuplicatePaymentMethod(true).
+                done();
+
+        gateway.creditCard().create(request);
+        Result<CreditCard> result = gateway.creditCard().create(request);
+
+        Assert.assertFalse(result.isSuccess());
+        Assert.assertEquals(
+                ValidationErrorCode.CREDIT_CARD_DUPLICATE_CARD_EXISTS,
+                result.getErrors().forObject("creditCard").onField("number").get(0).getCode()
+            );
+     }
+
+    @Test
     public void verifyValidCreditCard() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
