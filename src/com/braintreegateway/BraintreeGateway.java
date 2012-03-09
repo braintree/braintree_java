@@ -160,6 +160,10 @@ public class BraintreeGateway {
     public String trData(Request trData, String redirectURL) {
         return new TrUtil(configuration).buildTrData(trData, redirectURL);
     }
+    
+    public WebhookGateway webhook() {
+        return new WebhookGateway(configuration);
+    }
 
     public SettlementBatchSummaryGateway settlementBatchSummary() {
         return new SettlementBatchSummaryGateway(http);
