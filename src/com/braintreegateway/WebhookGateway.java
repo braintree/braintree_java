@@ -13,11 +13,11 @@ public class WebhookGateway {
         this.configuration = configuration;
     }
 
-    public Notification parse(String signature, String payload) {
+    public WebhookNotification parse(String signature, String payload) {
         validateSignature(signature, payload);
         String xmlPayload = new String(Base64.decodeBase64(payload));
         NodeWrapper node = NodeWrapperFactory.instance.create(xmlPayload);
-        return new Notification(node);
+        return new WebhookNotification(node);
     }
 
     private void validateSignature(String signature, String payload) {

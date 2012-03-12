@@ -13,7 +13,7 @@ public class NotificationTest {
 		String xml = "<notification><kind>" + "bad_kind" + "</kind></notification>";
 		NodeWrapper node = NodeWrapperFactory.instance.create(xml);
 		
-		Notification notification = new Notification(node);
+		WebhookNotification notification = new WebhookNotification(node);
 		Assert.assertEquals(Webhook.Kind.UNRECOGNIZED, notification.getKind());
 	}
 }

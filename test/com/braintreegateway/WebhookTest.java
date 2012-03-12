@@ -26,7 +26,7 @@ public class WebhookTest {
     public void createsSampleNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTest().sampleNotification(Webhook.Kind.SUBSCRIPTION_PAST_DUE, "my_id");
 
-        Notification notification = this.gateway.webhook().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+        WebhookNotification notification = this.gateway.webhook().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
 
         Assert.assertEquals(Webhook.Kind.SUBSCRIPTION_PAST_DUE, notification.getKind());
         Assert.assertEquals("my_id", notification.getSubscription().getId());
