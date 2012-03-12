@@ -8,10 +8,10 @@ import java.util.HashMap;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 import com.braintreegateway.util.Crypto;
 
-public class WebhookTestGateway {
+public class WebhookTestingGateway {
     private Configuration configuration;
 
-    public WebhookTestGateway(Configuration configuration) {
+    public WebhookTestingGateway(Configuration configuration) {
         this.configuration = configuration;
     }
 

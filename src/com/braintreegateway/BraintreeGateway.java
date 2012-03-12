@@ -186,7 +186,7 @@ public class BraintreeGateway {
         return new WebhookGateway(configuration);
     }
 
-    public WebhookTestGateway webhookTest() {
-        return new WebhookTestGateway(configuration);
+    public WebhookTestingGateway webhookTesting() {
+        return new WebhookTestingGateway(configuration);
     }
 }

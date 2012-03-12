@@ -24,7 +24,7 @@ public class WebhookTest {
 
     @Test
     public void createsSampleNotification() {
-        HashMap<String, String> sampleNotification = this.gateway.webhookTest().sampleNotification(Webhook.Kind.SUBSCRIPTION_PAST_DUE, "my_id");
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(Webhook.Kind.SUBSCRIPTION_PAST_DUE, "my_id");
 
         WebhookNotification notification = this.gateway.webhook().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
 
@@ -34,14 +34,14 @@ public class WebhookTest {
 
     @Test(expected = InvalidSignatureException.class)
     public void invalidSignatureRaisesException() {
-        HashMap<String, String> sampleNotification = this.gateway.webhookTest().sampleNotification(Webhook.Kind.SUBSCRIPTION_PAST_DUE, "my_id");
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(Webhook.Kind.SUBSCRIPTION_PAST_DUE, "my_id");
 
         this.gateway.webhook().parse(sampleNotification.get("signature") + "bad_stuff", sampleNotification.get("payload"));
     }
 
     @Test(expected = InvalidSignatureException.class)
     public void signatureWithoutMatchingPublicKeyRaisesException() {
-        HashMap<String, String> sampleNotification = this.gateway.webhookTest().sampleNotification(Webhook.Kind.SUBSCRIPTION_PAST_DUE, "my_id");
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(Webhook.Kind.SUBSCRIPTION_PAST_DUE, "my_id");
 
         this.gateway.webhook().parse("uknown_public_key|signature", sampleNotification.get("payload"));
     }
