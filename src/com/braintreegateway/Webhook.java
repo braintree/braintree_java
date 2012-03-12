@@ -2,7 +2,8 @@ package com.braintreegateway;
 
 public class Webhook {
 	public enum Kind {
-        SUBSCRIPTION_PAST_DUE("subscription_past_due");
+        SUBSCRIPTION_PAST_DUE("subscription_past_due"), 
+        UNRECOGNIZED("unrecognized");
 
         private final String name;
 

@@ -16,7 +16,7 @@ public class Notification {
 		}
 	}
 
-	public Object getKind() {
+	public Webhook.Kind getKind() {
 		return this.kind;
 	}
 
