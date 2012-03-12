@@ -15,7 +15,7 @@ public class WebhookTestingGateway {
         this.configuration = configuration;
     }
 
-    private String buildPayload(Webhook.Kind kind, String id) {
+    private String buildPayload(WebhookNotification.Kind kind, String id) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         String timestamp = dateFormat.format(cal.getTime());
@@ -28,7 +28,7 @@ public class WebhookTestingGateway {
         return String.format("%s|%s", configuration.publicKey, new Crypto().hmacHash(configuration.privateKey, stringToSign));
     }
 
-    public HashMap<String, String> sampleNotification(Webhook.Kind kind, String id) {
+    public HashMap<String, String> sampleNotification(WebhookNotification.Kind kind, String id) {
         HashMap<String, String> response = new HashMap<String, String>();
         String payload = buildPayload(kind, id);
         response.put("payload", payload);

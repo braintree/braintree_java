@@ -6,7 +6,7 @@ import org.junit.Test;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 
-public class NotificationTest {
+public class WebhookNotificationTest {
 
 	@Test
 	public void createNotificationWithUnrecognizedKind() {
@@ -14,6 +14,6 @@ public class NotificationTest {
 		NodeWrapper node = NodeWrapperFactory.instance.create(xml);
 		
 		WebhookNotification notification = new WebhookNotification(node);
-		Assert.assertEquals(Webhook.Kind.UNRECOGNIZED, notification.getKind());
+		Assert.assertEquals(WebhookNotification.Kind.UNRECOGNIZED, notification.getKind());
 	}
 }
