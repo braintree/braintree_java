@@ -16,7 +16,7 @@ public class WebhookTestingGateway {
     }
 
     private String buildPayload(WebhookNotification.Kind kind, String id) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         Calendar cal = Calendar.getInstance();
         String timestamp = dateFormat.format(cal.getTime());
         String payload = "<notification><timestamp>" + timestamp + "</timestamp><kind>" + kind + "</kind><subject>" + subscriptionXml(id) + "</subject></notification>";

@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+import java.util.Calendar;
+
 import com.braintreegateway.util.EnumUtils;
 import com.braintreegateway.util.NodeWrapper;
 
@@ -22,9 +24,11 @@ public class WebhookNotification {
     
 	private Subscription subscription;
 	private Kind kind;
+    private Calendar timestamp;
 	
 	public WebhookNotification(NodeWrapper node) {
 		this.kind = EnumUtils.findByName(Kind.class, node.findString("kind"));
+		this.timestamp = node.findDateTime("timestamp");
 		
 		if (node.findFirst("subject/subscription") != null) {
 			this.subscription = new Subscription(node.findFirst("subject/subscription"));
@@ -38,4 +42,8 @@ public class WebhookNotification {
 	public Subscription getSubscription() {
 		return this.subscription;
 	}
+
+    public Calendar getTimestamp() {
+        return this.timestamp;
+    }
 }
