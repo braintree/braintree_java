@@ -31,7 +31,7 @@ public class WebhookTest {
 
         Assert.assertEquals(WebhookNotification.Kind.SUBSCRIPTION_PAST_DUE, notification.getKind());
         Assert.assertEquals("my_id", notification.getSubscription().getId());
-        Assert.assertTrue(notification.getTimestamp() instanceof Calendar);
+        TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
     }
 
     @Test(expected = InvalidSignatureException.class)

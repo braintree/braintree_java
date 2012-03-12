@@ -2,8 +2,9 @@ package com.braintreegateway;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 import com.braintreegateway.util.Crypto;
@@ -17,9 +18,9 @@ public class WebhookTestingGateway {
 
     private String buildPayload(WebhookNotification.Kind kind, String id) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        Calendar cal = Calendar.getInstance();
-        String timestamp = dateFormat.format(cal.getTime());
-        String payload = "<notification><timestamp>" + timestamp + "</timestamp><kind>" + kind + "</kind><subject>" + subscriptionXml(id) + "</subject></notification>";
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String timestamp = dateFormat.format(new Date());
+        String payload = "<notification><timestamp type=\"datetime\">" + timestamp + "</timestamp><kind>" + kind + "</kind><subject>" + subscriptionXml(id) + "</subject></notification>";
 
         return Base64.encodeBase64String(payload.getBytes()).trim();
     }
