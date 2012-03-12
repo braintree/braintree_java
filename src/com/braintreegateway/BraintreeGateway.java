@@ -92,7 +92,7 @@ public class BraintreeGateway {
      * @return an {@link AddOnGateway}.
      */
     public AddOnGateway addOn() {
-        return new AddOnGateway(http, configuration);
+        return new AddOnGateway(http);
     }
 
     /**
@@ -116,7 +116,7 @@ public class BraintreeGateway {
      * @return an {@link DiscountGateway}.
      */
     public DiscountGateway discount() {
-        return new DiscountGateway(http, configuration);
+        return new DiscountGateway(http);
     }
 
     /**
@@ -124,7 +124,7 @@ public class BraintreeGateway {
      * @return an {@link PlanGateway}.
      */
     public PlanGateway plan() {
-        return new PlanGateway(http, configuration);
+        return new PlanGateway(http);
     }
 
     public String getAuthorizationHeader() {

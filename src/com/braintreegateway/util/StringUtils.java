@@ -80,7 +80,8 @@ public class StringUtils {
         return "{" + join(", ", pairs.toArray()) + "}";
     }
 
-    public static String toString(Object value) {
+    @SuppressWarnings("unchecked")
+	public static String toString(Object value) {
         if(value instanceof Map)
             return mapToString((Map<String, Object>) value);
         else if(value instanceof List)
@@ -92,7 +93,7 @@ public class StringUtils {
     }
 
     public static String listToString(List<Object> value) {
-        String[] valueStrings = new String[value.size()];
+        Object[] valueStrings = new Object[value.size()];
         for (int i = 0; i < valueStrings.length; i++) {
             valueStrings[i] = toString(value.get(i));
         }
