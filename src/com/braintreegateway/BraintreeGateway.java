@@ -182,8 +182,8 @@ public class BraintreeGateway {
         return new TrUtil(configuration).buildTrData(trData, redirectURL);
     }
 
-    public WebhookGateway webhook() {
-        return new WebhookGateway(configuration);
+    public WebhookNotificationGateway webhookNotification() {
+        return new WebhookNotificationGateway(configuration);
     }
 
     public WebhookTestingGateway webhookTesting() {

@@ -6,10 +6,10 @@ import com.braintreegateway.util.Crypto;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 
-public class WebhookGateway {
+public class WebhookNotificationGateway {
     private Configuration configuration;
 
-    public WebhookGateway(Configuration configuration) {
+    public WebhookNotificationGateway(Configuration configuration) {
         this.configuration = configuration;
     }
 
