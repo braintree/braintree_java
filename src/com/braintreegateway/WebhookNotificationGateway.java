@@ -34,8 +34,9 @@ public class WebhookNotificationGateway {
             }
         }
 
-        String computedSignature = new Crypto().hmacHash(configuration.privateKey, payload);
-        if (!computedSignature.equals(matchingSignature)) {
+        Crypto crypto = new Crypto();
+        String computedSignature = crypto.hmacHash(configuration.privateKey, payload);
+        if (!crypto.secureCompare(computedSignature, matchingSignature)) {
             throw new InvalidSignatureException();
         }
     }
