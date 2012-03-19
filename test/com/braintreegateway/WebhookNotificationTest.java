@@ -36,25 +36,25 @@ public class WebhookNotificationTest {
 
     @Test
     public void createsSampleNotification() {
-        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_PAST_DUE, "my_id");
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
 
         WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
 
-        Assert.assertEquals(WebhookNotification.Kind.SUBSCRIPTION_PAST_DUE, notification.getKind());
+        Assert.assertEquals(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, notification.getKind());
         Assert.assertEquals("my_id", notification.getSubscription().getId());
         TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
     }
 
     @Test(expected = InvalidSignatureException.class)
     public void invalidSignatureRaisesException() {
-        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_PAST_DUE, "my_id");
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
 
         this.gateway.webhookNotification().parse(sampleNotification.get("signature") + "bad_stuff", sampleNotification.get("payload"));
     }
 
     @Test(expected = InvalidSignatureException.class)
     public void signatureWithoutMatchingPublicKeyRaisesException() {
-        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_PAST_DUE, "my_id");
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
 
         this.gateway.webhookNotification().parse("uknown_public_key|signature", sampleNotification.get("payload"));
     }

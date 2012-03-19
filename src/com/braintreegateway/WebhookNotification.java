@@ -7,7 +7,13 @@ import com.braintreegateway.util.NodeWrapper;
 
 public class WebhookNotification {
     public enum Kind {
-        SUBSCRIPTION_PAST_DUE("subscription_past_due"), 
+        SUBSCRIPTION_CANCELED("subscription_canceled"),
+        SUBSCRIPTION_CHARGED_SUCCESSFULLY("subscription_charged_successfully"),
+        SUBSCRIPTION_CHARGED_UNSUCCESSFULLY("subscription_charged_unsuccessfully"),
+        SUBSCRIPTION_EXPIRED("subscription_expired"),
+        SUBSCRIPTION_TRIAL_ENDED("subscription_trial_ended"),
+        SUBSCRIPTION_WENT_ACTIVE("subscription_went_active"),
+        SUBSCRIPTION_WENT_PAST_DUE("subscription_went_past_due"),
         UNRECOGNIZED("unrecognized");
 
         private final String name;
