@@ -62,7 +62,7 @@ public class CreditCard {
     private boolean isDefault;
     private boolean isExpired;
     private String last4;
-    private String numberUniqueIdentifier;
+    private String uniqueNumberIdentifier;
     private List<Subscription> subscriptions;
     private String token;
     private Calendar updatedAt;
@@ -81,7 +81,7 @@ public class CreditCard {
         isDefault = node.findBoolean("default");
         isExpired = node.findBoolean("expired");
         last4 = node.findString("last-4");
-        numberUniqueIdentifier = node.findString("number-unique-identifier");
+        uniqueNumberIdentifier = node.findString("unique-number-identifier");
         token = node.findString("token");
         NodeWrapper billingAddressResponse = node.findFirst("billing-address");
         if (billingAddressResponse != null) {
@@ -141,8 +141,8 @@ public class CreditCard {
         return getBin() + "******" + getLast4();
     }
 
-    public String getNumberUniqueIdentifier() {
-        return numberUniqueIdentifier;
+    public String getUniqueNumberIdentifier() {
+        return uniqueNumberIdentifier;
     }
 
     public List<Subscription> getSubscriptions() {
