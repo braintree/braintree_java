@@ -5,12 +5,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Assert;
-
 import org.junit.Test;
 
-import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.NodeWrapperFactory;
 
 
 public class ValidationErrorsTest {

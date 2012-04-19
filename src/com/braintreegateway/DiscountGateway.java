@@ -1,17 +1,15 @@
 package com.braintreegateway;
 
-import com.braintreegateway.util.Http;
-import com.braintreegateway.util.NodeWrapper;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.braintreegateway.util.Http;
+import com.braintreegateway.util.NodeWrapper;
+
 public class DiscountGateway {
-    private Configuration configuration;
     private Http http;
 
-    public DiscountGateway(Http http, Configuration configuration) {
-        this.configuration = configuration;
+    public DiscountGateway(Http http) {
         this.http = http;
     }
 

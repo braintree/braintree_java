@@ -10,17 +10,16 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
 
-import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.org.apache.commons.codec.binary.StringUtils;
-import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.Subscription.Status;
+import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.NodeWrapperFactory;
 
 public class SubscriptionTest {
 

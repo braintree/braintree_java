@@ -70,6 +70,7 @@ public class CreditCardTest {
         Assert.assertTrue(card.getToken() != null);
         Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getCreatedAt().get(Calendar.YEAR));
         Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getUpdatedAt().get(Calendar.YEAR));
+        Assert.assertTrue(card.getUniqueNumberIdentifier().matches("\\A\\w{32}\\z"));
     }
 
     @Test

@@ -158,6 +158,7 @@ public class CustomerTest {
         Assert.assertEquals("510510", creditCard.getBin());
         Assert.assertEquals("5100", creditCard.getLast4());
         Assert.assertEquals("05/2012", creditCard.getExpirationDate());
+        Assert.assertTrue(creditCard.getUniqueNumberIdentifier().matches("\\A\\w{32}\\z"));
     }
 
     @Test
