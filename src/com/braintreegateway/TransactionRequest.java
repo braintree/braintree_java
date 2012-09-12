@@ -20,6 +20,7 @@ public class TransactionRequest extends Request {
     private String orderId;
     private String paymentMethodToken;
     private String purchaseOrderNumber;
+    private Boolean recurring;
     private String shippingAddressId;
     private TransactionDescriptorRequest descriptorRequest;
     private TransactionAddressRequest shippingAddressRequest;
@@ -61,7 +62,7 @@ public class TransactionRequest extends Request {
         customFields.put(apiName, value);
         return this;
     }
-    
+
     public TransactionDescriptorRequest descriptor() {
         descriptorRequest = new TransactionDescriptorRequest(this);
         return descriptorRequest;
@@ -91,9 +92,14 @@ public class TransactionRequest extends Request {
         this.paymentMethodToken = paymentMethodToken;
         return this;
     }
-    
+
     public TransactionRequest purchaseOrderNumber(String purchaseOrderNumber) {
         this.purchaseOrderNumber = purchaseOrderNumber;
+        return this;
+    }
+
+    public TransactionRequest recurring(Boolean recurring) {
+        this.recurring = recurring;
         return this;
     }
 
@@ -101,17 +107,17 @@ public class TransactionRequest extends Request {
         shippingAddressRequest = new TransactionAddressRequest(this, "shipping");
         return shippingAddressRequest;
     }
-    
+
     public TransactionRequest shippingAddressId(String shippingAddressId) {
         this.shippingAddressId = shippingAddressId;
         return this;
     }
-    
+
     public TransactionRequest taxAmount(BigDecimal taxAmount) {
         this.taxAmount = taxAmount;
         return this;
     }
-    
+
     public TransactionRequest taxExempt(Boolean taxExempt) {
         this.taxExempt = taxExempt;
         return this;
@@ -131,14 +137,14 @@ public class TransactionRequest extends Request {
     public String toXML() {
         return buildRequest("transaction").toXML();
     }
-    
+
     public TransactionRequest type(Type type) {
         this.type = type;
         return this;
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).     
+        RequestBuilder builder = new RequestBuilder(root).
             addElement("amount", amount).
             addElement("customerId", customerId).
             addElement("merchantAccountId", merchantAccountId).
@@ -153,15 +159,16 @@ public class TransactionRequest extends Request {
             addElement("descriptor", descriptorRequest).
             addElement("billing", billingAddressRequest).
             addElement("shipping", shippingAddressRequest).
-            addElement("options", transactionOptionsRequest);
-        
+            addElement("options", transactionOptionsRequest).
+            addElement("recurring", recurring);
+
         if (!customFields.isEmpty()) {
             builder.addElement("customFields", customFields);
         }
         if (type != null) {
             builder.addElement("type", type.toString().toLowerCase());
         }
-        
+
         return builder;
     }
 }
