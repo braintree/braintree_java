@@ -167,8 +167,8 @@ public class CreditCardTest {
         Assert.assertEquals("5100", card.getLast4());
         Assert.assertTrue(card.getToken() != null);
     }
-    
-    
+
+
     @Test
     public void createCreditCardFromTransparentRedirectWithCountry() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -184,9 +184,9 @@ public class CreditCardTest {
                 countryCodeNumeric("533").
                 done();
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
-        
+
         Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
-        
+
         Assert.assertTrue(result.isSuccess());
         Assert.assertEquals("411111", result.getTarget().getBin());
         Assert.assertEquals("1111", result.getTarget().getLast4());
@@ -250,7 +250,7 @@ public class CreditCardTest {
         CreditCard card = gateway.creditCard().confirmTransparentRedirect(queryString).getTarget();
         Assert.assertTrue(card.isDefault());
     }
-    
+
     @Test
     public void createCreditCardFromTransparentRedirectWithInconsistentCountries() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -264,9 +264,9 @@ public class CreditCardTest {
                 countryCodeAlpha2("US").
                 done();
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
-        
+
         Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
-        
+
         Assert.assertFalse(result.isSuccess());
         Assert.assertEquals(ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY, result.getErrors().forObject("creditCard").forObject("billingAddress").onField("base").get(0).getCode());
     }
@@ -276,12 +276,12 @@ public class CreditCardTest {
     public void createViaTransparentRedirectThrowsWhenQueryStringHasBeenTamperedWith() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest trParams = new CreditCardRequest().customerId(customer.getId());
-        
+
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, new CreditCardRequest(), gateway.creditCard().transparentRedirectURLForCreate());
         gateway.creditCard().confirmTransparentRedirect(queryString + "this makes it invalid");
     }
-    
-    @Test 
+
+    @Test
     public void createWithDefaultFlag() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
 
@@ -302,11 +302,11 @@ public class CreditCardTest {
 
         CreditCard card1 = gateway.creditCard().create(request1).getTarget();
         CreditCard card2 = gateway.creditCard().create(request2).getTarget();
-        
+
         Assert.assertFalse(gateway.creditCard().find(card1.getToken()).isDefault());
         Assert.assertTrue(gateway.creditCard().find(card2.getToken()).isDefault());
     }
-    
+
     @Test
     public void update() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -332,7 +332,7 @@ public class CreditCardTest {
                 countryCodeAlpha3("ITA").
                 countryCodeNumeric("380").
                 done();
-                
+
 
         Result<CreditCard> updateResult = gateway.creditCard().update(card.getToken(), updateRequest);
         Assert.assertTrue(updateResult.isSuccess());
@@ -359,22 +359,22 @@ public class CreditCardTest {
             customerId(customer.getId()).
             number("5105105105105100").
             expirationDate("05/12");
-        
+
         CreditCard card1 = gateway.creditCard().create(request).getTarget();
         CreditCard card2 = gateway.creditCard().create(request).getTarget();
-        
+
         Assert.assertTrue(card1.isDefault());
         Assert.assertFalse(card2.isDefault());
-        
+
         gateway.creditCard().update(card2.getToken(), new CreditCardRequest().options().makeDefault(true).done());
         Assert.assertFalse(gateway.creditCard().find(card1.getToken()).isDefault());
         Assert.assertTrue(gateway.creditCard().find(card2.getToken()).isDefault());
-        
+
         gateway.creditCard().update(card1.getToken(), new CreditCardRequest().options().makeDefault(true).done());
         Assert.assertTrue(gateway.creditCard().find(card1.getToken()).isDefault());
         Assert.assertFalse(gateway.creditCard().find(card2.getToken()).isDefault());
     }
-    
+
     @SuppressWarnings("deprecation")
     @Test
     public void updateViaTransparentRedirect() {
@@ -399,7 +399,7 @@ public class CreditCardTest {
         CreditCard updatedCard = result.getTarget();
         Assert.assertEquals("joe cool", updatedCard.getCardholderName());
     }
-    
+
     @Test
     public void updateCountryFromTransparentRedirect() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -408,7 +408,7 @@ public class CreditCardTest {
             number("5105105105105100").
             expirationDate("05/12");
         CreditCard card = gateway.creditCard().create(request).getTarget();
-        
+
         CreditCardRequest updateRequest = new CreditCardRequest();
         CreditCardRequest trParams = new CreditCardRequest().
             paymentMethodToken(card.getToken()).
@@ -420,11 +420,11 @@ public class CreditCardTest {
                 countryCodeAlpha3("JEY").
                 countryCodeNumeric("832").
                 done();
-                
+
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, updateRequest, gateway.transparentRedirect().url());
-        
+
         Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
-        
+
         Assert.assertTrue(result.isSuccess());
         CreditCard updatedCreditCard = gateway.creditCard().find(card.getToken());
         Assert.assertEquals("411111", updatedCreditCard.getBin());
@@ -437,7 +437,7 @@ public class CreditCardTest {
         Assert.assertEquals("832", updatedCreditCard.getBillingAddress().getCountryCodeNumeric());
     }
 
-    
+
     @Test
     public void updateCountryFromTransparentRedirectWithInvalidCountry() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -446,7 +446,7 @@ public class CreditCardTest {
             number("5105105105105100").
             expirationDate("05/12");
         CreditCard card = gateway.creditCard().create(request).getTarget();
-        
+
         CreditCardRequest updateRequest = new CreditCardRequest();
         CreditCardRequest trParams = new CreditCardRequest().
             paymentMethodToken(card.getToken()).
@@ -455,11 +455,11 @@ public class CreditCardTest {
             billingAddress().
                 countryCodeAlpha2("zz").
                 done();
-                
+
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, updateRequest, gateway.transparentRedirect().url());
-        
+
         Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
-        
+
         Assert.assertFalse(result.isSuccess());
         Assert.assertEquals(
             ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED,
@@ -516,7 +516,7 @@ public class CreditCardTest {
         Assert.assertEquals("05/2012", updatedCard.getExpirationDate());
         Assert.assertEquals("5100", updatedCard.getLast4());
     }
-    
+
     @Test
     public void updateWithBillingAddressCreatesNewAddressByDefault() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -527,7 +527,7 @@ public class CreditCardTest {
             billingAddress().
                 firstName("John").
                 done();
-        
+
         CreditCard creditCard = gateway.creditCard().create(request).getTarget();
 
         CreditCardRequest updateRequest = new CreditCardRequest().
@@ -552,7 +552,7 @@ public class CreditCardTest {
             billingAddress().
                 firstName("John").
                 done();
-        
+
         CreditCard creditCard = gateway.creditCard().create(request).getTarget();
 
         CreditCardRequest updateRequest = new CreditCardRequest().
@@ -581,7 +581,7 @@ public class CreditCardTest {
             billingAddress().
                 firstName("John").
                 done();
-        
+
         CreditCard creditCard = gateway.creditCard().create(request).getTarget();
 
         CreditCardRequest trParams = new CreditCardRequest().
@@ -626,7 +626,7 @@ public class CreditCardTest {
         Assert.assertEquals("05/2012", found.getExpirationDate());
         Assert.assertEquals("5100", found.getLast4());
     }
-    
+
     @Test
     public void findReturnsAssociatedSubscriptions() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -644,9 +644,9 @@ public class CreditCardTest {
             paymentMethodToken(card.getToken()).
             price(new BigDecimal("1.00"));
         Subscription subscription = gateway.subscription().create(subscriptionRequest).getTarget();
-        
+
         CreditCard foundCard = gateway.creditCard().find(card.getToken());
-        
+
         Assert.assertEquals(subscription.getId(), foundCard.getSubscriptions().get(0).getId());
         Assert.assertEquals(new BigDecimal("1.00"), foundCard.getSubscriptions().get(0).getPrice());
         Assert.assertEquals("integration_trialless_plan", foundCard.getSubscriptions().get(0).getPlanId());
@@ -729,7 +729,7 @@ public class CreditCardTest {
         Result<CreditCard> result = gateway.creditCard().create(request);
         Assert.assertTrue(result.isSuccess());
     }
-    
+
     @Test
     public void verifyCreditCardAgainstSpecificMerchantAccount() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -769,7 +769,7 @@ public class CreditCardTest {
         Assert.assertEquals("Do Not Honor", result.getMessage());
         Assert.assertNull(verification.getGatewayRejectionReason());
     }
-    
+
     @Test
     public void verificationExposesgatewayRejectionReason() {
         BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
@@ -790,12 +790,12 @@ public class CreditCardTest {
 
         Assert.assertEquals(Transaction.GatewayRejectionReason.CVV, verification.getGatewayRejectionReason());
     }
-    
+
     @Test
     public void expiredSearch() {
         ResourceCollection<CreditCard> expiredCards = gateway.creditCard().expired();
         Assert.assertTrue(expiredCards.getMaximumSize() > 0);
-        
+
         List<String> tokens = new ArrayList<String>();
         for (CreditCard card : expiredCards) {
             Assert.assertTrue(card.isExpired());
@@ -805,17 +805,17 @@ public class CreditCardTest {
         Set<String> uniqueTokens = new HashSet<String>(tokens);
         Assert.assertEquals(expiredCards.getMaximumSize(), uniqueTokens.size());
     }
-    
+
     @Test
     public void expiringBetween() {
         Calendar start = Calendar.getInstance();
         start.set(2010, 0, 1);
         Calendar end = Calendar.getInstance();
         end.set(2010, 11, 30);
-        
+
         ResourceCollection<CreditCard> expiredCards = gateway.creditCard().expiringBetween(start, end);
         Assert.assertTrue(expiredCards.getMaximumSize() > 0);
-        
+
         List<String> tokens = new ArrayList<String>();
         for (CreditCard card : expiredCards) {
             Assert.assertEquals("2010", card.getExpirationYear());
@@ -825,4 +825,61 @@ public class CreditCardTest {
         Set<String> uniqueTokens = new HashSet<String>(tokens);
         Assert.assertEquals(expiredCards.getMaximumSize(), uniqueTokens.size());
     }
+
+    @Test
+    public void prepaidCard() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("4500600000000061").
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        CreditCard card = result.getTarget();
+
+        Assert.assertEquals(CreditCard.Prepaid.YES, card.getPrepaid());
+    }
+
+
+    @Test
+    public void negativeCardTypeIndicators() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("4111111111111111").
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        CreditCard card = result.getTarget();
+
+        Assert.assertEquals(CreditCard.Prepaid.NO, card.getPrepaid());
+    }
+
+
+    @Test
+    public void absentCardTypeIndicators() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5555555555554444").
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        CreditCard card = result.getTarget();
+
+        Assert.assertEquals(CreditCard.Prepaid.UNKNOWN, card.getPrepaid());
+    }
+
 }

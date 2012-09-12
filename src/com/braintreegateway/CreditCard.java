@@ -50,6 +50,23 @@ public class CreditCard {
         }
     }
 
+    public enum Prepaid {
+        YES("Yes"),
+        NO("No"),
+        UNKNOWN("Unknown");
+
+        private final String value;
+
+        Prepaid(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
     private Address billingAddress;
     private String bin;
     private String cardholderName;
@@ -62,6 +79,7 @@ public class CreditCard {
     private boolean isDefault;
     private boolean isExpired;
     private String last4;
+    private String prepaid;
     private String uniqueNumberIdentifier;
     private List<Subscription> subscriptions;
     private String token;
@@ -81,6 +99,7 @@ public class CreditCard {
         isDefault = node.findBoolean("default");
         isExpired = node.findBoolean("expired");
         last4 = node.findString("last-4");
+        prepaid = node.findString("prepaid");
         uniqueNumberIdentifier = node.findString("unique-number-identifier");
         token = node.findString("token");
         NodeWrapper billingAddressResponse = node.findFirst("billing-address");
@@ -139,6 +158,16 @@ public class CreditCard {
 
     public String getMaskedNumber() {
         return getBin() + "******" + getLast4();
+    }
+
+    public Prepaid getPrepaid() {
+      if(prepaid.equals(Prepaid.YES.toString())) {
+        return Prepaid.YES;
+      } else if (prepaid.equals(Prepaid.NO.toString())) {
+        return Prepaid.NO;
+      } else {
+        return Prepaid.UNKNOWN;
+      }
     }
 
     public String getUniqueNumberIdentifier() {
