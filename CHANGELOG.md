@@ -1,3 +1,7 @@
+## 2.16.0
+
+* Adds prepaid attribute on credit cards (possible values: Yes, No, Unknown)
+
 ## 2.15.0
 
 * Adds webhook gateways for parsing, verifying, and testing incoming notifications

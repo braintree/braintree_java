@@ -14,20 +14,20 @@ import com.braintreegateway.util.TrUtil;
  * <li> {@link SubscriptionGateway Subscriptions}
  * <li> {@link TransactionGateway Transactions}
  * </ul>
- * 
+ *
  * Quick Start Example:
- * 
+ *
  * <pre>
  * import java.math.BigDecimal;
  * import com.braintreegateway.*;
- * 
+ *
  * public class BraintreeExample {
- * 
+ *
  *     public static void main(String[] args) {
  *         BraintreeGateway gateway = new BraintreeGateway(Environment.SANDBOX, &quot;the_merchant_id&quot;, &quot;the_public_key&quot;, &quot;the_private_key&quot;);
- * 
+ *
  *         TransactionRequest request = new TransactionRequest().amount(new BigDecimal(&quot;100.00&quot;)).creditCard().number(&quot;4111111111111111&quot;).expirationDate(&quot;05/2012&quot;).done();
- * 
+ *
  *         Transaction transaction = gateway.transaction().sale(request).getTarget();
  *         System.out.println(&quot;Transaction ID: &quot; + transaction.getId());
  *         System.out.println(&quot;Status: &quot; + transaction.getStatus());
@@ -37,7 +37,7 @@ import com.braintreegateway.util.TrUtil;
  */
 public class BraintreeGateway {
 
-    public static final String VERSION = "2.15.0";
+    public static final String VERSION = "2.16.0";
 
     private Configuration configuration;
     private Environment environment;
@@ -48,7 +48,7 @@ public class BraintreeGateway {
 
     /**
      * Instantiates a BraintreeGateway. Use the values provided by Braintree.
-     * 
+     *
      * @param environment
      *            Either {@link Environment#SANDBOX} or
      *            {@link Environment#PRODUCTION}.
@@ -71,7 +71,7 @@ public class BraintreeGateway {
     /**
      * Returns an {@link AddOnGateway} for interacting with {@link AddOn}
      * objects.
-     * 
+     *
      * @return an {@link AddOnGateway}.
      */
     public AddOnGateway addOn() {
@@ -81,7 +81,7 @@ public class BraintreeGateway {
     /**
      * Returns an {@link AddressGateway} for interacting with {@link Address}
      * objects.
-     * 
+     *
      * @return an {@link AddressGateway}.
      */
     public AddressGateway address() {
@@ -95,7 +95,7 @@ public class BraintreeGateway {
     /**
      * Returns an {@link CreditCardGateway} for interacting with
      * {@link CreditCard} objects.
-     * 
+     *
      * @return an {@link CreditCardGateway}.
      */
     public CreditCardGateway creditCard() {
@@ -105,7 +105,7 @@ public class BraintreeGateway {
     /**
      * Returns an {@link CustomerGateway} for interacting with {@link Customer}
      * objects.
-     * 
+     *
      * @return an {@link CustomerGateway}.
      */
     public CustomerGateway customer() {
@@ -115,7 +115,7 @@ public class BraintreeGateway {
     /**
      * Returns an {@link DiscountGateway} for interacting with {@link Discount}
      * objects.
-     * 
+     *
      * @return an {@link DiscountGateway}.
      */
     public DiscountGateway discount() {
@@ -132,7 +132,7 @@ public class BraintreeGateway {
 
     /**
      * Returns an {@link PlanGateway} for interacting with {@link Plan} objects.
-     * 
+     *
      * @return an {@link PlanGateway}.
      */
     public PlanGateway plan() {
@@ -146,7 +146,7 @@ public class BraintreeGateway {
     /**
      * Returns an {@link SubscriptionGateway} for interacting with
      * {@link Subscription} objects.
-     * 
+     *
      * @return an {@link SubscriptionGateway}.
      */
     public SubscriptionGateway subscription() {
@@ -156,7 +156,7 @@ public class BraintreeGateway {
     /**
      * Returns an {@link TransactionGateway} for interacting with
      * {@link Transaction} objects.
-     * 
+     *
      * @return an {@link TransactionGateway}.
      */
     public TransactionGateway transaction() {
@@ -170,7 +170,7 @@ public class BraintreeGateway {
     /**
      * Returns encoded transparent redirect data for the given {@link Request}
      * and redirect URL
-     * 
+     *
      * @param trData
      *            the transparent redirect data as a {@link Request} object.
      * @param redirectURL
