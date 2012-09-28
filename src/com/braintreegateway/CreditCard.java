@@ -50,6 +50,91 @@ public class CreditCard {
         }
     }
 
+    public enum Commercial {
+        YES("Yes"),
+        NO("No"),
+        UNKNOWN("Unknown");
+
+        private final String value;
+
+        Commercial(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
+    public enum Debit {
+        YES("Yes"),
+        NO("No"),
+        UNKNOWN("Unknown");
+
+        private final String value;
+
+        Debit(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
+    public enum DurbinRegulated {
+        YES("Yes"),
+        NO("No"),
+        UNKNOWN("Unknown");
+
+        private final String value;
+
+        DurbinRegulated(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
+    public enum Healthcare {
+        YES("Yes"),
+        NO("No"),
+        UNKNOWN("Unknown");
+
+        private final String value;
+
+        Healthcare(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
+    public enum Payroll {
+        YES("Yes"),
+        NO("No"),
+        UNKNOWN("Unknown");
+
+        private final String value;
+
+        Payroll(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
     public enum Prepaid {
         YES("Yes"),
         NO("No"),
@@ -79,6 +164,11 @@ public class CreditCard {
     private boolean isDefault;
     private boolean isExpired;
     private String last4;
+    private String commercial;
+    private String debit;
+    private String durbinRegulated;
+    private String healthcare;
+    private String payroll;
     private String prepaid;
     private String uniqueNumberIdentifier;
     private List<Subscription> subscriptions;
@@ -99,6 +189,11 @@ public class CreditCard {
         isDefault = node.findBoolean("default");
         isExpired = node.findBoolean("expired");
         last4 = node.findString("last-4");
+        commercial = node.findString("commercial");
+        debit = node.findString("debit");
+        durbinRegulated = node.findString("durbin-regulated");
+        healthcare = node.findString("healthcare");
+        payroll = node.findString("payroll");
         prepaid = node.findString("prepaid");
         uniqueNumberIdentifier = node.findString("unique-number-identifier");
         token = node.findString("token");
@@ -158,6 +253,56 @@ public class CreditCard {
 
     public String getMaskedNumber() {
         return getBin() + "******" + getLast4();
+    }
+
+    public Commercial getCommercial() {
+      if(commercial.equals(Commercial.YES.toString())) {
+        return Commercial.YES;
+      } else if (commercial.equals(Commercial.NO.toString())) {
+        return Commercial.NO;
+      } else {
+        return Commercial.UNKNOWN;
+      }
+    }
+
+    public Debit getDebit() {
+      if(debit.equals(Debit.YES.toString())) {
+        return Debit.YES;
+      } else if (debit.equals(Debit.NO.toString())) {
+        return Debit.NO;
+      } else {
+        return Debit.UNKNOWN;
+      }
+    }
+
+    public DurbinRegulated getDurbinRegulated() {
+      if(durbinRegulated.equals(DurbinRegulated.YES.toString())) {
+        return DurbinRegulated.YES;
+      } else if (durbinRegulated.equals(DurbinRegulated.NO.toString())) {
+        return DurbinRegulated.NO;
+      } else {
+        return DurbinRegulated.UNKNOWN;
+      }
+    }
+
+    public Healthcare getHealthcare() {
+      if(healthcare.equals(Healthcare.YES.toString())) {
+        return Healthcare.YES;
+      } else if (healthcare.equals(Healthcare.NO.toString())) {
+        return Healthcare.NO;
+      } else {
+        return Healthcare.UNKNOWN;
+      }
+    }
+
+    public Payroll getPayroll() {
+      if(payroll.equals(Payroll.YES.toString())) {
+        return Payroll.YES;
+      } else if (payroll.equals(Payroll.NO.toString())) {
+        return Payroll.NO;
+      } else {
+        return Payroll.UNKNOWN;
+      }
     }
 
     public Prepaid getPrepaid() {
