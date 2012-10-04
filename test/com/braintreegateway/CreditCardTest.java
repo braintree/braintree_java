@@ -12,6 +12,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.braintreegateway.test.CreditCardNumbers;
+
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
 
@@ -827,12 +829,102 @@ public class CreditCardTest {
     }
 
     @Test
+    public void commercialCard() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number(CreditCardNumbers.CardTypeIndicators.Commercial.getValue()).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        CreditCard card = result.getTarget();
+
+        Assert.assertEquals(CreditCard.Commercial.YES, card.getCommercial());
+    }
+
+    @Test
+    public void durbinRegulatedCard() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number(CreditCardNumbers.CardTypeIndicators.DurbinRegulated.getValue()).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        CreditCard card = result.getTarget();
+
+        Assert.assertEquals(CreditCard.DurbinRegulated.YES, card.getDurbinRegulated());
+    }
+
+    @Test
+    public void debitCard() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number(CreditCardNumbers.CardTypeIndicators.Debit.getValue()).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        CreditCard card = result.getTarget();
+
+        Assert.assertEquals(CreditCard.Debit.YES, card.getDebit());
+    }
+
+    @Test
+    public void healthcareCard() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number(CreditCardNumbers.CardTypeIndicators.Healthcare.getValue()).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        CreditCard card = result.getTarget();
+
+        Assert.assertEquals(CreditCard.Healthcare.YES, card.getHealthcare());
+    }
+
+    @Test
+    public void payrollCard() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number(CreditCardNumbers.CardTypeIndicators.Payroll.getValue()).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        CreditCard card = result.getTarget();
+
+        Assert.assertEquals(CreditCard.Payroll.YES, card.getPayroll());
+    }
+
+    @Test
     public void prepaidCard() {
         BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
         Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
             customerId(customer.getId()).
-            number("4500600000000061").
+            number(CreditCardNumbers.CardTypeIndicators.Prepaid.getValue()).
             expirationDate("05/12").
             options().
                 verifyCard(true).
@@ -851,7 +943,7 @@ public class CreditCardTest {
         Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
             customerId(customer.getId()).
-            number("4111111111111111").
+            number(CreditCardNumbers.CardTypeIndicators.No.getValue()).
             expirationDate("05/12").
             options().
                 verifyCard(true).
@@ -860,6 +952,11 @@ public class CreditCardTest {
         Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
         CreditCard card = result.getTarget();
 
+        Assert.assertEquals(CreditCard.Commercial.NO, card.getCommercial());
+        Assert.assertEquals(CreditCard.Debit.NO, card.getDebit());
+        Assert.assertEquals(CreditCard.DurbinRegulated.NO, card.getDurbinRegulated());
+        Assert.assertEquals(CreditCard.Healthcare.NO, card.getHealthcare());
+        Assert.assertEquals(CreditCard.Payroll.NO, card.getPayroll());
         Assert.assertEquals(CreditCard.Prepaid.NO, card.getPrepaid());
     }
 
@@ -879,7 +976,11 @@ public class CreditCardTest {
         Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
         CreditCard card = result.getTarget();
 
+        Assert.assertEquals(CreditCard.Commercial.UNKNOWN, card.getCommercial());
+        Assert.assertEquals(CreditCard.Debit.UNKNOWN, card.getDebit());
+        Assert.assertEquals(CreditCard.DurbinRegulated.UNKNOWN, card.getDurbinRegulated());
+        Assert.assertEquals(CreditCard.Healthcare.UNKNOWN, card.getHealthcare());
+        Assert.assertEquals(CreditCard.Payroll.UNKNOWN, card.getPayroll());
         Assert.assertEquals(CreditCard.Prepaid.UNKNOWN, card.getPrepaid());
-    }
-
+     }
 }

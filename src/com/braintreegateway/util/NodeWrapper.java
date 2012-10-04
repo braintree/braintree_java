@@ -7,14 +7,6 @@ import java.util.*;
 
 public abstract class NodeWrapper {
 
-    private final static SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    private final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-    static {
-        dateTimeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-    }
-
     public abstract List<NodeWrapper> findAll(String expression);
 
     public List<String> findAllStrings(String expression) {
@@ -43,6 +35,8 @@ public abstract class NodeWrapper {
             if (dateString == null) {
                 return null;
             }
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
             calendar.setTime(dateFormat.parse(dateString));
             return calendar;
@@ -57,6 +51,8 @@ public abstract class NodeWrapper {
             if (dateString == null) {
                 return null;
             }
+            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            dateTimeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
             calendar.setTime(dateTimeFormat.parse(dateString));
             return calendar;

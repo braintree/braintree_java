@@ -105,6 +105,7 @@ public class Transaction {
     private String processorResponseCode;
     private String processorResponseText;
     private String purchaseOrderNumber;
+    private Boolean recurring;
     private String refundedTransactionId;
     private String refundId;
     private List<String> refundIds;
@@ -142,6 +143,7 @@ public class Transaction {
         processorResponseCode = node.findString("processor-response-code");
         processorResponseText = node.findString("processor-response-text");
         purchaseOrderNumber = node.findString("purchase-order-number");
+        recurring = node.findBoolean("recurring");
         refundedTransactionId = node.findString("refunded-transaction-id");
         refundId = node.findString("refund-id");
         settlementBatchId = node.findString("settlement-batch-id");
@@ -262,7 +264,7 @@ public class Transaction {
     public String getProcessorResponseText() {
         return processorResponseText;
     }
-    
+
     public String getPurchaseOrderNumber() {
         return purchaseOrderNumber;
     }
@@ -302,17 +304,21 @@ public class Transaction {
     public String getSubscriptionId() {
         return subscriptionId;
     }
-    
+
     public Subscription getSubscription() {
         return subscription;
     }
-    
+
     public BigDecimal getTaxAmount() {
         return taxAmount;
     }
 
     public Type getType() {
         return type;
+    }
+
+    public Boolean getRecurring() {
+        return recurring;
     }
 
     public Calendar getUpdatedAt() {
@@ -346,7 +352,7 @@ public class Transaction {
         }
         return gateway.address().find(customer.getId(), shippingAddress.getId());
     }
-    
+
     public Boolean isTaxExempt() {
         return taxExempt;
     }

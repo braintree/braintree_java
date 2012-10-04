@@ -602,6 +602,21 @@ public class TransactionTest {
     }
 
     @Test
+    public void saleWithRecurringFlag(){
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            recurring(true).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        Assert.assertTrue(transaction.getRecurring());
+    }
+
+    @Test
     public void saleWithValidationErrorsOnAddress() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.DECLINE.amount).
