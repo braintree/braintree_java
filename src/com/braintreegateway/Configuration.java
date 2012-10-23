@@ -4,9 +4,9 @@ public class Configuration {
     public String baseMerchantURL;
     public String privateKey;
     public String publicKey;
-    
+
     public static String apiVersion() {
-        return "2";
+        return "3";
     }
 
     public Configuration(String baseMerchantURL, String publicKey, String privateKey) {

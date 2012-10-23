@@ -102,6 +102,10 @@ public class BraintreeGateway {
         return new CreditCardGateway(http, configuration);
     }
 
+    public CreditCardVerificationGateway creditCardVerification() {
+        return new CreditCardVerificationGateway(http, configuration);
+    }
+
     /**
      * Returns an {@link CustomerGateway} for interacting with {@link Customer}
      * objects.
