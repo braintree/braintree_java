@@ -1,6 +1,7 @@
 package com.braintreegateway;
 
 import com.braintreegateway.Transaction.GatewayRejectionReason;
+import java.util.Calendar;
 import com.braintreegateway.util.EnumUtils;
 import com.braintreegateway.util.NodeWrapper;
 
@@ -19,6 +20,10 @@ public class CreditCardVerification {
     private String processorResponseText;
     private String merchantAccountId;
     private Status status;
+    private String id;
+    private CreditCard creditCard;
+    private Address billingAddress;
+    private Calendar createdAt;
 
     public CreditCardVerification(NodeWrapper node) {
         this.avsErrorResponseCode = node.findString("avs-error-response-code");
@@ -30,6 +35,10 @@ public class CreditCardVerification {
         this.processorResponseText = node.findString("processor-response-text");
         this.merchantAccountId = node.findString("merchant-account-id");
         this.status = EnumUtils.findByName(Status.class, node.findString("status"));
+        this.id = node.findString("id");
+        this.creditCard = new CreditCard(node.findFirst("credit-card"));
+        this.billingAddress = new Address(node.findFirst("billing"));
+        this.createdAt = node.findDateTime("created-at");
     }
 
     public String getAvsErrorResponseCode() {
@@ -44,10 +53,26 @@ public class CreditCardVerification {
         return avsStreetAddressResponseCode;
     }
 
+    public Address getBillingAddress() {
+        return billingAddress;
+    }
+
+    public Calendar getCreatedAt() {
+        return createdAt;
+    }
+
+    public CreditCard getCreditCard() {
+        return creditCard;
+    }
+
     public String getCvvResponseCode() {
         return cvvResponseCode;
     }
-    
+
+    public String getId() {
+        return id;
+    }
+
     public GatewayRejectionReason getGatewayRejectionReason() {
         return gatewayRejectionReason;
     }

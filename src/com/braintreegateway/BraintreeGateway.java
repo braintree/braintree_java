@@ -37,7 +37,7 @@ import com.braintreegateway.util.TrUtil;
  */
 public class BraintreeGateway {
 
-    public static final String VERSION = "2.17.0";
+    public static final String VERSION = "2.18.0";
 
     private Configuration configuration;
     private Environment environment;
@@ -100,6 +100,10 @@ public class BraintreeGateway {
      */
     public CreditCardGateway creditCard() {
         return new CreditCardGateway(http, configuration);
+    }
+
+    public CreditCardVerificationGateway creditCardVerification() {
+        return new CreditCardVerificationGateway(http, configuration);
     }
 
     /**

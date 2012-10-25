@@ -1,14 +1,24 @@
 package com.braintreegateway;
 
-import com.braintreegateway.util.NodeWrapperFactory;
-import org.junit.Assert;
-
-import org.junit.Test;
+import java.util.Calendar;
 
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.NodeWrapperFactory;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
+import com.braintreegateway.SandboxValues.CreditCardNumber;
 
 public class CreditCardVerificationTest {
+
+    private BraintreeGateway gateway;
+
+    @Before
+    public void createGateway() {
+        this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
+    }
+
     @Test
     public void constructFromResponse() {
         StringBuilder builder = new StringBuilder();
@@ -22,6 +32,15 @@ public class CreditCardVerificationTest {
         builder.append("    <avs-street-address-response-code>I</avs-street-address-response-code>");
         builder.append("    <processor-response-text>Do Not Honor</processor-response-text>");
         builder.append("    <cvv-response-code>M</cvv-response-code>");
+        builder.append("    <id>verification_id</id>");
+        builder.append("    <credit-card>");
+        builder.append("      <cardholder-name>Joe Johnson</cardholder-name>");
+        builder.append("      <number>4111111111111111</number>");
+        builder.append("      <expiration-date>12/2012</expiration-date>");
+        builder.append("    </credit-card>");
+        builder.append("    <billing>");
+        builder.append("      <postal-code>60601</postal-code>");
+        builder.append("    </billing>");
         builder.append("  </verification>");
         builder.append("  <errors>");
         builder.append("    <errors type=\"array\"/>");
@@ -38,4 +57,127 @@ public class CreditCardVerificationTest {
         Assert.assertEquals("Do Not Honor", verification.getProcessorResponseText());
         Assert.assertEquals("M", verification.getCvvResponseCode());
     }
+
+    @Test
+    public void searchOnAllTextFields()
+    {
+        CustomerRequest request = new CustomerRequest().
+            creditCard().
+                number("4000111111111115").
+                expirationDate("11/12").
+                cardholderName("Tom Smith").
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        Assert.assertFalse(result.isSuccess());
+        CreditCardVerification verification = result.getCreditCardVerification();
+
+        CreditCardVerification newVerification = gateway.creditCardVerification().find(verification.getId());
+
+        CreditCardVerificationSearchRequest searchRequest = new CreditCardVerificationSearchRequest().
+            id().is(verification.getId()).
+            creditCardCardholderName().is("Tom Smith").
+            creditCardExpirationDate().is("11/2012").
+            creditCardNumber().is("4000111111111115");
+
+        ResourceCollection<CreditCardVerification> collection = gateway.creditCardVerification().search(searchRequest);
+
+        Assert.assertEquals(1, collection.getMaximumSize());
+        Assert.assertEquals(verification.getId(), collection.getFirst().getId());
+    }
+
+    @Test
+    public void searchOnMultipleValueFields()
+    {
+        CustomerRequest requestOne = new CustomerRequest().
+            creditCard().
+                number("4000111111111115").
+                expirationDate("11/12").
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> resultOne = gateway.customer().create(requestOne);
+        Assert.assertFalse(resultOne.isSuccess());
+        CreditCardVerification verificationOne = resultOne.getCreditCardVerification();
+
+        CustomerRequest requestTwo = new CustomerRequest().
+            creditCard().
+                number("5105105105105100").
+                expirationDate("06/12").
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> resultTwo = gateway.customer().create(requestTwo);
+        Assert.assertFalse(resultTwo.isSuccess());
+        CreditCardVerification verificationTwo = resultTwo.getCreditCardVerification();
+
+        CreditCardVerificationSearchRequest searchRequest = new CreditCardVerificationSearchRequest().
+            ids().in(verificationOne.getId(), verificationTwo.getId()).
+            creditCardCardType().in(CreditCard.CardType.VISA, CreditCard.CardType.MASTER_CARD);
+
+        ResourceCollection<CreditCardVerification> collection = gateway.creditCardVerification().search(searchRequest);
+
+        Assert.assertEquals(2, collection.getMaximumSize());
+        Assert.assertEquals(verificationOne.getId(), collection.getFirst().getId());
+    }
+
+    @Test
+    public void searchOnRangeFields()
+    {
+        CustomerRequest request = new CustomerRequest().
+            creditCard().
+                number("4000111111111115").
+                expirationDate("11/12").
+                cardholderName("Tom Smith").
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        Assert.assertFalse(result.isSuccess());
+        CreditCardVerification verification = result.getCreditCardVerification();
+
+        Calendar createdAt = verification.getCreatedAt();
+
+        Calendar threeDaysEarlier = ((Calendar)createdAt.clone());
+        threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
+
+        Calendar oneDayEarlier = ((Calendar)createdAt.clone());
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
+
+        Calendar oneDayLater = ((Calendar)createdAt.clone());
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
+
+        CreditCardVerificationSearchRequest searchRequest = new CreditCardVerificationSearchRequest().
+           id().is(verification.getId()).
+           createdAt().between(oneDayEarlier, oneDayLater);
+
+        Assert.assertEquals(1, gateway.creditCardVerification().search(searchRequest).getMaximumSize());
+
+        searchRequest = new CreditCardVerificationSearchRequest().
+           id().is(verification.getId()).
+           createdAt().greaterThanOrEqualTo(oneDayEarlier);
+
+        Assert.assertEquals(1, gateway.creditCardVerification().search(searchRequest).getMaximumSize());
+
+        searchRequest = new CreditCardVerificationSearchRequest().
+           id().is(verification.getId()).
+           createdAt().lessThanOrEqualTo(oneDayLater);
+
+        Assert.assertEquals(1, gateway.creditCardVerification().search(searchRequest).getMaximumSize());
+
+        searchRequest = new CreditCardVerificationSearchRequest().
+           id().is(verification.getId()).
+           createdAt().between(threeDaysEarlier, oneDayEarlier);
+
+        Assert.assertEquals(0, gateway.creditCardVerification().search(searchRequest).getMaximumSize());
+     }
 }
