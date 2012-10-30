@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.braintreegateway.test.CreditCardNumbers;
+import com.braintreegateway.test.CreditCardDefaults;
 
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
@@ -936,6 +937,41 @@ public class CreditCardTest {
         Assert.assertEquals(CreditCard.Prepaid.YES, card.getPrepaid());
     }
 
+    @Test
+    public void issuingBank() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number(CreditCardNumbers.CardTypeIndicators.IssuingBank.getValue()).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        CreditCard card = result.getTarget();
+
+        Assert.assertEquals(CreditCardDefaults.IssuingBank.getValue(), card.getIssuingBank());
+    }
+
+    @Test
+    public void countryOfIssuance() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number(CreditCardNumbers.CardTypeIndicators.CountryOfIssuance.getValue()).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        CreditCard card = result.getTarget();
+
+        Assert.assertEquals(CreditCardDefaults.CountryOfIssuance.getValue(), card.getCountryOfIssuance());
+    }
 
     @Test
     public void negativeCardTypeIndicators() {
@@ -982,5 +1018,7 @@ public class CreditCardTest {
         Assert.assertEquals(CreditCard.Healthcare.UNKNOWN, card.getHealthcare());
         Assert.assertEquals(CreditCard.Payroll.UNKNOWN, card.getPayroll());
         Assert.assertEquals(CreditCard.Prepaid.UNKNOWN, card.getPrepaid());
+        Assert.assertEquals("Unknown", card.getCountryOfIssuance());
+        Assert.assertEquals("Unknown", card.getIssuingBank());
      }
 }

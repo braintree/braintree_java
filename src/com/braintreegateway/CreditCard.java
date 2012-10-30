@@ -170,6 +170,8 @@ public class CreditCard {
     private String healthcare;
     private String payroll;
     private String prepaid;
+    private String countryOfIssuance;
+    private String issuingBank;
     private String uniqueNumberIdentifier;
     private List<Subscription> subscriptions;
     private String token;
@@ -195,6 +197,8 @@ public class CreditCard {
         healthcare = node.findString("healthcare");
         payroll = node.findString("payroll");
         prepaid = node.findString("prepaid");
+        countryOfIssuance = node.findString("country-of-issuance");
+        issuingBank = node.findString("issuing-bank");
         uniqueNumberIdentifier = node.findString("unique-number-identifier");
         token = node.findString("token");
         NodeWrapper billingAddressResponse = node.findFirst("billing-address");
@@ -313,6 +317,22 @@ public class CreditCard {
       } else {
         return Prepaid.UNKNOWN;
       }
+    }
+
+    public String getCountryOfIssuance() {
+        if(countryOfIssuance.equals("")) {
+            return "Unknown";
+        } else {
+            return countryOfIssuance;
+        }
+    }
+
+    public String getIssuingBank() {
+        if(issuingBank.equals("")) {
+            return "Unknown";
+        } else {
+            return issuingBank;
+        }
     }
 
     public String getUniqueNumberIdentifier() {
