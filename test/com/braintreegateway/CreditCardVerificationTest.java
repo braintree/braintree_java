@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.braintreegateway.SandboxValues.CreditCardNumber;
+import com.braintreegateway.test.CreditCardNumbers;
 
 public class CreditCardVerificationTest {
 
@@ -37,6 +38,7 @@ public class CreditCardVerificationTest {
         builder.append("      <cardholder-name>Joe Johnson</cardholder-name>");
         builder.append("      <number>4111111111111111</number>");
         builder.append("      <expiration-date>12/2012</expiration-date>");
+        builder.append("      <prepaid>Unknown</prepaid>");
         builder.append("    </credit-card>");
         builder.append("    <billing>");
         builder.append("      <postal-code>60601</postal-code>");
@@ -56,6 +58,7 @@ public class CreditCardVerificationTest {
         Assert.assertEquals("I", verification.getAvsStreetAddressResponseCode());
         Assert.assertEquals("Do Not Honor", verification.getProcessorResponseText());
         Assert.assertEquals("M", verification.getCvvResponseCode());
+        Assert.assertEquals(CreditCard.Prepaid.UNKNOWN, verification.getCreditCard().getPrepaid());
     }
 
     @Test
@@ -180,4 +183,30 @@ public class CreditCardVerificationTest {
 
         Assert.assertEquals(0, gateway.creditCardVerification().search(searchRequest).getMaximumSize());
      }
+
+    @Test
+    public void verificationHasCardTypeIndicators()
+    {
+        CustomerRequest request = new CustomerRequest().
+            creditCard().
+                number("4000111111111115").
+                expirationDate("11/12").
+                cardholderName("Tom Smith").
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        CreditCardVerification verification = result.getCreditCardVerification();
+
+        Assert.assertEquals(CreditCard.Commercial.UNKNOWN, verification.getCreditCard().getCommercial());
+        Assert.assertEquals(CreditCard.Debit.UNKNOWN, verification.getCreditCard().getDebit());
+        Assert.assertEquals(CreditCard.DurbinRegulated.UNKNOWN, verification.getCreditCard().getDurbinRegulated());
+        Assert.assertEquals(CreditCard.Healthcare.UNKNOWN, verification.getCreditCard().getHealthcare());
+        Assert.assertEquals(CreditCard.Payroll.UNKNOWN, verification.getCreditCard().getPayroll());
+        Assert.assertEquals(CreditCard.Prepaid.UNKNOWN, verification.getCreditCard().getPrepaid());
+        Assert.assertEquals("Unknown", verification.getCreditCard().getCountryOfIssuance());
+        Assert.assertEquals("Unknown", verification.getCreditCard().getIssuingBank());
+    }
 }

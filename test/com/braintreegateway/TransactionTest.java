@@ -15,6 +15,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.braintreegateway.test.CreditCardNumbers;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
@@ -190,6 +191,30 @@ public class TransactionTest {
         Assert.assertEquals("05", creditCard.getExpirationMonth());
         Assert.assertEquals("2009", creditCard.getExpirationYear());
         Assert.assertEquals("05/2009", creditCard.getExpirationDate());
+    }
+
+    @Test
+    public void saleWithCardTypeIndicators() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumbers.CardTypeIndicators.Prepaid.getValue()).
+                expirationDate("05/2012").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+
+        CreditCard card = result.getTarget().getCreditCard();
+
+        Assert.assertEquals(CreditCard.Prepaid.YES, card.getPrepaid());
+        Assert.assertEquals(CreditCard.Healthcare.UNKNOWN, card.getHealthcare());
+        Assert.assertEquals(CreditCard.Payroll.UNKNOWN, card.getPayroll());
+        Assert.assertEquals(CreditCard.Debit.UNKNOWN, card.getDebit());
+        Assert.assertEquals(CreditCard.DurbinRegulated.UNKNOWN, card.getDurbinRegulated());
+        Assert.assertEquals(CreditCard.Commercial.UNKNOWN, card.getCommercial());
+        Assert.assertEquals("Unknown", card.getCountryOfIssuance());
+        Assert.assertEquals("Unknown", card.getIssuingBank());
     }
 
     @Test
