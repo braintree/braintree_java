@@ -709,7 +709,7 @@ public class TransactionTest {
         List<ValidationErrorCode> validationErrorCodes = new ArrayList<ValidationErrorCode>();
         validationErrorCodes.add(errros.get(0).getCode());
         validationErrorCodes.add(errros.get(1).getCode());
-        Assert.assertTrue(validationErrorCodes.contains(ValidationErrorCode.TRANSACTION_PAYMENT_METHOD_CONFLICT));
+        Assert.assertTrue(validationErrorCodes.contains(ValidationErrorCode.TRANSACTION_PAYMENT_METHOD_CONFLICT_WITH_VENMO_SDK));
         Assert.assertTrue(validationErrorCodes.contains(ValidationErrorCode.TRANSACTION_PAYMENT_METHOD_DOES_NOT_BELONG_TO_CUSTOMER));
     }
 
