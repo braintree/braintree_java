@@ -13,6 +13,7 @@ public class TransactionRequest extends Request {
     private BigDecimal amount;
     private TransactionAddressRequest billingAddressRequest;
     private TransactionCreditCardRequest creditCardRequest;
+    private String channel;
     private String customerId;
     private CustomerRequest customerRequest;
     private Map<String, String> customFields;
@@ -41,6 +42,11 @@ public class TransactionRequest extends Request {
     public TransactionAddressRequest billingAddress() {
         billingAddressRequest = new TransactionAddressRequest(this, "billing");
         return billingAddressRequest;
+    }
+
+    public TransactionRequest channel(String channel) {
+        this.channel = channel;
+        return this;
     }
 
     public TransactionCreditCardRequest creditCard() {
@@ -146,6 +152,7 @@ public class TransactionRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root).
             addElement("amount", amount).
+            addElement("channel", channel).
             addElement("customerId", customerId).
             addElement("merchantAccountId", merchantAccountId).
             addElement("orderId", orderId).

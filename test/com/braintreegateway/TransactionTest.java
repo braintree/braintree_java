@@ -108,11 +108,18 @@ public class TransactionTest {
         Assert.assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        TransactionCloneRequest cloneRequest = new TransactionCloneRequest().amount(new BigDecimal("123.45")).options().submitForSettlement(false).done();
+        TransactionCloneRequest cloneRequest = new TransactionCloneRequest().
+            amount(new BigDecimal("123.45")).
+            channel("MyShoppingCartProvider").
+            options().
+              submitForSettlement(false).
+              done();
         Result<Transaction> cloneResult = gateway.transaction().cloneTransaction(transaction.getId(), cloneRequest);
         Assert.assertTrue(cloneResult.isSuccess());
         Transaction cloneTransaction = result.getTarget();
 
+        Assert.assertEquals(new BigDecimal("123.45"), cloneTransaction.getAmount());
+        Assert.assertEquals("MyShoppingCartProvider", cloneTransaction.getChannel());
         Assert.assertEquals("123", cloneTransaction.getOrderId());
         Assert.assertEquals("411111******1111", cloneTransaction.getCreditCard().getMaskedNumber());
         Assert.assertEquals("Dan", cloneTransaction.getCustomer().getFirstName());
