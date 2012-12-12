@@ -1,6 +1,6 @@
 <project default="test">
   <target name="test">
-    <junit haltonerror="yes" fork="yes" forkmode="once">
+    <junit haltonerror="yes" fork="yes" forkmode="once" failureproperty="junit.failure">
       <classpath>
         <pathelement location="test-classes"/>
         <fileset dir=".">
@@ -17,5 +17,6 @@
         </fileset>
       </batchtest>
     </junit>
+    <fail if="junit.failure" message="Unit tests failed"/>
   </target>
 </project>
