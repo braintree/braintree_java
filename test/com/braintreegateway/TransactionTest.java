@@ -116,7 +116,7 @@ public class TransactionTest {
               done();
         Result<Transaction> cloneResult = gateway.transaction().cloneTransaction(transaction.getId(), cloneRequest);
         Assert.assertTrue(cloneResult.isSuccess());
-        Transaction cloneTransaction = result.getTarget();
+        Transaction cloneTransaction = cloneResult.getTarget();
 
         Assert.assertEquals(new BigDecimal("123.45"), cloneTransaction.getAmount());
         Assert.assertEquals("MyShoppingCartProvider", cloneTransaction.getChannel());
@@ -228,6 +228,7 @@ public class TransactionTest {
     public void saleWithAllAttributes() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
+            channel("MyShoppingCartProvider").
             orderId("123").
             creditCard().
                 cardholderName("The Cardholder").
@@ -279,6 +280,7 @@ public class TransactionTest {
 
         Assert.assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
         Assert.assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        Assert.assertEquals("MyShoppingCartProvider", transaction.getChannel());
         Assert.assertEquals("123", transaction.getOrderId());
         Assert.assertNull(transaction.getVaultCreditCard(gateway));
         Assert.assertNull(transaction.getVaultCustomer(gateway));
