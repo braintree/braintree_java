@@ -1,3 +1,7 @@
+## 2.20.0
+
+* Adds channel field to transactions.
+
 ## 2.19.0
 
 * Adds country of issuance and issuing bank
