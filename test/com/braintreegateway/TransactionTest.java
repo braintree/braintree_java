@@ -15,6 +15,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.braintreegateway.test.CreditCardNumbers;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
@@ -107,11 +108,18 @@ public class TransactionTest {
         Assert.assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        TransactionCloneRequest cloneRequest = new TransactionCloneRequest().amount(new BigDecimal("123.45")).options().submitForSettlement(false).done();
+        TransactionCloneRequest cloneRequest = new TransactionCloneRequest().
+            amount(new BigDecimal("123.45")).
+            channel("MyShoppingCartProvider").
+            options().
+              submitForSettlement(false).
+              done();
         Result<Transaction> cloneResult = gateway.transaction().cloneTransaction(transaction.getId(), cloneRequest);
         Assert.assertTrue(cloneResult.isSuccess());
-        Transaction cloneTransaction = result.getTarget();
+        Transaction cloneTransaction = cloneResult.getTarget();
 
+        Assert.assertEquals(new BigDecimal("123.45"), cloneTransaction.getAmount());
+        Assert.assertEquals("MyShoppingCartProvider", cloneTransaction.getChannel());
         Assert.assertEquals("123", cloneTransaction.getOrderId());
         Assert.assertEquals("411111******1111", cloneTransaction.getCreditCard().getMaskedNumber());
         Assert.assertEquals("Dan", cloneTransaction.getCustomer().getFirstName());
@@ -193,9 +201,34 @@ public class TransactionTest {
     }
 
     @Test
+    public void saleWithCardTypeIndicators() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumbers.CardTypeIndicators.Prepaid.getValue()).
+                expirationDate("05/2012").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+
+        CreditCard card = result.getTarget().getCreditCard();
+
+        Assert.assertEquals(CreditCard.Prepaid.YES, card.getPrepaid());
+        Assert.assertEquals(CreditCard.Healthcare.UNKNOWN, card.getHealthcare());
+        Assert.assertEquals(CreditCard.Payroll.UNKNOWN, card.getPayroll());
+        Assert.assertEquals(CreditCard.Debit.UNKNOWN, card.getDebit());
+        Assert.assertEquals(CreditCard.DurbinRegulated.UNKNOWN, card.getDurbinRegulated());
+        Assert.assertEquals(CreditCard.Commercial.UNKNOWN, card.getCommercial());
+        Assert.assertEquals("Unknown", card.getCountryOfIssuance());
+        Assert.assertEquals("Unknown", card.getIssuingBank());
+    }
+
+    @Test
     public void saleWithAllAttributes() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
+            channel("MyShoppingCartProvider").
             orderId("123").
             creditCard().
                 cardholderName("The Cardholder").
@@ -247,6 +280,7 @@ public class TransactionTest {
 
         Assert.assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
         Assert.assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        Assert.assertEquals("MyShoppingCartProvider", transaction.getChannel());
         Assert.assertEquals("123", transaction.getOrderId());
         Assert.assertNull(transaction.getVaultCreditCard(gateway));
         Assert.assertNull(transaction.getVaultCustomer(gateway));
@@ -684,7 +718,7 @@ public class TransactionTest {
         List<ValidationErrorCode> validationErrorCodes = new ArrayList<ValidationErrorCode>();
         validationErrorCodes.add(errros.get(0).getCode());
         validationErrorCodes.add(errros.get(1).getCode());
-        Assert.assertTrue(validationErrorCodes.contains(ValidationErrorCode.TRANSACTION_PAYMENT_METHOD_CONFLICT));
+        Assert.assertTrue(validationErrorCodes.contains(ValidationErrorCode.TRANSACTION_PAYMENT_METHOD_CONFLICT_WITH_VENMO_SDK));
         Assert.assertTrue(validationErrorCodes.contains(ValidationErrorCode.TRANSACTION_PAYMENT_METHOD_DOES_NOT_BELONG_TO_CUSTOMER));
     }
 
