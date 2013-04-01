@@ -15,6 +15,7 @@ public class CreditCardRequest extends Request {
     private CustomerRequest parent;
     private String token;
     private String paymentMethodToken;
+    private String venmoSdkPaymentMethodCode;
 
     public CreditCardRequest() {
     }
@@ -60,7 +61,7 @@ public class CreditCardRequest extends Request {
     public String getCustomerId() {
         return customerId;
     }
-    
+
     @Override
     public String getKind() {
         if (this.paymentMethodToken == null) {
@@ -76,6 +77,11 @@ public class CreditCardRequest extends Request {
 
     public CreditCardRequest number(String number) {
         this.number = number;
+        return this;
+    }
+
+    public CreditCardRequest venmoSdkPaymentMethodCode(String venmoSdkPaymentMethodCode) {
+        this.venmoSdkPaymentMethodCode = venmoSdkPaymentMethodCode;
         return this;
     }
 
@@ -110,7 +116,7 @@ public class CreditCardRequest extends Request {
             addTopLevelElement("paymentMethodToken", paymentMethodToken).
             toQueryString();
     }
-    
+
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
             addElement("billingAddress", billingAddressRequest).
@@ -121,6 +127,7 @@ public class CreditCardRequest extends Request {
             addElement("cvv", cvv).
             addElement("number", number).
             addElement("expirationDate", expirationDate).
-            addElement("token", token);
+            addElement("token", token).
+            addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode);
     }
 }

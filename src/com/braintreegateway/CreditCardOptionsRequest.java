@@ -7,6 +7,7 @@ public class CreditCardOptionsRequest extends Request {
     private Boolean verifyCard;
     private Boolean makeDefault;
     private String updateExistingToken;
+    private String venmoSdkSession;
 
     public CreditCardOptionsRequest(CreditCardRequest parent) {
         this.parent = parent;
@@ -41,6 +42,11 @@ public class CreditCardOptionsRequest extends Request {
         return this;
     }
 
+    public CreditCardOptionsRequest venmoSdkSession(String venmoSdkSession) {
+        this.venmoSdkSession = venmoSdkSession;
+        return this;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("options").toXML();
@@ -50,15 +56,15 @@ public class CreditCardOptionsRequest extends Request {
     public String toQueryString() {
         return toQueryString("options");
     }
-    
+
     @Override
     public String toQueryString(String root) {
         return buildRequest(root).toQueryString();
     }
-    
+
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root);
-        
+
         builder.addElement("failOnDuplicatePaymentMethod", failOnDuplicatePaymentMethod);
         builder.addElement("verifyCard", verifyCard);
         builder.addElement("verificationMerchantAccountId", verificationMerchantAccountId);
@@ -66,7 +72,8 @@ public class CreditCardOptionsRequest extends Request {
             builder.addElement("makeDefault", makeDefault);
         }
         builder.addElement("updateExistingToken", updateExistingToken);
-        
+        builder.addElement("venmoSdkSession", venmoSdkSession);
+
         return builder;
     }
 }

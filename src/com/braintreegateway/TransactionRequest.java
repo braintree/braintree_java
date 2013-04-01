@@ -29,6 +29,7 @@ public class TransactionRequest extends Request {
     private BigDecimal taxAmount;
     private Boolean taxExempt;
     private Type type;
+    private String venmoSdkPaymentMethodCode;
 
     public TransactionRequest() {
         this.customFields = new HashMap<String, String>();
@@ -129,6 +130,11 @@ public class TransactionRequest extends Request {
         return this;
     }
 
+    public TransactionRequest venmoSdkPaymentMethodCode(String venmoSdkPaymentMethodCode) {
+      this.venmoSdkPaymentMethodCode = venmoSdkPaymentMethodCode;
+      return this;
+    }
+
     @Override
     public String toQueryString() {
         return toQueryString("transaction");
@@ -167,7 +173,8 @@ public class TransactionRequest extends Request {
             addElement("billing", billingAddressRequest).
             addElement("shipping", shippingAddressRequest).
             addElement("options", transactionOptionsRequest).
-            addElement("recurring", recurring);
+            addElement("recurring", recurring).
+            addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode);
 
         if (!customFields.isEmpty()) {
             builder.addElement("customFields", customFields);
