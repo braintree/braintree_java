@@ -1,3 +1,7 @@
+## 2.21.0
+
+* Adds Venmo Touch support.
+
 ## 2.20.0
 
 * Adds channel field to transactions.

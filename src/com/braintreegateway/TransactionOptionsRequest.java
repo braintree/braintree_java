@@ -7,6 +7,7 @@ public class TransactionOptionsRequest extends Request {
     private Boolean storeInVaultOnSuccess;
     private Boolean storeShippingAddressInVault;
     private Boolean submitForSettlement;
+    private String venmoSdkSession;
 
     public TransactionOptionsRequest(TransactionRequest parent) {
         this.parent = parent;
@@ -41,6 +42,11 @@ public class TransactionOptionsRequest extends Request {
         return this;
     }
 
+    public TransactionOptionsRequest venmoSdkSession(String venmoSdkSession) {
+        this.venmoSdkSession = venmoSdkSession;
+        return this;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("options").toXML();
@@ -62,6 +68,7 @@ public class TransactionOptionsRequest extends Request {
             addElement("storeInVaultOnSuccess", storeInVaultOnSuccess).
             addElement("addBillingAddressToPaymentMethod", addBillingAddressToPaymentMethod).
             addElement("storeShippingAddressInVault", storeShippingAddressInVault).
-            addElement("submitForSettlement", submitForSettlement);
+            addElement("submitForSettlement", submitForSettlement).
+            addElement("venmoSdkSession", venmoSdkSession);
     }
 }
