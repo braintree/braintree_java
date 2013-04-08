@@ -2404,7 +2404,7 @@ public class TransactionTest {
     }
     
     @Test
-    public void serviceFees() {
+    public void serviceFee() {
     	TransactionRequest request = new TransactionRequest().
     		merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
 	        amount(new BigDecimal("100.00")).
