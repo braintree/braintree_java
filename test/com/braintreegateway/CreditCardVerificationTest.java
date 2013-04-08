@@ -2,14 +2,12 @@ package com.braintreegateway;
 
 import java.util.Calendar;
 
-import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.braintreegateway.SandboxValues.CreditCardNumber;
-import com.braintreegateway.test.CreditCardNumbers;
+import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.NodeWrapperFactory;
 
 public class CreditCardVerificationTest {
 
@@ -77,8 +75,6 @@ public class CreditCardVerificationTest {
         Result<Customer> result = gateway.customer().create(request);
         Assert.assertFalse(result.isSuccess());
         CreditCardVerification verification = result.getCreditCardVerification();
-
-        CreditCardVerification newVerification = gateway.creditCardVerification().find(verification.getId());
 
         CreditCardVerificationSearchRequest searchRequest = new CreditCardVerificationSearchRequest().
             id().is(verification.getId()).

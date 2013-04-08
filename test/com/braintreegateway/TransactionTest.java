@@ -2266,14 +2266,14 @@ public class TransactionTest {
 
     @Test
     public void unrecognizedStatus() {
-        String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><type>sale</type></transaction>";
+        String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><service-fee></service-fee><type>sale</type></transaction>";
         Transaction transaction = new Transaction(NodeWrapperFactory.instance.create(xml));
         Assert.assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
     }
 
     @Test
     public void unrecognizedType() {
-        String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><type>sale</type></transaction>";
+        String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><service-fee></service-fee><type>sale</type></transaction>";
         Transaction transaction = new Transaction(NodeWrapperFactory.instance.create(xml));
         Assert.assertEquals(Transaction.Type.UNRECOGNIZED, transaction.getType());
     }
@@ -2401,5 +2401,27 @@ public class TransactionTest {
         Assert.assertNull(discounts.get(0).getNumberOfBillingCycles());
         Assert.assertEquals(new Integer(2), discounts.get(0).getQuantity());
         Assert.assertTrue(discounts.get(0).neverExpires());
+    }
+    
+    @Test
+    public void serviceFees() {
+    	TransactionRequest request = new TransactionRequest().
+    		merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+	        amount(new BigDecimal("100.00")).
+	        creditCard().
+	        	number(CreditCardNumber.VISA.number).
+	        	expirationDate("05/2009").
+	        	done().
+	        serviceFee().
+	        	amount(new BigDecimal("1.00")).
+	        	merchantAccountId(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID).
+	        	done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        Assert.assertEquals(new BigDecimal("1.00"), transaction.getServiceFee().getAmount());
+        Assert.assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getServiceFee().getMerchantAccountId());
     }
 }

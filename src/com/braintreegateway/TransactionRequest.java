@@ -13,6 +13,7 @@ public class TransactionRequest extends Request {
     private BigDecimal amount;
     private TransactionAddressRequest billingAddressRequest;
     private TransactionCreditCardRequest creditCardRequest;
+    private TransactionServiceFeeRequest serviceFeeRequest;
     private String channel;
     private String customerId;
     private CustomerRequest customerRequest;
@@ -53,6 +54,11 @@ public class TransactionRequest extends Request {
     public TransactionCreditCardRequest creditCard() {
         creditCardRequest = new TransactionCreditCardRequest(this);
         return creditCardRequest;
+    }
+    
+    public TransactionServiceFeeRequest serviceFee() {
+    	serviceFeeRequest = new TransactionServiceFeeRequest(this);
+    	return serviceFeeRequest;
     }
 
     public CustomerRequest customer() {
@@ -174,7 +180,8 @@ public class TransactionRequest extends Request {
             addElement("shipping", shippingAddressRequest).
             addElement("options", transactionOptionsRequest).
             addElement("recurring", recurring).
-            addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode);
+            addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode).
+            addElement("serviceFee", serviceFeeRequest);
 
         if (!customFields.isEmpty()) {
             builder.addElement("customFields", customFields);

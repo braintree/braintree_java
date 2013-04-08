@@ -120,6 +120,7 @@ public class Transaction {
     private Boolean taxExempt;
     private Type type;
     private Calendar updatedAt;
+    private ServiceFee serviceFee;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -135,8 +136,7 @@ public class Transaction {
         customer = new Customer(node.findFirst("customer"));
         cvvResponseCode = node.findString("cvv-response-code");
         descriptor = new Descriptor(node.findFirst("descriptor"));
-        gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node
-            .findString("gateway-rejection-reason"));
+        gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"));
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
         orderId = node.findString("order-id");
@@ -148,6 +148,7 @@ public class Transaction {
         recurring = node.findBoolean("recurring");
         refundedTransactionId = node.findString("refunded-transaction-id");
         refundId = node.findString("refund-id");
+        serviceFee = new ServiceFee(node.findFirst("service-fee"));
         settlementBatchId = node.findString("settlement-batch-id");
         shippingAddress = new Address(node.findFirst("shipping"));
         status = EnumUtils.findByName(Status.class, node.findString("status"));
@@ -289,6 +290,10 @@ public class Transaction {
 
     public List<String> getRefundIds() {
         return refundIds;
+    }
+
+    public ServiceFee getServiceFee() {
+    	return serviceFee;
     }
 
     public String getSettlementBatchId() {
