@@ -22,18 +22,24 @@ public enum Environment {
     }
 
     private static String developmentPort() {
-        return System.getenv().get("GATEWAY_PORT") == null ? "3000" : System.getenv().get("GATEWAY_PORT");
+        if (System.getenv().get("GATEWAY_PORT") != null) {
+            return System.getenv().get("GATEWAY_PORT");
+        } else if (System.getProperty("com.braintreegateway.port") != null) {
+            return System.getProperty("com.braintreegateway.port");
+        } else {
+            return "3000";
+        }
     }
 
     private static String developmentHost() {
-        return System.getenv().get("GATEWAY_HOST") == null ? "http://localhost" : System.getenv().get("GATEWAY_HOST");
+        return System.getProperty("com.braintreegateway.host") == null ? "http://localhost" : System.getProperty("com.braintreegateway.host");
     }
 
     private static String[] developmentCertificates() {
-        if (System.getenv().get("GATEWAY_CERTIFICATES") == null) {
+        if (System.getProperty("com.braintreegateway.certificates") == null) {
             return new String[] {};
         } else {
-            String certs = System.getenv().get("GATEWAY_CERTIFICATES");
+            String certs = System.getProperty("com.braintreegateway.certificates");
             return certs.split(",");
         }
     }
