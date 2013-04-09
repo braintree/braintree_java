@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import com.braintreegateway.test.CreditCardNumbers;
 import com.braintreegateway.test.CreditCardDefaults;
+import com.braintreegateway.test.VenmoSdk;
 
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
@@ -308,6 +309,19 @@ public class CreditCardTest {
 
         Assert.assertFalse(gateway.creditCard().find(card1.getToken()).isDefault());
         Assert.assertTrue(gateway.creditCard().find(card2.getToken()).isDefault());
+    }
+
+    @Test
+    public void createWithVenmoSdkPaymentMethodCode() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            venmoSdkPaymentMethodCode(VenmoSdk.PaymentMethodCode.Visa.code);
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        Assert.assertTrue(result.isSuccess());
+        CreditCard card = result.getTarget();
+        Assert.assertEquals("411111", card.getBin());
     }
 
     @Test

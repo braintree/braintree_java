@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.braintreegateway.test.CreditCardNumbers;
+import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
@@ -932,6 +933,17 @@ public class TransactionTest {
 
         Assert.assertEquals(ValidationErrorCode.TRANSACTION_PURCHASE_ORDER_NUMBER_IS_INVALID,
             result.getErrors().forObject("transaction").onField("purchaseOrderNumber").get(0).getCode());
+    }
+
+    @Test
+    public void saleWithVenmoSdkPaymentMethodCode() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            venmoSdkPaymentMethodCode(VenmoSdk.PaymentMethodCode.Visa.code);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Assert.assertTrue(result.isSuccess());
+        Assert.assertEquals("411111", result.getTarget().getCreditCard().getBin());
     }
 
     @Test
@@ -2402,7 +2414,7 @@ public class TransactionTest {
         Assert.assertEquals(new Integer(2), discounts.get(0).getQuantity());
         Assert.assertTrue(discounts.get(0).neverExpires());
     }
-    
+
     @Test
     public void serviceFee() {
     	TransactionRequest request = new TransactionRequest().
