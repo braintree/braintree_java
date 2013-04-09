@@ -5,7 +5,7 @@ package com.braintreegateway;
  */
 public enum Environment {
     /** For Braintree internal development. */
-    DEVELOPMENT("http://localhost:" + developmentPort(), new String[] {}),
+    DEVELOPMENT(developmentHost() + ":" + developmentPort(), developmentCertificates()),
 
     /** For production. */
     PRODUCTION("https://www.braintreegateway.com:443", new String[] {"www_braintreegateway_com.ca.der", "securetrust.ca.der"}),
@@ -23,5 +23,18 @@ public enum Environment {
 
     private static String developmentPort() {
         return System.getenv().get("GATEWAY_PORT") == null ? "3000" : System.getenv().get("GATEWAY_PORT");
+    }
+
+    private static String developmentHost() {
+        return System.getenv().get("GATEWAY_HOST") == null ? "http://localhost" : System.getenv().get("GATEWAY_HOST");
+    }
+
+    private static String[] developmentCertificates() {
+        if (System.getenv().get("GATEWAY_CERTIFICATES") == null) {
+            return new String[] {};
+        } else {
+            String certs = System.getenv().get("GATEWAY_CERTIFICATES");
+            return certs.split(",");
+        }
     }
 }
