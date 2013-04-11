@@ -2,43 +2,43 @@ package com.braintreegateway;
 
 public class CustomerSearchRequest extends SearchRequest {
     public TextNode<CustomerSearchRequest> addressCountryName() {
-        return new TextNode<CustomerSearchRequest>("address_country_name", this);
+        return textNode("address_country_name");
     }
 
     public TextNode<CustomerSearchRequest> addressExtendedAddress() {
-        return new TextNode<CustomerSearchRequest>("address_extended_address", this);
+        return textNode("address_extended_address");
     }
 
     public TextNode<CustomerSearchRequest> addressFirstName() {
-        return new TextNode<CustomerSearchRequest>("address_first_name", this);
+        return textNode("address_first_name");
     }
 
     public TextNode<CustomerSearchRequest> addressLastName() {
-        return new TextNode<CustomerSearchRequest>("address_last_name", this);
+        return textNode("address_last_name");
     }
 
     public TextNode<CustomerSearchRequest> addressLocality() {
-        return new TextNode<CustomerSearchRequest>("address_locality", this);
+        return textNode("address_locality");
     }
 
     public TextNode<CustomerSearchRequest> addressPostalCode() {
-        return new TextNode<CustomerSearchRequest>("address_postal_code", this);
+        return textNode("address_postal_code");
     }
 
     public TextNode<CustomerSearchRequest> addressRegion() {
-        return new TextNode<CustomerSearchRequest>("address_region", this);
+        return textNode("address_region");
     }
 
     public TextNode<CustomerSearchRequest> addressStreetAddress() {
-        return new TextNode<CustomerSearchRequest>("address_street_address", this);
+        return textNode("address_street_address");
     }
 
     public TextNode<CustomerSearchRequest> cardholderName() {
-        return new TextNode<CustomerSearchRequest>("cardholder_name", this);
+        return textNode("cardholder_name");
     }
 
     public TextNode<CustomerSearchRequest> company() {
-        return new TextNode<CustomerSearchRequest>("company", this);
+        return textNode("company");
     }
 
     public EqualityNode<CustomerSearchRequest> creditCardExpirationDate() {
@@ -46,35 +46,35 @@ public class CustomerSearchRequest extends SearchRequest {
     }
 
     public TextNode<CustomerSearchRequest> email() {
-        return new TextNode<CustomerSearchRequest>("email", this);
+        return textNode("email");
     }
 
     public TextNode<CustomerSearchRequest> fax() {
-        return new TextNode<CustomerSearchRequest>("fax", this);
+        return textNode("fax");
     }
 
     public TextNode<CustomerSearchRequest> firstName() {
-        return new TextNode<CustomerSearchRequest>("first_name", this);
+        return textNode("first_name");
     }
 
     public TextNode<CustomerSearchRequest> id() {
-        return new TextNode<CustomerSearchRequest>("id", this);
+        return textNode("id");
     }
 
     public TextNode<CustomerSearchRequest> lastName() {
-        return new TextNode<CustomerSearchRequest>("last_name", this);
+        return textNode("last_name");
     }
 
     public TextNode<CustomerSearchRequest> paymentMethodToken() {
-        return new TextNode<CustomerSearchRequest>("payment_method_token", this);
+        return textNode("payment_method_token");
     }
 
     public TextNode<CustomerSearchRequest> phone() {
-        return new TextNode<CustomerSearchRequest>("phone", this);
+        return textNode("phone");
     }
 
     public TextNode<CustomerSearchRequest> website() {
-        return new TextNode<CustomerSearchRequest>("website", this);
+        return textNode("website");
     }
 
     public IsNode<CustomerSearchRequest> paymentMethodTokenWithDuplicates() {
@@ -91,5 +91,9 @@ public class CustomerSearchRequest extends SearchRequest {
 
     public DateRangeNode<CustomerSearchRequest> createdAt() {
         return new DateRangeNode<CustomerSearchRequest>("created_at", this);
+    }
+
+    private TextNode<CustomerSearchRequest> textNode(String fieldName) {
+        return new TextNode<CustomerSearchRequest>(fieldName, this);
     }
 }

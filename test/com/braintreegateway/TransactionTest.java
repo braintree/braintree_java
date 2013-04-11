@@ -1,6 +1,7 @@
 package com.braintreegateway;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.*;
 
 import com.braintreegateway.testhelpers.TestHelper;
@@ -1739,6 +1740,66 @@ public class TransactionTest {
      }
 
     @Test
+    public void searchOnDepositDate() throws ParseException {
+        String transactionID = "deposit_transaction";
+
+        Calendar depositTime = CalendarTestUtils.dateTime("2013-04-10T00:00:00Z");
+
+        Calendar threeDaysEarlier = ((Calendar)depositTime.clone());
+        threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
+
+        Calendar oneDayEarlier = ((Calendar)depositTime.clone());
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
+
+        Calendar oneDayLater = ((Calendar)depositTime.clone());
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+                id().is(transactionID).
+                depositDate().between(oneDayEarlier, oneDayLater);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+                id().is(transactionID).
+                depositDate().greaterThanOrEqualTo(oneDayEarlier);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+                id().is(transactionID).
+                depositDate().lessThanOrEqualTo(oneDayLater);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+                id().is(transactionID).
+                depositDate().between(threeDaysEarlier, oneDayEarlier);
+
+        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    @Test
+    public void searchOnDepositDateUsingLocalTime() throws ParseException {
+        String transactionId = "deposit_transaction";
+
+        Calendar depositTime = CalendarTestUtils.dateTime("2013-04-10T00:00:00Z");
+        depositTime.setTimeZone(TimeZone.getTimeZone("CST"));
+
+        Calendar oneDayEarlier = Calendar.getInstance();
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
+
+        Calendar oneDayLater = Calendar.getInstance();
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+                id().is(transactionId).
+                depositDate().between(oneDayEarlier, oneDayLater);
+
+        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    @Test
     public void searchOnCreatedAt() {
         TransactionRequest request = new TransactionRequest().
         amount(TransactionAmount.AUTHORIZE.amount).
@@ -1788,8 +1849,8 @@ public class TransactionTest {
     @Test
     public void searchOnCreatedAtUsingLocalTime() {
         TransactionRequest request = new TransactionRequest().
-            amount(TransactionAmount.AUTHORIZE.amount).
-            creditCard().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2010").
                 done();
@@ -1803,8 +1864,8 @@ public class TransactionTest {
         oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-            id().is(transaction.getId()).
-            createdAt().between(oneDayEarlier, oneDayLater);
+                id().is(transaction.getId()).
+                createdAt().between(oneDayEarlier, oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
     }

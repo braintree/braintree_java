@@ -2,47 +2,47 @@ package com.braintreegateway;
 
 public class TransactionSearchRequest extends SearchRequest {
     public TextNode<TransactionSearchRequest> id() {
-        return new TextNode<TransactionSearchRequest>("id", this);
+        return textNode("id");
     }
 
     public TextNode<TransactionSearchRequest> billingCompany() {
-        return new TextNode<TransactionSearchRequest>("billing_company", this);
+        return textNode("billing_company");
     }
 
     public TextNode<TransactionSearchRequest> billingCountryName() {
-        return new TextNode<TransactionSearchRequest>("billing_country_name", this);
+        return textNode("billing_country_name");
     }
 
     public TextNode<TransactionSearchRequest> billingExtendedAddress() {
-        return new TextNode<TransactionSearchRequest>("billing_extended_address", this);
+        return textNode("billing_extended_address");
     }
 
     public TextNode<TransactionSearchRequest> billingFirstName() {
-        return new TextNode<TransactionSearchRequest>("billing_first_name", this);
+        return textNode("billing_first_name");
     }
 
     public TextNode<TransactionSearchRequest> billingLastName() {
-        return new TextNode<TransactionSearchRequest>("billing_last_name", this);
+        return textNode("billing_last_name");
     }
 
     public TextNode<TransactionSearchRequest> billingLocality() {
-        return new TextNode<TransactionSearchRequest>("billing_locality", this);
+        return textNode("billing_locality");
     }
 
     public TextNode<TransactionSearchRequest> billingPostalCode() {
-        return new TextNode<TransactionSearchRequest>("billing_postal_code", this);
+        return textNode("billing_postal_code");
     }
 
     public TextNode<TransactionSearchRequest> billingRegion() {
-        return new TextNode<TransactionSearchRequest>("billing_region", this);
+        return textNode("billing_region");
     }
 
     public TextNode<TransactionSearchRequest> billingStreetAddress() {
-        return new TextNode<TransactionSearchRequest>("billing_street_address", this);
+        return textNode("billing_street_address");
     }
 
     public TextNode<TransactionSearchRequest> creditCardCardholderName() {
-        return new TextNode<TransactionSearchRequest>("credit_card_cardholder_name", this);
+        return textNode("credit_card_cardholder_name");
     }
 
     public EqualityNode<TransactionSearchRequest> creditCardExpirationDate() {
@@ -54,123 +54,123 @@ public class TransactionSearchRequest extends SearchRequest {
     }
 
     public TextNode<TransactionSearchRequest> currency() {
-        return new TextNode<TransactionSearchRequest>("currency", this);
+        return textNode("currency");
     }
 
     public TextNode<TransactionSearchRequest> customerCompany() {
-        return new TextNode<TransactionSearchRequest>("customer_company", this);
+        return textNode("customer_company");
     }
 
     public TextNode<TransactionSearchRequest> customerEmail() {
-        return new TextNode<TransactionSearchRequest>("customer_email", this);
+        return textNode("customer_email");
     }
 
     public TextNode<TransactionSearchRequest> customerFax() {
-        return new TextNode<TransactionSearchRequest>("customer_fax", this);
+        return textNode("customer_fax");
     }
 
     public TextNode<TransactionSearchRequest> customerFirstName() {
-        return new TextNode<TransactionSearchRequest>("customer_first_name", this);
+        return textNode("customer_first_name");
     }
 
     public TextNode<TransactionSearchRequest> customerId() {
-        return new TextNode<TransactionSearchRequest>("customer_id", this);
+        return textNode("customer_id");
     }
 
     public TextNode<TransactionSearchRequest> customerLastName() {
-        return new TextNode<TransactionSearchRequest>("customer_last_name", this);
+        return textNode("customer_last_name");
     }
 
     public TextNode<TransactionSearchRequest> customerPhone() {
-        return new TextNode<TransactionSearchRequest>("customer_phone", this);
+        return textNode("customer_phone");
     }
 
     public TextNode<TransactionSearchRequest> customerWebsite() {
-        return new TextNode<TransactionSearchRequest>("customer_website", this);
+        return textNode("customer_website");
     }
 
     public MultipleValueNode<TransactionSearchRequest, String> ids() {
-        return new MultipleValueNode<TransactionSearchRequest, String>("ids", this);
+        return multiTypeNode("ids");
     }
 
     public TextNode<TransactionSearchRequest> orderId() {
-        return new TextNode<TransactionSearchRequest>("order_id", this);
+        return textNode("order_id");
     }
 
     public TextNode<TransactionSearchRequest> paymentMethodToken() {
-        return new TextNode<TransactionSearchRequest>("payment_method_token", this);
+        return textNode("payment_method_token");
     }
 
     public TextNode<TransactionSearchRequest> processorAuthorizationCode() {
-        return new TextNode<TransactionSearchRequest>("processor_authorization_code", this);
+        return textNode("processor_authorization_code");
     }
 
     public TextNode<TransactionSearchRequest> settlementBatchId() {
-        return new TextNode<TransactionSearchRequest>("settlement_batch_id", this);
+        return textNode("settlement_batch_id");
     }
 
     public TextNode<TransactionSearchRequest> shippingCompany() {
-        return new TextNode<TransactionSearchRequest>("shipping_company", this);
+        return textNode("shipping_company");
     }
 
     public TextNode<TransactionSearchRequest> shippingCountryName() {
-        return new TextNode<TransactionSearchRequest>("shipping_country_name", this);
+        return textNode("shipping_country_name");
     }
 
     public TextNode<TransactionSearchRequest> shippingExtendedAddress() {
-        return new TextNode<TransactionSearchRequest>("shipping_extended_address", this);
+        return textNode("shipping_extended_address");
     }
 
     public TextNode<TransactionSearchRequest> shippingFirstName() {
-        return new TextNode<TransactionSearchRequest>("shipping_first_name", this);
+        return textNode("shipping_first_name");
     }
 
     public TextNode<TransactionSearchRequest> shippingLastName() {
-        return new TextNode<TransactionSearchRequest>("shipping_last_name", this);
+        return textNode("shipping_last_name");
     }
 
     public TextNode<TransactionSearchRequest> shippingLocality() {
-        return new TextNode<TransactionSearchRequest>("shipping_locality", this);
+        return textNode("shipping_locality");
     }
 
     public TextNode<TransactionSearchRequest> shippingPostalCode() {
-        return new TextNode<TransactionSearchRequest>("shipping_postal_code", this);
+        return textNode("shipping_postal_code");
     }
 
     public TextNode<TransactionSearchRequest> shippingRegion() {
-        return new TextNode<TransactionSearchRequest>("shipping_region", this);
+        return textNode("shipping_region");
     }
 
     public TextNode<TransactionSearchRequest> shippingStreetAddress() {
-        return new TextNode<TransactionSearchRequest>("shipping_street_address", this);
+        return textNode("shipping_street_address");
     }
 
     public MultipleValueNode<TransactionSearchRequest, Transaction.CreatedUsing> createdUsing() {
-        return new MultipleValueNode<TransactionSearchRequest, Transaction.CreatedUsing>("created_using", this);
+        return multiTypeNode("created_using");
     }
 
     public MultipleValueNode<TransactionSearchRequest, CreditCard.CustomerLocation> creditCardCustomerLocation() {
-        return new MultipleValueNode<TransactionSearchRequest, CreditCard.CustomerLocation>("credit_card_customer_location", this);
+        return multiTypeNode("credit_card_customer_location");
     }
 
     public MultipleValueNode<TransactionSearchRequest, String> merchantAccountId() {
-        return new MultipleValueNode<TransactionSearchRequest, String>("merchant_account_id", this);
+        return multiTypeNode("merchant_account_id");
     }
 
     public MultipleValueNode<TransactionSearchRequest, CreditCard.CardType> creditCardCardType() {
-        return new MultipleValueNode<TransactionSearchRequest, CreditCard.CardType>("credit_card_card_type", this);
+        return multiTypeNode("credit_card_card_type");
     }
 
     public MultipleValueNode<TransactionSearchRequest, Transaction.Status> status() {
-        return new MultipleValueNode<TransactionSearchRequest, Transaction.Status>("status", this);
+        return multiTypeNode("status");
     }
 
     public MultipleValueNode<TransactionSearchRequest, Transaction.Source> source() {
-        return new MultipleValueNode<TransactionSearchRequest, Transaction.Source>("source", this);
+        return multiTypeNode("source");
     }
 
     public MultipleValueNode<TransactionSearchRequest, Transaction.Type> type() {
-        return new MultipleValueNode<TransactionSearchRequest, Transaction.Type>("type", this);
+        return multiTypeNode("type");
     }
 
     public KeyValueNode<TransactionSearchRequest> refund() {
@@ -182,38 +182,54 @@ public class TransactionSearchRequest extends SearchRequest {
     }
 
     public DateRangeNode<TransactionSearchRequest> authorizationExpiredAt() {
-        return new DateRangeNode<TransactionSearchRequest>("authorization_expired_at", this);
+        return dateRange("authorization_expired_at");
     }
 
     public DateRangeNode<TransactionSearchRequest> authorizedAt() {
-        return new DateRangeNode<TransactionSearchRequest>("authorized_at", this);
+        return dateRange("authorized_at");
     }
 
     public DateRangeNode<TransactionSearchRequest> createdAt() {
-        return new DateRangeNode<TransactionSearchRequest>("created_at", this);
+        return dateRange("created_at");
     }
 
     public DateRangeNode<TransactionSearchRequest> failedAt() {
-        return new DateRangeNode<TransactionSearchRequest>("failed_at", this);
+        return dateRange("failed_at");
     }
 
     public DateRangeNode<TransactionSearchRequest> gatewayRejectedAt() {
-        return new DateRangeNode<TransactionSearchRequest>("gateway_rejected_at", this);
+        return dateRange("gateway_rejected_at");
     }
 
     public DateRangeNode<TransactionSearchRequest> processorDeclinedAt() {
-        return new DateRangeNode<TransactionSearchRequest>("processor_declined_at", this);
+        return dateRange("processor_declined_at");
     }
 
     public DateRangeNode<TransactionSearchRequest> settledAt() {
-        return new DateRangeNode<TransactionSearchRequest>("settled_at", this);
+        return dateRange("settled_at");
     }
 
     public DateRangeNode<TransactionSearchRequest> submittedForSettlementAt() {
-        return new DateRangeNode<TransactionSearchRequest>("submitted_for_settlement_at", this);
+        return dateRange("submitted_for_settlement_at");
     }
 
     public DateRangeNode<TransactionSearchRequest> voidedAt() {
-        return new DateRangeNode<TransactionSearchRequest>("voided_at", this);
+        return dateRange("voided_at");
+    }
+
+    public DateRangeNode<TransactionSearchRequest> depositDate() {
+        return dateRange("deposit_date");
+    }
+
+    private DateRangeNode<TransactionSearchRequest> dateRange(String fieldName) {
+        return new DateRangeNode<TransactionSearchRequest>(fieldName, this);
+    }
+
+    private TextNode<TransactionSearchRequest> textNode(String fieldName) {
+        return new TextNode<TransactionSearchRequest>(fieldName, this);
+    }
+
+    private <T> MultipleValueNode<TransactionSearchRequest, T> multiTypeNode(String type) {
+        return new MultipleValueNode<TransactionSearchRequest, T>(type, this);
     }
 }
