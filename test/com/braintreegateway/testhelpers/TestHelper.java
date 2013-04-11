@@ -1,4 +1,4 @@
-package com.braintreegateway;
+package com.braintreegateway.testhelpers;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
+import com.braintreegateway.*;
 import org.junit.Assert;
 
 import com.braintreegateway.Transaction.Status;
@@ -15,8 +16,10 @@ import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Crypto;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import org.junit.Ignore;
 
-public class TestHelper {
+@Ignore("Testing utility class")
+public abstract class TestHelper {
 
     public static final class CompareModificationsById implements Comparator<Modification> {
         public int compare(Modification left, Modification right) {

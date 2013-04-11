@@ -7,6 +7,10 @@ import java.util.*;
 
 public abstract class NodeWrapper {
 
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String UTC_DESCRIPTOR = "UTC";
+
     public abstract List<NodeWrapper> findAll(String expression);
 
     public List<String> findAllStrings(String expression) {
@@ -35,9 +39,9 @@ public abstract class NodeWrapper {
             if (dateString == null) {
                 return null;
             }
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+            dateFormat.setTimeZone(TimeZone.getTimeZone(UTC_DESCRIPTOR));
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(UTC_DESCRIPTOR));
             calendar.setTime(dateFormat.parse(dateString));
             return calendar;
         } catch (Exception e) {
@@ -51,9 +55,9 @@ public abstract class NodeWrapper {
             if (dateString == null) {
                 return null;
             }
-            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            dateTimeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DATE_TIME_FORMAT);
+            dateTimeFormat.setTimeZone(TimeZone.getTimeZone(UTC_DESCRIPTOR));
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(UTC_DESCRIPTOR));
             calendar.setTime(dateTimeFormat.parse(dateString));
             return calendar;
         } catch (Exception e) {

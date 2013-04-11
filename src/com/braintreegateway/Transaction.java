@@ -11,6 +11,10 @@ import com.braintreegateway.util.NodeWrapper;
 
 public class Transaction {
 
+    public boolean isDeposited() {
+        return getDepositDetails().isValid();
+    }
+
     public enum CreatedUsing {
         FULL_INFORMATION("full_information"),
         TOKEN("token");
@@ -95,6 +99,7 @@ public class Transaction {
     private Customer customer;
     private Map<String, String> customFields;
     private String cvvResponseCode;
+    private DepositDetail depositDetails;
     private Descriptor descriptor;
     private List<Discount> discounts;
     private GatewayRejectionReason gatewayRejectionReason;
@@ -135,6 +140,7 @@ public class Transaction {
         customFields = node.findMap("custom-fields/*");
         customer = new Customer(node.findFirst("customer"));
         cvvResponseCode = node.findString("cvv-response-code");
+        depositDetails = new DepositDetail(node.findFirst("deposit-details"));
         descriptor = new Descriptor(node.findFirst("descriptor"));
         gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"));
         id = node.findString("id");
@@ -230,6 +236,10 @@ public class Transaction {
 
     public String getCvvResponseCode() {
         return cvvResponseCode;
+    }
+
+    public DepositDetail getDepositDetails() {
+        return depositDetails;
     }
 
     public Descriptor getDescriptor() {

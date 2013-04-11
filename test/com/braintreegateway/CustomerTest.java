@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

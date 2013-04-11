@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.braintreegateway.Configuration;
 import com.braintreegateway.CreditCardRequest;
-import com.braintreegateway.TestHelper;
+import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.TransactionRequest;
 
 public class TrUtilTest {

@@ -2,6 +2,7 @@ package com.braintreegateway;
 
 import java.math.BigDecimal;
 
+import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Assert;
 
 import org.junit.Before;

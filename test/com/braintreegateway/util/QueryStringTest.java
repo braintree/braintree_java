@@ -9,8 +9,7 @@ import org.junit.Test;
 
 import com.braintreegateway.CreditCardRequest;
 import com.braintreegateway.Request;
-import com.braintreegateway.TestHelper;
-import com.braintreegateway.util.QueryString;
+import com.braintreegateway.testhelpers.TestHelper;
 
 public class QueryStringTest {
     @Test

@@ -3,6 +3,7 @@ package com.braintreegateway;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

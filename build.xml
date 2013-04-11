@@ -13,7 +13,7 @@
       <batchtest>
         <fileset dir="test">
           <include name="**/*Test*.java"/>
-          <exclude name="**/TestHelper.java"/>
+          <exclude name="testhelpers/*.java"/>
         </fileset>
       </batchtest>
     </junit>

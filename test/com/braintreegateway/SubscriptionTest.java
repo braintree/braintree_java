@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
 
+import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

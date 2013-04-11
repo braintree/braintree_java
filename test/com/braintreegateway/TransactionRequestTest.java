@@ -1,5 +1,6 @@
 package com.braintreegateway;
 
+import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Assert;
 import org.junit.Test;
 

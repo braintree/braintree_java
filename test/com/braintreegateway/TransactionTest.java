@@ -1,15 +1,10 @@
 package com.braintreegateway;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
+import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,6 +16,8 @@ import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
+
+import static org.junit.Assert.*;
 
 public class TransactionTest {
 
@@ -1111,8 +1108,8 @@ public class TransactionTest {
     @Test
     public void find() {
         TransactionRequest request = new TransactionRequest().
-            amount(TransactionAmount.AUTHORIZE.amount).
-            creditCard().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2008").
                 done();
@@ -1133,6 +1130,23 @@ public class TransactionTest {
     @Test(expected = NotFoundException.class)
     public void findWithWhitespaceId() {
         gateway.transaction().find(" ");
+    }
+
+    @Test
+    public void findWithDepositDetails() throws Exception {
+        Transaction foundTransaction = gateway.transaction().find("deposit_transaction");
+        DepositDetail depositDetails = foundTransaction.getDepositDetails();
+
+        Calendar depositCalendar = CalendarTestUtils.date("2013-04-10");
+        Calendar disbursedCalendar = CalendarTestUtils.dateTime("2013-04-11T00:00:00Z");
+
+        assertEquals(true, foundTransaction.isDeposited());
+        assertEquals(depositCalendar, depositDetails.getDepositDate());
+        assertEquals(disbursedCalendar, depositDetails.getDisbursedAt());
+        assertEquals("USD", depositDetails.getSettlementCurrencyIsoCode());
+        assertEquals(false, depositDetails.isFundsHeld());
+        assertEquals(new BigDecimal("1"), depositDetails.getSettlementCurrencyExchangeRate());
+        assertEquals(new BigDecimal("100.00"), depositDetails.getSettlementAmount());
     }
 
     @Test
@@ -2278,14 +2292,14 @@ public class TransactionTest {
 
     @Test
     public void unrecognizedStatus() {
-        String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><service-fee></service-fee><type>sale</type></transaction>";
+        String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><service-fee></service-fee><deposit-details/><type>sale</type></transaction>";
         Transaction transaction = new Transaction(NodeWrapperFactory.instance.create(xml));
         Assert.assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
     }
 
     @Test
     public void unrecognizedType() {
-        String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><service-fee></service-fee><type>sale</type></transaction>";
+        String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><service-fee></service-fee><deposit-details/><type>sale</type></transaction>";
         Transaction transaction = new Transaction(NodeWrapperFactory.instance.create(xml));
         Assert.assertEquals(Transaction.Type.UNRECOGNIZED, transaction.getType());
     }
