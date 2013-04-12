@@ -1137,11 +1137,11 @@ public class TransactionTest {
 
     @Test
     public void findWithDepositDetails() throws Exception {
+        Calendar depositCalendar = CalendarTestUtils.date("2013-04-10");
+        Calendar disbursedCalendar = CalendarTestUtils.dateTime("2013-04-09T00:00:00Z");
+
         Transaction foundTransaction = gateway.transaction().find("deposit_transaction");
         DepositDetail depositDetails = foundTransaction.getDepositDetails();
-
-        Calendar depositCalendar = CalendarTestUtils.date("2013-04-10");
-        Calendar disbursedCalendar = CalendarTestUtils.dateTime("2013-04-11T00:00:00Z");
 
         assertEquals(true, foundTransaction.isDeposited());
         assertEquals(depositCalendar, depositDetails.getDepositDate());
