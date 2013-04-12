@@ -14,17 +14,20 @@ public abstract class CalendarTestUtils {
     public static final String UTC = "UTC";
 
     public static Calendar date(String dateString) throws ParseException {
-        return getCalendar(dateString, NodeWrapper.DATE_FORMAT);
+        return getCalendar(dateString, NodeWrapper.DATE_FORMAT, UTC);
     }
 
     public static Calendar dateTime(String dateString) throws ParseException {
-        return getCalendar(dateString, NodeWrapper.DATE_TIME_FORMAT);
+        return dateTime(dateString, UTC);
+    }
+    public static Calendar dateTime(String dateString, String timeZoneName) throws ParseException {
+        return getCalendar(dateString, NodeWrapper.DATE_TIME_FORMAT, timeZoneName);
     }
 
-    public static Calendar getCalendar(String dateString, String dateTimeFormat) throws ParseException {
+    public static Calendar getCalendar(String dateString, String dateTimeFormat, String timeZoneName) throws ParseException {
         DateFormat dateFormat = new SimpleDateFormat(dateTimeFormat);
-        dateFormat.setTimeZone(TimeZone.getTimeZone(UTC));
-        Calendar depositCalendar = Calendar.getInstance(TimeZone.getTimeZone(UTC));
+        dateFormat.setTimeZone(TimeZone.getTimeZone(timeZoneName));
+        Calendar depositCalendar = Calendar.getInstance(TimeZone.getTimeZone(timeZoneName));
         depositCalendar.setTime(dateFormat.parse(dateString));
         return depositCalendar;
     }

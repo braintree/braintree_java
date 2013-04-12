@@ -1,7 +1,9 @@
 package com.braintreegateway;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.braintreegateway.testhelpers.TestHelper;
@@ -1783,14 +1785,8 @@ public class TransactionTest {
     public void searchOnDepositDateUsingLocalTime() throws ParseException {
         String transactionId = "deposit_transaction";
 
-        Calendar depositTime = CalendarTestUtils.dateTime("2013-04-10T00:00:00Z");
-        depositTime.setTimeZone(TimeZone.getTimeZone("CST"));
-
-        Calendar oneDayEarlier = Calendar.getInstance();
-        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
-
-        Calendar oneDayLater = Calendar.getInstance();
-        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
+        Calendar oneDayEarlier = CalendarTestUtils.dateTime("2013-04-09T00:00:00Z", "CST");
+        Calendar oneDayLater =   CalendarTestUtils.dateTime("2013-04-11T00:00:00Z", "CST");
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
                 id().is(transactionId).
