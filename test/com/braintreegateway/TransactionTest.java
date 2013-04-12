@@ -1,9 +1,7 @@
 package com.braintreegateway;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.braintreegateway.testhelpers.TestHelper;
@@ -25,6 +23,7 @@ import static org.junit.Assert.*;
 public class TransactionTest {
 
     private BraintreeGateway gateway;
+    public static final String DEPOSIT_TRANSACTION_ID = "deposittransaction";
 
     @Before
     public void createGateway() {
@@ -1140,7 +1139,7 @@ public class TransactionTest {
         Calendar depositCalendar = CalendarTestUtils.date("2013-04-10");
         Calendar disbursedCalendar = CalendarTestUtils.dateTime("2013-04-09T00:00:00Z");
 
-        Transaction foundTransaction = gateway.transaction().find("deposit_transaction");
+        Transaction foundTransaction = gateway.transaction().find(DEPOSIT_TRANSACTION_ID);
         DepositDetail depositDetails = foundTransaction.getDepositDetails();
 
         assertEquals(true, foundTransaction.isDeposited());
@@ -1743,8 +1742,6 @@ public class TransactionTest {
 
     @Test
     public void searchOnDepositDate() throws ParseException {
-        String transactionID = "deposit_transaction";
-
         Calendar depositTime = CalendarTestUtils.dateTime("2013-04-10T00:00:00Z");
 
         Calendar threeDaysEarlier = ((Calendar)depositTime.clone());
@@ -1757,25 +1754,25 @@ public class TransactionTest {
         oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-                id().is(transactionID).
+                id().is(DEPOSIT_TRANSACTION_ID).
                 depositDate().between(oneDayEarlier, oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
-                id().is(transactionID).
+                id().is(DEPOSIT_TRANSACTION_ID).
                 depositDate().greaterThanOrEqualTo(oneDayEarlier);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
-                id().is(transactionID).
+                id().is(DEPOSIT_TRANSACTION_ID).
                 depositDate().lessThanOrEqualTo(oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
-                id().is(transactionID).
+                id().is(DEPOSIT_TRANSACTION_ID).
                 depositDate().between(threeDaysEarlier, oneDayEarlier);
 
         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
@@ -1783,13 +1780,12 @@ public class TransactionTest {
 
     @Test
     public void searchOnDepositDateUsingLocalTime() throws ParseException {
-        String transactionId = "deposit_transaction";
 
         Calendar oneDayEarlier = CalendarTestUtils.dateTime("2013-04-09T00:00:00Z", "CST");
         Calendar oneDayLater =   CalendarTestUtils.dateTime("2013-04-11T00:00:00Z", "CST");
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-                id().is(transactionId).
+                id().is(DEPOSIT_TRANSACTION_ID).
                 depositDate().between(oneDayEarlier, oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
