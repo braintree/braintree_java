@@ -1,11 +1,15 @@
 package com.braintreegateway;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 
@@ -124,7 +128,8 @@ public class CreditCardVerificationTest {
         ResourceCollection<CreditCardVerification> collection = gateway.creditCardVerification().search(searchRequest);
 
         Assert.assertEquals(2, collection.getMaximumSize());
-        Assert.assertEquals(verificationOne.getId(), collection.getFirst().getId());
+        List<String> expectedIds = new ArrayList<String>(Arrays.asList(verificationOne.getId(), verificationTwo.getId()));
+        Assert.assertTrue(TestHelper.listIncludes(expectedIds, collection.getFirst().getId()));
     }
 
     @Test
