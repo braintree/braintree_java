@@ -217,8 +217,8 @@ public class TransactionSearchRequest extends SearchRequest {
         return dateRange("voided_at");
     }
 
-    public DateRangeNode<TransactionSearchRequest> depositDate() {
-        return dateRange("deposit_date");
+    public DateRangeNode<TransactionSearchRequest> disbursementDate() {
+        return dateRange("disbursement_date");
     }
 
     private DateRangeNode<TransactionSearchRequest> dateRange(String fieldName) {

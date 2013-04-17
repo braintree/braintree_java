@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
 public class TransactionTest {
 
     private BraintreeGateway gateway;
-    public static final String DEPOSIT_TRANSACTION_ID = "deposittransaction";
+    public static final String DISBURSEMENT_TRANSACTION_ID = "deposittransaction";
 
     @Before
     public void createGateway() {
@@ -1135,20 +1135,18 @@ public class TransactionTest {
     }
 
     @Test
-    public void findWithDepositDetails() throws Exception {
-        Calendar depositCalendar = CalendarTestUtils.date("2013-04-10");
-        Calendar disbursedCalendar = CalendarTestUtils.dateTime("2013-04-09T00:00:00Z");
+    public void findWithDisbursementDetails() throws Exception {
+        Calendar disbursementCalendar = CalendarTestUtils.date("2013-04-10");
 
-        Transaction foundTransaction = gateway.transaction().find(DEPOSIT_TRANSACTION_ID);
-        DepositDetail depositDetails = foundTransaction.getDepositDetails();
+        Transaction foundTransaction = gateway.transaction().find(DISBURSEMENT_TRANSACTION_ID);
+        DisbursementDetails disbursementDetails = foundTransaction.getDisbursementDetails();
 
-        assertEquals(true, foundTransaction.isDeposited());
-        assertEquals(depositCalendar, depositDetails.getDepositDate());
-        assertEquals(disbursedCalendar, depositDetails.getDisbursedAt());
-        assertEquals("USD", depositDetails.getSettlementCurrencyIsoCode());
-        assertEquals(false, depositDetails.isFundsHeld());
-        assertEquals(new BigDecimal("1"), depositDetails.getSettlementCurrencyExchangeRate());
-        assertEquals(new BigDecimal("100.00"), depositDetails.getSettlementAmount());
+        assertEquals(true, foundTransaction.isDisbursed());
+        assertEquals(disbursementCalendar, disbursementDetails.getDisbursementDate());
+        assertEquals("USD", disbursementDetails.getSettlementCurrencyIsoCode());
+        assertEquals(false, disbursementDetails.isFundsHeld());
+        assertEquals(new BigDecimal("1"), disbursementDetails.getSettlementCurrencyExchangeRate());
+        assertEquals(new BigDecimal("100.00"), disbursementDetails.getSettlementAmount());
     }
 
     @Test
@@ -1741,52 +1739,52 @@ public class TransactionTest {
      }
 
     @Test
-    public void searchOnDepositDate() throws ParseException {
-        Calendar depositTime = CalendarTestUtils.dateTime("2013-04-10T00:00:00Z");
+    public void searchOnDisbursementDate() throws ParseException {
+        Calendar disbursementTime = CalendarTestUtils.dateTime("2013-04-10T00:00:00Z");
 
-        Calendar threeDaysEarlier = ((Calendar)depositTime.clone());
+        Calendar threeDaysEarlier = ((Calendar)disbursementTime.clone());
         threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
 
-        Calendar oneDayEarlier = ((Calendar)depositTime.clone());
+        Calendar oneDayEarlier = ((Calendar)disbursementTime.clone());
         oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
 
-        Calendar oneDayLater = ((Calendar)depositTime.clone());
+        Calendar oneDayLater = ((Calendar)disbursementTime.clone());
         oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-                id().is(DEPOSIT_TRANSACTION_ID).
-                depositDate().between(oneDayEarlier, oneDayLater);
+                id().is(DISBURSEMENT_TRANSACTION_ID).
+                disbursementDate().between(oneDayEarlier, oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
-                id().is(DEPOSIT_TRANSACTION_ID).
-                depositDate().greaterThanOrEqualTo(oneDayEarlier);
+                id().is(DISBURSEMENT_TRANSACTION_ID).
+                disbursementDate().greaterThanOrEqualTo(oneDayEarlier);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
-                id().is(DEPOSIT_TRANSACTION_ID).
-                depositDate().lessThanOrEqualTo(oneDayLater);
+                id().is(DISBURSEMENT_TRANSACTION_ID).
+                disbursementDate().lessThanOrEqualTo(oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
-                id().is(DEPOSIT_TRANSACTION_ID).
-                depositDate().between(threeDaysEarlier, oneDayEarlier);
+                id().is(DISBURSEMENT_TRANSACTION_ID).
+                disbursementDate().between(threeDaysEarlier, oneDayEarlier);
 
         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
-    public void searchOnDepositDateUsingLocalTime() throws ParseException {
+    public void searchOnDisbursementDateUsingLocalTime() throws ParseException {
 
         Calendar oneDayEarlier = CalendarTestUtils.dateTime("2013-04-09T00:00:00Z", "CST");
         Calendar oneDayLater =   CalendarTestUtils.dateTime("2013-04-11T00:00:00Z", "CST");
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-                id().is(DEPOSIT_TRANSACTION_ID).
-                depositDate().between(oneDayEarlier, oneDayLater);
+                id().is(DISBURSEMENT_TRANSACTION_ID).
+                disbursementDate().between(oneDayEarlier, oneDayLater);
 
         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
     }
@@ -2345,14 +2343,14 @@ public class TransactionTest {
 
     @Test
     public void unrecognizedStatus() {
-        String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><service-fee></service-fee><deposit-details/><type>sale</type></transaction>";
+        String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><service-fee></service-fee><disbursement-details/><type>sale</type></transaction>";
         Transaction transaction = new Transaction(NodeWrapperFactory.instance.create(xml));
         Assert.assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
     }
 
     @Test
     public void unrecognizedType() {
-        String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><service-fee></service-fee><deposit-details/><type>sale</type></transaction>";
+        String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><service-fee></service-fee><disbursement-details/><type>sale</type></transaction>";
         Transaction transaction = new Transaction(NodeWrapperFactory.instance.create(xml));
         Assert.assertEquals(Transaction.Type.UNRECOGNIZED, transaction.getType());
     }

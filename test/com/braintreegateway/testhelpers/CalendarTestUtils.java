@@ -27,8 +27,8 @@ public abstract class CalendarTestUtils {
     public static Calendar getCalendar(String dateString, String dateTimeFormat, String timeZoneName) throws ParseException {
         DateFormat dateFormat = new SimpleDateFormat(dateTimeFormat);
         dateFormat.setTimeZone(TimeZone.getTimeZone(timeZoneName));
-        Calendar depositCalendar = Calendar.getInstance(TimeZone.getTimeZone(timeZoneName));
-        depositCalendar.setTime(dateFormat.parse(dateString));
-        return depositCalendar;
+        Calendar disbursementCalendar = Calendar.getInstance(TimeZone.getTimeZone(timeZoneName));
+        disbursementCalendar.setTime(dateFormat.parse(dateString));
+        return disbursementCalendar;
     }
 }
