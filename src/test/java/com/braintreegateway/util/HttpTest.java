@@ -1,8 +1,11 @@
 package com.braintreegateway.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.cert.CertificateException;
 
+import com.braintreegateway.exceptions.UnexpectedException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +18,8 @@ import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
+
+import static org.junit.Assert.*;
 
 @SuppressWarnings("deprecation")
 public class HttpTest {
@@ -121,7 +126,7 @@ public class HttpTest {
         try {
             Http http = new Http(gateway.getAuthorizationHeader(), "https://localhost:9443", Environment.SANDBOX.certificateFilenames, BraintreeGateway.VERSION);
             http.get("/");
-            Assert.fail();
+            fail();
         } catch (Exception e) {
             Assert.assertTrue(e.getMessage().contains("Cert"));
         } finally {
@@ -131,6 +136,7 @@ public class HttpTest {
 
     private void startSSLServer() throws Exception {
         String fileName = StringUtils.getFullPathOfFile("script/httpsd.rb");
+        new File(fileName).setExecutable(true);
         new ProcessBuilder(fileName, "/tmp/httpsd.pid").start().waitFor();
     }
 

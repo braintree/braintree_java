@@ -2,42 +2,28 @@ ENV['TEST_JDK_VERSION'] ||= "1.5"
 
 task :default => :test
 
-task :init do
-  sh "mkdir -p classes"
-  sh "mkdir -p test-classes"
-end
-
 task :clean do
-  sh "rm -f *.jar"
-  sh "rm -rf classes/*"
-  sh "rm -rf test-classes/*"
+  sh "mvn clean"
   sh "rm -rf doc"
 end
 
-task :compile => :init do
-  sh "javac -target #{ENV['TEST_JDK_VERSION']} -d classes -cp #{lib_classpath} -Xlint:deprecation #{src_files}"
-  cp_r "ssl", "classes"
+task :compile do
+  sh "mvn compile"
+end
+
+task :test do
+  sh "mvn test"
 end
 
 desc "build a jar"
 task :jar => :compile do
-  sh "jar cvf #{jar_name} -C classes . > /dev/null"
-end
-
-task :compile_tests => [:init, :clean, :jar] do
-  sh "javac -target #{ENV['TEST_JDK_VERSION']} -Xlint:deprecation -d test-classes -cp #{jar_name}:#{lib_classpath} #{test_files}"
-  cp_r "test/script", "test-classes", :preserve => true
-  cp_r "test/ssl", "test-classes"
-end
-
-task :test => :compile_tests do
-  sh "ant test"
+  sh "mvn package"
 end
 
 # e.g. rake single_test testclass=com.braintreegateway.TransactionTest
 desc "run a single unit test class"
-task :single_test => :compile_tests do
-  sh "ant single-test -Dtest.class=#{ENV['testclass']}"
+task :single_test do
+  sh "mvn test -Dtest=#{ENV['testclass']}"
 end
 
 desc "generate javadoc"
@@ -47,10 +33,6 @@ task :javadoc do
     "com.braintreegateway.org"
   ]
   sh "javadoc -sourcepath src -subpackages com.braintreegateway -exclude #{excludes.join(":")} -d doc -overview overview.html"
-end
-
-def lib_classpath
-  Dir.glob("lib/*.jar").join(":")
 end
 
 def src_files

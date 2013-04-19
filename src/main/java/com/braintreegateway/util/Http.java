@@ -101,7 +101,7 @@ public class Http {
             responseStream.close();
             return NodeWrapperFactory.instance.create(xml);
         } catch (IOException e) {
-            throw new UnexpectedException(e.getMessage());
+            throw new UnexpectedException(e.getMessage(), e);
         }
     }
     
@@ -112,7 +112,7 @@ public class Http {
             
             for (String certificateFilename : certificateFilenames) {
                 CertificateFactory cf = CertificateFactory.getInstance("X.509");
-                InputStream certStream = Http.class.getClassLoader().getResourceAsStream("ssl/" + certificateFilename);
+                InputStream certStream = Http.class.getClassLoader().getResourceAsStream(certificateFilename);
 
                 Certificate cert = cf.generateCertificate(certStream);
                 keyStore.setCertificateEntry(certificateFilename, cert);
@@ -128,7 +128,7 @@ public class Http {
 
             return sslContext.getSocketFactory();
         } catch (Exception e) {
-            throw new UnexpectedException(e.getMessage());
+            throw new UnexpectedException(e.getMessage(), e);
         }
     }
 
