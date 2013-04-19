@@ -1309,6 +1309,37 @@ public class SubscriptionTest {
     }
 
     @Test
+    public void searchOnBogusMerchantAccountIdIs() {
+        SubscriptionRequest request1 = new SubscriptionRequest().
+                merchantAccountId(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID).
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
+                price(new BigDecimal(5));
+        Subscription subscription = gateway.subscription().create(request1).getTarget();
+
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+                merchantAccountId().is(subscription.getMerchantAccountId()).
+                price().is(new BigDecimal(5));
+
+        ResourceCollection<Subscription> results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription));
+
+        search = new SubscriptionSearchRequest().
+                merchantAccountId().in(subscription.getMerchantAccountId(), "totally_bogus").
+                price().is(new BigDecimal(5));
+
+        results = gateway.subscription().search(search);
+        Assert.assertTrue(TestHelper.includesSubscription(results, subscription));
+
+        search = new SubscriptionSearchRequest().
+                merchantAccountId().is("totally_bogus").
+                price().is(new BigDecimal(5));
+
+        results = gateway.subscription().search(search);
+        Assert.assertFalse(TestHelper.includesSubscription(results, subscription));
+    }
+
+    @Test
     public void searchOnNextBillingDate() {
         SubscriptionRequest request1 = new SubscriptionRequest().
                 paymentMethodToken(creditCard.getToken()).
