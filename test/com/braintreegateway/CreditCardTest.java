@@ -79,6 +79,27 @@ public class CreditCardTest {
     }
 
     @Test
+    public void createWithMonthAndYear() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("5105105105105100").
+            expirationMonth("06").
+            expirationYear("13");
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        Assert.assertTrue(result.isSuccess());
+        CreditCard card = result.getTarget();
+        Assert.assertEquals(customer.getId(), card.getCustomerId());
+        Assert.assertEquals("06", card.getExpirationMonth());
+        Assert.assertEquals("2013", card.getExpirationYear());
+        Assert.assertEquals("06/2013", card.getExpirationDate());
+        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getCreatedAt().get(Calendar.YEAR));
+        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getUpdatedAt().get(Calendar.YEAR));
+    }
+
+    @Test
     public void createWithXmlCharacters() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().

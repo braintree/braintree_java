@@ -10,6 +10,8 @@ public class CreditCardRequest extends Request {
     private String customerId;
     private String cvv;
     private String expirationDate;
+    private String expirationMonth;
+    private String expirationYear;
     private String number;
     private CreditCardOptionsRequest optionsRequest;
     private CustomerRequest parent;
@@ -55,6 +57,16 @@ public class CreditCardRequest extends Request {
 
     public CreditCardRequest expirationDate(String expirationDate) {
         this.expirationDate = expirationDate;
+        return this;
+    }
+
+    public CreditCardRequest expirationMonth(String expirationMonth) {
+        this.expirationMonth = expirationMonth;
+        return this;
+    }
+
+    public CreditCardRequest expirationYear(String expirationYear) {
+        this.expirationYear = expirationYear;
         return this;
     }
 
@@ -127,6 +139,8 @@ public class CreditCardRequest extends Request {
             addElement("cvv", cvv).
             addElement("number", number).
             addElement("expirationDate", expirationDate).
+            addElement("expirationMonth", expirationMonth).
+            addElement("expirationYear", expirationYear).
             addElement("token", token).
             addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode);
     }
