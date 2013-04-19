@@ -22,6 +22,8 @@ import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 
+import static org.junit.Assert.*;
+
 public class SubscriptionTest {
 
     private BraintreeGateway gateway;
@@ -40,7 +42,7 @@ public class SubscriptionTest {
                 done();
 
         Result<Customer> result = gateway.customer().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         this.customer = result.getTarget();
         this.creditCard = customer.getCreditCards().get(0);
     }
@@ -54,7 +56,7 @@ public class SubscriptionTest {
                 planId(plan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
         Calendar expectedBillingPeriodEndDate = Calendar.getInstance();
@@ -69,18 +71,18 @@ public class SubscriptionTest {
         Calendar expectedFirstDate = Calendar.getInstance();
         expectedFirstDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
 
-        Assert.assertEquals(creditCard.getToken(), subscription.getPaymentMethodToken());
-        Assert.assertEquals(plan.getId(), subscription.getPlanId());
-        Assert.assertEquals(plan.getPrice(), subscription.getPrice());
-        Assert.assertEquals(new BigDecimal("0.00"), subscription.getBalance());
-        Assert.assertEquals(new Integer(1), subscription.getCurrentBillingCycle());
-        Assert.assertEquals(new BigDecimal("12.34"), subscription.getNextBillAmount());
-        Assert.assertEquals(new BigDecimal("12.34"), subscription.getNextBillingPeriodAmount());
-        Assert.assertTrue(subscription.getId().matches("^\\w{6}$"));
-        Assert.assertEquals(Subscription.Status.ACTIVE, subscription.getStatus());
-        Assert.assertEquals(new Integer(0), subscription.getFailureCount());
-        Assert.assertEquals(false, subscription.hasTrialPeriod());
-        Assert.assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
+        assertEquals(creditCard.getToken(), subscription.getPaymentMethodToken());
+        assertEquals(plan.getId(), subscription.getPlanId());
+        assertEquals(plan.getPrice(), subscription.getPrice());
+        assertEquals(new BigDecimal("0.00"), subscription.getBalance());
+        assertEquals(new Integer(1), subscription.getCurrentBillingCycle());
+        assertEquals(new BigDecimal("12.34"), subscription.getNextBillAmount());
+        assertEquals(new BigDecimal("12.34"), subscription.getNextBillingPeriodAmount());
+        assertTrue(subscription.getId().matches("^\\w{6}$"));
+        assertEquals(Subscription.Status.ACTIVE, subscription.getStatus());
+        assertEquals(new Integer(0), subscription.getFailureCount());
+        assertEquals(false, subscription.hasTrialPeriod());
+        assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
 
         TestHelper.assertDatesEqual(expectedBillingPeriodEndDate, subscription.getBillingPeriodEndDate());
         TestHelper.assertDatesEqual(expectedBillingPeriodStartDate, subscription.getBillingPeriodStartDate());
@@ -97,11 +99,11 @@ public class SubscriptionTest {
                 planId(plan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
         Transaction transaction = subscription.getTransactions().get(0);
-        Assert.assertEquals(subscription.getBillingPeriodStartDate(), transaction.getSubscription().getBillingPeriodStartDate());
-        Assert.assertEquals(subscription.getBillingPeriodEndDate(), transaction.getSubscription().getBillingPeriodEndDate());
+        assertEquals(subscription.getBillingPeriodStartDate(), transaction.getSubscription().getBillingPeriodStartDate());
+        assertEquals(subscription.getBillingPeriodEndDate(), transaction.getSubscription().getBillingPeriodEndDate());
     }
 
     @Test
@@ -112,27 +114,27 @@ public class SubscriptionTest {
                 planId(plan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
         Calendar expectedFirstAndNextBillingDate = Calendar.getInstance();
         expectedFirstAndNextBillingDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
         expectedFirstAndNextBillingDate.add(Calendar.DAY_OF_MONTH, plan.getTrialDuration());
 
-        Assert.assertEquals(plan.getId(), subscription.getPlanId());
-        Assert.assertEquals(plan.getPrice(), subscription.getPrice());
-        Assert.assertEquals(creditCard.getToken(), subscription.getPaymentMethodToken());
-        Assert.assertTrue(subscription.getId().matches("^\\w{6}$"));
-        Assert.assertEquals(Subscription.Status.ACTIVE, subscription.getStatus());
+        assertEquals(plan.getId(), subscription.getPlanId());
+        assertEquals(plan.getPrice(), subscription.getPrice());
+        assertEquals(creditCard.getToken(), subscription.getPaymentMethodToken());
+        assertTrue(subscription.getId().matches("^\\w{6}$"));
+        assertEquals(Subscription.Status.ACTIVE, subscription.getStatus());
 
-        Assert.assertEquals(null, subscription.getBillingPeriodStartDate());
-        Assert.assertEquals(null, subscription.getBillingPeriodEndDate());
-        Assert.assertEquals(new Integer(0), subscription.getCurrentBillingCycle());
+        assertEquals(null, subscription.getBillingPeriodStartDate());
+        assertEquals(null, subscription.getBillingPeriodEndDate());
+        assertEquals(new Integer(0), subscription.getCurrentBillingCycle());
 
-        Assert.assertEquals(new Integer(0), subscription.getFailureCount());
-        Assert.assertEquals(true, subscription.hasTrialPeriod());
-        Assert.assertEquals(plan.getTrialDuration(), subscription.getTrialDuration());
-        Assert.assertEquals(plan.getTrialDurationUnit().toString(), subscription.getTrialDurationUnit().toString());
+        assertEquals(new Integer(0), subscription.getFailureCount());
+        assertEquals(true, subscription.hasTrialPeriod());
+        assertEquals(plan.getTrialDuration(), subscription.getTrialDuration());
+        assertEquals(plan.getTrialDurationUnit().toString(), subscription.getTrialDurationUnit().toString());
 
         TestHelper.assertDatesEqual(expectedFirstAndNextBillingDate, subscription.getNextBillingDate());
         TestHelper.assertDatesEqual(expectedFirstAndNextBillingDate, subscription.getFirstBillingDate());
@@ -149,12 +151,12 @@ public class SubscriptionTest {
                 trialDurationUnit(Subscription.DurationUnit.MONTH);
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
-        Assert.assertEquals(true, subscription.hasTrialPeriod());
-        Assert.assertEquals(new Integer(2), subscription.getTrialDuration());
-        Assert.assertEquals(Subscription.DurationUnit.MONTH, subscription.getTrialDurationUnit());
+        assertEquals(true, subscription.hasTrialPeriod());
+        assertEquals(new Integer(2), subscription.getTrialDuration());
+        assertEquals(Subscription.DurationUnit.MONTH, subscription.getTrialDurationUnit());
     }
 
     @Test
@@ -166,10 +168,10 @@ public class SubscriptionTest {
                 trialPeriod(false);
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
-        Assert.assertEquals(false, subscription.hasTrialPeriod());
+        assertEquals(false, subscription.hasTrialPeriod());
     }
 
     @Test
@@ -181,10 +183,10 @@ public class SubscriptionTest {
                 price(new BigDecimal("482.48"));
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
-        Assert.assertEquals(new BigDecimal("482.48"), subscription.getPrice());
+        assertEquals(new BigDecimal("482.48"), subscription.getPrice());
     }
 
     @Test
@@ -195,7 +197,7 @@ public class SubscriptionTest {
                 planId(plan.getId());
 
         Subscription subscription = gateway.subscription().create(request).getTarget();
-        Assert.assertEquals(plan.getNumberOfBillingCycles(), subscription.getNumberOfBillingCycles());
+        assertEquals(plan.getNumberOfBillingCycles(), subscription.getNumberOfBillingCycles());
 
         SubscriptionRequest overrideRequest = new SubscriptionRequest().
                 paymentMethodToken(creditCard.getToken()).
@@ -203,8 +205,8 @@ public class SubscriptionTest {
                 numberOfBillingCycles(10);
 
         Subscription overriddenSubsription = gateway.subscription().create(overrideRequest).getTarget();
-        Assert.assertEquals(new Integer(10), overriddenSubsription.getNumberOfBillingCycles());
-        Assert.assertFalse(overriddenSubsription.neverExpires());
+        assertEquals(new Integer(10), overriddenSubsription.getNumberOfBillingCycles());
+        assertFalse(overriddenSubsription.neverExpires());
     }
 
     @Test
@@ -216,8 +218,8 @@ public class SubscriptionTest {
                 neverExpires(true);
 
         Subscription subscription = gateway.subscription().create(request).getTarget();
-        Assert.assertNull(subscription.getNumberOfBillingCycles());
-        Assert.assertTrue(subscription.neverExpires());
+        assertNull(subscription.getNumberOfBillingCycles());
+        assertTrue(subscription.neverExpires());
     }
 
     @Test
@@ -235,7 +237,7 @@ public class SubscriptionTest {
 
         Subscription updatedSubscription = gateway.subscription().update(subscription.getId(), updateRequest).getTarget();
 
-        Assert.assertNull(updatedSubscription.getNumberOfBillingCycles());
+        assertNull(updatedSubscription.getNumberOfBillingCycles());
     }
 
     @Test
@@ -253,7 +255,7 @@ public class SubscriptionTest {
 
         Subscription updatedSubscription = gateway.subscription().update(subscription.getId(), updateRequest).getTarget();
 
-        Assert.assertEquals(new Integer(14), updatedSubscription.getNumberOfBillingCycles());
+        assertEquals(new Integer(14), updatedSubscription.getNumberOfBillingCycles());
     }
 
     @Test
@@ -263,10 +265,10 @@ public class SubscriptionTest {
                 planId(PlanFixture.BILLING_DAY_OF_MONTH_PLAN.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
-        Assert.assertEquals(new Integer(5), subscription.getBillingDayOfMonth());
+        assertEquals(new Integer(5), subscription.getBillingDayOfMonth());
     }
 
     @Test
@@ -277,10 +279,10 @@ public class SubscriptionTest {
                 planId(PlanFixture.BILLING_DAY_OF_MONTH_PLAN.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
-        Assert.assertEquals(new Integer(19), subscription.getBillingDayOfMonth());
+        assertEquals(new Integer(19), subscription.getBillingDayOfMonth());
     }
 
     @Test
@@ -293,10 +295,10 @@ public class SubscriptionTest {
                 done();
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
-        Assert.assertEquals(1, subscription.getTransactions().size());
+        assertEquals(1, subscription.getTransactions().size());
     }
 
     @Test
@@ -311,11 +313,11 @@ public class SubscriptionTest {
                 firstBillingDate(firstBillingDate);
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
         TestHelper.assertDatesEqual(firstBillingDate, subscription.getFirstBillingDate());
-        Assert.assertEquals(Subscription.Status.PENDING, subscription.getStatus());
+        assertEquals(Subscription.Status.PENDING, subscription.getStatus());
     }
 
     @Test
@@ -329,10 +331,10 @@ public class SubscriptionTest {
                 firstBillingDate(firstBillingDate);
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertFalse(createResult.isSuccess());
+        assertFalse(createResult.isSuccess());
 
         List<ValidationError> errors = createResult.getErrors().forObject("subscription").onField("firstBillingDate");
-        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_FIRST_BILLING_DATE_CANNOT_BE_IN_THE_PAST, errors.get(0).getCode());
+        assertEquals(ValidationErrorCode.SUBSCRIPTION_FIRST_BILLING_DATE_CANNOT_BE_IN_THE_PAST, errors.get(0).getCode());
     }
 
     @Test
@@ -347,10 +349,10 @@ public class SubscriptionTest {
 
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
-        Assert.assertEquals(newId, subscription.getId());
+        assertEquals(newId, subscription.getId());
     }
 
     @Test
@@ -363,10 +365,10 @@ public class SubscriptionTest {
                 merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID);
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
-        Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
+        assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
     }
 
     @Test
@@ -379,14 +381,14 @@ public class SubscriptionTest {
 
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
         Transaction transaction = subscription.getTransactions().get(0);
 
-        Assert.assertEquals(1, subscription.getTransactions().size());
-        Assert.assertEquals(new BigDecimal("482.48"), transaction.getAmount());
-        Assert.assertEquals(Transaction.Type.SALE, transaction.getType());
-        Assert.assertEquals(subscription.getId(), transaction.getSubscriptionId());
+        assertEquals(1, subscription.getTransactions().size());
+        assertEquals(new BigDecimal("482.48"), transaction.getAmount());
+        assertEquals(Transaction.Type.SALE, transaction.getType());
+        assertEquals(subscription.getId(), transaction.getSubscriptionId());
     }
 
     @Test
@@ -398,8 +400,8 @@ public class SubscriptionTest {
                 price(SandboxValues.TransactionAmount.DECLINE.amount);
 
         Result<Subscription> result = gateway.subscription().create(request);
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals(Transaction.Status.PROCESSOR_DECLINED, result.getTransaction().getStatus());
+        assertFalse(result.isSuccess());
+        assertEquals(Transaction.Status.PROCESSOR_DECLINED, result.getTransaction().getStatus());
     }
 
     @Test
@@ -411,10 +413,10 @@ public class SubscriptionTest {
 
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
-        Assert.assertEquals(0, subscription.getTransactions().size());
+        assertEquals(0, subscription.getTransactions().size());
     }
 
     @Test
@@ -428,11 +430,11 @@ public class SubscriptionTest {
                 done();
 
         Result<Subscription> result = gateway.subscription().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Subscription subscription = result.getTarget();
 
-        Assert.assertEquals(0, subscription.getAddOns().size());
-        Assert.assertEquals(0, subscription.getDiscounts().size());
+        assertEquals(0, subscription.getAddOns().size());
+        assertEquals(0, subscription.getDiscounts().size());
     }
 
     @Test
@@ -443,42 +445,42 @@ public class SubscriptionTest {
                 planId(plan.getId());
 
         Result<Subscription> result = gateway.subscription().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Subscription subscription = result.getTarget();
 
         List<AddOn> addOns = subscription.getAddOns();
         Collections.sort(addOns, new TestHelper.CompareModificationsById());
 
-        Assert.assertEquals(2, addOns.size());
+        assertEquals(2, addOns.size());
 
-        Assert.assertEquals("increase_10", addOns.get(0).getId());
-        Assert.assertEquals(new BigDecimal("10.00"), addOns.get(0).getAmount());
-        Assert.assertEquals(new Integer(1), addOns.get(0).getQuantity());
-        Assert.assertTrue(addOns.get(0).neverExpires());
-        Assert.assertNull(addOns.get(0).getNumberOfBillingCycles());
+        assertEquals("increase_10", addOns.get(0).getId());
+        assertEquals(new BigDecimal("10.00"), addOns.get(0).getAmount());
+        assertEquals(new Integer(1), addOns.get(0).getQuantity());
+        assertTrue(addOns.get(0).neverExpires());
+        assertNull(addOns.get(0).getNumberOfBillingCycles());
 
-        Assert.assertEquals("increase_20", addOns.get(1).getId());
-        Assert.assertEquals(new BigDecimal("20.00"), addOns.get(1).getAmount());
-        Assert.assertEquals(new Integer(1), addOns.get(1).getQuantity());
-        Assert.assertTrue(addOns.get(1).neverExpires());
-        Assert.assertNull(addOns.get(1).getNumberOfBillingCycles());
+        assertEquals("increase_20", addOns.get(1).getId());
+        assertEquals(new BigDecimal("20.00"), addOns.get(1).getAmount());
+        assertEquals(new Integer(1), addOns.get(1).getQuantity());
+        assertTrue(addOns.get(1).neverExpires());
+        assertNull(addOns.get(1).getNumberOfBillingCycles());
 
         List<Discount> discounts = subscription.getDiscounts();
         Collections.sort(discounts, new TestHelper.CompareModificationsById());
 
-        Assert.assertEquals(2, discounts.size());
+        assertEquals(2, discounts.size());
 
-        Assert.assertEquals("discount_11", discounts.get(0).getId());
-        Assert.assertEquals(new BigDecimal("11.00"), discounts.get(0).getAmount());
-        Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
-        Assert.assertTrue(discounts.get(0).neverExpires());
-        Assert.assertNull(discounts.get(0).getNumberOfBillingCycles());
+        assertEquals("discount_11", discounts.get(0).getId());
+        assertEquals(new BigDecimal("11.00"), discounts.get(0).getAmount());
+        assertEquals(new Integer(1), discounts.get(0).getQuantity());
+        assertTrue(discounts.get(0).neverExpires());
+        assertNull(discounts.get(0).getNumberOfBillingCycles());
 
-        Assert.assertEquals("discount_7", discounts.get(1).getId());
-        Assert.assertEquals(new BigDecimal("7.00"), discounts.get(1).getAmount());
-        Assert.assertEquals(new Integer(1), discounts.get(1).getQuantity());
-        Assert.assertTrue(discounts.get(1).neverExpires());
-        Assert.assertNull(discounts.get(1).getNumberOfBillingCycles());
+        assertEquals("discount_7", discounts.get(1).getId());
+        assertEquals(new BigDecimal("7.00"), discounts.get(1).getAmount());
+        assertEquals(new Integer(1), discounts.get(1).getQuantity());
+        assertTrue(discounts.get(1).neverExpires());
+        assertNull(discounts.get(1).getNumberOfBillingCycles());
     }
 
     @Test
@@ -508,38 +510,38 @@ public class SubscriptionTest {
                 done();
 
         Result<Subscription> result = gateway.subscription().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Subscription subscription = result.getTarget();
 
         List<AddOn> addOns = subscription.getAddOns();
         Collections.sort(addOns, new TestHelper.CompareModificationsById());
 
-        Assert.assertEquals(2, addOns.size());
+        assertEquals(2, addOns.size());
 
-        Assert.assertEquals("increase_10", addOns.get(0).getId());
-        Assert.assertEquals(new BigDecimal("30.00"), addOns.get(0).getAmount());
-        Assert.assertEquals(new Integer(3), addOns.get(0).getNumberOfBillingCycles());
-        Assert.assertFalse(addOns.get(0).neverExpires());
-        Assert.assertEquals(new Integer(9), addOns.get(0).getQuantity());
+        assertEquals("increase_10", addOns.get(0).getId());
+        assertEquals(new BigDecimal("30.00"), addOns.get(0).getAmount());
+        assertEquals(new Integer(3), addOns.get(0).getNumberOfBillingCycles());
+        assertFalse(addOns.get(0).neverExpires());
+        assertEquals(new Integer(9), addOns.get(0).getQuantity());
 
-        Assert.assertEquals("increase_20", addOns.get(1).getId());
-        Assert.assertEquals(new BigDecimal("40.00"), addOns.get(1).getAmount());
-        Assert.assertEquals(new Integer(1), addOns.get(1).getQuantity());
+        assertEquals("increase_20", addOns.get(1).getId());
+        assertEquals(new BigDecimal("40.00"), addOns.get(1).getAmount());
+        assertEquals(new Integer(1), addOns.get(1).getQuantity());
 
         List<Discount> discounts = subscription.getDiscounts();
         Collections.sort(discounts, new TestHelper.CompareModificationsById());
 
-        Assert.assertEquals(2, discounts.size());
+        assertEquals(2, discounts.size());
 
-        Assert.assertEquals("discount_11", discounts.get(0).getId());
-        Assert.assertEquals(new BigDecimal("23.00"), discounts.get(0).getAmount());
-        Assert.assertNull(discounts.get(0).getNumberOfBillingCycles());
-        Assert.assertTrue(discounts.get(0).neverExpires());
-        Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
+        assertEquals("discount_11", discounts.get(0).getId());
+        assertEquals(new BigDecimal("23.00"), discounts.get(0).getAmount());
+        assertNull(discounts.get(0).getNumberOfBillingCycles());
+        assertTrue(discounts.get(0).neverExpires());
+        assertEquals(new Integer(1), discounts.get(0).getQuantity());
 
-        Assert.assertEquals("discount_7", discounts.get(1).getId());
-        Assert.assertEquals(new BigDecimal("15.00"), discounts.get(1).getAmount());
-        Assert.assertEquals(new Integer(1), discounts.get(1).getQuantity());
+        assertEquals("discount_7", discounts.get(1).getId());
+        assertEquals(new BigDecimal("15.00"), discounts.get(1).getAmount());
+        assertEquals(new Integer(1), discounts.get(1).getQuantity());
     }
 
     @Test
@@ -556,11 +558,11 @@ public class SubscriptionTest {
                 done();
 
         Result<Subscription> result = gateway.subscription().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Subscription subscription = result.getTarget();
 
-        Assert.assertEquals(0, subscription.getAddOns().size());
-        Assert.assertEquals(0, subscription.getDiscounts().size());
+        assertEquals(0, subscription.getAddOns().size());
+        assertEquals(0, subscription.getDiscounts().size());
     }
 
     @Test
@@ -578,11 +580,11 @@ public class SubscriptionTest {
                 done();
 
         Result<Subscription> result = gateway.subscription().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Subscription subscription = result.getTarget();
 
-        Assert.assertEquals(0, subscription.getAddOns().size());
-        Assert.assertEquals(0, subscription.getDiscounts().size());
+        assertEquals(0, subscription.getAddOns().size());
+        assertEquals(0, subscription.getDiscounts().size());
     }
 
     @Test
@@ -613,22 +615,22 @@ public class SubscriptionTest {
                 done();
 
         Result<Subscription> result = gateway.subscription().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Subscription subscription = result.getTarget();
 
-        Assert.assertEquals(1, subscription.getAddOns().size());
+        assertEquals(1, subscription.getAddOns().size());
 
-        Assert.assertEquals(new BigDecimal("40.00"), subscription.getAddOns().get(0).getAmount());
-        Assert.assertEquals(new Integer(6), subscription.getAddOns().get(0).getNumberOfBillingCycles());
-        Assert.assertFalse(subscription.getAddOns().get(0).neverExpires());
-        Assert.assertEquals(new Integer(3), subscription.getAddOns().get(0).getQuantity());
+        assertEquals(new BigDecimal("40.00"), subscription.getAddOns().get(0).getAmount());
+        assertEquals(new Integer(6), subscription.getAddOns().get(0).getNumberOfBillingCycles());
+        assertFalse(subscription.getAddOns().get(0).neverExpires());
+        assertEquals(new Integer(3), subscription.getAddOns().get(0).getQuantity());
 
-        Assert.assertEquals(1, subscription.getDiscounts().size());
+        assertEquals(1, subscription.getDiscounts().size());
 
-        Assert.assertEquals(new BigDecimal("17.00"), subscription.getDiscounts().get(0).getAmount());
-        Assert.assertNull(subscription.getDiscounts().get(0).getNumberOfBillingCycles());
-        Assert.assertTrue(subscription.getDiscounts().get(0).neverExpires());
-        Assert.assertEquals(new Integer(2), subscription.getDiscounts().get(0).getQuantity());
+        assertEquals(new BigDecimal("17.00"), subscription.getDiscounts().get(0).getAmount());
+        assertNull(subscription.getDiscounts().get(0).getNumberOfBillingCycles());
+        assertTrue(subscription.getDiscounts().get(0).neverExpires());
+        assertEquals(new Integer(2), subscription.getDiscounts().get(0).getQuantity());
     }
 
     @Test
@@ -647,11 +649,11 @@ public class SubscriptionTest {
                 done();
 
         Result<Subscription> result = gateway.subscription().create(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_MODIFICATION_AMOUNT_IS_INVALID,
+        assertEquals(ValidationErrorCode.SUBSCRIPTION_MODIFICATION_AMOUNT_IS_INVALID,
                 result.getErrors().forObject("subscription").forObject("addOns").forObject("update").forIndex(0).onField("amount").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_MODIFICATION_QUANTITY_IS_INVALID,
+        assertEquals(ValidationErrorCode.SUBSCRIPTION_MODIFICATION_QUANTITY_IS_INVALID,
                 result.getErrors().forObject("subscription").forObject("addOns").forObject("update").forIndex(1).onField("quantity").get(0).getCode());
     }
 
@@ -663,13 +665,13 @@ public class SubscriptionTest {
                 planId(plan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
         Subscription foundSubscription = gateway.subscription().find(subscription.getId());
-        Assert.assertEquals(subscription.getId(), foundSubscription.getId());
-        Assert.assertEquals(subscription.getPaymentMethodToken(), creditCard.getToken());
-        Assert.assertEquals(subscription.getPlanId(), plan.getId());
+        assertEquals(subscription.getId(), foundSubscription.getId());
+        assertEquals(subscription.getPaymentMethodToken(), creditCard.getToken());
+        assertEquals(subscription.getPlanId(), plan.getId());
     }
 
     @Test
@@ -692,17 +694,17 @@ public class SubscriptionTest {
                 id(oldId);
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
 
         String newId = "new-id-" + new Random().nextInt();
         SubscriptionRequest updateRequest = new SubscriptionRequest().id(newId);
         Result<Subscription> result = gateway.subscription().update(oldId, updateRequest);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Subscription subscription = result.getTarget();
 
-        Assert.assertEquals(newId, subscription.getId());
-        Assert.assertNotNull(gateway.subscription().find(newId));
+        assertEquals(newId, subscription.getId());
+        assertNotNull(gateway.subscription().find(newId));
     }
 
     @Test
@@ -713,16 +715,16 @@ public class SubscriptionTest {
                 planId(plan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
 
         SubscriptionRequest updateRequest = new SubscriptionRequest()
                 .merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID);
         Result<Subscription> result = gateway.subscription().update(createResult.getTarget().getId(), updateRequest);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Subscription subscription = result.getTarget();
 
-        Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
+        assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
     }
 
     @Test
@@ -733,17 +735,17 @@ public class SubscriptionTest {
                 planId(originalPlan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
         Plan newPlan = PlanFixture.PLAN_WITH_TRIAL;
         SubscriptionRequest updateRequest = new SubscriptionRequest().planId(newPlan.getId());
         Result<Subscription> result = gateway.subscription().update(subscription.getId(), updateRequest);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         subscription = result.getTarget();
 
-        Assert.assertEquals(newPlan.getId(), subscription.getPlanId());
+        assertEquals(newPlan.getId(), subscription.getPlanId());
     }
 
     @Test
@@ -754,7 +756,7 @@ public class SubscriptionTest {
                 planId(originalPlan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
         CreditCardRequest request = new CreditCardRequest().
@@ -769,10 +771,10 @@ public class SubscriptionTest {
         SubscriptionRequest updateRequest = new SubscriptionRequest().paymentMethodToken(newCreditCard.getToken());
         Result<Subscription> result = gateway.subscription().update(subscription.getId(), updateRequest);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         subscription = result.getTarget();
 
-        Assert.assertEquals(newCreditCard.getToken(), subscription.getPaymentMethodToken());
+        assertEquals(newCreditCard.getToken(), subscription.getPaymentMethodToken());
     }
 
     @Test
@@ -784,17 +786,17 @@ public class SubscriptionTest {
                 price(new BigDecimal("1.23"));
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
         SubscriptionRequest updateRequest = new SubscriptionRequest().price(new BigDecimal("4.56"));
         Result<Subscription> result = gateway.subscription().update(subscription.getId(), updateRequest);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         subscription = result.getTarget();
 
-        Assert.assertEquals(new BigDecimal("4.56"), subscription.getPrice());
-        Assert.assertEquals(2, subscription.getTransactions().size());
+        assertEquals(new BigDecimal("4.56"), subscription.getPrice());
+        assertEquals(2, subscription.getTransactions().size());
     }
 
     @Test
@@ -806,7 +808,7 @@ public class SubscriptionTest {
                 price(new BigDecimal("1.23"));
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
         SubscriptionRequest updateRequest = new SubscriptionRequest().
@@ -816,11 +818,11 @@ public class SubscriptionTest {
                 done();
         Result<Subscription> result = gateway.subscription().update(subscription.getId(), updateRequest);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         subscription = result.getTarget();
 
-        Assert.assertEquals(new BigDecimal("4.56"), subscription.getPrice());
-        Assert.assertEquals(2, subscription.getTransactions().size());
+        assertEquals(new BigDecimal("4.56"), subscription.getPrice());
+        assertEquals(2, subscription.getTransactions().size());
     }
 
     @Test
@@ -832,7 +834,7 @@ public class SubscriptionTest {
                 price(new BigDecimal("1.23"));
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
         SubscriptionRequest updateRequest = new SubscriptionRequest().
@@ -842,11 +844,11 @@ public class SubscriptionTest {
                 done();
         Result<Subscription> result = gateway.subscription().update(subscription.getId(), updateRequest);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         subscription = result.getTarget();
 
-        Assert.assertEquals(new BigDecimal("4.56"), subscription.getPrice());
-        Assert.assertEquals(1, subscription.getTransactions().size());
+        assertEquals(new BigDecimal("4.56"), subscription.getPrice());
+        assertEquals(1, subscription.getTransactions().size());
     }
 
     @Test
@@ -858,7 +860,7 @@ public class SubscriptionTest {
                 price(new BigDecimal("1.23"));
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription createdSubscription = createResult.getTarget();
 
         SubscriptionRequest updateRequest = new SubscriptionRequest().
@@ -869,14 +871,14 @@ public class SubscriptionTest {
                 done();
         Result<Subscription> result = gateway.subscription().update(createdSubscription.getId(), updateRequest);
 
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         Subscription subscription = result.getSubscription();
 
-        Assert.assertEquals(createdSubscription.getTransactions().size() + 1, subscription.getTransactions().size());
-        Assert.assertEquals(Transaction.Status.PROCESSOR_DECLINED, subscription.getTransactions().get(0).getStatus());
+        assertEquals(createdSubscription.getTransactions().size() + 1, subscription.getTransactions().size());
+        assertEquals(Transaction.Status.PROCESSOR_DECLINED, subscription.getTransactions().get(0).getStatus());
 
-        Assert.assertEquals(new BigDecimal("0.00"), subscription.getBalance());
-        Assert.assertEquals(new BigDecimal("1.23"), subscription.getPrice());
+        assertEquals(new BigDecimal("0.00"), subscription.getBalance());
+        assertEquals(new BigDecimal("1.23"), subscription.getPrice());
     }
 
     @Test
@@ -888,7 +890,7 @@ public class SubscriptionTest {
                 price(new BigDecimal("1.23"));
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription createdSubscription = createResult.getTarget();
 
         SubscriptionRequest updateRequest = new SubscriptionRequest().
@@ -899,13 +901,13 @@ public class SubscriptionTest {
                 done();
         Result<Subscription> result = gateway.subscription().update(createdSubscription.getId(), updateRequest);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Subscription subscription = result.getTarget();
-        Assert.assertEquals(createdSubscription.getTransactions().size() + 1, subscription.getTransactions().size());
-        Assert.assertEquals(Transaction.Status.PROCESSOR_DECLINED, subscription.getTransactions().get(0).getStatus());
+        assertEquals(createdSubscription.getTransactions().size() + 1, subscription.getTransactions().size());
+        assertEquals(Transaction.Status.PROCESSOR_DECLINED, subscription.getTransactions().get(0).getStatus());
 
-        Assert.assertEquals(subscription.getTransactions().get(0).getAmount(), subscription.getBalance());
-        Assert.assertEquals(new BigDecimal("2100.00"), subscription.getPrice());
+        assertEquals(subscription.getTransactions().get(0).getAmount(), subscription.getBalance());
+        assertEquals(new BigDecimal("2100.00"), subscription.getPrice());
     }
 
     @Test
@@ -916,17 +918,17 @@ public class SubscriptionTest {
                 planId(originalPlan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(createRequest);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
         SubscriptionRequest updateRequest = new SubscriptionRequest().price(new BigDecimal("4.56"));
         Result<Subscription> result = gateway.subscription().update(subscription.getId(), updateRequest);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         subscription = result.getTarget();
 
-        Assert.assertEquals(new BigDecimal("4.56"), subscription.getPrice());
-        Assert.assertEquals(1, subscription.getTransactions().size());
+        assertEquals(new BigDecimal("4.56"), subscription.getPrice());
+        assertEquals(1, subscription.getTransactions().size());
     }
 
     @Test
@@ -962,32 +964,32 @@ public class SubscriptionTest {
                 done();
 
         Result<Subscription> result = gateway.subscription().update(subscription.getId(), request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Subscription updatedSubscription = result.getTarget();
 
         List<AddOn> addOns = updatedSubscription.getAddOns();
         Collections.sort(addOns, new TestHelper.CompareModificationsById());
 
-        Assert.assertEquals(2, addOns.size());
+        assertEquals(2, addOns.size());
 
-        Assert.assertEquals(new BigDecimal("30.00"), addOns.get(0).getAmount());
-        Assert.assertEquals(new Integer(9), addOns.get(0).getQuantity());
+        assertEquals(new BigDecimal("30.00"), addOns.get(0).getAmount());
+        assertEquals(new Integer(9), addOns.get(0).getQuantity());
 
-        Assert.assertEquals(new BigDecimal("31.00"), addOns.get(1).getAmount());
-        Assert.assertEquals(new Integer(7), addOns.get(1).getQuantity());
+        assertEquals(new BigDecimal("31.00"), addOns.get(1).getAmount());
+        assertEquals(new Integer(7), addOns.get(1).getQuantity());
 
         List<Discount> discounts = updatedSubscription.getDiscounts();
         Collections.sort(discounts, new TestHelper.CompareModificationsById());
 
-        Assert.assertEquals(2, discounts.size());
+        assertEquals(2, discounts.size());
 
-        Assert.assertEquals("discount_15", discounts.get(0).getId());
-        Assert.assertEquals(new BigDecimal("23.00"), discounts.get(0).getAmount());
-        Assert.assertEquals(new Integer(1), discounts.get(0).getQuantity());
+        assertEquals("discount_15", discounts.get(0).getId());
+        assertEquals(new BigDecimal("23.00"), discounts.get(0).getAmount());
+        assertEquals(new Integer(1), discounts.get(0).getQuantity());
 
-        Assert.assertEquals("discount_7", discounts.get(1).getId());
-        Assert.assertEquals(new BigDecimal("15.00"), discounts.get(1).getAmount());
-        Assert.assertEquals(new Integer(1), discounts.get(1).getQuantity());
+        assertEquals("discount_7", discounts.get(1).getId());
+        assertEquals(new BigDecimal("15.00"), discounts.get(1).getAmount());
+        assertEquals(new Integer(1), discounts.get(1).getQuantity());
     }
 
     @Test
@@ -1014,11 +1016,11 @@ public class SubscriptionTest {
                 done();
 
         Result<Subscription> result = gateway.subscription().update(subscription.getId(), request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Subscription updatedSubscription = result.getTarget();
 
-        Assert.assertEquals(1, updatedSubscription.getAddOns().size());
-        Assert.assertEquals(1, updatedSubscription.getDiscounts().size());
+        assertEquals(1, updatedSubscription.getAddOns().size());
+        assertEquals(1, updatedSubscription.getDiscounts().size());
     }
 
     @Test
@@ -1043,8 +1045,8 @@ public class SubscriptionTest {
 
         Subscription updatedSubscription = gateway.subscription().update(subscription.getId(), updateRequest).getTarget();
 
-        Assert.assertEquals("999*99", updatedSubscription.getDescriptor().getName());
-        Assert.assertEquals("1234567891", updatedSubscription.getDescriptor().getPhone());
+        assertEquals("999*99", updatedSubscription.getDescriptor().getName());
+        assertEquals("1234567891", updatedSubscription.getDescriptor().getPhone());
     }
 
     @Test
@@ -1054,9 +1056,9 @@ public class SubscriptionTest {
                 planId("noSuchPlanId");
 
         Result<Subscription> result = gateway.subscription().create(createRequest);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_PLAN_ID_IS_INVALID, result.getErrors().forObject("subscription").onField("planId").get(0).getCode());
+        assertEquals(ValidationErrorCode.SUBSCRIPTION_PLAN_ID_IS_INVALID, result.getErrors().forObject("subscription").onField("planId").get(0).getCode());
     }
 
     @Test
@@ -1066,9 +1068,9 @@ public class SubscriptionTest {
                 planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId());
 
         Result<Subscription> result = gateway.subscription().create(createRequest);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_PAYMENT_METHOD_TOKEN_IS_INVALID, result.getErrors().forObject("subscription").onField("paymentMethodToken").get(0).getCode());
+        assertEquals(ValidationErrorCode.SUBSCRIPTION_PAYMENT_METHOD_TOKEN_IS_INVALID, result.getErrors().forObject("subscription").onField("paymentMethodToken").get(0).getCode());
     }
 
     @Test
@@ -1083,15 +1085,15 @@ public class SubscriptionTest {
                 done();
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
 
         Subscription subscription = createResult.getTarget();
-        Assert.assertEquals("123*123456789012345678", subscription.getDescriptor().getName());
-        Assert.assertEquals("3334445555", subscription.getDescriptor().getPhone());
+        assertEquals("123*123456789012345678", subscription.getDescriptor().getName());
+        assertEquals("3334445555", subscription.getDescriptor().getPhone());
 
         Transaction transaction = subscription.getTransactions().get(0);
-        Assert.assertEquals("123*123456789012345678", transaction.getDescriptor().getName());
-        Assert.assertEquals("3334445555", transaction.getDescriptor().getPhone());
+        assertEquals("123*123456789012345678", transaction.getDescriptor().getName());
+        assertEquals("3334445555", transaction.getDescriptor().getPhone());
     }
 
     @Test
@@ -1103,12 +1105,12 @@ public class SubscriptionTest {
                 done();
 
         Result<Subscription> result = gateway.subscription().create(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_NAME_FORMAT_IS_INVALID,
+        assertEquals(ValidationErrorCode.DESCRIPTOR_NAME_FORMAT_IS_INVALID,
                 result.getErrors().forObject("subscription").forObject("descriptor").onField("name").get(0).getCode());
 
-        Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_PHONE_FORMAT_IS_INVALID,
+        assertEquals(ValidationErrorCode.DESCRIPTOR_PHONE_FORMAT_IS_INVALID,
                 result.getErrors().forObject("subscription").forObject("descriptor").onField("phone").get(0).getCode());
     }
 
@@ -1121,10 +1123,10 @@ public class SubscriptionTest {
                 id("invalid id");
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertFalse(createResult.isSuccess());
-        Assert.assertNull(createResult.getTarget());
+        assertFalse(createResult.isSuccess());
+        assertNull(createResult.getTarget());
         ValidationErrors errors = createResult.getErrors();
-        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_TOKEN_FORMAT_IS_INVALID, errors.forObject("subscription").onField("id").get(0).getCode());
+        assertEquals(ValidationErrorCode.SUBSCRIPTION_TOKEN_FORMAT_IS_INVALID, errors.forObject("subscription").onField("id").get(0).getCode());
     }
 
     @Test
@@ -1135,16 +1137,16 @@ public class SubscriptionTest {
                 planId(plan.getId());
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Subscription createdSubscription = createResult.getTarget();
 
         SubscriptionRequest updateRequest = new SubscriptionRequest().id("invalid id");
         Result<Subscription> result = gateway.subscription().update(createdSubscription.getId(), updateRequest);
 
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertNull(result.getTarget());
+        assertFalse(result.isSuccess());
+        assertNull(result.getTarget());
         ValidationErrors errors = result.getErrors();
-        Assert.assertEquals(ValidationErrorCode.SUBSCRIPTION_TOKEN_FORMAT_IS_INVALID, errors.forObject("subscription").onField("id").get(0).getCode());
+        assertEquals(ValidationErrorCode.SUBSCRIPTION_TOKEN_FORMAT_IS_INVALID, errors.forObject("subscription").onField("id").get(0).getCode());
 
 
     }
@@ -1158,11 +1160,11 @@ public class SubscriptionTest {
                 id("invalid id");
 
         Result<Subscription> createResult = gateway.subscription().create(request);
-        Assert.assertFalse(createResult.isSuccess());
-        Assert.assertNull(createResult.getTarget());
+        assertFalse(createResult.isSuccess());
+        assertNull(createResult.getTarget());
         Map<String, String> parameters = createResult.getParameters();
-        Assert.assertEquals(plan.getId(), parameters.get("plan_id"));
-        Assert.assertEquals("invalid id", parameters.get("id"));
+        assertEquals(plan.getId(), parameters.get("plan_id"));
+        assertEquals("invalid id", parameters.get("id"));
     }
 
     @Test
@@ -1175,9 +1177,9 @@ public class SubscriptionTest {
         Result<Subscription> createResult = gateway.subscription().create(request);
         Result<Subscription> cancelResult = gateway.subscription().cancel(createResult.getTarget().getId());
 
-        Assert.assertTrue(cancelResult.isSuccess());
-        Assert.assertEquals(Subscription.Status.CANCELED, cancelResult.getTarget().getStatus());
-        Assert.assertEquals(Subscription.Status.CANCELED, gateway.subscription().find(createResult.getTarget().getId()).getStatus());
+        assertTrue(cancelResult.isSuccess());
+        assertEquals(Subscription.Status.CANCELED, cancelResult.getTarget().getStatus());
+        assertEquals(Subscription.Status.CANCELED, gateway.subscription().find(createResult.getTarget().getId()).getStatus());
     }
 
     @Test
@@ -1201,8 +1203,8 @@ public class SubscriptionTest {
                 price().is(new BigDecimal(5));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription12));
-        Assert.assertFalse(TestHelper.includesSubscription(results, subscription11));
+        assertTrue(TestHelper.includesSubscription(results, subscription12));
+        assertFalse(TestHelper.includesSubscription(results, subscription11));
     }
 
     @Test
@@ -1219,9 +1221,9 @@ public class SubscriptionTest {
                 daysPastDue().between(2, 10);
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
 
-        Assert.assertTrue(results.getMaximumSize() > 0);
+        assertTrue(results.getMaximumSize() > 0);
         for (Subscription foundSubscription : results) {
-            Assert.assertTrue(foundSubscription.getDaysPastDue() >= 2 && foundSubscription.getDaysPastDue() <= 10);
+            assertTrue(foundSubscription.getDaysPastDue() >= 2 && foundSubscription.getDaysPastDue() <= 10);
         }
     }
 
@@ -1247,8 +1249,8 @@ public class SubscriptionTest {
                 price().is(new BigDecimal(2));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
-        Assert.assertFalse(TestHelper.includesSubscription(results, subscription2));
+        assertTrue(TestHelper.includesSubscription(results, subscription1));
+        assertFalse(TestHelper.includesSubscription(results, subscription2));
     }
 
     @Test
@@ -1272,15 +1274,15 @@ public class SubscriptionTest {
                 inTrialPeriod().is(true);
 
         ResourceCollection<Subscription> subscriptionsWithTrialPeriods = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(subscriptionsWithTrialPeriods, subscriptionWithTrial));
-        Assert.assertFalse(TestHelper.includesSubscription(subscriptionsWithTrialPeriods, subscriptionWithoutTrial));
+        assertTrue(TestHelper.includesSubscription(subscriptionsWithTrialPeriods, subscriptionWithTrial));
+        assertFalse(TestHelper.includesSubscription(subscriptionsWithTrialPeriods, subscriptionWithoutTrial));
 
         search = new SubscriptionSearchRequest().
                 inTrialPeriod().is(false);
 
         ResourceCollection<Subscription> subscriptionsWithoutTrialPeriods = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(subscriptionsWithoutTrialPeriods, subscriptionWithoutTrial));
-        Assert.assertFalse(TestHelper.includesSubscription(subscriptionsWithoutTrialPeriods, subscriptionWithTrial));
+        assertTrue(TestHelper.includesSubscription(subscriptionsWithoutTrialPeriods, subscriptionWithoutTrial));
+        assertFalse(TestHelper.includesSubscription(subscriptionsWithoutTrialPeriods, subscriptionWithTrial));
     }
 
     @Test
@@ -1304,8 +1306,8 @@ public class SubscriptionTest {
                 price().is(new BigDecimal(3));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscriptionNonDefaultMerchantAccount));
-        Assert.assertFalse(TestHelper.includesSubscription(results, subscriptionDefaultMerchantAccount));
+        assertTrue(TestHelper.includesSubscription(results, subscriptionNonDefaultMerchantAccount));
+        assertFalse(TestHelper.includesSubscription(results, subscriptionDefaultMerchantAccount));
     }
 
     @Test
@@ -1322,21 +1324,21 @@ public class SubscriptionTest {
                 price().is(new BigDecimal(5));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription));
+        assertTrue(TestHelper.includesSubscription(results, subscription));
 
         search = new SubscriptionSearchRequest().
                 merchantAccountId().in(subscription.getMerchantAccountId(), "totally_bogus").
                 price().is(new BigDecimal(5));
 
         results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription));
+        assertTrue(TestHelper.includesSubscription(results, subscription));
 
         search = new SubscriptionSearchRequest().
                 merchantAccountId().is("totally_bogus").
                 price().is(new BigDecimal(5));
 
         results = gateway.subscription().search(search);
-        Assert.assertFalse(TestHelper.includesSubscription(results, subscription));
+        assertFalse(TestHelper.includesSubscription(results, subscription));
     }
 
     @Test
@@ -1359,8 +1361,8 @@ public class SubscriptionTest {
                 nextBillingDate().greaterThanOrEqualTo(expectedNextBillingDate);
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
 
-        Assert.assertTrue(TestHelper.includesSubscription(results, triallessSubscription));
-        Assert.assertFalse(TestHelper.includesSubscription(results, trialSubscription));
+        assertTrue(TestHelper.includesSubscription(results, triallessSubscription));
+        assertFalse(TestHelper.includesSubscription(results, trialSubscription));
     }
 
     @Test
@@ -1384,8 +1386,8 @@ public class SubscriptionTest {
                 price().is(new BigDecimal(7));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
-        Assert.assertFalse(TestHelper.includesSubscription(results, subscription2));
+        assertTrue(TestHelper.includesSubscription(results, subscription1));
+        assertFalse(TestHelper.includesSubscription(results, subscription2));
     }
 
     @Test
@@ -1409,8 +1411,8 @@ public class SubscriptionTest {
                 price().is(new BigDecimal(8));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription2));
-        Assert.assertFalse(TestHelper.includesSubscription(results, subscription1));
+        assertTrue(TestHelper.includesSubscription(results, subscription2));
+        assertFalse(TestHelper.includesSubscription(results, subscription1));
     }
 
     @Test
@@ -1434,8 +1436,8 @@ public class SubscriptionTest {
                 price().is(new BigDecimal(9));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
-        Assert.assertFalse(TestHelper.includesSubscription(results, subscription2));
+        assertTrue(TestHelper.includesSubscription(results, subscription1));
+        assertFalse(TestHelper.includesSubscription(results, subscription2));
     }
 
     @Test
@@ -1459,8 +1461,8 @@ public class SubscriptionTest {
                 price().is(new BigDecimal(10));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
-        Assert.assertFalse(TestHelper.includesSubscription(results, subscription2));
+        assertTrue(TestHelper.includesSubscription(results, subscription1));
+        assertFalse(TestHelper.includesSubscription(results, subscription2));
     }
 
     @Test
@@ -1484,8 +1486,8 @@ public class SubscriptionTest {
                 price().is(new BigDecimal(11));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
-        Assert.assertFalse(TestHelper.includesSubscription(results, subscription2));
+        assertTrue(TestHelper.includesSubscription(results, subscription1));
+        assertFalse(TestHelper.includesSubscription(results, subscription2));
     }
 
     @Test
@@ -1513,9 +1515,9 @@ public class SubscriptionTest {
                 price().is(new BigDecimal(6));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription2));
-        Assert.assertFalse(TestHelper.includesSubscription(results, subscription3));
+        assertTrue(TestHelper.includesSubscription(results, subscription1));
+        assertTrue(TestHelper.includesSubscription(results, subscription2));
+        assertFalse(TestHelper.includesSubscription(results, subscription3));
     }
 
     @Test
@@ -1539,8 +1541,8 @@ public class SubscriptionTest {
                 price().is(new BigDecimal(12));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
-        Assert.assertFalse(TestHelper.includesSubscription(results, subscription2));
+        assertTrue(TestHelper.includesSubscription(results, subscription1));
+        assertFalse(TestHelper.includesSubscription(results, subscription2));
     }
 
     @Test
@@ -1549,9 +1551,9 @@ public class SubscriptionTest {
                 status().in(Status.EXPIRED);
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
 
-        Assert.assertTrue(results.getMaximumSize() > 0);
+        assertTrue(results.getMaximumSize() > 0);
         for (Subscription subscription : results) {
-            Assert.assertEquals(Status.EXPIRED, subscription.getStatus());
+            assertEquals(Status.EXPIRED, subscription.getStatus());
         }
     }
 
@@ -1580,8 +1582,8 @@ public class SubscriptionTest {
                 price().is(new BigDecimal(13));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription2));
+        assertTrue(TestHelper.includesSubscription(results, subscription1));
+        assertTrue(TestHelper.includesSubscription(results, subscription2));
     }
 
     @Test
@@ -1605,8 +1607,8 @@ public class SubscriptionTest {
                 price().is(new BigDecimal(14));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription2));
+        assertTrue(TestHelper.includesSubscription(results, subscription1));
+        assertTrue(TestHelper.includesSubscription(results, subscription2));
     }
 
     @Test
@@ -1628,22 +1630,22 @@ public class SubscriptionTest {
                 transactionId().is(subscription1.getTransactions().get(0).getId());
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
-        Assert.assertTrue(TestHelper.includesSubscription(results, subscription1));
-        Assert.assertFalse(TestHelper.includesSubscription(results, subscription2));
+        assertTrue(TestHelper.includesSubscription(results, subscription1));
+        assertFalse(TestHelper.includesSubscription(results, subscription2));
     }
 
     @Test
     public void unrecognizedStatus() {
         String xml = "<subscription><status>foobar</status></subscription>";
         Subscription transaction = new Subscription(NodeWrapperFactory.instance.create(xml));
-        Assert.assertEquals(Subscription.Status.UNRECOGNIZED, transaction.getStatus());
+        assertEquals(Subscription.Status.UNRECOGNIZED, transaction.getStatus());
     }
 
     @Test
     public void unrecognizedDurationUnit() {
         String xml = "<subscription><trial-duration-unit>foobar</trial-duration-unit></subscription>";
         Subscription transaction = new Subscription(NodeWrapperFactory.instance.create(xml));
-        Assert.assertEquals(Subscription.DurationUnit.UNRECOGNIZED, transaction.getTrialDurationUnit());
+        assertEquals(Subscription.DurationUnit.UNRECOGNIZED, transaction.getTrialDurationUnit());
     }
 
     @Test
@@ -1657,15 +1659,15 @@ public class SubscriptionTest {
         makePastDue(subscription, 1);
 
         Result<Transaction> result = gateway.subscription().retryCharge(subscription.getId(), TransactionAmount.AUTHORIZE.amount);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         Transaction transaction = result.getTarget();
-        Assert.assertEquals(TransactionAmount.AUTHORIZE.amount, transaction.getAmount());
-        Assert.assertNotNull(transaction.getProcessorAuthorizationCode());
-        Assert.assertEquals(Transaction.Type.SALE, transaction.getType());
-        Assert.assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
-        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
-        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
+        assertEquals(TransactionAmount.AUTHORIZE.amount, transaction.getAmount());
+        assertNotNull(transaction.getProcessorAuthorizationCode());
+        assertEquals(Transaction.Type.SALE, transaction.getType());
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
     }
 
     @Test
@@ -1678,15 +1680,15 @@ public class SubscriptionTest {
         makePastDue(subscription, 1);
 
         Result<Transaction> result = gateway.subscription().retryCharge(subscription.getId());
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         Transaction transaction = result.getTarget();
-        Assert.assertEquals(subscription.getPrice(), transaction.getAmount());
-        Assert.assertNotNull(transaction.getProcessorAuthorizationCode());
-        Assert.assertEquals(Transaction.Type.SALE, transaction.getType());
-        Assert.assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
-        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
-        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
+        assertEquals(subscription.getPrice(), transaction.getAmount());
+        assertNotNull(transaction.getProcessorAuthorizationCode());
+        assertEquals(Transaction.Type.SALE, transaction.getType());
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
     }
 
     @Test
@@ -1700,11 +1702,11 @@ public class SubscriptionTest {
         makePastDue(subscription, 1);
 
         Subscription foundSubscription = gateway.subscription().find(subscription.getId());
-        Assert.assertEquals(Status.PAST_DUE, foundSubscription.getStatus());
+        assertEquals(Status.PAST_DUE, foundSubscription.getStatus());
     }
 
     private void makePastDue(Subscription subscription, int numberOfDaysPastDue) {
         NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).put("/subscriptions/" + subscription.getId() + "/make_past_due?days_past_due=" + numberOfDaysPastDue);
-        Assert.assertTrue(response.isSuccess());
+        assertTrue(response.isSuccess());
     }
 }
