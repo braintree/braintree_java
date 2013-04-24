@@ -162,6 +162,7 @@ public class CreditCard {
     private String expirationMonth;
     private String expirationYear;
     private boolean isDefault;
+    private boolean isVenmoSdk;
     private boolean isExpired;
     private String last4;
     private String commercial;
@@ -189,6 +190,7 @@ public class CreditCard {
         expirationMonth = node.findString("expiration-month");
         expirationYear = node.findString("expiration-year");
         isDefault = node.findBoolean("default");
+        isVenmoSdk = node.findBoolean("venmo-sdk");
         isExpired = node.findBoolean("expired");
         last4 = node.findString("last-4");
         commercial = node.findString("commercial");
@@ -353,6 +355,10 @@ public class CreditCard {
 
     public boolean isDefault() {
         return isDefault;
+    }
+
+    public boolean isVenmoSdk() {
+      return isVenmoSdk;
     }
 
     public boolean isExpired() {
