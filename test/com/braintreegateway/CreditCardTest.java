@@ -77,6 +77,7 @@ public class CreditCardTest {
         Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getUpdatedAt().get(Calendar.YEAR));
         Assert.assertTrue(card.getUniqueNumberIdentifier().matches("\\A\\w{32}\\z"));
         Assert.assertFalse(card.isVenmoSdk());
+        Assert.assertTrue(card.getImageUrl().matches(".*png.*"));
     }
 
     @Test
