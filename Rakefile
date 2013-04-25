@@ -34,6 +34,12 @@ task :test => :compile_tests do
   sh "ant test"
 end
 
+# e.g. rake single_test testclass=com.braintreegateway.TransactionTest
+desc "run a single unit test class"
+task :single_test => :compile_tests do
+  sh "ant single-test -Dtest.class=#{ENV['testclass']}"
+end
+
 desc "generate javadoc"
 task :javadoc do
   excludes = [
