@@ -357,7 +357,12 @@ public class CreditCardTest {
             venmoSdkPaymentMethodCode(VenmoSdk.PaymentMethodCode.Invalid.code);
 
         Result<CreditCard> result = gateway.creditCard().create(request);
+        ValidationErrorCode errorCode = result.getErrors().forObject("creditCard")
+          .onField("venmoSdkPaymentMethodCode").get(0).getCode();
+
         Assert.assertFalse(result.isSuccess());
+        Assert.assertEquals("Invalid VenmoSDK payment method code", result.getMessage());
+        Assert.assertEquals(ValidationErrorCode.CREDIT_CARD_INVALID_VENMO_SDK_PAYMENT_METHOD_CODE, errorCode);
     }
 
     @Test
