@@ -2483,7 +2483,7 @@ public class TransactionTest {
     @Test
     public void serviceFee() {
     	TransactionRequest request = new TransactionRequest().
-    		merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+	        merchantAccountId(MerchantAccount.NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
 	        amount(new BigDecimal("100.00")).
 	        creditCard().
 	        	number(CreditCardNumber.VISA.number).
