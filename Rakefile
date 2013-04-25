@@ -18,7 +18,7 @@ end
 
 desc "run integration tests"
 task :verify do
-  sh "mvn verify"
+  sh "mvn compile test verify"
 end
 
 desc "build a jar"
