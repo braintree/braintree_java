@@ -1,5 +1,6 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
+import com.braintreegateway.Plan;
 import com.braintreegateway.util.NodeWrapperFactory;
 
 public class PlanFixture {

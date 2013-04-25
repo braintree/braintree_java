@@ -1,6 +1,7 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import java.math.BigDecimal;
+import com.braintreegateway.*;
 
 public class PlanRequest extends Request {
     private String id;

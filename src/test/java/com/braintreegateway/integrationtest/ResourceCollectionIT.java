@@ -1,4 +1,4 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,14 +9,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.*;
 
-public class ResourceCollectionTest {
+public class ResourceCollectionIT {
     private String[] values = new String[] { "a", "b", "c", "d", "e" };
-    
+
     class TestPager implements Pager<String> {
         public List<String> getPage(List<String> ids) {
             List<String> results = new ArrayList<String>();
-            
+
             for (String id : ids) {
                 results.add(values[Integer.parseInt(id)]);
             }
@@ -33,11 +34,11 @@ public class ResourceCollectionTest {
                     "<items>1</items>" +
                     "<items>2</items>" +
                     "<items>3</items>" +
-                    "<items>4</items>" +                    
+                    "<items>4</items>" +
                 "</ids>" +
                 "</search-results>"
         );
-       
+
         ResourceCollection<String> resourceCollection = new ResourceCollection<String>(new TestPager(), xml);
 
         int index = 0;

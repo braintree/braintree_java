@@ -1,9 +1,10 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import org.junit.Assert;
 import org.junit.Test;
+import com.braintreegateway.CreditCardRequest;
 
-public class CreditCardRequestTest {
+public class CreditCardRequestIT {
     @Test
     public void toXmlEscapesXmlChars() {
         CreditCardRequest request = new CreditCardRequest().

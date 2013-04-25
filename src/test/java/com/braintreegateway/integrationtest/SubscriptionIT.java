@@ -1,4 +1,4 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.braintreegateway.*;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.Subscription.Status;
 import com.braintreegateway.exceptions.NotFoundException;
@@ -24,7 +25,7 @@ import com.braintreegateway.util.NodeWrapperFactory;
 
 import static org.junit.Assert.*;
 
-public class SubscriptionTest {
+public class SubscriptionIT {
 
     private BraintreeGateway gateway;
     private Customer customer;

@@ -1,4 +1,4 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 public class MerchantAccount {
 	public static final String DEFAULT_MERCHANT_ACCOUNT_ID = "sandbox_credit_card";

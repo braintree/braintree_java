@@ -1,4 +1,4 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,13 +12,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.braintreegateway.*;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
 
 import com.braintreegateway.test.VenmoSdk;
 
 @SuppressWarnings("deprecation")
-public class CustomerTest {
+public class CustomerIT {
 
     private BraintreeGateway gateway;
 

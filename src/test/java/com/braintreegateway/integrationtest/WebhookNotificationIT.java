@@ -1,8 +1,9 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import java.util.Calendar;
 import java.util.HashMap;
 
+import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,7 +13,7 @@ import com.braintreegateway.exceptions.InvalidSignatureException;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 
-public class WebhookNotificationTest {
+public class WebhookNotificationIT {
     private BraintreeGateway gateway;
 
     @Before
@@ -24,7 +25,7 @@ public class WebhookNotificationTest {
 	public void createNotificationWithUnrecognizedKind() {
 		String xml = "<notification><kind>" + "bad_kind" + "</kind></notification>";
 		NodeWrapper node = NodeWrapperFactory.instance.create(xml);
-		
+
 		WebhookNotification notification = new WebhookNotification(node);
 		Assert.assertEquals(WebhookNotification.Kind.UNRECOGNIZED, notification.getKind());
 	}

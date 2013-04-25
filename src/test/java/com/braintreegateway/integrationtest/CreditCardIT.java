@@ -1,4 +1,4 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,7 +21,7 @@ import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
 
-public class CreditCardTest {
+public class CreditCardIT {
 
     private BraintreeGateway gateway;
 

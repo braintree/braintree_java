@@ -1,4 +1,4 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,11 +9,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 
-public class CreditCardVerificationTest {
+public class CreditCardVerificationIT {
 
     private BraintreeGateway gateway;
 

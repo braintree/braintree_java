@@ -1,10 +1,11 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Assert;
 import org.junit.Test;
+import com.braintreegateway.*;
 
-public class TransactionRequestTest {
+public class TransactionRequestIT {
     @Test
     public void toQueryStringWithNestedCustomer() {
         TransactionRequest request = new TransactionRequest().
@@ -14,7 +15,7 @@ public class TransactionRequestTest {
 
         Assert.assertEquals("transaction%5Bcustomer%5D%5Bfirst_name%5D=Drew", request.toQueryString());
     }
-    
+
     @Test
     public void customFieldsEscapesKeysAndValues() {
         TransactionRequest request = new TransactionRequest().customField("ke&y", "va<lue");

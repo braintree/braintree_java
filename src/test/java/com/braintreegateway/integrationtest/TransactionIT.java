@@ -1,9 +1,10 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
 
+import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.util.NodeWrapperFactory;
@@ -17,10 +18,11 @@ import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.*;
 
 import static org.junit.Assert.*;
 
-public class TransactionTest {
+public class TransactionIT {
 
     private BraintreeGateway gateway;
     public static final String DISBURSEMENT_TRANSACTION_ID = "deposittransaction";

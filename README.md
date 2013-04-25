@@ -55,6 +55,12 @@ The Braintree library provides integration access to the Braintree Gateway.
 
 ## Maven
 
+  With Maven installed, this package can be built simply by running this command:
+
+     mvn package
+
+  The resulting jar file will be produced in the directory named "target".
+
 ### In repositories:
 
      <repository>

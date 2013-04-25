@@ -1,11 +1,12 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import org.junit.Assert;
 
 import org.junit.Test;
 
+import com.braintreegateway.*;
 
-public class ValidationErrorCodeTest {
+public class ValidationErrorCodeIT {
 
     @Test
     public void findByCode() {

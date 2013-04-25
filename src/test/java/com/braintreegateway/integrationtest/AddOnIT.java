@@ -1,6 +1,8 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
+import com.braintreegateway.*;
 import com.braintreegateway.util.Http;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
 
-public class AddOnTest {
+public class AddOnIT {
     private BraintreeGateway gateway;
     private Http http;
 

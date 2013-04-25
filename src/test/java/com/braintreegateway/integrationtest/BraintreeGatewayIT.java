@@ -1,9 +1,11 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-public class BraintreeGatewayTest {
+import com.braintreegateway.*;
+
+public class BraintreeGatewayIT {
     @Test
     public void developmentBaseMerchantUrl() {
         BraintreeGateway config = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "publicKey",

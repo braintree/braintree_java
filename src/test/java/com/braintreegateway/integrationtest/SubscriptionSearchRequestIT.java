@@ -1,4 +1,4 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -10,8 +10,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.braintreegateway.Subscription.Status;
+import com.braintreegateway.*;
 
-public class SubscriptionSearchRequestTest {
+public class SubscriptionSearchRequestIT {
     @Test
     public void daysPastDueXmlIsOperator() {
         String expected = "<search><days_past_due><is>42</is></days_past_due></search>";

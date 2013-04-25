@@ -1,9 +1,10 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import java.util.Calendar;
 import java.util.Map;
 import java.util.TimeZone;
 
+import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,8 +13,8 @@ import org.junit.Test;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 
-public class SettlementBatchSummaryTest {
-    
+public class SettlementBatchSummaryIT {
+
     private BraintreeGateway gateway;
     private TimeZone eastern_timezone;
 
@@ -22,7 +23,7 @@ public class SettlementBatchSummaryTest {
         this.eastern_timezone = TimeZone.getTimeZone("America/New_York");
         this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
     }
-    
+
     @Test
     public void returnEmptyCollectionIfThereIsNoData() {
         Calendar settlementDate = Calendar.getInstance();
@@ -65,21 +66,21 @@ public class SettlementBatchSummaryTest {
 
         Result<Transaction> result = gateway.transaction().sale(request);
         Assert.assertTrue(result.isSuccess());
-        
+
         TestHelper.settle(gateway, result.getTarget().getId());
-        
+
         Result<SettlementBatchSummary> summaryResult = gateway.settlementBatchSummary().generate(Calendar.getInstance(eastern_timezone));
         Assert.assertTrue(summaryResult.isSuccess());
-        
+
         Assert.assertTrue(summaryResult.getTarget().getRecords().size() > 0);
-        
+
         Map<String, String> first = summaryResult.getTarget().getRecords().get(0);
         Assert.assertTrue(first.containsKey("kind"));
         Assert.assertTrue(first.containsKey("count"));
         Assert.assertTrue(first.containsKey("amount_settled"));
         Assert.assertTrue(first.containsKey("merchant_account_id"));
     }
-    
+
     @Test
     public void returnsDataGroupedByTheGivenCustomField() {
         TransactionRequest request = new TransactionRequest().
@@ -93,17 +94,17 @@ public class SettlementBatchSummaryTest {
             options().
                submitForSettlement(true).
                done();
-    
+
         Result<Transaction> result = gateway.transaction().sale(request);
         Assert.assertTrue(result.isSuccess());
-        
+
         TestHelper.settle(gateway, result.getTarget().getId());
 
         Result<SettlementBatchSummary> summaryResult = gateway.settlementBatchSummary().generate(Calendar.getInstance(eastern_timezone), "store_me");
         Assert.assertTrue(summaryResult.isSuccess());
-        
+
         Assert.assertTrue(summaryResult.getTarget().getRecords().size() > 0);
-        
+
         Map<String, String> first = summaryResult.getTarget().getRecords().get(0);
         Assert.assertTrue(first.containsKey("store_me"));
     }

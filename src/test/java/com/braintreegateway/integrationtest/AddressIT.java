@@ -1,4 +1,4 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import java.util.Calendar;
 import java.util.Map;
@@ -8,9 +8,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.*;
 
 
-public class AddressTest {
+public class AddressIT {
 
     private BraintreeGateway gateway;
 
@@ -163,7 +164,7 @@ public class AddressTest {
         ValidationErrors errors = createResult.getErrors();
         Assert.assertEquals(ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY, errors.forObject("address").onField("base").get(0).getCode());
     }
-    
+
     @Test
     public void validationErrorsOnCountryCodeAlpha2() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -176,7 +177,7 @@ public class AddressTest {
         ValidationErrors errors = createResult.getErrors();
         Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryCodeAlpha2").get(0).getCode());
     }
-    
+
     @Test
     public void validationErrorsOnCountryCodeAlpha3() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -189,7 +190,7 @@ public class AddressTest {
         ValidationErrors errors = createResult.getErrors();
         Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA3_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryCodeAlpha3").get(0).getCode());
     }
-    
+
     @Test
     public void validationErrorsOnCountryCodeNumeric() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();

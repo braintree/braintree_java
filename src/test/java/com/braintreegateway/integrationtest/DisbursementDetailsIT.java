@@ -1,7 +1,8 @@
-package com.braintreegateway;
+package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.DisbursementDetails;
 import org.junit.Test;
 
 import java.text.ParseException;
@@ -11,7 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class DisbursementDetailsTest {
+public class DisbursementDetailsIT {
 
     @Test
     public void isValidTrue() throws ParseException {
