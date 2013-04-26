@@ -2480,17 +2480,17 @@ public class TransactionIT {
 
     @Test
     public void serviceFee() {
-    	TransactionRequest request = new TransactionRequest().
-	        merchantAccountId(MerchantAccount.NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
-	        amount(new BigDecimal("100.00")).
-	        creditCard().
-	        	number(CreditCardNumber.VISA.number).
-	        	expirationDate("05/2009").
-	        	done().
-	        serviceFee().
-	        	amount(new BigDecimal("1.00")).
-	        	merchantAccountId(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID).
-	        	done();
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(MerchantAccount.NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            serviceFee().
+                amount(new BigDecimal("1.00")).
+                merchantAccountId(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID).
+                done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
@@ -2499,4 +2499,64 @@ public class TransactionIT {
         assertEquals(new BigDecimal("1.00"), transaction.getServiceFee().getAmount());
         assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getServiceFee().getMerchantAccountId());
     }
+
+    @Test
+    public void serviceFeeNotAllowedForMasterMerchant() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            serviceFee().
+                amount(new BigDecimal("1.00")).
+                merchantAccountId(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID).
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.SERVICE_FEE_NOT_SUPPORTED_ON_MASTER_MERCHANT,
+            result.getErrors().forObject("transaction").forObject("service_fee").onField("base").get(0).getCode());
+    }
+
+    @Test
+    public void serviceFeeMerchantAccountMustBeAMaster() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+	        serviceFee().
+                amount(new BigDecimal("1.00")).
+                merchantAccountId(MerchantAccount.NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.SERVICE_FEE_MERCHANT_ACCOUNT_MUST_BE_A_MASTER_MERCHANT_ACCOUNT,
+                result.getErrors().forObject("transaction").forObject("service_fee").onField("merchant_account_id").get(0).getCode());
+    }
+
+    @Test
+    public void serviceFeeRequiredWhenUsingSubmerchant() {
+        TransactionRequest request = new TransactionRequest().
+	        merchantAccountId(MerchantAccount.NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
+	        amount(new BigDecimal("100.00")).
+	        creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_SUB_MERCHANT_REQUIRES_SERVICE_FEE,
+                result.getErrors().forObject("transaction").onField("merchant_account_id").get(0).getCode());
+    }
+
 }
