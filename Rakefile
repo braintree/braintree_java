@@ -12,25 +12,26 @@ task :compile do
   sh "mvn compile"
 end
 
+desc "run unit and integration tests"
 task :test do
   sh "mvn test"
 end
 
-desc "run integration tests"
-task :verify do
-  sh "mvn compile test verify"
-end
-
-desc "build a jar"
-task :jar => :compile do
-  sh "mvn package"
+desc "compile, test, build a jar"
+task :jar do
+  sh "mvn verify package"
   sh "cp target/braintree-java-*.jar #{jar_name}"
 end
 
-# e.g. rake single_test testclass=com.braintreegateway.TransactionTest
-desc "run a single unit test class"
+# e.g. rake single_test testclass=com.braintreegateway.integrationtest.TransactionIT
+desc "run a single unit or integration test class"
 task :single_test do
-  sh "mvn test -Dtest=#{ENV['testclass']}"
+  test_class = ENV['testclass']
+  if test_class.include? ".integrationtest."
+    sh "mvn verify -Dit.test=#{test_class}"
+  else
+    sh "mvn test -Dtest=#{test_class}"
+  end
 end
 
 desc "generate javadoc"
