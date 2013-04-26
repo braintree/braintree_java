@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rake --trace verify
+rake --trace test
