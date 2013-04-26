@@ -1,13 +1,13 @@
 package com.braintreegateway;
 
+import com.braintreegateway.org.apache.commons.codec.binary.Base64;
+import com.braintreegateway.util.Crypto;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TimeZone;
-
-import com.braintreegateway.org.apache.commons.codec.binary.Base64;
-import com.braintreegateway.util.Crypto;
 
 public class WebhookTestingGateway {
     private Configuration configuration;

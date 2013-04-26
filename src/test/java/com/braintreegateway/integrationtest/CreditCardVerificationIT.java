@@ -1,18 +1,18 @@
 package com.braintreegateway.integrationtest;
 
+import com.braintreegateway.*;
+import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.NodeWrapperFactory;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.braintreegateway.*;
-import com.braintreegateway.testhelpers.TestHelper;
-import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.util.NodeWrapperFactory;
+import static org.junit.Assert.*;
 
 public class CreditCardVerificationIT {
 
@@ -54,19 +54,18 @@ public class CreditCardVerificationIT {
 
         NodeWrapper verificationNode = (NodeWrapperFactory.instance.create(builder.toString())).findFirst("verification");
         CreditCardVerification verification = new CreditCardVerification(verificationNode);
-        Assert.assertEquals(null, verification.getAvsErrorResponseCode());
-        Assert.assertEquals("I", verification.getAvsPostalCodeResponseCode());
-        Assert.assertEquals(CreditCardVerification.Status.PROCESSOR_DECLINED, verification.getStatus());
-        Assert.assertEquals("2000", verification.getProcessorResponseCode());
-        Assert.assertEquals("I", verification.getAvsStreetAddressResponseCode());
-        Assert.assertEquals("Do Not Honor", verification.getProcessorResponseText());
-        Assert.assertEquals("M", verification.getCvvResponseCode());
-        Assert.assertEquals(CreditCard.Prepaid.UNKNOWN, verification.getCreditCard().getPrepaid());
+        assertEquals(null, verification.getAvsErrorResponseCode());
+        assertEquals("I", verification.getAvsPostalCodeResponseCode());
+        assertEquals(CreditCardVerification.Status.PROCESSOR_DECLINED, verification.getStatus());
+        assertEquals("2000", verification.getProcessorResponseCode());
+        assertEquals("I", verification.getAvsStreetAddressResponseCode());
+        assertEquals("Do Not Honor", verification.getProcessorResponseText());
+        assertEquals("M", verification.getCvvResponseCode());
+        assertEquals(CreditCard.Prepaid.UNKNOWN, verification.getCreditCard().getPrepaid());
     }
 
     @Test
-    public void searchOnAllTextFields()
-    {
+    public void searchOnAllTextFields() {
         CustomerRequest request = new CustomerRequest().
             creditCard().
                 number("4000111111111115").
@@ -78,7 +77,7 @@ public class CreditCardVerificationIT {
                 done();
 
         Result<Customer> result = gateway.customer().create(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         CreditCardVerification verification = result.getCreditCardVerification();
 
         CreditCardVerificationSearchRequest searchRequest = new CreditCardVerificationSearchRequest().
@@ -89,13 +88,12 @@ public class CreditCardVerificationIT {
 
         ResourceCollection<CreditCardVerification> collection = gateway.creditCardVerification().search(searchRequest);
 
-        Assert.assertEquals(1, collection.getMaximumSize());
-        Assert.assertEquals(verification.getId(), collection.getFirst().getId());
+        assertEquals(1, collection.getMaximumSize());
+        assertEquals(verification.getId(), collection.getFirst().getId());
     }
 
     @Test
-    public void searchOnMultipleValueFields()
-    {
+    public void searchOnMultipleValueFields() {
         CustomerRequest requestOne = new CustomerRequest().
             creditCard().
                 number("4000111111111115").
@@ -106,7 +104,7 @@ public class CreditCardVerificationIT {
                 done();
 
         Result<Customer> resultOne = gateway.customer().create(requestOne);
-        Assert.assertFalse(resultOne.isSuccess());
+        assertFalse(resultOne.isSuccess());
         CreditCardVerification verificationOne = resultOne.getCreditCardVerification();
 
         CustomerRequest requestTwo = new CustomerRequest().
@@ -119,7 +117,7 @@ public class CreditCardVerificationIT {
                 done();
 
         Result<Customer> resultTwo = gateway.customer().create(requestTwo);
-        Assert.assertFalse(resultTwo.isSuccess());
+        assertFalse(resultTwo.isSuccess());
         CreditCardVerification verificationTwo = resultTwo.getCreditCardVerification();
 
         CreditCardVerificationSearchRequest searchRequest = new CreditCardVerificationSearchRequest().
@@ -128,14 +126,13 @@ public class CreditCardVerificationIT {
 
         ResourceCollection<CreditCardVerification> collection = gateway.creditCardVerification().search(searchRequest);
 
-        Assert.assertEquals(2, collection.getMaximumSize());
+        assertEquals(2, collection.getMaximumSize());
         List<String> expectedIds = new ArrayList<String>(Arrays.asList(verificationOne.getId(), verificationTwo.getId()));
-        Assert.assertTrue(TestHelper.listIncludes(expectedIds, collection.getFirst().getId()));
+        assertTrue(TestHelper.listIncludes(expectedIds, collection.getFirst().getId()));
     }
 
     @Test
-    public void searchOnRangeFields()
-    {
+    public void searchOnRangeFields() {
         CustomerRequest request = new CustomerRequest().
             creditCard().
                 number("4000111111111115").
@@ -147,48 +144,47 @@ public class CreditCardVerificationIT {
                 done();
 
         Result<Customer> result = gateway.customer().create(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         CreditCardVerification verification = result.getCreditCardVerification();
 
         Calendar createdAt = verification.getCreatedAt();
 
-        Calendar threeDaysEarlier = ((Calendar)createdAt.clone());
+        Calendar threeDaysEarlier = ((Calendar) createdAt.clone());
         threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
 
-        Calendar oneDayEarlier = ((Calendar)createdAt.clone());
+        Calendar oneDayEarlier = ((Calendar) createdAt.clone());
         oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
 
-        Calendar oneDayLater = ((Calendar)createdAt.clone());
+        Calendar oneDayLater = ((Calendar) createdAt.clone());
         oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         CreditCardVerificationSearchRequest searchRequest = new CreditCardVerificationSearchRequest().
            id().is(verification.getId()).
            createdAt().between(oneDayEarlier, oneDayLater);
 
-        Assert.assertEquals(1, gateway.creditCardVerification().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.creditCardVerification().search(searchRequest).getMaximumSize());
 
         searchRequest = new CreditCardVerificationSearchRequest().
            id().is(verification.getId()).
            createdAt().greaterThanOrEqualTo(oneDayEarlier);
 
-        Assert.assertEquals(1, gateway.creditCardVerification().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.creditCardVerification().search(searchRequest).getMaximumSize());
 
         searchRequest = new CreditCardVerificationSearchRequest().
            id().is(verification.getId()).
            createdAt().lessThanOrEqualTo(oneDayLater);
 
-        Assert.assertEquals(1, gateway.creditCardVerification().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.creditCardVerification().search(searchRequest).getMaximumSize());
 
         searchRequest = new CreditCardVerificationSearchRequest().
            id().is(verification.getId()).
            createdAt().between(threeDaysEarlier, oneDayEarlier);
 
-        Assert.assertEquals(0, gateway.creditCardVerification().search(searchRequest).getMaximumSize());
-     }
+        assertEquals(0, gateway.creditCardVerification().search(searchRequest).getMaximumSize());
+    }
 
     @Test
-    public void verificationHasCardTypeIndicators()
-    {
+    public void verificationHasCardTypeIndicators() {
         CustomerRequest request = new CustomerRequest().
             creditCard().
                 number("4000111111111115").
@@ -202,13 +198,13 @@ public class CreditCardVerificationIT {
         Result<Customer> result = gateway.customer().create(request);
         CreditCardVerification verification = result.getCreditCardVerification();
 
-        Assert.assertEquals(CreditCard.Commercial.UNKNOWN, verification.getCreditCard().getCommercial());
-        Assert.assertEquals(CreditCard.Debit.UNKNOWN, verification.getCreditCard().getDebit());
-        Assert.assertEquals(CreditCard.DurbinRegulated.UNKNOWN, verification.getCreditCard().getDurbinRegulated());
-        Assert.assertEquals(CreditCard.Healthcare.UNKNOWN, verification.getCreditCard().getHealthcare());
-        Assert.assertEquals(CreditCard.Payroll.UNKNOWN, verification.getCreditCard().getPayroll());
-        Assert.assertEquals(CreditCard.Prepaid.UNKNOWN, verification.getCreditCard().getPrepaid());
-        Assert.assertEquals("Unknown", verification.getCreditCard().getCountryOfIssuance());
-        Assert.assertEquals("Unknown", verification.getCreditCard().getIssuingBank());
+        assertEquals(CreditCard.Commercial.UNKNOWN, verification.getCreditCard().getCommercial());
+        assertEquals(CreditCard.Debit.UNKNOWN, verification.getCreditCard().getDebit());
+        assertEquals(CreditCard.DurbinRegulated.UNKNOWN, verification.getCreditCard().getDurbinRegulated());
+        assertEquals(CreditCard.Healthcare.UNKNOWN, verification.getCreditCard().getHealthcare());
+        assertEquals(CreditCard.Payroll.UNKNOWN, verification.getCreditCard().getPayroll());
+        assertEquals(CreditCard.Prepaid.UNKNOWN, verification.getCreditCard().getPrepaid());
+        assertEquals("Unknown", verification.getCreditCard().getCountryOfIssuance());
+        assertEquals("Unknown", verification.getCreditCard().getIssuingBank());
     }
 }

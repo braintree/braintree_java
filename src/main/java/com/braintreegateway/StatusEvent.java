@@ -1,12 +1,12 @@
 package com.braintreegateway;
 
-import java.math.BigDecimal;
-import java.util.Calendar;
-
 import com.braintreegateway.Transaction.Source;
 import com.braintreegateway.Transaction.Status;
 import com.braintreegateway.util.EnumUtils;
 import com.braintreegateway.util.NodeWrapper;
+
+import java.math.BigDecimal;
+import java.util.Calendar;
 
 public class StatusEvent {
 

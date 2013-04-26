@@ -1,5 +1,10 @@
 package com.braintreegateway.util;
 
+import com.braintreegateway.Configuration;
+import com.braintreegateway.Request;
+import com.braintreegateway.exceptions.*;
+
+import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -11,23 +16,6 @@ import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.zip.GZIPInputStream;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
-
-import com.braintreegateway.Configuration;
-import com.braintreegateway.Request;
-import com.braintreegateway.exceptions.AuthenticationException;
-import com.braintreegateway.exceptions.AuthorizationException;
-import com.braintreegateway.exceptions.DownForMaintenanceException;
-import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.exceptions.ServerException;
-import com.braintreegateway.exceptions.UnexpectedException;
-import com.braintreegateway.exceptions.UpgradeRequiredException;
 
 public class Http {
 

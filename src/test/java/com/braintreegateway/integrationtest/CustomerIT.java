@@ -1,22 +1,16 @@
 package com.braintreegateway.integrationtest;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
-
 import com.braintreegateway.test.VenmoSdk;
+import com.braintreegateway.testhelpers.TestHelper;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 @SuppressWarnings("deprecation")
 public class CustomerIT {
@@ -30,13 +24,13 @@ public class CustomerIT {
 
     @Test
     public void transparentRedirectURLForCreate() {
-        Assert.assertEquals(gateway.baseMerchantURL() + "/customers/all/create_via_transparent_redirect_request",
+        assertEquals(gateway.baseMerchantURL() + "/customers/all/create_via_transparent_redirect_request",
                 gateway.customer().transparentRedirectURLForCreate());
     }
 
     @Test
     public void transparentRedirectURLForUpdate() {
-        Assert.assertEquals(gateway.baseMerchantURL() + "/customers/all/update_via_transparent_redirect_request",
+        assertEquals(gateway.baseMerchantURL() + "/customers/all/update_via_transparent_redirect_request",
                 gateway.customer().transparentRedirectURLForUpdate());
     }
 
@@ -51,18 +45,18 @@ public class CustomerIT {
             phone("614-555-1234").
             website("http://example.com");
         Result<Customer> result = gateway.customer().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Customer customer = result.getTarget();
 
-        Assert.assertEquals("Mark", customer.getFirstName());
-        Assert.assertEquals("Jones", customer.getLastName());
-        Assert.assertEquals("Jones Co.", customer.getCompany());
-        Assert.assertEquals("mark.jones@example.com", customer.getEmail());
-        Assert.assertEquals("419-555-1234", customer.getFax());
-        Assert.assertEquals("614-555-1234", customer.getPhone());
-        Assert.assertEquals("http://example.com", customer.getWebsite());
-        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), customer.getCreatedAt().get(Calendar.YEAR));
-        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), customer.getUpdatedAt().get(Calendar.YEAR));
+        assertEquals("Mark", customer.getFirstName());
+        assertEquals("Jones", customer.getLastName());
+        assertEquals("Jones Co.", customer.getCompany());
+        assertEquals("mark.jones@example.com", customer.getEmail());
+        assertEquals("419-555-1234", customer.getFax());
+        assertEquals("614-555-1234", customer.getPhone());
+        assertEquals("http://example.com", customer.getWebsite());
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), customer.getCreatedAt().get(Calendar.YEAR));
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), customer.getUpdatedAt().get(Calendar.YEAR));
     }
 
     @Test
@@ -73,10 +67,10 @@ public class CustomerIT {
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.customer().transparentRedirectURLForCreate());
         Result<Customer> result = gateway.customer().confirmTransparentRedirect(queryString);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Customer customer = result.getTarget();
-        Assert.assertEquals("John", customer.getFirstName());
-        Assert.assertEquals("Doe", customer.getLastName());
+        assertEquals("John", customer.getFirstName());
+        assertEquals("Doe", customer.getLastName());
     }
 
     @Test(expected = ForgedQueryStringException.class)
@@ -99,26 +93,26 @@ public class CustomerIT {
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.customer().transparentRedirectURLForCreate());
         Result<Customer> result = gateway.customer().confirmTransparentRedirect(queryString);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Customer customer = result.getTarget();
-        Assert.assertEquals("John", customer.getFirstName());
-        Assert.assertEquals("Doe", customer.getLastName());
-        Assert.assertEquals("1111", customer.getCreditCards().get(0).getLast4());
+        assertEquals("John", customer.getFirstName());
+        assertEquals("Doe", customer.getLastName());
+        assertEquals("1111", customer.getCreditCards().get(0).getLast4());
     }
 
     @Test
     public void createWithBlanks() {
         CustomerRequest request = new CustomerRequest();
         Result<Customer> result = gateway.customer().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Customer customer = result.getTarget();
-        Assert.assertEquals(null, customer.getFirstName());
-        Assert.assertEquals(null, customer.getLastName());
-        Assert.assertEquals(null, customer.getCompany());
-        Assert.assertEquals(null, customer.getEmail());
-        Assert.assertEquals(null, customer.getFax());
-        Assert.assertEquals(null, customer.getPhone());
-        Assert.assertEquals(null, customer.getWebsite());
+        assertEquals(null, customer.getFirstName());
+        assertEquals(null, customer.getLastName());
+        assertEquals(null, customer.getCompany());
+        assertEquals(null, customer.getEmail());
+        assertEquals(null, customer.getFax());
+        assertEquals(null, customer.getPhone());
+        assertEquals(null, customer.getWebsite());
     }
 
     @Test
@@ -127,14 +121,14 @@ public class CustomerIT {
             customField("store_me", "custom value").
             customField("another_stored_field", "custom value2");
         Result<Customer> result = gateway.customer().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         Map<String, String> expected = new HashMap<String, String>();
         expected.put("store_me", "custom value");
         expected.put("another_stored_field", "custom value2");
 
         Customer customer = result.getTarget();
-        Assert.assertEquals(expected, customer.getCustomFields());
+        assertEquals(expected, customer.getCustomFields());
     }
 
     @Test
@@ -150,19 +144,19 @@ public class CustomerIT {
             lastName("Jones");
 
         Result<Customer> result = gateway.customer().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Customer customer = result.getTarget();
 
-        Assert.assertEquals("Fred", customer.getFirstName());
-        Assert.assertEquals("Jones", customer.getLastName());
-        Assert.assertEquals(1, customer.getCreditCards().size());
+        assertEquals("Fred", customer.getFirstName());
+        assertEquals("Jones", customer.getLastName());
+        assertEquals(1, customer.getCreditCards().size());
 
         CreditCard creditCard = customer.getCreditCards().get(0);
-        Assert.assertEquals("Fred Jones", creditCard.getCardholderName());
-        Assert.assertEquals("510510", creditCard.getBin());
-        Assert.assertEquals("5100", creditCard.getLast4());
-        Assert.assertEquals("05/2012", creditCard.getExpirationDate());
-        Assert.assertTrue(creditCard.getUniqueNumberIdentifier().matches("\\A\\w{32}\\z"));
+        assertEquals("Fred Jones", creditCard.getCardholderName());
+        assertEquals("510510", creditCard.getBin());
+        assertEquals("5100", creditCard.getLast4());
+        assertEquals("05/2012", creditCard.getExpirationDate());
+        assertTrue(creditCard.getUniqueNumberIdentifier().matches("\\A\\w{32}\\z"));
     }
 
     @Test
@@ -183,11 +177,11 @@ public class CustomerIT {
         gateway.customer().create(customerRequest);
         Result<Customer> result = gateway.customer().create(customerRequest);
 
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals(
+        assertFalse(result.isSuccess());
+        assertEquals(
                 ValidationErrorCode.CREDIT_CARD_DUPLICATE_CARD_EXISTS,
                 result.getErrors().forObject("customer").forObject("creditCard").onField("number").get(0).getCode()
-            );
+        );
     }
 
     @Test
@@ -206,18 +200,18 @@ public class CustomerIT {
             lastName("Jones");
 
         Result<Customer> result = gateway.customer().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Customer customer = result.getTarget();
 
-        Assert.assertEquals("Fred", customer.getFirstName());
-        Assert.assertEquals("Jones", customer.getLastName());
-        Assert.assertEquals(1, customer.getCreditCards().size());
+        assertEquals("Fred", customer.getFirstName());
+        assertEquals("Jones", customer.getLastName());
+        assertEquals(1, customer.getCreditCards().size());
 
         CreditCard creditCard = customer.getCreditCards().get(0);
-        Assert.assertEquals("Fred Jones", creditCard.getCardholderName());
-        Assert.assertEquals("411111", creditCard.getBin());
-        Assert.assertEquals("1111", creditCard.getLast4());
-        Assert.assertEquals("05/2012", creditCard.getExpirationDate());
+        assertEquals("Fred Jones", creditCard.getCardholderName());
+        assertEquals("411111", creditCard.getBin());
+        assertEquals("1111", creditCard.getLast4());
+        assertEquals("05/2012", creditCard.getExpirationDate());
     }
 
     @Test
@@ -236,9 +230,9 @@ public class CustomerIT {
             lastName("Jones");
 
         Result<Customer> result = gateway.customer().create(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         CreditCardVerification verification = result.getCreditCardVerification();
-        Assert.assertEquals(CreditCardVerification.Status.PROCESSOR_DECLINED, verification.getStatus());
+        assertEquals(CreditCardVerification.Status.PROCESSOR_DECLINED, verification.getStatus());
     }
 
     @Test
@@ -265,38 +259,38 @@ public class CustomerIT {
             lastName("Jones");
 
         Result<Customer> result = gateway.customer().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Customer customer = gateway.customer().create(request).getTarget();
 
-        Assert.assertEquals("Fred", customer.getFirstName());
-        Assert.assertEquals("Jones", customer.getLastName());
-        Assert.assertEquals(1, customer.getCreditCards().size());
+        assertEquals("Fred", customer.getFirstName());
+        assertEquals("Jones", customer.getLastName());
+        assertEquals(1, customer.getCreditCards().size());
 
         CreditCard creditCard = customer.getCreditCards().get(0);
-        Assert.assertEquals("Fred Jones", creditCard.getCardholderName());
-        Assert.assertEquals("510510", creditCard.getBin());
-        Assert.assertEquals("5100", creditCard.getLast4());
-        Assert.assertEquals("05/2012", creditCard.getExpirationDate());
+        assertEquals("Fred Jones", creditCard.getCardholderName());
+        assertEquals("510510", creditCard.getBin());
+        assertEquals("5100", creditCard.getLast4());
+        assertEquals("05/2012", creditCard.getExpirationDate());
 
         Address billingAddress = creditCard.getBillingAddress();
-        Assert.assertEquals("1 E Main St", billingAddress.getStreetAddress());
-        Assert.assertEquals("Unit 2", billingAddress.getExtendedAddress());
-        Assert.assertEquals("Chicago", billingAddress.getLocality());
-        Assert.assertEquals("Illinois", billingAddress.getRegion());
-        Assert.assertEquals("60607", billingAddress.getPostalCode());
-        Assert.assertEquals("United States of America", billingAddress.getCountryName());
-        Assert.assertEquals("US", billingAddress.getCountryCodeAlpha2());
-        Assert.assertEquals("USA", billingAddress.getCountryCodeAlpha3());
-        Assert.assertEquals("840", billingAddress.getCountryCodeNumeric());
+        assertEquals("1 E Main St", billingAddress.getStreetAddress());
+        assertEquals("Unit 2", billingAddress.getExtendedAddress());
+        assertEquals("Chicago", billingAddress.getLocality());
+        assertEquals("Illinois", billingAddress.getRegion());
+        assertEquals("60607", billingAddress.getPostalCode());
+        assertEquals("United States of America", billingAddress.getCountryName());
+        assertEquals("US", billingAddress.getCountryCodeAlpha2());
+        assertEquals("USA", billingAddress.getCountryCodeAlpha3());
+        assertEquals("840", billingAddress.getCountryCodeNumeric());
 
-        Assert.assertEquals(1, customer.getAddresses().size());
+        assertEquals(1, customer.getAddresses().size());
         Address address = customer.getAddresses().get(0);
-        Assert.assertEquals("1 E Main St", address.getStreetAddress());
-        Assert.assertEquals("Unit 2", address.getExtendedAddress());
-        Assert.assertEquals("Chicago", address.getLocality());
-        Assert.assertEquals("Illinois", address.getRegion());
-        Assert.assertEquals("60607", address.getPostalCode());
-        Assert.assertEquals("United States of America", address.getCountryName());
+        assertEquals("1 E Main St", address.getStreetAddress());
+        assertEquals("Unit 2", address.getExtendedAddress());
+        assertEquals("Chicago", address.getLocality());
+        assertEquals("Illinois", address.getRegion());
+        assertEquals("60607", address.getPostalCode());
+        assertEquals("United States of America", address.getCountryName());
     }
 
     @Test
@@ -315,8 +309,8 @@ public class CustomerIT {
                 done();
 
         Result<Customer> result = gateway.customer().create(request);
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals(
+        assertFalse(result.isSuccess());
+        assertEquals(
             ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY,
             result.getErrors().forObject("customer").forObject("creditCard").forObject("billingAddress").onField("base").get(0).getCode()
         );
@@ -331,8 +325,8 @@ public class CustomerIT {
                 done();
 
         Result<Customer> result = gateway.customer().create(request);
-        Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals("510510", result.getTarget().getCreditCards().get(0).getBin());
+        assertTrue(result.isSuccess());
+        assertEquals("510510", result.getTarget().getCreditCards().get(0).getBin());
     }
 
     @Test
@@ -356,14 +350,14 @@ public class CustomerIT {
 
         Result<Customer> result = gateway.transparentRedirect().confirmCustomer(queryString);
 
-        Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals("John", result.getTarget().getFirstName());
-        Assert.assertEquals("Fred", result.getTarget().getLastName());
+        assertTrue(result.isSuccess());
+        assertEquals("John", result.getTarget().getFirstName());
+        assertEquals("Fred", result.getTarget().getLastName());
 
-        Assert.assertEquals("United States of America", result.getTarget().getCreditCards().get(0).getBillingAddress().getCountryName());
-        Assert.assertEquals("US", result.getTarget().getCreditCards().get(0).getBillingAddress().getCountryCodeAlpha2());
-        Assert.assertEquals("USA", result.getTarget().getCreditCards().get(0).getBillingAddress().getCountryCodeAlpha3());
-        Assert.assertEquals("840", result.getTarget().getCreditCards().get(0).getBillingAddress().getCountryCodeNumeric());
+        assertEquals("United States of America", result.getTarget().getCreditCards().get(0).getBillingAddress().getCountryName());
+        assertEquals("US", result.getTarget().getCreditCards().get(0).getBillingAddress().getCountryCodeAlpha2());
+        assertEquals("USA", result.getTarget().getCreditCards().get(0).getBillingAddress().getCountryCodeAlpha3());
+        assertEquals("840", result.getTarget().getCreditCards().get(0).getBillingAddress().getCountryCodeNumeric());
     }
 
     @Test
@@ -385,9 +379,9 @@ public class CustomerIT {
 
         Result<Customer> result = gateway.transparentRedirect().confirmCustomer(queryString);
 
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
-        Assert.assertEquals(
+        assertEquals(
             ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY,
             result.getErrors().forObject("customer").forObject("creditCard").forObject("billingAddress").onField("base").get(0).getCode()
         );
@@ -397,21 +391,21 @@ public class CustomerIT {
     public void find() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         Customer foundCustomer = gateway.customer().find(customer.getId());
-        Assert.assertEquals(customer.getId(), foundCustomer.getId());
+        assertEquals(customer.getId(), foundCustomer.getId());
     }
+
     @Test
     public void findWithEmptyIds() {
         try {
             gateway.customer().find(" ");
-            Assert.fail("Should throw NotFoundException");
+            fail("Should throw NotFoundException");
         } catch (NotFoundException e) {
         }
 
     }
 
     @Test
-    public void findDuplicateCreditCardsGivenPaymentMethodToken()
-    {
+    public void findDuplicateCreditCardsGivenPaymentMethodToken() {
         CustomerRequest request = new CustomerRequest().
                 creditCard().
                     number("4012000033330026").
@@ -427,18 +421,16 @@ public class CustomerIT {
         ResourceCollection<Customer> collection = gateway.customer().search(searchRequest);
 
         List<String> customerIds = new ArrayList<String>();
-        for (Customer customer : collection)
-        {
+        for (Customer customer : collection) {
             customerIds.add(customer.getId());
         }
 
-        Assert.assertTrue(customerIds.contains(jim.getId()));
-        Assert.assertTrue(customerIds.contains(joe.getId()));
+        assertTrue(customerIds.contains(jim.getId()));
+        assertTrue(customerIds.contains(joe.getId()));
     }
 
     @Test
-    public void searchOnAllTextFields()
-    {
+    public void searchOnAllTextFields() {
         String creditCardToken = String.valueOf(new Random().nextInt());
 
         CustomerRequest request = new CustomerRequest().
@@ -492,51 +484,51 @@ public class CustomerIT {
 
         ResourceCollection<Customer> collection = gateway.customer().search(searchRequest);
 
-        Assert.assertEquals(1, collection.getMaximumSize());
-        Assert.assertEquals(customer.getId(), collection.getFirst().getId());
+        assertEquals(1, collection.getMaximumSize());
+        assertEquals(customer.getId(), collection.getFirst().getId());
     }
 
     @Test
     public void searchOnCreatedAt() {
         CustomerRequest request = new CustomerRequest();
 
-         Customer customer = gateway.customer().create(request).getTarget();
+        Customer customer = gateway.customer().create(request).getTarget();
 
-         Calendar createdAt = customer.getCreatedAt();
+        Calendar createdAt = customer.getCreatedAt();
 
-         Calendar threeHoursEarlier = ((Calendar)createdAt.clone());
-         threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
+        Calendar threeHoursEarlier = ((Calendar) createdAt.clone());
+        threeHoursEarlier.add(Calendar.HOUR_OF_DAY, -3);
 
-         Calendar oneHourEarlier = ((Calendar)createdAt.clone());
-         oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
+        Calendar oneHourEarlier = ((Calendar) createdAt.clone());
+        oneHourEarlier.add(Calendar.HOUR_OF_DAY, -1);
 
-         Calendar oneHourLater = ((Calendar)createdAt.clone());
-         oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
+        Calendar oneHourLater = ((Calendar) createdAt.clone());
+        oneHourLater.add(Calendar.HOUR_OF_DAY, 1);
 
-         CustomerSearchRequest searchRequest = new CustomerSearchRequest().
+        CustomerSearchRequest searchRequest = new CustomerSearchRequest().
              id().is(customer.getId()).
              createdAt().between(oneHourEarlier, oneHourLater);
 
-         Assert.assertEquals(1, gateway.customer().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.customer().search(searchRequest).getMaximumSize());
 
-         searchRequest = new CustomerSearchRequest().
-             id().is(customer.getId()).
-             createdAt().greaterThanOrEqualTo(oneHourEarlier);
+        searchRequest = new CustomerSearchRequest().
+            id().is(customer.getId()).
+            createdAt().greaterThanOrEqualTo(oneHourEarlier);
 
-         Assert.assertEquals(1, gateway.customer().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.customer().search(searchRequest).getMaximumSize());
 
-         searchRequest = new CustomerSearchRequest().
-             id().is(customer.getId()).
-             createdAt().lessThanOrEqualTo(oneHourLater);
+        searchRequest = new CustomerSearchRequest().
+            id().is(customer.getId()).
+            createdAt().lessThanOrEqualTo(oneHourLater);
 
-         Assert.assertEquals(1, gateway.customer().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.customer().search(searchRequest).getMaximumSize());
 
-         searchRequest = new CustomerSearchRequest().
-             id().is(customer.getId()).
-             createdAt().between(threeHoursEarlier, oneHourEarlier);
+        searchRequest = new CustomerSearchRequest().
+            id().is(customer.getId()).
+            createdAt().between(threeHoursEarlier, oneHourEarlier);
 
-         Assert.assertEquals(0, gateway.customer().search(searchRequest).getMaximumSize());
-     }
+        assertEquals(0, gateway.customer().search(searchRequest).getMaximumSize());
+    }
 
 
     @Test
@@ -561,15 +553,15 @@ public class CustomerIT {
             website("http://getbraintree.com");
 
         Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
-        Assert.assertTrue(updateResult.isSuccess());
+        assertTrue(updateResult.isSuccess());
         Customer updatedCustomer = updateResult.getTarget();
-        Assert.assertEquals("Drew", updatedCustomer.getFirstName());
-        Assert.assertEquals("Olson", updatedCustomer.getLastName());
-        Assert.assertEquals("Braintree", updatedCustomer.getCompany());
-        Assert.assertEquals("drew.olson@example.com", updatedCustomer.getEmail());
-        Assert.assertEquals("555-555-5555", updatedCustomer.getFax());
-        Assert.assertEquals("555-555-5554", updatedCustomer.getPhone());
-        Assert.assertEquals("http://getbraintree.com", updatedCustomer.getWebsite());
+        assertEquals("Drew", updatedCustomer.getFirstName());
+        assertEquals("Olson", updatedCustomer.getLastName());
+        assertEquals("Braintree", updatedCustomer.getCompany());
+        assertEquals("drew.olson@example.com", updatedCustomer.getEmail());
+        assertEquals("555-555-5555", updatedCustomer.getFax());
+        assertEquals("555-555-5554", updatedCustomer.getPhone());
+        assertEquals("http://getbraintree.com", updatedCustomer.getWebsite());
     }
 
     @Test
@@ -617,17 +609,17 @@ public class CustomerIT {
         CreditCard updatedCreditCard = updatedCustomer.getCreditCards().get(0);
         Address updatedAddress = updatedCreditCard.getBillingAddress();
 
-        Assert.assertEquals("Jane", updatedCustomer.getFirstName());
-        Assert.assertEquals("Doe", updatedCustomer.getLastName());
-        Assert.assertEquals("10/2010", updatedCreditCard.getExpirationDate());
-        Assert.assertEquals("11111", updatedAddress.getPostalCode());
-        Assert.assertEquals("Kiribati", updatedAddress.getCountryName());
-        Assert.assertEquals("KI", updatedAddress.getCountryCodeAlpha2());
-        Assert.assertEquals("KIR", updatedAddress.getCountryCodeAlpha3());
-        Assert.assertEquals("296", updatedAddress.getCountryCodeNumeric());
+        assertEquals("Jane", updatedCustomer.getFirstName());
+        assertEquals("Doe", updatedCustomer.getLastName());
+        assertEquals("10/2010", updatedCreditCard.getExpirationDate());
+        assertEquals("11111", updatedAddress.getPostalCode());
+        assertEquals("Kiribati", updatedAddress.getCountryName());
+        assertEquals("KI", updatedAddress.getCountryCodeAlpha2());
+        assertEquals("KIR", updatedAddress.getCountryCodeAlpha3());
+        assertEquals("296", updatedAddress.getCountryCodeNumeric());
     }
 
-     @Test
+    @Test
     public void updateWithNewCreditCardAndExistingAddress() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         AddressRequest addressRequest = new AddressRequest().
@@ -645,8 +637,8 @@ public class CustomerIT {
 
         Address updatedAddress = updatedCustomer.getCreditCards().get(0).getBillingAddress();
 
-        Assert.assertEquals(address.getId(), updatedAddress.getId());
-        Assert.assertEquals("John", updatedAddress.getFirstName());
+        assertEquals(address.getId(), updatedAddress.getId());
+        assertEquals("John", updatedAddress.getFirstName());
     }
 
     @Test
@@ -680,8 +672,8 @@ public class CustomerIT {
                 done();
 
         Result<Customer> result = gateway.customer().update(customer.getId(), updateRequest);
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals(
+        assertFalse(result.isSuccess());
+        assertEquals(
             ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY,
             result.getErrors().forObject("customer").forObject("creditCard").forObject("billingAddress").onField("base").get(0).getCode()
         );
@@ -731,10 +723,10 @@ public class CustomerIT {
         CreditCard updatedCreditCard = updatedCustomer.getCreditCards().get(0);
         Address updatedAddress = updatedCreditCard.getBillingAddress();
 
-        Assert.assertEquals("Jane", updatedCustomer.getFirstName());
-        Assert.assertEquals("Doe", updatedCustomer.getLastName());
-        Assert.assertEquals("10/2010", updatedCreditCard.getExpirationDate());
-        Assert.assertEquals("11111", updatedAddress.getPostalCode());
+        assertEquals("Jane", updatedCustomer.getFirstName());
+        assertEquals("Doe", updatedCustomer.getLastName());
+        assertEquals("10/2010", updatedCreditCard.getExpirationDate());
+        assertEquals("11111", updatedAddress.getPostalCode());
     }
 
     @Test
@@ -764,15 +756,15 @@ public class CustomerIT {
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.customer().transparentRedirectURLForUpdate());
         Result<Customer> result = gateway.customer().confirmTransparentRedirect(queryString);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Customer customer = result.getTarget();
-        Assert.assertEquals("Drew", customer.getFirstName());
-        Assert.assertEquals("Olson", customer.getLastName());
-        Assert.assertEquals("Braintree", customer.getCompany());
-        Assert.assertEquals("drew.olson@example.com", customer.getEmail());
-        Assert.assertEquals("555-555-5555", customer.getFax());
-        Assert.assertEquals("555-555-5554", customer.getPhone());
-        Assert.assertEquals("http://getbraintree.com", customer.getWebsite());
+        assertEquals("Drew", customer.getFirstName());
+        assertEquals("Olson", customer.getLastName());
+        assertEquals("Braintree", customer.getCompany());
+        assertEquals("drew.olson@example.com", customer.getEmail());
+        assertEquals("555-555-5555", customer.getFax());
+        assertEquals("555-555-5554", customer.getPhone());
+        assertEquals("http://getbraintree.com", customer.getWebsite());
     }
 
     @Test
@@ -818,14 +810,14 @@ public class CustomerIT {
 
         Result<Customer> result = gateway.transparentRedirect().confirmCustomer(queryString);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Customer updatedCustomer = gateway.customer().find(customer.getId());
-        Assert.assertEquals("Jane", updatedCustomer.getFirstName());
-        Assert.assertEquals("Dough", updatedCustomer.getLastName());
-        Assert.assertEquals("Mexico", updatedCustomer.getCreditCards().get(0).getBillingAddress().getCountryName());
-        Assert.assertEquals("MX", updatedCustomer.getCreditCards().get(0).getBillingAddress().getCountryCodeAlpha2());
-        Assert.assertEquals("MEX", updatedCustomer.getCreditCards().get(0).getBillingAddress().getCountryCodeAlpha3());
-        Assert.assertEquals("484", updatedCustomer.getCreditCards().get(0).getBillingAddress().getCountryCodeNumeric());
+        assertEquals("Jane", updatedCustomer.getFirstName());
+        assertEquals("Dough", updatedCustomer.getLastName());
+        assertEquals("Mexico", updatedCustomer.getCreditCards().get(0).getBillingAddress().getCountryName());
+        assertEquals("MX", updatedCustomer.getCreditCards().get(0).getBillingAddress().getCountryCodeAlpha2());
+        assertEquals("MEX", updatedCustomer.getCreditCards().get(0).getBillingAddress().getCountryCodeAlpha3());
+        assertEquals("484", updatedCustomer.getCreditCards().get(0).getBillingAddress().getCountryCodeNumeric());
     }
 
     @Test
@@ -862,8 +854,8 @@ public class CustomerIT {
 
         Result<Customer> result = gateway.transparentRedirect().confirmCustomer(queryString);
 
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals(
+        assertFalse(result.isSuccess());
+        assertEquals(
             ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY,
             result.getErrors().forObject("customer").forObject("creditCard").forObject("billingAddress").onField("base").get(0).getCode()
         );
@@ -876,7 +868,7 @@ public class CustomerIT {
         CustomerRequest request = new CustomerRequest().
             id(oldId);
         Result<Customer> result = gateway.customer().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         Customer customer = result.getTarget();
 
@@ -885,7 +877,7 @@ public class CustomerIT {
             id(newId);
 
         Customer updatedCustomer = gateway.customer().update(customer.getId(), updateRequest).getTarget();
-        Assert.assertEquals(newId, updatedCustomer.getId());
+        assertEquals(newId, updatedCustomer.getId());
     }
 
     @Test
@@ -899,7 +891,7 @@ public class CustomerIT {
             phone("614-555-1234").
             website("http://example.com");
         Result<Customer> result = gateway.customer().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         Customer customer = result.getTarget();
 
@@ -908,16 +900,16 @@ public class CustomerIT {
             company("Braintree");
 
         Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
-        Assert.assertTrue(updateResult.isSuccess());
+        assertTrue(updateResult.isSuccess());
         Customer updatedCustomer = updateResult.getTarget();
 
-        Assert.assertEquals("Mark", updatedCustomer.getFirstName());
-        Assert.assertEquals("Olson", updatedCustomer.getLastName());
-        Assert.assertEquals("Braintree", updatedCustomer.getCompany());
-        Assert.assertEquals("mark.jones@example.com", updatedCustomer.getEmail());
-        Assert.assertEquals("419-555-1234", updatedCustomer.getFax());
-        Assert.assertEquals("614-555-1234", updatedCustomer.getPhone());
-        Assert.assertEquals("http://example.com", updatedCustomer.getWebsite());
+        assertEquals("Mark", updatedCustomer.getFirstName());
+        assertEquals("Olson", updatedCustomer.getLastName());
+        assertEquals("Braintree", updatedCustomer.getCompany());
+        assertEquals("mark.jones@example.com", updatedCustomer.getEmail());
+        assertEquals("419-555-1234", updatedCustomer.getFax());
+        assertEquals("614-555-1234", updatedCustomer.getPhone());
+        assertEquals("http://example.com", updatedCustomer.getWebsite());
     }
 
     @Test
@@ -933,10 +925,10 @@ public class CustomerIT {
         Customer customer = gateway.customer().create(request).getTarget();
 
         Result<Customer> result = gateway.customer().delete(customer.getId());
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         try {
             gateway.customer().find(customer.getId());
-            Assert.fail();
+            fail();
         } catch (NotFoundException e) {
         }
     }
@@ -945,7 +937,7 @@ public class CustomerIT {
     public void all() {
         ResourceCollection<Customer> resourceCollection = gateway.customer().all();
 
-        Assert.assertTrue(resourceCollection.getMaximumSize() > 0);
-        Assert.assertNotNull(resourceCollection.getFirst());
+        assertTrue(resourceCollection.getMaximumSize() > 0);
+        assertNotNull(resourceCollection.getFirst());
     }
 }

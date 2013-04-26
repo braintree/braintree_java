@@ -1,13 +1,9 @@
 package com.braintreegateway;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.StringUtils;
+
+import java.util.*;
 
 /**
  * Represents a collection of (nested) validation errors. Query for validation

@@ -20,6 +20,7 @@ public abstract class CalendarTestUtils {
     public static Calendar dateTime(String dateString) throws ParseException {
         return dateTime(dateString, UTC);
     }
+
     public static Calendar dateTime(String dateString, String timeZoneName) throws ParseException {
         return getCalendar(dateString, NodeWrapper.DATE_TIME_FORMAT, timeZoneName);
     }

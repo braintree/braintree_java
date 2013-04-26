@@ -1,8 +1,8 @@
 package com.braintreegateway;
 
-import java.util.Calendar;
-
 import com.braintreegateway.util.NodeWrapper;
+
+import java.util.Calendar;
 
 /**
  * An address can belong to:

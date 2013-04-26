@@ -1,11 +1,10 @@
 package com.braintreegateway.util;
 
-import java.security.MessageDigest;
+import com.braintreegateway.org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-
-import com.braintreegateway.org.apache.commons.codec.binary.Hex;
+import java.security.MessageDigest;
 
 public class Crypto {
     public String hmacHash(String privateKey, String content) {

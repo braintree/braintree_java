@@ -1,15 +1,17 @@
 package com.braintreegateway.integrationtest;
 
-import com.braintreegateway.*;
+import com.braintreegateway.AddOn;
+import com.braintreegateway.BraintreeGateway;
+import com.braintreegateway.Environment;
 import com.braintreegateway.util.Http;
-
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
+
+import static org.junit.Assert.assertEquals;
 
 public class AddOnIT {
     private BraintreeGateway gateway;
@@ -43,11 +45,11 @@ public class AddOnIT {
             }
         }
 
-        Assert.assertEquals(new BigDecimal("100.00"), actualAddOn.getAmount());
-        Assert.assertEquals("java test add-on description", actualAddOn.getDescription());
-        Assert.assertEquals("add_on", actualAddOn.getKind());
-        Assert.assertEquals("java test add-on name", actualAddOn.getName());
-        Assert.assertEquals(false, actualAddOn.neverExpires());
-        Assert.assertEquals(new Integer("12"), actualAddOn.getNumberOfBillingCycles());
+        assertEquals(new BigDecimal("100.00"), actualAddOn.getAmount());
+        assertEquals("java test add-on description", actualAddOn.getDescription());
+        assertEquals("add_on", actualAddOn.getKind());
+        assertEquals("java test add-on name", actualAddOn.getName());
+        assertEquals(false, actualAddOn.neverExpires());
+        assertEquals(new Integer("12"), actualAddOn.getNumberOfBillingCycles());
     }
 }

@@ -1,10 +1,10 @@
 package com.braintreegateway;
 
+import com.braintreegateway.util.NodeWrapper;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import com.braintreegateway.util.NodeWrapper;
 
 /**
  * A collection used to page through query or search results.

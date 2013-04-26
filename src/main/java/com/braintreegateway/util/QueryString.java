@@ -1,9 +1,9 @@
 package com.braintreegateway.util;
 
+import com.braintreegateway.Request;
+
 import java.net.URLEncoder;
 import java.util.Map;
-
-import com.braintreegateway.Request;
 
 public class QueryString {
     private StringBuilder builder;

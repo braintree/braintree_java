@@ -1,17 +1,18 @@
 package com.braintreegateway.integrationtest;
 
+import com.braintreegateway.*;
+import com.braintreegateway.SandboxValues.CreditCardNumber;
+import com.braintreegateway.SandboxValues.TransactionAmount;
+import com.braintreegateway.testhelpers.TestHelper;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.Calendar;
 import java.util.Map;
 import java.util.TimeZone;
 
-import com.braintreegateway.*;
-import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.braintreegateway.SandboxValues.CreditCardNumber;
-import com.braintreegateway.SandboxValues.TransactionAmount;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SettlementBatchSummaryIT {
 
@@ -30,7 +31,7 @@ public class SettlementBatchSummaryIT {
         settlementDate.add(Calendar.YEAR, -5);
 
         Result<SettlementBatchSummary> result = gateway.settlementBatchSummary().generate(settlementDate);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
     }
 
     @Test
@@ -38,7 +39,7 @@ public class SettlementBatchSummaryIT {
         Calendar time = Calendar.getInstance();
         time.clear();
         time.set(2011, 7, 31);
-        Assert.assertEquals(SettlementBatchSummaryRequest.dateString(time), "2011-08-31");
+        assertEquals(SettlementBatchSummaryRequest.dateString(time), "2011-08-31");
     }
 
 
@@ -48,7 +49,7 @@ public class SettlementBatchSummaryIT {
         Calendar time = Calendar.getInstance(tz);
         time.clear();
         time.set(2011, 7, 31, 23, 00);
-        Assert.assertEquals(SettlementBatchSummaryRequest.dateString(time), "2011-08-31");
+        assertEquals(SettlementBatchSummaryRequest.dateString(time), "2011-08-31");
     }
 
     @Test
@@ -65,20 +66,20 @@ public class SettlementBatchSummaryIT {
                done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         TestHelper.settle(gateway, result.getTarget().getId());
 
         Result<SettlementBatchSummary> summaryResult = gateway.settlementBatchSummary().generate(Calendar.getInstance(eastern_timezone));
-        Assert.assertTrue(summaryResult.isSuccess());
+        assertTrue(summaryResult.isSuccess());
 
-        Assert.assertTrue(summaryResult.getTarget().getRecords().size() > 0);
+        assertTrue(summaryResult.getTarget().getRecords().size() > 0);
 
         Map<String, String> first = summaryResult.getTarget().getRecords().get(0);
-        Assert.assertTrue(first.containsKey("kind"));
-        Assert.assertTrue(first.containsKey("count"));
-        Assert.assertTrue(first.containsKey("amount_settled"));
-        Assert.assertTrue(first.containsKey("merchant_account_id"));
+        assertTrue(first.containsKey("kind"));
+        assertTrue(first.containsKey("count"));
+        assertTrue(first.containsKey("amount_settled"));
+        assertTrue(first.containsKey("merchant_account_id"));
     }
 
     @Test
@@ -96,16 +97,16 @@ public class SettlementBatchSummaryIT {
                done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         TestHelper.settle(gateway, result.getTarget().getId());
 
         Result<SettlementBatchSummary> summaryResult = gateway.settlementBatchSummary().generate(Calendar.getInstance(eastern_timezone), "store_me");
-        Assert.assertTrue(summaryResult.isSuccess());
+        assertTrue(summaryResult.isSuccess());
 
-        Assert.assertTrue(summaryResult.getTarget().getRecords().size() > 0);
+        assertTrue(summaryResult.getTarget().getRecords().size() > 0);
 
         Map<String, String> first = summaryResult.getTarget().getRecords().get(0);
-        Assert.assertTrue(first.containsKey("store_me"));
+        assertTrue(first.containsKey("store_me"));
     }
 }

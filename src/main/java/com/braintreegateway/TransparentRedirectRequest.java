@@ -1,11 +1,11 @@
 package com.braintreegateway;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.TrUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TransparentRedirectRequest extends Request {
     private String id;

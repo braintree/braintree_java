@@ -1,9 +1,10 @@
 package com.braintreegateway.integrationtest;
 
+import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Assert;
 import org.junit.Test;
-import com.braintreegateway.*;
+
+import static org.junit.Assert.assertEquals;
 
 public class TransactionRequestIT {
     @Test
@@ -13,7 +14,7 @@ public class TransactionRequestIT {
                 firstName("Drew").
                 done();
 
-        Assert.assertEquals("transaction%5Bcustomer%5D%5Bfirst_name%5D=Drew", request.toQueryString());
+        assertEquals("transaction%5Bcustomer%5D%5Bfirst_name%5D=Drew", request.toQueryString());
     }
 
     @Test

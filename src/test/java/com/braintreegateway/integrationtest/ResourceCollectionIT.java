@@ -1,18 +1,18 @@
 package com.braintreegateway.integrationtest;
 
+import com.braintreegateway.Pager;
+import com.braintreegateway.ResourceCollection;
+import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.NodeWrapperFactory;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.braintreegateway.util.NodeWrapperFactory;
-import org.junit.Assert;
-
-import org.junit.Test;
-
-import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.*;
+import static org.junit.Assert.assertEquals;
 
 public class ResourceCollectionIT {
-    private String[] values = new String[] { "a", "b", "c", "d", "e" };
+    private String[] values = new String[]{"a", "b", "c", "d", "e"};
 
     class TestPager implements Pager<String> {
         public List<String> getPage(List<String> ids) {
@@ -44,10 +44,10 @@ public class ResourceCollectionIT {
         int index = 0;
         int count = 0;
         for (String string : resourceCollection) {
-            Assert.assertEquals(values[index], string);
+            assertEquals(values[index], string);
             index++;
             count++;
         }
-        Assert.assertEquals(values.length, count);
+        assertEquals(values.length, count);
     }
 }

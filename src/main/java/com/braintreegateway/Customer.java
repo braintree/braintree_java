@@ -1,12 +1,8 @@
 package com.braintreegateway;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import com.braintreegateway.util.NodeWrapper;
+
+import java.util.*;
 
 public class Customer {
 

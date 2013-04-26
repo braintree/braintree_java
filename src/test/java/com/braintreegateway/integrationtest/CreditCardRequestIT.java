@@ -1,15 +1,16 @@
 package com.braintreegateway.integrationtest;
 
-import org.junit.Assert;
-import org.junit.Test;
 import com.braintreegateway.CreditCardRequest;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class CreditCardRequestIT {
     @Test
     public void toXmlEscapesXmlChars() {
         CreditCardRequest request = new CreditCardRequest().
             cardholderName("Special Xml Chars <>&\"'");
-         Assert.assertEquals("<creditCard><cardholderName>Special Xml Chars &lt;&gt;&amp;&quot;&apos;</cardholderName></creditCard>", request.toXML());
+        assertEquals("<creditCard><cardholderName>Special Xml Chars &lt;&gt;&amp;&quot;&apos;</cardholderName></creditCard>", request.toXML());
     }
 
     @Test
@@ -19,7 +20,7 @@ public class CreditCardRequestIT {
             billingAddress().
                 region("Chicago").
                 done();
-        Assert.assertEquals("credit_card%5Bcardholder_name%5D=Drew&credit_card%5Bbilling_address%5D%5Bregion%5D=Chicago", request.toQueryString());
+        assertEquals("credit_card%5Bcardholder_name%5D=Drew&credit_card%5Bbilling_address%5D%5Bregion%5D=Chicago", request.toQueryString());
     }
 
     @Test
@@ -29,6 +30,6 @@ public class CreditCardRequestIT {
             billingAddress().
                 region("Chicago").
                 done();
-        Assert.assertEquals("customer%5Bcredit_card%5D%5Bcardholder_name%5D=Drew&customer%5Bcredit_card%5D%5Bbilling_address%5D%5Bregion%5D=Chicago", request.toQueryString("customer[credit_card]"));
+        assertEquals("customer%5Bcredit_card%5D%5Bcardholder_name%5D=Drew&customer%5Bcredit_card%5D%5Bbilling_address%5D%5Bregion%5D=Chicago", request.toQueryString("customer[credit_card]"));
     }
 }

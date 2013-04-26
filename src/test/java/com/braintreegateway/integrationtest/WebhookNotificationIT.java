@@ -1,17 +1,19 @@
 package com.braintreegateway.integrationtest;
 
-import java.util.Calendar;
-import java.util.HashMap;
-
-import com.braintreegateway.*;
+import com.braintreegateway.BraintreeGateway;
+import com.braintreegateway.Environment;
+import com.braintreegateway.WebhookNotification;
+import com.braintreegateway.exceptions.InvalidSignatureException;
 import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Assert;
+import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.braintreegateway.exceptions.InvalidSignatureException;
-import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.util.NodeWrapperFactory;
+import java.util.Calendar;
+import java.util.HashMap;
+
+import static org.junit.Assert.assertEquals;
 
 public class WebhookNotificationIT {
     private BraintreeGateway gateway;
@@ -21,19 +23,19 @@ public class WebhookNotificationIT {
         this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
     }
 
-	@Test
-	public void createNotificationWithUnrecognizedKind() {
-		String xml = "<notification><kind>" + "bad_kind" + "</kind></notification>";
-		NodeWrapper node = NodeWrapperFactory.instance.create(xml);
+    @Test
+    public void createNotificationWithUnrecognizedKind() {
+        String xml = "<notification><kind>" + "bad_kind" + "</kind></notification>";
+        NodeWrapper node = NodeWrapperFactory.instance.create(xml);
 
-		WebhookNotification notification = new WebhookNotification(node);
-		Assert.assertEquals(WebhookNotification.Kind.UNRECOGNIZED, notification.getKind());
-	}
+        WebhookNotification notification = new WebhookNotification(node);
+        assertEquals(WebhookNotification.Kind.UNRECOGNIZED, notification.getKind());
+    }
 
     @Test
     public void verifyCreatesAVerificationString() {
         String verification = this.gateway.webhookNotification().verify("verification_token");
-        Assert.assertEquals("integration_public_key|c9f15b74b0d98635cd182c51e2703cffa83388c3", verification);
+        assertEquals("integration_public_key|c9f15b74b0d98635cd182c51e2703cffa83388c3", verification);
     }
 
     @Test
@@ -42,8 +44,8 @@ public class WebhookNotificationIT {
 
         WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
 
-        Assert.assertEquals(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, notification.getKind());
-        Assert.assertEquals("my_id", notification.getSubscription().getId());
+        assertEquals(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, notification.getKind());
+        assertEquals("my_id", notification.getSubscription().getId());
         TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
     }
 

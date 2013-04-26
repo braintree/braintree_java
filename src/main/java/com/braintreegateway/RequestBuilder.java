@@ -1,15 +1,11 @@
 package com.braintreegateway;
 
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-
 import com.braintreegateway.util.QueryString;
 import com.braintreegateway.util.StringUtils;
+
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class RequestBuilder {
 

@@ -1,27 +1,18 @@
 package com.braintreegateway.integrationtest;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.TimeZone;
-
-import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.braintreegateway.*;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.Subscription.Status;
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -679,7 +670,7 @@ public class SubscriptionIT {
     public void findWithEmptyIds() {
         try {
             gateway.subscription().find(" ");
-            Assert.fail("Should throw NotFoundException");
+            fail("Should throw NotFoundException");
         } catch (NotFoundException e) {
         }
 

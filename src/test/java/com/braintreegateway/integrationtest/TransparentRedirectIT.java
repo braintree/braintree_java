@@ -1,16 +1,15 @@
 package com.braintreegateway.integrationtest;
 
-import java.math.BigDecimal;
-
+import com.braintreegateway.*;
+import com.braintreegateway.SandboxValues.CreditCardNumber;
+import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.braintreegateway.SandboxValues.CreditCardNumber;
-import com.braintreegateway.SandboxValues.TransactionAmount;
-import com.braintreegateway.*;
+import java.math.BigDecimal;
+
+import static org.junit.Assert.*;
 
 public class TransparentRedirectIT {
     private BraintreeGateway gateway;
@@ -37,9 +36,9 @@ public class TransparentRedirectIT {
 
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
         Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
-        Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals(CreditCardNumber.VISA.number.substring(0, 6), result.getTarget().getCreditCard().getBin());
-        Assert.assertEquals(TransactionAmount.AUTHORIZE.amount, result.getTarget().getAmount());
+        assertTrue(result.isSuccess());
+        assertEquals(CreditCardNumber.VISA.number.substring(0, 6), result.getTarget().getCreditCard().getBin());
+        assertEquals(TransactionAmount.AUTHORIZE.amount, result.getTarget().getAmount());
     }
 
     @Test
@@ -58,8 +57,8 @@ public class TransparentRedirectIT {
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
         Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
 
-        Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, result.getTarget().getMerchantAccountId());
+        assertTrue(result.isSuccess());
+        assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, result.getTarget().getMerchantAccountId());
     }
 
     @Test
@@ -81,10 +80,10 @@ public class TransparentRedirectIT {
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
         Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
-        Assert.assertEquals("123*123456789012345678", transaction.getDescriptor().getName());
-        Assert.assertEquals("3334445555", transaction.getDescriptor().getPhone());
+        assertEquals("123*123456789012345678", transaction.getDescriptor().getName());
+        assertEquals("3334445555", transaction.getDescriptor().getPhone());
     }
 
     @Test
@@ -105,11 +104,11 @@ public class TransparentRedirectIT {
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
         Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
-        Assert.assertEquals(new BigDecimal("10.00"), transaction.getTaxAmount());
-        Assert.assertTrue(transaction.isTaxExempt());
-        Assert.assertEquals("12345", transaction.getPurchaseOrderNumber());
+        assertEquals(new BigDecimal("10.00"), transaction.getTaxAmount());
+        assertTrue(transaction.isTaxExempt());
+        assertEquals("12345", transaction.getPurchaseOrderNumber());
     }
 
     @Test
@@ -120,9 +119,9 @@ public class TransparentRedirectIT {
 
         Result<Customer> result = gateway.transparentRedirect().confirmCustomer(queryString);
 
-        Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals("John", result.getTarget().getFirstName());
-        Assert.assertEquals("Doe", result.getTarget().getLastName());
+        assertTrue(result.isSuccess());
+        assertEquals("John", result.getTarget().getFirstName());
+        assertEquals("Doe", result.getTarget().getLastName());
     }
 
     @Test
@@ -138,10 +137,10 @@ public class TransparentRedirectIT {
 
         Result<Customer> result = gateway.transparentRedirect().confirmCustomer(queryString);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Customer updatedCustomer = gateway.customer().find(customer.getId());
-        Assert.assertEquals("Jane", updatedCustomer.getFirstName());
-        Assert.assertEquals("Dough", updatedCustomer.getLastName());
+        assertEquals("Jane", updatedCustomer.getFirstName());
+        assertEquals("Dough", updatedCustomer.getLastName());
     }
 
     @Test
@@ -156,10 +155,10 @@ public class TransparentRedirectIT {
 
         Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
 
-        Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals("411111", result.getTarget().getBin());
-        Assert.assertEquals("1111", result.getTarget().getLast4());
-        Assert.assertEquals("10/2010", result.getTarget().getExpirationDate());
+        assertTrue(result.isSuccess());
+        assertEquals("411111", result.getTarget().getBin());
+        assertEquals("1111", result.getTarget().getLast4());
+        assertEquals("10/2010", result.getTarget().getExpirationDate());
     }
 
     @Test
@@ -180,11 +179,11 @@ public class TransparentRedirectIT {
 
         Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard updatedCreditCard = gateway.creditCard().find(card.getToken());
-        Assert.assertEquals("411111", updatedCreditCard.getBin());
-        Assert.assertEquals("1111", updatedCreditCard.getLast4());
-        Assert.assertEquals("10/2010", updatedCreditCard.getExpirationDate());
+        assertEquals("411111", updatedCreditCard.getBin());
+        assertEquals("1111", updatedCreditCard.getLast4());
+        assertEquals("10/2010", updatedCreditCard.getExpirationDate());
     }
 
     @Test
@@ -195,9 +194,9 @@ public class TransparentRedirectIT {
 
         try {
             gateway.transparentRedirect().confirmTransaction(queryString);
-            Assert.assertTrue(false);
+            assertTrue(false);
         } catch (IllegalArgumentException e) {
-            Assert.assertEquals("You attemped to confirm a transaction, but received a customer.", e.getMessage());
+            assertEquals("You attemped to confirm a transaction, but received a customer.", e.getMessage());
         }
     }
 
@@ -207,7 +206,7 @@ public class TransparentRedirectIT {
         TransactionRequest trParams = new TransactionRequest().type(Transaction.Type.SALE);
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, invalidRequest, gateway.transparentRedirect().url());
         Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertTrue(result.getErrors().deepSize() > 0);
+        assertFalse(result.isSuccess());
+        assertTrue(result.getErrors().deepSize() > 0);
     }
 }

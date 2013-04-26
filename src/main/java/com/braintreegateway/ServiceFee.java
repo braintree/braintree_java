@@ -1,8 +1,8 @@
 package com.braintreegateway;
 
-import java.math.BigDecimal;
-
 import com.braintreegateway.util.NodeWrapper;
+
+import java.math.BigDecimal;
 
 public class ServiceFee {
     private BigDecimal amount;

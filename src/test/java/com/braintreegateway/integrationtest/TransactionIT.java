@@ -1,24 +1,21 @@
 package com.braintreegateway.integrationtest;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.util.*;
-
 import com.braintreegateway.*;
-import com.braintreegateway.testhelpers.TestHelper;
-import com.braintreegateway.testhelpers.CalendarTestUtils;
-import com.braintreegateway.util.NodeWrapperFactory;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.braintreegateway.test.CreditCardNumbers;
-import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.*;
+import com.braintreegateway.test.CreditCardNumbers;
+import com.braintreegateway.test.VenmoSdk;
+import com.braintreegateway.testhelpers.CalendarTestUtils;
+import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.util.NodeWrapperFactory;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -35,7 +32,7 @@ public class TransactionIT {
     @SuppressWarnings("deprecation")
     @Test
     public void transparentRedirectURLForCreate() {
-        Assert.assertEquals(gateway.baseMerchantURL() + "/transactions/all/create_via_transparent_redirect_request",
+        assertEquals(gateway.baseMerchantURL() + "/transactions/all/create_via_transparent_redirect_request",
                 gateway.transaction().transparentRedirectURLForCreate());
     }
 
@@ -49,14 +46,14 @@ public class TransactionIT {
     public void saleTrData() {
         String trData = gateway.transaction().saleTrData(new TransactionRequest(), "http://example.com");
         TestHelper.assertValidTrData(gateway.getConfiguration(), trData);
-        Assert.assertTrue(trData.contains("sale"));
+        assertTrue(trData.contains("sale"));
     }
 
     @Test
     public void creditTrData() {
         String trData = gateway.transaction().creditTrData(new TransactionRequest(), "http://example.com");
         TestHelper.assertValidTrData(gateway.getConfiguration(), trData);
-        Assert.assertTrue(trData.contains("credit"));
+        assertTrue(trData.contains("credit"));
     }
 
     @SuppressWarnings("deprecation")
@@ -77,7 +74,7 @@ public class TransactionIT {
 
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transaction().transparentRedirectURLForCreate());
         Result<Transaction> result = gateway.transaction().confirmTransparentRedirect(queryString);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
     }
 
     @SuppressWarnings("deprecation")
@@ -107,26 +104,26 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
         TransactionCloneRequest cloneRequest = new TransactionCloneRequest().
             amount(new BigDecimal("123.45")).
             channel("MyShoppingCartProvider").
             options().
-              submitForSettlement(false).
-              done();
+                submitForSettlement(false).
+                done();
         Result<Transaction> cloneResult = gateway.transaction().cloneTransaction(transaction.getId(), cloneRequest);
-        Assert.assertTrue(cloneResult.isSuccess());
+        assertTrue(cloneResult.isSuccess());
         Transaction cloneTransaction = cloneResult.getTarget();
 
-        Assert.assertEquals(new BigDecimal("123.45"), cloneTransaction.getAmount());
-        Assert.assertEquals("MyShoppingCartProvider", cloneTransaction.getChannel());
-        Assert.assertEquals("123", cloneTransaction.getOrderId());
-        Assert.assertEquals("411111******1111", cloneTransaction.getCreditCard().getMaskedNumber());
-        Assert.assertEquals("Dan", cloneTransaction.getCustomer().getFirstName());
-        Assert.assertEquals("Carl", cloneTransaction.getBillingAddress().getFirstName());
-        Assert.assertEquals("Andrew", cloneTransaction.getShippingAddress().getFirstName());
+        assertEquals(new BigDecimal("123.45"), cloneTransaction.getAmount());
+        assertEquals("MyShoppingCartProvider", cloneTransaction.getChannel());
+        assertEquals("123", cloneTransaction.getOrderId());
+        assertEquals("411111******1111", cloneTransaction.getCreditCard().getMaskedNumber());
+        assertEquals("Dan", cloneTransaction.getCustomer().getFirstName());
+        assertEquals("Carl", cloneTransaction.getBillingAddress().getFirstName());
+        assertEquals("Andrew", cloneTransaction.getShippingAddress().getFirstName());
     }
 
     @Test
@@ -140,15 +137,15 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
         TransactionCloneRequest cloneRequest = new TransactionCloneRequest().amount(new BigDecimal("123.45")).options().submitForSettlement(true).done();
         Result<Transaction> cloneResult = gateway.transaction().cloneTransaction(transaction.getId(), cloneRequest);
-        Assert.assertTrue(cloneResult.isSuccess());
+        assertTrue(cloneResult.isSuccess());
         Transaction cloneTransaction = cloneResult.getTarget();
 
-        Assert.assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, cloneTransaction.getStatus());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, cloneTransaction.getStatus());
     }
 
     @Test
@@ -161,15 +158,15 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().credit(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
         TransactionCloneRequest cloneRequest = new TransactionCloneRequest().amount(new BigDecimal("123.45"));
         Result<Transaction> cloneResult = gateway.transaction().cloneTransaction(transaction.getId(), cloneRequest);
-        Assert.assertFalse(cloneResult.isSuccess());
+        assertFalse(cloneResult.isSuccess());
 
 
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_CLONE_CREDIT,
+        assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_CLONE_CREDIT,
                 cloneResult.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 
@@ -183,23 +180,23 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
-        Assert.assertEquals("USD", transaction.getCurrencyIsoCode());
-        Assert.assertNotNull(transaction.getProcessorAuthorizationCode());
-        Assert.assertEquals(Transaction.Type.SALE, transaction.getType());
-        Assert.assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
-        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
-        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
+        assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
+        assertEquals("USD", transaction.getCurrencyIsoCode());
+        assertNotNull(transaction.getProcessorAuthorizationCode());
+        assertEquals(Transaction.Type.SALE, transaction.getType());
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
 
         CreditCard creditCard = transaction.getCreditCard();
-        Assert.assertEquals("411111", creditCard.getBin());
-        Assert.assertEquals("1111", creditCard.getLast4());
-        Assert.assertEquals("05", creditCard.getExpirationMonth());
-        Assert.assertEquals("2009", creditCard.getExpirationYear());
-        Assert.assertEquals("05/2009", creditCard.getExpirationDate());
+        assertEquals("411111", creditCard.getBin());
+        assertEquals("1111", creditCard.getLast4());
+        assertEquals("05", creditCard.getExpirationMonth());
+        assertEquals("2009", creditCard.getExpirationYear());
+        assertEquals("05/2009", creditCard.getExpirationDate());
     }
 
     @Test
@@ -212,18 +209,18 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         CreditCard card = result.getTarget().getCreditCard();
 
-        Assert.assertEquals(CreditCard.Prepaid.YES, card.getPrepaid());
-        Assert.assertEquals(CreditCard.Healthcare.UNKNOWN, card.getHealthcare());
-        Assert.assertEquals(CreditCard.Payroll.UNKNOWN, card.getPayroll());
-        Assert.assertEquals(CreditCard.Debit.UNKNOWN, card.getDebit());
-        Assert.assertEquals(CreditCard.DurbinRegulated.UNKNOWN, card.getDurbinRegulated());
-        Assert.assertEquals(CreditCard.Commercial.UNKNOWN, card.getCommercial());
-        Assert.assertEquals("Unknown", card.getCountryOfIssuance());
-        Assert.assertEquals("Unknown", card.getIssuingBank());
+        assertEquals(CreditCard.Prepaid.YES, card.getPrepaid());
+        assertEquals(CreditCard.Healthcare.UNKNOWN, card.getHealthcare());
+        assertEquals(CreditCard.Payroll.UNKNOWN, card.getPayroll());
+        assertEquals(CreditCard.Debit.UNKNOWN, card.getDebit());
+        assertEquals(CreditCard.DurbinRegulated.UNKNOWN, card.getDurbinRegulated());
+        assertEquals(CreditCard.Commercial.UNKNOWN, card.getCommercial());
+        assertEquals("Unknown", card.getCountryOfIssuance());
+        assertEquals("Unknown", card.getIssuingBank());
     }
 
     @Test
@@ -277,68 +274,68 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
-        Assert.assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
-        Assert.assertEquals("MyShoppingCartProvider", transaction.getChannel());
-        Assert.assertEquals("123", transaction.getOrderId());
-        Assert.assertNull(transaction.getVaultCreditCard(gateway));
-        Assert.assertNull(transaction.getVaultCustomer(gateway));
-        Assert.assertNull(transaction.getAvsErrorResponseCode());
-        Assert.assertEquals("M", transaction.getAvsPostalCodeResponseCode());
-        Assert.assertEquals("M", transaction.getAvsStreetAddressResponseCode());
-        Assert.assertEquals("M", transaction.getCvvResponseCode());
-        Assert.assertFalse(transaction.isTaxExempt());
-        Assert.assertNull(transaction.getVaultCreditCard(gateway));
+        assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        assertEquals("MyShoppingCartProvider", transaction.getChannel());
+        assertEquals("123", transaction.getOrderId());
+        assertNull(transaction.getVaultCreditCard(gateway));
+        assertNull(transaction.getVaultCustomer(gateway));
+        assertNull(transaction.getAvsErrorResponseCode());
+        assertEquals("M", transaction.getAvsPostalCodeResponseCode());
+        assertEquals("M", transaction.getAvsStreetAddressResponseCode());
+        assertEquals("M", transaction.getCvvResponseCode());
+        assertFalse(transaction.isTaxExempt());
+        assertNull(transaction.getVaultCreditCard(gateway));
         CreditCard creditCard = transaction.getCreditCard();
-        Assert.assertEquals("411111", creditCard.getBin());
-        Assert.assertEquals("1111", creditCard.getLast4());
-        Assert.assertEquals("05", creditCard.getExpirationMonth());
-        Assert.assertEquals("2009", creditCard.getExpirationYear());
-        Assert.assertEquals("05/2009", creditCard.getExpirationDate());
-        Assert.assertEquals("The Cardholder", creditCard.getCardholderName());
+        assertEquals("411111", creditCard.getBin());
+        assertEquals("1111", creditCard.getLast4());
+        assertEquals("05", creditCard.getExpirationMonth());
+        assertEquals("2009", creditCard.getExpirationYear());
+        assertEquals("05/2009", creditCard.getExpirationDate());
+        assertEquals("The Cardholder", creditCard.getCardholderName());
 
-        Assert.assertNull(transaction.getVaultCustomer(gateway));
+        assertNull(transaction.getVaultCustomer(gateway));
         Customer customer = transaction.getCustomer();
-        Assert.assertEquals("Dan", customer.getFirstName());
-        Assert.assertEquals("Smith", customer.getLastName());
-        Assert.assertEquals("Braintree Payment Solutions", customer.getCompany());
-        Assert.assertEquals("dan@example.com", customer.getEmail());
-        Assert.assertEquals("419-555-1234", customer.getPhone());
-        Assert.assertEquals("419-555-1235", customer.getFax());
-        Assert.assertEquals("http://braintreepayments.com", customer.getWebsite());
+        assertEquals("Dan", customer.getFirstName());
+        assertEquals("Smith", customer.getLastName());
+        assertEquals("Braintree Payment Solutions", customer.getCompany());
+        assertEquals("dan@example.com", customer.getEmail());
+        assertEquals("419-555-1234", customer.getPhone());
+        assertEquals("419-555-1235", customer.getFax());
+        assertEquals("http://braintreepayments.com", customer.getWebsite());
 
-        Assert.assertNull(transaction.getVaultBillingAddress(gateway));
+        assertNull(transaction.getVaultBillingAddress(gateway));
         Address billing = transaction.getBillingAddress();
-        Assert.assertEquals("Carl", billing.getFirstName());
-        Assert.assertEquals("Jones", billing.getLastName());
-        Assert.assertEquals("Braintree", billing.getCompany());
-        Assert.assertEquals("123 E Main St", billing.getStreetAddress());
-        Assert.assertEquals("Suite 403", billing.getExtendedAddress());
-        Assert.assertEquals("Chicago", billing.getLocality());
-        Assert.assertEquals("IL", billing.getRegion());
-        Assert.assertEquals("60622", billing.getPostalCode());
-        Assert.assertEquals("United States of America", billing.getCountryName());
-        Assert.assertEquals("US", billing.getCountryCodeAlpha2());
-        Assert.assertEquals("USA", billing.getCountryCodeAlpha3());
-        Assert.assertEquals("840", billing.getCountryCodeNumeric());
+        assertEquals("Carl", billing.getFirstName());
+        assertEquals("Jones", billing.getLastName());
+        assertEquals("Braintree", billing.getCompany());
+        assertEquals("123 E Main St", billing.getStreetAddress());
+        assertEquals("Suite 403", billing.getExtendedAddress());
+        assertEquals("Chicago", billing.getLocality());
+        assertEquals("IL", billing.getRegion());
+        assertEquals("60622", billing.getPostalCode());
+        assertEquals("United States of America", billing.getCountryName());
+        assertEquals("US", billing.getCountryCodeAlpha2());
+        assertEquals("USA", billing.getCountryCodeAlpha3());
+        assertEquals("840", billing.getCountryCodeNumeric());
 
-        Assert.assertNull(transaction.getVaultShippingAddress(gateway));
+        assertNull(transaction.getVaultShippingAddress(gateway));
         Address shipping = transaction.getShippingAddress();
-        Assert.assertEquals("Andrew", shipping.getFirstName());
-        Assert.assertEquals("Mason", shipping.getLastName());
-        Assert.assertEquals("Braintree Shipping", shipping.getCompany());
-        Assert.assertEquals("456 W Main St", shipping.getStreetAddress());
-        Assert.assertEquals("Apt 2F", shipping.getExtendedAddress());
-        Assert.assertEquals("Bartlett", shipping.getLocality());
-        Assert.assertEquals("MA", shipping.getRegion());
-        Assert.assertEquals("60103", shipping.getPostalCode());
-        Assert.assertEquals("Mexico", shipping.getCountryName());
-        Assert.assertEquals("MX", shipping.getCountryCodeAlpha2());
-        Assert.assertEquals("MEX", shipping.getCountryCodeAlpha3());
-        Assert.assertEquals("484", shipping.getCountryCodeNumeric());
+        assertEquals("Andrew", shipping.getFirstName());
+        assertEquals("Mason", shipping.getLastName());
+        assertEquals("Braintree Shipping", shipping.getCompany());
+        assertEquals("456 W Main St", shipping.getStreetAddress());
+        assertEquals("Apt 2F", shipping.getExtendedAddress());
+        assertEquals("Bartlett", shipping.getLocality());
+        assertEquals("MA", shipping.getRegion());
+        assertEquals("60103", shipping.getPostalCode());
+        assertEquals("Mexico", shipping.getCountryName());
+        assertEquals("MX", shipping.getCountryCodeAlpha2());
+        assertEquals("MEX", shipping.getCountryCodeAlpha3());
+        assertEquals("484", shipping.getCountryCodeNumeric());
     }
 
     @Test
@@ -352,10 +349,10 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getMerchantAccountId());
+        assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getMerchantAccountId());
     }
 
     @Test
@@ -368,10 +365,10 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getMerchantAccountId());
+        assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getMerchantAccountId());
     }
 
     @Test
@@ -395,16 +392,16 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
         CreditCard creditCard = transaction.getCreditCard();
-        Assert.assertEquals(paymentToken, creditCard.getToken());
-        Assert.assertEquals("05/2009", transaction.getVaultCreditCard(gateway).getExpirationDate());
+        assertEquals(paymentToken, creditCard.getToken());
+        assertEquals("05/2009", transaction.getVaultCreditCard(gateway).getExpirationDate());
 
         Customer customer = transaction.getCustomer();
-        Assert.assertEquals(customerId, customer.getId());
-        Assert.assertEquals("Jane", transaction.getVaultCustomer(gateway).getFirstName());
+        assertEquals(customerId, customer.getId());
+        assertEquals("Jane", transaction.getVaultCustomer(gateway).getFirstName());
 
     }
 
@@ -424,16 +421,16 @@ public class TransactionIT {
             done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
         CreditCard creditCard = transaction.getCreditCard();
-        Assert.assertNotNull(creditCard.getToken());
-        Assert.assertEquals("05/2009", transaction.getVaultCreditCard(gateway).getExpirationDate());
+        assertNotNull(creditCard.getToken());
+        assertEquals("05/2009", transaction.getVaultCreditCard(gateway).getExpirationDate());
 
         Customer customer = transaction.getCustomer();
-        Assert.assertNotNull(customer.getId());
-        Assert.assertEquals("Jane", transaction.getVaultCustomer(gateway).getFirstName());
+        assertNotNull(customer.getId());
+        assertEquals("Jane", transaction.getVaultCustomer(gateway).getFirstName());
     }
 
     @Test
@@ -452,16 +449,16 @@ public class TransactionIT {
             done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
         CreditCard creditCard = transaction.getCreditCard();
-        Assert.assertNotNull(creditCard.getToken());
-        Assert.assertEquals("05/2009", transaction.getVaultCreditCard(gateway).getExpirationDate());
+        assertNotNull(creditCard.getToken());
+        assertEquals("05/2009", transaction.getVaultCreditCard(gateway).getExpirationDate());
 
         Customer customer = transaction.getCustomer();
-        Assert.assertNotNull(customer.getId());
-        Assert.assertEquals("Jane", transaction.getVaultCustomer(gateway).getFirstName());
+        assertNotNull(customer.getId());
+        assertEquals("Jane", transaction.getVaultCustomer(gateway).getFirstName());
     }
 
     @Test
@@ -480,16 +477,16 @@ public class TransactionIT {
             done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         Transaction transaction = result.getTransaction();
 
         CreditCard creditCard = transaction.getCreditCard();
-        Assert.assertNull(creditCard.getToken());
-        Assert.assertNull(transaction.getVaultCreditCard(gateway));
+        assertNull(creditCard.getToken());
+        assertNull(transaction.getVaultCreditCard(gateway));
 
         Customer customer = transaction.getCustomer();
-        Assert.assertNull(customer.getId());
-        Assert.assertNull(transaction.getVaultCustomer(gateway));
+        assertNull(customer.getId());
+        assertNull(transaction.getVaultCustomer(gateway));
     }
 
     @Test
@@ -513,16 +510,16 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
         CreditCard creditCard = transaction.getVaultCreditCard(gateway);
-        Assert.assertEquals("Carl", creditCard.getBillingAddress().getFirstName());
-        Assert.assertEquals("Carl", transaction.getVaultBillingAddress(gateway).getFirstName());
-        Assert.assertEquals("Andrew", transaction.getVaultShippingAddress(gateway).getFirstName());
+        assertEquals("Carl", creditCard.getBillingAddress().getFirstName());
+        assertEquals("Carl", transaction.getVaultBillingAddress(gateway).getFirstName());
+        assertEquals("Andrew", transaction.getVaultShippingAddress(gateway).getFirstName());
 
         Customer customer = transaction.getVaultCustomer(gateway);
-        Assert.assertEquals(2, customer.getAddresses().size());
+        assertEquals(2, customer.getAddresses().size());
 
         List<Address> addresses = new ArrayList<Address>(customer.getAddresses());
         Collections.sort(addresses, new Comparator<Address>() {
@@ -530,20 +527,20 @@ public class TransactionIT {
                 return left.getFirstName().compareTo(right.getFirstName());
             }
         });
-        Assert.assertEquals("Andrew", addresses.get(0).getFirstName());
-        Assert.assertEquals("Carl", addresses.get(1).getFirstName());
+        assertEquals("Andrew", addresses.get(0).getFirstName());
+        assertEquals("Carl", addresses.get(1).getFirstName());
 
-        Assert.assertNotNull(transaction.getBillingAddress().getId());
-        Assert.assertNotNull(transaction.getShippingAddress().getId());
+        assertNotNull(transaction.getBillingAddress().getId());
+        assertNotNull(transaction.getShippingAddress().getId());
     }
 
     @Test
-     public void saleWithVaultCustomerAndNewCreditCard() {
+    public void saleWithVaultCustomerAndNewCreditCard() {
         Customer customer = gateway.customer().create(new CustomerRequest().
                 firstName("Michael").
                 lastName("Angelo").
                 company("Some Company")
-         ).getTarget();
+        ).getTarget();
 
         TransactionRequest request = new TransactionRequest().
             amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
@@ -555,42 +552,42 @@ public class TransactionIT {
                     done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals("Bob the Builder", transaction.getCreditCard().getCardholderName());
-        Assert.assertNull(transaction.getVaultCreditCard(gateway));
-     }
+        assertEquals("Bob the Builder", transaction.getCreditCard().getCardholderName());
+        assertNull(transaction.getVaultCreditCard(gateway));
+    }
 
-     @Test
-     public void saleWithVaultCustomerAndNewCreditCardStoresInVault() {
-         Customer customer = gateway.customer().create(new CustomerRequest().
-                 firstName("Michael").
-                 lastName("Angelo").
-                 company("Some Company")
-          ).getTarget();
+    @Test
+    public void saleWithVaultCustomerAndNewCreditCardStoresInVault() {
+        Customer customer = gateway.customer().create(new CustomerRequest().
+                firstName("Michael").
+                lastName("Angelo").
+                company("Some Company")
+        ).getTarget();
 
-         TransactionRequest request = new TransactionRequest().
-             amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
-             customerId(customer.getId()).
-             creditCard().
-                     cardholderName("Bob the Builder").
-                     number(SandboxValues.CreditCardNumber.VISA.number).
-                     expirationDate("05/2009").
-                     done().
-              options().
-                  storeInVault(true).
-                  done();
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            customerId(customer.getId()).
+            creditCard().
+                cardholderName("Bob the Builder").
+                number(SandboxValues.CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            options().
+                storeInVault(true).
+                done();
 
-         Result<Transaction> result = gateway.transaction().sale(request);
-         Assert.assertTrue(result.isSuccess());
-         Transaction transaction = result.getTarget();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
 
-         Assert.assertEquals("Bob the Builder", transaction.getCreditCard().getCardholderName());
-         Assert.assertEquals("Bob the Builder", transaction.getVaultCreditCard(gateway).getCardholderName());
-     }
+        assertEquals("Bob the Builder", transaction.getCreditCard().getCardholderName());
+        assertEquals("Bob the Builder", transaction.getVaultCreditCard(gateway).getCardholderName());
+    }
 
-     @Test
+    @Test
     public void saleDeclined() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.DECLINE.amount).
@@ -600,20 +597,20 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         Transaction transaction = result.getTransaction();
 
-        Assert.assertEquals(new BigDecimal("2000.00"), transaction.getAmount());
-        Assert.assertEquals(Transaction.Status.PROCESSOR_DECLINED, transaction.getStatus());
-        Assert.assertEquals("2000", transaction.getProcessorResponseCode());
-        Assert.assertNotNull(transaction.getProcessorResponseText());
+        assertEquals(new BigDecimal("2000.00"), transaction.getAmount());
+        assertEquals(Transaction.Status.PROCESSOR_DECLINED, transaction.getStatus());
+        assertEquals("2000", transaction.getProcessorResponseCode());
+        assertNotNull(transaction.getProcessorResponseText());
 
         CreditCard creditCard = transaction.getCreditCard();
-        Assert.assertEquals("411111", creditCard.getBin());
-        Assert.assertEquals("1111", creditCard.getLast4());
-        Assert.assertEquals("05", creditCard.getExpirationMonth());
-        Assert.assertEquals("2009", creditCard.getExpirationYear());
-        Assert.assertEquals("05/2009", creditCard.getExpirationDate());
+        assertEquals("411111", creditCard.getBin());
+        assertEquals("1111", creditCard.getLast4());
+        assertEquals("05", creditCard.getExpirationMonth());
+        assertEquals("2009", creditCard.getExpirationYear());
+        assertEquals("05/2009", creditCard.getExpirationDate());
     }
 
     @Test
@@ -627,18 +624,18 @@ public class TransactionIT {
                 expirationDate("05/2009").
                 done();
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
         Map<String, String> expected = new HashMap<String, String>();
         expected.put("store_me", "custom value");
         expected.put("another_stored_field", "custom value2");
 
-        Assert.assertEquals(expected, transaction.getCustomFields());
+        assertEquals(expected, transaction.getCustomFields());
     }
 
     @Test
-    public void saleWithRecurringFlag(){
+    public void saleWithRecurringFlag() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             recurring(true).
@@ -647,9 +644,9 @@ public class TransactionIT {
                 expirationDate("05/2009").
                 done();
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
-        Assert.assertTrue(transaction.getRecurring());
+        assertTrue(transaction.getRecurring());
     }
 
     @Test
@@ -669,16 +666,16 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED,
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED,
                 result.getErrors().forObject("transaction").forObject("billing").onField("countryName").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED,
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED,
                 result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha2").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA3_IS_NOT_ACCEPTED,
-            result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha3").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_NUMERIC_IS_NOT_ACCEPTED,
-            result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeNumeric").get(0).getCode());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA3_IS_NOT_ACCEPTED,
+                result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha3").get(0).getCode());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_NUMERIC_IS_NOT_ACCEPTED,
+                result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeNumeric").get(0).getCode());
     }
 
     @Test
@@ -691,9 +688,9 @@ public class TransactionIT {
                 expirationDate("05/2009").
                 done();
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CUSTOM_FIELD_IS_INVALID,
+        assertEquals(ValidationErrorCode.TRANSACTION_CUSTOM_FIELD_IS_INVALID,
                 result.getErrors().forObject("transaction").onField("customFields").get(0).getCode());
     }
 
@@ -710,18 +707,18 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         List<ValidationError> errros = result.getErrors().forObject("transaction").onField("base");
 
-        Assert.assertNull(result.getTransaction());
-        Assert.assertNull(result.getCreditCardVerification());
-        Assert.assertEquals(2, errros.size());
+        assertNull(result.getTransaction());
+        assertNull(result.getCreditCardVerification());
+        assertEquals(2, errros.size());
 
         List<ValidationErrorCode> validationErrorCodes = new ArrayList<ValidationErrorCode>();
         validationErrorCodes.add(errros.get(0).getCode());
         validationErrorCodes.add(errros.get(1).getCode());
-        Assert.assertTrue(validationErrorCodes.contains(ValidationErrorCode.TRANSACTION_PAYMENT_METHOD_CONFLICT_WITH_VENMO_SDK));
-        Assert.assertTrue(validationErrorCodes.contains(ValidationErrorCode.TRANSACTION_PAYMENT_METHOD_DOES_NOT_BELONG_TO_CUSTOMER));
+        assertTrue(validationErrorCodes.contains(ValidationErrorCode.TRANSACTION_PAYMENT_METHOD_CONFLICT_WITH_VENMO_SDK));
+        assertTrue(validationErrorCodes.contains(ValidationErrorCode.TRANSACTION_PAYMENT_METHOD_DOES_NOT_BELONG_TO_CUSTOMER));
     }
 
     @Test
@@ -739,12 +736,12 @@ public class TransactionIT {
             paymentMethodToken(creditCard.getToken());
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals(creditCard.getToken(), transaction.getCreditCard().getToken());
-        Assert.assertEquals("510510", transaction.getCreditCard().getBin());
-        Assert.assertEquals("05/2012", transaction.getCreditCard().getExpirationDate());
+        assertEquals(creditCard.getToken(), transaction.getCreditCard().getToken());
+        assertEquals("510510", transaction.getCreditCard().getBin());
+        assertEquals("05/2012", transaction.getCreditCard().getExpirationDate());
     }
 
     @Test
@@ -762,13 +759,13 @@ public class TransactionIT {
             creditCard().cvv("301").done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals(creditCard.getToken(), transaction.getCreditCard().getToken());
-        Assert.assertEquals("510510", transaction.getCreditCard().getBin());
-        Assert.assertEquals("05/2012", transaction.getCreditCard().getExpirationDate());
-        Assert.assertEquals("S", transaction.getCvvResponseCode());
+        assertEquals(creditCard.getToken(), transaction.getCreditCard().getToken());
+        assertEquals("510510", transaction.getCreditCard().getBin());
+        assertEquals("05/2012", transaction.getCreditCard().getExpirationDate());
+        assertEquals("S", transaction.getCvvResponseCode());
     }
 
 
@@ -791,11 +788,11 @@ public class TransactionIT {
             shippingAddressId(shippingAddress.getId());
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals(shippingAddress.getId(), transaction.getShippingAddress().getId());
-        Assert.assertEquals("Carl", transaction.getShippingAddress().getFirstName());
+        assertEquals(shippingAddress.getId(), transaction.getShippingAddress().getId());
+        assertEquals("Carl", transaction.getShippingAddress().getFirstName());
     }
 
     @Test
@@ -808,14 +805,14 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertNull(result.getTarget());
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_AMOUNT_IS_REQUIRED, result.getErrors().forObject("transaction").onField("amount").get(0).getCode());
+        assertFalse(result.isSuccess());
+        assertNull(result.getTarget());
+        assertEquals(ValidationErrorCode.TRANSACTION_AMOUNT_IS_REQUIRED, result.getErrors().forObject("transaction").onField("amount").get(0).getCode());
 
         Map<String, String> parameters = result.getParameters();
-        Assert.assertEquals(null, parameters.get("transaction[amount]"));
-        Assert.assertEquals("05", parameters.get("transaction[credit_card][expiration_month]"));
-        Assert.assertEquals("2010", parameters.get("transaction[credit_card][expiration_year]"));
+        assertEquals(null, parameters.get("transaction[amount]"));
+        assertEquals("05", parameters.get("transaction[credit_card][expiration_month]"));
+        assertEquals("2010", parameters.get("transaction[credit_card][expiration_year]"));
     }
 
     @Test
@@ -831,10 +828,10 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
     }
 
     @Test
@@ -851,11 +848,11 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals("123*123456789012345678", transaction.getDescriptor().getName());
-        Assert.assertEquals("3334445555", transaction.getDescriptor().getPhone());
+        assertEquals("123*123456789012345678", transaction.getDescriptor().getName());
+        assertEquals("3334445555", transaction.getDescriptor().getPhone());
     }
 
     @Test
@@ -872,12 +869,12 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_NAME_FORMAT_IS_INVALID,
+        assertEquals(ValidationErrorCode.DESCRIPTOR_NAME_FORMAT_IS_INVALID,
             result.getErrors().forObject("transaction").forObject("descriptor").onField("name").get(0).getCode());
 
-        Assert.assertEquals(ValidationErrorCode.DESCRIPTOR_PHONE_FORMAT_IS_INVALID,
+        assertEquals(ValidationErrorCode.DESCRIPTOR_PHONE_FORMAT_IS_INVALID,
             result.getErrors().forObject("transaction").forObject("descriptor").onField("phone").get(0).getCode());
     }
 
@@ -894,12 +891,12 @@ public class TransactionIT {
             purchaseOrderNumber("12345");
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals(new BigDecimal("10.00"), transaction.getTaxAmount());
-        Assert.assertTrue(transaction.isTaxExempt());
-        Assert.assertEquals("12345", transaction.getPurchaseOrderNumber());
+        assertEquals(new BigDecimal("10.00"), transaction.getTaxAmount());
+        assertTrue(transaction.isTaxExempt());
+        assertEquals("12345", transaction.getPurchaseOrderNumber());
     }
 
     @Test
@@ -913,9 +910,9 @@ public class TransactionIT {
             purchaseOrderNumber("aaaaaaaaaaaaaaaaaa");
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_PURCHASE_ORDER_NUMBER_IS_TOO_LONG,
+        assertEquals(ValidationErrorCode.TRANSACTION_PURCHASE_ORDER_NUMBER_IS_TOO_LONG,
             result.getErrors().forObject("transaction").onField("purchaseOrderNumber").get(0).getCode());
     }
 
@@ -930,9 +927,9 @@ public class TransactionIT {
             purchaseOrderNumber("\u00c3\u009f\u00c3\u00a5\u00e2\u0088\u0082");
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_PURCHASE_ORDER_NUMBER_IS_INVALID,
+        assertEquals(ValidationErrorCode.TRANSACTION_PURCHASE_ORDER_NUMBER_IS_INVALID,
             result.getErrors().forObject("transaction").onField("purchaseOrderNumber").get(0).getCode());
     }
 
@@ -943,8 +940,8 @@ public class TransactionIT {
             venmoSdkPaymentMethodCode(VenmoSdk.PaymentMethodCode.Visa.code);
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals("411111", result.getTarget().getCreditCard().getBin());
+        assertTrue(result.isSuccess());
+        assertEquals("411111", result.getTarget().getCreditCard().getBin());
     }
 
     @Test
@@ -952,7 +949,7 @@ public class TransactionIT {
         TransactionRequest request = new TransactionRequest();
 
         TransactionRequest trParams = new TransactionRequest().
-        amount(TransactionAmount.AUTHORIZE.amount).
+            amount(TransactionAmount.AUTHORIZE.amount).
             type(Transaction.Type.SALE).
             creditCard().
                 number(CreditCardNumber.VISA.number).
@@ -968,13 +965,13 @@ public class TransactionIT {
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
         Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals("United States of America", transaction.getBillingAddress().getCountryName());
-        Assert.assertEquals("US", transaction.getBillingAddress().getCountryCodeAlpha2());
-        Assert.assertEquals("USA", transaction.getBillingAddress().getCountryCodeAlpha3());
-        Assert.assertEquals("840", transaction.getBillingAddress().getCountryCodeNumeric());
+        assertEquals("United States of America", transaction.getBillingAddress().getCountryName());
+        assertEquals("US", transaction.getBillingAddress().getCountryCodeAlpha2());
+        assertEquals("USA", transaction.getBillingAddress().getCountryCodeAlpha3());
+        assertEquals("840", transaction.getBillingAddress().getCountryCodeNumeric());
     }
 
     @Test
@@ -998,16 +995,16 @@ public class TransactionIT {
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
         Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
 
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED,
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED,
                 result.getErrors().forObject("transaction").forObject("billing").onField("countryName").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED,
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED,
                 result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha2").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA3_IS_NOT_ACCEPTED,
-            result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha3").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_NUMERIC_IS_NOT_ACCEPTED,
-            result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeNumeric").get(0).getCode());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA3_IS_NOT_ACCEPTED,
+                result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha3").get(0).getCode());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_NUMERIC_IS_NOT_ACCEPTED,
+                result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeNumeric").get(0).getCode());
     }
 
     @Test
@@ -1020,19 +1017,19 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().credit(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
-        Assert.assertEquals(Transaction.Type.CREDIT, transaction.getType());
-        Assert.assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
+        assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
+        assertEquals(Transaction.Type.CREDIT, transaction.getType());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
 
         CreditCard creditCard = transaction.getCreditCard();
-        Assert.assertEquals("411111", creditCard.getBin());
-        Assert.assertEquals("1111", creditCard.getLast4());
-        Assert.assertEquals("05", creditCard.getExpirationMonth());
-        Assert.assertEquals("2009", creditCard.getExpirationYear());
-        Assert.assertEquals("05/2009", creditCard.getExpirationDate());
+        assertEquals("411111", creditCard.getBin());
+        assertEquals("1111", creditCard.getLast4());
+        assertEquals("05", creditCard.getExpirationMonth());
+        assertEquals("2009", creditCard.getExpirationYear());
+        assertEquals("05/2009", creditCard.getExpirationDate());
     }
 
     @Test
@@ -1046,10 +1043,10 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().credit(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getMerchantAccountId());
+        assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getMerchantAccountId());
     }
 
     @Test
@@ -1062,10 +1059,10 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().credit(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getMerchantAccountId());
+        assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getMerchantAccountId());
     }
 
     @Test
@@ -1079,14 +1076,14 @@ public class TransactionIT {
                 expirationDate("05/2009").
                 done();
         Result<Transaction> result = gateway.transaction().credit(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
         Map<String, String> expected = new HashMap<String, String>();
         expected.put("store_me", "custom value");
         expected.put("another_stored_field", "custom value2");
 
-        Assert.assertEquals(expected, transaction.getCustomFields());
+        assertEquals(expected, transaction.getCustomFields());
     }
 
     @Test
@@ -1099,21 +1096,21 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = gateway.transaction().credit(request);
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertNull(result.getTarget());
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_AMOUNT_IS_REQUIRED, result.getErrors().forObject("transaction").onField("amount").get(0).getCode());
+        assertFalse(result.isSuccess());
+        assertNull(result.getTarget());
+        assertEquals(ValidationErrorCode.TRANSACTION_AMOUNT_IS_REQUIRED, result.getErrors().forObject("transaction").onField("amount").get(0).getCode());
 
         Map<String, String> parameters = result.getParameters();
-        Assert.assertEquals(null, parameters.get("transaction[amount]"));
-        Assert.assertEquals("05", parameters.get("transaction[credit_card][expiration_month]"));
-        Assert.assertEquals("2010", parameters.get("transaction[credit_card][expiration_year]"));
+        assertEquals(null, parameters.get("transaction[amount]"));
+        assertEquals("05", parameters.get("transaction[credit_card][expiration_month]"));
+        assertEquals("2010", parameters.get("transaction[credit_card][expiration_year]"));
     }
 
     @Test
     public void find() {
         TransactionRequest request = new TransactionRequest().
-                amount(TransactionAmount.AUTHORIZE.amount).
-                creditCard().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2008").
                 done();
@@ -1121,9 +1118,9 @@ public class TransactionIT {
 
         Transaction foundTransaction = gateway.transaction().find(transaction.getId());
 
-        Assert.assertEquals(transaction.getId(), foundTransaction.getId());
-        Assert.assertEquals(Transaction.Status.AUTHORIZED, foundTransaction.getStatus());
-        Assert.assertEquals("05/2008", foundTransaction.getCreditCard().getExpirationDate());
+        assertEquals(transaction.getId(), foundTransaction.getId());
+        assertEquals(Transaction.Status.AUTHORIZED, foundTransaction.getStatus());
+        assertEquals("05/2008", foundTransaction.getCreditCard().getExpirationDate());
     }
 
     @Test(expected = NotFoundException.class)
@@ -1154,17 +1151,17 @@ public class TransactionIT {
     @Test
     public void voidVoidsTheTransaction() {
         TransactionRequest request = new TransactionRequest().
-        amount(TransactionAmount.AUTHORIZE.amount).
-        creditCard().
-            number(CreditCardNumber.VISA.number).
-            expirationDate("05/2008").
-            done();
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
         Transaction transaction = gateway.transaction().sale(request).getTarget();
         Result<Transaction> result = gateway.transaction().voidTransaction(transaction.getId());
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
-        Assert.assertEquals(transaction.getId(), result.getTarget().getId());
-        Assert.assertEquals(Transaction.Status.VOIDED, result.getTarget().getStatus());
+        assertEquals(transaction.getId(), result.getTarget().getId());
+        assertEquals(Transaction.Status.VOIDED, result.getTarget().getStatus());
     }
 
     @Test(expected = NotFoundException.class)
@@ -1175,87 +1172,87 @@ public class TransactionIT {
     @Test
     public void voidWithBadStatus() {
         TransactionRequest request = new TransactionRequest().
-        amount(TransactionAmount.AUTHORIZE.amount).
-        creditCard().
-            number(CreditCardNumber.VISA.number).
-            expirationDate("05/2008").
-            done();
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
         Transaction transaction = gateway.transaction().sale(request).getTarget();
 
         gateway.transaction().voidTransaction(transaction.getId());
         Result<Transaction> result = gateway.transaction().voidTransaction(transaction.getId());
 
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_BE_VOIDED,
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_BE_VOIDED,
                 result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 
     @Test
     public void statusHistoryReturnsCorrectStatusEvents() {
         TransactionRequest request = new TransactionRequest().
-        amount(TransactionAmount.AUTHORIZE.amount).
-        creditCard().
-            number(CreditCardNumber.VISA.number).
-            expirationDate("05/2008").
-            done();
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
         Transaction transaction = gateway.transaction().sale(request).getTarget();
 
         Transaction settledTransaction = gateway.transaction().submitForSettlement(transaction.getId()).getTarget();
 
-        Assert.assertEquals(2, settledTransaction.getStatusHistory().size());
-        Assert.assertEquals(Transaction.Status.AUTHORIZED, settledTransaction.getStatusHistory().get(0).getStatus());
-        Assert.assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, settledTransaction.getStatusHistory().get(1).getStatus());
+        assertEquals(2, settledTransaction.getStatusHistory().size());
+        assertEquals(Transaction.Status.AUTHORIZED, settledTransaction.getStatusHistory().get(0).getStatus());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, settledTransaction.getStatusHistory().get(1).getStatus());
     }
 
     @Test
     public void submitForSettlementWithoutAmount() {
         TransactionRequest request = new TransactionRequest().
-        amount(TransactionAmount.AUTHORIZE.amount).
-        creditCard().
-            number(CreditCardNumber.VISA.number).
-            expirationDate("05/2008").
-            done();
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
         Transaction transaction = gateway.transaction().sale(request).getTarget();
 
         Result<Transaction> result = gateway.transaction().submitForSettlement(transaction.getId());
 
-        Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
-        Assert.assertEquals(TransactionAmount.AUTHORIZE.amount, result.getTarget().getAmount());
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
+        assertEquals(TransactionAmount.AUTHORIZE.amount, result.getTarget().getAmount());
     }
 
     @Test
     public void submitForSettlementWithAmount() {
         TransactionRequest request = new TransactionRequest().
-        amount(TransactionAmount.AUTHORIZE.amount).
-        creditCard().
-            number(CreditCardNumber.VISA.number).
-            expirationDate("05/2008").
-            done();
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
         Transaction transaction = gateway.transaction().sale(request).getTarget();
 
         Result<Transaction> result = gateway.transaction().submitForSettlement(transaction.getId(), new BigDecimal("50.00"));
 
-        Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
-        Assert.assertEquals(new BigDecimal("50.00"), result.getTarget().getAmount());
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
+        assertEquals(new BigDecimal("50.00"), result.getTarget().getAmount());
     }
 
     @Test
     public void submitForSettlementWithBadStatus() {
         TransactionRequest request = new TransactionRequest().
-        amount(TransactionAmount.AUTHORIZE.amount).
-        creditCard().
-            number(CreditCardNumber.VISA.number).
-            expirationDate("05/2008").
-            done();
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
         Transaction transaction = gateway.transaction().sale(request).getTarget();
 
         gateway.transaction().submitForSettlement(transaction.getId());
         Result<Transaction> result = gateway.transaction().submitForSettlement(transaction.getId());
 
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_SUBMIT_FOR_SETTLEMENT,
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_SUBMIT_FOR_SETTLEMENT,
                 result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 
@@ -1265,8 +1262,7 @@ public class TransactionIT {
     }
 
     @Test
-    public void searchOnAllTextFields()
-    {
+    public void searchOnAllTextFields() {
         String creditCardToken = String.valueOf(new Random().nextInt());
         String firstName = String.valueOf(new Random().nextInt());
 
@@ -1358,8 +1354,8 @@ public class TransactionIT {
 
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(1, collection.getMaximumSize());
-        Assert.assertEquals(transaction.getId(), collection.getFirst().getId());
+        assertEquals(1, collection.getMaximumSize());
+        assertEquals(transaction.getId(), collection.getFirst().getId());
     }
 
     @Test
@@ -1378,28 +1374,28 @@ public class TransactionIT {
             creditCardCardholderName().startsWith("Tom");
 
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
-        Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             creditCardCardholderName().endsWith("Smith");
 
         collection = gateway.transaction().search(searchRequest);
-        Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             creditCardCardholderName().contains("m Sm");
 
         collection = gateway.transaction().search(searchRequest);
-        Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             creditCardCardholderName().isNot("Tom Smith");
 
         collection = gateway.transaction().search(searchRequest);
-        Assert.assertEquals(0, collection.getMaximumSize());
+        assertEquals(0, collection.getMaximumSize());
     }
 
     @Test
@@ -1418,80 +1414,80 @@ public class TransactionIT {
             creditCardCardholderName().is(null);
 
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
-        Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
     }
 
     @Test
     public void searchOnCreatedUsing() {
-         TransactionRequest request = new TransactionRequest().
-             amount(TransactionAmount.AUTHORIZE.amount).
-             creditCard().
-                 number(CreditCardNumber.VISA.number).
-                 expirationDate("05/2010").
-                 done();
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done();
 
-         Transaction transaction = gateway.transaction().sale(request).getTarget();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
 
-         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-             id().is(transaction.getId()).
-             createdUsing().is(Transaction.CreatedUsing.FULL_INFORMATION);
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            createdUsing().is(Transaction.CreatedUsing.FULL_INFORMATION);
 
-         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-         Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
-         searchRequest = new TransactionSearchRequest().
-             id().is(transaction.getId()).
-             createdUsing().in(Transaction.CreatedUsing.FULL_INFORMATION, Transaction.CreatedUsing.TOKEN);
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            createdUsing().in(Transaction.CreatedUsing.FULL_INFORMATION, Transaction.CreatedUsing.TOKEN);
 
-         collection = gateway.transaction().search(searchRequest);
+        collection = gateway.transaction().search(searchRequest);
 
-         Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
-         searchRequest = new TransactionSearchRequest().
-             id().is(transaction.getId()).
-             createdUsing().is(Transaction.CreatedUsing.TOKEN);
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            createdUsing().is(Transaction.CreatedUsing.TOKEN);
 
-         collection = gateway.transaction().search(searchRequest);
+        collection = gateway.transaction().search(searchRequest);
 
-         Assert.assertEquals(0, collection.getMaximumSize());
-     }
+        assertEquals(0, collection.getMaximumSize());
+    }
 
     @Test
     public void searchOnCreditCardCustomerLocation() {
-         TransactionRequest request = new TransactionRequest().
-             amount(TransactionAmount.AUTHORIZE.amount).
-             creditCard().
-                 number(CreditCardNumber.VISA.number).
-                 expirationDate("05/2010").
-                 done();
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done();
 
-         Transaction transaction = gateway.transaction().sale(request).getTarget();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
 
-         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-             id().is(transaction.getId()).
-             creditCardCustomerLocation().is(CreditCard.CustomerLocation.US);
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCustomerLocation().is(CreditCard.CustomerLocation.US);
 
-         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-         Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
-         searchRequest = new TransactionSearchRequest().
-             id().is(transaction.getId()).
-             creditCardCustomerLocation().in(CreditCard.CustomerLocation.US, CreditCard.CustomerLocation.INTERNATIONAL);
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCustomerLocation().in(CreditCard.CustomerLocation.US, CreditCard.CustomerLocation.INTERNATIONAL);
 
-         collection = gateway.transaction().search(searchRequest);
+        collection = gateway.transaction().search(searchRequest);
 
-         Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
-         searchRequest = new TransactionSearchRequest().
-             id().is(transaction.getId()).
-             creditCardCustomerLocation().is(CreditCard.CustomerLocation.INTERNATIONAL);
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCustomerLocation().is(CreditCard.CustomerLocation.INTERNATIONAL);
 
-         collection = gateway.transaction().search(searchRequest);
+        collection = gateway.transaction().search(searchRequest);
 
-         Assert.assertEquals(0, collection.getMaximumSize());
-     }
+        assertEquals(0, collection.getMaximumSize());
+    }
 
     @Test
     public void searchOnMerchantAccountId() {
@@ -1510,7 +1506,7 @@ public class TransactionIT {
 
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1518,7 +1514,7 @@ public class TransactionIT {
 
         collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1526,7 +1522,7 @@ public class TransactionIT {
 
         collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(0, collection.getMaximumSize());
+        assertEquals(0, collection.getMaximumSize());
     }
 
     @Test
@@ -1546,7 +1542,7 @@ public class TransactionIT {
 
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1554,7 +1550,7 @@ public class TransactionIT {
 
         collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1562,7 +1558,7 @@ public class TransactionIT {
 
         collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(0, collection.getMaximumSize());
+        assertEquals(0, collection.getMaximumSize());
     }
 
     @Test
@@ -1582,7 +1578,7 @@ public class TransactionIT {
 
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1590,7 +1586,7 @@ public class TransactionIT {
 
         collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1598,7 +1594,7 @@ public class TransactionIT {
 
         collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(0, collection.getMaximumSize());
+        assertEquals(0, collection.getMaximumSize());
     }
 
     @Test
@@ -1607,8 +1603,8 @@ public class TransactionIT {
             status().is(Transaction.Status.AUTHORIZATION_EXPIRED);
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertTrue(collection.getMaximumSize() > 0);
-        Assert.assertEquals(Transaction.Status.AUTHORIZATION_EXPIRED, collection.getFirst().getStatus());
+        assertTrue(collection.getMaximumSize() > 0);
+        assertEquals(Transaction.Status.AUTHORIZATION_EXPIRED, collection.getFirst().getStatus());
     }
 
     @Test
@@ -1628,7 +1624,7 @@ public class TransactionIT {
 
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1636,7 +1632,7 @@ public class TransactionIT {
 
         collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
@@ -1644,7 +1640,7 @@ public class TransactionIT {
 
         collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(0, collection.getMaximumSize());
+        assertEquals(0, collection.getMaximumSize());
     }
 
     @Test
@@ -1673,7 +1669,7 @@ public class TransactionIT {
 
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(2, collection.getMaximumSize());
+        assertEquals(2, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             creditCardCardholderName().is(name).
@@ -1681,7 +1677,7 @@ public class TransactionIT {
 
         collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(1, collection.getMaximumSize());
+        assertEquals(1, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             creditCardCardholderName().is(name).
@@ -1690,8 +1686,8 @@ public class TransactionIT {
 
         collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(1, collection.getMaximumSize());
-        Assert.assertEquals(refundTransaction.getId(), collection.getFirst().getId());
+        assertEquals(1, collection.getMaximumSize());
+        assertEquals(refundTransaction.getId(), collection.getFirst().getId());
 
         searchRequest = new TransactionSearchRequest().
             creditCardCardholderName().is(name).
@@ -1700,149 +1696,149 @@ public class TransactionIT {
 
         collection = gateway.transaction().search(searchRequest);
 
-        Assert.assertEquals(1, collection.getMaximumSize());
-        Assert.assertEquals(creditTransaction.getId(), collection.getFirst().getId());
+        assertEquals(1, collection.getMaximumSize());
+        assertEquals(creditTransaction.getId(), collection.getFirst().getId());
     }
 
     @Test
     public void searchOnAmount() {
         TransactionRequest request = new TransactionRequest().
-        amount(new BigDecimal("1000")).
-        creditCard().
-            number(CreditCardNumber.VISA.number).
-            expirationDate("05/2010").
-            done();
+            amount(new BigDecimal("1000")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done();
 
-         Transaction transaction = gateway.transaction().sale(request).getTarget();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
 
-         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-             id().is(transaction.getId()).
-             amount().between(new BigDecimal("500"), new BigDecimal("1500"));
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            amount().between(new BigDecimal("500"), new BigDecimal("1500"));
 
-         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
-         searchRequest = new TransactionSearchRequest().
-             id().is(transaction.getId()).
-             amount().greaterThanOrEqualTo(new BigDecimal("500"));
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            amount().greaterThanOrEqualTo(new BigDecimal("500"));
 
-         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
-         searchRequest = new TransactionSearchRequest().
-             id().is(transaction.getId()).
-             amount().lessThanOrEqualTo(new BigDecimal("1500"));
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            amount().lessThanOrEqualTo(new BigDecimal("1500"));
 
-         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
-         searchRequest = new TransactionSearchRequest().
-             id().is(transaction.getId()).
-             amount().between(new BigDecimal("1300"), new BigDecimal("1500"));
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            amount().between(new BigDecimal("1300"), new BigDecimal("1500"));
 
-         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
-     }
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
 
     @Test
     public void searchOnDisbursementDate() throws ParseException {
         Calendar disbursementTime = CalendarTestUtils.dateTime("2013-04-10T00:00:00Z");
 
-        Calendar threeDaysEarlier = ((Calendar)disbursementTime.clone());
+        Calendar threeDaysEarlier = ((Calendar) disbursementTime.clone());
         threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
 
-        Calendar oneDayEarlier = ((Calendar)disbursementTime.clone());
+        Calendar oneDayEarlier = ((Calendar) disbursementTime.clone());
         oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
 
-        Calendar oneDayLater = ((Calendar)disbursementTime.clone());
+        Calendar oneDayLater = ((Calendar) disbursementTime.clone());
         oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
                 id().is(DISBURSEMENT_TRANSACTION_ID).
                 disbursementDate().between(oneDayEarlier, oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
                 id().is(DISBURSEMENT_TRANSACTION_ID).
                 disbursementDate().greaterThanOrEqualTo(oneDayEarlier);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
                 id().is(DISBURSEMENT_TRANSACTION_ID).
                 disbursementDate().lessThanOrEqualTo(oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
                 id().is(DISBURSEMENT_TRANSACTION_ID).
                 disbursementDate().between(threeDaysEarlier, oneDayEarlier);
 
-        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
     public void searchOnDisbursementDateUsingLocalTime() throws ParseException {
 
         Calendar oneDayEarlier = CalendarTestUtils.dateTime("2013-04-09T00:00:00Z", "CST");
-        Calendar oneDayLater =   CalendarTestUtils.dateTime("2013-04-11T00:00:00Z", "CST");
+        Calendar oneDayLater = CalendarTestUtils.dateTime("2013-04-11T00:00:00Z", "CST");
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
                 id().is(DISBURSEMENT_TRANSACTION_ID).
                 disbursementDate().between(oneDayEarlier, oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
     public void searchOnCreatedAt() {
         TransactionRequest request = new TransactionRequest().
-        amount(TransactionAmount.AUTHORIZE.amount).
-        creditCard().
-            number(CreditCardNumber.VISA.number).
-            expirationDate("05/2010").
-            done();
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2010").
+                done();
 
-         Transaction transaction = gateway.transaction().sale(request).getTarget();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
 
-         Calendar createdAt = transaction.getCreatedAt();
+        Calendar createdAt = transaction.getCreatedAt();
 
-         Calendar threeDaysEarlier = ((Calendar)createdAt.clone());
-         threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
+        Calendar threeDaysEarlier = ((Calendar) createdAt.clone());
+        threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
 
-         Calendar oneDayEarlier = ((Calendar)createdAt.clone());
-         oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
+        Calendar oneDayEarlier = ((Calendar) createdAt.clone());
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
 
-         Calendar oneDayLater = ((Calendar)createdAt.clone());
-         oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
+        Calendar oneDayLater = ((Calendar) createdAt.clone());
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
-         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-             id().is(transaction.getId()).
-             createdAt().between(oneDayEarlier, oneDayLater);
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+                id().is(transaction.getId()).
+                createdAt().between(oneDayEarlier, oneDayLater);
 
-         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
-         searchRequest = new TransactionSearchRequest().
-             id().is(transaction.getId()).
-             createdAt().greaterThanOrEqualTo(oneDayEarlier);
+        searchRequest = new TransactionSearchRequest().
+                id().is(transaction.getId()).
+                createdAt().greaterThanOrEqualTo(oneDayEarlier);
 
-         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
-         searchRequest = new TransactionSearchRequest().
-             id().is(transaction.getId()).
-             createdAt().lessThanOrEqualTo(oneDayLater);
+        searchRequest = new TransactionSearchRequest().
+                id().is(transaction.getId()).
+                createdAt().lessThanOrEqualTo(oneDayLater);
 
-         Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
-         searchRequest = new TransactionSearchRequest().
-             id().is(transaction.getId()).
-             createdAt().between(threeDaysEarlier, oneDayEarlier);
+        searchRequest = new TransactionSearchRequest().
+                id().is(transaction.getId()).
+                createdAt().between(threeDaysEarlier, oneDayEarlier);
 
-         Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
-     }
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
 
     @Test
     public void searchOnCreatedAtUsingLocalTime() {
         TransactionRequest request = new TransactionRequest().
-                amount(TransactionAmount.AUTHORIZE.amount).
-                creditCard().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2010").
                 done();
@@ -1859,7 +1855,7 @@ public class TransactionIT {
                 id().is(transaction.getId()).
                 createdAt().between(oneDayEarlier, oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
@@ -1878,13 +1874,13 @@ public class TransactionIT {
 
         ResourceCollection<Transaction> results = gateway.transaction().search(searchRequest);
 
-        Assert.assertTrue(results.getMaximumSize() > 0);
-        Assert.assertEquals(Transaction.Status.AUTHORIZATION_EXPIRED, results.getFirst().getStatus());
+        assertTrue(results.getMaximumSize() > 0);
+        assertEquals(Transaction.Status.AUTHORIZATION_EXPIRED, results.getFirst().getStatus());
 
         searchRequest = new TransactionSearchRequest().
             authorizationExpiredAt().between(threeDaysEarlier, oneDayEarlier);
 
-        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
@@ -1911,25 +1907,25 @@ public class TransactionIT {
             id().is(transaction.getId()).
             authorizedAt().between(oneDayEarlier, oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             authorizedAt().greaterThanOrEqualTo(oneDayEarlier);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             authorizedAt().lessThanOrEqualTo(oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             authorizedAt().between(threeDaysEarlier, oneDayEarlier);
 
-        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
@@ -1956,25 +1952,25 @@ public class TransactionIT {
             id().is(transaction.getId()).
             failedAt().between(oneDayEarlier, oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             failedAt().greaterThanOrEqualTo(oneDayEarlier);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             failedAt().lessThanOrEqualTo(oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             failedAt().between(threeDaysEarlier, oneDayEarlier);
 
-        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
@@ -2003,25 +1999,25 @@ public class TransactionIT {
             id().is(transaction.getId()).
             gatewayRejectedAt().between(oneDayEarlier, oneDayLater);
 
-        Assert.assertEquals(1, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             gatewayRejectedAt().greaterThanOrEqualTo(oneDayEarlier);
 
-        Assert.assertEquals(1, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             gatewayRejectedAt().lessThanOrEqualTo(oneDayLater);
 
-        Assert.assertEquals(1, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             gatewayRejectedAt().between(threeDaysEarlier, oneDayEarlier);
 
-        Assert.assertEquals(0, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(0, processingRulesGateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
@@ -2048,25 +2044,25 @@ public class TransactionIT {
             id().is(transaction.getId()).
             processorDeclinedAt().between(oneDayEarlier, oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             processorDeclinedAt().greaterThanOrEqualTo(oneDayEarlier);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             processorDeclinedAt().lessThanOrEqualTo(oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             processorDeclinedAt().between(threeDaysEarlier, oneDayEarlier);
 
-        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
@@ -2098,25 +2094,25 @@ public class TransactionIT {
             id().is(transaction.getId()).
             settledAt().between(oneDayEarlier, oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             settledAt().greaterThanOrEqualTo(oneDayEarlier);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             settledAt().lessThanOrEqualTo(oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             settledAt().between(threeDaysEarlier, oneDayEarlier);
 
-        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
@@ -2146,25 +2142,25 @@ public class TransactionIT {
             id().is(transaction.getId()).
             submittedForSettlementAt().between(oneDayEarlier, oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             submittedForSettlementAt().greaterThanOrEqualTo(oneDayEarlier);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             submittedForSettlementAt().lessThanOrEqualTo(oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             submittedForSettlementAt().between(threeDaysEarlier, oneDayEarlier);
 
-        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
@@ -2192,25 +2188,25 @@ public class TransactionIT {
             id().is(transaction.getId()).
             voidedAt().between(oneDayEarlier, oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             voidedAt().greaterThanOrEqualTo(oneDayEarlier);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             voidedAt().lessThanOrEqualTo(oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             voidedAt().between(threeDaysEarlier, oneDayEarlier);
 
-        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
@@ -2241,14 +2237,14 @@ public class TransactionIT {
             authorizedAt().between(oneDayEarlier, oneDayLater).
             submittedForSettlementAt().between(oneDayEarlier, oneDayLater);
 
-        Assert.assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             authorizedAt().between(threeDaysEarlier, oneDayEarlier).
             submittedForSettlementAt().between(threeDaysEarlier, oneDayEarlier);
 
-        Assert.assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
@@ -2267,15 +2263,15 @@ public class TransactionIT {
         TestHelper.settle(gateway, transactionId);
 
         Result<Transaction> result = gateway.transaction().refund(transactionId);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         Transaction refund = result.getTarget();
         Transaction originalTransaction = gateway.transaction().find(transactionId);
 
-        Assert.assertEquals(Transaction.Type.CREDIT, refund.getType());
-        Assert.assertEquals(originalTransaction.getAmount(), refund.getAmount());
-        Assert.assertEquals(refund.getId(), originalTransaction.getRefundId());
-        Assert.assertEquals(originalTransaction.getId(), refund.getRefundedTransactionId());
+        assertEquals(Transaction.Type.CREDIT, refund.getType());
+        assertEquals(originalTransaction.getAmount(), refund.getAmount());
+        assertEquals(refund.getId(), originalTransaction.getRefundId());
+        assertEquals(originalTransaction.getId(), refund.getRefundedTransactionId());
     }
 
     @Test
@@ -2293,9 +2289,9 @@ public class TransactionIT {
         TestHelper.settle(gateway, transaction.getId());
 
         Result<Transaction> result = gateway.transaction().refund(transaction.getId(), TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)));
-        Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
-        Assert.assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), result.getTarget().getAmount());
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
+        assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), result.getTarget().getAmount());
     }
 
     @Test
@@ -2313,33 +2309,33 @@ public class TransactionIT {
         TestHelper.settle(gateway, transaction.getId());
 
         Transaction refund1 = gateway.transaction().refund(transaction.getId(), TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2))).getTarget();
-        Assert.assertEquals(Transaction.Type.CREDIT, refund1.getType());
-        Assert.assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), refund1.getAmount());
+        assertEquals(Transaction.Type.CREDIT, refund1.getType());
+        assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), refund1.getAmount());
 
         Transaction refund2 = gateway.transaction().refund(transaction.getId(), TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2))).getTarget();
-        Assert.assertEquals(Transaction.Type.CREDIT, refund2.getType());
-        Assert.assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), refund2.getAmount());
+        assertEquals(Transaction.Type.CREDIT, refund2.getType());
+        assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), refund2.getAmount());
 
         transaction = gateway.transaction().find(transaction.getId());
-        Assert.assertTrue(TestHelper.listIncludes(transaction.getRefundIds(), refund1.getId()));
-        Assert.assertTrue(TestHelper.listIncludes(transaction.getRefundIds(), refund1.getId()));
+        assertTrue(TestHelper.listIncludes(transaction.getRefundIds(), refund1.getId()));
+        assertTrue(TestHelper.listIncludes(transaction.getRefundIds(), refund1.getId()));
     }
 
     @Test
     public void refundFailsWithNonSettledTransaction() {
         TransactionRequest request = new TransactionRequest().
-        amount(TransactionAmount.AUTHORIZE.amount).
-        creditCard().
-            number(CreditCardNumber.VISA.number).
-            expirationDate("05/2008").
-            done();
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
         Transaction transaction = gateway.transaction().sale(request).getTarget();
-        Assert.assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
 
         Result<Transaction> result = gateway.transaction().refund(transaction.getId());
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
-        Assert.assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_REFUND_UNLESS_SETTLED,
+        assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_REFUND_UNLESS_SETTLED,
                 result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 
@@ -2347,14 +2343,14 @@ public class TransactionIT {
     public void unrecognizedStatus() {
         String xml = "<transaction><status>foobar</status><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><service-fee></service-fee><disbursement-details/><type>sale</type></transaction>";
         Transaction transaction = new Transaction(NodeWrapperFactory.instance.create(xml));
-        Assert.assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
+        assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
     }
 
     @Test
     public void unrecognizedType() {
         String xml = "<transaction><type>foobar</type><billing/><credit-card/><customer/><descriptor/><shipping/><subscription/><service-fee></service-fee><disbursement-details/><type>sale</type></transaction>";
         Transaction transaction = new Transaction(NodeWrapperFactory.instance.create(xml));
-        Assert.assertEquals(Transaction.Type.UNRECOGNIZED, transaction.getType());
+        assertEquals(Transaction.Type.UNRECOGNIZED, transaction.getType());
     }
 
     @Test
@@ -2369,10 +2365,10 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = processingRulesGateway.transaction().sale(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         Transaction transaction = result.getTransaction();
 
-        Assert.assertEquals(Transaction.GatewayRejectionReason.CVV, transaction.getGatewayRejectionReason());
+        assertEquals(Transaction.GatewayRejectionReason.CVV, transaction.getGatewayRejectionReason());
     }
 
     @Test
@@ -2389,10 +2385,10 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = processingRulesGateway.transaction().sale(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         Transaction transaction = result.getTransaction();
 
-        Assert.assertEquals(Transaction.GatewayRejectionReason.AVS, transaction.getGatewayRejectionReason());
+        assertEquals(Transaction.GatewayRejectionReason.AVS, transaction.getGatewayRejectionReason());
     }
 
     @Test
@@ -2410,10 +2406,10 @@ public class TransactionIT {
                 done();
 
         Result<Transaction> result = processingRulesGateway.transaction().sale(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         Transaction transaction = result.getTransaction();
 
-        Assert.assertEquals(Transaction.GatewayRejectionReason.AVS_AND_CVV, transaction.getGatewayRejectionReason());
+        assertEquals(Transaction.GatewayRejectionReason.AVS_AND_CVV, transaction.getGatewayRejectionReason());
     }
 
     @Test
@@ -2453,33 +2449,33 @@ public class TransactionIT {
 
         Transaction transaction = gateway.subscription().create(request).getTarget().getTransactions().get(0);
 
-        Assert.assertEquals(PlanFixture.PLAN_WITHOUT_TRIAL.getId(), transaction.getPlanId());
+        assertEquals(PlanFixture.PLAN_WITHOUT_TRIAL.getId(), transaction.getPlanId());
 
         List<AddOn> addOns = transaction.getAddOns();
         Collections.sort(addOns, new TestHelper.CompareModificationsById());
 
-        Assert.assertEquals(2, addOns.size());
+        assertEquals(2, addOns.size());
 
-        Assert.assertEquals("increase_10", addOns.get(0).getId());
-        Assert.assertEquals(new BigDecimal("11.00"), addOns.get(0).getAmount());
-        Assert.assertEquals(new Integer(5), addOns.get(0).getNumberOfBillingCycles());
-        Assert.assertEquals(new Integer(2), addOns.get(0).getQuantity());
-        Assert.assertFalse(addOns.get(0).neverExpires());
+        assertEquals("increase_10", addOns.get(0).getId());
+        assertEquals(new BigDecimal("11.00"), addOns.get(0).getAmount());
+        assertEquals(new Integer(5), addOns.get(0).getNumberOfBillingCycles());
+        assertEquals(new Integer(2), addOns.get(0).getQuantity());
+        assertFalse(addOns.get(0).neverExpires());
 
-        Assert.assertEquals("increase_20", addOns.get(1).getId());
-        Assert.assertEquals(new BigDecimal("21.00"), addOns.get(1).getAmount());
-        Assert.assertEquals(new Integer(6), addOns.get(1).getNumberOfBillingCycles());
-        Assert.assertEquals(new Integer(3), addOns.get(1).getQuantity());
-        Assert.assertFalse(addOns.get(1).neverExpires());
+        assertEquals("increase_20", addOns.get(1).getId());
+        assertEquals(new BigDecimal("21.00"), addOns.get(1).getAmount());
+        assertEquals(new Integer(6), addOns.get(1).getNumberOfBillingCycles());
+        assertEquals(new Integer(3), addOns.get(1).getQuantity());
+        assertFalse(addOns.get(1).neverExpires());
 
         List<Discount> discounts = transaction.getDiscounts();
-        Assert.assertEquals(1, discounts.size());
+        assertEquals(1, discounts.size());
 
-        Assert.assertEquals("discount_7", discounts.get(0).getId());
-        Assert.assertEquals(new BigDecimal("7.50"), discounts.get(0).getAmount());
-        Assert.assertNull(discounts.get(0).getNumberOfBillingCycles());
-        Assert.assertEquals(new Integer(2), discounts.get(0).getQuantity());
-        Assert.assertTrue(discounts.get(0).neverExpires());
+        assertEquals("discount_7", discounts.get(0).getId());
+        assertEquals(new BigDecimal("7.50"), discounts.get(0).getAmount());
+        assertNull(discounts.get(0).getNumberOfBillingCycles());
+        assertEquals(new Integer(2), discounts.get(0).getQuantity());
+        assertTrue(discounts.get(0).neverExpires());
     }
 
     @Test
@@ -2497,10 +2493,10 @@ public class TransactionIT {
 	        	done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        Assert.assertEquals(new BigDecimal("1.00"), transaction.getServiceFee().getAmount());
-        Assert.assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getServiceFee().getMerchantAccountId());
+        assertEquals(new BigDecimal("1.00"), transaction.getServiceFee().getAmount());
+        assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getServiceFee().getMerchantAccountId());
     }
 }

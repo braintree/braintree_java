@@ -1,15 +1,17 @@
 package com.braintreegateway.integrationtest;
 
-import com.braintreegateway.util.Http;
-import com.braintreegateway.*;
+import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Discount;
-import org.junit.Assert;
+import com.braintreegateway.Environment;
+import com.braintreegateway.util.Http;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
+
+import static org.junit.Assert.assertEquals;
 
 public class DiscountIT {
     private BraintreeGateway gateway;
@@ -43,11 +45,11 @@ public class DiscountIT {
             }
         }
 
-        Assert.assertEquals(new BigDecimal("100.00"), actualDiscount.getAmount());
-        Assert.assertEquals("java test discount description", actualDiscount.getDescription());
-        Assert.assertEquals("discount", actualDiscount.getKind());
-        Assert.assertEquals("java test discount name", actualDiscount.getName());
-        Assert.assertEquals(false, actualDiscount.neverExpires());
-        Assert.assertEquals(new Integer("12"), actualDiscount.getNumberOfBillingCycles());
+        assertEquals(new BigDecimal("100.00"), actualDiscount.getAmount());
+        assertEquals("java test discount description", actualDiscount.getDescription());
+        assertEquals("discount", actualDiscount.getKind());
+        assertEquals("java test discount name", actualDiscount.getName());
+        assertEquals(false, actualDiscount.neverExpires());
+        assertEquals(new Integer("12"), actualDiscount.getNumberOfBillingCycles());
     }
 }

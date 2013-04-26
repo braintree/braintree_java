@@ -1,8 +1,8 @@
 package com.braintreegateway;
 
-import java.util.Map;
-
 import com.braintreegateway.util.NodeWrapper;
+
+import java.util.Map;
 
 public class Result<T> {
 

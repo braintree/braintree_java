@@ -1,10 +1,10 @@
 package com.braintreegateway;
 
+import com.braintreegateway.util.NodeWrapper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.braintreegateway.util.NodeWrapper;
 
 public class SettlementBatchSummary {
 

@@ -1,15 +1,18 @@
 package com.braintreegateway.integrationtest;
 
+import com.braintreegateway.ValidationError;
+import com.braintreegateway.ValidationErrorCode;
+import com.braintreegateway.ValidationErrors;
+import com.braintreegateway.util.NodeWrapperFactory;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-import com.braintreegateway.*;
-import com.braintreegateway.util.NodeWrapperFactory;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 public class ValidationErrorsIT {
@@ -18,22 +21,22 @@ public class ValidationErrorsIT {
     public void onField() {
         ValidationErrors errors = new ValidationErrors();
         errors.addError(new ValidationError("country_name", ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, "invalid country"));
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.onField("countryName").get(0).getCode());
-        Assert.assertEquals("invalid country", errors.onField("countryName").get(0).getMessage());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.onField("countryName").get(0).getCode());
+        assertEquals("invalid country", errors.onField("countryName").get(0).getMessage());
     }
 
     @Test
     public void onFieldAlsoWorksWithUnderscores() {
         ValidationErrors errors = new ValidationErrors();
         errors.addError(new ValidationError("country_name", ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, "invalid country"));
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.onField("country_name").get(0).getCode());
-        Assert.assertEquals("invalid country", errors.onField("country_name").get(0).getMessage());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.onField("country_name").get(0).getCode());
+        assertEquals("invalid country", errors.onField("country_name").get(0).getMessage());
     }
 
     @Test
     public void nonExistingField() {
         ValidationErrors errors = new ValidationErrors();
-        Assert.assertTrue(errors.onField("foo").isEmpty());
+        assertTrue(errors.onField("foo").isEmpty());
     }
 
     @Test
@@ -43,14 +46,14 @@ public class ValidationErrorsIT {
 
         ValidationErrors errors = new ValidationErrors();
         errors.addErrors("address", addressErrors);
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryName").get(0).getCode());
-        Assert.assertEquals("invalid country", errors.forObject("address").onField("country_name").get(0).getMessage());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryName").get(0).getCode());
+        assertEquals("invalid country", errors.forObject("address").onField("country_name").get(0).getMessage());
     }
 
     @Test
     public void forObjectOnNonExistingObject() {
         ValidationErrors errors = new ValidationErrors();
-        Assert.assertEquals(0, errors.forObject("invalid").size());
+        assertEquals(0, errors.forObject("invalid").size());
     }
 
     @Test
@@ -60,7 +63,7 @@ public class ValidationErrorsIT {
 
         ValidationErrors errors = new ValidationErrors();
         errors.addErrors("billing-address", addressErrors);
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_FIRST_NAME_IS_TOO_LONG, errors.forObject("billing_address").onField("name").get(0).getCode());
+        assertEquals(ValidationErrorCode.ADDRESS_FIRST_NAME_IS_TOO_LONG, errors.forObject("billing_address").onField("name").get(0).getCode());
     }
 
     @Test
@@ -68,7 +71,7 @@ public class ValidationErrorsIT {
         ValidationErrors errors = new ValidationErrors();
         errors.addError(new ValidationError("countryName", ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, "invalid country"));
         errors.addError(new ValidationError("anotherField", ValidationErrorCode.ADDRESS_COMPANY_IS_TOO_LONG, "another message"));
-        Assert.assertEquals(2, errors.size());
+        assertEquals(2, errors.size());
     }
 
     @Test
@@ -81,11 +84,11 @@ public class ValidationErrorsIT {
         errors.addError(new ValidationError("someField", ValidationErrorCode.ADDRESS_EXTENDED_ADDRESS_IS_TOO_LONG, "some message"));
         errors.addErrors("address", addressErrors);
 
-        Assert.assertEquals(3, errors.deepSize());
-        Assert.assertEquals(1, errors.size());
+        assertEquals(3, errors.deepSize());
+        assertEquals(1, errors.size());
 
-        Assert.assertEquals(2, errors.forObject("address").deepSize());
-        Assert.assertEquals(2, errors.forObject("address").size());
+        assertEquals(2, errors.forObject("address").deepSize());
+        assertEquals(2, errors.forObject("address").size());
     }
 
     @Test
@@ -98,8 +101,8 @@ public class ValidationErrorsIT {
         errors.addError(new ValidationError("someField", ValidationErrorCode.ADDRESS_FIRST_NAME_IS_TOO_LONG, "some message"));
         errors.addErrors("address", addressErrors);
 
-        Assert.assertEquals(1, errors.getAllValidationErrors().size());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_FIRST_NAME_IS_TOO_LONG, errors.getAllValidationErrors().get(0).getCode());
+        assertEquals(1, errors.getAllValidationErrors().size());
+        assertEquals(ValidationErrorCode.ADDRESS_FIRST_NAME_IS_TOO_LONG, errors.getAllValidationErrors().get(0).getCode());
     }
 
     @Test
@@ -112,7 +115,7 @@ public class ValidationErrorsIT {
         errors.addError(new ValidationError("someField", ValidationErrorCode.ADDRESS_FIRST_NAME_IS_TOO_LONG, "3"));
         errors.addErrors("address", addressErrors);
 
-        Assert.assertEquals(3, errors.getAllDeepValidationErrors().size());
+        assertEquals(3, errors.getAllDeepValidationErrors().size());
 
         List<ValidationError> validationErrors = new ArrayList<ValidationError>(errors.getAllDeepValidationErrors());
         Collections.sort(validationErrors, new Comparator<ValidationError>() {
@@ -121,9 +124,9 @@ public class ValidationErrorsIT {
             }
         });
 
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COMPANY_IS_TOO_LONG, validationErrors.get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, validationErrors.get(1).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_FIRST_NAME_IS_TOO_LONG, validationErrors.get(2).getCode());
+        assertEquals(ValidationErrorCode.ADDRESS_COMPANY_IS_TOO_LONG, validationErrors.get(0).getCode());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, validationErrors.get(1).getCode());
+        assertEquals(ValidationErrorCode.ADDRESS_FIRST_NAME_IS_TOO_LONG, validationErrors.get(2).getCode());
     }
 
 
@@ -147,9 +150,9 @@ public class ValidationErrorsIT {
         builder.append("</api-error-response>");
 
         ValidationErrors errors = new ValidationErrors(NodeWrapperFactory.instance.create(builder.toString()));
-        Assert.assertEquals(1, errors.deepSize());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.forObject("address").onField("country_name").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryName").get(0).getCode());
+        assertEquals(1, errors.deepSize());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.forObject("address").onField("country_name").get(0).getCode());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryName").get(0).getCode());
     }
 
     @Test
@@ -177,9 +180,9 @@ public class ValidationErrorsIT {
         builder.append("</api-error-response>");
 
         ValidationErrors errors = new ValidationErrors(NodeWrapperFactory.instance.create(builder.toString()));
-        Assert.assertEquals(2, errors.deepSize());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryName").get(0).getCode());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_STREET_ADDRESS_IS_TOO_LONG, errors.forObject("address").onField("streetAddress").get(0).getCode());
+        assertEquals(2, errors.deepSize());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryName").get(0).getCode());
+        assertEquals(ValidationErrorCode.ADDRESS_STREET_ADDRESS_IS_TOO_LONG, errors.forObject("address").onField("streetAddress").get(0).getCode());
     }
 
     @Test
@@ -206,8 +209,8 @@ public class ValidationErrorsIT {
         builder.append("</api-error-response>");
 
         ValidationErrors errors = new ValidationErrors(NodeWrapperFactory.instance.create(builder.toString()));
-        Assert.assertEquals(2, errors.deepSize());
-        Assert.assertEquals(2, errors.forObject("transaction").onField("base").size());
+        assertEquals(2, errors.deepSize());
+        assertEquals(2, errors.forObject("transaction").onField("base").size());
     }
 
     @Test
@@ -233,8 +236,8 @@ public class ValidationErrorsIT {
         builder.append("</api-error-response>");
 
         ValidationErrors errors = new ValidationErrors(NodeWrapperFactory.instance.create(builder.toString()));
-        Assert.assertEquals(1, errors.deepSize());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.forObject("creditCard").forObject("billingAddress").onField("countryName").get(0).getCode());
+        assertEquals(1, errors.deepSize());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.forObject("creditCard").forObject("billingAddress").onField("countryName").get(0).getCode());
     }
 
     @Test
@@ -277,19 +280,19 @@ public class ValidationErrorsIT {
 
         ValidationErrors errors = new ValidationErrors(NodeWrapperFactory.instance.create(builder.toString()));
 
-        Assert.assertEquals(3, errors.deepSize());
-        Assert.assertEquals(0, errors.size());
+        assertEquals(3, errors.deepSize());
+        assertEquals(0, errors.size());
 
-        Assert.assertEquals(3, errors.forObject("customer").deepSize());
-        Assert.assertEquals(1, errors.forObject("customer").size());
-        Assert.assertEquals(ValidationErrorCode.CUSTOMER_FIRST_NAME_IS_TOO_LONG, errors.forObject("customer").onField("firstName").get(0).getCode());
+        assertEquals(3, errors.forObject("customer").deepSize());
+        assertEquals(1, errors.forObject("customer").size());
+        assertEquals(ValidationErrorCode.CUSTOMER_FIRST_NAME_IS_TOO_LONG, errors.forObject("customer").onField("firstName").get(0).getCode());
 
-        Assert.assertEquals(2, errors.forObject("customer").forObject("creditCard").deepSize());
-        Assert.assertEquals(1, errors.forObject("customer").forObject("creditCard").size());
-        Assert.assertEquals(ValidationErrorCode.CREDIT_CARD_NUMBER_IS_INVALID, errors.forObject("customer").forObject("creditCard").onField("number").get(0).getCode());
+        assertEquals(2, errors.forObject("customer").forObject("creditCard").deepSize());
+        assertEquals(1, errors.forObject("customer").forObject("creditCard").size());
+        assertEquals(ValidationErrorCode.CREDIT_CARD_NUMBER_IS_INVALID, errors.forObject("customer").forObject("creditCard").onField("number").get(0).getCode());
 
-        Assert.assertEquals(1, errors.forObject("customer").forObject("creditCard").forObject("billingAddress").deepSize());
-        Assert.assertEquals(1, errors.forObject("customer").forObject("creditCard").forObject("billingAddress").size());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.forObject("customer").forObject("creditCard").forObject("billingAddress").onField("countryName").get(0).getCode());
+        assertEquals(1, errors.forObject("customer").forObject("creditCard").forObject("billingAddress").deepSize());
+        assertEquals(1, errors.forObject("customer").forObject("creditCard").forObject("billingAddress").size());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED, errors.forObject("customer").forObject("creditCard").forObject("billingAddress").onField("countryName").get(0).getCode());
     }
 }

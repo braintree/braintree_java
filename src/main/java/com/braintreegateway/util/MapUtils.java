@@ -1,6 +1,7 @@
 package com.braintreegateway.util;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MapUtils {
     public static Map<String, Object> toMap(Object... args) {

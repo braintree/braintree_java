@@ -1,8 +1,9 @@
 package com.braintreegateway.integrationtest;
 
-import java.math.BigDecimal;
+import com.braintreegateway.Request;
+import com.braintreegateway.RequestBuilder;
 
-import com.braintreegateway.*;
+import java.math.BigDecimal;
 
 public class FakeModificationRequest extends Request {
     private BigDecimal amount;

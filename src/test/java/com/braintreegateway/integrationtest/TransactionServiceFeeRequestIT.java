@@ -1,10 +1,11 @@
 package com.braintreegateway.integrationtest;
 
+import com.braintreegateway.TransactionServiceFeeRequest;
+import org.junit.Test;
+
 import java.math.BigDecimal;
 
-import org.junit.Assert;
-import org.junit.Test;
-import com.braintreegateway.*;
+import static org.junit.Assert.assertEquals;
 
 public class TransactionServiceFeeRequestIT {
     @Test
@@ -14,6 +15,6 @@ public class TransactionServiceFeeRequestIT {
     		amount(new BigDecimal("1.00")).
     		merchantAccountId("abcdef");
 
-        Assert.assertEquals(expected, request.toXML());
+        assertEquals(expected, request.toXML());
     }
 }

@@ -1,8 +1,8 @@
 package com.braintreegateway;
 
-import java.math.BigDecimal;
-
 import com.braintreegateway.Transaction.Type;
+
+import java.math.BigDecimal;
 
 public class SubscriptionTransactionRequest extends Request {
 

@@ -1,5 +1,13 @@
 package com.braintreegateway.testhelpers;
 
+import com.braintreegateway.*;
+import com.braintreegateway.Transaction.Status;
+import com.braintreegateway.exceptions.UnexpectedException;
+import com.braintreegateway.util.Crypto;
+import com.braintreegateway.util.Http;
+import com.braintreegateway.util.NodeWrapper;
+import org.junit.Ignore;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -8,15 +16,8 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
-import com.braintreegateway.*;
-import org.junit.Assert;
-
-import com.braintreegateway.Transaction.Status;
-import com.braintreegateway.exceptions.UnexpectedException;
-import com.braintreegateway.util.Crypto;
-import com.braintreegateway.util.Http;
-import com.braintreegateway.util.NodeWrapper;
-import org.junit.Ignore;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @Ignore("Testing utility class")
 public abstract class TestHelper {
@@ -52,14 +53,14 @@ public abstract class TestHelper {
     }
 
     public static void assertIncludes(String expected, String all) {
-        Assert.assertTrue("Expected:\n" + all + "\nto include:\n" + expected, all.indexOf(expected) >= 0);
+        assertTrue("Expected:\n" + all + "\nto include:\n" + expected, all.indexOf(expected) >= 0);
     }
 
     public static void assertValidTrData(Configuration configuration, String trData) {
         String[] dataSections = trData.split("\\|");
         String trHash = dataSections[0];
         String trContent = dataSections[1];
-        Assert.assertEquals(trHash, new Crypto().hmacHash(configuration.privateKey, trContent));
+        assertEquals(trHash, new Crypto().hmacHash(configuration.privateKey, trContent));
     }
 
     public static boolean listIncludes(List<? extends Object> list, Object expectedItem) {
@@ -70,7 +71,7 @@ public abstract class TestHelper {
         }
         return false;
     }
-    
+
     public static boolean includesSubscription(ResourceCollection<Subscription> collection, Subscription item) {
         for (Subscription subscription : collection) {
             if (subscription.getId().equals(item.getId())) {
@@ -90,10 +91,10 @@ public abstract class TestHelper {
 
         return false;
     }
-    
+
     public static void settle(BraintreeGateway gateway, String transactionId) {
         NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).put("/transactions/" + transactionId + "/settle");
-        Assert.assertTrue(response.isSuccess());
+        assertTrue(response.isSuccess());
     }
 
     public static String simulateFormPostForTR(BraintreeGateway gateway, Request trParams, Request request, String postUrl) {

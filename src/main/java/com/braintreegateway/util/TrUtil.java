@@ -1,12 +1,12 @@
 package com.braintreegateway.util;
 
+import com.braintreegateway.Configuration;
+import com.braintreegateway.Request;
+
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.TimeZone;
-
-import com.braintreegateway.Configuration;
-import com.braintreegateway.Request;
 
 public class TrUtil {
     private Configuration configuration;

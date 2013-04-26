@@ -1,14 +1,14 @@
 package com.braintreegateway.integrationtest;
 
-import java.util.Calendar;
-import java.util.Map;
-
-import org.junit.Assert;
+import com.braintreegateway.*;
+import com.braintreegateway.exceptions.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.*;
+import java.util.Calendar;
+import java.util.Map;
+
+import static org.junit.Assert.*;
 
 
 public class AddressIT {
@@ -38,22 +38,22 @@ public class AddressIT {
             countryCodeNumeric("840");
 
         Result<Address> createResult = gateway.address().create(customer.getId(), request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Address address = createResult.getTarget();
-        Assert.assertEquals("Joe", address.getFirstName());
-        Assert.assertEquals("Smith", address.getLastName());
-        Assert.assertEquals("Smith Co.", address.getCompany());
-        Assert.assertEquals("1 E Main St", address.getStreetAddress());
-        Assert.assertEquals("Unit 2", address.getExtendedAddress());
-        Assert.assertEquals("Chicago", address.getLocality());
-        Assert.assertEquals("Illinois", address.getRegion());
-        Assert.assertEquals("60607", address.getPostalCode());
-        Assert.assertEquals("United States of America", address.getCountryName());
-        Assert.assertEquals("US", address.getCountryCodeAlpha2());
-        Assert.assertEquals("USA", address.getCountryCodeAlpha3());
-        Assert.assertEquals("840", address.getCountryCodeNumeric());
-        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), address.getCreatedAt().get(Calendar.YEAR));
-        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), address.getUpdatedAt().get(Calendar.YEAR));
+        assertEquals("Joe", address.getFirstName());
+        assertEquals("Smith", address.getLastName());
+        assertEquals("Smith Co.", address.getCompany());
+        assertEquals("1 E Main St", address.getStreetAddress());
+        assertEquals("Unit 2", address.getExtendedAddress());
+        assertEquals("Chicago", address.getLocality());
+        assertEquals("Illinois", address.getRegion());
+        assertEquals("60607", address.getPostalCode());
+        assertEquals("United States of America", address.getCountryName());
+        assertEquals("US", address.getCountryCodeAlpha2());
+        assertEquals("USA", address.getCountryCodeAlpha3());
+        assertEquals("840", address.getCountryCodeNumeric());
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), address.getCreatedAt().get(Calendar.YEAR));
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), address.getUpdatedAt().get(Calendar.YEAR));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class AddressIT {
             countryName("United States of America");
 
         Result<Address> result = gateway.address().create(customer.getId(), request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         Address address = result.getTarget();
 
         AddressRequest updateRequest = new AddressRequest().
@@ -83,18 +83,18 @@ public class AddressIT {
             countryCodeNumeric("484");
 
         Result<Address> updateResult = gateway.address().update(address.getCustomerId(), address.getId(), updateRequest);
-        Assert.assertTrue(updateResult.isSuccess());
+        assertTrue(updateResult.isSuccess());
         Address updatedAddress = updateResult.getTarget();
 
-        Assert.assertEquals("2 E Main St", updatedAddress.getStreetAddress());
-        Assert.assertEquals("Unit 3", updatedAddress.getExtendedAddress());
-        Assert.assertEquals("Bartlett", updatedAddress.getLocality());
-        Assert.assertEquals("Mass", updatedAddress.getRegion());
-        Assert.assertEquals("12345", updatedAddress.getPostalCode());
-        Assert.assertEquals("Mexico", updatedAddress.getCountryName());
-        Assert.assertEquals("MX", updatedAddress.getCountryCodeAlpha2());
-        Assert.assertEquals("MEX", updatedAddress.getCountryCodeAlpha3());
-        Assert.assertEquals("484", updatedAddress.getCountryCodeNumeric());
+        assertEquals("2 E Main St", updatedAddress.getStreetAddress());
+        assertEquals("Unit 3", updatedAddress.getExtendedAddress());
+        assertEquals("Bartlett", updatedAddress.getLocality());
+        assertEquals("Mass", updatedAddress.getRegion());
+        assertEquals("12345", updatedAddress.getPostalCode());
+        assertEquals("Mexico", updatedAddress.getCountryName());
+        assertEquals("MX", updatedAddress.getCountryCodeAlpha2());
+        assertEquals("MEX", updatedAddress.getCountryCodeAlpha3());
+        assertEquals("484", updatedAddress.getCountryCodeNumeric());
     }
 
     @Test
@@ -104,24 +104,24 @@ public class AddressIT {
             streetAddress("1 E Main St");
 
         Result<Address> createResult = gateway.address().create(customer.getId(), request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Address address = createResult.getTarget();
 
         Address foundAddress = gateway.address().find(address.getCustomerId(), address.getId());
-        Assert.assertEquals("1 E Main St", foundAddress.getStreetAddress());
+        assertEquals("1 E Main St", foundAddress.getStreetAddress());
     }
 
     @Test
     public void findWithEmptyIds() {
         try {
             gateway.address().find(" ", "address_id");
-            Assert.fail("Should throw NotFoundException");
+            fail("Should throw NotFoundException");
         } catch (NotFoundException e) {
         }
 
         try {
             gateway.address().find("customer_id", " ");
-            Assert.fail("Should throw NotFoundException");
+            fail("Should throw NotFoundException");
         } catch (NotFoundException e) {
         }
     }
@@ -138,15 +138,15 @@ public class AddressIT {
             countryName("United States of America");
 
         Result<Address> createResult = gateway.address().create(customer.getId(), request);
-        Assert.assertTrue(createResult.isSuccess());
+        assertTrue(createResult.isSuccess());
         Address address = createResult.getTarget();
 
         Result<Address> deleteResult = gateway.address().delete(address.getCustomerId(), address.getId());
-        Assert.assertTrue(deleteResult.isSuccess());
+        assertTrue(deleteResult.isSuccess());
 
         try {
             gateway.address().find(address.getCustomerId(), address.getId());
-            Assert.fail();
+            fail();
         } catch (NotFoundException e) {
         }
     }
@@ -159,10 +159,10 @@ public class AddressIT {
             countryCodeAlpha2("US");
 
         Result<Address> createResult = gateway.address().create(customer.getId(), request);
-        Assert.assertFalse(createResult.isSuccess());
-        Assert.assertNull(createResult.getTarget());
+        assertFalse(createResult.isSuccess());
+        assertNull(createResult.getTarget());
         ValidationErrors errors = createResult.getErrors();
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY, errors.forObject("address").onField("base").get(0).getCode());
+        assertEquals(ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY, errors.forObject("address").onField("base").get(0).getCode());
     }
 
     @Test
@@ -172,10 +172,10 @@ public class AddressIT {
             countryCodeAlpha2("ZZ");
 
         Result<Address> createResult = gateway.address().create(customer.getId(), request);
-        Assert.assertFalse(createResult.isSuccess());
-        Assert.assertNull(createResult.getTarget());
+        assertFalse(createResult.isSuccess());
+        assertNull(createResult.getTarget());
         ValidationErrors errors = createResult.getErrors();
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryCodeAlpha2").get(0).getCode());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryCodeAlpha2").get(0).getCode());
     }
 
     @Test
@@ -185,10 +185,10 @@ public class AddressIT {
             countryCodeAlpha3("ZZZ");
 
         Result<Address> createResult = gateway.address().create(customer.getId(), request);
-        Assert.assertFalse(createResult.isSuccess());
-        Assert.assertNull(createResult.getTarget());
+        assertFalse(createResult.isSuccess());
+        assertNull(createResult.getTarget());
         ValidationErrors errors = createResult.getErrors();
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA3_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryCodeAlpha3").get(0).getCode());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA3_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryCodeAlpha3").get(0).getCode());
     }
 
     @Test
@@ -198,10 +198,10 @@ public class AddressIT {
             countryCodeNumeric("000");
 
         Result<Address> createResult = gateway.address().create(customer.getId(), request);
-        Assert.assertFalse(createResult.isSuccess());
-        Assert.assertNull(createResult.getTarget());
+        assertFalse(createResult.isSuccess());
+        assertNull(createResult.getTarget());
         ValidationErrors errors = createResult.getErrors();
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_NUMERIC_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryCodeNumeric").get(0).getCode());
+        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_NUMERIC_IS_NOT_ACCEPTED, errors.forObject("address").onField("countryCodeNumeric").get(0).getCode());
     }
 
     @Test
@@ -211,10 +211,10 @@ public class AddressIT {
             countryName("United States of Hammer");
 
         Result<Address> createResult = gateway.address().create(customer.getId(), request);
-        Assert.assertFalse(createResult.isSuccess());
+        assertFalse(createResult.isSuccess());
         Map<String, String> parameters = createResult.getParameters();
-        Assert.assertEquals("integration_merchant_id", parameters.get("merchant_id"));
-        Assert.assertEquals(customer.getId(), parameters.get("customer_id"));
-        Assert.assertEquals("United States of Hammer", parameters.get("address[country_name]"));
+        assertEquals("integration_merchant_id", parameters.get("merchant_id"));
+        assertEquals(customer.getId(), parameters.get("customer_id"));
+        assertEquals("United States of Hammer", parameters.get("address[country_name]"));
     }
 }

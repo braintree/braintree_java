@@ -1,14 +1,15 @@
 package com.braintreegateway.integrationtest;
 
-import com.braintreegateway.util.Http;
 import com.braintreegateway.*;
-import org.junit.Assert;
+import com.braintreegateway.util.Http;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
+
+import static org.junit.Assert.assertEquals;
 
 public class PlanIT {
     private BraintreeGateway gateway;
@@ -66,24 +67,24 @@ public class PlanIT {
             }
         }
 
-        Assert.assertEquals(new Integer(1), actualPlan.getBillingDayOfMonth());
-        Assert.assertEquals(new Integer(1), actualPlan.getBillingFrequency());
-        Assert.assertEquals("USD", actualPlan.getCurrencyIsoCode());
-        Assert.assertEquals("java test description", actualPlan.getDescription());
-        Assert.assertEquals("java test plan", actualPlan.getName());
-        Assert.assertEquals(new Integer(12), actualPlan.getNumberOfBillingCycles());
-        Assert.assertEquals(new BigDecimal("100.00"), actualPlan.getPrice());
-        Assert.assertEquals((Integer) 1, actualPlan.getTrialDuration());
-        Assert.assertEquals(Plan.DurationUnit.DAY, actualPlan.getTrialDurationUnit());
-        Assert.assertEquals(false, actualPlan.hasTrialPeriod());
+        assertEquals(new Integer(1), actualPlan.getBillingDayOfMonth());
+        assertEquals(new Integer(1), actualPlan.getBillingFrequency());
+        assertEquals("USD", actualPlan.getCurrencyIsoCode());
+        assertEquals("java test description", actualPlan.getDescription());
+        assertEquals("java test plan", actualPlan.getName());
+        assertEquals(new Integer(12), actualPlan.getNumberOfBillingCycles());
+        assertEquals(new BigDecimal("100.00"), actualPlan.getPrice());
+        assertEquals((Integer) 1, actualPlan.getTrialDuration());
+        assertEquals(Plan.DurationUnit.DAY, actualPlan.getTrialDurationUnit());
+        assertEquals(false, actualPlan.hasTrialPeriod());
 
         AddOn addOn = actualPlan.getAddOns().get(0);
-        Assert.assertEquals(new BigDecimal("100.00"), addOn.getAmount());
-        Assert.assertEquals("add_on", addOn.getKind());
+        assertEquals(new BigDecimal("100.00"), addOn.getAmount());
+        assertEquals("add_on", addOn.getKind());
 
-        Discount discount= actualPlan.getDiscounts().get(0);
-        Assert.assertEquals(new BigDecimal("100.00"), discount.getAmount());
-        Assert.assertEquals("discount", discount.getKind());
+        Discount discount = actualPlan.getDiscounts().get(0);
+        assertEquals(new BigDecimal("100.00"), discount.getAmount());
+        assertEquals("discount", discount.getKind());
     }
 
 }

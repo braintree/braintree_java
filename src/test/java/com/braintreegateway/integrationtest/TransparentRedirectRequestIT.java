@@ -1,19 +1,14 @@
 package com.braintreegateway.integrationtest;
 
-import java.net.URLEncoder;
-
-import org.junit.Assert;
-
+import com.braintreegateway.Configuration;
+import com.braintreegateway.TransparentRedirectRequest;
+import com.braintreegateway.exceptions.*;
 import org.junit.Test;
 
-import com.braintreegateway.exceptions.AuthenticationException;
-import com.braintreegateway.exceptions.AuthorizationException;
-import com.braintreegateway.exceptions.DownForMaintenanceException;
-import com.braintreegateway.exceptions.ForgedQueryStringException;
-import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.exceptions.ServerException;
-import com.braintreegateway.exceptions.UnexpectedException;
-import com.braintreegateway.*;
+import java.net.URLEncoder;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class TransparentRedirectRequestIT {
     @Test
@@ -52,11 +47,11 @@ public class TransparentRedirectRequestIT {
         String message = "Invalid params: transaction[bad]";
         try {
             new TransparentRedirectRequest(configuration, String.format("bt_message=%s&http_status=403&id=6kdj469tw7yck32j&hash=126d5130b71a4907e460fad23876ed70dd41dcd2", URLEncoder.encode(message, "UTF-8")));
-            Assert.fail();
+            fail();
         } catch (AuthorizationException e) {
-            Assert.assertEquals(message, e.getMessage());
+            assertEquals(message, e.getMessage());
         } catch (Exception e) {
-            Assert.fail();
+            fail();
         }
     }
 

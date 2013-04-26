@@ -1,8 +1,8 @@
 package com.braintreegateway.integrationtest;
 
+import com.braintreegateway.DisbursementDetails;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.DisbursementDetails;
 import org.junit.Test;
 
 import java.text.ParseException;
@@ -10,7 +10,8 @@ import java.util.Calendar;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class DisbursementDetailsIT {
 

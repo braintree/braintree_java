@@ -1,12 +1,12 @@
 package com.braintreegateway;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides methods to interact with {@link Subscription Subscriptions}.

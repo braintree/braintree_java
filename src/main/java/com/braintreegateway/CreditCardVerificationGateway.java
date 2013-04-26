@@ -1,11 +1,11 @@
 package com.braintreegateway;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreditCardVerificationGateway {
     private Configuration configuration;

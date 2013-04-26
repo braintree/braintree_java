@@ -1,14 +1,14 @@
 package com.braintreegateway;
 
+import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.util.Http;
+import com.braintreegateway.util.NodeWrapper;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
-
-import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.util.Http;
-import com.braintreegateway.util.NodeWrapper;
 
 /**
  * Provides methods to create, delete, find, and update {@link CreditCard}

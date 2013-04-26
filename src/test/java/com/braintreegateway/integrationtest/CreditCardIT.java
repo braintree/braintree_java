@@ -1,25 +1,19 @@
 package com.braintreegateway.integrationtest;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
 import com.braintreegateway.*;
+import com.braintreegateway.exceptions.ForgedQueryStringException;
+import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.test.CreditCardDefaults;
+import com.braintreegateway.test.CreditCardNumbers;
+import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.braintreegateway.test.CreditCardNumbers;
-import com.braintreegateway.test.CreditCardDefaults;
-import com.braintreegateway.test.VenmoSdk;
+import java.math.BigDecimal;
+import java.util.*;
 
-import com.braintreegateway.exceptions.ForgedQueryStringException;
-import com.braintreegateway.exceptions.NotFoundException;
+import static org.junit.Assert.*;
 
 public class CreditCardIT {
 
@@ -34,14 +28,14 @@ public class CreditCardIT {
     @SuppressWarnings("deprecation")
     @Test
     public void transparentRedirectURLForCreate() {
-        Assert.assertEquals(gateway.baseMerchantURL() + "/payment_methods/all/create_via_transparent_redirect_request",
+        assertEquals(gateway.baseMerchantURL() + "/payment_methods/all/create_via_transparent_redirect_request",
                 gateway.creditCard().transparentRedirectURLForCreate());
     }
 
     @SuppressWarnings("deprecation")
     @Test
     public void transparentRedirectURLForUpdate() {
-        Assert.assertEquals(gateway.baseMerchantURL() + "/payment_methods/all/update_via_transparent_redirect_request",
+        assertEquals(gateway.baseMerchantURL() + "/payment_methods/all/update_via_transparent_redirect_request",
                 gateway.creditCard().transparentRedirectURLForUpdate());
     }
 
@@ -61,24 +55,24 @@ public class CreditCardIT {
             number("5105105105105100").
             expirationDate("05/12");
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
-        Assert.assertEquals("John Doe", card.getCardholderName());
-        Assert.assertEquals("MasterCard", card.getCardType());
-        Assert.assertEquals(customer.getId(), card.getCustomerId());
-        Assert.assertEquals("US", card.getCustomerLocation());
-        Assert.assertEquals("510510", card.getBin());
-        Assert.assertEquals("05", card.getExpirationMonth());
-        Assert.assertEquals("2012", card.getExpirationYear());
-        Assert.assertEquals("05/2012", card.getExpirationDate());
-        Assert.assertEquals("5100", card.getLast4());
-        Assert.assertEquals("510510******5100", card.getMaskedNumber());
-        Assert.assertTrue(card.getToken() != null);
-        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getCreatedAt().get(Calendar.YEAR));
-        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getUpdatedAt().get(Calendar.YEAR));
-        Assert.assertTrue(card.getUniqueNumberIdentifier().matches("\\A\\w{32}\\z"));
-        Assert.assertFalse(card.isVenmoSdk());
-        Assert.assertTrue(card.getImageUrl().matches(".*png.*"));
+        assertEquals("John Doe", card.getCardholderName());
+        assertEquals("MasterCard", card.getCardType());
+        assertEquals(customer.getId(), card.getCustomerId());
+        assertEquals("US", card.getCustomerLocation());
+        assertEquals("510510", card.getBin());
+        assertEquals("05", card.getExpirationMonth());
+        assertEquals("2012", card.getExpirationYear());
+        assertEquals("05/2012", card.getExpirationDate());
+        assertEquals("5100", card.getLast4());
+        assertEquals("510510******5100", card.getMaskedNumber());
+        assertTrue(card.getToken() != null);
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getCreatedAt().get(Calendar.YEAR));
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getUpdatedAt().get(Calendar.YEAR));
+        assertTrue(card.getUniqueNumberIdentifier().matches("\\A\\w{32}\\z"));
+        assertFalse(card.isVenmoSdk());
+        assertTrue(card.getImageUrl().matches(".*png.*"));
     }
 
     @Test
@@ -92,14 +86,14 @@ public class CreditCardIT {
             expirationMonth("06").
             expirationYear("13");
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
-        Assert.assertEquals(customer.getId(), card.getCustomerId());
-        Assert.assertEquals("06", card.getExpirationMonth());
-        Assert.assertEquals("2013", card.getExpirationYear());
-        Assert.assertEquals("06/2013", card.getExpirationDate());
-        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getCreatedAt().get(Calendar.YEAR));
-        Assert.assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getUpdatedAt().get(Calendar.YEAR));
+        assertEquals(customer.getId(), card.getCustomerId());
+        assertEquals("06", card.getExpirationMonth());
+        assertEquals("2013", card.getExpirationYear());
+        assertEquals("06/2013", card.getExpirationDate());
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getCreatedAt().get(Calendar.YEAR));
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getUpdatedAt().get(Calendar.YEAR));
     }
 
     @Test
@@ -111,9 +105,9 @@ public class CreditCardIT {
             number("5105105105105100").
             expirationDate("05/12");
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
-        Assert.assertEquals("Special Chars <>&\"'", card.getCardholderName());
+        assertEquals("Special Chars <>&\"'", card.getCardholderName());
     }
 
     @Test
@@ -137,19 +131,19 @@ public class CreditCardIT {
             number("5105105105105100").
             expirationDate("05/12");
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
 
         Address billingAddress = card.getBillingAddress();
-        Assert.assertEquals("1 E Main St", billingAddress.getStreetAddress());
-        Assert.assertEquals("Unit 2", billingAddress.getExtendedAddress());
-        Assert.assertEquals("Chicago", billingAddress.getLocality());
-        Assert.assertEquals("Illinois", billingAddress.getRegion());
-        Assert.assertEquals("60607", billingAddress.getPostalCode());
-        Assert.assertEquals("United States of America", billingAddress.getCountryName());
-        Assert.assertEquals("US", billingAddress.getCountryCodeAlpha2());
-        Assert.assertEquals("USA", billingAddress.getCountryCodeAlpha3());
-        Assert.assertEquals("840", billingAddress.getCountryCodeNumeric());
+        assertEquals("1 E Main St", billingAddress.getStreetAddress());
+        assertEquals("Unit 2", billingAddress.getExtendedAddress());
+        assertEquals("Chicago", billingAddress.getLocality());
+        assertEquals("Illinois", billingAddress.getRegion());
+        assertEquals("60607", billingAddress.getPostalCode());
+        assertEquals("United States of America", billingAddress.getCountryName());
+        assertEquals("US", billingAddress.getCountryCodeAlpha2());
+        assertEquals("USA", billingAddress.getCountryCodeAlpha3());
+        assertEquals("840", billingAddress.getCountryCodeNumeric());
     }
 
     @Test
@@ -164,12 +158,12 @@ public class CreditCardIT {
             number("5105105105105100").
             expirationDate("05/12");
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
 
         Address billingAddress = card.getBillingAddress();
-        Assert.assertEquals(address.getId(), billingAddress.getId());
-        Assert.assertEquals("11111", billingAddress.getPostalCode());
+        assertEquals(address.getId(), billingAddress.getId());
+        assertEquals("11111", billingAddress.getPostalCode());
     }
 
     @SuppressWarnings("deprecation")
@@ -186,15 +180,15 @@ public class CreditCardIT {
 
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.creditCard().transparentRedirectURLForCreate());
         Result<CreditCard> result = gateway.creditCard().confirmTransparentRedirect(queryString);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
-        Assert.assertEquals("John Doe", card.getCardholderName());
-        Assert.assertEquals("510510", card.getBin());
-        Assert.assertEquals("05", card.getExpirationMonth());
-        Assert.assertEquals("2012", card.getExpirationYear());
-        Assert.assertEquals("05/2012", card.getExpirationDate());
-        Assert.assertEquals("5100", card.getLast4());
-        Assert.assertTrue(card.getToken() != null);
+        assertEquals("John Doe", card.getCardholderName());
+        assertEquals("510510", card.getBin());
+        assertEquals("05", card.getExpirationMonth());
+        assertEquals("2012", card.getExpirationYear());
+        assertEquals("05/2012", card.getExpirationDate());
+        assertEquals("5100", card.getLast4());
+        assertTrue(card.getToken() != null);
     }
 
 
@@ -216,14 +210,14 @@ public class CreditCardIT {
 
         Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
 
-        Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals("411111", result.getTarget().getBin());
-        Assert.assertEquals("1111", result.getTarget().getLast4());
-        Assert.assertEquals("10/2010", result.getTarget().getExpirationDate());
-        Assert.assertEquals("Aruba", result.getTarget().getBillingAddress().getCountryName());
-        Assert.assertEquals("AW", result.getTarget().getBillingAddress().getCountryCodeAlpha2());
-        Assert.assertEquals("ABW", result.getTarget().getBillingAddress().getCountryCodeAlpha3());
-        Assert.assertEquals("533", result.getTarget().getBillingAddress().getCountryCodeNumeric());
+        assertTrue(result.isSuccess());
+        assertEquals("411111", result.getTarget().getBin());
+        assertEquals("1111", result.getTarget().getLast4());
+        assertEquals("10/2010", result.getTarget().getExpirationDate());
+        assertEquals("Aruba", result.getTarget().getBillingAddress().getCountryName());
+        assertEquals("AW", result.getTarget().getBillingAddress().getCountryCodeAlpha2());
+        assertEquals("ABW", result.getTarget().getBillingAddress().getCountryCodeAlpha3());
+        assertEquals("533", result.getTarget().getBillingAddress().getCountryCodeNumeric());
     }
 
     @SuppressWarnings("deprecation")
@@ -250,7 +244,7 @@ public class CreditCardIT {
 
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request2, gateway.creditCard().transparentRedirectURLForCreate());
         CreditCard card = gateway.creditCard().confirmTransparentRedirect(queryString).getTarget();
-        Assert.assertTrue(card.isDefault());
+        assertTrue(card.isDefault());
     }
 
     @SuppressWarnings("deprecation")
@@ -277,7 +271,7 @@ public class CreditCardIT {
 
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request2, gateway.creditCard().transparentRedirectURLForCreate());
         CreditCard card = gateway.creditCard().confirmTransparentRedirect(queryString).getTarget();
-        Assert.assertTrue(card.isDefault());
+        assertTrue(card.isDefault());
     }
 
     @Test
@@ -296,8 +290,8 @@ public class CreditCardIT {
 
         Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
 
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals(ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY, result.getErrors().forObject("creditCard").forObject("billingAddress").onField("base").get(0).getCode());
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY, result.getErrors().forObject("creditCard").forObject("billingAddress").onField("base").get(0).getCode());
     }
 
     @SuppressWarnings("deprecation")
@@ -332,8 +326,8 @@ public class CreditCardIT {
         CreditCard card1 = gateway.creditCard().create(request1).getTarget();
         CreditCard card2 = gateway.creditCard().create(request2).getTarget();
 
-        Assert.assertFalse(gateway.creditCard().find(card1.getToken()).isDefault());
-        Assert.assertTrue(gateway.creditCard().find(card2.getToken()).isDefault());
+        assertFalse(gateway.creditCard().find(card1.getToken()).isDefault());
+        assertTrue(gateway.creditCard().find(card2.getToken()).isDefault());
     }
 
     @Test
@@ -344,10 +338,10 @@ public class CreditCardIT {
             venmoSdkPaymentMethodCode(VenmoSdk.PaymentMethodCode.Visa.code);
 
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
-        Assert.assertEquals("411111", card.getBin());
-        Assert.assertTrue(card.isVenmoSdk());
+        assertEquals("411111", card.getBin());
+        assertTrue(card.isVenmoSdk());
     }
 
     @Test
@@ -358,7 +352,7 @@ public class CreditCardIT {
             venmoSdkPaymentMethodCode(VenmoSdk.PaymentMethodCode.Invalid.code);
 
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
     }
 
     @Test
@@ -370,14 +364,14 @@ public class CreditCardIT {
             number("5105105105105100").
             expirationDate("05/12").
             options().
-              venmoSdkSession(VenmoSdk.Session.Valid.value).
-              done();
+                venmoSdkSession(VenmoSdk.Session.Valid.value).
+                done();
 
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
-        Assert.assertEquals("510510", card.getBin());
-        Assert.assertTrue(card.isVenmoSdk());
+        assertEquals("510510", card.getBin());
+        assertTrue(card.isVenmoSdk());
     }
 
     @Test
@@ -389,14 +383,14 @@ public class CreditCardIT {
             number("5105105105105100").
             expirationDate("05/12").
             options().
-              venmoSdkSession(VenmoSdk.Session.Invalid.value).
-              done();
+                venmoSdkSession(VenmoSdk.Session.Invalid.value).
+                done();
 
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
-        Assert.assertEquals("510510", card.getBin());
-        Assert.assertFalse(card.isVenmoSdk());
+        assertEquals("510510", card.getBin());
+        assertFalse(card.isVenmoSdk());
     }
 
     @Test
@@ -409,7 +403,7 @@ public class CreditCardIT {
             number("5105105105105100").
             expirationDate("05/12");
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
 
         CreditCardRequest updateRequest = new CreditCardRequest().
@@ -427,21 +421,21 @@ public class CreditCardIT {
 
 
         Result<CreditCard> updateResult = gateway.creditCard().update(card.getToken(), updateRequest);
-        Assert.assertTrue(updateResult.isSuccess());
+        assertTrue(updateResult.isSuccess());
         CreditCard updatedCard = updateResult.getTarget();
 
-        Assert.assertEquals("Jane Jones", updatedCard.getCardholderName());
-        Assert.assertEquals("411111", updatedCard.getBin());
-        Assert.assertEquals("12", updatedCard.getExpirationMonth());
-        Assert.assertEquals("2005", updatedCard.getExpirationYear());
-        Assert.assertEquals("12/2005", updatedCard.getExpirationDate());
-        Assert.assertEquals("1111", updatedCard.getLast4());
-        Assert.assertTrue(updatedCard.getToken() != card.getToken());
+        assertEquals("Jane Jones", updatedCard.getCardholderName());
+        assertEquals("411111", updatedCard.getBin());
+        assertEquals("12", updatedCard.getExpirationMonth());
+        assertEquals("2005", updatedCard.getExpirationYear());
+        assertEquals("12/2005", updatedCard.getExpirationDate());
+        assertEquals("1111", updatedCard.getLast4());
+        assertTrue(updatedCard.getToken() != card.getToken());
 
-        Assert.assertEquals("Italy", updatedCard.getBillingAddress().getCountryName());
-        Assert.assertEquals("IT", updatedCard.getBillingAddress().getCountryCodeAlpha2());
-        Assert.assertEquals("ITA", updatedCard.getBillingAddress().getCountryCodeAlpha3());
-        Assert.assertEquals("380", updatedCard.getBillingAddress().getCountryCodeNumeric());
+        assertEquals("Italy", updatedCard.getBillingAddress().getCountryName());
+        assertEquals("IT", updatedCard.getBillingAddress().getCountryCodeAlpha2());
+        assertEquals("ITA", updatedCard.getBillingAddress().getCountryCodeAlpha3());
+        assertEquals("380", updatedCard.getBillingAddress().getCountryCodeNumeric());
     }
 
     @Test
@@ -455,16 +449,16 @@ public class CreditCardIT {
         CreditCard card1 = gateway.creditCard().create(request).getTarget();
         CreditCard card2 = gateway.creditCard().create(request).getTarget();
 
-        Assert.assertTrue(card1.isDefault());
-        Assert.assertFalse(card2.isDefault());
+        assertTrue(card1.isDefault());
+        assertFalse(card2.isDefault());
 
         gateway.creditCard().update(card2.getToken(), new CreditCardRequest().options().makeDefault(true).done());
-        Assert.assertFalse(gateway.creditCard().find(card1.getToken()).isDefault());
-        Assert.assertTrue(gateway.creditCard().find(card2.getToken()).isDefault());
+        assertFalse(gateway.creditCard().find(card1.getToken()).isDefault());
+        assertTrue(gateway.creditCard().find(card2.getToken()).isDefault());
 
         gateway.creditCard().update(card1.getToken(), new CreditCardRequest().options().makeDefault(true).done());
-        Assert.assertTrue(gateway.creditCard().find(card1.getToken()).isDefault());
-        Assert.assertFalse(gateway.creditCard().find(card2.getToken()).isDefault());
+        assertTrue(gateway.creditCard().find(card1.getToken()).isDefault());
+        assertFalse(gateway.creditCard().find(card2.getToken()).isDefault());
     }
 
     @SuppressWarnings("deprecation")
@@ -487,9 +481,9 @@ public class CreditCardIT {
 
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.creditCard().transparentRedirectURLForUpdate());
         Result<CreditCard> result = gateway.creditCard().confirmTransparentRedirect(queryString);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard updatedCard = result.getTarget();
-        Assert.assertEquals("joe cool", updatedCard.getCardholderName());
+        assertEquals("joe cool", updatedCard.getCardholderName());
     }
 
     @Test
@@ -517,16 +511,16 @@ public class CreditCardIT {
 
         Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard updatedCreditCard = gateway.creditCard().find(card.getToken());
-        Assert.assertEquals("411111", updatedCreditCard.getBin());
-        Assert.assertEquals("1111", updatedCreditCard.getLast4());
-        Assert.assertEquals("10/2010", updatedCreditCard.getExpirationDate());
+        assertEquals("411111", updatedCreditCard.getBin());
+        assertEquals("1111", updatedCreditCard.getLast4());
+        assertEquals("10/2010", updatedCreditCard.getExpirationDate());
 
-        Assert.assertEquals("Jersey", updatedCreditCard.getBillingAddress().getCountryName());
-        Assert.assertEquals("JE", updatedCreditCard.getBillingAddress().getCountryCodeAlpha2());
-        Assert.assertEquals("JEY", updatedCreditCard.getBillingAddress().getCountryCodeAlpha3());
-        Assert.assertEquals("832", updatedCreditCard.getBillingAddress().getCountryCodeNumeric());
+        assertEquals("Jersey", updatedCreditCard.getBillingAddress().getCountryName());
+        assertEquals("JE", updatedCreditCard.getBillingAddress().getCountryCodeAlpha2());
+        assertEquals("JEY", updatedCreditCard.getBillingAddress().getCountryCodeAlpha3());
+        assertEquals("832", updatedCreditCard.getBillingAddress().getCountryCodeNumeric());
     }
 
 
@@ -552,8 +546,8 @@ public class CreditCardIT {
 
         Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
 
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals(
+        assertFalse(result.isSuccess());
+        assertEquals(
             ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED,
             result.getErrors().forObject("creditCard").forObject("billingAddress").onField("countryCodeAlpha2").get(0).getCode()
         );
@@ -569,17 +563,17 @@ public class CreditCardIT {
             number("5105105105105100").
             expirationDate("05/12");
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
 
         String newToken = String.valueOf(new Random().nextInt());
         CreditCardRequest updateRequest = new CreditCardRequest().customerId(customer.getId()).token(newToken);
 
         Result<CreditCard> updateResult = gateway.creditCard().update(card.getToken(), updateRequest);
-        Assert.assertTrue(updateResult.isSuccess());
+        assertTrue(updateResult.isSuccess());
         CreditCard updatedCard = updateResult.getTarget();
 
-        Assert.assertEquals(newToken, updatedCard.getToken());
+        assertEquals(newToken, updatedCard.getToken());
     }
 
     @Test
@@ -592,21 +586,21 @@ public class CreditCardIT {
             number("5105105105105100").
             expirationDate("05/12");
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
 
         CreditCardRequest updateRequest = new CreditCardRequest().cardholderName("Jane Jones");
 
         Result<CreditCard> updateResult = gateway.creditCard().update(card.getToken(), updateRequest);
-        Assert.assertTrue(updateResult.isSuccess());
+        assertTrue(updateResult.isSuccess());
         CreditCard updatedCard = updateResult.getTarget();
 
-        Assert.assertEquals("Jane Jones", updatedCard.getCardholderName());
-        Assert.assertEquals("510510", updatedCard.getBin());
-        Assert.assertEquals("05", updatedCard.getExpirationMonth());
-        Assert.assertEquals("2012", updatedCard.getExpirationYear());
-        Assert.assertEquals("05/2012", updatedCard.getExpirationDate());
-        Assert.assertEquals("5100", updatedCard.getLast4());
+        assertEquals("Jane Jones", updatedCard.getCardholderName());
+        assertEquals("510510", updatedCard.getBin());
+        assertEquals("05", updatedCard.getExpirationMonth());
+        assertEquals("2012", updatedCard.getExpirationYear());
+        assertEquals("05/2012", updatedCard.getExpirationDate());
+        assertEquals("5100", updatedCard.getLast4());
     }
 
     @Test
@@ -629,9 +623,9 @@ public class CreditCardIT {
 
         CreditCard updatedCreditCard = gateway.creditCard().update(creditCard.getToken(), updateRequest).getTarget();
 
-        Assert.assertNull(updatedCreditCard.getBillingAddress().getFirstName());
-        Assert.assertEquals("Jones", updatedCreditCard.getBillingAddress().getLastName());
-        Assert.assertFalse(creditCard.getBillingAddress().getId().equals(updatedCreditCard.getBillingAddress().getId()));
+        assertNull(updatedCreditCard.getBillingAddress().getFirstName());
+        assertEquals("Jones", updatedCreditCard.getBillingAddress().getLastName());
+        assertFalse(creditCard.getBillingAddress().getId().equals(updatedCreditCard.getBillingAddress().getId()));
     }
 
     @Test
@@ -657,9 +651,9 @@ public class CreditCardIT {
 
         CreditCard updatedCreditCard = gateway.creditCard().update(creditCard.getToken(), updateRequest).getTarget();
 
-        Assert.assertEquals("John", updatedCreditCard.getBillingAddress().getFirstName());
-        Assert.assertEquals("Jones", updatedCreditCard.getBillingAddress().getLastName());
-        Assert.assertEquals(creditCard.getBillingAddress().getId(), updatedCreditCard.getBillingAddress().getId());
+        assertEquals("John", updatedCreditCard.getBillingAddress().getFirstName());
+        assertEquals("Jones", updatedCreditCard.getBillingAddress().getLastName());
+        assertEquals(creditCard.getBillingAddress().getId(), updatedCreditCard.getBillingAddress().getId());
     }
 
     @SuppressWarnings("deprecation")
@@ -691,9 +685,9 @@ public class CreditCardIT {
 
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, updateRequest, gateway.creditCard().transparentRedirectURLForUpdate());
         CreditCard updatedCard = gateway.creditCard().confirmTransparentRedirect(queryString).getTarget();
-        Assert.assertEquals("John", updatedCard.getBillingAddress().getFirstName());
-        Assert.assertEquals("Jones", updatedCard.getBillingAddress().getLastName());
-        Assert.assertEquals(creditCard.getBillingAddress().getId(), updatedCard.getBillingAddress().getId());
+        assertEquals("John", updatedCard.getBillingAddress().getFirstName());
+        assertEquals("Jones", updatedCard.getBillingAddress().getLastName());
+        assertEquals(creditCard.getBillingAddress().getId(), updatedCard.getBillingAddress().getId());
     }
 
     @Test
@@ -706,17 +700,17 @@ public class CreditCardIT {
             number("5105105105105100").
             expirationDate("05/12");
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
 
         CreditCard found = gateway.creditCard().find(card.getToken());
 
-        Assert.assertEquals("John Doe", found.getCardholderName());
-        Assert.assertEquals("510510", found.getBin());
-        Assert.assertEquals("05", found.getExpirationMonth());
-        Assert.assertEquals("2012", found.getExpirationYear());
-        Assert.assertEquals("05/2012", found.getExpirationDate());
-        Assert.assertEquals("5100", found.getLast4());
+        assertEquals("John Doe", found.getCardholderName());
+        assertEquals("510510", found.getBin());
+        assertEquals("05", found.getExpirationMonth());
+        assertEquals("2012", found.getExpirationYear());
+        assertEquals("05/2012", found.getExpirationDate());
+        assertEquals("5100", found.getLast4());
     }
 
     @Test
@@ -739,9 +733,9 @@ public class CreditCardIT {
 
         CreditCard foundCard = gateway.creditCard().find(card.getToken());
 
-        Assert.assertEquals(subscription.getId(), foundCard.getSubscriptions().get(0).getId());
-        Assert.assertEquals(new BigDecimal("1.00"), foundCard.getSubscriptions().get(0).getPrice());
-        Assert.assertEquals("integration_trialless_plan", foundCard.getSubscriptions().get(0).getPlanId());
+        assertEquals(subscription.getId(), foundCard.getSubscriptions().get(0).getId());
+        assertEquals(new BigDecimal("1.00"), foundCard.getSubscriptions().get(0).getPrice());
+        assertEquals("integration_trialless_plan", foundCard.getSubscriptions().get(0).getPlanId());
     }
 
     @Test(expected = NotFoundException.class)
@@ -753,7 +747,7 @@ public class CreditCardIT {
     public void findWithEmptyIds() {
         try {
             gateway.creditCard().find(" ");
-            Assert.fail("Should throw NotFoundException");
+            fail("Should throw NotFoundException");
         } catch (NotFoundException e) {
         }
     }
@@ -769,15 +763,15 @@ public class CreditCardIT {
             number("5105105105105100").
             expirationDate("05/12");
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
 
         Result<CreditCard> deleteResult = gateway.creditCard().delete(card.getToken());
-        Assert.assertTrue(deleteResult.isSuccess());
+        assertTrue(deleteResult.isSuccess());
 
         try {
             gateway.creditCard().find(card.getToken());
-            Assert.fail();
+            fail();
         } catch (NotFoundException e) {
         }
     }
@@ -798,12 +792,12 @@ public class CreditCardIT {
         gateway.creditCard().create(request);
         Result<CreditCard> result = gateway.creditCard().create(request);
 
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals(
+        assertFalse(result.isSuccess());
+        assertEquals(
                 ValidationErrorCode.CREDIT_CARD_DUPLICATE_CARD_EXISTS,
                 result.getErrors().forObject("creditCard").onField("number").get(0).getCode()
-            );
-     }
+        );
+    }
 
     @Test
     public void verifyValidCreditCard() {
@@ -819,7 +813,7 @@ public class CreditCardIT {
                 done();
 
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
     }
 
     @Test
@@ -837,8 +831,8 @@ public class CreditCardIT {
                 done();
 
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, result.getCreditCardVerification().getMerchantAccountId());
+        assertFalse(result.isSuccess());
+        assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, result.getCreditCardVerification().getMerchantAccountId());
     }
 
     @Test
@@ -855,11 +849,11 @@ public class CreditCardIT {
                 done();
 
         Result<CreditCard> result = gateway.creditCard().create(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         CreditCardVerification verification = result.getCreditCardVerification();
-        Assert.assertEquals(CreditCardVerification.Status.PROCESSOR_DECLINED, verification.getStatus());
-        Assert.assertEquals("Do Not Honor", result.getMessage());
-        Assert.assertNull(verification.getGatewayRejectionReason());
+        assertEquals(CreditCardVerification.Status.PROCESSOR_DECLINED, verification.getStatus());
+        assertEquals("Do Not Honor", result.getMessage());
+        assertNull(verification.getGatewayRejectionReason());
     }
 
     @Test
@@ -877,25 +871,25 @@ public class CreditCardIT {
                 done();
 
         Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         CreditCardVerification verification = result.getCreditCardVerification();
 
-        Assert.assertEquals(Transaction.GatewayRejectionReason.CVV, verification.getGatewayRejectionReason());
+        assertEquals(Transaction.GatewayRejectionReason.CVV, verification.getGatewayRejectionReason());
     }
 
     @Test
     public void expiredSearch() {
         ResourceCollection<CreditCard> expiredCards = gateway.creditCard().expired();
-        Assert.assertTrue(expiredCards.getMaximumSize() > 0);
+        assertTrue(expiredCards.getMaximumSize() > 0);
 
         List<String> tokens = new ArrayList<String>();
         for (CreditCard card : expiredCards) {
-            Assert.assertTrue(card.isExpired());
+            assertTrue(card.isExpired());
             tokens.add(card.getToken());
         }
 
         Set<String> uniqueTokens = new HashSet<String>(tokens);
-        Assert.assertEquals(expiredCards.getMaximumSize(), uniqueTokens.size());
+        assertEquals(expiredCards.getMaximumSize(), uniqueTokens.size());
     }
 
     @Test
@@ -906,16 +900,16 @@ public class CreditCardIT {
         end.set(2010, 11, 30);
 
         ResourceCollection<CreditCard> expiredCards = gateway.creditCard().expiringBetween(start, end);
-        Assert.assertTrue(expiredCards.getMaximumSize() > 0);
+        assertTrue(expiredCards.getMaximumSize() > 0);
 
         List<String> tokens = new ArrayList<String>();
         for (CreditCard card : expiredCards) {
-            Assert.assertEquals("2010", card.getExpirationYear());
+            assertEquals("2010", card.getExpirationYear());
             tokens.add(card.getToken());
         }
 
         Set<String> uniqueTokens = new HashSet<String>(tokens);
-        Assert.assertEquals(expiredCards.getMaximumSize(), uniqueTokens.size());
+        assertEquals(expiredCards.getMaximumSize(), uniqueTokens.size());
     }
 
     @Test
@@ -933,7 +927,7 @@ public class CreditCardIT {
         Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
         CreditCard card = result.getTarget();
 
-        Assert.assertEquals(CreditCard.Commercial.YES, card.getCommercial());
+        assertEquals(CreditCard.Commercial.YES, card.getCommercial());
     }
 
     @Test
@@ -951,7 +945,7 @@ public class CreditCardIT {
         Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
         CreditCard card = result.getTarget();
 
-        Assert.assertEquals(CreditCard.DurbinRegulated.YES, card.getDurbinRegulated());
+        assertEquals(CreditCard.DurbinRegulated.YES, card.getDurbinRegulated());
     }
 
     @Test
@@ -969,7 +963,7 @@ public class CreditCardIT {
         Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
         CreditCard card = result.getTarget();
 
-        Assert.assertEquals(CreditCard.Debit.YES, card.getDebit());
+        assertEquals(CreditCard.Debit.YES, card.getDebit());
     }
 
     @Test
@@ -987,7 +981,7 @@ public class CreditCardIT {
         Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
         CreditCard card = result.getTarget();
 
-        Assert.assertEquals(CreditCard.Healthcare.YES, card.getHealthcare());
+        assertEquals(CreditCard.Healthcare.YES, card.getHealthcare());
     }
 
     @Test
@@ -1005,7 +999,7 @@ public class CreditCardIT {
         Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
         CreditCard card = result.getTarget();
 
-        Assert.assertEquals(CreditCard.Payroll.YES, card.getPayroll());
+        assertEquals(CreditCard.Payroll.YES, card.getPayroll());
     }
 
     @Test
@@ -1023,7 +1017,7 @@ public class CreditCardIT {
         Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
         CreditCard card = result.getTarget();
 
-        Assert.assertEquals(CreditCard.Prepaid.YES, card.getPrepaid());
+        assertEquals(CreditCard.Prepaid.YES, card.getPrepaid());
     }
 
     @Test
@@ -1041,7 +1035,7 @@ public class CreditCardIT {
         Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
         CreditCard card = result.getTarget();
 
-        Assert.assertEquals(CreditCardDefaults.IssuingBank.getValue(), card.getIssuingBank());
+        assertEquals(CreditCardDefaults.IssuingBank.getValue(), card.getIssuingBank());
     }
 
     @Test
@@ -1059,7 +1053,7 @@ public class CreditCardIT {
         Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
         CreditCard card = result.getTarget();
 
-        Assert.assertEquals(CreditCardDefaults.CountryOfIssuance.getValue(), card.getCountryOfIssuance());
+        assertEquals(CreditCardDefaults.CountryOfIssuance.getValue(), card.getCountryOfIssuance());
     }
 
     @Test
@@ -1077,12 +1071,12 @@ public class CreditCardIT {
         Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
         CreditCard card = result.getTarget();
 
-        Assert.assertEquals(CreditCard.Commercial.NO, card.getCommercial());
-        Assert.assertEquals(CreditCard.Debit.NO, card.getDebit());
-        Assert.assertEquals(CreditCard.DurbinRegulated.NO, card.getDurbinRegulated());
-        Assert.assertEquals(CreditCard.Healthcare.NO, card.getHealthcare());
-        Assert.assertEquals(CreditCard.Payroll.NO, card.getPayroll());
-        Assert.assertEquals(CreditCard.Prepaid.NO, card.getPrepaid());
+        assertEquals(CreditCard.Commercial.NO, card.getCommercial());
+        assertEquals(CreditCard.Debit.NO, card.getDebit());
+        assertEquals(CreditCard.DurbinRegulated.NO, card.getDurbinRegulated());
+        assertEquals(CreditCard.Healthcare.NO, card.getHealthcare());
+        assertEquals(CreditCard.Payroll.NO, card.getPayroll());
+        assertEquals(CreditCard.Prepaid.NO, card.getPrepaid());
     }
 
 
@@ -1101,13 +1095,13 @@ public class CreditCardIT {
         Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
         CreditCard card = result.getTarget();
 
-        Assert.assertEquals(CreditCard.Commercial.UNKNOWN, card.getCommercial());
-        Assert.assertEquals(CreditCard.Debit.UNKNOWN, card.getDebit());
-        Assert.assertEquals(CreditCard.DurbinRegulated.UNKNOWN, card.getDurbinRegulated());
-        Assert.assertEquals(CreditCard.Healthcare.UNKNOWN, card.getHealthcare());
-        Assert.assertEquals(CreditCard.Payroll.UNKNOWN, card.getPayroll());
-        Assert.assertEquals(CreditCard.Prepaid.UNKNOWN, card.getPrepaid());
-        Assert.assertEquals("Unknown", card.getCountryOfIssuance());
-        Assert.assertEquals("Unknown", card.getIssuingBank());
-     }
+        assertEquals(CreditCard.Commercial.UNKNOWN, card.getCommercial());
+        assertEquals(CreditCard.Debit.UNKNOWN, card.getDebit());
+        assertEquals(CreditCard.DurbinRegulated.UNKNOWN, card.getDurbinRegulated());
+        assertEquals(CreditCard.Healthcare.UNKNOWN, card.getHealthcare());
+        assertEquals(CreditCard.Payroll.UNKNOWN, card.getPayroll());
+        assertEquals(CreditCard.Prepaid.UNKNOWN, card.getPrepaid());
+        assertEquals("Unknown", card.getCountryOfIssuance());
+        assertEquals("Unknown", card.getIssuingBank());
+    }
 }
