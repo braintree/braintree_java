@@ -2517,7 +2517,7 @@ public class TransactionIT {
         Result<Transaction> result = gateway.transaction().sale(request);
         assertFalse(result.isSuccess());
 
-        assertEquals(ValidationErrorCode.SERVICE_FEE_NOT_SUPPORTED_ON_MASTER_MERCHANT,
+        assertEquals(ValidationErrorCode.SERVICE_FEE_MERCHANT_ACCOUNT_NOT_SUPPORTED,
             result.getErrors().forObject("transaction").forObject("service_fee").onField("base").get(0).getCode());
     }
 
