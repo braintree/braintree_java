@@ -1,37 +1,37 @@
 ENV['TEST_JDK_VERSION'] ||= "1.5"
 
-task :default => :test
-
-task :init do
-  sh "mkdir -p classes"
-  sh "mkdir -p test-classes"
-end
+task :default => :jar
 
 task :clean do
-  sh "rm -f *.jar"
-  sh "rm -rf classes/*"
-  sh "rm -rf test-classes/*"
+  sh "mvn clean"
+  sh "rm *jar || true"
   sh "rm -rf doc"
 end
 
-task :compile => :init do
-  sh "javac -target #{ENV['TEST_JDK_VERSION']} -d classes -cp #{lib_classpath} -Xlint:deprecation #{src_files}"
-  cp_r "ssl", "classes"
+task :compile do
+  sh "mvn compile"
 end
 
-desc "build a jar"
-task :jar => :compile do
-  sh "jar cvf #{jar_name} -C classes . > /dev/null"
+desc "run unit and integration tests"
+task :test do
+  sh "mvn verify"
 end
 
-task :compile_tests => [:init, :clean, :jar] do
-  sh "javac -target #{ENV['TEST_JDK_VERSION']} -Xlint:deprecation -d test-classes -cp #{jar_name}:#{lib_classpath} #{test_files}"
-  cp_r "test/script", "test-classes", :preserve => true
-  cp_r "test/ssl", "test-classes"
+desc "compile, test, build a jar"
+task :jar do
+  sh "mvn verify package"
+  sh "cp target/braintree-java-*.jar #{jar_name}"
 end
 
-task :test => :compile_tests do
-  sh "ant test"
+# e.g. rake single_test testclass=com.braintreegateway.integrationtest.TransactionIT
+desc "run a single unit or integration test class"
+task :single_test do
+  test_class = ENV['testclass']
+  if test_class.include? ".integrationtest."
+    sh "mvn verify -Dit.test=#{test_class}"
+  else
+    sh "mvn test -Dtest=#{test_class}"
+  end
 end
 
 desc "generate javadoc"
@@ -43,24 +43,12 @@ task :javadoc do
   sh "javadoc -sourcepath src -subpackages com.braintreegateway -exclude #{excludes.join(":")} -d doc -overview overview.html"
 end
 
-def lib_classpath
-  Dir.glob("lib/*.jar").join(":")
-end
-
-def src_files
-  Dir.glob("src/**/*.java").join(" ")
-end
-
-def test_files
-  Dir.glob("test/**/*.java").join(" ")
-end
-
 def jar_name
   "braintree-java-#{version}.jar"
 end
 
 def version
-  contents = File.read('src/com/braintreegateway/BraintreeGateway.java')
+  contents = File.read('src/main/java/com/braintreegateway/BraintreeGateway.java')
   version = contents.slice(/VERSION = "(.*)"/, 1)
   raise "Cannot read version" if version.empty?
   version
