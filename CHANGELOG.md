@@ -1,3 +1,7 @@
+## 2.22.1
+
+* Bumps version in maven pom.xml
+
 ## 2.22.0
 
 * Adds disbursement details to transactions.
