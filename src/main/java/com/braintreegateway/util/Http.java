@@ -15,6 +15,7 @@ import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
+import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 
 public class Http {
@@ -31,7 +32,7 @@ public class Http {
     public Http(String authorizationHeader, String baseMerchantURL, String[] certificateFilenames, String version) {
         this.authorizationHeader = authorizationHeader;
         this.baseMerchantURL = baseMerchantURL;
-        this.certificateFilenames = certificateFilenames;
+        this.certificateFilenames = Arrays.copyOf(certificateFilenames, certificateFilenames.length);
         this.version = version;
     }
 
