@@ -7,9 +7,10 @@ import java.util.Calendar;
 import java.util.List;
 
 public class CreditCard {
-public static final String yes = "Yes";
-public static final String no = "No";
-public static final String unknown = "Unknown";
+    public static final String VALUE_YES = "Yes";
+    public static final String VALUE_NO = "No";
+    public static final String VALUE_UNKNOWN = "Unknown";
+
     public enum CardType {
         AMEX("American Express"),
         CARTE_BLANCHE("Carte Blanche"),
@@ -21,7 +22,7 @@ public static final String unknown = "Unknown";
         MAESTRO("Maestro"),
         MASTER_CARD("MasterCard"),
         SOLO("Solo"),
-        /*SWITCH("Switch"),*/
+        SWITCH("Switch"),
         VISA("Visa");
 
         private final String name;
@@ -53,9 +54,9 @@ public static final String unknown = "Unknown";
     }
 
     public enum Commercial {
-        YES(yes),
-        NO(no),
-        UNKNOWN(unknown);
+        YES(VALUE_YES),
+        NO(VALUE_NO),
+        UNKNOWN(VALUE_UNKNOWN);
 
         private final String value;
 
@@ -70,9 +71,9 @@ public static final String unknown = "Unknown";
     }
 
     public enum Debit {
-        YES(yes),
-        NO(no),
-        UNKNOWN(unknown);
+        YES(VALUE_YES),
+        NO(VALUE_NO),
+        UNKNOWN(VALUE_UNKNOWN);
 
         private final String value;
 
@@ -87,9 +88,9 @@ public static final String unknown = "Unknown";
     }
 
     public enum DurbinRegulated {
-        YES(yes),
-        NO(no),
-        UNKNOWN(unknown);
+        YES(VALUE_YES),
+        NO(VALUE_NO),
+        UNKNOWN(VALUE_UNKNOWN);
 
         private final String value;
 
@@ -104,9 +105,9 @@ public static final String unknown = "Unknown";
     }
 
     public enum Healthcare {
-        YES(yes),
-        NO(no),
-        UNKNOWN(unknown);
+        YES(VALUE_YES),
+        NO(VALUE_NO),
+        UNKNOWN(VALUE_UNKNOWN);
 
         private final String value;
 
@@ -121,9 +122,9 @@ public static final String unknown = "Unknown";
     }
 
     public enum Payroll {
-        YES(yes),
-        NO(no),
-        UNKNOWN(unknown);
+        YES(VALUE_YES),
+        NO(VALUE_NO),
+        UNKNOWN(VALUE_UNKNOWN);
 
         private final String value;
 
@@ -138,9 +139,9 @@ public static final String unknown = "Unknown";
     }
 
     public enum Prepaid {
-        YES(yes),
-        NO(no),
-        UNKNOWN(unknown);
+        YES(VALUE_YES),
+        NO(VALUE_NO),
+        UNKNOWN(VALUE_UNKNOWN);
 
         private final String value;
 
