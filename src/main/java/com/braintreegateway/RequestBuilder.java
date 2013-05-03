@@ -67,11 +67,11 @@ public class RequestBuilder {
         } else if (element instanceof Map<?, ?>) {
             return formatAsXML(name, (Map<String, Object>) element);
         } else if (element instanceof List<?>) {
-            String xml = "";
+            StringBuilder xml = new StringBuilder();
             for (Object item : (List<Object>) element) {
-                xml += buildXMLElement("item", item);
+                xml.append(buildXMLElement("item", item));
             }
-            return wrapInXMLTag(name, xml, "array");
+            return wrapInXMLTag(name, xml.toString(), "array");
         } else {
             return String.format("<%s>%s</%s>", xmlEscape(name), element == null ? "" : xmlEscape(element.toString()), xmlEscape(name));
         }
@@ -80,13 +80,13 @@ public class RequestBuilder {
     protected static String formatAsXML(String name, Map<String, Object> map) {
         if (map == null)
             return "";
-        String xml = "";
-        xml += String.format("<%s>", name);
+        StringBuilder xml = new StringBuilder();
+        xml.append(String.format("<%s>", name));
         for (Map.Entry<String, Object> entry : map.entrySet()) {
-            xml += buildXMLElement(entry.getKey(), entry.getValue());
+            xml.append(buildXMLElement(entry.getKey(), entry.getValue()));
         }
-        xml += String.format("</%s>", name);
-        return xml;
+        xml.append(String.format("</%s>", name));
+        return xml.toString();
     }
 
     protected static Object buildQueryStringElement(String name, String value) {

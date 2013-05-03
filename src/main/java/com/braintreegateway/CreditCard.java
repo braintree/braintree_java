@@ -7,7 +7,9 @@ import java.util.Calendar;
 import java.util.List;
 
 public class CreditCard {
-
+public static final String yes = "Yes";
+public static final String no = "No";
+public static final String unknown = "Unknown";
     public enum CardType {
         AMEX("American Express"),
         CARTE_BLANCHE("Carte Blanche"),
@@ -19,7 +21,7 @@ public class CreditCard {
         MAESTRO("Maestro"),
         MASTER_CARD("MasterCard"),
         SOLO("Solo"),
-        SWITCH("Switch"),
+        /*SWITCH("Switch"),*/
         VISA("Visa");
 
         private final String name;
@@ -51,9 +53,9 @@ public class CreditCard {
     }
 
     public enum Commercial {
-        YES("Yes"),
-        NO("No"),
-        UNKNOWN("Unknown");
+        YES(yes),
+        NO(no),
+        UNKNOWN(unknown);
 
         private final String value;
 
@@ -68,9 +70,9 @@ public class CreditCard {
     }
 
     public enum Debit {
-        YES("Yes"),
-        NO("No"),
-        UNKNOWN("Unknown");
+        YES(yes),
+        NO(no),
+        UNKNOWN(unknown);
 
         private final String value;
 
@@ -85,9 +87,9 @@ public class CreditCard {
     }
 
     public enum DurbinRegulated {
-        YES("Yes"),
-        NO("No"),
-        UNKNOWN("Unknown");
+        YES(yes),
+        NO(no),
+        UNKNOWN(unknown);
 
         private final String value;
 
@@ -102,9 +104,9 @@ public class CreditCard {
     }
 
     public enum Healthcare {
-        YES("Yes"),
-        NO("No"),
-        UNKNOWN("Unknown");
+        YES(yes),
+        NO(no),
+        UNKNOWN(unknown);
 
         private final String value;
 
@@ -119,9 +121,9 @@ public class CreditCard {
     }
 
     public enum Payroll {
-        YES("Yes"),
-        NO("No"),
-        UNKNOWN("Unknown");
+        YES(yes),
+        NO(no),
+        UNKNOWN(unknown);
 
         private final String value;
 
@@ -136,9 +138,9 @@ public class CreditCard {
     }
 
     public enum Prepaid {
-        YES("Yes"),
-        NO("No"),
-        UNKNOWN("Unknown");
+        YES(yes),
+        NO(no),
+        UNKNOWN(unknown);
 
         private final String value;
 

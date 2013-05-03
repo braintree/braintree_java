@@ -31,7 +31,7 @@ public class TrUtil {
                 .appendEncodedData(request.toQueryString())
                 .toString();
 
-        String trHash = new Crypto().hmacHash(configuration.privateKey, trContent);
+        String trHash = new Crypto().hmacHash(configuration.privateKey, trContent.toString());
         return trHash + "|" + trContent;
     }
 
