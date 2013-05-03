@@ -8,6 +8,9 @@ import java.util.Calendar;
 import java.util.Map;
 import java.util.TimeZone;
 
+import static com.braintreegateway.util.QueryString.encode;
+import static com.braintreegateway.util.QueryString.encodeParam;
+
 public class TrUtil {
     private Configuration configuration;
 
@@ -19,16 +22,16 @@ public class TrUtil {
         Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         String dateString = String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", now);
 
-        String trContent = new QueryString().append("api_version", Configuration.apiVersion()).append("public_key", configuration.publicKey)
-                .append("redirect_url", redirectURL).append("time", dateString).append("kind", request.getKind()).toString();
+        String trContent = new QueryString()
+                .append("api_version", Configuration.apiVersion())
+                .append("public_key", configuration.publicKey)
+                .append("redirect_url", redirectURL)
+                .append("time", dateString)
+                .append("kind", request.getKind())
+                .appendEncodedData(request.toQueryString())
+                .toString();
 
-        String requestQueryString = request.toQueryString();
-
-        if (requestQueryString.length() > 0) {
-            trContent += "&" + requestQueryString;
-        }
-
-        String trHash = new Crypto().hmacHash(configuration.privateKey, trContent);
+        String trHash = new Crypto().hmacHash(configuration.privateKey, trContent.toString());
         return trHash + "|" + trContent;
     }
 
@@ -36,7 +39,7 @@ public class TrUtil {
         String[] pieces = queryString.split("&hash=");
         String queryStringWithoutHash = pieces[0];
         String hash = pieces[1];
-        
+
         return hash.equals(new Crypto().hmacHash(configuration.privateKey, queryStringWithoutHash));
     }
 
@@ -52,18 +55,6 @@ public class TrUtil {
             }
         }
         return builder.toString();
-    }
-
-    protected String encodeParam(String key, String value) {
-        String encodedKey = "";
-        String encodedValue = "";
-        try {
-            encodedKey = URLEncoder.encode(key, "UTF-8");
-            encodedValue = URLEncoder.encode(value, "UTF-8");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return encodedKey + "=" + encodedValue;
     }
 
     public String url() {

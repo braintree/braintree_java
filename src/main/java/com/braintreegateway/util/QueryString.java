@@ -2,11 +2,12 @@ package com.braintreegateway.util;
 
 import com.braintreegateway.Request;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
 public class QueryString {
-    private StringBuilder builder;
+    private final StringBuilder builder;
 
     public QueryString() {
         builder = new StringBuilder("");
@@ -28,20 +29,33 @@ public class QueryString {
         return appendString(key, value.toString());
     }
 
+    public QueryString appendEncodedData(String alreadyEncodedData) {
+        if (alreadyEncodedData != null && alreadyEncodedData.length() > 0) {
+            builder.append('&');
+            builder.append(alreadyEncodedData);
+        }
+        return this;
+    }
+
+
     public String toString() {
         return builder.toString();
     }
 
-    protected String encodeParam(String key, String value) {
-        String encodedKey = "";
-        String encodedValue = "";
-        try {
-            encodedKey = URLEncoder.encode(key, "UTF-8");
-            encodedValue = URLEncoder.encode(value, "UTF-8");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public static String encodeParam(String key, String value) {
+        String encodedKey = encode(key);
+        String encodedValue = encode(value);
         return encodedKey + "=" + encodedValue;
+    }
+
+    public static String DEFAULT_ENCODING = "UTF-8";
+
+    public static String encode(String value) {
+        try {
+            return URLEncoder.encode(value, DEFAULT_ENCODING);
+        } catch(UnsupportedEncodingException e) {
+            throw new IllegalStateException(DEFAULT_ENCODING + " encoding should always be available");
+        }
     }
 
     protected QueryString appendString(String key, String value) {
@@ -66,7 +80,7 @@ public class QueryString {
         }
         return this;
     }
-    
+
     protected QueryString appendMap(String key, Map<?, ?> value) {
         for (Object keyString : value.keySet()) {
             appendString(String.format("%s[%s]", key, keyString), value.get(keyString).toString());
