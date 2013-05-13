@@ -10,6 +10,7 @@ import java.util.Map;
 public class CustomerRequest extends Request {
     private String company;
     private String customerId;
+    private String deviceSessionId;
     private String email;
     private String fax;
     private String firstName;
@@ -50,6 +51,11 @@ public class CustomerRequest extends Request {
         return this;
     }
 
+    public CustomerRequest deviceSessionId(String deviceSessionId) {
+        this.deviceSessionId = deviceSessionId;
+        return this;
+    }
+
     public TransactionRequest done() {
         return parent;
     }
@@ -68,7 +74,7 @@ public class CustomerRequest extends Request {
         this.firstName = firstName;
         return this;
     }
-    
+
     @Override
     public String getKind() {
         if (this.customerId == null) {
@@ -118,10 +124,11 @@ public class CustomerRequest extends Request {
             addTopLevelElement("customerId", customerId).
             toQueryString();
     }
-    
+
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root).
             addElement("company", company).
+            addElement("deviceSessionId", deviceSessionId).
             addElement("email", email).
             addElement("fax", fax).
             addElement("firstName", firstName).
@@ -130,7 +137,7 @@ public class CustomerRequest extends Request {
             addElement("phone", phone).
             addElement("website", website).
             addElement("creditCard", creditCardRequest);
-        
+
         if (customFields.size() > 0) {
             builder.addElement("customFields", customFields);
         }

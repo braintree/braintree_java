@@ -116,6 +116,15 @@ public class CustomerIT {
     }
 
     @Test
+    public void createWithSecurityParams() {
+        CustomerRequest request = new CustomerRequest().
+            deviceSessionId("abc123");
+        Result<Customer> result = gateway.customer().create(request);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
     public void createWithCustomFields() {
         CustomerRequest request = new CustomerRequest().
             customField("store_me", "custom value").
