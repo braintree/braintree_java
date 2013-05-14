@@ -9,6 +9,7 @@ public class CreditCardRequest extends Request {
     private String cardholderName;
     private String customerId;
     private String cvv;
+    private String deviceSessionId;
     private String expirationDate;
     private String expirationMonth;
     private String expirationYear;
@@ -48,6 +49,11 @@ public class CreditCardRequest extends Request {
 
     public CreditCardRequest cvv(String cvv) {
         this.cvv = cvv;
+        return this;
+    }
+
+    public CreditCardRequest deviceSessionId(String deviceSessionId) {
+        this.deviceSessionId = deviceSessionId;
         return this;
     }
 
@@ -138,6 +144,7 @@ public class CreditCardRequest extends Request {
             addElement("cardholderName", cardholderName).
             addElement("cvv", cvv).
             addElement("number", number).
+            addElement("deviceSessionId", deviceSessionId).
             addElement("expirationDate", expirationDate).
             addElement("expirationMonth", expirationMonth).
             addElement("expirationYear", expirationYear).

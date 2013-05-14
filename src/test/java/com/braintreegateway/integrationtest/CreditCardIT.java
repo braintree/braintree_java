@@ -111,6 +111,20 @@ public class CreditCardIT {
     }
 
     @Test
+    public void createWithSecurityParams() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("Special Chars").
+            number("5105105105105100").
+            expirationDate("05/12").
+            deviceSessionId("abc123");
+        Result<CreditCard> result = gateway.creditCard().create(request);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
     public void createWithAddress() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
