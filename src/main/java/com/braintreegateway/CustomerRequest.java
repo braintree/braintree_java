@@ -128,7 +128,6 @@ public class CustomerRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root).
             addElement("company", company).
-            addElement("deviceSessionId", deviceSessionId).
             addElement("email", email).
             addElement("fax", fax).
             addElement("firstName", firstName).
