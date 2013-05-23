@@ -13,7 +13,6 @@ public class TransactionRequest extends Request {
     private BigDecimal amount;
     private TransactionAddressRequest billingAddressRequest;
     private TransactionCreditCardRequest creditCardRequest;
-    private TransactionServiceFeeRequest serviceFeeRequest;
     private String channel;
     private String customerId;
     private String deviceSessionId;
@@ -32,6 +31,7 @@ public class TransactionRequest extends Request {
     private Boolean taxExempt;
     private Type type;
     private String venmoSdkPaymentMethodCode;
+    private BigDecimal serviceFeeAmount;
 
     public TransactionRequest() {
         this.customFields = new HashMap<String, String>();
@@ -57,9 +57,9 @@ public class TransactionRequest extends Request {
         return creditCardRequest;
     }
     
-    public TransactionServiceFeeRequest serviceFee() {
-    	serviceFeeRequest = new TransactionServiceFeeRequest(this);
-    	return serviceFeeRequest;
+    public TransactionRequest serviceFeeAmount(BigDecimal fee) {
+        serviceFeeAmount = fee;
+        return this;
     }
 
     public CustomerRequest customer() {
@@ -188,7 +188,7 @@ public class TransactionRequest extends Request {
             addElement("recurring", recurring).
             addElement("deviceSessionId", deviceSessionId).
             addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode).
-            addElement("serviceFee", serviceFeeRequest);
+            addElement("serviceFeeAmount", serviceFeeAmount);
 
         if (!customFields.isEmpty()) {
             builder.addElement("customFields", customFields);

@@ -2495,23 +2495,19 @@ public class TransactionIT {
     @Test
     public void serviceFee() {
         TransactionRequest request = new TransactionRequest().
-            merchantAccountId(MerchantAccount.NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
-            amount(new BigDecimal("100.00")).
-            creditCard().
+                merchantAccountId(MerchantAccount.NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
+                amount(new BigDecimal("100.00")).
+                creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2009").
                 done().
-            serviceFee().
-                amount(new BigDecimal("1.00")).
-                merchantAccountId(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID).
-                done();
+                serviceFeeAmount(new BigDecimal("1.00"));
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        assertEquals(new BigDecimal("1.00"), transaction.getServiceFee().getAmount());
-        assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, transaction.getServiceFee().getMerchantAccountId());
+        assertEquals(new BigDecimal("1.00"), transaction.getServiceFeeAmount());
     }
 
     @Test
@@ -2521,47 +2517,23 @@ public class TransactionIT {
             amount(new BigDecimal("100.00")).
             creditCard().
                 number(CreditCardNumber.VISA.number).
-                expirationDate("05/2009").
+                expirationDate("05/2017").
                 done().
-            serviceFee().
-                amount(new BigDecimal("1.00")).
-                merchantAccountId(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID).
-                done();
+            serviceFeeAmount(new BigDecimal("1.00"));
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertFalse(result.isSuccess());
-
-        assertEquals(ValidationErrorCode.SERVICE_FEE_MERCHANT_ACCOUNT_NOT_SUPPORTED,
-            result.getErrors().forObject("transaction").forObject("service_fee").onField("base").get(0).getCode());
-    }
-
-    @Test
-    public void serviceFeeMerchantAccountMustBeAMaster() {
-        TransactionRequest request = new TransactionRequest().
-            merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
-            amount(new BigDecimal("100.00")).
-            creditCard().
-                number(CreditCardNumber.VISA.number).
-                expirationDate("05/2009").
-                done().
-	        serviceFee().
-                amount(new BigDecimal("1.00")).
-                merchantAccountId(MerchantAccount.NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
-                done();
-
-        Result<Transaction> result = gateway.transaction().sale(request);
-        assertFalse(result.isSuccess());
-
-        assertEquals(ValidationErrorCode.SERVICE_FEE_MERCHANT_ACCOUNT_MUST_BE_A_MASTER_MERCHANT_ACCOUNT,
-                result.getErrors().forObject("transaction").forObject("service_fee").onField("merchant_account_id").get(0).getCode());
+        System.err.println(result.getErrors());
+        assertEquals(ValidationErrorCode.TRANSACTION_SERVICE_FEE_AMOUNT_NOT_ALLOWED_ON_MASTER_MERCHANT,
+            result.getErrors().forObject("transaction").onField("service_fee_amount").get(0).getCode());
     }
 
     @Test
     public void serviceFeeRequiredWhenUsingSubmerchant() {
         TransactionRequest request = new TransactionRequest().
-	        merchantAccountId(MerchantAccount.NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
-	        amount(new BigDecimal("100.00")).
-	        creditCard().
+            merchantAccountId(MerchantAccount.NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
+            amount(new BigDecimal("100.00")).
+            creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2009").
                 done();
@@ -2571,6 +2543,24 @@ public class TransactionIT {
 
         assertEquals(ValidationErrorCode.TRANSACTION_SUB_MERCHANT_REQUIRES_SERVICE_FEE,
                 result.getErrors().forObject("transaction").onField("merchant_account_id").get(0).getCode());
+    }
+
+    @Test
+    public void negativeServiceFee() {
+        TransactionRequest request = new TransactionRequest().
+                merchantAccountId(MerchantAccount.NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
+                amount(new BigDecimal("100.00")).
+                creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+                serviceFeeAmount(new BigDecimal("-1.00"));
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        System.err.println(result.getErrors());
+        assertEquals(ValidationErrorCode.TRANSACTION_SERVICE_FEE_AMOUNT_CANNOT_BE_NEGATIVE,
+                result.getErrors().forObject("transaction").onField("service_fee_amount").get(0).getCode());
     }
 
 }

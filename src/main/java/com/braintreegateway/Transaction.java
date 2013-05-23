@@ -125,7 +125,7 @@ public class Transaction {
     private Boolean taxExempt;
     private Type type;
     private Calendar updatedAt;
-    private ServiceFee serviceFee;
+    private BigDecimal serviceFeeAmount;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -154,7 +154,7 @@ public class Transaction {
         recurring = node.findBoolean("recurring");
         refundedTransactionId = node.findString("refunded-transaction-id");
         refundId = node.findString("refund-id");
-        serviceFee = new ServiceFee(node.findFirst("service-fee"));
+        serviceFeeAmount = node.findBigDecimal("service-fee-amount");
         settlementBatchId = node.findString("settlement-batch-id");
         shippingAddress = new Address(node.findFirst("shipping"));
         status = EnumUtils.findByName(Status.class, node.findString("status"));
@@ -302,8 +302,8 @@ public class Transaction {
         return refundIds;
     }
 
-    public ServiceFee getServiceFee() {
-    	return serviceFee;
+    public BigDecimal getServiceFeeAmount() {
+        return serviceFeeAmount;
     }
 
     public String getSettlementBatchId() {
