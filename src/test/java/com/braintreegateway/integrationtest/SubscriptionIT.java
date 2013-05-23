@@ -4,6 +4,7 @@ import com.braintreegateway.*;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.Subscription.Status;
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
@@ -16,7 +17,7 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class SubscriptionIT {
+public class SubscriptionIT implements MerchantAccountTestConstants {
 
     private BraintreeGateway gateway;
     private Customer customer;
@@ -74,7 +75,7 @@ public class SubscriptionIT {
         assertEquals(Subscription.Status.ACTIVE, subscription.getStatus());
         assertEquals(new Integer(0), subscription.getFailureCount());
         assertEquals(false, subscription.hasTrialPeriod());
-        assertEquals(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
+        assertEquals(DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
 
         TestHelper.assertDatesEqual(expectedBillingPeriodEndDate, subscription.getBillingPeriodEndDate());
         TestHelper.assertDatesEqual(expectedBillingPeriodStartDate, subscription.getBillingPeriodStartDate());
@@ -354,13 +355,13 @@ public class SubscriptionIT {
                 paymentMethodToken(creditCard.getToken()).
                 planId(plan.getId()).
                 price(new BigDecimal("482.48")).
-                merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID);
+                merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID);
 
         Result<Subscription> createResult = gateway.subscription().create(request);
         assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
-        assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
+        assertEquals(NON_DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
     }
 
     @Test
@@ -710,13 +711,13 @@ public class SubscriptionIT {
         assertTrue(createResult.isSuccess());
 
         SubscriptionRequest updateRequest = new SubscriptionRequest()
-                .merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID);
+                .merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID);
         Result<Subscription> result = gateway.subscription().update(createResult.getTarget().getId(), updateRequest);
 
         assertTrue(result.isSuccess());
         Subscription subscription = result.getTarget();
 
-        assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
+        assertEquals(NON_DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
     }
 
     @Test
@@ -1280,21 +1281,21 @@ public class SubscriptionIT {
     @Test
     public void searchOnMerchantAccountIdIs() {
         SubscriptionRequest request1 = new SubscriptionRequest().
-                merchantAccountId(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID).
+                merchantAccountId(DEFAULT_MERCHANT_ACCOUNT_ID).
                 paymentMethodToken(creditCard.getToken()).
                 planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
                 price(new BigDecimal(3));
         Subscription subscriptionDefaultMerchantAccount = gateway.subscription().create(request1).getTarget();
 
         SubscriptionRequest request2 = new SubscriptionRequest().
-                merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID).
                 paymentMethodToken(creditCard.getToken()).
                 planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
                 price(new BigDecimal(3));
         Subscription subscriptionNonDefaultMerchantAccount = gateway.subscription().create(request2).getTarget();
 
         SubscriptionSearchRequest search = new SubscriptionSearchRequest().
-                merchantAccountId().is(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                merchantAccountId().is(NON_DEFAULT_MERCHANT_ACCOUNT_ID).
                 price().is(new BigDecimal(3));
 
         ResourceCollection<Subscription> results = gateway.subscription().search(search);
@@ -1305,7 +1306,7 @@ public class SubscriptionIT {
     @Test
     public void searchOnBogusMerchantAccountIdIs() {
         SubscriptionRequest request1 = new SubscriptionRequest().
-                merchantAccountId(MerchantAccount.DEFAULT_MERCHANT_ACCOUNT_ID).
+                merchantAccountId(DEFAULT_MERCHANT_ACCOUNT_ID).
                 paymentMethodToken(creditCard.getToken()).
                 planId(PlanFixture.PLAN_WITH_TRIAL.getId()).
                 price(new BigDecimal(5));
