@@ -1,6 +1,7 @@
 package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.CreditCardRequest;
+import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -11,6 +12,13 @@ public class CreditCardRequestIT {
         CreditCardRequest request = new CreditCardRequest().
             cardholderName("Special Xml Chars <>&\"'");
         assertEquals("<creditCard><cardholderName>Special Xml Chars &lt;&gt;&amp;&quot;&apos;</cardholderName></creditCard>", request.toXML());
+    }
+    @Test
+    public void toXmlIncludesSecurityParams() {
+        CreditCardRequest request = new CreditCardRequest().
+            deviceSessionId("dsid_abc123");
+
+        TestHelper.assertIncludes("dsid_abc123", request.toXML());
     }
 
     @Test

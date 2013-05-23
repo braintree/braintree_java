@@ -16,6 +16,7 @@ public class TransactionRequest extends Request {
     private TransactionServiceFeeRequest serviceFeeRequest;
     private String channel;
     private String customerId;
+    private String deviceSessionId;
     private CustomerRequest customerRequest;
     private Map<String, String> customFields;
     private String merchantAccountId;
@@ -73,6 +74,11 @@ public class TransactionRequest extends Request {
 
     public TransactionRequest customField(String apiName, String value) {
         customFields.put(apiName, value);
+        return this;
+    }
+
+    public TransactionRequest deviceSessionId(String deviceSessionId) {
+        this.deviceSessionId = deviceSessionId;
         return this;
     }
 
@@ -180,6 +186,7 @@ public class TransactionRequest extends Request {
             addElement("shipping", shippingAddressRequest).
             addElement("options", transactionOptionsRequest).
             addElement("recurring", recurring).
+            addElement("deviceSessionId", deviceSessionId).
             addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode).
             addElement("serviceFee", serviceFeeRequest);
 

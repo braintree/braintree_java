@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+import java.util.Arrays;
+
 /**
  * Indicates the environment of the Braintree Gateway with which to interact.
  */
@@ -18,7 +20,7 @@ public enum Environment {
 
     private Environment(String baseURL, String[] certificateFilenames) {
         this.baseURL = baseURL;
-        this.certificateFilenames = certificateFilenames;
+        this.certificateFilenames = Arrays.copyOf(certificateFilenames, certificateFilenames.length);
     }
 
     private static String developmentPort() {

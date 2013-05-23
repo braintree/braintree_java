@@ -101,8 +101,10 @@ public abstract class TestHelper {
         String response = "";
         try {
             String trData = gateway.transparentRedirect().trData(trParams, "http://example.com");
-            String postData = "tr_data=" + URLEncoder.encode(trData, "UTF-8") + "&";
-            postData += request.toQueryString();
+            StringBuilder postData = new StringBuilder("tr_data=")
+                    .append(URLEncoder.encode(trData, "UTF-8"))
+                    .append("&")
+                    .append(request.toQueryString());
 
             URL url = new URL(postUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -111,7 +113,7 @@ public abstract class TestHelper {
             connection.setRequestMethod("POST");
             connection.addRequestProperty("Accept", "application/xml");
             connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.getOutputStream().write(postData.getBytes("UTF-8"));
+            connection.getOutputStream().write(postData.toString().getBytes("UTF-8"));
             connection.getOutputStream().close();
             if (connection.getResponseCode() == 422) {
                 connection.getErrorStream();

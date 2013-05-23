@@ -1,3 +1,16 @@
+## 2.23.0
+
+* Lots of cleanups [thanks to https://github.com/steve-nester-uk]
+
+## 2.22.1
+
+* Bumps version in maven pom.xml
+
+## 2.22.0
+
+* Adds disbursement details to transactions.
+* Adds image url to transactions.
+
 ## 2.21.0
 
 * Adds Venmo Touch support.
