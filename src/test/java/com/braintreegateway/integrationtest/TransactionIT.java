@@ -2542,7 +2542,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Result<Transaction> result = gateway.transaction().sale(request);
         assertFalse(result.isSuccess());
 
-        assertEquals(ValidationErrorCode.TRANSACTION_SUB_MERCHANT_REQUIRES_SERVICE_FEE,
+        assertEquals(ValidationErrorCode.TRANSACTION_SUB_MERCHANT_REQUIRES_SERVICE_FEE_AMOUNT,
                 result.getErrors().forObject("transaction").onField("merchant_account_id").get(0).getCode());
     }
 
