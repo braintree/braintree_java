@@ -19,13 +19,13 @@
 
     <scm> <!-- currently pointing to our public github! -->
       <url>
-        https://github.com/braintree/braintree-java/
+        https://github.braintreeps.com/braintree/braintree-java/
       </url>
       <connection>
-        scm:git:ssh://git@github.com/braintree/braintree-java.git
+        scm:git:git@github.braintreeps.com/braintree/braintree-java.git
       </connection>
       <developerConnection>
-        scm:git:ssh://git@github.com/braintree/braintree-java.git
+        scm:git:git@github.braintreeps.com/braintree/braintree-java.git
       </developerConnection>
     </scm>
     <distributionManagement>
