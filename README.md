@@ -63,11 +63,7 @@ The Braintree library provides integration access to the Braintree Gateway.
 
 ### In repositories:
 
-     <repository>
-       <id>braintree</id>
-       <name>Braintree</name>
-       <url>http://braintree.github.com/braintree_java/releases</url>
-     </repository>
+     Maven Central, which should be enabled by default. No additional repositories are required.
 
 ### In dependencies
 
