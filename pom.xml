@@ -35,9 +35,9 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </snapshotRepository>
         <repository>
-            <id>sonatype-nexus-releases</id>
+            <id>sonatype-nexus-staging</id>
             <name>Releases</name>
-            <url>https://oss.sonatype.org/content/repositories/releases/</url>
+            <url>https://oss.sonatype.org/content/repositories/staging/</url>
         </repository>
     </distributionManagement>
 
