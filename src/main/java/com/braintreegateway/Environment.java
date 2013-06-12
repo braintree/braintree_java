@@ -7,7 +7,7 @@ import java.util.Arrays;
  */
 public class Environment {
     /** For Braintree internal development. */
-    public static final Environment DEVELOPMENT = new Environment("http://localhost:3000", new String[] {});
+    public static final Environment DEVELOPMENT = new Environment("http://localhost:" + developmentPort(), new String[] {});
 
     /** For production. */
     public static final Environment PRODUCTION = new Environment("https://www.braintreegateway.com:443", new String[] {"ssl/www_braintreegateway_com.ca.der", "ssl/securetrust.ca.der"});
@@ -21,5 +21,13 @@ public class Environment {
     public Environment(String baseURL, String[] certificateFilenames) {
         this.baseURL = baseURL;
         this.certificateFilenames = Arrays.copyOf(certificateFilenames, certificateFilenames.length);
+    }
+
+    public static String developmentPort() {
+        if (System.getenv().get("GATEWAY_PORT") != null) {
+            return System.getenv().get("GATEWAY_PORT");
+        } else {
+            return "3000";
+        }
     }
 }
