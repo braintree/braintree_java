@@ -1,3 +1,7 @@
+.classpath
+.project
+.settings
+.settings/*
 /.idea
 *.iml
 /*.jar
