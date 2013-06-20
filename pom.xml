@@ -16,15 +16,15 @@
       </license>
     </licenses>
 
-    <scm> 
+    <scm>
       <url>
-        https://git@github.braintreeps.com/braintree/braintree-java.git
+       scm:git|ssh://git@github.braintreeps.com/braintree/braintree-java.git
      </url>
      <connection>
-       scm:git:git://git@github.braintreeps.com/braintree/braintree-java.git
+       scm:git:https://git@github.braintreeps.com/braintree/braintree-java.git
      </connection>
      <developerConnection>
-       scm:git:git://git@github.braintreeps.com/braintree/braintree-java.git
+       scm:git|ssh://git@github.braintreeps.com/braintree/braintree-java.git
      </developerConnection>
     </scm>
 
