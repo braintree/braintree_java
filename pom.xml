@@ -18,14 +18,14 @@
 
     <scm>
       <url>
-        https://git@github.braintreeps.com/braintree/braintree-java.git
-     </url>
-     <connection>
-       scm:git:https://git@github.braintreeps.com/braintree/braintree-java.git
-     </connection>
-     <developerConnection>
-       scm:git:git://git@github.braintreeps.com/braintree/braintree-java.git
-     </developerConnection>
+        https://github.com/braintree/braintree-java.git
+      </url>
+      <connection>
+        scm:git:https://git@github.braintreeps.com/braintree/braintree-java.git
+      </connection>
+      <developerConnection>
+        scm:git:[fetch=]https://git@github.braintreeps.com/braintree/braintree-java.git[push=]git://git@github.braintreeps.com/braintree/braintree-java.git
+      </developerConnection>
     </scm>
 
     <distributionManagement>
@@ -165,6 +165,12 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.3.2</version>
             </plugin>
         </plugins>
     </build>
