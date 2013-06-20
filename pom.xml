@@ -18,7 +18,7 @@
 
     <scm> 
       <url>
-       scm:git:git://github.braintreeps.com/braintree/braintree-java.git
+        https://git@github.braintreeps.com/braintree/braintree-java.git
      </url>
      <connection>
        scm:git:git://git@github.braintreeps.com/braintree/braintree-java.git
