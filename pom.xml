@@ -16,17 +16,18 @@
       </license>
     </licenses>
 
-    <scm> <!-- currently pointing to our public github! -->
+    <scm> 
       <url>
-        https://github.braintreeps.com/braintree/braintree-java/
-      </url>
-      <connection>
-        scm:git:git://git@github.braintreeps.com/braintree/braintree-java.git
-      </connection>
-      <developerConnection>
-        scm:git:git://git@github.braintreeps.com/braintree/braintree-java.git
-      </developerConnection>
+       scm:git:git://github.braintreeps.com/braintree/braintree-java.git
+     </url>
+     <connection>
+       scm:git:git://git@github.braintreeps.com/braintree/braintree-java.git
+     </connection>
+     <developerConnection>
+       scm:git:git://git@github.braintreeps.com/braintree/braintree-java.git
+     </developerConnection>
     </scm>
+
     <distributionManagement>
         <snapshotRepository>
             <id>sonatype-nexus-snapshots</id>
