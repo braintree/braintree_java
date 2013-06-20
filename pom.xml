@@ -21,10 +21,10 @@
         https://github.com/braintree/braintree-java.git
       </url>
       <connection>
-        scm:git:https://git@github.braintreeps.com/braintree/braintree-java.git
+        scm:git:ssh://git@github.braintreeps.com/braintree/braintree-java.git
       </connection>
       <developerConnection>
-        scm:git:[fetch=]https://git@github.braintreeps.com/braintree/braintree-java.git[push=]ssh://git@github.braintreeps.com/braintree/braintree-java.git
+        scm:git:ssh://git@github.braintreeps.com/braintree/braintree-java.git
       </developerConnection>
     </scm>
 
