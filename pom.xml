@@ -21,10 +21,10 @@
         https://github.braintreeps.com/braintree/braintree-java/
       </url>
       <connection>
-        scm:git://git@github.braintreeps.com:braintree/braintree-java.git
+        scm:git:git://git@github.braintreeps.com/braintree/braintree-java.git
       </connection>
       <developerConnection>
-        scm:git://git@github.braintreeps.com:braintree/braintree-java.git
+        scm:git:git://git@github.braintreeps.com/braintree/braintree-java.git
       </developerConnection>
     </scm>
     <distributionManagement>
