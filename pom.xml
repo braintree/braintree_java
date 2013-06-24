@@ -80,9 +80,9 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>1.4</version>
-                        <!--configuration>
-                            <useAgent>true</useAgent> == doesn't currently work ==
-                        </configuration-->
+                        <configuration>
+                            <useAgent>true</useAgent>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
