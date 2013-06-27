@@ -68,7 +68,7 @@ The Braintree library provides integration access to the Braintree Gateway.
 ### In dependencies
 
     <dependency>
-      <groupId>com.braintreegateway</groupId>
+      <groupId>com.braintreepayments.gateway</groupId>
       <artifactId>braintree-java</artifactId>
       <version>PUT VERSION NUMBER HERE</version>
     </dependency>
