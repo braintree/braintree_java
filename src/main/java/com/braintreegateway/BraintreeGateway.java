@@ -1,6 +1,7 @@
 package com.braintreegateway;
 
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
+import com.braintreegateway.util.ClientLibraryProperties;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.TrUtil;
 
@@ -37,7 +38,7 @@ import com.braintreegateway.util.TrUtil;
  */
 public class BraintreeGateway {
 
-    public static final String VERSION = "2.22.1";
+    public static final String VERSION = new ClientLibraryProperties().version();
 
     private Configuration configuration;
     private Environment environment;
