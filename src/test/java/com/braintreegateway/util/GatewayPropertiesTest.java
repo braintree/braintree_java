@@ -37,14 +37,14 @@ public class GatewayPropertiesTest {
 
     @Test
     public void canRetrieveVersion() {
-        String version = new GatewayProperties().version();
-        assertTrue("Expecting version to loaded from GatewayProperties", versionValid(version));
+        String version = new ClientLibraryProperties().version();
+        assertTrue("Expecting version to loaded from ClientLibraryProperties", versionValid(version));
     }
 
     @Test
     public void gatewayUsesProperties() {
         String gatewayVersion = BraintreeGateway.VERSION;
-        String propertiesVersion = new GatewayProperties().version();
+        String propertiesVersion = new ClientLibraryProperties().version();
         assertEquals(gatewayVersion, propertiesVersion);
     }
 
