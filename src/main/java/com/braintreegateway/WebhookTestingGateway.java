@@ -20,7 +20,7 @@ public class WebhookTestingGateway {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         String timestamp = dateFormat.format(new Date());
-        String payload = "<notification><timestamp type=\"datetime\">" + timestamp + "</timestamp><kind>" + kind + "</kind><subject>" + subscriptionXml(id) + "</subject></notification>";
+        String payload = "<notification><timestamp type=\"datetime\">" + timestamp + "</timestamp><kind>" + kind + "</kind><subject>" + subjectXml(kind, id) + "</subject></notification>";
 
         return Base64.encodeBase64String(payload.getBytes()).trim();
     }
@@ -36,6 +36,18 @@ public class WebhookTestingGateway {
         response.put("signature", publicKeySignaturePair(payload));
 
         return response;
+    }
+
+    private String subjectXml(WebhookNotification.Kind kind, String id) {
+        if (kind == WebhookNotification.Kind.MERCHANT_ACCOUNT_APPROVED || kind == WebhookNotification.Kind.MERCHANT_ACCOUNT_DECLINED) {
+            return merchantAccountXml(id);
+        } else {
+            return subscriptionXml(id);
+        }
+    }
+
+    private String merchantAccountXml(String id) {
+        return "<api-error-response> <message>Credit score is too low</message> <errors> <errors type=\"array\"/> <merchant-account> <errors type=\"array\"> <error> <code>82609</code> <message>Credit score is too low</message> <attribute type=\"symbol\">base</attribute> </error> </errors> </merchant-account> </errors> <merchant-account> <id>" + id + "</id> <status>suspended</status> <master-merchant-account> <id>master_ma_for_" + id + "</id> <status>suspended</status> </master-merchant-account> </merchant-account> </api-error-response>";
     }
 
     private String subscriptionXml(String id) {

@@ -7,6 +7,7 @@ import com.braintreegateway.exceptions.InvalidSignatureException;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
+import com.braintreegateway.ValidationErrorCode;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ public class WebhookNotificationIT {
 
     @Test
     public void createNotificationWithUnrecognizedKind() {
-        String xml = "<notification><kind>" + "bad_kind" + "</kind></notification>";
+        String xml = "<notification><kind>" + "bad_kind" + "</kind> <subject> </subject> </notification>";
         NodeWrapper node = NodeWrapperFactory.instance.create(xml);
 
         WebhookNotification notification = new WebhookNotification(node);
@@ -39,7 +40,7 @@ public class WebhookNotificationIT {
     }
 
     @Test
-    public void createsSampleNotification() {
+    public void createsSampleSubscriptionNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
 
         WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
@@ -47,6 +48,40 @@ public class WebhookNotificationIT {
         assertEquals(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, notification.getKind());
         assertEquals("my_id", notification.getSubscription().getId());
         TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
+    }
+
+    @Test
+    public void createsSampleMerchantAccountApprovedNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.MERCHANT_ACCOUNT_APPROVED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+
+        assertEquals(WebhookNotification.Kind.MERCHANT_ACCOUNT_APPROVED, notification.getKind());
+        assertEquals("my_id", notification.getMerchantAccount().getId());
+        TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
+    }
+
+    @Test
+    public void createsSampleMerchantAccountDeclinedNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.MERCHANT_ACCOUNT_DECLINED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+
+        assertEquals(WebhookNotification.Kind.MERCHANT_ACCOUNT_DECLINED, notification.getKind());
+        assertEquals("my_id", notification.getMerchantAccount().getId());
+        TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
+    }
+
+    @Test
+    public void createsSampleMerchantAccountDeclinedNotificationWithErrorCodes() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.MERCHANT_ACCOUNT_DECLINED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+
+        assertEquals(WebhookNotification.Kind.MERCHANT_ACCOUNT_DECLINED, notification.getKind());
+        assertEquals("my_id", notification.getMerchantAccount().getId());
+        TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
+        assertEquals(ValidationErrorCode.MERCHANT_ACCOUNT_APPLICANT_DETAILS_FIRST_NAME_IS_REQUIRED, notification.getErrors().forObject("merchantAccount").onField("base").get(0).getCode());
     }
 
     @Test(expected = InvalidSignatureException.class)
