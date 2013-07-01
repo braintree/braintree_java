@@ -2524,7 +2524,6 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertFalse(result.isSuccess());
-        System.err.println(result.getErrors());
         assertEquals(ValidationErrorCode.TRANSACTION_SERVICE_FEE_AMOUNT_NOT_ALLOWED_ON_MASTER_MERCHANT_ACCOUNT,
             result.getErrors().forObject("transaction").onField("service_fee_amount").get(0).getCode());
     }

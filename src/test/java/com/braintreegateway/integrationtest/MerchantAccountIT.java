@@ -62,12 +62,12 @@ public class MerchantAccountIT {
                 firstName("Joe").
                 lastName("Bloggs").
                 email("joe@bloggs.com").
-                address(new AddressRequest().
+                address().
                     streetAddress("123 Credibility St.").
                     postalCode("60606").
                     locality("Chicago").
-                    region("IL")
-                ).
+                    region("IL").
+                    done().
                 dateOfBirth("10/9/1980").
                 ssn("123-456-7890").
                 routingNumber("9879879877").
