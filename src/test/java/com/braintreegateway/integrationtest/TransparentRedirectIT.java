@@ -3,6 +3,7 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
+import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +12,7 @@ import java.math.BigDecimal;
 
 import static org.junit.Assert.*;
 
-public class TransparentRedirectIT {
+public class TransparentRedirectIT implements MerchantAccountTestConstants {
     private BraintreeGateway gateway;
 
     @Before
@@ -52,13 +53,13 @@ public class TransparentRedirectIT {
 
         TransactionRequest trParams = new TransactionRequest().
             type(Transaction.Type.SALE).
-            merchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID);
+            merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID);
 
         String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
         Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
 
         assertTrue(result.isSuccess());
-        assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, result.getTarget().getMerchantAccountId());
+        assertEquals(NON_DEFAULT_MERCHANT_ACCOUNT_ID, result.getTarget().getMerchantAccountId());
     }
 
     @Test

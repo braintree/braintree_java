@@ -2,6 +2,7 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 public class Result<T> {
@@ -14,22 +15,17 @@ public class Result<T> {
     private String message;
     private T target;
 
-    @SuppressWarnings("unchecked")
     public static <T> T newInstanceFromNode(Class<T> klass, NodeWrapper node) {
-        if (klass == CreditCard.class) {
-            return (T) new CreditCard(node);
-        } else if (klass == Address.class) {
-            return (T) new Address(node);
-        } else if (klass == Customer.class) {
-            return (T) new Customer(node);
-        } else if (klass == Subscription.class) {
-            return (T) new Subscription(node);
-        } else if (klass == Transaction.class) {
-            return (T) new Transaction(node);
-        } else if (klass == SettlementBatchSummary.class){
-            return (T) new SettlementBatchSummary(node);
+        Throwable cause = null;
+        try {
+            return klass.getConstructor(NodeWrapper.class).newInstance(node);
         }
-        throw new IllegalArgumentException("Unknown klass: " + klass);
+        catch (InstantiationException e) { cause = e; }
+        catch (IllegalAccessException e) { cause = e; }
+        catch (InvocationTargetException e) { cause = e;  }
+        catch (NoSuchMethodException e) { cause = e; }
+
+        throw new IllegalArgumentException("Unknown klass: " + klass, cause);
     }
 
     public Result() {
