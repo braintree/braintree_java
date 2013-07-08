@@ -84,7 +84,7 @@ public class WebhookNotificationIT {
         assertEquals(WebhookNotification.Kind.MERCHANT_ACCOUNT_DECLINED, notification.getKind());
         assertEquals("my_id", notification.getMerchantAccount().getId());
         TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
-        assertEquals(ValidationErrorCode.MERCHANT_ACCOUNT_APPLICANT_DETAILS_FIRST_NAME_IS_REQUIRED, notification.getErrors().forObject("merchantAccount").onField("base").get(0).getCode());
+        assertEquals(ValidationErrorCode.MERCHANT_ACCOUNT_APPLICANT_DETAILS_DECLINED_OFAC, notification.getErrors().forObject("merchantAccount").onField("base").get(0).getCode());
     }
 
     @Test(expected = InvalidSignatureException.class)
