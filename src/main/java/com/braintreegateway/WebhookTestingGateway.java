@@ -39,15 +39,21 @@ public class WebhookTestingGateway {
     }
 
     private String subjectXml(WebhookNotification.Kind kind, String id) {
-        if (kind == WebhookNotification.Kind.MERCHANT_ACCOUNT_APPROVED || kind == WebhookNotification.Kind.MERCHANT_ACCOUNT_DECLINED) {
-            return merchantAccountXml(id);
+        if (kind == WebhookNotification.Kind.MERCHANT_ACCOUNT_DECLINED) {
+            return merchantAccountXmlDeclined(id);
+        } else if (kind == WebhookNotification.Kind.MERCHANT_ACCOUNT_APPROVED) {
+            return merchantAccountXmlActive(id);
         } else {
             return subscriptionXml(id);
         }
     }
 
-    private String merchantAccountXml(String id) {
+    private String merchantAccountXmlDeclined(String id) {
         return "<api-error-response> <message>Credit score is too low</message> <errors> <errors type=\"array\"/> <merchant-account> <errors type=\"array\"> <error> <code>82609</code> <message>Credit score is too low</message> <attribute type=\"symbol\">base</attribute> </error> </errors> </merchant-account> </errors> <merchant-account> <id>" + id + "</id> <status>suspended</status> <master-merchant-account> <id>master_ma_for_" + id + "</id> <status>suspended</status> </master-merchant-account> </merchant-account> </api-error-response>";
+    }
+
+    private String merchantAccountXmlActive(String id) {
+        return "<merchant-account><id>" + id + "</id><master-merchant-account><id>master_merchant_account</id><status>active</status></master-merchant-account><status>active</status></merchant-account>";
     }
 
     private String subscriptionXml(String id) {

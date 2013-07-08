@@ -2,6 +2,7 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Environment;
+import com.braintreegateway.MerchantAccount;
 import com.braintreegateway.WebhookNotification;
 import com.braintreegateway.exceptions.InvalidSignatureException;
 import com.braintreegateway.testhelpers.TestHelper;
@@ -58,6 +59,7 @@ public class WebhookNotificationIT {
 
         assertEquals(WebhookNotification.Kind.MERCHANT_ACCOUNT_APPROVED, notification.getKind());
         assertEquals("my_id", notification.getMerchantAccount().getId());
+        assertEquals(MerchantAccount.Status.ACTIVE, notification.getMerchantAccount().getStatus());
         TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
     }
 
@@ -69,6 +71,7 @@ public class WebhookNotificationIT {
 
         assertEquals(WebhookNotification.Kind.MERCHANT_ACCOUNT_DECLINED, notification.getKind());
         assertEquals("my_id", notification.getMerchantAccount().getId());
+        assertEquals(MerchantAccount.Status.SUSPENDED, notification.getMerchantAccount().getStatus());
         TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
     }
 
