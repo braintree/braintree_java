@@ -8,6 +8,14 @@ import static org.junit.Assert.assertEquals;
 
 public class CustomerRequestIT {
     @Test
+    public void toXmlIncludesBundle() {
+        CustomerRequest request = new CustomerRequest().
+            bundledParams("{\"device_session_id\": \"devicesession123\"}");
+
+        TestHelper.assertIncludes("devicesession123", request.toXML());
+    }
+
+    @Test
     public void toXmlIncludesSecurityParams() {
         CustomerRequest request = new CustomerRequest().
             creditCard().

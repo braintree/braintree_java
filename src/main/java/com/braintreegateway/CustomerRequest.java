@@ -8,6 +8,7 @@ import java.util.Map;
  * Provides a fluent interface to build up requests around {@link Customer Customers}.
  */
 public class CustomerRequest extends Request {
+    private String bundledParams;
     private String company;
     private String customerId;
     private String deviceSessionId;
@@ -29,6 +30,11 @@ public class CustomerRequest extends Request {
     public CustomerRequest(TransactionRequest transactionRequest) {
         this();
         this.parent = transactionRequest;
+    }
+
+    public CustomerRequest bundledParams(String bundledParams) {
+        this.bundledParams = bundledParams;
+        return this;
     }
 
     public CustomerRequest company(String company) {
@@ -127,6 +133,7 @@ public class CustomerRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root).
+            addElement("bundledParams", bundledParams).
             addElement("company", company).
             addElement("email", email).
             addElement("fax", fax).
