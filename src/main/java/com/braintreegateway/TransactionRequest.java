@@ -12,6 +12,7 @@ import java.util.Map;
 public class TransactionRequest extends Request {
     private BigDecimal amount;
     private TransactionAddressRequest billingAddressRequest;
+    private String bundledParams;
     private TransactionCreditCardRequest creditCardRequest;
     private String channel;
     private String customerId;
@@ -45,6 +46,11 @@ public class TransactionRequest extends Request {
     public TransactionAddressRequest billingAddress() {
         billingAddressRequest = new TransactionAddressRequest(this, "billing");
         return billingAddressRequest;
+    }
+
+    public TransactionRequest bundledParams(String bundledParams) {
+        this.bundledParams = bundledParams;
+        return this;
     }
 
     public TransactionRequest channel(String channel) {
@@ -170,6 +176,7 @@ public class TransactionRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root).
             addElement("amount", amount).
+            addElement("bundledParams", bundledParams).
             addElement("channel", channel).
             addElement("customerId", customerId).
             addElement("merchantAccountId", merchantAccountId).

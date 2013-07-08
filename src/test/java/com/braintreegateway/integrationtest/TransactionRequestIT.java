@@ -28,4 +28,10 @@ public class TransactionRequestIT {
         TransactionRequest request = new TransactionRequest().deviceSessionId("device_session");
         TestHelper.assertIncludes("device_session", request.toXML());
     }
+
+    @Test
+    public void toXmlIncludesBundle() {
+        TransactionRequest request = new TransactionRequest().bundledParams("{\"device_session_id\": \"mydsid\"}");
+        TestHelper.assertIncludes("mydsid", request.toXML());
+    }
 }
