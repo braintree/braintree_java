@@ -53,11 +53,11 @@ public class WebhookNotificationIT {
 
     @Test
     public void createsSampleMerchantAccountApprovedNotification() {
-        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.MERCHANT_ACCOUNT_APPROVED, "my_id");
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_APPROVED, "my_id");
 
         WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
 
-        assertEquals(WebhookNotification.Kind.MERCHANT_ACCOUNT_APPROVED, notification.getKind());
+        assertEquals(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_APPROVED, notification.getKind());
         assertEquals("my_id", notification.getMerchantAccount().getId());
         assertEquals(MerchantAccount.Status.ACTIVE, notification.getMerchantAccount().getStatus());
         TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
@@ -65,11 +65,11 @@ public class WebhookNotificationIT {
 
     @Test
     public void createsSampleMerchantAccountDeclinedNotification() {
-        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.MERCHANT_ACCOUNT_DECLINED, "my_id");
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED, "my_id");
 
         WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
 
-        assertEquals(WebhookNotification.Kind.MERCHANT_ACCOUNT_DECLINED, notification.getKind());
+        assertEquals(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED, notification.getKind());
         assertEquals("my_id", notification.getMerchantAccount().getId());
         assertEquals(MerchantAccount.Status.SUSPENDED, notification.getMerchantAccount().getStatus());
         TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
@@ -77,11 +77,11 @@ public class WebhookNotificationIT {
 
     @Test
     public void createsSampleMerchantAccountDeclinedNotificationWithErrorCodes() {
-        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.MERCHANT_ACCOUNT_DECLINED, "my_id");
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED, "my_id");
 
         WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
 
-        assertEquals(WebhookNotification.Kind.MERCHANT_ACCOUNT_DECLINED, notification.getKind());
+        assertEquals(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED, notification.getKind());
         assertEquals("my_id", notification.getMerchantAccount().getId());
         TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
         assertEquals(ValidationErrorCode.MERCHANT_ACCOUNT_APPLICANT_DETAILS_DECLINED_OFAC, notification.getErrors().forObject("merchantAccount").onField("base").get(0).getCode());

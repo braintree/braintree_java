@@ -39,10 +39,10 @@ public class WebhookTestingGateway {
     }
 
     private String subjectXml(WebhookNotification.Kind kind, String id) {
-        if (kind == WebhookNotification.Kind.MERCHANT_ACCOUNT_DECLINED) {
-            return merchantAccountXmlDeclined(id);
-        } else if (kind == WebhookNotification.Kind.MERCHANT_ACCOUNT_APPROVED) {
+        if (kind == WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_APPROVED) {
             return merchantAccountXmlActive(id);
+        } else if (kind == WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED) {
+            return merchantAccountXmlDeclined(id);
         } else {
             return subscriptionXml(id);
         }
