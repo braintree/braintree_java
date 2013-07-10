@@ -43,6 +43,8 @@ public class WebhookTestingGateway {
             return merchantAccountXmlActive(id);
         } else if (kind == WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED) {
             return merchantAccountXmlDeclined(id);
+        } else if (kind == WebhookNotification.Kind.TRANSACTION_DISBURSED) {
+            return transactionXml(id);
         } else {
             return subscriptionXml(id);
         }
@@ -58,5 +60,9 @@ public class WebhookTestingGateway {
 
     private String subscriptionXml(String id) {
         return "<subscription><id>" + id + "</id><transactions type=\"array\"></transactions><add_ons type=\"array\"></add_ons><discounts type=\"array\"></discounts></subscription>";
+    }
+
+    private String transactionXml(String id) {
+      return "<transaction><id>" + id + "</id><amount>100</amount><disbursement-details><disbursement-date type=\"datetime\">2013-07-09T18:23:29Z</disbursement-date></disbursement-details><billing></billing><credit-card></credit-card><customer></customer><descriptor></descriptor><shipping></shipping><subscription></subscription></transaction>";
     }
 }

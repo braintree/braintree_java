@@ -100,4 +100,17 @@ public class WebhookNotificationIT {
 
         this.gateway.webhookNotification().parse("uknown_public_key|signature", sampleNotification.get("payload"));
     }
+
+    @Test
+    public void createsSampleTransactionDisbursedNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.TRANSACTION_DISBURSED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+
+        assertEquals(WebhookNotification.Kind.TRANSACTION_DISBURSED, notification.getKind());
+        assertEquals("my_id", notification.getTransaction().getId());
+        assertEquals(2013, notification.getTransaction().getDisbursementDetails().getDisbursementDate().get(Calendar.YEAR));
+        assertEquals(Calendar.JULY, notification.getTransaction().getDisbursementDetails().getDisbursementDate().get(Calendar.MONTH));
+        assertEquals(9, notification.getTransaction().getDisbursementDetails().getDisbursementDate().get(Calendar.DAY_OF_MONTH));
+    }
 }

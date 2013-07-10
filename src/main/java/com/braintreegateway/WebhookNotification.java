@@ -16,6 +16,7 @@ public class WebhookNotification {
         SUBSCRIPTION_TRIAL_ENDED("subscription_trial_ended"),
         SUBSCRIPTION_WENT_ACTIVE("subscription_went_active"),
         SUBSCRIPTION_WENT_PAST_DUE("subscription_went_past_due"),
+        TRANSACTION_DISBURSED("transaction_disbursed"),
         UNRECOGNIZED("unrecognized");
 
         private final String name;
@@ -33,6 +34,7 @@ public class WebhookNotification {
     private ValidationErrors errors;
     private MerchantAccount merchantAccount;
     private Subscription subscription;
+    private Transaction transaction;
     private Kind kind;
     private Calendar timestamp;
 
@@ -54,6 +56,10 @@ public class WebhookNotification {
             this.merchantAccount = new MerchantAccount(wrapperNode.findFirst("merchant-account"));
         }
 
+        if (wrapperNode.findFirst("transaction") != null) {
+            this.transaction = new Transaction(wrapperNode.findFirst("transaction"));
+        }
+
         if (!wrapperNode.isSuccess()) {
             this.errors = new ValidationErrors(wrapperNode);
         }
@@ -73,6 +79,10 @@ public class WebhookNotification {
 
     public Subscription getSubscription() {
         return this.subscription;
+    }
+
+    public Transaction getTransaction() {
+        return this.transaction;
     }
 
     public Calendar getTimestamp() {
