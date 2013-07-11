@@ -17,7 +17,7 @@ public class CreditCardRequestIT {
     @Test
     public void toXmlIncludesBundle() {
         CreditCardRequest request = new CreditCardRequest().
-            bundledParams("{\"deviceSessionId\": \"dsid_abc123\"");
+            deviceData("{\"deviceSessionId\": \"dsid_abc123\"");
 
         TestHelper.assertIncludes("dsid_abc123", request.toXML());
     }

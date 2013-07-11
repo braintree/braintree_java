@@ -10,7 +10,7 @@ public class CustomerRequestIT {
     @Test
     public void toXmlIncludesBundle() {
         CustomerRequest request = new CustomerRequest().
-            bundledParams("{\"device_session_id\": \"devicesession123\"}");
+            deviceData("{\"device_session_id\": \"devicesession123\"}");
 
         TestHelper.assertIncludes("devicesession123", request.toXML());
     }
