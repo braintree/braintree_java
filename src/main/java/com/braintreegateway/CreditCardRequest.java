@@ -6,6 +6,7 @@ package com.braintreegateway;
 public class CreditCardRequest extends Request {
     private CreditCardAddressRequest billingAddressRequest;
     private String billingAddressId;
+    private String deviceData;
     private String cardholderName;
     private String customerId;
     private String cvv;
@@ -34,6 +35,11 @@ public class CreditCardRequest extends Request {
 
     public CreditCardRequest billingAddressId(String billingAddressId) {
         this.billingAddressId = billingAddressId;
+        return this;
+    }
+
+    public CreditCardRequest deviceData(String deviceData) {
+        this.deviceData = deviceData;
         return this;
     }
 
@@ -139,6 +145,7 @@ public class CreditCardRequest extends Request {
         return new RequestBuilder(root).
             addElement("billingAddress", billingAddressRequest).
             addElement("billingAddressId", billingAddressId).
+            addElement("deviceData", deviceData).
             addElement("options", optionsRequest).
             addElement("customerId", customerId).
             addElement("cardholderName", cardholderName).
