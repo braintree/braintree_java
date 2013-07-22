@@ -12,9 +12,11 @@ import java.util.Map;
 public class TransactionRequest extends Request {
     private BigDecimal amount;
     private TransactionAddressRequest billingAddressRequest;
+    private String deviceData;
     private TransactionCreditCardRequest creditCardRequest;
     private String channel;
     private String customerId;
+    private String deviceSessionId;
     private CustomerRequest customerRequest;
     private Map<String, String> customFields;
     private String merchantAccountId;
@@ -45,6 +47,11 @@ public class TransactionRequest extends Request {
         return billingAddressRequest;
     }
 
+    public TransactionRequest deviceData(String deviceData) {
+        this.deviceData = deviceData;
+        return this;
+    }
+
     public TransactionRequest channel(String channel) {
         this.channel = channel;
         return this;
@@ -67,6 +74,11 @@ public class TransactionRequest extends Request {
 
     public TransactionRequest customField(String apiName, String value) {
         customFields.put(apiName, value);
+        return this;
+    }
+
+    public TransactionRequest deviceSessionId(String deviceSessionId) {
+        this.deviceSessionId = deviceSessionId;
         return this;
     }
 
@@ -158,6 +170,7 @@ public class TransactionRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root).
             addElement("amount", amount).
+            addElement("deviceData", deviceData).
             addElement("channel", channel).
             addElement("customerId", customerId).
             addElement("merchantAccountId", merchantAccountId).
@@ -174,6 +187,7 @@ public class TransactionRequest extends Request {
             addElement("shipping", shippingAddressRequest).
             addElement("options", transactionOptionsRequest).
             addElement("recurring", recurring).
+            addElement("deviceSessionId", deviceSessionId).
             addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode);
 
         if (!customFields.isEmpty()) {

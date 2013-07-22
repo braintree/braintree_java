@@ -22,4 +22,16 @@ public class TransactionRequestIT {
         TransactionRequest request = new TransactionRequest().customField("ke&y", "va<lue");
         TestHelper.assertIncludes("<customFields><ke&amp;y>va&lt;lue</ke&amp;y></customFields>", request.toXML());
     }
+
+    @Test
+    public void toXmlIncludesSecurityParams() {
+        TransactionRequest request = new TransactionRequest().deviceSessionId("device_session");
+        TestHelper.assertIncludes("device_session", request.toXML());
+    }
+
+    @Test
+    public void toXmlIncludesBundle() {
+        TransactionRequest request = new TransactionRequest().deviceData("{\"device_session_id\": \"mydsid\"}");
+        TestHelper.assertIncludes("mydsid", request.toXML());
+    }
 }
