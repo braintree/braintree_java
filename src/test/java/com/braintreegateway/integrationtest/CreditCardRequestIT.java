@@ -31,6 +31,14 @@ public class CreditCardRequestIT {
     }
 
     @Test
+    public void toXmlIncludesBundle() {
+        CreditCardRequest request = new CreditCardRequest().
+            deviceData("{\"deviceSessionId\": \"dsid_abc123\"");
+
+        TestHelper.assertIncludes("dsid_abc123", request.toXML());
+    }
+
+    @Test
     public void toQueryString() {
         CreditCardRequest request = new CreditCardRequest().
             cardholderName("Drew").

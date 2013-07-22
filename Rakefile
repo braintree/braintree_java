@@ -42,3 +42,7 @@ task :javadoc do
   ]
   sh "javadoc -sourcepath src -subpackages com.braintreegateway -exclude #{excludes.join(":")} -d doc -overview overview.html"
 end
+
+def jar_name
+  "braintree-java-#{version}.jar"
+end
