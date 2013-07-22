@@ -126,13 +126,13 @@ public class ValidationErrors {
     }
 
     private void populateErrors(NodeWrapper node) {
-        if (node.getElementName() == "api-error-response") {
+        if (node.getElementName().equals("api-error-response")) {
             node = node.findFirst("errors");
         }
 
         List<NodeWrapper> errorResponses = node.findAll("*");
         for (NodeWrapper errorResponse : errorResponses) {
-            if (errorResponse.getElementName() != "errors") {
+            if (!errorResponse.getElementName().equals("errors")) {
                 nestedErrors.put(errorResponse.getElementName(), new ValidationErrors(errorResponse));
             } else {
                 populateTopLevelErrors(errorResponse.findAll("error"));

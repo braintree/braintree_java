@@ -67,7 +67,7 @@ public abstract class NodeWrapper {
 
     public Integer findInteger(String expression) {
         String value = findString(expression);
-        return value == null ? null : new Integer(value);
+        return value == null ? null : Integer.valueOf(value);
     }
 
     public abstract NodeWrapper findFirst(String expression);
@@ -77,7 +77,7 @@ public abstract class NodeWrapper {
     public abstract String getElementName(); //TODO MDM Rename to getName
 
     public boolean isSuccess() {
-        return getElementName() != "api-error-response";
+        return !(getElementName().equals("api-error-response"));
     }
 
     public Map<String, String> findMap(String expression) {

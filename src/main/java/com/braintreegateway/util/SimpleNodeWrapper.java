@@ -104,11 +104,11 @@ public class SimpleNodeWrapper extends NodeWrapper {
     private String stringValue() {
         if (content.size() == 1 && content.get(0) == null)
             return null;
-        String value = "";
+        StringBuilder value = new StringBuilder();
         for (Object o : content) {
-            value += o.toString();
+            value.append(o.toString());
         }
-        return value.trim();
+        return value.toString().trim();
     }
 
     @Override

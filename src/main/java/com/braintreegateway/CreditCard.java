@@ -7,6 +7,9 @@ import java.util.Calendar;
 import java.util.List;
 
 public class CreditCard {
+    public static final String VALUE_YES = "Yes";
+    public static final String VALUE_NO = "No";
+    public static final String VALUE_UNKNOWN = "Unknown";
 
     public enum CardType {
         AMEX("American Express"),
@@ -51,9 +54,9 @@ public class CreditCard {
     }
 
     public enum Commercial {
-        YES("Yes"),
-        NO("No"),
-        UNKNOWN("Unknown");
+        YES(VALUE_YES),
+        NO(VALUE_NO),
+        UNKNOWN(VALUE_UNKNOWN);
 
         private final String value;
 
@@ -68,9 +71,9 @@ public class CreditCard {
     }
 
     public enum Debit {
-        YES("Yes"),
-        NO("No"),
-        UNKNOWN("Unknown");
+        YES(VALUE_YES),
+        NO(VALUE_NO),
+        UNKNOWN(VALUE_UNKNOWN);
 
         private final String value;
 
@@ -85,9 +88,9 @@ public class CreditCard {
     }
 
     public enum DurbinRegulated {
-        YES("Yes"),
-        NO("No"),
-        UNKNOWN("Unknown");
+        YES(VALUE_YES),
+        NO(VALUE_NO),
+        UNKNOWN(VALUE_UNKNOWN);
 
         private final String value;
 
@@ -102,9 +105,9 @@ public class CreditCard {
     }
 
     public enum Healthcare {
-        YES("Yes"),
-        NO("No"),
-        UNKNOWN("Unknown");
+        YES(VALUE_YES),
+        NO(VALUE_NO),
+        UNKNOWN(VALUE_UNKNOWN);
 
         private final String value;
 
@@ -119,9 +122,9 @@ public class CreditCard {
     }
 
     public enum Payroll {
-        YES("Yes"),
-        NO("No"),
-        UNKNOWN("Unknown");
+        YES(VALUE_YES),
+        NO(VALUE_NO),
+        UNKNOWN(VALUE_UNKNOWN);
 
         private final String value;
 
@@ -136,9 +139,9 @@ public class CreditCard {
     }
 
     public enum Prepaid {
-        YES("Yes"),
-        NO("No"),
-        UNKNOWN("Unknown");
+        YES(VALUE_YES),
+        NO(VALUE_NO),
+        UNKNOWN(VALUE_UNKNOWN);
 
         private final String value;
 
