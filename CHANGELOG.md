@@ -1,3 +1,8 @@
+## 2.23.0
+
+* Adds device data to transactions, customers, and credit cards.
+* Lots of cleanups [thanks to https://github.com/steve-nester-uk]
+
 ## 2.22.1
 
 * Bumps version in maven pom.xml

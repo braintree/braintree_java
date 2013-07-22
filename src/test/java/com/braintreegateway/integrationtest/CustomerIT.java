@@ -116,6 +116,21 @@ public class CustomerIT {
     }
 
     @Test
+    public void createWithSecurityParams() {
+        CustomerRequest request = new CustomerRequest().
+            creditCard().
+                cardholderName("Fred Jones").
+                number("5105105105105100").
+                cvv("123").
+                expirationDate("05/12").
+                deviceSessionId("abc123").
+                done();
+        Result<Customer> result = gateway.customer().create(request);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
     public void createWithCustomFields() {
         CustomerRequest request = new CustomerRequest().
             customField("store_me", "custom value").

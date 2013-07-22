@@ -20,7 +20,7 @@ end
 desc "compile, test, build a jar"
 task :jar do
   sh "mvn verify package"
-  sh "cp target/braintree-java-*.jar #{jar_name}"
+  sh "cp target/braintree-java-*.jar ./#{jar_name}"
 end
 
 # e.g. rake single_test testclass=com.braintreegateway.integrationtest.TransactionIT
@@ -45,11 +45,4 @@ end
 
 def jar_name
   "braintree-java-#{version}.jar"
-end
-
-def version
-  contents = File.read('src/main/java/com/braintreegateway/BraintreeGateway.java')
-  version = contents.slice(/VERSION = "(.*)"/, 1)
-  raise "Cannot read version" if version.empty?
-  version
 end

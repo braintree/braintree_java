@@ -1,21 +1,54 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.braintree.java</groupId>
+    <groupId>com.braintreepayments.gateway</groupId>
     <artifactId>braintree-java</artifactId>
-    <version>2.22.1</version>
+    <version>2.22.4-SNAPSHOT</version>
+    <description>Java Client Library for Braintree Payments Gateway</description>
+    <packaging>jar</packaging>
+    <name>Braintree Gateway Java Client Library</name>
+    <url>https://www.braintreegateway.com</url>
     <inceptionYear>2013</inceptionYear>
-    <properties>
-    </properties>
 
-    <repositories>
+    <licenses>
+      <license>
+        <name>MIT license</name>
+        <url>http://www.opensource.org/licenses/mit-license.php</url>
+      </license>
+    </licenses>
+
+    <scm>
+      <url>
+        https://github.com/braintree/braintree-java.git
+      </url>
+      <connection>
+        scm:git:ssh://git@github.braintreeps.com/braintree/braintree-java.git
+      </connection>
+      <developerConnection>
+        scm:git:ssh://git@github.braintreeps.com/braintree/braintree-java.git
+      </developerConnection>
+      <tag>HEAD</tag>
+  </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Development Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
         <repository>
-            <id>maven.apache.org</id>
-            <name>Apache Maven Repository</name>
-            <url>http://repo.maven.apache.org/maven2</url>
+            <id>sonatype-nexus-staging</id>
+            <name>Releases</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-    </repositories>
+    </distributionManagement>
+
+    <developers>
+      <developer>
+        <id>devs</id>
+        <name>Braintree Payments</name>
+        <timezone>-5</timezone>
+      </developer>
+    </developers>
 
     <dependencies>
         <dependency>
@@ -32,7 +65,91 @@
         </dependency>
     </dependencies>
 
+    <profiles>  <!-- tasks to be performed only when building releases -->
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.4</version>
+                        <configuration>
+                            <useAgent>true</useAgent>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9</version>
+                        <configuration>
+                            <show>private</show>
+                            <nohelp>true</nohelp>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.7</version>
+                        <configuration>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                  <include>**/*.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                  <exclude>**/*.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -46,6 +163,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.14.1</version>
+                <configuration>
+                  <disableXmlReport>true</disableXmlReport>
+                  <useFile>false</useFile>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -60,6 +182,15 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                  <mavenExecutorId>forked-path</mavenExecutorId>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -6,9 +6,11 @@ package com.braintreegateway;
 public class CreditCardRequest extends Request {
     private CreditCardAddressRequest billingAddressRequest;
     private String billingAddressId;
+    private String deviceData;
     private String cardholderName;
     private String customerId;
     private String cvv;
+    private String deviceSessionId;
     private String expirationDate;
     private String expirationMonth;
     private String expirationYear;
@@ -36,6 +38,11 @@ public class CreditCardRequest extends Request {
         return this;
     }
 
+    public CreditCardRequest deviceData(String deviceData) {
+        this.deviceData = deviceData;
+        return this;
+    }
+
     public CreditCardRequest cardholderName(String cardholderName) {
         this.cardholderName = cardholderName;
         return this;
@@ -48,6 +55,11 @@ public class CreditCardRequest extends Request {
 
     public CreditCardRequest cvv(String cvv) {
         this.cvv = cvv;
+        return this;
+    }
+
+    public CreditCardRequest deviceSessionId(String deviceSessionId) {
+        this.deviceSessionId = deviceSessionId;
         return this;
     }
 
@@ -133,11 +145,13 @@ public class CreditCardRequest extends Request {
         return new RequestBuilder(root).
             addElement("billingAddress", billingAddressRequest).
             addElement("billingAddressId", billingAddressId).
+            addElement("deviceData", deviceData).
             addElement("options", optionsRequest).
             addElement("customerId", customerId).
             addElement("cardholderName", cardholderName).
             addElement("cvv", cvv).
             addElement("number", number).
+            addElement("deviceSessionId", deviceSessionId).
             addElement("expirationDate", expirationDate).
             addElement("expirationMonth", expirationMonth).
             addElement("expirationYear", expirationYear).
