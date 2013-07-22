@@ -1,3 +1,7 @@
+## 2.23.0
+
+* Adds device data to transactions, customers, and credit cards.
+
 ## 2.22.1
 
 * Bumps version in maven pom.xml
