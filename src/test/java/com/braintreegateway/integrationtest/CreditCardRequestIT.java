@@ -30,14 +30,6 @@ public class CreditCardRequestIT {
     }
 
     @Test
-    public void toXmlIncludesSecurityParams() {
-        CreditCardRequest request = new CreditCardRequest().
-            deviceSessionId("dsid_abc123");
-
-        TestHelper.assertIncludes("dsid_abc123", request.toXML());
-    }
-
-    @Test
     public void toQueryString() {
         CreditCardRequest request = new CreditCardRequest().
             cardholderName("Drew").
