@@ -97,6 +97,11 @@ public abstract class TestHelper {
         assertTrue(response.isSuccess());
     }
 
+    public static void escrow(BraintreeGateway gateway, String transactionId) {
+        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).put("/transactions/" + transactionId + "/escrow");
+        assertTrue(response.isSuccess());
+    }
+
     public static String simulateFormPostForTR(BraintreeGateway gateway, Request trParams, Request request, String postUrl) {
         String response = "";
         try {

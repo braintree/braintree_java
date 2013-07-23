@@ -31,6 +31,13 @@ public class Transaction {
         }
     }
 
+    public enum EscrowStatus {
+        HELD_IN_ESCROW,
+        SUBMITTED_FOR_ESCROW,
+        SUBMITTED_FOR_RELEASE,
+        RELEASED;
+    }
+
     public enum GatewayRejectionReason {
         AVS("avs"),
         AVS_AND_CVV("avs_and_cvv"),
@@ -102,6 +109,7 @@ public class Transaction {
     private DisbursementDetails disbursementDetails;
     private Descriptor descriptor;
     private List<Discount> discounts;
+    private EscrowStatus escrowStatus;
     private GatewayRejectionReason gatewayRejectionReason;
     private String id;
     private String merchantAccountId;
@@ -142,6 +150,7 @@ public class Transaction {
         cvvResponseCode = node.findString("cvv-response-code");
         disbursementDetails = new DisbursementDetails(node.findFirst("disbursement-details"));
         descriptor = new Descriptor(node.findFirst("descriptor"));
+        escrowStatus = EnumUtils.findByName(EscrowStatus.class, node.findString("escrow-status"));
         gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"));
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
@@ -248,6 +257,10 @@ public class Transaction {
 
     public List<Discount> getDiscounts() {
         return discounts;
+    }
+
+    public EscrowStatus getEscrowStatus() {
+        return escrowStatus;
     }
 
     public GatewayRejectionReason getGatewayRejectionReason() {

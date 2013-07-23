@@ -2562,4 +2562,169 @@ public class TransactionIT implements MerchantAccountTestConstants {
                 result.getErrors().forObject("transaction").onField("service_fee_amount").get(0).getCode());
     }
 
+    @Test
+    public void holdForEscrowOnCreate() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            serviceFeeAmount(new BigDecimal("1.00")).
+            options().
+                holdForEscrow(true).
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        assertEquals(
+                Transaction.EscrowStatus.SUBMITTED_FOR_ESCROW,
+                result.getTarget().getEscrowStatus()
+                );
+    }
+
+    @Test
+    public void holdForEscrowOnSaleForMasterMerchantAccount() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            serviceFeeAmount(new BigDecimal("1.00")).
+            options().
+                holdForEscrow(true).
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+                ValidationErrorCode.TRANSACTION_CANNOT_HOLD_FOR_ESCROW,
+                result.getErrors().forObject("transaction").onField("base").get(0).getCode()
+                );
+    }
+
+    @Test
+    public void holdForEscrowAfterSale() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2012").
+                done().
+            serviceFeeAmount(new BigDecimal("1.00"));
+        Result<Transaction> sale = gateway.transaction().sale(request);
+        assertTrue(sale.isSuccess());
+        String transactionID = sale.getTarget().getId();
+        Result<Transaction> holdForEscrow = gateway.transaction().holdForEscrow(transactionID);
+        assertTrue(holdForEscrow.isSuccess());
+        assertEquals(
+                Transaction.EscrowStatus.SUBMITTED_FOR_ESCROW,
+                holdForEscrow.getTarget().getEscrowStatus()
+                );
+    }
+
+    @Test
+    public void holdForEscrowAfterSaleFailsForMasterMerchants() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2012").
+                done();
+        Result<Transaction> sale = gateway.transaction().sale(request);
+        assertTrue(sale.isSuccess());
+        Result<Transaction> holdForEscrow = gateway.transaction().holdForEscrow(sale.getTarget().getId());
+        assertFalse(holdForEscrow.isSuccess());
+        assertEquals(
+                ValidationErrorCode.TRANSACTION_CANNOT_HOLD_FOR_ESCROW,
+                holdForEscrow.getErrors().forObject("transaction").onField("base").get(0).getCode()
+                );
+    }
+
+    @Test
+    public void submitForRelease() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2012").
+                done().
+            serviceFeeAmount(new BigDecimal("1.00"));
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+        assertTrue(saleResult.isSuccess());
+        TestHelper.escrow(gateway, saleResult.getTarget().getId());
+        Result<Transaction> releaseResult = gateway.transaction().submitForRelease(saleResult.getTarget().getId());
+        assertTrue(releaseResult.isSuccess());
+        assertEquals(
+                Transaction.EscrowStatus.SUBMITTED_FOR_RELEASE,
+                releaseResult.getTarget().getEscrowStatus()
+                );
+    }
+
+    @Test
+    public void submitForReleaseFailsWhenTransactionIsNotEscrowed() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2012").
+                done().
+            serviceFeeAmount(new BigDecimal("1.00"));
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+        assertTrue(saleResult.isSuccess());
+        Result<Transaction> releaseResult = gateway.transaction().submitForRelease(saleResult.getTarget().getId());
+        assertFalse(releaseResult.isSuccess());
+        assertEquals(
+                ValidationErrorCode.TRANSACTION_CANNOT_SUBMIT_FOR_RELEASE,
+                releaseResult.getErrors().forObject("transaction").onField("base").get(0).getCode()
+                );
+    }
+
+    @Test
+    public void cancelReleaseSucceeds() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2012").
+                done().
+            serviceFeeAmount(new BigDecimal("1.00"));
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+        assertTrue(saleResult.isSuccess());
+        TestHelper.escrow(gateway, saleResult.getTarget().getId());
+        Result<Transaction> releaseResult = gateway.transaction().submitForRelease(saleResult.getTarget().getId());
+        Result<Transaction> cancelResult = gateway.transaction().cancelRelease(saleResult.getTarget().getId());
+        assertTrue(cancelResult.isSuccess());
+        assertEquals(
+                Transaction.EscrowStatus.HELD_IN_ESCROW,
+                cancelResult.getTarget().getEscrowStatus()
+                );
+    }
+
+    @Test
+    public void cancelReleaseFailsReleasingNonPendingTransactions() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2012").
+                done().
+            serviceFeeAmount(new BigDecimal("1.00"));
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+        assertTrue(saleResult.isSuccess());
+        TestHelper.escrow(gateway, saleResult.getTarget().getId());
+        Result<Transaction> cancelResult = gateway.transaction().cancelRelease(saleResult.getTarget().getId());
+        assertFalse(cancelResult.isSuccess());
+        assertEquals(
+                ValidationErrorCode.TRANSACTION_CANNOT_CANCEL_RELEASE,
+                cancelResult.getErrors().forObject("transaction").onField("base").get(0).getCode()
+                );
+    }
 }

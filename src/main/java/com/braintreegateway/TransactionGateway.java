@@ -15,12 +15,12 @@ import java.util.List;
  * E.g. sales, credits, refunds, searches, etc.
  * This class does not need to be instantiated directly.
  * Instead, use {@link BraintreeGateway#transaction()} to get an instance of this class:
- * 
+ *
  * <pre>
  * BraintreeGateway gateway = new BraintreeGateway(...);
  * gateway.transaction().create(...)
  * </pre>
- * 
+ *
  * For more detailed information on {@link Transaction Transactions}, see <a href="http://www.braintreepayments.com/gateway/transaction-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/transaction-api</a>
  */
 public class TransactionGateway {
@@ -37,7 +37,7 @@ public class TransactionGateway {
         NodeWrapper response = http.post("/transactions/" + id + "/clone", request);
         return new Result<Transaction>(response, Transaction.class);
     }
-    
+
     /**
      * Please use gateway.transparentRedirect().confirmTransaction() instead
      */
@@ -67,7 +67,7 @@ public class TransactionGateway {
     public String creditTrData(TransactionRequest trData, String redirectURL) {
         return new TrUtil(configuration).buildTrData(trData.type(Type.CREDIT), redirectURL);
     }
-    
+
     /**
      * Finds a {@link Transaction} by id.
      * @param id the id of the {@link Transaction}.
@@ -88,7 +88,7 @@ public class TransactionGateway {
         NodeWrapper response = http.post("/transactions/" + id + "/refund");
         return new Result<Transaction>(response, Transaction.class);
     }
-    
+
     public Result<Transaction> refund(String id, BigDecimal amount) {
         TransactionRequest request = new TransactionRequest().amount(amount);
         NodeWrapper response = http.post("/transactions/" + id + "/refund", request);
@@ -133,8 +133,41 @@ public class TransactionGateway {
         for (NodeWrapper node : response.findAll("transaction")) {
             items.add(new Transaction(node));
         }
-        
+
         return items;
+    }
+
+    /**
+     * Cancels a pending release of a transaction with the given id from escrow.
+     * @param id of the transaction to cancel release from escrow of.
+     * @return a {@link Result}.
+     */
+    public Result<Transaction> cancelRelease(String id) {
+        TransactionRequest request = new TransactionRequest();
+        NodeWrapper response = http.put("/transactions/" + id + "/cancel_release", request);
+        return new Result<Transaction>(response, Transaction.class);
+    }
+
+    /**
+     * Holds the transaction with the given id for escrow.
+     * @param id of the transaction to hold for escrow.
+     * @return a {@link Result}.
+     */
+    public Result<Transaction> holdForEscrow(String id) {
+        TransactionRequest request = new TransactionRequest();
+        NodeWrapper response = http.put("/transactions/" + id + "/hold_for_escrow", request);
+        return new Result<Transaction>(response, Transaction.class);
+    }
+
+    /**
+     * Submits the transaction with the given id for release.
+     * @param id of the transaction to submit for release.
+     * @return a {@link Result}.
+     */
+    public Result<Transaction> submitForRelease(String id) {
+        TransactionRequest request = new TransactionRequest();
+        NodeWrapper response = http.put("/transactions/" + id + "/submit_for_release", request);
+        return new Result<Transaction>(response, Transaction.class);
     }
 
     /**
