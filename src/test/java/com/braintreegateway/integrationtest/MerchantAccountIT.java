@@ -72,7 +72,7 @@ public class MerchantAccountIT {
                 ssn("123-456-7890").
                 routingNumber("122100024").
                 accountNumber("98479798798").
-                taxId(123456789).
+                taxId("123456789").
                 companyName("Calculon's Drama School").
                 done().
             tosAccepted(true).

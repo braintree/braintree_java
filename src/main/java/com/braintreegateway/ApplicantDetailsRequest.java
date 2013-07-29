@@ -8,7 +8,7 @@ public class ApplicantDetailsRequest extends Request {
     private ApplicantDetailsAddressRequest address;
     private String dateOfBirth;
     private String ssn;
-    private Integer taxId;
+    private String taxId;
     private String routingNumber;
     private String accountNumber;
     private MerchantAccountRequest parent;
@@ -52,7 +52,7 @@ public class ApplicantDetailsRequest extends Request {
         return this;
     }
 
-    public ApplicantDetailsRequest taxId(Integer taxId) {
+    public ApplicantDetailsRequest taxId(String taxId) {
         this.taxId = taxId;
         return this;
     }
