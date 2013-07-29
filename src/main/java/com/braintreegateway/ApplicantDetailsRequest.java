@@ -1,18 +1,25 @@
 package com.braintreegateway;
 
 public class ApplicantDetailsRequest extends Request {
+    private String companyName;
     private String firstName;
     private String lastName;
     private String email;
     private ApplicantDetailsAddressRequest address;
     private String dateOfBirth;
     private String ssn;
+    private Integer taxId;
     private String routingNumber;
     private String accountNumber;
     private MerchantAccountRequest parent;
 
     public ApplicantDetailsRequest(MerchantAccountRequest parent) {
         this.parent = parent;
+    }
+
+    public ApplicantDetailsRequest companyName(String companyName) {
+        this.companyName = companyName;
+        return this;
     }
 
     public ApplicantDetailsRequest firstName(String firstName) {
@@ -42,6 +49,11 @@ public class ApplicantDetailsRequest extends Request {
 
     public ApplicantDetailsRequest ssn(String ssn) {
         this.ssn = ssn;
+        return this;
+    }
+
+    public ApplicantDetailsRequest taxId(Integer taxId) {
+        this.taxId = taxId;
         return this;
     }
 
@@ -76,12 +88,14 @@ public class ApplicantDetailsRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
+                addElement("companyName", companyName).
                 addElement("firstName", firstName).
                 addElement("lastName", lastName).
                 addElement("email", email).
                 addElement("addressRequest", address).
                 addElement("dateOfBirth", dateOfBirth).
                 addElement("ssn", ssn).
+                addElement("taxId", taxId).
                 addElement("routingNumber", routingNumber).
                 addElement("accountNumber", accountNumber);
     }

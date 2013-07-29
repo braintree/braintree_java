@@ -70,8 +70,10 @@ public class MerchantAccountIT {
                     done().
                 dateOfBirth("10/9/1980").
                 ssn("123-456-7890").
-                routingNumber("9879879877").
+                routingNumber("122100024").
                 accountNumber("98479798798").
+                taxId(123456789).
+                companyName("Calculon's Drama School").
                 done().
             tosAccepted(true).
             masterMerchantAccountId("sandbox_master_merchant_account");
