@@ -2563,7 +2563,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
-    public void holdForEscrowOnCreate() {
+    public void holdInEscrowOnCreate() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
             amount(new BigDecimal("100.00")).
@@ -2573,18 +2573,18 @@ public class TransactionIT implements MerchantAccountTestConstants {
                 done().
             serviceFeeAmount(new BigDecimal("1.00")).
             options().
-                holdForEscrow(true).
+                holdInEscrow(true).
                 done();
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
         assertEquals(
-                Transaction.EscrowStatus.SUBMITTED_FOR_ESCROW,
+                Transaction.EscrowStatus.HOLD_PENDING,
                 result.getTarget().getEscrowStatus()
                 );
     }
 
     @Test
-    public void holdForEscrowOnSaleForMasterMerchantAccount() {
+    public void holdInEscrowOnSaleForMasterMerchantAccount() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID).
             amount(new BigDecimal("100.00")).
@@ -2594,7 +2594,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
                 done().
             serviceFeeAmount(new BigDecimal("1.00")).
             options().
-                holdForEscrow(true).
+                holdInEscrow(true).
                 done();
         Result<Transaction> result = gateway.transaction().sale(request);
         assertFalse(result.isSuccess());
@@ -2605,7 +2605,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
-    public void holdForEscrowAfterSale() {
+    public void holdInEscrowAfterSale() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
             amount(new BigDecimal("100.00")).
@@ -2617,16 +2617,16 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Result<Transaction> sale = gateway.transaction().sale(request);
         assertTrue(sale.isSuccess());
         String transactionID = sale.getTarget().getId();
-        Result<Transaction> holdForEscrow = gateway.transaction().holdForEscrow(transactionID);
-        assertTrue(holdForEscrow.isSuccess());
+        Result<Transaction> holdInEscrow = gateway.transaction().holdInEscrow(transactionID);
+        assertTrue(holdInEscrow.isSuccess());
         assertEquals(
-                Transaction.EscrowStatus.SUBMITTED_FOR_ESCROW,
-                holdForEscrow.getTarget().getEscrowStatus()
+                Transaction.EscrowStatus.HOLD_PENDING,
+                holdInEscrow.getTarget().getEscrowStatus()
                 );
     }
 
     @Test
-    public void holdForEscrowAfterSaleFailsForMasterMerchants() {
+    public void holdInEscrowAfterSaleFailsForMasterMerchants() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID).
             amount(new BigDecimal("100.00")).
@@ -2636,11 +2636,11 @@ public class TransactionIT implements MerchantAccountTestConstants {
                 done();
         Result<Transaction> sale = gateway.transaction().sale(request);
         assertTrue(sale.isSuccess());
-        Result<Transaction> holdForEscrow = gateway.transaction().holdForEscrow(sale.getTarget().getId());
-        assertFalse(holdForEscrow.isSuccess());
+        Result<Transaction> holdInEscrow = gateway.transaction().holdInEscrow(sale.getTarget().getId());
+        assertFalse(holdInEscrow.isSuccess());
         assertEquals(
                 ValidationErrorCode.TRANSACTION_CANNOT_HOLD_FOR_ESCROW,
-                holdForEscrow.getErrors().forObject("transaction").onField("base").get(0).getCode()
+                holdInEscrow.getErrors().forObject("transaction").onField("base").get(0).getCode()
                 );
     }
 
@@ -2660,7 +2660,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Result<Transaction> releaseResult = gateway.transaction().submitForRelease(saleResult.getTarget().getId());
         assertTrue(releaseResult.isSuccess());
         assertEquals(
-                Transaction.EscrowStatus.SUBMITTED_FOR_RELEASE,
+                Transaction.EscrowStatus.RELEASE_PENDING,
                 releaseResult.getTarget().getEscrowStatus()
                 );
     }
@@ -2702,7 +2702,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Result<Transaction> cancelResult = gateway.transaction().cancelRelease(saleResult.getTarget().getId());
         assertTrue(cancelResult.isSuccess());
         assertEquals(
-                Transaction.EscrowStatus.HELD_IN_ESCROW,
+                Transaction.EscrowStatus.HELD,
                 cancelResult.getTarget().getEscrowStatus()
                 );
     }

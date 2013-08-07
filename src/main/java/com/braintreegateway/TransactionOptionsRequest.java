@@ -2,7 +2,7 @@ package com.braintreegateway;
 
 public class TransactionOptionsRequest extends Request {
     private Boolean addBillingAddressToPaymentMethod;
-    private Boolean holdForEscrow;
+    private Boolean holdInEscrow;
     private TransactionRequest parent;
     private Boolean storeInVault;
     private Boolean storeInVaultOnSuccess;
@@ -23,8 +23,8 @@ public class TransactionOptionsRequest extends Request {
         return parent;
     }
 
-    public TransactionOptionsRequest holdForEscrow(Boolean holdForEscrow) {
-        this.holdForEscrow = holdForEscrow;
+    public TransactionOptionsRequest holdInEscrow(Boolean holdInEscrow) {
+        this.holdInEscrow = holdInEscrow;
         return this;
     }
 
@@ -70,7 +70,7 @@ public class TransactionOptionsRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
-            addElement("holdForEscrow", holdForEscrow).
+            addElement("holdInEscrow", holdInEscrow).
             addElement("storeInVault", storeInVault).
             addElement("storeInVaultOnSuccess", storeInVaultOnSuccess).
             addElement("addBillingAddressToPaymentMethod", addBillingAddressToPaymentMethod).

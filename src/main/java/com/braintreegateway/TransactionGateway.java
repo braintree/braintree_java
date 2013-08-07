@@ -153,9 +153,9 @@ public class TransactionGateway {
      * @param id of the transaction to hold for escrow.
      * @return a {@link Result}.
      */
-    public Result<Transaction> holdForEscrow(String id) {
+    public Result<Transaction> holdInEscrow(String id) {
         TransactionRequest request = new TransactionRequest();
-        NodeWrapper response = http.put("/transactions/" + id + "/hold_for_escrow", request);
+        NodeWrapper response = http.put("/transactions/" + id + "/hold_in_escrow", request);
         return new Result<Transaction>(response, Transaction.class);
     }
 

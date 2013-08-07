@@ -32,10 +32,11 @@ public class Transaction {
     }
 
     public enum EscrowStatus {
-        HELD_IN_ESCROW,
-        SUBMITTED_FOR_ESCROW,
-        SUBMITTED_FOR_RELEASE,
-        RELEASED;
+        HELD,
+        HOLD_PENDING,
+        RELEASE_PENDING,
+        RELEASED,
+        REFUNDED;
     }
 
     public enum GatewayRejectionReason {
