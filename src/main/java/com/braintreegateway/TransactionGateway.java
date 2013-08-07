@@ -164,9 +164,9 @@ public class TransactionGateway {
      * @param id of the transaction to submit for release.
      * @return a {@link Result}.
      */
-    public Result<Transaction> submitForRelease(String id) {
+    public Result<Transaction> releaseFromEscrow(String id) {
         TransactionRequest request = new TransactionRequest();
-        NodeWrapper response = http.put("/transactions/" + id + "/submit_for_release", request);
+        NodeWrapper response = http.put("/transactions/" + id + "/release_from_escrow", request);
         return new Result<Transaction>(response, Transaction.class);
     }
 

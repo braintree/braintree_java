@@ -2645,7 +2645,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
-    public void submitForRelease() {
+    public void releaseFromEscrow() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
             amount(new BigDecimal("100.00")).
@@ -2657,7 +2657,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Result<Transaction> saleResult = gateway.transaction().sale(request);
         assertTrue(saleResult.isSuccess());
         TestHelper.escrow(gateway, saleResult.getTarget().getId());
-        Result<Transaction> releaseResult = gateway.transaction().submitForRelease(saleResult.getTarget().getId());
+        Result<Transaction> releaseResult = gateway.transaction().releaseFromEscrow(saleResult.getTarget().getId());
         assertTrue(releaseResult.isSuccess());
         assertEquals(
                 Transaction.EscrowStatus.RELEASE_PENDING,
@@ -2666,7 +2666,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
-    public void submitForReleaseFailsWhenTransactionIsNotEscrowed() {
+    public void releaseFromEscrowFailsWhenTransactionIsNotEscrowed() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID).
             amount(new BigDecimal("100.00")).
@@ -2677,7 +2677,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
             serviceFeeAmount(new BigDecimal("1.00"));
         Result<Transaction> saleResult = gateway.transaction().sale(request);
         assertTrue(saleResult.isSuccess());
-        Result<Transaction> releaseResult = gateway.transaction().submitForRelease(saleResult.getTarget().getId());
+        Result<Transaction> releaseResult = gateway.transaction().releaseFromEscrow(saleResult.getTarget().getId());
         assertFalse(releaseResult.isSuccess());
         assertEquals(
                 ValidationErrorCode.TRANSACTION_CANNOT_RELEASE_FROM_ESCROW,
@@ -2698,7 +2698,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Result<Transaction> saleResult = gateway.transaction().sale(request);
         assertTrue(saleResult.isSuccess());
         TestHelper.escrow(gateway, saleResult.getTarget().getId());
-        Result<Transaction> releaseResult = gateway.transaction().submitForRelease(saleResult.getTarget().getId());
+        Result<Transaction> releaseResult = gateway.transaction().releaseFromEscrow(saleResult.getTarget().getId());
         Result<Transaction> cancelResult = gateway.transaction().cancelRelease(saleResult.getTarget().getId());
         assertTrue(cancelResult.isSuccess());
         assertEquals(
