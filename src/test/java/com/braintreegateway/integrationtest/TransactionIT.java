@@ -2599,7 +2599,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Result<Transaction> result = gateway.transaction().sale(request);
         assertFalse(result.isSuccess());
         assertEquals(
-                ValidationErrorCode.TRANSACTION_CANNOT_HOLD_FOR_ESCROW,
+                ValidationErrorCode.TRANSACTION_CANNOT_HOLD_IN_ESCROW,
                 result.getErrors().forObject("transaction").onField("base").get(0).getCode()
                 );
     }
@@ -2639,7 +2639,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Result<Transaction> holdInEscrow = gateway.transaction().holdInEscrow(sale.getTarget().getId());
         assertFalse(holdInEscrow.isSuccess());
         assertEquals(
-                ValidationErrorCode.TRANSACTION_CANNOT_HOLD_FOR_ESCROW,
+                ValidationErrorCode.TRANSACTION_CANNOT_HOLD_IN_ESCROW,
                 holdInEscrow.getErrors().forObject("transaction").onField("base").get(0).getCode()
                 );
     }
