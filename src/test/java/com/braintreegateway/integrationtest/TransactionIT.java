@@ -2680,7 +2680,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Result<Transaction> releaseResult = gateway.transaction().submitForRelease(saleResult.getTarget().getId());
         assertFalse(releaseResult.isSuccess());
         assertEquals(
-                ValidationErrorCode.TRANSACTION_CANNOT_SUBMIT_FOR_RELEASE,
+                ValidationErrorCode.TRANSACTION_CANNOT_RELEASE_FROM_ESCROW,
                 releaseResult.getErrors().forObject("transaction").onField("base").get(0).getCode()
                 );
     }
