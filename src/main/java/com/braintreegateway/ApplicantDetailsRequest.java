@@ -5,6 +5,7 @@ public class ApplicantDetailsRequest extends Request {
     private String firstName;
     private String lastName;
     private String email;
+    private String phone;
     private ApplicantDetailsAddressRequest address;
     private String dateOfBirth;
     private String ssn;
@@ -34,6 +35,11 @@ public class ApplicantDetailsRequest extends Request {
 
     public ApplicantDetailsRequest email(String email) {
         this.email = email;
+        return this;
+    }
+
+    public ApplicantDetailsRequest phone(String phone) {
+        this.phone = phone;
         return this;
     }
 

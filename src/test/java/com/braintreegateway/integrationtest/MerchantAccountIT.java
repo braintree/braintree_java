@@ -62,6 +62,7 @@ public class MerchantAccountIT {
                 firstName("Joe").
                 lastName("Bloggs").
                 email("joe@bloggs.com").
+                phone("555-555-5555").
                 address().
                     streetAddress("123 Credibility St.").
                     postalCode("60606").
