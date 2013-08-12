@@ -7,6 +7,8 @@ import java.util.Calendar;
 
 public class WebhookNotification {
     public enum Kind {
+        PARTNER_USER_DELETED("partner_user_deleted"),
+        PARTNER_USER_CREATED("partner_user_created"),
         SUB_MERCHANT_ACCOUNT_APPROVED("sub_merchant_account_approved"),
         SUB_MERCHANT_ACCOUNT_DECLINED("sub_merchant_account_declined"),
         SUBSCRIPTION_CANCELED("subscription_canceled"),
@@ -37,6 +39,7 @@ public class WebhookNotification {
     private Transaction transaction;
     private Kind kind;
     private Calendar timestamp;
+    private PartnerCredentials partnerCredentials;
 
     public WebhookNotification(NodeWrapper node) {
         this.kind = EnumUtils.findByName(Kind.class, node.findString("kind"));
@@ -58,6 +61,10 @@ public class WebhookNotification {
 
         if (wrapperNode.findFirst("transaction") != null) {
             this.transaction = new Transaction(wrapperNode.findFirst("transaction"));
+        }
+
+        if (wrapperNode.findFirst("partner-credentials") != null) {
+            this.partnerCredentials = new PartnerCredentials(wrapperNode.findFirst("partner-credentials"));
         }
 
         if (!wrapperNode.isSuccess()) {
@@ -87,5 +94,9 @@ public class WebhookNotification {
 
     public Calendar getTimestamp() {
         return this.timestamp;
+    }
+
+    public PartnerCredentials getPartnerCredentials() {
+        return this.partnerCredentials;
     }
 }
