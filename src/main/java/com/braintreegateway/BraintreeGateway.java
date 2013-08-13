@@ -194,4 +194,14 @@ public class BraintreeGateway {
     public WebhookTestingGateway webhookTesting() {
         return new WebhookTestingGateway(configuration);
     }
+
+    /**
+     * Returns an {@link MerchantAccountGateway} for interacting with
+     * {@link MerchantAccount} objects.
+     *
+     * @return an {@link MerchantAccountGateway}.
+     */
+    public MerchantAccountGateway merchantAccount() {
+        return new MerchantAccountGateway(http);
+    }
 }

@@ -13,18 +13,19 @@ public class CreditCardRequestIT {
             cardholderName("Special Xml Chars <>&\"'");
         assertEquals("<creditCard><cardholderName>Special Xml Chars &lt;&gt;&amp;&quot;&apos;</cardholderName></creditCard>", request.toXML());
     }
-    @Test
-    public void toXmlIncludesSecurityParams() {
-        CreditCardRequest request = new CreditCardRequest().
-            deviceSessionId("dsid_abc123");
-
-        TestHelper.assertIncludes("dsid_abc123", request.toXML());
-    }
 
     @Test
     public void toXmlIncludesBundle() {
         CreditCardRequest request = new CreditCardRequest().
             deviceData("{\"deviceSessionId\": \"dsid_abc123\"");
+
+        TestHelper.assertIncludes("dsid_abc123", request.toXML());
+    }
+
+    @Test
+    public void toXmlIncludesSecurityParams() {
+        CreditCardRequest request = new CreditCardRequest().
+            deviceSessionId("dsid_abc123");
 
         TestHelper.assertIncludes("dsid_abc123", request.toXML());
     }

@@ -31,6 +31,14 @@ public class Transaction {
         }
     }
 
+    public enum EscrowStatus {
+        HELD,
+        HOLD_PENDING,
+        RELEASE_PENDING,
+        RELEASED,
+        REFUNDED;
+    }
+
     public enum GatewayRejectionReason {
         AVS("avs"),
         AVS_AND_CVV("avs_and_cvv"),
@@ -102,6 +110,7 @@ public class Transaction {
     private DisbursementDetails disbursementDetails;
     private Descriptor descriptor;
     private List<Discount> discounts;
+    private EscrowStatus escrowStatus;
     private GatewayRejectionReason gatewayRejectionReason;
     private String id;
     private String merchantAccountId;
@@ -125,6 +134,7 @@ public class Transaction {
     private Boolean taxExempt;
     private Type type;
     private Calendar updatedAt;
+    private BigDecimal serviceFeeAmount;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -141,6 +151,7 @@ public class Transaction {
         cvvResponseCode = node.findString("cvv-response-code");
         disbursementDetails = new DisbursementDetails(node.findFirst("disbursement-details"));
         descriptor = new Descriptor(node.findFirst("descriptor"));
+        escrowStatus = EnumUtils.findByName(EscrowStatus.class, node.findString("escrow-status"));
         gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"));
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
@@ -153,6 +164,7 @@ public class Transaction {
         recurring = node.findBoolean("recurring");
         refundedTransactionId = node.findString("refunded-transaction-id");
         refundId = node.findString("refund-id");
+        serviceFeeAmount = node.findBigDecimal("service-fee-amount");
         settlementBatchId = node.findString("settlement-batch-id");
         shippingAddress = new Address(node.findFirst("shipping"));
         status = EnumUtils.findByName(Status.class, node.findString("status"));
@@ -248,6 +260,10 @@ public class Transaction {
         return discounts;
     }
 
+    public EscrowStatus getEscrowStatus() {
+        return escrowStatus;
+    }
+
     public GatewayRejectionReason getGatewayRejectionReason() {
         return gatewayRejectionReason;
     }
@@ -298,6 +314,10 @@ public class Transaction {
 
     public List<String> getRefundIds() {
         return refundIds;
+    }
+
+    public BigDecimal getServiceFeeAmount() {
+        return serviceFeeAmount;
     }
 
     public String getSettlementBatchId() {

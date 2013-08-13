@@ -20,7 +20,7 @@ end
 desc "compile, test, build a jar"
 task :jar do
   sh "mvn verify package"
-  sh "cp target/braintree-java-*.jar ./#{jar_name}"
+  sh "cp target/braintree-java-*.jar ./"
 end
 
 # e.g. rake single_test testclass=com.braintreegateway.integrationtest.TransactionIT

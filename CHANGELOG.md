@@ -1,3 +1,12 @@
+## 2.24.0
+
+* Adds holdInEscrow method
+* Add error codes for verification not supported error
+* Add companyName and taxId to ApplicantDetailsRequest 
+* Adds cancelRelease method
+* Adds releaseFromEscrow functionality
+* Adds merchant account phone error code.
+
 ## 2.23.0
 
 * Adds device data to transactions, customers, and credit cards.

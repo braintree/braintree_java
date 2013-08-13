@@ -6,6 +6,7 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.CreditCardDefaults;
 import com.braintreegateway.test.CreditCardNumbers;
 import com.braintreegateway.test.VenmoSdk;
+import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +16,7 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class CreditCardIT {
+public class CreditCardIT implements MerchantAccountTestConstants {
 
     private BraintreeGateway gateway;
 
@@ -846,12 +847,12 @@ public class CreditCardIT {
             expirationDate("05/12").
             options().
                 verifyCard(true).
-                verificationMerchantAccountId(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                verificationMerchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID).
                 done();
 
         Result<CreditCard> result = gateway.creditCard().create(request);
         assertFalse(result.isSuccess());
-        assertEquals(MerchantAccount.NON_DEFAULT_MERCHANT_ACCOUNT_ID, result.getCreditCardVerification().getMerchantAccountId());
+        assertEquals(NON_DEFAULT_MERCHANT_ACCOUNT_ID, result.getCreditCardVerification().getMerchantAccountId());
     }
 
     @Test

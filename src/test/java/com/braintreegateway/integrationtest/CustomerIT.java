@@ -345,6 +345,24 @@ public class CustomerIT {
     }
 
     @Test
+    public void createWithVenmoSdkSession() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Fred").
+            creditCard().
+                number("5105105105105100").
+                cvv("123").
+                expirationDate("05/12").
+                options().
+                  venmoSdkSession(VenmoSdk.Session.Valid.value).
+                  done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget().getCreditCards().get(0).isVenmoSdk());
+    }
+
+    @Test
     public void createCustomerFromTransparentRedirect() {
         CustomerRequest request = new CustomerRequest().firstName("John");
         CustomerRequest trParams = new CustomerRequest().

@@ -20,7 +20,7 @@ public class WebhookTestingGateway {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         String timestamp = dateFormat.format(new Date());
-        String payload = "<notification><timestamp type=\"datetime\">" + timestamp + "</timestamp><kind>" + kind + "</kind><subject>" + subscriptionXml(id) + "</subject></notification>";
+        String payload = "<notification><timestamp type=\"datetime\">" + timestamp + "</timestamp><kind>" + kind + "</kind><subject>" + subjectXml(kind, id) + "</subject></notification>";
 
         return Base64.encodeBase64String(payload.getBytes()).trim();
     }
@@ -38,7 +38,31 @@ public class WebhookTestingGateway {
         return response;
     }
 
+    private String subjectXml(WebhookNotification.Kind kind, String id) {
+        if (kind == WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_APPROVED) {
+            return merchantAccountXmlActive(id);
+        } else if (kind == WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED) {
+            return merchantAccountXmlDeclined(id);
+        } else if (kind == WebhookNotification.Kind.TRANSACTION_DISBURSED) {
+            return transactionXml(id);
+        } else {
+            return subscriptionXml(id);
+        }
+    }
+
+    private String merchantAccountXmlDeclined(String id) {
+        return "<api-error-response> <message>Credit score is too low</message> <errors> <errors type=\"array\"/> <merchant-account> <errors type=\"array\"> <error> <code>82621</code> <message>Credit score is too low</message> <attribute type=\"symbol\">base</attribute> </error> </errors> </merchant-account> </errors> <merchant-account> <id>" + id + "</id> <status>suspended</status> <master-merchant-account> <id>master_ma_for_" + id + "</id> <status>suspended</status> </master-merchant-account> </merchant-account> </api-error-response>";
+    }
+
+    private String merchantAccountXmlActive(String id) {
+        return "<merchant-account><id>" + id + "</id><master-merchant-account><id>master_merchant_account</id><status>active</status></master-merchant-account><status>active</status></merchant-account>";
+    }
+
     private String subscriptionXml(String id) {
         return "<subscription><id>" + id + "</id><transactions type=\"array\"></transactions><add_ons type=\"array\"></add_ons><discounts type=\"array\"></discounts></subscription>";
+    }
+
+    private String transactionXml(String id) {
+      return "<transaction><id>" + id + "</id><amount>100</amount><disbursement-details><disbursement-date type=\"datetime\">2013-07-09T18:23:29Z</disbursement-date></disbursement-details><billing></billing><credit-card></credit-card><customer></customer><descriptor></descriptor><shipping></shipping><subscription></subscription></transaction>";
     }
 }
