@@ -115,7 +115,7 @@ public class WebhookTestingGateway {
     }
 
     private String partnerUserCreatedXml(String id) {
-        return node("partner-credentials",
+        return node("partner-user",
                 node("partner-user-id", "abc123"),
                 node("merchant-public-id", "public_id"),
                 node("public-key", "public_key"),
@@ -124,7 +124,7 @@ public class WebhookTestingGateway {
     }
 
     private String partnerUserDeletedXml(String id) {
-        return node("partner-credentials",
+        return node("partner-user",
                 node("partner-user-id", "abc123")
         );
     }

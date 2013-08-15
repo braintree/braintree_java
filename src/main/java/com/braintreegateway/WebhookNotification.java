@@ -39,7 +39,7 @@ public class WebhookNotification {
     private Transaction transaction;
     private Kind kind;
     private Calendar timestamp;
-    private PartnerCredentials partnerCredentials;
+    private PartnerUser partnerUser;
 
     public WebhookNotification(NodeWrapper node) {
         this.kind = EnumUtils.findByName(Kind.class, node.findString("kind"));
@@ -63,8 +63,8 @@ public class WebhookNotification {
             this.transaction = new Transaction(wrapperNode.findFirst("transaction"));
         }
 
-        if (wrapperNode.findFirst("partner-credentials") != null) {
-            this.partnerCredentials = new PartnerCredentials(wrapperNode.findFirst("partner-credentials"));
+        if (wrapperNode.findFirst("partner-user") != null) {
+            this.partnerUser = new PartnerUser(wrapperNode.findFirst("partner-user"));
         }
 
         if (!wrapperNode.isSuccess()) {
@@ -96,7 +96,7 @@ public class WebhookNotification {
         return this.timestamp;
     }
 
-    public PartnerCredentials getPartnerCredentials() {
-        return this.partnerCredentials;
+    public PartnerUser getPartnerUser() {
+        return this.partnerUser;
     }
 }

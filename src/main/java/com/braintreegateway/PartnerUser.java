@@ -2,13 +2,13 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 
-public final class PartnerCredentials {
+public final class PartnerUser {
     private final String merchantPublicId;
     private final String publicKey;
     private final String privateKey;
     private final String partnerUserId;
 
-    public PartnerCredentials(NodeWrapper node) {
+    public PartnerUser(NodeWrapper node) {
         this.merchantPublicId = node.findString("merchant-public-id");
         this.publicKey = node.findString("public-key");
         this.privateKey = node.findString("private-key");

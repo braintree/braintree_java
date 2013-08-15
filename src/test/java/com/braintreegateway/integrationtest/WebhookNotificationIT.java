@@ -125,10 +125,10 @@ public class WebhookNotificationIT {
             .parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
 
         assertEquals(WebhookNotification.Kind.PARTNER_USER_CREATED, notification.getKind());
-        assertEquals("public_id", notification.getPartnerCredentials().getMerchantPublicId());
-        assertEquals("public_key", notification.getPartnerCredentials().getPublicKey());
-        assertEquals("private_key", notification.getPartnerCredentials().getPrivateKey());
-        assertEquals("abc123", notification.getPartnerCredentials().getPartnerUserId());
+        assertEquals("public_id", notification.getPartnerUser().getMerchantPublicId());
+        assertEquals("public_key", notification.getPartnerUser().getPublicKey());
+        assertEquals("private_key", notification.getPartnerUser().getPrivateKey());
+        assertEquals("abc123", notification.getPartnerUser().getPartnerUserId());
         long now = new Date().getTime();
         long age = now - notification.getTimestamp().getTime().getTime();
         assertTrue(age < 5000);
@@ -144,10 +144,10 @@ public class WebhookNotificationIT {
             .parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
 
         assertEquals(WebhookNotification.Kind.PARTNER_USER_DELETED, notification.getKind());
-        assertEquals("abc123", notification.getPartnerCredentials().getPartnerUserId());
-        assertEquals(null, notification.getPartnerCredentials().getMerchantPublicId());
-        assertEquals(null, notification.getPartnerCredentials().getPublicKey());
-        assertEquals(null, notification.getPartnerCredentials().getPrivateKey());
+        assertEquals("abc123", notification.getPartnerUser().getPartnerUserId());
+        assertEquals(null, notification.getPartnerUser().getMerchantPublicId());
+        assertEquals(null, notification.getPartnerUser().getPublicKey());
+        assertEquals(null, notification.getPartnerUser().getPrivateKey());
         long now = new Date().getTime();
         long age = now - notification.getTimestamp().getTime().getTime();
         assertTrue(age < 5000);
