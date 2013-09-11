@@ -135,6 +135,22 @@ public class WebhookNotificationIT {
     }
 
     @Test
+    public void buildsSampleNotificationForPartnerMerchantDeclinedWebhook()
+    {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting()
+            .sampleNotification(WebhookNotification.Kind.PARTNER_MERCHANT_DECLINED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification()
+            .parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+
+        assertEquals(WebhookNotification.Kind.PARTNER_MERCHANT_DECLINED, notification.getKind());
+        assertEquals("abc123", notification.getPartnerUser().getPartnerUserId());
+        long now = new Date().getTime();
+        long age = now - notification.getTimestamp().getTime().getTime();
+        assertTrue(age < 5000);
+    }
+
+    @Test
     public void buildsSampleNotificationForPartnerUserDeletedWebhook()
     {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting()

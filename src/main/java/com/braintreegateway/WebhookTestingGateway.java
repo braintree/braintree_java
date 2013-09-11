@@ -45,6 +45,7 @@ public class WebhookTestingGateway {
             case TRANSACTION_DISBURSED: return transactionXml(id);
             case PARTNER_USER_CREATED: return partnerUserCreatedXml(id);
             case PARTNER_USER_DELETED: return partnerUserDeletedXml(id);
+            case PARTNER_MERCHANT_DECLINED: return partnerMerchantDeclinedXml(id);
             default: return subscriptionXml(id);
         }
     }
@@ -124,6 +125,12 @@ public class WebhookTestingGateway {
     }
 
     private String partnerUserDeletedXml(String id) {
+        return node("partner-user",
+                node("partner-user-id", "abc123")
+        );
+    }
+
+    private String partnerMerchantDeclinedXml(String id) {
         return node("partner-user",
                 node("partner-user-id", "abc123")
         );

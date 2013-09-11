@@ -9,6 +9,7 @@ public class WebhookNotification {
     public enum Kind {
         PARTNER_USER_DELETED("partner_user_deleted"),
         PARTNER_USER_CREATED("partner_user_created"),
+        PARTNER_MERCHANT_DECLINED("partner_merchant_declined"),
         SUB_MERCHANT_ACCOUNT_APPROVED("sub_merchant_account_approved"),
         SUB_MERCHANT_ACCOUNT_DECLINED("sub_merchant_account_declined"),
         SUBSCRIPTION_CANCELED("subscription_canceled"),
