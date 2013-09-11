@@ -2431,7 +2431,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
             billingAddress().
                 postalCode("20001").
                 done().
-            creditCard().
+                creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2009").
                 cvv("200").
@@ -2447,12 +2447,16 @@ public class TransactionIT implements MerchantAccountTestConstants {
     @Test
     public void fieldsWithUnrecognizedValuesAreCategorizedAsSuch() {
 
-        Transaction transaction = gateway.transaction().find("unrecognized_transaction_id");
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+                id().is("dodgy_rejection");
 
-        assertEquals(Transaction.GatewayRejectionReason.UNRECOGNIZED, transaction.getGatewayRejectionReason());
-        assertEquals(Transaction.EscrowStatus.UNRECOGNIZED, transaction.getEscrowStatus());
-        assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
+        assertEquals(1, collection.getMaximumSize());
+        final Transaction first = collection.getFirst();
+        assertEquals(Transaction.GatewayRejectionReason.UNRECOGNIZED, first.getGatewayRejectionReason());
+        assertEquals(Transaction.EscrowStatus.UNRECOGNIZED, first.getEscrowStatus());
+        assertEquals(Transaction.Status.UNRECOGNIZED, first.getStatus());
     }
 
 
