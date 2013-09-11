@@ -17,8 +17,7 @@ public class Transaction {
 
     public enum CreatedUsing {
         FULL_INFORMATION("full_information"),
-        TOKEN("token"),
-        UNRECOGNIZED("unrecognized");
+        TOKEN("token");
 
         private final String name;
 
@@ -37,16 +36,14 @@ public class Transaction {
         HOLD_PENDING,
         RELEASE_PENDING,
         RELEASED,
-        REFUNDED,
-        UNRECOGNIZED;
+        REFUNDED;
     }
 
     public enum GatewayRejectionReason {
         AVS("avs"),
         AVS_AND_CVV("avs_and_cvv"),
         CVV("cvv"),
-        DUPLICATE("duplicate"),
-        UNRECOGNIZED("unrecognized");
+        DUPLICATE("duplicate");
 
         private final String name;
 
@@ -62,8 +59,7 @@ public class Transaction {
 
     public enum Source {
         API("api"),
-        CONTROL_PANEL("control_panel"),
-        UNRECOGNIZED("unrecognized");
+        CONTROL_PANEL("control_panel");
 
         private final String name;
 
