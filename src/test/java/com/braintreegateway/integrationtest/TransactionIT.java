@@ -2431,7 +2431,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
             billingAddress().
                 postalCode("20001").
                 done().
-            creditCard().
+                creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2009").
                 cvv("200").
@@ -2443,6 +2443,22 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
         assertEquals(Transaction.GatewayRejectionReason.AVS_AND_CVV, transaction.getGatewayRejectionReason());
     }
+
+    @Test
+    public void fieldsWithUnrecognizedValuesAreCategorizedAsSuch() {
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+                id().is("dodgy_rejection");
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(1, collection.getMaximumSize());
+        final Transaction first = collection.getFirst();
+        assertEquals(Transaction.GatewayRejectionReason.UNRECOGNIZED, first.getGatewayRejectionReason());
+        assertEquals(Transaction.EscrowStatus.UNRECOGNIZED, first.getEscrowStatus());
+        assertEquals(Transaction.Status.UNRECOGNIZED, first.getStatus());
+    }
+
 
     @Test
     public void snapshotPlanIdAddOnsAndDiscountsFromSubscription() {
