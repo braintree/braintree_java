@@ -1,3 +1,7 @@
+## 2.24.1
+
+* Bug fix - catchall  unrecognized GatewayRejectionReasons
+
 ## 2.24.0
 
 * Adds holdInEscrow method
