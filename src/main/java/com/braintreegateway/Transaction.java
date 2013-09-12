@@ -43,7 +43,8 @@ public class Transaction {
         AVS("avs"),
         AVS_AND_CVV("avs_and_cvv"),
         CVV("cvv"),
-        DUPLICATE("duplicate");
+        DUPLICATE("duplicate"),
+        UNRECOGNIZED("unrecognized");
 
         private final String name;
 
