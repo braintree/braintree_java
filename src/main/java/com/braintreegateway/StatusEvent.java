@@ -20,7 +20,7 @@ public class StatusEvent {
         amount = node.findBigDecimal("amount");
         status = EnumUtils.findByName(Status.class, node.findString("status"));
         timestamp = node.findDateTime("timestamp");
-        source = EnumUtils.findByName(Source.class, node.findString("source"));
+        source = EnumUtils.findByName(Source.class, node.findString("transaction-source"));
         user = node.findString("user");
     }
 
