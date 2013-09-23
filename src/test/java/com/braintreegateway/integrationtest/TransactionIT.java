@@ -12,6 +12,7 @@ import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -1673,6 +1674,22 @@ public class TransactionIT implements MerchantAccountTestConstants {
         collection = gateway.transaction().search(searchRequest);
 
         assertEquals(0, collection.getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+          id().is(transaction.getId()).
+          source().in(Transaction.Source.API, Transaction.Source.RECURRING);
+
+        collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(1, collection.getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+          id().is(transaction.getId()).
+          source().in(Transaction.Source.RECURRING);
+
+        collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(0, collection.getMaximumSize());
     }
 
     @Test
@@ -2442,6 +2459,16 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Transaction transaction = result.getTransaction();
 
         assertEquals(Transaction.GatewayRejectionReason.AVS_AND_CVV, transaction.getGatewayRejectionReason());
+    }
+
+    @Ignore("<2.24.1")
+    @Test
+    public void fieldsWithUnrecognizedValuesAreCategorizedAsSuch() {
+      Transaction transaction = gateway.transaction().find("unrecognized_transaction_id");
+
+      assertEquals(Transaction.GatewayRejectionReason.UNRECOGNIZED, transaction.getGatewayRejectionReason());
+      assertEquals(Transaction.EscrowStatus.UNRECOGNIZED, transaction.getEscrowStatus());
+      assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
     }
 
     @Test

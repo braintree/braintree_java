@@ -13,9 +13,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class WebhookNotificationIT {
     private BraintreeGateway gateway;
@@ -112,5 +113,59 @@ public class WebhookNotificationIT {
         assertEquals(2013, notification.getTransaction().getDisbursementDetails().getDisbursementDate().get(Calendar.YEAR));
         assertEquals(Calendar.JULY, notification.getTransaction().getDisbursementDetails().getDisbursementDate().get(Calendar.MONTH));
         assertEquals(9, notification.getTransaction().getDisbursementDetails().getDisbursementDate().get(Calendar.DAY_OF_MONTH));
+    }
+
+    @Test
+    public void buildsSampleNotificationForPartnerUserCreatedWebhook()
+    {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting()
+            .sampleNotification(WebhookNotification.Kind.PARTNER_USER_CREATED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification()
+            .parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+
+        assertEquals(WebhookNotification.Kind.PARTNER_USER_CREATED, notification.getKind());
+        assertEquals("public_id", notification.getPartnerUser().getMerchantPublicId());
+        assertEquals("public_key", notification.getPartnerUser().getPublicKey());
+        assertEquals("private_key", notification.getPartnerUser().getPrivateKey());
+        assertEquals("abc123", notification.getPartnerUser().getPartnerUserId());
+        long now = new Date().getTime();
+        long age = now - notification.getTimestamp().getTime().getTime();
+        assertTrue(age < 5000);
+    }
+
+    @Test
+    public void buildsSampleNotificationForPartnerMerchantDeclinedWebhook()
+    {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting()
+            .sampleNotification(WebhookNotification.Kind.PARTNER_MERCHANT_DECLINED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification()
+            .parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+
+        assertEquals(WebhookNotification.Kind.PARTNER_MERCHANT_DECLINED, notification.getKind());
+        assertEquals("abc123", notification.getPartnerUser().getPartnerUserId());
+        long now = new Date().getTime();
+        long age = now - notification.getTimestamp().getTime().getTime();
+        assertTrue(age < 5000);
+    }
+
+    @Test
+    public void buildsSampleNotificationForPartnerUserDeletedWebhook()
+    {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting()
+            .sampleNotification(WebhookNotification.Kind.PARTNER_USER_DELETED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification()
+            .parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+
+        assertEquals(WebhookNotification.Kind.PARTNER_USER_DELETED, notification.getKind());
+        assertEquals("abc123", notification.getPartnerUser().getPartnerUserId());
+        assertEquals(null, notification.getPartnerUser().getMerchantPublicId());
+        assertEquals(null, notification.getPartnerUser().getPublicKey());
+        assertEquals(null, notification.getPartnerUser().getPrivateKey());
+        long now = new Date().getTime();
+        long age = now - notification.getTimestamp().getTime().getTime();
+        assertTrue(age < 5000);
     }
 }

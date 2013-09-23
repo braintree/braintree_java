@@ -39,30 +39,121 @@ public class WebhookTestingGateway {
     }
 
     private String subjectXml(WebhookNotification.Kind kind, String id) {
-        if (kind == WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_APPROVED) {
-            return merchantAccountXmlActive(id);
-        } else if (kind == WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED) {
-            return merchantAccountXmlDeclined(id);
-        } else if (kind == WebhookNotification.Kind.TRANSACTION_DISBURSED) {
-            return transactionXml(id);
-        } else {
-            return subscriptionXml(id);
+        switch(kind) {
+            case SUB_MERCHANT_ACCOUNT_APPROVED: return merchantAccountXmlActive(id);
+            case SUB_MERCHANT_ACCOUNT_DECLINED: return merchantAccountXmlDeclined(id);
+            case TRANSACTION_DISBURSED: return transactionXml(id);
+            case PARTNER_USER_CREATED: return partnerUserCreatedXml(id);
+            case PARTNER_USER_DELETED: return partnerUserDeletedXml(id);
+            case PARTNER_MERCHANT_DECLINED: return partnerMerchantDeclinedXml(id);
+            default: return subscriptionXml(id);
         }
     }
 
+    private String[][] TYPE_DATETIME = {{"type", "datetime"}};
+    private String[][] TYPE_ARRAY = {{"type", "array"}};
+    private String[][] TYPE_SYMBOL = {{"type", "symbol"}};
+
     private String merchantAccountXmlDeclined(String id) {
-        return "<api-error-response> <message>Credit score is too low</message> <errors> <errors type=\"array\"/> <merchant-account> <errors type=\"array\"> <error> <code>82621</code> <message>Credit score is too low</message> <attribute type=\"symbol\">base</attribute> </error> </errors> </merchant-account> </errors> <merchant-account> <id>" + id + "</id> <status>suspended</status> <master-merchant-account> <id>master_ma_for_" + id + "</id> <status>suspended</status> </master-merchant-account> </merchant-account> </api-error-response>";
+        return node("api-error-response",
+                node("message", "Credit score is too low"),
+                node("errors", TYPE_ARRAY,
+                    node("merchant-account",
+                        node("errors", TYPE_ARRAY,
+                            node("error",
+                                node("code", "82621"),
+                                node("message", "Credit score is too low"),
+                                node("attribute", TYPE_SYMBOL, "base")
+                            )
+                        )
+                    )
+                ),
+                node("merchant-account",
+                    node("id", id),
+                    node("status", "suspended"),
+                    node("master-merchant-account",
+                        node("id", "master_ma_for_" + id),
+                        node("status", "suspended")
+                    )
+                )
+        );
     }
 
     private String merchantAccountXmlActive(String id) {
-        return "<merchant-account><id>" + id + "</id><master-merchant-account><id>master_merchant_account</id><status>active</status></master-merchant-account><status>active</status></merchant-account>";
+          return node("merchant-account",
+                  node("id", id),
+                  node("master-merchant-account",
+                      node("id", id),
+                      node("status", "active")
+                  ),
+                  node("status", "active")
+        );
     }
 
     private String subscriptionXml(String id) {
-        return "<subscription><id>" + id + "</id><transactions type=\"array\"></transactions><add_ons type=\"array\"></add_ons><discounts type=\"array\"></discounts></subscription>";
+        return node("subscription",
+                node("id", id),
+                node("transactions", TYPE_ARRAY),
+                node("add_ons", TYPE_ARRAY),
+                node("discounts", TYPE_ARRAY)
+        );
     }
 
     private String transactionXml(String id) {
-      return "<transaction><id>" + id + "</id><amount>100</amount><disbursement-details><disbursement-date type=\"datetime\">2013-07-09T18:23:29Z</disbursement-date></disbursement-details><billing></billing><credit-card></credit-card><customer></customer><descriptor></descriptor><shipping></shipping><subscription></subscription></transaction>";
+        return node("transaction",
+                node("id", id),
+                node("amount", "100"),
+                node("disbursement-details",
+                    node("disbursement-date", TYPE_DATETIME, "2013-07-09T18:23:29Z")
+                ),
+                node("billing"),
+                node("credit-card"),
+                node("customer"),
+                node("descriptor"),
+                node("shipping"),
+                node("subscription")
+        );
+    }
+
+    private String partnerUserCreatedXml(String id) {
+        return node("partner-user",
+                node("partner-user-id", "abc123"),
+                node("merchant-public-id", "public_id"),
+                node("public-key", "public_key"),
+                node("private-key", "private_key")
+        );
+    }
+
+    private String partnerUserDeletedXml(String id) {
+        return node("partner-user",
+                node("partner-user-id", "abc123")
+        );
+    }
+
+    private String partnerMerchantDeclinedXml(String id) {
+        return node("partner-user",
+                node("partner-user-id", "abc123")
+        );
+    }
+
+    private static String node(String name, String... contents) {
+        return node(name, null, contents);
+    }
+
+    private static String node(String name, String[][] attributes, String... contents) {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append('<').append(name);
+        if (attributes != null) {
+            for (String[] pair : attributes) {
+                buffer.append(" ");
+                buffer.append(pair[0]).append("=\"").append(pair[1]).append("\"");
+            }
+        }
+        buffer.append('>');
+        for (String content : contents) {
+            buffer.append(content);
+        }
+        buffer.append("</").append(name).append('>');
+        return buffer.toString();
     }
 }

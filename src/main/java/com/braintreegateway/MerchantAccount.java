@@ -8,7 +8,8 @@ public class MerchantAccount {
     public enum Status {
         PENDING,
         ACTIVE,
-        SUSPENDED
+        SUSPENDED,
+        UNRECOGNIZED
     }
 
     private final String id;
