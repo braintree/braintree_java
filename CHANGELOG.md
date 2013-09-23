@@ -1,3 +1,6 @@
+## 2.24.1
+* Adds fraud to gatewayRejectionReason, unrecognized to all enums missing it.
+
 ## 2.24.0
 
 * Adds holdInEscrow method
