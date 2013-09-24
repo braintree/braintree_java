@@ -12,7 +12,6 @@ import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -2461,7 +2460,6 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals(Transaction.GatewayRejectionReason.AVS_AND_CVV, transaction.getGatewayRejectionReason());
     }
 
-    @Ignore("<2.24.1")
     @Test
     public void fieldsWithUnrecognizedValuesAreCategorizedAsSuch() {
       Transaction transaction = gateway.transaction().find("unrecognized_transaction_id");
