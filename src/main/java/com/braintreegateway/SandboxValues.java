@@ -7,8 +7,8 @@ import java.math.BigDecimal;
  */
 public class SandboxValues {
     public enum CreditCardNumber {
-        VISA("4111111111111111");
-
+        VISA("4111111111111111"),
+        FRAUD("4000111111111511");
         public String number;
 
         private CreditCardNumber(String number) {
