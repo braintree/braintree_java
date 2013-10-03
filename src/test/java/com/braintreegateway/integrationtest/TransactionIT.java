@@ -297,6 +297,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals("2009", creditCard.getExpirationYear());
         assertEquals("05/2009", creditCard.getExpirationDate());
         assertEquals("The Cardholder", creditCard.getCardholderName());
+        assertNull(transaction.getVoiceReferralNumber());
 
         assertNull(transaction.getVaultCustomer(gateway));
         Customer customer = transaction.getCustomer();
