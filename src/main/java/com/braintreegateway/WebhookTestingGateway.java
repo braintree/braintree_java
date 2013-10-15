@@ -120,7 +120,8 @@ public class WebhookTestingGateway {
                 node("partner-merchant-id", "abc123"),
                 node("merchant-public-id", "public_id"),
                 node("public-key", "public_key"),
-                node("private-key", "private_key")
+                node("private-key", "private_key"),
+                node("client-side-encryption-key", "cse_key")
         );
     }
 

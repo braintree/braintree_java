@@ -129,6 +129,7 @@ public class WebhookNotificationIT {
         assertEquals("public_key", notification.getPartnerMerchant().getPublicKey());
         assertEquals("private_key", notification.getPartnerMerchant().getPrivateKey());
         assertEquals("abc123", notification.getPartnerMerchant().getPartnerMerchantId());
+        assertEquals("cse_key", notification.getPartnerMerchant().getClientSideEncryptionKey());
         long now = new Date().getTime();
         long age = now - notification.getTimestamp().getTime().getTime();
         assertTrue(age < 5000);
