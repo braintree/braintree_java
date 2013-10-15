@@ -2,17 +2,17 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 
-public final class PartnerUser {
+public final class PartnerMerchant {
     private final String merchantPublicId;
     private final String publicKey;
     private final String privateKey;
-    private final String partnerUserId;
+    private final String partnerMerchantId;
 
-    public PartnerUser(NodeWrapper node) {
+    public PartnerMerchant(NodeWrapper node) {
         this.merchantPublicId = node.findString("merchant-public-id");
         this.publicKey = node.findString("public-key");
         this.privateKey = node.findString("private-key");
-        this.partnerUserId = node.findString("partner-user-id");
+        this.partnerMerchantId = node.findString("partner-merchant-id");
     }
 
     public String getMerchantPublicId() {
@@ -27,8 +27,8 @@ public final class PartnerUser {
         return privateKey;
     }
 
-    public String getPartnerUserId() {
-        return partnerUserId;
+    public String getPartnerMerchantId() {
+        return partnerMerchantId;
     }
 }
 
