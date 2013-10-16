@@ -124,6 +124,7 @@ public class CustomerIT {
                 cvv("123").
                 expirationDate("05/12").
                 deviceSessionId("abc123").
+                fraudMerchantId("456").
                 done();
         Result<Customer> result = gateway.customer().create(request);
 

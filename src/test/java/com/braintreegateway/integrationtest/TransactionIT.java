@@ -637,6 +637,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             deviceSessionId("abc123").
+            fraudMerchantId("456").
             creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2009").

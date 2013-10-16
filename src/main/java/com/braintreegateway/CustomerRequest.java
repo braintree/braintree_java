@@ -12,6 +12,7 @@ public class CustomerRequest extends Request {
     private String company;
     private String customerId;
     private String deviceSessionId;
+    private String fraudMerchantId;
     private String email;
     private String fax;
     private String firstName;
@@ -59,6 +60,11 @@ public class CustomerRequest extends Request {
 
     public CustomerRequest deviceSessionId(String deviceSessionId) {
         this.deviceSessionId = deviceSessionId;
+        return this;
+    }
+
+    public CustomerRequest fraudMerchantId(String fraudMerchantId) {
+        this.fraudMerchantId = fraudMerchantId;
         return this;
     }
 

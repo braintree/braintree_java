@@ -17,17 +17,20 @@ public class CreditCardRequestIT {
     @Test
     public void toXmlIncludesBundle() {
         CreditCardRequest request = new CreditCardRequest().
-            deviceData("{\"deviceSessionId\": \"dsid_abc123\"");
+            deviceData("{\"deviceSessionId\": \"dsid_abc123\", \"fraudMerchantId\": \"fmid_456\"}");
 
         TestHelper.assertIncludes("dsid_abc123", request.toXML());
+        TestHelper.assertIncludes("fmid_456", request.toXML());
     }
 
     @Test
     public void toXmlIncludesSecurityParams() {
         CreditCardRequest request = new CreditCardRequest().
-            deviceSessionId("dsid_abc123");
+          deviceSessionId("dsid_abc123").
+          fraudMerchantId("fmid_456");
 
         TestHelper.assertIncludes("dsid_abc123", request.toXML());
+        TestHelper.assertIncludes("fmid_456", request.toXML());
     }
 
     @Test

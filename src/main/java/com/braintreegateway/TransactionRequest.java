@@ -17,6 +17,7 @@ public class TransactionRequest extends Request {
     private String channel;
     private String customerId;
     private String deviceSessionId;
+    private String fraudMerchantId;
     private CustomerRequest customerRequest;
     private Map<String, String> customFields;
     private String merchantAccountId;
@@ -62,7 +63,7 @@ public class TransactionRequest extends Request {
         creditCardRequest = new TransactionCreditCardRequest(this);
         return creditCardRequest;
     }
-    
+
     public TransactionRequest serviceFeeAmount(BigDecimal fee) {
         serviceFeeAmount = fee;
         return this;
@@ -85,6 +86,11 @@ public class TransactionRequest extends Request {
 
     public TransactionRequest deviceSessionId(String deviceSessionId) {
         this.deviceSessionId = deviceSessionId;
+        return this;
+    }
+
+    public TransactionRequest fraudMerchantId(String fraudMerchantId) {
+        this.fraudMerchantId = fraudMerchantId;
         return this;
     }
 
@@ -194,6 +200,7 @@ public class TransactionRequest extends Request {
             addElement("options", transactionOptionsRequest).
             addElement("recurring", recurring).
             addElement("deviceSessionId", deviceSessionId).
+            addElement("fraudMerchantId", fraudMerchantId).
             addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode).
             addElement("serviceFeeAmount", serviceFeeAmount);
 
