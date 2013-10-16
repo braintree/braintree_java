@@ -70,6 +70,23 @@ public class BraintreeGateway {
     }
 
     /**
+     * Returns a BraintreeGateway specifically for Partner usage. Unless you are a partner, use the regular constructor instead.
+     *
+     * @param environment
+     *            Either {@link Environment#SANDBOX} or
+     *            {@link Environment#PRODUCTION}.
+     * @param partnerId
+     *            the partner id provided by Braintree.
+     * @param publicKey
+     *            the public key provided by Braintree.
+     * @param privateKey
+     *            the private key provided by Braintree.
+     */
+    public static BraintreeGateway forPartner(Environment environment, String partnerId, String publicKey, String privateKey) {
+        return new BraintreeGateway(environment, partnerId, publicKey, privateKey);
+    }
+
+    /**
      * Returns an {@link AddOnGateway} for interacting with {@link AddOn}
      * objects.
      *
@@ -203,5 +220,13 @@ public class BraintreeGateway {
      */
     public MerchantAccountGateway merchantAccount() {
         return new MerchantAccountGateway(http);
+    }
+
+    public String getPrivateKey() {
+      return privateKey;
+    }
+
+    public String getPublicKey() {
+      return publicKey;
     }
 }
