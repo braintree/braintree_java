@@ -5,6 +5,7 @@ import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.test.CreditCardNumbers;
 import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
@@ -2294,6 +2295,14 @@ public class TransactionIT implements MerchantAccountTestConstants {
             submittedForSettlementAt().between(threeDaysEarlier, oneDayEarlier);
 
         assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    @Test(expected = DownForMaintenanceException.class)
+    public void searchReturnsAndHandlesInvalidCriteria() {
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            amount().is(new BigDecimal("-500"));
+
+        gateway.transaction().search(searchRequest);
     }
 
     @Test
