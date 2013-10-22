@@ -2,6 +2,7 @@ package com.braintreegateway;
 
 import com.braintreegateway.Transaction.Type;
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.TrUtil;
@@ -118,11 +119,15 @@ public class TransactionGateway {
     /**
      * Finds all Transactions that match the query and returns a {@link ResourceCollection}.
      * See: <a href="http://www.braintreepayments.com/gateway/transaction-api#searching" target="_blank">http://www.braintreepaymentsolutions.com/gateway/transaction-api#searching</a>
-     * @return a {@link ResourceCollection}.
+     * @return a {@link ResourceCollection} or raises a {@link DownForMaintenanceException}.
      */
     public ResourceCollection<Transaction> search(TransactionSearchRequest query) {
         NodeWrapper node = http.post("/transactions/advanced_search_ids", query);
-        return new ResourceCollection<Transaction>(new TransactionPager(this, query), node);
+        if (node.getElementName() == "search-results") {
+          return new ResourceCollection<Transaction>(new TransactionPager(this, query), node);
+        } else {
+          throw new DownForMaintenanceException();
+        }
     }
 
     List<Transaction> fetchTransactions(TransactionSearchRequest query, List<String> ids) {
