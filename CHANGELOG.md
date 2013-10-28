@@ -1,3 +1,6 @@
+## 2.25.0
+* Adds support for Partnerships
+
 ## 2.24.1
 * Adds fraud to gatewayRejectionReason, unrecognized to all enums missing it.
 
