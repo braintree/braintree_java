@@ -119,7 +119,8 @@ public class CreditCardIT implements MerchantAccountTestConstants {
             cardholderName("Special Chars").
             number("5105105105105100").
             expirationDate("05/12").
-            deviceSessionId("abc123");
+            deviceSessionId("abc123").
+            fraudMerchantId("456");
         Result<CreditCard> result = gateway.creditCard().create(request);
 
         assertTrue(result.isSuccess());

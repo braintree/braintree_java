@@ -11,6 +11,7 @@ public class CreditCardRequest extends Request {
     private String customerId;
     private String cvv;
     private String deviceSessionId;
+    private String fraudMerchantId;
     private String expirationDate;
     private String expirationMonth;
     private String expirationYear;
@@ -63,6 +64,10 @@ public class CreditCardRequest extends Request {
         return this;
     }
 
+    public CreditCardRequest fraudMerchantId(String fraudMerchantId) {
+        this.fraudMerchantId = fraudMerchantId;
+        return this;
+    }
     public CustomerRequest done() {
         return parent;
     }
@@ -152,6 +157,7 @@ public class CreditCardRequest extends Request {
             addElement("cvv", cvv).
             addElement("number", number).
             addElement("deviceSessionId", deviceSessionId).
+            addElement("fraudMerchantId", fraudMerchantId).
             addElement("expirationDate", expirationDate).
             addElement("expirationMonth", expirationMonth).
             addElement("expirationYear", expirationYear).

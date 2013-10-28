@@ -25,13 +25,17 @@ public class TransactionRequestIT {
 
     @Test
     public void toXmlIncludesSecurityParams() {
-        TransactionRequest request = new TransactionRequest().deviceSessionId("device_session");
+        TransactionRequest request = new TransactionRequest().
+          deviceSessionId("device_session").
+          fraudMerchantId("fraud_merchant");
         TestHelper.assertIncludes("device_session", request.toXML());
+        TestHelper.assertIncludes("fraud_merchant", request.toXML());
     }
 
     @Test
     public void toXmlIncludesBundle() {
-        TransactionRequest request = new TransactionRequest().deviceData("{\"device_session_id\": \"mydsid\"}");
+        TransactionRequest request = new TransactionRequest().deviceData("{\"device_session_id\": \"mydsid\", \"fraud_merchant_id\": \"myfmid\"}");
         TestHelper.assertIncludes("mydsid", request.toXML());
+        TestHelper.assertIncludes("myfmid", request.toXML());
     }
 }
