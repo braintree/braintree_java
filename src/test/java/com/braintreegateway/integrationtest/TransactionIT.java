@@ -5,6 +5,7 @@ import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.test.CreditCardNumbers;
 import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
@@ -12,7 +13,6 @@ import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -298,6 +298,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals("2009", creditCard.getExpirationYear());
         assertEquals("05/2009", creditCard.getExpirationDate());
         assertEquals("The Cardholder", creditCard.getCardholderName());
+        assertNull(transaction.getVoiceReferralNumber());
 
         assertNull(transaction.getVaultCustomer(gateway));
         Customer customer = transaction.getCustomer();
@@ -616,10 +617,28 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void saleWithFraudCardIsDeclined() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.FRAUD.number).
+                expirationDate("05/2016").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        assertEquals(Transaction.Status.GATEWAY_REJECTED, transaction.getStatus());
+        assertEquals(Transaction.GatewayRejectionReason.FRAUD, transaction.getGatewayRejectionReason());
+    }
+
+    @Test
     public void saleWithSecuirtyParams() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             deviceSessionId("abc123").
+            fraudMerchantId("456").
             creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2009").
@@ -2296,6 +2315,14 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
+    @Test(expected = DownForMaintenanceException.class)
+    public void searchReturnsAndHandlesInvalidCriteria() {
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            amount().is(new BigDecimal("-500"));
+
+        gateway.transaction().search(searchRequest);
+    }
+
     @Test
     @SuppressWarnings("deprecation")
     public void refundTransaction() {
@@ -2461,7 +2488,6 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals(Transaction.GatewayRejectionReason.AVS_AND_CVV, transaction.getGatewayRejectionReason());
     }
 
-    @Ignore("<2.24.1")
     @Test
     public void fieldsWithUnrecognizedValuesAreCategorizedAsSuch() {
       Transaction transaction = gateway.transaction().find("unrecognized_transaction_id");

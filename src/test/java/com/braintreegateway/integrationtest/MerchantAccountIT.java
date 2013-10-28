@@ -70,7 +70,7 @@ public class MerchantAccountIT {
                     region("IL").
                     done().
                 dateOfBirth("10/9/1980").
-                ssn("123-456-7890").
+                ssn("123-45-7890").
                 routingNumber("122100024").
                 accountNumber("98479798798").
                 taxId("123456789").

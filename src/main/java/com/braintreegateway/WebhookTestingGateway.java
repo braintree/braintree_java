@@ -43,8 +43,8 @@ public class WebhookTestingGateway {
             case SUB_MERCHANT_ACCOUNT_APPROVED: return merchantAccountXmlActive(id);
             case SUB_MERCHANT_ACCOUNT_DECLINED: return merchantAccountXmlDeclined(id);
             case TRANSACTION_DISBURSED: return transactionXml(id);
-            case PARTNER_USER_CREATED: return partnerUserCreatedXml(id);
-            case PARTNER_USER_DELETED: return partnerUserDeletedXml(id);
+            case PARTNER_MERCHANT_CONNECTED: return partnerMerchantConnectedXml(id);
+            case PARTNER_MERCHANT_DISCONNECTED: return partnerMerchantDisconnectedXml(id);
             case PARTNER_MERCHANT_DECLINED: return partnerMerchantDeclinedXml(id);
             default: return subscriptionXml(id);
         }
@@ -115,24 +115,25 @@ public class WebhookTestingGateway {
         );
     }
 
-    private String partnerUserCreatedXml(String id) {
-        return node("partner-user",
-                node("partner-user-id", "abc123"),
+    private String partnerMerchantConnectedXml(String id) {
+        return node("partner-merchant",
+                node("partner-merchant-id", "abc123"),
                 node("merchant-public-id", "public_id"),
                 node("public-key", "public_key"),
-                node("private-key", "private_key")
+                node("private-key", "private_key"),
+                node("client-side-encryption-key", "cse_key")
         );
     }
 
-    private String partnerUserDeletedXml(String id) {
-        return node("partner-user",
-                node("partner-user-id", "abc123")
+    private String partnerMerchantDisconnectedXml(String id) {
+        return node("partner-merchant",
+                node("partner-merchant-id", "abc123")
         );
     }
 
     private String partnerMerchantDeclinedXml(String id) {
-        return node("partner-user",
-                node("partner-user-id", "abc123")
+        return node("partner-merchant",
+                node("partner-merchant-id", "abc123")
         );
     }
 

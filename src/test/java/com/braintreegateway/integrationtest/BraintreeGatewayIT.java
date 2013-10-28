@@ -29,6 +29,13 @@ public class BraintreeGatewayIT {
     }
 
     @Test
+    public void partnerIdAlias() {
+        BraintreeGateway config = BraintreeGateway.forPartner(Environment.DEVELOPMENT, "partner_id", "publicKey", "privateKey");
+        assertEquals(config.getPublicKey(), "publicKey");
+        assertEquals(config.getPrivateKey(), "privateKey");
+    }
+
+    @Test
     public void getAuthorizationHeader() {
         BraintreeGateway config = new BraintreeGateway(Environment.DEVELOPMENT, "development_merchant_id",
                 "integration_public_key", "integration_private_key");
