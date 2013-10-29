@@ -19,7 +19,6 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 
 public class Http {
@@ -107,10 +106,8 @@ public class Http {
                 CertificateFactory cf = CertificateFactory.getInstance("X.509");
                 InputStream certStream = Http.class.getClassLoader().getResourceAsStream(certificateFilename);
 
-                Collection c = cf.generateCertificates(certStream);
-                Iterator i = c.iterator();
-                while (i.hasNext()) {
-                    Certificate cert = (Certificate)i.next();
+                Collection<? extends Certificate> coll = cf.generateCertificates(certStream);
+                for (Certificate cert : coll) {
                     if (cert instanceof X509Certificate) {
                       X509Certificate x509cert = (X509Certificate) cert;
                       Principal principal = x509cert.getSubjectDN();
