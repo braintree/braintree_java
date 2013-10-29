@@ -12,10 +12,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.security.KeyStore;
+import java.security.Principal;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 
 public class Http {
@@ -67,11 +71,11 @@ public class Http {
     private NodeWrapper httpRequest(RequestMethod requestMethod, String url, String postBody) {
         try {
             HttpURLConnection connection = buildConnection(requestMethod, url);
-            
+
             if (connection instanceof HttpsURLConnection) {
                 ((HttpsURLConnection) connection).setSSLSocketFactory(getSSLSocketFactory());
             }
-            
+
             if (postBody != null) {
                 connection.getOutputStream().write(postBody.getBytes("UTF-8"));
                 connection.getOutputStream().close();
@@ -93,18 +97,27 @@ public class Http {
             throw new UnexpectedException(e.getMessage(), e);
         }
     }
-    
+
     private SSLSocketFactory getSSLSocketFactory() {
         try {
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             keyStore.load(null);
-            
+
             for (String certificateFilename : certificateFilenames) {
                 CertificateFactory cf = CertificateFactory.getInstance("X.509");
                 InputStream certStream = Http.class.getClassLoader().getResourceAsStream(certificateFilename);
 
-                Certificate cert = cf.generateCertificate(certStream);
-                keyStore.setCertificateEntry(certificateFilename, cert);
+                Collection c = cf.generateCertificates(certStream);
+                Iterator i = c.iterator();
+                while (i.hasNext()) {
+                    Certificate cert = (Certificate)i.next();
+                    if (cert instanceof X509Certificate) {
+                      X509Certificate x509cert = (X509Certificate) cert;
+                      Principal principal = x509cert.getSubjectDN();
+                      String subject = principal.getName();
+                      keyStore.setCertificateEntry(subject, cert);
+                    }
+                }
             }
 
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
@@ -145,7 +158,7 @@ public class Http {
                 e.printStackTrace();
             }
         }
-        
+
         if (isErrorCode(statusCode)) {
             switch (statusCode) {
             case 401:

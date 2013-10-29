@@ -18,14 +18,14 @@ public class BraintreeGatewayIT {
     @Test
     public void sandboxBaseMerchantUrl() {
         BraintreeGateway config = new BraintreeGateway(Environment.SANDBOX, "sandbox_merchant_id", "publicKey", "privateKey");
-        assertEquals("https://sandbox.braintreegateway.com:443/merchants/sandbox_merchant_id", config
+        assertEquals("https://api.sandbox.braintreegateway.com:443/merchants/sandbox_merchant_id", config
                 .baseMerchantURL());
     }
 
     @Test
     public void productionBaseMerchantUrl() {
         BraintreeGateway config = new BraintreeGateway(Environment.PRODUCTION, "production_merchant_id", "publicKey", "privateKey");
-        assertEquals("https://www.braintreegateway.com:443/merchants/production_merchant_id", config.baseMerchantURL());
+        assertEquals("https://api.braintreegateway.com:443/merchants/production_merchant_id", config.baseMerchantURL());
     }
 
     @Test

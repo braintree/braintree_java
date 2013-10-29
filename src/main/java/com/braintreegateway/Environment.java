@@ -10,10 +10,10 @@ public class Environment {
     public static final Environment DEVELOPMENT = new Environment("http://localhost:" + developmentPort(), new String[] {});
 
     /** For production. */
-    public static final Environment PRODUCTION = new Environment("https://www.braintreegateway.com:443", new String[] {"ssl/www_braintreegateway_com.ca.der", "ssl/securetrust.ca.der"});
+    public static final Environment PRODUCTION = new Environment("https://api.braintreegateway.com:443", new String[] {"ssl/api_braintreegateway_com.ca.crt"});
 
     /** For merchant's to use during their development and testing. */
-    public static final Environment SANDBOX = new Environment("https://sandbox.braintreegateway.com:443", new String[] {"ssl/sandbox-godaddy-root.ca.der", "ssl/sandbox_braintreegateway_com.ca.der", "ssl/sandbox-godaddy-intermediate.ca.der"});
+    public static final Environment SANDBOX = new Environment("https://api.sandbox.braintreegateway.com:443", new String[] {"ssl/api_braintreegateway_com.ca.crt"});
 
     public final String baseURL;
     public final String[] certificateFilenames;
