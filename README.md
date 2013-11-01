@@ -73,6 +73,10 @@ The Braintree library provides integration access to the Braintree Gateway.
       <version>PUT VERSION NUMBER HERE</version>
     </dependency>
 
+## Open Source Attribution
+
+A list of open source projects that help power Braintree can be found [here](https://www.braintreepayments.com/developers/open-source).
+
 ## License
 
 See the LICENSE file.
