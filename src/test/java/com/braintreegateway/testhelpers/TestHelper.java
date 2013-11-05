@@ -3,7 +3,7 @@ package com.braintreegateway.testhelpers;
 import com.braintreegateway.*;
 import com.braintreegateway.Transaction.Status;
 import com.braintreegateway.exceptions.UnexpectedException;
-import com.braintreegateway.util.Crypto;
+import com.braintreegateway.util.Sha1Hasher;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import org.junit.Ignore;
@@ -60,7 +60,7 @@ public abstract class TestHelper {
         String[] dataSections = trData.split("\\|");
         String trHash = dataSections[0];
         String trContent = dataSections[1];
-        assertEquals(trHash, new Crypto().hmacHash(configuration.privateKey, trContent));
+        assertEquals(trHash, new Sha1Hasher().hmacHash(configuration.privateKey, trContent));
     }
 
     public static boolean listIncludes(List<? extends Object> list, Object expectedItem) {

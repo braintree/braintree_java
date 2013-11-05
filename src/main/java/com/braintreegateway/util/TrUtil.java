@@ -22,17 +22,15 @@ public class TrUtil {
         Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         String dateString = String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", now);
 
-        String trContent = new QueryString()
+        QueryString trContent = new QueryString()
                 .append("api_version", Configuration.apiVersion())
                 .append("public_key", configuration.publicKey)
                 .append("redirect_url", redirectURL)
                 .append("time", dateString)
                 .append("kind", request.getKind())
-                .appendEncodedData(request.toQueryString())
-                .toString();
+                .appendEncodedData(request.toQueryString());
 
-        String trHash = new Crypto().hmacHash(configuration.privateKey, trContent.toString());
-        return trHash + "|" + trContent;
+        return new SignatureService(configuration.privateKey, new Sha1Hasher()).sign(trContent);
     }
 
     public boolean isValidTrQueryString(String queryString) {
@@ -40,7 +38,7 @@ public class TrUtil {
         String queryStringWithoutHash = pieces[0];
         String hash = pieces[1];
 
-        return hash.equals(new Crypto().hmacHash(configuration.privateKey, queryStringWithoutHash));
+        return hash.equals(new Sha1Hasher().hmacHash(configuration.privateKey, queryStringWithoutHash));
     }
 
     protected String encodeMap(Map<String, String> map) {

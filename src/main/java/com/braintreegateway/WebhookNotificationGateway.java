@@ -3,6 +3,7 @@ package com.braintreegateway;
 import com.braintreegateway.exceptions.InvalidSignatureException;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 import com.braintreegateway.util.Crypto;
+import com.braintreegateway.util.Sha1Hasher;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 
@@ -34,9 +35,8 @@ public class WebhookNotificationGateway {
             }
         }
 
-        Crypto crypto = new Crypto();
-        String computedSignature = crypto.hmacHash(configuration.privateKey, payload);
-        if (!crypto.secureCompare(computedSignature, matchingSignature)) {
+        String computedSignature = new Sha1Hasher().hmacHash(configuration.privateKey, payload);
+        if (!new Crypto().secureCompare(computedSignature, matchingSignature)) {
             throw new InvalidSignatureException();
         }
     }
@@ -46,6 +46,6 @@ public class WebhookNotificationGateway {
     }
 
     private String publicKeySignaturePair(String stringToSign) {
-        return String.format("%s|%s", configuration.publicKey, new Crypto().hmacHash(configuration.privateKey, stringToSign));
+        return String.format("%s|%s", configuration.publicKey, new Sha1Hasher().hmacHash(configuration.privateKey, stringToSign));
     }
 }
