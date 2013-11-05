@@ -153,6 +153,26 @@ public class BraintreeGateway {
     }
 
     /**
+     * Returns a String used for client side authentication.
+     *
+     * @param customerId
+     *         the Id of the customer to authenticate an action for
+     * @return a String.
+     */
+    public String generateAuthorizationFingerprint(String customerId) {
+      return AuthorizationFingerprint.generate(this.merchantId, this.publicKey, this.privateKey, customerId);
+    }
+
+    /**
+     * Returns a String used for client side authentication.
+     *
+     * @return a String.
+     */
+    public String generateAuthorizationFingerprint() {
+      return generateAuthorizationFingerprint(null);
+    }
+
+    /**
      * Returns an {@link PlanGateway} for interacting with {@link Plan} objects.
      *
      * @return an {@link PlanGateway}.
