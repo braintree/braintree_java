@@ -1,16 +1,17 @@
 package com.braintreegateway;
 
+import com.braintreegateway.CreditCardOptions;
+
 public class CreditCardOptionsRequest extends Request {
     private CreditCardRequest parent;
     private String verificationMerchantAccountId;
-    private Boolean failOnDuplicatePaymentMethod;
-    private Boolean verifyCard;
-    private Boolean makeDefault;
     private String updateExistingToken;
     private String venmoSdkSession;
+    private CreditCardOptions options;
 
     public CreditCardOptionsRequest(CreditCardRequest parent) {
         this.parent = parent;
+        this.options = new CreditCardOptions();
     }
 
     public CreditCardRequest done() {
@@ -23,17 +24,17 @@ public class CreditCardOptionsRequest extends Request {
     }
 
     public CreditCardOptionsRequest failOnDuplicatePaymentMethod(Boolean failOnDuplicatePaymentMethod) {
-        this.failOnDuplicatePaymentMethod = failOnDuplicatePaymentMethod;
+        this.options.failOnDuplicatePaymentMethod(failOnDuplicatePaymentMethod);
         return this;
     }
 
     public CreditCardOptionsRequest verifyCard(Boolean verifyCard) {
-        this.verifyCard = verifyCard;
+        this.options.verifyCard(verifyCard);
         return this;
     }
 
     public CreditCardOptionsRequest makeDefault(Boolean makeDefault) {
-        this.makeDefault = makeDefault;
+        this.options.makeDefault(makeDefault);
         return this;
     }
 
@@ -65,9 +66,10 @@ public class CreditCardOptionsRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root);
 
-        builder.addElement("failOnDuplicatePaymentMethod", failOnDuplicatePaymentMethod);
-        builder.addElement("verifyCard", verifyCard);
+        builder.addElement("failOnDuplicatePaymentMethod", options.getFailOnDuplicatePaymentMethod());
+        builder.addElement("verifyCard", options.getVerifyCard());
         builder.addElement("verificationMerchantAccountId", verificationMerchantAccountId);
+        Boolean makeDefault = options.getMakeDefault();
         if (makeDefault != null && makeDefault.booleanValue()) {
             builder.addElement("makeDefault", makeDefault);
         }
