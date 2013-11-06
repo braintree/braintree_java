@@ -155,12 +155,12 @@ public class BraintreeGateway {
     /**
      * Returns a String used for client side authentication.
      *
-     * @param customerId
-     *         the Id of the customer to authenticate an action for
+     * @param options
+     *        An AuthorizationFingerprintOptions object.
      * @return a String.
      */
-    public String generateAuthorizationFingerprint(String customerId) {
-      return AuthorizationFingerprint.generate(this.merchantId, this.publicKey, this.privateKey, customerId);
+    public String generateAuthorizationFingerprint(AuthorizationFingerprintOptions options) {
+      return AuthorizationFingerprintGenerator.generate(this.merchantId, this.publicKey, this.privateKey, options);
     }
 
     /**
