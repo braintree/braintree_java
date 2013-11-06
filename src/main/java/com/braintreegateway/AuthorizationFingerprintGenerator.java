@@ -28,7 +28,7 @@ public class AuthorizationFingerprintGenerator {
             if (options != null) {
                 String customerId = options.getCustomerId();
                 if (customerId != null) {
-                    payload.append("customer_id", URLEncoder.encode(customerId, "UTF-8"));
+                    payload.append("customer_id", customerId);
                 }
 
                 Boolean makeDefault = options.getMakeDefault();

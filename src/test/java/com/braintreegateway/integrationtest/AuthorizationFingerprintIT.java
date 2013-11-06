@@ -10,6 +10,7 @@ import static org.junit.Assert.fail;
 
 import com.braintreegateway.testhelpers.HttpHelper;
 import com.braintreegateway.util.Http;
+import com.braintreegateway.util.QueryString;
 import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Customer;
 import com.braintreegateway.Result;
@@ -114,5 +115,132 @@ public class AuthorizationFingerprintIT {
           fail();
         }
         assertEquals(200, responseCode);
+    }
+
+    private String urlencode(String string) {
+        String encodedString = "";
+        try {
+            encodedString = URLEncoder.encode(string, "UTF-8");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return encodedString;
+    }
+
+    private int postResponseCode(String url, QueryString payload) {
+        int responseCode = -1;
+        try {
+          responseCode = HttpHelper.post(url, payload.toString());
+        } catch (java.net.MalformedURLException e) {
+          throw new RuntimeException(e);
+        } catch (java.io.IOException e) {
+          throw new RuntimeException(e);
+        }
+
+        return responseCode;
+    }
+
+    @Test
+    public void fingerprintContainsVerifyCard() {
+        CustomerRequest request = new CustomerRequest();
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        AuthorizationFingerprintOptions authorizationFingerprintOptions = new AuthorizationFingerprintOptions().
+          verifyCard(true).
+          customerId(customer.getId());
+
+        String authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
+
+        String url = Environment.DEVELOPMENT.baseURL + "/client_api/credit_cards.json";
+        QueryString payload = new QueryString();
+        payload.append("authorization_fingerprint", authorizationFingerprint).
+            append("session_identifier_type", "testing").
+            append("session_identifier", "test-identifier").
+            append("credit_card[number]", "4000111111111115").
+            append("credit_card[expiration_month]", "11").
+            append("credit_card[expiration_year]", "2099");
+
+        int responseCode = postResponseCode(url, payload);
+        assertEquals(422, responseCode);
+
+        int new_card_count = gateway.customer().find(customer.getId()).getCreditCards().size();
+        assertEquals(0, new_card_count);
+    }
+
+    @Test
+    public void fingerprintContainsFailOnDuplicatePaymentMethod() {
+        CustomerRequest request = new CustomerRequest();
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        AuthorizationFingerprintOptions authorizationFingerprintOptions = new AuthorizationFingerprintOptions().
+          failOnDuplicatePaymentMethod(false).
+          customerId(customer.getId());
+
+        String authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
+
+        String url = Environment.DEVELOPMENT.baseURL + "/client_api/credit_cards.json";
+        QueryString payload = new QueryString();
+        payload.append("authorization_fingerprint", authorizationFingerprint).
+            append("session_identifier_type", "testing").
+            append("session_identifier", "test-identifier").
+            append("credit_card[number]", "4111111111111111").
+            append("credit_card[expiration_month]", "11").
+            append("credit_card[expiration_year]", "2099");
+
+        int responseCode = postResponseCode(url, payload);
+        assertEquals(200, responseCode);
+
+        authorizationFingerprintOptions = new AuthorizationFingerprintOptions().
+          failOnDuplicatePaymentMethod(true).
+          customerId(customer.getId());
+
+        authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
+
+        url = Environment.DEVELOPMENT.baseURL + "/client_api/credit_cards.json";
+        payload = new QueryString();
+        payload.append("authorization_fingerprint", authorizationFingerprint).
+            append("session_identifier_type", "testing").
+            append("session_identifier", "test-identifier").
+            append("credit_card[number]", "4111111111111111").
+            append("credit_card[expiration_month]", "11").
+            append("credit_card[expiration_year]", "2099");
+
+        responseCode = postResponseCode(url, payload);
+        assertEquals(422, responseCode);
+
+        int new_card_count = gateway.customer().find(customer.getId()).getCreditCards().size();
+        assertEquals(1, new_card_count);
+    }
+
+    @Test
+    public void fingerprintContainsMakeDefault() {
+        CustomerRequest request = new CustomerRequest();
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        AuthorizationFingerprintOptions authorizationFingerprintOptions = new AuthorizationFingerprintOptions().
+          makeDefault(true).
+          customerId(customer.getId());
+
+        String authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
+
+        String url = Environment.DEVELOPMENT.baseURL + "/client_api/credit_cards.json";
+        QueryString payload = new QueryString();
+        payload.append("authorization_fingerprint", authorizationFingerprint).
+            append("session_identifier_type", "testing").
+            append("session_identifier", "test-identifier").
+            append("credit_card[number]", "4111111111111111").
+            append("credit_card[expiration_month]", "11").
+            append("credit_card[expiration_year]", "2099");
+
+        int responseCode = postResponseCode(url, payload);
+        assertEquals(200, responseCode);
+
+        assertTrue(gateway.customer().find(customer.getId()).getCreditCards().get(0).isDefault());
     }
 }
