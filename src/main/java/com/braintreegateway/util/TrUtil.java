@@ -30,7 +30,7 @@ public class TrUtil {
                 .append("kind", request.getKind())
                 .appendEncodedData(request.toQueryString());
 
-        return new SignatureService(configuration.privateKey, new Sha1Hasher()).sign(trContent);
+        return new SignatureService(configuration.privateKey, new Sha1Hasher()).sign(trContent.toString());
     }
 
     public boolean isValidTrQueryString(String queryString) {

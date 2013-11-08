@@ -48,6 +48,6 @@ public class AuthorizationFingerprintGenerator {
             throw new RuntimeException(e);
         }
 
-        return new SignatureService(privateKey, new Sha256Hasher()).sign(payload);
+        return new SignatureService(privateKey, new Sha256Hasher()).sign(payload.toString());
     }
 }

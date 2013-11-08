@@ -9,14 +9,11 @@ public class SignatureService {
         this.hasher = hasher;
     }
 
-    public String sign(QueryString query) {
-        String urlEncodedData = query.toString();
-        return hash(urlEncodedData) + "|" + urlEncodedData;
+    public String sign(String query) {
+        return hash(query) + "|" + query;
     }
 
     private String hash(String string) {
         return hasher.hmacHash(key, string);
     }
-
 }
-
