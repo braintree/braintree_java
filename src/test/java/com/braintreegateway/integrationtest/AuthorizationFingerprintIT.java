@@ -1,6 +1,7 @@
 package com.braintreegateway.integrationtest;
 
 import java.net.URLEncoder;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.Before;
@@ -11,7 +12,9 @@ import static org.junit.Assert.fail;
 import com.braintreegateway.testhelpers.HttpHelper;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.QueryString;
+import com.braintreegateway.CreditCardRequest;
 import com.braintreegateway.CustomerRequest;
+import com.braintreegateway.CreditCard;
 import com.braintreegateway.Customer;
 import com.braintreegateway.Result;
 import com.braintreegateway.Environment;
@@ -21,6 +24,29 @@ import com.braintreegateway.AuthorizationFingerprintOptions;
 
 public class AuthorizationFingerprintIT {
     private BraintreeGateway gateway;
+
+    private String urlencode(String string) {
+        String encodedString = "";
+        try {
+            encodedString = URLEncoder.encode(string, "UTF-8");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return encodedString;
+    }
+
+    private int postResponseCode(String url, QueryString payload) {
+        int responseCode = -1;
+        try {
+          responseCode = HttpHelper.post(url, payload.toString());
+        } catch (java.net.MalformedURLException e) {
+          throw new RuntimeException(e);
+        } catch (java.io.IOException e) {
+          throw new RuntimeException(e);
+        }
+
+        return responseCode;
+    }
 
     @Before
     public void createGateway() {
@@ -117,29 +143,6 @@ public class AuthorizationFingerprintIT {
         assertEquals(200, responseCode);
     }
 
-    private String urlencode(String string) {
-        String encodedString = "";
-        try {
-            encodedString = URLEncoder.encode(string, "UTF-8");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return encodedString;
-    }
-
-    private int postResponseCode(String url, QueryString payload) {
-        int responseCode = -1;
-        try {
-          responseCode = HttpHelper.post(url, payload.toString());
-        } catch (java.net.MalformedURLException e) {
-          throw new RuntimeException(e);
-        } catch (java.io.IOException e) {
-          throw new RuntimeException(e);
-        }
-
-        return responseCode;
-    }
-
     @Test
     public void fingerprintContainsVerifyCard() {
         CustomerRequest request = new CustomerRequest();
@@ -223,6 +226,14 @@ public class AuthorizationFingerprintIT {
         assertTrue(result.isSuccess());
         Customer customer = result.getTarget();
 
+        CreditCardRequest creditCardRequest = new CreditCardRequest()
+            .customerId(customer.getId())
+            .number("5105105105105100")
+            .expirationDate("11/2099");
+
+        Result<CreditCard> creditCardResult = gateway.creditCard().create(creditCardRequest);
+        assertTrue(creditCardResult.isSuccess());
+
         AuthorizationFingerprintOptions authorizationFingerprintOptions = new AuthorizationFingerprintOptions().
           makeDefault(true).
           customerId(customer.getId());
@@ -241,6 +252,12 @@ public class AuthorizationFingerprintIT {
         int responseCode = postResponseCode(url, payload);
         assertEquals(200, responseCode);
 
-        assertTrue(gateway.customer().find(customer.getId()).getCreditCards().get(0).isDefault());
+        List<CreditCard> creditCards = gateway.customer().find(customer.getId()).getCreditCards();
+        assertEquals(2, creditCards.size());
+        for (CreditCard creditCard : creditCards) {
+          if (creditCard.getLast4().equals("1111")) {
+            assertTrue(creditCard.isDefault());
+          }
+        }
     }
 }
