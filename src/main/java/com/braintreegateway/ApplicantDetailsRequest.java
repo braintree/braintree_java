@@ -98,6 +98,7 @@ public class ApplicantDetailsRequest extends Request {
                 addElement("firstName", firstName).
                 addElement("lastName", lastName).
                 addElement("email", email).
+                addElement("phone", phone).
                 addElement("addressRequest", address).
                 addElement("dateOfBirth", dateOfBirth).
                 addElement("ssn", ssn).
