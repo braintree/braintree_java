@@ -112,30 +112,30 @@ public class MerchantAccountIT {
         assertTrue("merchant account creation should succeed", result.isSuccess());
         MerchantAccountRequest request = creationRequest().
             masterMerchantAccountId(null);
-        Result<MerchantAccount> update_result = gateway.merchantAccount().update(result.getTarget().getId(), request);
-        assertTrue("merchant account update should succeed", update_result.isSuccess());
-        MerchantAccount merchant_account = update_result.getTarget();
-        assertEquals("Job", merchant_account.getIndividualDetails().getFirstName());
-        assertEquals("Leoggs", merchant_account.getIndividualDetails().getLastName());
-        assertEquals("job@leoggs.com", merchant_account.getIndividualDetails().getEmail());
-        assertEquals("5555551212", merchant_account.getIndividualDetails().getPhone());
-        assertEquals("193 Credibility St.", merchant_account.getIndividualDetails().getAddress().getStreetAddress());
-        assertEquals("60611", merchant_account.getIndividualDetails().getAddress().getPostalCode());
-        assertEquals("Avondale", merchant_account.getIndividualDetails().getAddress().getLocality());
-        assertEquals("IN", merchant_account.getIndividualDetails().getAddress().getRegion());
-        assertEquals("1985-09-10", merchant_account.getIndividualDetails().getDateOfBirth());
-        assertEquals("Calculon", merchant_account.getBusinessDetails().getLegalName());
-        assertEquals("Calculon", merchant_account.getBusinessDetails().getDbaName());
-        assertEquals("123456780", merchant_account.getBusinessDetails().getTaxId());
-        assertEquals("135 Credibility St.", merchant_account.getBusinessDetails().getAddress().getStreetAddress());
-        assertEquals("60602", merchant_account.getBusinessDetails().getAddress().getPostalCode());
-        assertEquals("Gary", merchant_account.getBusinessDetails().getAddress().getLocality());
-        assertEquals("OH", merchant_account.getBusinessDetails().getAddress().getRegion());
-        assertEquals(MerchantAccount.FundingDestination.EMAIL, merchant_account.getFundingDetails().getDestination());
-        assertEquals("joe+funding@bloggs.com", merchant_account.getFundingDetails().getEmail());
-        assertEquals("3125551212", merchant_account.getFundingDetails().getMobilePhone());
-        assertEquals("122100024", merchant_account.getFundingDetails().getRoutingNumber());
-        assertEquals("8799", merchant_account.getFundingDetails().getAccountNumberLast4());
+        Result<MerchantAccount> updateResult = gateway.merchantAccount().update(result.getTarget().getId(), request);
+        assertTrue("merchant account update should succeed", updateResult.isSuccess());
+        MerchantAccount merchantAccount = updateResult.getTarget();
+        assertEquals("Job", merchantAccount.getIndividualDetails().getFirstName());
+        assertEquals("Leoggs", merchantAccount.getIndividualDetails().getLastName());
+        assertEquals("job@leoggs.com", merchantAccount.getIndividualDetails().getEmail());
+        assertEquals("5555551212", merchantAccount.getIndividualDetails().getPhone());
+        assertEquals("193 Credibility St.", merchantAccount.getIndividualDetails().getAddress().getStreetAddress());
+        assertEquals("60611", merchantAccount.getIndividualDetails().getAddress().getPostalCode());
+        assertEquals("Avondale", merchantAccount.getIndividualDetails().getAddress().getLocality());
+        assertEquals("IN", merchantAccount.getIndividualDetails().getAddress().getRegion());
+        assertEquals("1985-09-10", merchantAccount.getIndividualDetails().getDateOfBirth());
+        assertEquals("Calculon", merchantAccount.getBusinessDetails().getLegalName());
+        assertEquals("Calculon", merchantAccount.getBusinessDetails().getDbaName());
+        assertEquals("123456780", merchantAccount.getBusinessDetails().getTaxId());
+        assertEquals("135 Credibility St.", merchantAccount.getBusinessDetails().getAddress().getStreetAddress());
+        assertEquals("60602", merchantAccount.getBusinessDetails().getAddress().getPostalCode());
+        assertEquals("Gary", merchantAccount.getBusinessDetails().getAddress().getLocality());
+        assertEquals("OH", merchantAccount.getBusinessDetails().getAddress().getRegion());
+        assertEquals(MerchantAccount.FundingDestination.EMAIL, merchantAccount.getFundingDetails().getDestination());
+        assertEquals("joe+funding@bloggs.com", merchantAccount.getFundingDetails().getEmail());
+        assertEquals("3125551212", merchantAccount.getFundingDetails().getMobilePhone());
+        assertEquals("122100024", merchantAccount.getFundingDetails().getRoutingNumber());
+        assertEquals("8799", merchantAccount.getFundingDetails().getAccountNumberLast4());
     }
 
     @Test
