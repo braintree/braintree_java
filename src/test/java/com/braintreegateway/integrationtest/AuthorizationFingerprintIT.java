@@ -86,7 +86,13 @@ public class AuthorizationFingerprintIT {
 
     @Test
     public void fingerprintWithCreditCardOptionsIsAccepted() {
-        AuthorizationFingerprintOptions authorizationFingerprintOptions = new AuthorizationFingerprintOptions().verifyCard(true);
+        CustomerRequest request = new CustomerRequest();
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        AuthorizationFingerprintOptions authorizationFingerprintOptions = new AuthorizationFingerprintOptions().verifyCard(true).
+          customerId(customer.getId());
         String authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
         String encodedFingerprint = "";
         try {
@@ -195,7 +201,7 @@ public class AuthorizationFingerprintIT {
             append("credit_card[expiration_year]", "2099");
 
         int responseCode = postResponseCode(url, payload);
-        assertEquals(200, responseCode);
+        assertEquals(201, responseCode);
 
         authorizationFingerprintOptions = new AuthorizationFingerprintOptions().
           failOnDuplicatePaymentMethod(true).
@@ -250,7 +256,7 @@ public class AuthorizationFingerprintIT {
             append("credit_card[expiration_year]", "2099");
 
         int responseCode = postResponseCode(url, payload);
-        assertEquals(200, responseCode);
+        assertEquals(201, responseCode);
 
         List<CreditCard> creditCards = gateway.customer().find(customer.getId()).getCreditCards();
         assertEquals(2, creditCards.size());
