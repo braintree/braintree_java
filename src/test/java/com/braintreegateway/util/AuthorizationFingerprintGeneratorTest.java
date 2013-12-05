@@ -1,10 +1,12 @@
 package com.braintreegateway.util;
 
 import org.junit.Test;
+import java.util.regex.*;
 
 import com.braintreegateway.AuthorizationFingerprintGenerator;
 import com.braintreegateway.AuthorizationFingerprintOptions;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class AuthorizationFingerprintGeneratorTest {
 
@@ -44,6 +46,7 @@ public class AuthorizationFingerprintGeneratorTest {
   @Test
   public void containsOptions() {
     AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().
+      customerId("a-customer-id").
       makeDefault(true).
       verifyCard(true).
       failOnDuplicatePaymentMethod(true);
@@ -60,6 +63,36 @@ public class AuthorizationFingerprintGeneratorTest {
     assertTrue(data.contains("credit_card%5Boptions%5D%5Bmake_default%5D=true"));
     assertTrue(data.contains("credit_card%5Boptions%5D%5Bverify_card%5D=true"));
     assertTrue(data.contains("credit_card%5Boptions%5D%5Bfail_on_duplicate_payment_method%5D=true"));
+  }
+
+  @Test
+  public void requiresCustomerIdForOptions() {
+    Pattern expectedPattern = Pattern.compile("verifyCard");
+    try {
+      AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().verifyCard(true);
+      AuthorizationFingerprintGenerator.generate("test", "test", "test", options);
+      fail("Expected IllegalArgumentException when credit card options are provided with no customer ID");
+    } catch (IllegalArgumentException e) {
+      assertTrue(expectedPattern.matcher(e.getMessage()).find());
+    }
+
+    expectedPattern = Pattern.compile("makeDefault");
+    try {
+      AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().makeDefault(true);
+      AuthorizationFingerprintGenerator.generate("test", "test", "test", options);
+      fail("Expected IllegalArgumentException when credit card options are provided with no customer ID");
+    } catch (IllegalArgumentException e) {
+      assertTrue(expectedPattern.matcher(e.getMessage()).find());
+    }
+
+    expectedPattern = Pattern.compile("failOnDuplicatePaymentMethod");
+    try {
+      AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().failOnDuplicatePaymentMethod(true);
+      AuthorizationFingerprintGenerator.generate("test", "test", "test", options);
+      fail("Expected IllegalArgumentException when credit card options are provided with no customer ID");
+    } catch (IllegalArgumentException e) {
+      assertTrue(expectedPattern.matcher(e.getMessage()).find());
+    }
   }
 
   @Test

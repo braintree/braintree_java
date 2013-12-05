@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import java.util.Date;
+import java.util.ArrayList;
 import java.net.URLEncoder;
 import com.braintreegateway.util.QueryString;
 import com.braintreegateway.util.Sha256Hasher;
@@ -14,6 +15,7 @@ import com.braintreegateway.AuthorizationFingerprintOptions;
 public class AuthorizationFingerprintGenerator {
 
     public static String generate(String merchantId, String publicKey, String privateKey, AuthorizationFingerprintOptions options) {
+        verifyOptions(options);
         TimeZone tz = TimeZone.getTimeZone("UTC");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
         df.setTimeZone(tz);
@@ -49,5 +51,35 @@ public class AuthorizationFingerprintGenerator {
         }
 
         return new SignatureService(privateKey, new Sha256Hasher()).sign(payload.toString());
+    }
+
+    private static void verifyOptions(AuthorizationFingerprintOptions options) {
+      if (options == null) {
+        return;
+      }
+      if (options.getCustomerId() == null) {
+        ArrayList<String> invalidOptions = new ArrayList<String>();
+        if (options.getVerifyCard() != null) {
+          invalidOptions.add("verifyCard");
+        }
+        if (options.getMakeDefault() != null) {
+          invalidOptions.add("makeDefault");
+        }
+        if (options.getFailOnDuplicatePaymentMethod() != null) {
+          invalidOptions.add("failOnDuplicatePaymentMethod");
+        }
+
+        if (!invalidOptions.isEmpty()){
+
+          String message = "Cannot pass following options without customerId: ";
+
+          for (String option : invalidOptions) {
+            message += " " + option;
+          }
+
+
+          throw new IllegalArgumentException(message);
+        }
+      }
     }
 }
