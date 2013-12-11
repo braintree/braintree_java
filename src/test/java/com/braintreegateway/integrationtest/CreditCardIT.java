@@ -361,6 +361,17 @@ public class CreditCardIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void createWithPaymentMethodNonce() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway);
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
     public void createWithInvalidVenmoSdkPaymentMethodCode() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
