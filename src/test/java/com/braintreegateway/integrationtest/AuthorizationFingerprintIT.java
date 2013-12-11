@@ -38,7 +38,7 @@ public class AuthorizationFingerprintIT {
     private int postResponseCode(String url, QueryString payload) {
         int responseCode = -1;
         try {
-          responseCode = HttpHelper.post(url, payload.toString());
+          responseCode = HttpHelper.postResponseCode(url, payload.toString());
         } catch (java.net.MalformedURLException e) {
           throw new RuntimeException(e);
         } catch (java.io.IOException e) {

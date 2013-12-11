@@ -6,6 +6,7 @@ import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Sha1Hasher;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.QueryString;
 import org.junit.Ignore;
 
 import java.io.IOException;
@@ -15,6 +16,8 @@ import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -132,5 +135,33 @@ public abstract class TestHelper {
         }
 
         return response;
+    }
+
+    public static String generateUnlockedNonce(BraintreeGateway gateway) {
+      String fingerprint = gateway.generateAuthorizationFingerprint();
+      String url = Environment.DEVELOPMENT.baseURL + "/client_api/credit_cards.json";
+      QueryString payload = new QueryString();
+      payload.append("authorization_fingerprint", fingerprint).
+        append("session_identifier_type", "testing").
+        append("session_identifier", "test-identifier").
+        append("credit_card[number]", "4111111111111111").
+        append("credit_card[expiration_month]", "11").
+        append("share", "true").
+        append("credit_card[expiration_year]", "2099");
+
+      String responseBody;
+      String nonce = "";
+      try {
+        responseBody = HttpHelper.post(url, payload.toString());
+        String noncePatternString = "\"nonce\":\"(\\w+)\"";
+        Pattern noncePattern = Pattern.compile(noncePatternString);
+        Matcher m = noncePattern.matcher(responseBody);
+        if (m.find()) {
+          nonce = m.group(1);
+        }
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+      return nonce;
     }
 }
