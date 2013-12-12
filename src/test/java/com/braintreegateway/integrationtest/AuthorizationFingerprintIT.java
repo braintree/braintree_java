@@ -69,7 +69,7 @@ public class AuthorizationFingerprintIT {
             throw new RuntimeException(e);
         }
 
-        String url = Environment.DEVELOPMENT.baseURL + "/client_api/credit_cards.json?";
+        String url = gateway.baseMerchantURL()  + "/client_api/credit_cards.json?";
         url += "authorizationFingerprint=" + encodedFingerprint;
         url += "&sessionIdentifierType=testing&sessionIdentifier=test-identifier";
 
@@ -101,7 +101,7 @@ public class AuthorizationFingerprintIT {
             throw new RuntimeException(e);
         }
 
-        String url = Environment.DEVELOPMENT.baseURL + "/client_api/credit_cards.json?";
+        String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json?";
         url += "authorizationFingerprint=" + encodedFingerprint;
         url += "&sessionIdentifierType=testing&sessionIdentifier=test-identifier";
 
@@ -134,7 +134,7 @@ public class AuthorizationFingerprintIT {
             throw new RuntimeException(e);
         }
 
-        String url = Environment.DEVELOPMENT.baseURL + "/client_api/credit_cards.json?";
+        String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json?";
         url += "authorizationFingerprint=" + encodedFingerprint;
         url += "&sessionIdentifierType=testing&sessionIdentifier=test-identifier";
 
@@ -162,7 +162,7 @@ public class AuthorizationFingerprintIT {
 
         String authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
 
-        String url = Environment.DEVELOPMENT.baseURL + "/client_api/credit_cards.json";
+        String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("session_identifier_type", "testing").
@@ -191,7 +191,7 @@ public class AuthorizationFingerprintIT {
 
         String authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
 
-        String url = Environment.DEVELOPMENT.baseURL + "/client_api/credit_cards.json";
+        String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("session_identifier_type", "testing").
@@ -209,7 +209,7 @@ public class AuthorizationFingerprintIT {
 
         authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
 
-        url = Environment.DEVELOPMENT.baseURL + "/client_api/credit_cards.json";
+        url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
         payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("session_identifier_type", "testing").
@@ -246,7 +246,7 @@ public class AuthorizationFingerprintIT {
 
         String authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
 
-        String url = Environment.DEVELOPMENT.baseURL + "/client_api/credit_cards.json";
+        String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("session_identifier_type", "testing").
