@@ -153,7 +153,7 @@ public abstract class TestHelper {
       String nonce = "";
       try {
         responseBody = HttpHelper.post(url, payload.toString());
-        String noncePatternString = "\"nonce\":\"(\\w+)\"";
+        String noncePatternString = "\"nonce\":\"([\\w\\-]+)\"";
         Pattern noncePattern = Pattern.compile(noncePatternString);
         Matcher m = noncePattern.matcher(responseBody);
         if (m.find()) {

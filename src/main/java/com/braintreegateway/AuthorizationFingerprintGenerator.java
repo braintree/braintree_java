@@ -23,27 +23,27 @@ public class AuthorizationFingerprintGenerator {
 
         QueryString payload = new QueryString();
         try {
-            payload.append("merchant_id", merchantId)
-                .append("public_key", publicKey)
-                .append("created_at", dateString);
+            payload.appendWithoutEncoding("merchant_id", merchantId)
+                .appendWithoutEncoding("public_key", publicKey)
+                .appendWithoutEncoding("created_at", dateString);
 
             if (options != null) {
                 String customerId = options.getCustomerId();
                 if (customerId != null) {
-                    payload.append("customer_id", customerId);
+                    payload.appendWithoutEncoding("customer_id", customerId);
                 }
 
                 Boolean makeDefault = options.getMakeDefault();
                 if (makeDefault != null) {
-                    payload.append("credit_card[options][make_default]", makeDefault.booleanValue());
+                    payload.appendWithoutEncoding("credit_card[options][make_default]", makeDefault.booleanValue());
                 }
                 Boolean verifyCard = options.getVerifyCard();
                 if (verifyCard != null) {
-                    payload.append("credit_card[options][verify_card]", verifyCard.booleanValue());
+                    payload.appendWithoutEncoding("credit_card[options][verify_card]", verifyCard.booleanValue());
                 }
                 Boolean failOnDuplicatePaymentMethod = options.getFailOnDuplicatePaymentMethod();
                 if (failOnDuplicatePaymentMethod != null) {
-                    payload.append("credit_card[options][fail_on_duplicate_payment_method]", failOnDuplicatePaymentMethod.booleanValue());
+                    payload.appendWithoutEncoding("credit_card[options][fail_on_duplicate_payment_method]", failOnDuplicatePaymentMethod.booleanValue());
                 }
             }
         } catch (Exception e) {
