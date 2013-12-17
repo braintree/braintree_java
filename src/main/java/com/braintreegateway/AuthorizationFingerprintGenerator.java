@@ -14,7 +14,7 @@ import com.braintreegateway.AuthorizationFingerprintOptions;
 
 public class AuthorizationFingerprintGenerator {
 
-    public static String generate(String merchantId, String publicKey, String privateKey, AuthorizationFingerprintOptions options) {
+    public static String generate(String merchantId, String publicKey, String privateKey, String baseUrl, AuthorizationFingerprintOptions options) {
         verifyOptions(options);
         TimeZone tz = TimeZone.getTimeZone("UTC");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
@@ -25,7 +25,8 @@ public class AuthorizationFingerprintGenerator {
         try {
             payload.appendWithoutEncoding("merchant_id", merchantId)
                 .appendWithoutEncoding("public_key", publicKey)
-                .appendWithoutEncoding("created_at", dateString);
+                .appendWithoutEncoding("created_at", dateString)
+                .appendWithoutEncoding("base_url", baseUrl);
 
             if (options != null) {
                 String customerId = options.getCustomerId();

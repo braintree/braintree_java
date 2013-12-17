@@ -160,7 +160,11 @@ public class BraintreeGateway {
      * @return a String.
      */
     public String generateAuthorizationFingerprint(AuthorizationFingerprintOptions options) {
-      return AuthorizationFingerprintGenerator.generate(this.merchantId, this.publicKey, this.privateKey, options);
+      return AuthorizationFingerprintGenerator.generate(this.merchantId,
+          this.publicKey,
+          this.privateKey,
+          this.baseMerchantURL(),
+          options);
     }
 
     /**

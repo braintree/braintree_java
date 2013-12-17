@@ -17,6 +17,7 @@ public class AuthorizationFingerprintGeneratorTest {
         "my_merchant_id",
         "my_public_key",
         "private_key",
+        "http://localhost:3000/merchants/my_merchant_id",
         null
     );
     String[] fingerprintParts = fingerprint.split("\\|");
@@ -35,12 +36,17 @@ public class AuthorizationFingerprintGeneratorTest {
         "my_merchant_id",
         "my_public_key",
         "private_key",
+        "http://localhost:3000/merchants/my_merchant_id",
         null
     );
     String[] fingerprintParts = fingerprint.split("\\|");
     String data = fingerprintParts[1];
 
     assertFalse(data.contains("%3A1"));
+    assertTrue(data.contains("my_merchant_id"));
+    assertTrue(data.contains("my_public_key"));
+    assertTrue(data.contains("created_at"));
+    assertTrue(data.contains("http://localhost:3000/merchants/my_merchant_id"));
   }
 
   @Test
@@ -49,6 +55,7 @@ public class AuthorizationFingerprintGeneratorTest {
         "merchant_id",
         "public_key",
         "private_key",
+        "http://localhost:3000/merchants/my_merchant_id",
         new AuthorizationFingerprintOptions().customerId("a-customer-id")
     );
     String[] fingerprintParts = fingerprint.split("\\|");
@@ -69,6 +76,7 @@ public class AuthorizationFingerprintGeneratorTest {
         "needs encoding",
         "public_key",
         "private_key",
+        "http://localhost:3000/merchants/my_merchant_id",
         options
     );
     String[] fingerprintParts = fingerprint.split("\\|");
@@ -84,7 +92,7 @@ public class AuthorizationFingerprintGeneratorTest {
     Pattern expectedPattern = Pattern.compile("verifyCard");
     try {
       AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().verifyCard(true);
-      AuthorizationFingerprintGenerator.generate("test", "test", "test", options);
+      AuthorizationFingerprintGenerator.generate("test", "test", "test", "test", options);
       fail("Expected IllegalArgumentException when credit card options are provided with no customer ID");
     } catch (IllegalArgumentException e) {
       assertTrue(expectedPattern.matcher(e.getMessage()).find());
@@ -93,7 +101,7 @@ public class AuthorizationFingerprintGeneratorTest {
     expectedPattern = Pattern.compile("makeDefault");
     try {
       AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().makeDefault(true);
-      AuthorizationFingerprintGenerator.generate("test", "test", "test", options);
+      AuthorizationFingerprintGenerator.generate("test", "test", "test", "test", options);
       fail("Expected IllegalArgumentException when credit card options are provided with no customer ID");
     } catch (IllegalArgumentException e) {
       assertTrue(expectedPattern.matcher(e.getMessage()).find());
@@ -102,7 +110,7 @@ public class AuthorizationFingerprintGeneratorTest {
     expectedPattern = Pattern.compile("failOnDuplicatePaymentMethod");
     try {
       AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().failOnDuplicatePaymentMethod(true);
-      AuthorizationFingerprintGenerator.generate("test", "test", "test", options);
+      AuthorizationFingerprintGenerator.generate("test", "test", "test", "test", options);
       fail("Expected IllegalArgumentException when credit card options are provided with no customer ID");
     } catch (IllegalArgumentException e) {
       assertTrue(expectedPattern.matcher(e.getMessage()).find());
