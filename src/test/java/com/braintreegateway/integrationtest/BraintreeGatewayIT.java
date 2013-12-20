@@ -53,11 +53,12 @@ public class BraintreeGatewayIT {
         String[] fingerprintParts = fingerprint.split("\\|");
         String signature = fingerprintParts[0];
         String data = fingerprintParts[1];
+        String expectedClientApiUrl = config.baseMerchantURL() + "/client_api";
 
         assertTrue(signature.length() > 1);
         assertTrue(data.contains("merchant_id=development_merchant_id"));
         assertTrue(data.contains("public_key=integration_public_key"));
-        assertTrue(data.contains("client_api_url=http://localhost:3000/merchants/development_merchant_id/client_api"));
+        assertTrue(data.contains("client_api_url=" + expectedClientApiUrl));
         assertTrue(data.contains("auth_url=http://auth.venmo.dev:4567"));
     }
 }
