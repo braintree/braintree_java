@@ -5,6 +5,7 @@ import com.braintreegateway.Environment;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BraintreeGatewayIT {
     @Test
@@ -41,5 +42,22 @@ public class BraintreeGatewayIT {
                 "integration_public_key", "integration_private_key");
         assertEquals("Basic aW50ZWdyYXRpb25fcHVibGljX2tleTppbnRlZ3JhdGlvbl9wcml2YXRlX2tleQ==", config
                 .getAuthorizationHeader());
+    }
+
+    @Test
+    public void generateAuthorizationFingerprint() {
+        BraintreeGateway config = new BraintreeGateway(Environment.DEVELOPMENT, "development_merchant_id",
+                "integration_public_key", "integration_private_key");
+
+        String fingerprint = config.generateAuthorizationFingerprint();
+        String[] fingerprintParts = fingerprint.split("\\|");
+        String signature = fingerprintParts[0];
+        String data = fingerprintParts[1];
+
+        assertTrue(signature.length() > 1);
+        assertTrue(data.contains("merchant_id=development_merchant_id"));
+        assertTrue(data.contains("public_key=integration_public_key"));
+        assertTrue(data.contains("client_api_url=http://localhost:3000/merchants/development_merchant_id/client_api"));
+        assertTrue(data.contains("auth_url=http://auth.venmo.dev:4567"));
     }
 }

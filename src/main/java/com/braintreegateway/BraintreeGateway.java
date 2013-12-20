@@ -110,6 +110,10 @@ public class BraintreeGateway {
         return environment.baseURL + "/merchants/" + merchantId;
     }
 
+    public String clientApiURL() {
+      return baseMerchantURL() + "/client_api";
+    }
+
     /**
      * Returns an {@link CreditCardGateway} for interacting with
      * {@link CreditCard} objects.
@@ -163,7 +167,8 @@ public class BraintreeGateway {
       return AuthorizationFingerprintGenerator.generate(this.merchantId,
           this.publicKey,
           this.privateKey,
-          this.baseMerchantURL(),
+          this.clientApiURL(),
+          this.environment.authURL,
           options);
     }
 
