@@ -3,6 +3,7 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import org.junit.Before;
 import org.junit.Test;
+import com.braintreegateway.exceptions.NotFoundException;
 
 import java.util.List;
 import java.util.Random;
@@ -104,6 +105,31 @@ public class MerchantAccountIT {
         Result<MerchantAccount> result = gateway.merchantAccount().create(request);
 
         assertTrue("merchant account creation should succeed", result.isSuccess());
+    }
+
+    @Test
+    public void findMerchantAccountWithGivenToken() {
+        Result<MerchantAccount> result = gateway.merchantAccount().create(creationRequest());
+        assertTrue("merchant account creation should succeed", result.isSuccess());
+        MerchantAccount ma = result.getTarget();
+        assertEquals("account status should be pending", MerchantAccount.Status.PENDING, ma.getStatus());
+
+        String merchantAccountId = ma.getId();
+
+        Result<MerchantAccount> found_result = gateway.merchantAccount().find(merchantAccountId);
+        MerchantAccount found_ma = found_result.getTarget();
+        assertEquals("found account status should be active", MerchantAccount.Status.ACTIVE, found_ma.getStatus());
+        assertEquals("found account individual first name should match original", "Job", found_ma.getIndividualDetails().getFirstName());
+        assertEquals("found account individual last name should match original", "Leoggs", found_ma.getIndividualDetails().getLastName());
+    }
+
+    @Test
+    public void findThrowsExceptionIfMerchantNotFound() {
+        try {
+            gateway.merchantAccount().find("non-existent");
+            fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+        }
     }
 
     @Test
