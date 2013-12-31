@@ -19,11 +19,10 @@ public final class MerchantAccountGateway {
         return new Result<MerchantAccount>(response, MerchantAccount.class);
     }
 
-    public Result<MerchantAccount> find(String id) {
+    public MerchantAccount find(String id) {
         if(id == null || id.trim().equals(""))
             throw new NotFoundException();
-        final NodeWrapper response = http.get("/merchant_accounts/" + id);
-        return new Result<MerchantAccount>(response, MerchantAccount.class);
+        return new MerchantAccount(http.get("/merchant_accounts/" + id));
     }
 
     public Result<MerchantAccount> update(String id, MerchantAccountRequest request) {

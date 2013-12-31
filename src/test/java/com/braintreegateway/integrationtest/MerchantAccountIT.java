@@ -116,8 +116,7 @@ public class MerchantAccountIT {
 
         String merchantAccountId = ma.getId();
 
-        Result<MerchantAccount> found_result = gateway.merchantAccount().find(merchantAccountId);
-        MerchantAccount found_ma = found_result.getTarget();
+        MerchantAccount found_ma = gateway.merchantAccount().find(merchantAccountId);
         assertEquals("found account status should be active", MerchantAccount.Status.ACTIVE, found_ma.getStatus());
         assertEquals("found account individual first name should match original", "Job", found_ma.getIndividualDetails().getFirstName());
         assertEquals("found account individual last name should match original", "Leoggs", found_ma.getIndividualDetails().getLastName());
