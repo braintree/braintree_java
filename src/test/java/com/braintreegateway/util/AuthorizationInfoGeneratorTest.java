@@ -5,10 +5,7 @@ import java.util.regex.*;
 
 import com.braintreegateway.AuthorizationInfoGenerator;
 import com.braintreegateway.AuthorizationFingerprintOptions;
-import com.braintreegateway.exceptions.UnexpectedException;
-import java.io.IOException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.braintreegateway.testhelpers.TestHelper;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -16,31 +13,21 @@ import static org.junit.Assert.fail;
 
 public class AuthorizationInfoGeneratorTest {
 
-  private JsonNode _getAuthInfo(AuthorizationFingerprintOptions options) {
-    ObjectMapper json_mapper = new ObjectMapper();
-    try {
-        String rawAuthInfo = AuthorizationInfoGenerator.generate(
-            "my_merchant_id",
-            "my_public_key",
-            "private_key",
-            "http://client.api.url",
-            "http://auth.url",
-            options
-        );
-        return json_mapper.readTree(rawAuthInfo);
-    } catch (IOException e) {
-        throw new UnexpectedException(e.getMessage());
-    }
-  }
-
-  private String _getFingerprint(AuthorizationFingerprintOptions options) {
-      return _getAuthInfo(options).get("fingerprint").asText();
+  private String _getAuthInfo(AuthorizationFingerprintOptions options) {
+      return AuthorizationInfoGenerator.generate(
+          "my_merchant_id",
+          "my_public_key",
+          "private_key",
+          "http://client.api.url",
+          "http://auth.url",
+          options
+      );
   }
 
   @Test
   public void containsEssentialData() {
-    JsonNode authInfo = _getAuthInfo(null);
-    String fingerprint = authInfo.get("fingerprint").asText();
+    String authInfo = _getAuthInfo(null);
+    String fingerprint = TestHelper.extractParamFromJson("fingerprint", authInfo);
     String[] fingerprintParts = fingerprint.split("\\|");
     String signature = fingerprintParts[0];
     String data = fingerprintParts[1];
@@ -48,13 +35,14 @@ public class AuthorizationInfoGeneratorTest {
     assertTrue(signature.length() > 1);
     assertTrue(data.contains("public_key=my_public_key"));
     assertTrue(data.contains("created_at="));
-    assertEquals(authInfo.get("client_api_url").asText(), "http://client.api.url");
-    assertEquals(authInfo.get("auth_url").asText(), "http://auth.url");
+    assertEquals(TestHelper.extractParamFromJson("client_api_url", authInfo), "http://client.api.url");
+    assertEquals(TestHelper.extractParamFromJson("auth_url", authInfo), "http://auth.url");
   }
 
   @Test
   public void isNotUrlEncoded() {
-    String fingerprint = _getFingerprint(null);
+    String authInfo = _getAuthInfo(null);
+    String fingerprint = TestHelper.extractParamFromJson("fingerprint", authInfo);
     String[] fingerprintParts = fingerprint.split("\\|");
     String data = fingerprintParts[1];
 
@@ -66,7 +54,8 @@ public class AuthorizationInfoGeneratorTest {
   @Test
   public void canIncludeCustomerId() {
     AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().customerId("a-customer-id");
-    String fingerprint = _getFingerprint(options);
+    String authInfo = _getAuthInfo(options);
+    String fingerprint = TestHelper.extractParamFromJson("fingerprint", authInfo);
     String[] fingerprintParts = fingerprint.split("\\|");
     String data = fingerprintParts[1];
 
@@ -81,7 +70,8 @@ public class AuthorizationInfoGeneratorTest {
       verifyCard(true).
       failOnDuplicatePaymentMethod(true);
 
-    String fingerprint = _getFingerprint(options);
+    String authInfo = _getAuthInfo(options);
+    String fingerprint = TestHelper.extractParamFromJson("fingerprint", authInfo);
     String[] fingerprintParts = fingerprint.split("\\|");
     String data = fingerprintParts[1];
 

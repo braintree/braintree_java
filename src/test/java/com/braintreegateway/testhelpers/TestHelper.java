@@ -18,8 +18,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -140,15 +138,8 @@ public abstract class TestHelper {
     }
 
     public static String generateUnlockedNonce(BraintreeGateway gateway) {
-      ObjectMapper json_mapper = new ObjectMapper();
-      String fingerprint;
-      try {
-          String rawAuthInfo = gateway.generateAuthorizationInfo();
-          JsonNode authInfo = json_mapper.readTree(rawAuthInfo);
-          fingerprint = authInfo.get("fingerprint").asText();
-      } catch (IOException e) {
-          throw new UnexpectedException(e.getMessage());
-      }
+      String rawAuthInfo = gateway.generateAuthorizationInfo();
+      String fingerprint = extractParamFromJson("fingerprint", rawAuthInfo);
       String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", fingerprint).
@@ -163,15 +154,23 @@ public abstract class TestHelper {
       String nonce = "";
       try {
         responseBody = HttpHelper.post(url, payload.toString());
-        String noncePatternString = "\"nonce\":\"([\\w\\-]+)\"";
-        Pattern noncePattern = Pattern.compile(noncePatternString);
-        Matcher m = noncePattern.matcher(responseBody);
-        if (m.find()) {
-          nonce = m.group(1);
-        }
+        nonce = extractParamFromJson("nonce", responseBody);
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
       return nonce;
+    }
+
+    public static String extractParamFromJson(String keyName, String json) {
+        String regex = "\"" + keyName + "\":\\s*\"([^\"]+)\"";
+        Pattern keyPattern = Pattern.compile(regex);
+        Matcher m = keyPattern.matcher(json);
+
+        String value = "";
+        if (m.find()) {
+          value = m.group(1);
+        }
+
+        return value;
     }
 }

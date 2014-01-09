@@ -375,7 +375,6 @@ public class CustomerIT {
         Result<Customer> result = gateway.customer().create(request);
         assertTrue(result.isSuccess());
         assertEquals(1, result.getTarget().getCreditCards().size());
-
     }
 
     @Test

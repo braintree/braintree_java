@@ -2,14 +2,11 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Environment;
+import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Test;
-import com.braintreegateway.exceptions.UnexpectedException;
-import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class BraintreeGatewayIT {
     @Test
@@ -53,25 +50,28 @@ public class BraintreeGatewayIT {
         BraintreeGateway config = new BraintreeGateway(Environment.DEVELOPMENT, "development_merchant_id",
                 "integration_public_key", "integration_private_key");
 
-        ObjectMapper json_mapper = new ObjectMapper();
-        JsonNode authInfo;
-        String fingerprint;
-        try {
-            String rawAuthInfo = config.generateAuthorizationInfo();
-            authInfo = json_mapper.readTree(rawAuthInfo);
-            fingerprint = authInfo.get("fingerprint").asText();
-        } catch (IOException e) {
-            throw new UnexpectedException(e.getMessage());
-        }
+        String rawAuthInfo = config.generateAuthorizationInfo();
+        String fingerprint = TestHelper.extractParamFromJson("fingerprint", rawAuthInfo);
+        /* ObjectMapper json_mapper = new ObjectMapper(); */
+        /* JsonNode authInfo; */
+        /* String fingerprint; */
+        /* try { */
+        /*     String rawAuthInfo = config.generateAuthorizationInfo(); */
+        /*     authInfo = json_mapper.readTree(rawAuthInfo); */
+        /*     fingerprint = authInfo.get("fingerprint").asText(); */
+        /* } catch (IOException e) { */
+        /*     throw new UnexpectedException(e.getMessage()); */
+        /* } */
 
         String[] fingerprintParts = fingerprint.split("\\|");
         String signature = fingerprintParts[0];
         String data = fingerprintParts[1];
-        String expectedClientApiUrl = config.baseMerchantURL() + "/client_api";
 
         assertTrue(signature.length() > 1);
         assertTrue(data.contains("public_key=integration_public_key"));
-        assertEquals(authInfo.get("client_api_url").asText(), expectedClientApiUrl);
-        assertEquals(authInfo.get("auth_url").asText(), "http://auth.venmo.dev:4567");
+
+        String expectedClientApiUrl = config.baseMerchantURL() + "/client_api";
+        assertEquals(TestHelper.extractParamFromJson("client_api_url", rawAuthInfo), expectedClientApiUrl);
+        assertEquals(TestHelper.extractParamFromJson("auth_url", rawAuthInfo), "http://auth.venmo.dev:4567");
     }
 }

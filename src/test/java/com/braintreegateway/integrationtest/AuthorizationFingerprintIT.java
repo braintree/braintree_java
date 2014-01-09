@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.braintreegateway.testhelpers.HttpHelper;
+import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.QueryString;
 import com.braintreegateway.CreditCardRequest;
@@ -21,10 +22,6 @@ import com.braintreegateway.Environment;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.AuthorizationFingerprintOptions;
-import com.braintreegateway.exceptions.UnexpectedException;
-import java.io.IOException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AuthorizationFingerprintIT {
     private BraintreeGateway gateway;
@@ -52,18 +49,9 @@ public class AuthorizationFingerprintIT {
         return responseCode;
     }
 
-    private JsonNode _getAuthInfo(AuthorizationFingerprintOptions options) {
-      ObjectMapper json_mapper = new ObjectMapper();
-      try {
-          String rawAuthInfo = gateway.generateAuthorizationInfo(options);
-          return json_mapper.readTree(rawAuthInfo);
-      } catch (IOException e) {
-          throw new UnexpectedException(e.getMessage());
-      }
-    }
-
     private String _getFingerprint(AuthorizationFingerprintOptions options) {
-        return _getAuthInfo(options).get("fingerprint").asText();
+        String rawAuthInfo = gateway.generateAuthorizationInfo(options);
+        return TestHelper.extractParamFromJson("fingerprint", rawAuthInfo);
     }
 
     @Before
