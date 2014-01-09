@@ -21,6 +21,10 @@ import com.braintreegateway.Environment;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.AuthorizationFingerprintOptions;
+import com.braintreegateway.exceptions.UnexpectedException;
+import java.io.IOException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AuthorizationFingerprintIT {
     private BraintreeGateway gateway;
@@ -48,6 +52,20 @@ public class AuthorizationFingerprintIT {
         return responseCode;
     }
 
+    private JsonNode _getAuthInfo(AuthorizationFingerprintOptions options) {
+      ObjectMapper json_mapper = new ObjectMapper();
+      try {
+          String rawAuthInfo = gateway.generateAuthorizationInfo(options);
+          return json_mapper.readTree(rawAuthInfo);
+      } catch (IOException e) {
+          throw new UnexpectedException(e.getMessage());
+      }
+    }
+
+    private String _getFingerprint(AuthorizationFingerprintOptions options) {
+        return _getAuthInfo(options).get("fingerprint").asText();
+    }
+
     @Before
     public void createGateway() {
         this.gateway = new BraintreeGateway(
@@ -61,7 +79,7 @@ public class AuthorizationFingerprintIT {
     @Test
     public void fingerprintIsAcceptedByTheGateway() {
         AuthorizationFingerprintOptions authorizationFingerprintOptions = new AuthorizationFingerprintOptions();
-        String authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
+        String authorizationFingerprint = _getFingerprint(authorizationFingerprintOptions);
         String encodedFingerprint = "";
         try {
             encodedFingerprint = URLEncoder.encode(authorizationFingerprint, "UTF-8");
@@ -93,7 +111,7 @@ public class AuthorizationFingerprintIT {
 
         AuthorizationFingerprintOptions authorizationFingerprintOptions = new AuthorizationFingerprintOptions().verifyCard(true).
           customerId(customer.getId());
-        String authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
+        String authorizationFingerprint = _getFingerprint(authorizationFingerprintOptions);
         String encodedFingerprint = "";
         try {
             encodedFingerprint = URLEncoder.encode(authorizationFingerprint, "UTF-8");
@@ -125,7 +143,7 @@ public class AuthorizationFingerprintIT {
 
         AuthorizationFingerprintOptions authorizationFingerprintOptions = new AuthorizationFingerprintOptions().
           customerId(customer.getId());
-        String authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
+        String authorizationFingerprint = _getFingerprint(authorizationFingerprintOptions);
 
         String encodedFingerprint = "";
         try {
@@ -160,7 +178,7 @@ public class AuthorizationFingerprintIT {
           verifyCard(true).
           customerId(customer.getId());
 
-        String authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
+        String authorizationFingerprint = _getFingerprint(authorizationFingerprintOptions);
 
         String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
         QueryString payload = new QueryString();
@@ -189,7 +207,7 @@ public class AuthorizationFingerprintIT {
           failOnDuplicatePaymentMethod(false).
           customerId(customer.getId());
 
-        String authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
+        String authorizationFingerprint = _getFingerprint(authorizationFingerprintOptions);
 
         String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
         QueryString payload = new QueryString();
@@ -207,7 +225,7 @@ public class AuthorizationFingerprintIT {
           failOnDuplicatePaymentMethod(true).
           customerId(customer.getId());
 
-        authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
+        authorizationFingerprint = _getFingerprint(authorizationFingerprintOptions);
 
         url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
         payload = new QueryString();
@@ -244,7 +262,7 @@ public class AuthorizationFingerprintIT {
           makeDefault(true).
           customerId(customer.getId());
 
-        String authorizationFingerprint = gateway.generateAuthorizationFingerprint(authorizationFingerprintOptions);
+        String authorizationFingerprint = _getFingerprint(authorizationFingerprintOptions);
 
         String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
         QueryString payload = new QueryString();

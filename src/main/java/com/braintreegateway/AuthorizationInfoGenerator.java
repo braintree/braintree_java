@@ -12,7 +12,7 @@ import com.braintreegateway.util.Sha256Hasher;
 import com.braintreegateway.util.SignatureService;
 import com.braintreegateway.AuthorizationFingerprintOptions;
 
-public class AuthorizationFingerprintGenerator {
+public class AuthorizationInfoGenerator {
 
     public static String generate(String merchantId, String publicKey, String privateKey, String clientApiUrl, String authUrl, AuthorizationFingerprintOptions options) {
         verifyOptions(options);
@@ -23,11 +23,8 @@ public class AuthorizationFingerprintGenerator {
 
         QueryString payload = new QueryString();
         try {
-            payload.appendWithoutEncoding("merchant_id", merchantId)
-                .appendWithoutEncoding("public_key", publicKey)
-                .appendWithoutEncoding("created_at", dateString)
-                .appendWithoutEncoding("client_api_url", clientApiUrl)
-                .appendWithoutEncoding("auth_url", authUrl);
+            payload.appendWithoutEncoding("public_key", publicKey)
+                .appendWithoutEncoding("created_at", dateString);
 
             if (options != null) {
                 String customerId = options.getCustomerId();
@@ -52,7 +49,9 @@ public class AuthorizationFingerprintGenerator {
             throw new RuntimeException(e);
         }
 
-        return new SignatureService(privateKey, new Sha256Hasher()).sign(payload.toString());
+        String fingerprint = new SignatureService(privateKey, new Sha256Hasher()).sign(payload.toString());
+        return String.format("{\"fingerprint\": \"%s\", \"client_api_url\": \"%s\", \"auth_url\": \"%s\"}",
+                fingerprint, clientApiUrl, authUrl);
     }
 
     private static void verifyOptions(AuthorizationFingerprintOptions options) {

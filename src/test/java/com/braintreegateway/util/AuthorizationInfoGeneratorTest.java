@@ -3,66 +3,70 @@ package com.braintreegateway.util;
 import org.junit.Test;
 import java.util.regex.*;
 
-import com.braintreegateway.AuthorizationFingerprintGenerator;
+import com.braintreegateway.AuthorizationInfoGenerator;
 import com.braintreegateway.AuthorizationFingerprintOptions;
+import com.braintreegateway.exceptions.UnexpectedException;
+import java.io.IOException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class AuthorizationFingerprintGeneratorTest {
+public class AuthorizationInfoGeneratorTest {
+
+  private JsonNode _getAuthInfo(AuthorizationFingerprintOptions options) {
+    ObjectMapper json_mapper = new ObjectMapper();
+    try {
+        String rawAuthInfo = AuthorizationInfoGenerator.generate(
+            "my_merchant_id",
+            "my_public_key",
+            "private_key",
+            "http://client.api.url",
+            "http://auth.url",
+            options
+        );
+        return json_mapper.readTree(rawAuthInfo);
+    } catch (IOException e) {
+        throw new UnexpectedException(e.getMessage());
+    }
+  }
+
+  private String _getFingerprint(AuthorizationFingerprintOptions options) {
+      return _getAuthInfo(options).get("fingerprint").asText();
+  }
 
   @Test
   public void containsEssentialData() {
-    String fingerprint = AuthorizationFingerprintGenerator.generate(
-        "my_merchant_id",
-        "my_public_key",
-        "private_key",
-        "http://localhost:3000/merchants/my_merchant_id/client_api",
-        "http://auth.venmo.dev:4567",
-        null
-    );
+    JsonNode authInfo = _getAuthInfo(null);
+    String fingerprint = authInfo.get("fingerprint").asText();
     String[] fingerprintParts = fingerprint.split("\\|");
     String signature = fingerprintParts[0];
     String data = fingerprintParts[1];
 
     assertTrue(signature.length() > 1);
-    assertTrue(data.contains("merchant_id=my_merchant_id"));
     assertTrue(data.contains("public_key=my_public_key"));
     assertTrue(data.contains("created_at="));
-    assertTrue(data.contains("client_api_url=http://localhost:3000/merchants/my_merchant_id/client_api"));
-    assertTrue(data.contains("auth_url=http://auth.venmo.dev:4567"));
+    assertEquals(authInfo.get("client_api_url").asText(), "http://client.api.url");
+    assertEquals(authInfo.get("auth_url").asText(), "http://auth.url");
   }
 
   @Test
   public void isNotUrlEncoded() {
-    String fingerprint = AuthorizationFingerprintGenerator.generate(
-        "my_merchant_id",
-        "my_public_key",
-        "private_key",
-        "http://localhost:3000/merchants/my_merchant_id",
-        "http://auth.venmo.dev:4567",
-        null
-    );
+    String fingerprint = _getFingerprint(null);
     String[] fingerprintParts = fingerprint.split("\\|");
     String data = fingerprintParts[1];
 
     assertFalse(data.contains("%3A1"));
-    assertTrue(data.contains("my_merchant_id"));
     assertTrue(data.contains("my_public_key"));
     assertTrue(data.contains("created_at"));
-    assertTrue(data.contains("http://localhost:3000/merchants/my_merchant_id"));
   }
 
   @Test
   public void canIncludeCustomerId() {
-    String fingerprint = AuthorizationFingerprintGenerator.generate(
-        "merchant_id",
-        "public_key",
-        "private_key",
-        "http://localhost:3000/merchants/my_merchant_id",
-        "http://auth.venmo.dev:4567",
-        new AuthorizationFingerprintOptions().customerId("a-customer-id")
-    );
+    AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().customerId("a-customer-id");
+    String fingerprint = _getFingerprint(options);
     String[] fingerprintParts = fingerprint.split("\\|");
     String data = fingerprintParts[1];
 
@@ -77,14 +81,7 @@ public class AuthorizationFingerprintGeneratorTest {
       verifyCard(true).
       failOnDuplicatePaymentMethod(true);
 
-    String fingerprint = AuthorizationFingerprintGenerator.generate(
-        "needs encoding",
-        "public_key",
-        "private_key",
-        "http://localhost:3000/merchants/my_merchant_id",
-        "http://auth.venmo.dev:4567",
-        options
-    );
+    String fingerprint = _getFingerprint(options);
     String[] fingerprintParts = fingerprint.split("\\|");
     String data = fingerprintParts[1];
 
@@ -98,7 +95,7 @@ public class AuthorizationFingerprintGeneratorTest {
     Pattern expectedPattern = Pattern.compile("verifyCard");
     try {
       AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().verifyCard(true);
-      AuthorizationFingerprintGenerator.generate("test", "test", "test", "test", "test", options);
+      AuthorizationInfoGenerator.generate("test", "test", "test", "test", "test", options);
       fail("Expected IllegalArgumentException when credit card options are provided with no customer ID");
     } catch (IllegalArgumentException e) {
       assertTrue(expectedPattern.matcher(e.getMessage()).find());
@@ -107,7 +104,7 @@ public class AuthorizationFingerprintGeneratorTest {
     expectedPattern = Pattern.compile("makeDefault");
     try {
       AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().makeDefault(true);
-      AuthorizationFingerprintGenerator.generate("test", "test", "test", "test", "test", options);
+      AuthorizationInfoGenerator.generate("test", "test", "test", "test", "test", options);
       fail("Expected IllegalArgumentException when credit card options are provided with no customer ID");
     } catch (IllegalArgumentException e) {
       assertTrue(expectedPattern.matcher(e.getMessage()).find());
@@ -116,7 +113,7 @@ public class AuthorizationFingerprintGeneratorTest {
     expectedPattern = Pattern.compile("failOnDuplicatePaymentMethod");
     try {
       AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().failOnDuplicatePaymentMethod(true);
-      AuthorizationFingerprintGenerator.generate("test", "test", "test", "test", "test", options);
+      AuthorizationInfoGenerator.generate("test", "test", "test", "test", "test", options);
       fail("Expected IllegalArgumentException when credit card options are provided with no customer ID");
     } catch (IllegalArgumentException e) {
       assertTrue(expectedPattern.matcher(e.getMessage()).find());

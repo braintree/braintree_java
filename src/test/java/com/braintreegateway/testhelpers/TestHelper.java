@@ -18,6 +18,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -138,7 +140,15 @@ public abstract class TestHelper {
     }
 
     public static String generateUnlockedNonce(BraintreeGateway gateway) {
-      String fingerprint = gateway.generateAuthorizationFingerprint();
+      ObjectMapper json_mapper = new ObjectMapper();
+      String fingerprint;
+      try {
+          String rawAuthInfo = gateway.generateAuthorizationInfo();
+          JsonNode authInfo = json_mapper.readTree(rawAuthInfo);
+          fingerprint = authInfo.get("fingerprint").asText();
+      } catch (IOException e) {
+          throw new UnexpectedException(e.getMessage());
+      }
       String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", fingerprint).
