@@ -803,7 +803,6 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals("S", transaction.getCvvResponseCode());
     }
 
-
     @Test
     public void saleUsesShippingAddressFromVault() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -828,6 +827,32 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
         assertEquals(shippingAddress.getId(), transaction.getShippingAddress().getId());
         assertEquals("Carl", transaction.getShippingAddress().getFirstName());
+    }
+
+    @Test
+    public void saleUsesBillingAddressFromVault() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+
+        gateway.creditCard().create(new CreditCardRequest().
+            customerId(customer.getId()).
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12")).getTarget();
+
+        Address billingAddress = gateway.address().create(customer.getId(),
+                new AddressRequest().firstName("Carl")).getTarget();
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            customerId(customer.getId()).
+            billingAddressId(billingAddress.getId());
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(billingAddress.getId(), transaction.getBillingAddress().getId());
+        assertEquals("Carl", transaction.getBillingAddress().getFirstName());
     }
 
     @Test
