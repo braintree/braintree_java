@@ -451,12 +451,14 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
         assertEquals(new Integer(1), addOns.get(0).getQuantity());
         assertTrue(addOns.get(0).neverExpires());
         assertNull(addOns.get(0).getNumberOfBillingCycles());
+        assertEquals(new Integer(0), addOns.get(0).getCurrentBillingCycle());
 
         assertEquals("increase_20", addOns.get(1).getId());
         assertEquals(new BigDecimal("20.00"), addOns.get(1).getAmount());
         assertEquals(new Integer(1), addOns.get(1).getQuantity());
         assertTrue(addOns.get(1).neverExpires());
         assertNull(addOns.get(1).getNumberOfBillingCycles());
+        assertEquals(new Integer(0), addOns.get(1).getCurrentBillingCycle());
 
         List<Discount> discounts = subscription.getDiscounts();
         Collections.sort(discounts, new TestHelper.CompareModificationsById());
@@ -468,12 +470,14 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
         assertEquals(new Integer(1), discounts.get(0).getQuantity());
         assertTrue(discounts.get(0).neverExpires());
         assertNull(discounts.get(0).getNumberOfBillingCycles());
+        assertEquals(new Integer(0), discounts.get(0).getCurrentBillingCycle());
 
         assertEquals("discount_7", discounts.get(1).getId());
         assertEquals(new BigDecimal("7.00"), discounts.get(1).getAmount());
         assertEquals(new Integer(1), discounts.get(1).getQuantity());
         assertTrue(discounts.get(1).neverExpires());
         assertNull(discounts.get(1).getNumberOfBillingCycles());
+        assertEquals(new Integer(0), discounts.get(1).getCurrentBillingCycle());
     }
 
     @Test
@@ -516,10 +520,12 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
         assertEquals(new Integer(3), addOns.get(0).getNumberOfBillingCycles());
         assertFalse(addOns.get(0).neverExpires());
         assertEquals(new Integer(9), addOns.get(0).getQuantity());
+        assertEquals(new Integer(0), addOns.get(0).getCurrentBillingCycle());
 
         assertEquals("increase_20", addOns.get(1).getId());
         assertEquals(new BigDecimal("40.00"), addOns.get(1).getAmount());
         assertEquals(new Integer(1), addOns.get(1).getQuantity());
+        assertEquals(new Integer(0), addOns.get(1).getCurrentBillingCycle());
 
         List<Discount> discounts = subscription.getDiscounts();
         Collections.sort(discounts, new TestHelper.CompareModificationsById());
@@ -531,10 +537,12 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
         assertNull(discounts.get(0).getNumberOfBillingCycles());
         assertTrue(discounts.get(0).neverExpires());
         assertEquals(new Integer(1), discounts.get(0).getQuantity());
+        assertEquals(new Integer(0), discounts.get(0).getCurrentBillingCycle());
 
         assertEquals("discount_7", discounts.get(1).getId());
         assertEquals(new BigDecimal("15.00"), discounts.get(1).getAmount());
         assertEquals(new Integer(1), discounts.get(1).getQuantity());
+        assertEquals(new Integer(0), discounts.get(1).getCurrentBillingCycle());
     }
 
     @Test
@@ -617,6 +625,7 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
         assertEquals(new Integer(6), subscription.getAddOns().get(0).getNumberOfBillingCycles());
         assertFalse(subscription.getAddOns().get(0).neverExpires());
         assertEquals(new Integer(3), subscription.getAddOns().get(0).getQuantity());
+        assertEquals(new Integer(0), subscription.getAddOns().get(0).getCurrentBillingCycle());
 
         assertEquals(1, subscription.getDiscounts().size());
 
@@ -624,6 +633,7 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
         assertNull(subscription.getDiscounts().get(0).getNumberOfBillingCycles());
         assertTrue(subscription.getDiscounts().get(0).neverExpires());
         assertEquals(new Integer(2), subscription.getDiscounts().get(0).getQuantity());
+        assertEquals(new Integer(0), subscription.getDiscounts().get(0).getCurrentBillingCycle());
     }
 
     @Test
