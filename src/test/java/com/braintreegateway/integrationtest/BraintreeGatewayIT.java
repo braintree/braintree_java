@@ -62,6 +62,6 @@ public class BraintreeGatewayIT {
 
         String expectedClientApiUrl = config.baseMerchantURL() + "/client_api";
         assertEquals(TestHelper.extractParamFromJson("client_api_url", rawClientToken), expectedClientApiUrl);
-        assertEquals(TestHelper.extractParamFromJson("auth_url", rawClientToken), "http://auth.venmo.dev:4567");
+        assertEquals(TestHelper.extractParamFromJson("auth_url", rawClientToken), "http://auth.venmo.dev:9292");
     }
 }
