@@ -137,18 +137,25 @@ public abstract class TestHelper {
         return response;
     }
 
-    public static String generateUnlockedNonce(BraintreeGateway gateway) {
-      String rawClientToken = gateway.generateClientToken();
+    public static String generateUnlockedNonce(BraintreeGateway gateway, String customerId, String creditCardNumber) {
+      String rawClientToken;
+      if (customerId == null) {
+          rawClientToken = gateway.generateClientToken();
+      } else {
+        rawClientToken = gateway.generateClientToken(new ClientTokenOptions().customerId(customerId));
+      }
+
       String authorizationFingerprint = extractParamFromJson("authorization_fingerprint", rawClientToken);
       String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", authorizationFingerprint).
         append("session_identifier_type", "testing").
         append("session_identifier", "test-identifier").
-        append("credit_card[number]", "4111111111111111").
+        append("credit_card[number]", creditCardNumber).
         append("credit_card[expiration_month]", "11").
         append("share", "true").
         append("credit_card[expiration_year]", "2099");
+
 
       String responseBody;
       String nonce = "";
@@ -159,6 +166,10 @@ public abstract class TestHelper {
         throw new RuntimeException(e);
       }
       return nonce;
+    }
+
+    public static String generateUnlockedNonce(BraintreeGateway gateway) {
+        return generateUnlockedNonce(gateway, null, "4111111111111111");
     }
 
     public static String extractParamFromJson(String keyName, String json) {

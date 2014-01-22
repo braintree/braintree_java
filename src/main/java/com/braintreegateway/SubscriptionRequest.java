@@ -20,6 +20,7 @@ public class SubscriptionRequest extends Request {
     private Integer numberOfBillingCycles;
     private SubscriptionOptionsRequest options;
     private String paymentMethodToken;
+    private String paymentMethodNonce;
     private String planId;
     private BigDecimal price;
     private Integer trialDuration;
@@ -80,6 +81,11 @@ public class SubscriptionRequest extends Request {
         return this;
     }
 
+    public SubscriptionRequest paymentMethodNonce(String nonce) {
+        this.paymentMethodNonce = nonce;
+        return this;
+    }
+
     public SubscriptionRequest planId(String id) {
         this.planId = id;
         return this;
@@ -123,6 +129,7 @@ public class SubscriptionRequest extends Request {
             addElement("numberOfBillingCycles", numberOfBillingCycles).
             addElement("options", options).
             addElement("paymentMethodToken", paymentMethodToken).
+            addElement("paymentMethodNonce", paymentMethodNonce).
             addElement("planId", planId).
             addElement("price", price).
             addElement("trialPeriod", hasTrialPeriod).
