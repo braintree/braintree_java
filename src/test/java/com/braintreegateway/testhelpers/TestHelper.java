@@ -138,11 +138,11 @@ public abstract class TestHelper {
     }
 
     public static String generateUnlockedNonce(BraintreeGateway gateway) {
-      String rawAuthInfo = gateway.generateAuthorizationInfo();
-      String fingerprint = extractParamFromJson("fingerprint", rawAuthInfo);
+      String rawClientToken = gateway.generateClientToken();
+      String authorizationFingerprint = extractParamFromJson("authorization_fingerprint", rawClientToken);
       String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
       QueryString payload = new QueryString();
-      payload.append("authorization_fingerprint", fingerprint).
+      payload.append("authorization_fingerprint", authorizationFingerprint).
         append("session_identifier_type", "testing").
         append("session_identifier", "test-identifier").
         append("credit_card[number]", "4111111111111111").

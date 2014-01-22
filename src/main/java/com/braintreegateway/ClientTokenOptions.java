@@ -1,29 +1,29 @@
 package com.braintreegateway;
 
-public class AuthorizationFingerprintOptions {
+public class ClientTokenOptions {
   private Boolean makeDefault;
   private Boolean verifyCard;
   private Boolean failOnDuplicatePaymentMethod;
   private String customerId;
 
-  public AuthorizationFingerprintOptions() {}
+  public ClientTokenOptions() {}
 
-  public AuthorizationFingerprintOptions verifyCard(Boolean verifyCard) {
+  public ClientTokenOptions verifyCard(Boolean verifyCard) {
     this.verifyCard = verifyCard;
     return this;
   }
 
-  public AuthorizationFingerprintOptions customerId(String customerId) {
+  public ClientTokenOptions customerId(String customerId) {
     this.customerId = customerId;
     return this;
   }
 
-  public AuthorizationFingerprintOptions makeDefault(Boolean makeDefault) {
+  public ClientTokenOptions makeDefault(Boolean makeDefault) {
     this.makeDefault = makeDefault;
     return this;
   }
 
-  public AuthorizationFingerprintOptions failOnDuplicatePaymentMethod(Boolean failOnDuplicatePaymentMethod) {
+  public ClientTokenOptions failOnDuplicatePaymentMethod(Boolean failOnDuplicatePaymentMethod) {
     this.failOnDuplicatePaymentMethod = failOnDuplicatePaymentMethod;
     return this;
   }

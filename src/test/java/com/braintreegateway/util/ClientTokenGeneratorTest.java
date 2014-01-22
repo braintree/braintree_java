@@ -3,18 +3,18 @@ package com.braintreegateway.util;
 import org.junit.Test;
 import java.util.regex.*;
 
-import com.braintreegateway.AuthorizationInfoGenerator;
-import com.braintreegateway.AuthorizationFingerprintOptions;
+import com.braintreegateway.ClientTokenGenerator;
+import com.braintreegateway.ClientTokenOptions;
 import com.braintreegateway.testhelpers.TestHelper;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class AuthorizationInfoGeneratorTest {
+public class ClientTokenGeneratorTest {
 
-  private String _getAuthInfo(AuthorizationFingerprintOptions options) {
-      return AuthorizationInfoGenerator.generate(
+  private String _getClientToken(ClientTokenOptions options) {
+      return ClientTokenGenerator.generate(
           "my_merchant_id",
           "my_public_key",
           "private_key",
@@ -26,9 +26,9 @@ public class AuthorizationInfoGeneratorTest {
 
   @Test
   public void containsEssentialData() {
-    String authInfo = _getAuthInfo(null);
-    String fingerprint = TestHelper.extractParamFromJson("fingerprint", authInfo);
-    String[] fingerprintParts = fingerprint.split("\\|");
+    String authInfo = _getClientToken(null);
+    String authorizationFingerprint = TestHelper.extractParamFromJson("authorization_fingerprint", authInfo);
+    String[] fingerprintParts = authorizationFingerprint.split("\\|");
     String signature = fingerprintParts[0];
     String data = fingerprintParts[1];
 
@@ -41,9 +41,9 @@ public class AuthorizationInfoGeneratorTest {
 
   @Test
   public void isNotUrlEncoded() {
-    String authInfo = _getAuthInfo(null);
-    String fingerprint = TestHelper.extractParamFromJson("fingerprint", authInfo);
-    String[] fingerprintParts = fingerprint.split("\\|");
+    String authInfo = _getClientToken(null);
+    String authorizationFingerprint = TestHelper.extractParamFromJson("authorization_fingerprint", authInfo);
+    String[] fingerprintParts = authorizationFingerprint.split("\\|");
     String data = fingerprintParts[1];
 
     assertFalse(data.contains("%3A1"));
@@ -53,10 +53,10 @@ public class AuthorizationInfoGeneratorTest {
 
   @Test
   public void canIncludeCustomerId() {
-    AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().customerId("a-customer-id");
-    String authInfo = _getAuthInfo(options);
-    String fingerprint = TestHelper.extractParamFromJson("fingerprint", authInfo);
-    String[] fingerprintParts = fingerprint.split("\\|");
+    ClientTokenOptions options = new ClientTokenOptions().customerId("a-customer-id");
+    String authInfo = _getClientToken(options);
+    String authorizationFingerprint = TestHelper.extractParamFromJson("authorization_fingerprint", authInfo);
+    String[] fingerprintParts = authorizationFingerprint.split("\\|");
     String data = fingerprintParts[1];
 
     assertTrue(data.contains("a-customer-id"));
@@ -64,15 +64,15 @@ public class AuthorizationInfoGeneratorTest {
 
   @Test
   public void containsOptions() {
-    AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().
+    ClientTokenOptions options = new ClientTokenOptions().
       customerId("a-customer-id").
       makeDefault(true).
       verifyCard(true).
       failOnDuplicatePaymentMethod(true);
 
-    String authInfo = _getAuthInfo(options);
-    String fingerprint = TestHelper.extractParamFromJson("fingerprint", authInfo);
-    String[] fingerprintParts = fingerprint.split("\\|");
+    String authInfo = _getClientToken(options);
+    String authorizationFingerprint = TestHelper.extractParamFromJson("authorization_fingerprint", authInfo);
+    String[] fingerprintParts = authorizationFingerprint.split("\\|");
     String data = fingerprintParts[1];
 
     assertTrue(data.contains("credit_card[options][make_default]=true"));
@@ -84,8 +84,8 @@ public class AuthorizationInfoGeneratorTest {
   public void requiresCustomerIdForOptions() {
     Pattern expectedPattern = Pattern.compile("verifyCard");
     try {
-      AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().verifyCard(true);
-      AuthorizationInfoGenerator.generate("test", "test", "test", "test", "test", options);
+      ClientTokenOptions options = new ClientTokenOptions().verifyCard(true);
+      ClientTokenGenerator.generate("test", "test", "test", "test", "test", options);
       fail("Expected IllegalArgumentException when credit card options are provided with no customer ID");
     } catch (IllegalArgumentException e) {
       assertTrue(expectedPattern.matcher(e.getMessage()).find());
@@ -93,8 +93,8 @@ public class AuthorizationInfoGeneratorTest {
 
     expectedPattern = Pattern.compile("makeDefault");
     try {
-      AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().makeDefault(true);
-      AuthorizationInfoGenerator.generate("test", "test", "test", "test", "test", options);
+      ClientTokenOptions options = new ClientTokenOptions().makeDefault(true);
+      ClientTokenGenerator.generate("test", "test", "test", "test", "test", options);
       fail("Expected IllegalArgumentException when credit card options are provided with no customer ID");
     } catch (IllegalArgumentException e) {
       assertTrue(expectedPattern.matcher(e.getMessage()).find());
@@ -102,8 +102,8 @@ public class AuthorizationInfoGeneratorTest {
 
     expectedPattern = Pattern.compile("failOnDuplicatePaymentMethod");
     try {
-      AuthorizationFingerprintOptions options = new AuthorizationFingerprintOptions().failOnDuplicatePaymentMethod(true);
-      AuthorizationInfoGenerator.generate("test", "test", "test", "test", "test", options);
+      ClientTokenOptions options = new ClientTokenOptions().failOnDuplicatePaymentMethod(true);
+      ClientTokenGenerator.generate("test", "test", "test", "test", "test", options);
       fail("Expected IllegalArgumentException when credit card options are provided with no customer ID");
     } catch (IllegalArgumentException e) {
       assertTrue(expectedPattern.matcher(e.getMessage()).find());

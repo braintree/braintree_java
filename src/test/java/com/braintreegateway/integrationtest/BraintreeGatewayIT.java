@@ -46,22 +46,12 @@ public class BraintreeGatewayIT {
     }
 
     @Test
-    public void generateAuthorizationInfo() {
+    public void generateClientToken() {
         BraintreeGateway config = new BraintreeGateway(Environment.DEVELOPMENT, "development_merchant_id",
                 "integration_public_key", "integration_private_key");
 
-        String rawAuthInfo = config.generateAuthorizationInfo();
-        String fingerprint = TestHelper.extractParamFromJson("fingerprint", rawAuthInfo);
-        /* ObjectMapper json_mapper = new ObjectMapper(); */
-        /* JsonNode authInfo; */
-        /* String fingerprint; */
-        /* try { */
-        /*     String rawAuthInfo = config.generateAuthorizationInfo(); */
-        /*     authInfo = json_mapper.readTree(rawAuthInfo); */
-        /*     fingerprint = authInfo.get("fingerprint").asText(); */
-        /* } catch (IOException e) { */
-        /*     throw new UnexpectedException(e.getMessage()); */
-        /* } */
+        String rawClientToken = config.generateClientToken();
+        String fingerprint = TestHelper.extractParamFromJson("authorization_fingerprint", rawClientToken);
 
         String[] fingerprintParts = fingerprint.split("\\|");
         String signature = fingerprintParts[0];
@@ -71,7 +61,7 @@ public class BraintreeGatewayIT {
         assertTrue(data.contains("public_key=integration_public_key"));
 
         String expectedClientApiUrl = config.baseMerchantURL() + "/client_api";
-        assertEquals(TestHelper.extractParamFromJson("client_api_url", rawAuthInfo), expectedClientApiUrl);
-        assertEquals(TestHelper.extractParamFromJson("auth_url", rawAuthInfo), "http://auth.venmo.dev:4567");
+        assertEquals(TestHelper.extractParamFromJson("client_api_url", rawClientToken), expectedClientApiUrl);
+        assertEquals(TestHelper.extractParamFromJson("auth_url", rawClientToken), "http://auth.venmo.dev:4567");
     }
 }

@@ -10,11 +10,11 @@ import java.net.URLEncoder;
 import com.braintreegateway.util.QueryString;
 import com.braintreegateway.util.Sha256Hasher;
 import com.braintreegateway.util.SignatureService;
-import com.braintreegateway.AuthorizationFingerprintOptions;
+import com.braintreegateway.ClientTokenOptions;
 
-public class AuthorizationInfoGenerator {
+public class ClientTokenGenerator {
 
-    public static String generate(String merchantId, String publicKey, String privateKey, String clientApiUrl, String authUrl, AuthorizationFingerprintOptions options) {
+    public static String generate(String merchantId, String publicKey, String privateKey, String clientApiUrl, String authUrl, ClientTokenOptions options) {
         verifyOptions(options);
         TimeZone tz = TimeZone.getTimeZone("UTC");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
@@ -50,11 +50,11 @@ public class AuthorizationInfoGenerator {
         }
 
         String fingerprint = new SignatureService(privateKey, new Sha256Hasher()).sign(payload.toString());
-        return String.format("{\"fingerprint\": \"%s\", \"client_api_url\": \"%s\", \"auth_url\": \"%s\"}",
+        return String.format("{\"authorization_fingerprint\": \"%s\", \"client_api_url\": \"%s\", \"auth_url\": \"%s\"}",
                 fingerprint, clientApiUrl, authUrl);
     }
 
-    private static void verifyOptions(AuthorizationFingerprintOptions options) {
+    private static void verifyOptions(ClientTokenOptions options) {
       if (options == null) {
         return;
       }
