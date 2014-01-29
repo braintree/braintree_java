@@ -51,7 +51,7 @@ public class ClientTokenIT {
 
     private String _getFingerprint(ClientTokenOptions options) {
         String rawClientToken = gateway.generateClientToken(options);
-        return TestHelper.extractParamFromJson("authorization_fingerprint", rawClientToken);
+        return TestHelper.extractParamFromJson("authorizationFingerprint", rawClientToken);
     }
 
     @Before

@@ -51,7 +51,7 @@ public class BraintreeGatewayIT {
                 "integration_public_key", "integration_private_key");
 
         String rawClientToken = config.generateClientToken();
-        String fingerprint = TestHelper.extractParamFromJson("authorization_fingerprint", rawClientToken);
+        String fingerprint = TestHelper.extractParamFromJson("authorizationFingerprint", rawClientToken);
 
         String[] fingerprintParts = fingerprint.split("\\|");
         String signature = fingerprintParts[0];
@@ -61,7 +61,7 @@ public class BraintreeGatewayIT {
         assertTrue(data.contains("public_key=integration_public_key"));
 
         String expectedClientApiUrl = config.baseMerchantURL() + "/client_api";
-        assertEquals(TestHelper.extractParamFromJson("client_api_url", rawClientToken), expectedClientApiUrl);
-        assertEquals(TestHelper.extractParamFromJson("auth_url", rawClientToken), "http://auth.venmo.dev:9292");
+        assertEquals(TestHelper.extractParamFromJson("clientApiUrl", rawClientToken), expectedClientApiUrl);
+        assertEquals(TestHelper.extractParamFromJson("authUrl", rawClientToken), "http://auth.venmo.dev:9292");
     }
 }

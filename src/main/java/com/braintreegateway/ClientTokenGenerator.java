@@ -50,7 +50,7 @@ public class ClientTokenGenerator {
         }
 
         String fingerprint = new SignatureService(privateKey, new Sha256Hasher()).sign(payload.toString());
-        return String.format("{\"authorization_fingerprint\": \"%s\", \"client_api_url\": \"%s\", \"auth_url\": \"%s\"}",
+        return String.format("{\"authorizationFingerprint\": \"%s\", \"clientApiUrl\": \"%s\", \"authUrl\": \"%s\"}",
                 fingerprint, clientApiUrl, authUrl);
     }
 

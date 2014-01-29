@@ -145,7 +145,7 @@ public abstract class TestHelper {
         rawClientToken = gateway.generateClientToken(new ClientTokenOptions().customerId(customerId));
       }
 
-      String authorizationFingerprint = extractParamFromJson("authorization_fingerprint", rawClientToken);
+      String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", rawClientToken);
       String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", authorizationFingerprint).

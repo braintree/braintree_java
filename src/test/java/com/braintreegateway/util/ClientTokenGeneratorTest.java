@@ -27,7 +27,7 @@ public class ClientTokenGeneratorTest {
   @Test
   public void containsEssentialData() {
     String authInfo = _getClientToken(null);
-    String authorizationFingerprint = TestHelper.extractParamFromJson("authorization_fingerprint", authInfo);
+    String authorizationFingerprint = TestHelper.extractParamFromJson("authorizationFingerprint", authInfo);
     String[] fingerprintParts = authorizationFingerprint.split("\\|");
     String signature = fingerprintParts[0];
     String data = fingerprintParts[1];
@@ -35,14 +35,14 @@ public class ClientTokenGeneratorTest {
     assertTrue(signature.length() > 1);
     assertTrue(data.contains("public_key=my_public_key"));
     assertTrue(data.contains("created_at="));
-    assertEquals(TestHelper.extractParamFromJson("client_api_url", authInfo), "http://client.api.url");
-    assertEquals(TestHelper.extractParamFromJson("auth_url", authInfo), "http://auth.url");
+    assertEquals(TestHelper.extractParamFromJson("clientApiUrl", authInfo), "http://client.api.url");
+    assertEquals(TestHelper.extractParamFromJson("authUrl", authInfo), "http://auth.url");
   }
 
   @Test
   public void isNotUrlEncoded() {
     String authInfo = _getClientToken(null);
-    String authorizationFingerprint = TestHelper.extractParamFromJson("authorization_fingerprint", authInfo);
+    String authorizationFingerprint = TestHelper.extractParamFromJson("authorizationFingerprint", authInfo);
     String[] fingerprintParts = authorizationFingerprint.split("\\|");
     String data = fingerprintParts[1];
 
@@ -55,7 +55,7 @@ public class ClientTokenGeneratorTest {
   public void canIncludeCustomerId() {
     ClientTokenOptions options = new ClientTokenOptions().customerId("a-customer-id");
     String authInfo = _getClientToken(options);
-    String authorizationFingerprint = TestHelper.extractParamFromJson("authorization_fingerprint", authInfo);
+    String authorizationFingerprint = TestHelper.extractParamFromJson("authorizationFingerprint", authInfo);
     String[] fingerprintParts = authorizationFingerprint.split("\\|");
     String data = fingerprintParts[1];
 
@@ -71,7 +71,7 @@ public class ClientTokenGeneratorTest {
       failOnDuplicatePaymentMethod(true);
 
     String authInfo = _getClientToken(options);
-    String authorizationFingerprint = TestHelper.extractParamFromJson("authorization_fingerprint", authInfo);
+    String authorizationFingerprint = TestHelper.extractParamFromJson("authorizationFingerprint", authInfo);
     String[] fingerprintParts = authorizationFingerprint.split("\\|");
     String data = fingerprintParts[1];
 
