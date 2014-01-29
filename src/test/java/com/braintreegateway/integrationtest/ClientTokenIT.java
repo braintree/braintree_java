@@ -77,7 +77,7 @@ public class ClientTokenIT {
 
         String url = gateway.baseMerchantURL()  + "/client_api/credit_cards.json?";
         url += "authorizationFingerprint=" + encodedFingerprint;
-        url += "&sessionIdentifierType=testing&sessionIdentifier=test-identifier";
+        url += "&sharedCustomerIdentifierType=testing&sharedCustomerIdentifier=test-identifier";
 
         int responseCode = -1;
         try {
@@ -109,7 +109,7 @@ public class ClientTokenIT {
 
         String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json?";
         url += "authorizationFingerprint=" + encodedFingerprint;
-        url += "&sessionIdentifierType=testing&sessionIdentifier=test-identifier";
+        url += "&sharedCustomerIdentifierType=testing&sharedCustomerIdentifier=test-identifier";
 
         int responseCode = -1;
         try {
@@ -142,7 +142,7 @@ public class ClientTokenIT {
 
         String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json?";
         url += "authorizationFingerprint=" + encodedFingerprint;
-        url += "&sessionIdentifierType=testing&sessionIdentifier=test-identifier";
+        url += "&sharedCustomerIdentifierType=testing&sharedCustomerIdentifier=test-identifier";
 
         int responseCode = -1;
         try {
@@ -171,8 +171,8 @@ public class ClientTokenIT {
         String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
-            append("session_identifier_type", "testing").
-            append("session_identifier", "test-identifier").
+            append("shared_customer_identifier_type", "testing").
+            append("shared_customer_identifier", "test-identifier").
             append("credit_card[number]", "4000111111111115").
             append("credit_card[expiration_month]", "11").
             append("credit_card[expiration_year]", "2099");
@@ -200,8 +200,8 @@ public class ClientTokenIT {
         String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
-            append("session_identifier_type", "testing").
-            append("session_identifier", "test-identifier").
+            append("shared_customer_identifier_type", "testing").
+            append("shared_customer_identifier", "test-identifier").
             append("credit_card[number]", "4111111111111111").
             append("credit_card[expiration_month]", "11").
             append("credit_card[expiration_year]", "2099");
@@ -218,8 +218,8 @@ public class ClientTokenIT {
         url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
         payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
-            append("session_identifier_type", "testing").
-            append("session_identifier", "test-identifier").
+            append("shared_customer_identifier_type", "testing").
+            append("shared_customer_identifier", "test-identifier").
             append("credit_card[number]", "4111111111111111").
             append("credit_card[expiration_month]", "11").
             append("credit_card[expiration_year]", "2099");
@@ -255,8 +255,8 @@ public class ClientTokenIT {
         String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
-            append("session_identifier_type", "testing").
-            append("session_identifier", "test-identifier").
+            append("shared_customer_identifier_type", "testing").
+            append("shared_customer_identifier", "test-identifier").
             append("credit_card[number]", "4111111111111111").
             append("credit_card[expiration_month]", "11").
             append("credit_card[expiration_year]", "2099");
