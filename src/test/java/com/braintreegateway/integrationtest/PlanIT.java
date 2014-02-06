@@ -33,8 +33,6 @@ public class PlanIT {
                 .name("java test plan")
                 .numberOfBillingCycles(12)
                 .price(new BigDecimal("100.00"))
-                .trialDuration(1)
-                .trialDurationUnit(Plan.DurationUnit.DAY)
                 .trialPeriod(false);
         http.post("/plans/create_plan_for_tests", request);
 
@@ -74,8 +72,6 @@ public class PlanIT {
         assertEquals("java test plan", actualPlan.getName());
         assertEquals(new Integer(12), actualPlan.getNumberOfBillingCycles());
         assertEquals(new BigDecimal("100.00"), actualPlan.getPrice());
-        assertEquals((Integer) 1, actualPlan.getTrialDuration());
-        assertEquals(Plan.DurationUnit.DAY, actualPlan.getTrialDurationUnit());
         assertEquals(false, actualPlan.hasTrialPeriod());
 
         AddOn addOn = actualPlan.getAddOns().get(0);
