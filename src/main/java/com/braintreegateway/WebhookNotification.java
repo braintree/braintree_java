@@ -20,6 +20,7 @@ public class WebhookNotification {
         SUBSCRIPTION_WENT_ACTIVE("subscription_went_active"),
         SUBSCRIPTION_WENT_PAST_DUE("subscription_went_past_due"),
         TRANSACTION_DISBURSED("transaction_disbursed"),
+        TRANSFER_EXCEPTION("transfer_exception"),
         UNRECOGNIZED("unrecognized");
 
         private final String name;
@@ -38,6 +39,7 @@ public class WebhookNotification {
     private MerchantAccount merchantAccount;
     private Subscription subscription;
     private Transaction transaction;
+    private Transfer transfer;
     private Kind kind;
     private Calendar timestamp;
     private PartnerMerchant partnerMerchant;
@@ -62,6 +64,10 @@ public class WebhookNotification {
 
         if (wrapperNode.findFirst("transaction") != null) {
             this.transaction = new Transaction(wrapperNode.findFirst("transaction"));
+        }
+
+        if (wrapperNode.findFirst("transfer") != null) {
+            this.transfer = new Transfer(wrapperNode.findFirst("transfer"));
         }
 
         if (wrapperNode.findFirst("partner-merchant") != null) {
@@ -91,6 +97,10 @@ public class WebhookNotification {
 
     public Transaction getTransaction() {
         return this.transaction;
+    }
+
+    public Transfer getTransfer() {
+        return this.transfer;
     }
 
     public Calendar getTimestamp() {

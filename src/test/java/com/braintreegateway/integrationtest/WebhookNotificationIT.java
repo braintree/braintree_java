@@ -116,6 +116,21 @@ public class WebhookNotificationIT {
     }
 
     @Test
+    public void createsSampleTransferExceptionNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.TRANSFER_EXCEPTION, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+
+        assertEquals(WebhookNotification.Kind.TRANSFER_EXCEPTION, notification.getKind());
+        assertEquals("my_id", notification.getTransfer().getId());
+        assertEquals("invalid_account_number", notification.getTransfer().getMessage());
+        assertEquals(2014, notification.getTransfer().getDisbursementDate().get(Calendar.YEAR));
+        assertEquals(Calendar.FEBRUARY, notification.getTransfer().getDisbursementDate().get(Calendar.MONTH));
+        assertEquals(10, notification.getTransfer().getDisbursementDate().get(Calendar.DAY_OF_MONTH));
+        assertEquals("update", notification.getTransfer().getFollowUpAction());
+    }
+
+    @Test
     public void buildsSampleNotificationForPartnerMerchantConnectedWebhook()
     {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting()

@@ -43,6 +43,7 @@ public class WebhookTestingGateway {
             case SUB_MERCHANT_ACCOUNT_APPROVED: return merchantAccountXmlActive(id);
             case SUB_MERCHANT_ACCOUNT_DECLINED: return merchantAccountXmlDeclined(id);
             case TRANSACTION_DISBURSED: return transactionXml(id);
+            case TRANSFER_EXCEPTION: return transferXml(id);
             case PARTNER_MERCHANT_CONNECTED: return partnerMerchantConnectedXml(id);
             case PARTNER_MERCHANT_DISCONNECTED: return partnerMerchantDisconnectedXml(id);
             case PARTNER_MERCHANT_DECLINED: return partnerMerchantDeclinedXml(id);
@@ -113,6 +114,17 @@ public class WebhookTestingGateway {
                 node("shipping"),
                 node("subscription")
         );
+    }
+
+    private String transferXml(String id) {
+      return node("transfer",
+              node("merchant-account-id", "abcdef"),
+              node("id", id),
+              node("message", "invalid_account_number"),
+              node("amount", "100.00"),
+              node("disbursement-date", "2014-02-10"),
+              node("follow-up-action", "update")
+          );
     }
 
     private String partnerMerchantConnectedXml(String id) {
