@@ -114,6 +114,10 @@ public class BraintreeGateway {
       return baseMerchantURL() + "/client_api";
     }
 
+    public ClientTokenGateway clientToken() {
+        return new ClientTokenGateway(http, configuration);
+    }
+
     /**
      * Returns an {@link CreditCardGateway} for interacting with
      * {@link CreditCard} objects.
@@ -154,31 +158,6 @@ public class BraintreeGateway {
 
     public Configuration getConfiguration() {
         return configuration;
-    }
-
-    /**
-     * Returns a String used for client side authentication.
-     *
-     * @param options
-     *        A ClientTokenOptions object.
-     * @return a String.
-     */
-    public String generateClientToken(ClientTokenOptions options) {
-      return ClientTokenGenerator.generate(this.merchantId,
-          this.publicKey,
-          this.privateKey,
-          this.clientApiURL(),
-          this.environment.authURL,
-          options);
-    }
-
-    /**
-     * Returns a String used for client side authentication.
-     *
-     * @return a String.
-     */
-    public String generateClientToken() {
-      return generateClientToken(null);
     }
 
     /**

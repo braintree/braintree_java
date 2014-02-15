@@ -44,24 +44,4 @@ public class BraintreeGatewayIT {
         assertEquals("Basic aW50ZWdyYXRpb25fcHVibGljX2tleTppbnRlZ3JhdGlvbl9wcml2YXRlX2tleQ==", config
                 .getAuthorizationHeader());
     }
-
-    @Test
-    public void generateClientToken() {
-        BraintreeGateway config = new BraintreeGateway(Environment.DEVELOPMENT, "development_merchant_id",
-                "integration_public_key", "integration_private_key");
-
-        String rawClientToken = config.generateClientToken();
-        String fingerprint = TestHelper.extractParamFromJson("authorizationFingerprint", rawClientToken);
-
-        String[] fingerprintParts = fingerprint.split("\\|");
-        String signature = fingerprintParts[0];
-        String data = fingerprintParts[1];
-
-        assertTrue(signature.length() > 1);
-        assertTrue(data.contains("public_key=integration_public_key"));
-
-        String expectedClientApiUrl = config.baseMerchantURL() + "/client_api";
-        assertEquals(TestHelper.extractParamFromJson("clientApiUrl", rawClientToken), expectedClientApiUrl);
-        assertEquals(TestHelper.extractParamFromJson("authUrl", rawClientToken), "http://auth.venmo.dev:9292");
-    }
 }

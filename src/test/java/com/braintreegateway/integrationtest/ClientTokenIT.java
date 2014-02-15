@@ -21,7 +21,8 @@ import com.braintreegateway.Result;
 import com.braintreegateway.Environment;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.ClientTokenOptions;
+import com.braintreegateway.ClientTokenRequest;
+import com.braintreegateway.ClientTokenOptionsRequest;
 
 public class ClientTokenIT {
     private BraintreeGateway gateway;
@@ -49,8 +50,7 @@ public class ClientTokenIT {
         return responseCode;
     }
 
-    private String _getFingerprint(ClientTokenOptions options) {
-        String rawClientToken = gateway.generateClientToken(options);
+    private String _getFingerprint(String rawClientToken) {
         return TestHelper.extractParamFromJson("authorizationFingerprint", rawClientToken);
     }
 
@@ -66,8 +66,8 @@ public class ClientTokenIT {
 
     @Test
     public void fingerprintIsAcceptedByTheGateway() {
-        ClientTokenOptions clientTokenOptions = new ClientTokenOptions();
-        String authorizationFingerprint = _getFingerprint(clientTokenOptions);
+        String clientToken = gateway.clientToken().generate();
+        String authorizationFingerprint = _getFingerprint(clientToken);
         String encodedFingerprint = "";
         try {
             encodedFingerprint = URLEncoder.encode(authorizationFingerprint, "UTF-8");
@@ -91,48 +91,17 @@ public class ClientTokenIT {
     }
 
     @Test
-    public void fingerprintWithCreditCardOptionsIsAccepted() {
-        CustomerRequest request = new CustomerRequest();
-        Result<Customer> result = gateway.customer().create(request);
-        assertTrue(result.isSuccess());
-        Customer customer = result.getTarget();
-
-        ClientTokenOptions clientTokenOptions = new ClientTokenOptions().verifyCard(true).
-          customerId(customer.getId());
-        String authorizationFingerprint = _getFingerprint(clientTokenOptions);
-        String encodedFingerprint = "";
-        try {
-            encodedFingerprint = URLEncoder.encode(authorizationFingerprint, "UTF-8");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json?";
-        url += "authorizationFingerprint=" + encodedFingerprint;
-        url += "&sharedCustomerIdentifierType=testing&sharedCustomerIdentifier=test-identifier";
-
-        int responseCode = -1;
-        try {
-          responseCode = HttpHelper.get(url);
-        } catch (java.net.MalformedURLException e) {
-          fail();
-        } catch (java.io.IOException e) {
-          fail();
-        }
-        assertEquals(200, responseCode);
-    }
-
-    @Test
     public void fingerprintCanContainCustomerId() {
-        CustomerRequest request = new CustomerRequest();
-        Result<Customer> result = gateway.customer().create(request);
+        CustomerRequest customerRequest = new CustomerRequest();
+        Result<Customer> result = gateway.customer().create(customerRequest);
         assertTrue(result.isSuccess());
         Customer customer = result.getTarget();
 
-        ClientTokenOptions clientTokenOptions = new ClientTokenOptions().
-          customerId(customer.getId());
-        String authorizationFingerprint = _getFingerprint(clientTokenOptions);
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
+            .customerId(customer.getId());
+        String clientToken = gateway.clientToken().generate(clientTokenRequest);
 
+        String authorizationFingerprint = _getFingerprint(clientToken);
         String encodedFingerprint = "";
         try {
             encodedFingerprint = URLEncoder.encode(authorizationFingerprint, "UTF-8");
@@ -156,17 +125,18 @@ public class ClientTokenIT {
     }
 
     @Test
-    public void fingerprintContainsVerifyCard() {
-        CustomerRequest request = new CustomerRequest();
-        Result<Customer> result = gateway.customer().create(request);
+    public void gatewayRespectsVerifyCard() {
+        CustomerRequest customerRequest = new CustomerRequest();
+        Result<Customer> result = gateway.customer().create(customerRequest);
         assertTrue(result.isSuccess());
         Customer customer = result.getTarget();
 
-        ClientTokenOptions clientTokenOptions = new ClientTokenOptions().
-          verifyCard(true).
-          customerId(customer.getId());
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
+            .customerId(customer.getId())
+            .options(new ClientTokenOptionsRequest().verifyCard(true));
+        String clientToken = gateway.clientToken().generate(clientTokenRequest);
 
-        String authorizationFingerprint = _getFingerprint(clientTokenOptions);
+        String authorizationFingerprint = _getFingerprint(clientToken);
 
         String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
         QueryString payload = new QueryString();
@@ -185,56 +155,9 @@ public class ClientTokenIT {
     }
 
     @Test
-    public void fingerprintContainsFailOnDuplicatePaymentMethod() {
-        CustomerRequest request = new CustomerRequest();
-        Result<Customer> result = gateway.customer().create(request);
-        assertTrue(result.isSuccess());
-        Customer customer = result.getTarget();
-
-        ClientTokenOptions clientTokenOptions = new ClientTokenOptions().
-          failOnDuplicatePaymentMethod(false).
-          customerId(customer.getId());
-
-        String authorizationFingerprint = _getFingerprint(clientTokenOptions);
-
-        String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
-        QueryString payload = new QueryString();
-        payload.append("authorization_fingerprint", authorizationFingerprint).
-            append("shared_customer_identifier_type", "testing").
-            append("shared_customer_identifier", "test-identifier").
-            append("credit_card[number]", "4111111111111111").
-            append("credit_card[expiration_month]", "11").
-            append("credit_card[expiration_year]", "2099");
-
-        int responseCode = postResponseCode(url, payload);
-        assertEquals(201, responseCode);
-
-        clientTokenOptions = new ClientTokenOptions().
-          failOnDuplicatePaymentMethod(true).
-          customerId(customer.getId());
-
-        authorizationFingerprint = _getFingerprint(clientTokenOptions);
-
-        url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
-        payload = new QueryString();
-        payload.append("authorization_fingerprint", authorizationFingerprint).
-            append("shared_customer_identifier_type", "testing").
-            append("shared_customer_identifier", "test-identifier").
-            append("credit_card[number]", "4111111111111111").
-            append("credit_card[expiration_month]", "11").
-            append("credit_card[expiration_year]", "2099");
-
-        responseCode = postResponseCode(url, payload);
-        assertEquals(422, responseCode);
-
-        int new_card_count = gateway.customer().find(customer.getId()).getCreditCards().size();
-        assertEquals(1, new_card_count);
-    }
-
-    @Test
-    public void fingerprintContainsMakeDefault() {
-        CustomerRequest request = new CustomerRequest();
-        Result<Customer> result = gateway.customer().create(request);
+    public void gatewayRespectsMakeDefault() {
+        CustomerRequest customerRequest = new CustomerRequest();
+        Result<Customer> result = gateway.customer().create(customerRequest);
         assertTrue(result.isSuccess());
         Customer customer = result.getTarget();
 
@@ -246,11 +169,12 @@ public class ClientTokenIT {
         Result<CreditCard> creditCardResult = gateway.creditCard().create(creditCardRequest);
         assertTrue(creditCardResult.isSuccess());
 
-        ClientTokenOptions clientTokenOptions = new ClientTokenOptions().
-          makeDefault(true).
-          customerId(customer.getId());
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
+            .customerId(customer.getId())
+            .options(new ClientTokenOptionsRequest().makeDefault(true));
+        String clientToken = gateway.clientToken().generate(clientTokenRequest);
 
-        String authorizationFingerprint = _getFingerprint(clientTokenOptions);
+        String authorizationFingerprint = _getFingerprint(clientToken);
 
         String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
         QueryString payload = new QueryString();
@@ -271,5 +195,54 @@ public class ClientTokenIT {
             assertTrue(creditCard.isDefault());
           }
         }
+    }
+
+    @Test
+    public void gatewayRespectsFailOnDuplicatePaymentMethod() {
+        CustomerRequest customerRequest = new CustomerRequest();
+        Result<Customer> result = gateway.customer().create(customerRequest);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
+            .customerId(customer.getId())
+            .options(new ClientTokenOptionsRequest().failOnDuplicatePaymentMethod(false));
+        String clientToken = gateway.clientToken().generate(clientTokenRequest);
+
+        String authorizationFingerprint = _getFingerprint(clientToken);
+
+        String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
+        QueryString payload = new QueryString();
+        payload.append("authorization_fingerprint", authorizationFingerprint).
+            append("shared_customer_identifier_type", "testing").
+            append("shared_customer_identifier", "test-identifier").
+            append("credit_card[number]", "4111111111111111").
+            append("credit_card[expiration_month]", "11").
+            append("credit_card[expiration_year]", "2099");
+
+        int responseCode = postResponseCode(url, payload);
+        assertEquals(201, responseCode);
+
+        clientTokenRequest = new ClientTokenRequest()
+            .customerId(customer.getId())
+            .options(new ClientTokenOptionsRequest().failOnDuplicatePaymentMethod(true));
+        clientToken = gateway.clientToken().generate(clientTokenRequest);
+
+        authorizationFingerprint = _getFingerprint(clientToken);
+
+        url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
+        payload = new QueryString();
+        payload.append("authorization_fingerprint", authorizationFingerprint).
+            append("shared_customer_identifier_type", "testing").
+            append("shared_customer_identifier", "test-identifier").
+            append("credit_card[number]", "4111111111111111").
+            append("credit_card[expiration_month]", "11").
+            append("credit_card[expiration_year]", "2099");
+
+        responseCode = postResponseCode(url, payload);
+        assertEquals(422, responseCode);
+
+        int new_card_count = gateway.customer().find(customer.getId()).getCreditCards().size();
+        assertEquals(1, new_card_count);
     }
 }

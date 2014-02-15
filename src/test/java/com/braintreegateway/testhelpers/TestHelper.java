@@ -138,14 +138,13 @@ public abstract class TestHelper {
     }
 
     public static String generateUnlockedNonce(BraintreeGateway gateway, String customerId, String creditCardNumber) {
-      String rawClientToken;
-      if (customerId == null) {
-          rawClientToken = gateway.generateClientToken();
-      } else {
-        rawClientToken = gateway.generateClientToken(new ClientTokenOptions().customerId(customerId));
+      ClientTokenRequest request = null;
+      if (customerId != null) {
+          request = new ClientTokenRequest().customerId(customerId);
       }
+      String clientToken = gateway.clientToken().generate(request);
 
-      String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", rawClientToken);
+      String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
       String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", authorizationFingerprint).
