@@ -1,5 +1,7 @@
 package com.braintreegateway.integrationtest;
 
+import java.lang.reflect.Field;
+
 import com.braintreegateway.*;
 import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Before;
@@ -29,6 +31,27 @@ public class TransferIT {
       Transfer transfer = new Transfer(NodeWrapperFactory.instance.create(xml));
       assertNotNull(transfer);
       assertEquals("sandbox_sub_merchant_account", transfer.getMerchantAccount(gateway).getId());
+    }
+
+    @Test
+    public void merchantAccountMemoized() throws Exception{
+      String xml = "<transfer>" +
+                    "<merchant-account-id>sandbox_sub_merchant_account</merchant-account-id>" +
+                    "<id>123456</id>" +
+                    "<message>invalid_account_number</message>" +
+                    "<amount>100.00</amount>" +
+                    "<disbursement-date>2013-04-10</disbursement-date>" +
+                    "<follow-up-action>update</follow-up-action>" +
+                    "</transfer>";
+
+      Transfer transfer = new Transfer(NodeWrapperFactory.instance.create(xml));
+      MerchantAccount firstMerchantAccount = transfer.getMerchantAccount(gateway);
+
+      Field field = Transfer.class.getDeclaredField("merchantAccountId");
+      field.setAccessible(true);
+      field.set(transfer, "non existent");
+
+      assertEquals(firstMerchantAccount, transfer.getMerchantAccount(gateway));
     }
 
     @Test

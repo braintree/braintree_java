@@ -12,6 +12,8 @@ public class Transfer {
     private final String followUpAction;
     private final String merchantAccountId;
 
+    private MerchantAccount merchantAccount;
+
     public Transfer(NodeWrapper node) {
         id = node.findString("id");
         message = node.findString("message");
@@ -37,7 +39,10 @@ public class Transfer {
     }
 
     public MerchantAccount getMerchantAccount(BraintreeGateway gateway) {
-        return gateway.merchantAccount().find(merchantAccountId);
+        if (merchantAccount == null) {
+            merchantAccount = gateway.merchantAccount().find(merchantAccountId);
+        }
+        return merchantAccount;
     }
 
     public ResourceCollection<Transaction> getTransactions(BraintreeGateway gateway) {
