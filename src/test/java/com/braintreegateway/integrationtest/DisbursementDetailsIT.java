@@ -14,7 +14,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class DisbursementDetailsIT {
-
     @Test
     public void isValidTrue() throws ParseException {
         NodeWrapper wrapper = mock(NodeWrapper.class);
