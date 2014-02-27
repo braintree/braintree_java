@@ -4,7 +4,7 @@ import com.braintreegateway.util.NodeWrapper;
 
 import java.util.Calendar;
 
-public class Transfer {
+public class Disbursement {
 
     private final String id;
     private final String message;
@@ -14,7 +14,7 @@ public class Transfer {
 
     private MerchantAccount merchantAccount;
 
-    public Transfer(NodeWrapper node) {
+    public Disbursement(NodeWrapper node) {
         id = node.findString("id");
         message = node.findString("message");
         disbursementDate = node.findDate("disbursement-date");
