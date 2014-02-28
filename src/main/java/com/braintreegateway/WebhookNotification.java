@@ -21,6 +21,7 @@ public class WebhookNotification {
         SUBSCRIPTION_WENT_PAST_DUE("subscription_went_past_due"),
         TRANSACTION_DISBURSED("transaction_disbursed"),
         DISBURSEMENT_EXCEPTION("disbursement_exception"),
+        DISBURSEMENT("disbursement"),
         UNRECOGNIZED("unrecognized");
 
         private final String name;
@@ -58,16 +59,16 @@ public class WebhookNotification {
             this.subscription = new Subscription(wrapperNode.findFirst("subscription"));
         }
 
+        if (wrapperNode.findFirst("disbursement") != null) {
+            this.disbursement = new Disbursement(wrapperNode.findFirst("disbursement"));
+        }
+
         if (wrapperNode.findFirst("merchant-account") != null) {
             this.merchantAccount = new MerchantAccount(wrapperNode.findFirst("merchant-account"));
         }
 
         if (wrapperNode.findFirst("transaction") != null) {
             this.transaction = new Transaction(wrapperNode.findFirst("transaction"));
-        }
-
-        if (wrapperNode.findFirst("disbursement") != null) {
-            this.disbursement = new Disbursement(wrapperNode.findFirst("disbursement"));
         }
 
         if (wrapperNode.findFirst("partner-merchant") != null) {

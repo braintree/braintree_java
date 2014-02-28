@@ -43,7 +43,8 @@ public class WebhookTestingGateway {
             case SUB_MERCHANT_ACCOUNT_APPROVED: return merchantAccountXmlActive(id);
             case SUB_MERCHANT_ACCOUNT_DECLINED: return merchantAccountXmlDeclined(id);
             case TRANSACTION_DISBURSED: return transactionXml(id);
-            case DISBURSEMENT_EXCEPTION: return disbursementXml(id);
+            case DISBURSEMENT: return disbursementXml(id);
+            case DISBURSEMENT_EXCEPTION: return disbursementExceptionXml(id);
             case PARTNER_MERCHANT_CONNECTED: return partnerMerchantConnectedXml(id);
             case PARTNER_MERCHANT_DISCONNECTED: return partnerMerchantDisconnectedXml(id);
             case PARTNER_MERCHANT_DECLINED: return partnerMerchantDeclinedXml(id);
@@ -52,8 +53,11 @@ public class WebhookTestingGateway {
     }
 
     private String[][] TYPE_DATETIME = {{"type", "datetime"}};
+    private String[][] TYPE_DATE = {{"type", "date"}};
     private String[][] TYPE_ARRAY = {{"type", "array"}};
     private String[][] TYPE_SYMBOL = {{"type", "symbol"}};
+    private String[][] TYPE_BOOLEAN = {{"type", "boolean"}};
+    private String[][] NIL_TRUE = {{"nil", "true"}};
 
     private String merchantAccountXmlDeclined(String id) {
         return node("api-error-response",
@@ -105,7 +109,7 @@ public class WebhookTestingGateway {
                 node("id", id),
                 node("amount", "100"),
                 node("disbursement-details",
-                    node("disbursement-date", TYPE_DATETIME, "2013-07-09T18:23:29Z")
+                    node("disbursement-date", TYPE_DATE, "2013-07-09")
                 ),
                 node("billing"),
                 node("credit-card"),
@@ -117,14 +121,47 @@ public class WebhookTestingGateway {
     }
 
     private String disbursementXml(String id) {
-      return node("disbursement",
-              node("merchant-account-id", "abcdef"),
-              node("id", id),
-              node("message", "invalid_account_number"),
-              node("amount", "100.00"),
-              node("disbursement-date", "2014-02-10"),
-              node("follow-up-action", "update")
-          );
+        return node("disbursement",
+                node("id", id),
+                node("transaction-ids", TYPE_ARRAY,
+                    node("item", "asdf"),
+                    node("item", "qwer")
+                ),
+                node("success", TYPE_BOOLEAN, "true"),
+                node("retry", TYPE_BOOLEAN, "false"),
+                node("exception-message", NIL_TRUE),
+                node("amount", "100.00"),
+                node("disbursement-date", TYPE_DATE, "2014-02-10"),
+                node("follow-up-action", NIL_TRUE),
+                node("merchant-account",
+                    node("id", "merchant_account_token"),
+                    node("currency-iso-code", "USD"),
+                    node("sub-merchant-account", TYPE_BOOLEAN, "false"),
+                    node("status", "active")
+                )
+        );
+    }
+
+    private String disbursementExceptionXml(String id) {
+        return node("disbursement",
+                node("id", id),
+                node("transaction-ids", TYPE_ARRAY,
+                    node("item", "asdf"),
+                    node("item", "qwer")
+                ),
+                node("success", TYPE_BOOLEAN, "false"),
+                node("retry", TYPE_BOOLEAN, "false"),
+                node("exception-message", "bank_rejected"),
+                node("amount", "100.00"),
+                node("disbursement-date", TYPE_DATE, "2014-02-10"),
+                node("follow-up-action", "update_account_information"),
+                node("merchant-account",
+                    node("id", "merchant_account_token"),
+                    node("currency-iso-code", "USD"),
+                    node("sub-merchant-account", TYPE_BOOLEAN, "false"),
+                    node("status", "active")
+                )
+        );
     }
 
     private String partnerMerchantConnectedXml(String id) {

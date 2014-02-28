@@ -116,6 +116,21 @@ public class WebhookNotificationIT {
     }
 
     @Test
+    public void createsSampleDisbursementNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISBURSEMENT, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+
+        assertEquals(WebhookNotification.Kind.DISBURSEMENT, notification.getKind());
+        assertEquals("my_id", notification.getDisbursement().getId());
+        assertEquals(null, notification.getDisbursement().getExceptionMessage());
+        assertEquals(2014, notification.getDisbursement().getDisbursementDate().get(Calendar.YEAR));
+        assertEquals(Calendar.FEBRUARY, notification.getDisbursement().getDisbursementDate().get(Calendar.MONTH));
+        assertEquals(10, notification.getDisbursement().getDisbursementDate().get(Calendar.DAY_OF_MONTH));
+        assertEquals(null, notification.getDisbursement().getFollowUpAction());
+    }
+
+    @Test
     public void createsSampleDisbursementExceptionNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISBURSEMENT_EXCEPTION, "my_id");
 
@@ -123,11 +138,11 @@ public class WebhookNotificationIT {
 
         assertEquals(WebhookNotification.Kind.DISBURSEMENT_EXCEPTION, notification.getKind());
         assertEquals("my_id", notification.getDisbursement().getId());
-        assertEquals("invalid_account_number", notification.getDisbursement().getMessage());
+        assertEquals("bank_rejected", notification.getDisbursement().getExceptionMessage());
         assertEquals(2014, notification.getDisbursement().getDisbursementDate().get(Calendar.YEAR));
         assertEquals(Calendar.FEBRUARY, notification.getDisbursement().getDisbursementDate().get(Calendar.MONTH));
         assertEquals(10, notification.getDisbursement().getDisbursementDate().get(Calendar.DAY_OF_MONTH));
-        assertEquals("update", notification.getDisbursement().getFollowUpAction());
+        assertEquals("update_account_information", notification.getDisbursement().getFollowUpAction());
     }
 
     @Test
