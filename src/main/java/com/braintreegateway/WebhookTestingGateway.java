@@ -52,7 +52,6 @@ public class WebhookTestingGateway {
         }
     }
 
-    private String[][] TYPE_DATETIME = {{"type", "datetime"}};
     private String[][] TYPE_DATE = {{"type", "date"}};
     private String[][] TYPE_ARRAY = {{"type", "array"}};
     private String[][] TYPE_SYMBOL = {{"type", "symbol"}};
