@@ -9,6 +9,7 @@ public final class DisbursementDetails {
     private final Calendar disbursementDate;
     private final String settlementCurrencyIsoCode;
     private final boolean fundsHeld;
+    private final boolean success;
     private final BigDecimal settlementCurrencyExchangeRate;
     private final BigDecimal settlementAmount;
 
@@ -16,6 +17,7 @@ public final class DisbursementDetails {
         disbursementDate = node.findDate("disbursement-date");
         settlementCurrencyIsoCode = node.findString("settlement-currency-iso-code");
         fundsHeld = node.findBoolean("funds-held");
+        success = node.findBoolean("success");
         settlementCurrencyExchangeRate = node.findBigDecimal("settlement-currency-exchange-rate");
         settlementAmount = node.findBigDecimal("settlement-amount");
     }
@@ -24,13 +26,16 @@ public final class DisbursementDetails {
         return disbursementDate;
     }
 
-
     public String getSettlementCurrencyIsoCode() {
         return settlementCurrencyIsoCode;
     }
 
     public boolean isFundsHeld() {
         return fundsHeld;
+    }
+
+    public boolean isSuccess() {
+        return success;
     }
 
     public BigDecimal getSettlementCurrencyExchangeRate() {
