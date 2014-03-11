@@ -81,7 +81,7 @@ public class ClientTokenIT {
 
         int responseCode = -1;
         try {
-          responseCode = HttpHelper.get(url);
+          responseCode = HttpHelper.getResponseCode(url);
         } catch (java.net.MalformedURLException e) {
           fail();
         } catch (java.io.IOException e) {
@@ -115,7 +115,7 @@ public class ClientTokenIT {
 
         int responseCode = -1;
         try {
-          responseCode = HttpHelper.get(url);
+          responseCode = HttpHelper.getResponseCode(url);
         } catch (java.net.MalformedURLException e) {
           fail();
         } catch (java.io.IOException e) {
