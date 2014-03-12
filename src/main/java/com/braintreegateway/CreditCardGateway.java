@@ -100,7 +100,11 @@ public class CreditCardGateway {
         if(nonce.trim().equals("") || nonce == null)
             throw new NotFoundException();
 
-        return new CreditCard(http.get("/payment_methods/from_nonce/" + nonce));
+        try {
+          return new CreditCard(http.get("/payment_methods/from_nonce/" + nonce));
+        } catch (NotFoundException e) {
+          throw new NotFoundException("Payment method with nonce " + nonce + " locked, consumed or not found");
+        }
     }
 
     /**

@@ -800,9 +800,10 @@ public class CreditCardIT implements MerchantAccountTestConstants {
     public void fromNoncePointingToUnlockedSharedCard() {
         String nonce = TestHelper.generateUnlockedNonce(gateway);
         try {
-          gateway.creditCard().fromNonce(nonce);
-          fail("Should throw NotFoundException");
+            gateway.creditCard().fromNonce(nonce);
+            fail("Should throw NotFoundException");
         } catch (NotFoundException e) {
+            assertTrue(e.getMessage().matches(".*not found.*"));
         }
     }
 
@@ -813,9 +814,10 @@ public class CreditCardIT implements MerchantAccountTestConstants {
         gateway.creditCard().fromNonce(nonce);
 
         try {
-          gateway.creditCard().fromNonce(nonce);
-          fail("Should throw NotFoundException");
+            gateway.creditCard().fromNonce(nonce);
+            fail("Should throw NotFoundException");
         } catch (NotFoundException e) {
+            assertTrue(e.getMessage().matches(".*consumed.*"));
         }
     }
 
@@ -859,6 +861,7 @@ public class CreditCardIT implements MerchantAccountTestConstants {
             gateway.creditCard().fromNonce(nonce);
             fail("Should throw NotFoundException");
         } catch (NotFoundException e) {
+            assertTrue(e.getMessage().matches(".*locked.*"));
         }
     }
 
