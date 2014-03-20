@@ -11,6 +11,7 @@ import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
 import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,11 +25,13 @@ import static org.junit.Assert.*;
 public class TransactionIT implements MerchantAccountTestConstants {
 
     private BraintreeGateway gateway;
+    private BraintreeGateway three_d_secure_gateway;
     public static final String DISBURSEMENT_TRANSACTION_ID = "deposittransaction";
 
     @Before
     public void createGateway() {
         this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
+        this.three_d_secure_gateway = new BraintreeGateway(Environment.DEVELOPMENT, "cardinal_integration_merchant_id", "cardinal_integration_public_key", "cardinal_integration_private_key");
     }
 
     @SuppressWarnings("deprecation")
@@ -598,6 +601,29 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
         assertEquals("Bob the Builder", transaction.getCreditCard().getCardholderName());
         assertEquals("Bob the Builder", transaction.getVaultCreditCard(gateway).getCardholderName());
+    }
+
+    @Test
+    public void saleWithThreeDSecureToken() {
+        String threeDSecureToken = TestHelper.createTest3DS(three_d_secure_gateway, "euro_ladders_instant", new ThreeDSecureRequestForTests().
+            number(CreditCardNumber.VISA.number).
+            expirationMonth("05").
+            expirationYear("2009")
+        );
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            threeDSecureToken(threeDSecureToken).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = three_d_secure_gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
     }
 
     @Test

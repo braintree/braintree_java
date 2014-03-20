@@ -36,6 +36,7 @@ public class TransactionRequest extends Request {
     private String venmoSdkPaymentMethodCode;
     private String paymentMethodNonce;
     private BigDecimal serviceFeeAmount;
+    private String threeDSecureToken;
 
     public TransactionRequest() {
         this.customFields = new HashMap<String, String>();
@@ -171,6 +172,11 @@ public class TransactionRequest extends Request {
       return this;
     }
 
+    public TransactionRequest threeDSecureToken(String threeDSecureToken) {
+      this.threeDSecureToken = threeDSecureToken;
+      return this;
+    }
+
     @Override
     public String toQueryString() {
         return toQueryString("transaction");
@@ -216,7 +222,8 @@ public class TransactionRequest extends Request {
             addElement("deviceSessionId", deviceSessionId).
             addElement("fraudMerchantId", fraudMerchantId).
             addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode).
-            addElement("serviceFeeAmount", serviceFeeAmount);
+            addElement("serviceFeeAmount", serviceFeeAmount).
+            addElement("threeDSecureToken", threeDSecureToken);
 
         if (!customFields.isEmpty()) {
             builder.addElement("customFields", customFields);
