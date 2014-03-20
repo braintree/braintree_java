@@ -2,9 +2,11 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Environment;
+import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BraintreeGatewayIT {
     @Test

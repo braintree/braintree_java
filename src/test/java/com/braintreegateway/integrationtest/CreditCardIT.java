@@ -8,6 +8,8 @@ import com.braintreegateway.test.CreditCardNumbers;
 import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.testhelpers.HttpHelper;
+import com.braintreegateway.util.QueryString;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -358,6 +360,17 @@ public class CreditCardIT implements MerchantAccountTestConstants {
         CreditCard card = result.getTarget();
         assertEquals("411111", card.getBin());
         assertTrue(card.isVenmoSdk());
+    }
+
+    @Test
+    public void createWithPaymentMethodNonce() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway);
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
     }
 
     @Test
@@ -773,6 +786,84 @@ public class CreditCardIT implements MerchantAccountTestConstants {
         }
     }
 
+    @Test
+    public void fromNonce() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        String nonce = TestHelper.generateUnlockedNonce(gateway, customer.getId(), "4012888888881881");
+
+        CreditCard card = gateway.creditCard().fromNonce(nonce);
+        assertNotNull(card);
+        assertEquals(card.getMaskedNumber(), "401288******1881");
+    }
+
+    @Test
+    public void fromNoncePointingToUnlockedSharedCard() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway);
+        try {
+            gateway.creditCard().fromNonce(nonce);
+            fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+            assertTrue(e.getMessage().matches(".*not found.*"));
+        }
+    }
+
+    @Test
+    public void fromConsumedNonce() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        String nonce = TestHelper.generateUnlockedNonce(gateway, customer.getId(), "4012888888881881");
+        gateway.creditCard().fromNonce(nonce);
+
+        try {
+            gateway.creditCard().fromNonce(nonce);
+            fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+            assertTrue(e.getMessage().matches(".*consumed.*"));
+        }
+    }
+
+    @Test
+    public void fromLockedNonce() {
+        ClientTokenRequest request = new ClientTokenRequest();
+        String clientToken = gateway.clientToken().generate(request);
+
+        String authorizationFingerprint = TestHelper.extractParamFromJson("authorizationFingerprint", clientToken);
+        String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
+        QueryString payload = new QueryString();
+        payload.append("authorization_fingerprint", authorizationFingerprint).
+            append("shared_customer_identifier_type", "testing").
+            append("shared_customer_identifier", "test-identifier").
+            append("credit_card[number]", "4012888888881881").
+            append("credit_card[expiration_month]", "11").
+            append("credit_card[expiration_year]", "2099").
+            append("share", "true");
+
+        try {
+            HttpHelper.post(url, payload.toString());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        payload = new QueryString();
+        payload.append("authorization_fingerprint", authorizationFingerprint).
+            append("shared_customer_identifier_type", "testing").
+            append("shared_customer_identifier", "test-identifier");
+
+        String responseBody;
+        try {
+            responseBody = HttpHelper.get(url + "?" + payload.toString());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        String nonce = TestHelper.extractParamFromJson("nonce", responseBody);
+
+        try {
+            gateway.creditCard().fromNonce(nonce);
+            fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+            assertTrue(e.getMessage().matches(".*locked.*"));
+        }
+    }
 
     @Test
     public void delete() {

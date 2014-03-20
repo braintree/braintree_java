@@ -87,4 +87,12 @@ public class QueryStringTest {
         TestHelper.assertIncludes("%5Bcredit_card%5D%5Boptions%5D%5Bmake_default%5D=true", actual);
         TestHelper.assertIncludes("%5Bcredit_card%5D%5Boptions%5D%5Bverify_card%5D=true", actual);
     }
+
+    @Test
+    public void appendWithoutEncoding() {
+        QueryString queryString = new QueryString();
+        queryString.appendWithoutEncoding("my key with a space", "/:%");
+
+        assertEquals(queryString.toString(), "my key with a space=/:%");
+    }
 }

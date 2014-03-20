@@ -84,6 +84,23 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
         TestHelper.assertDatesEqual(expectedFirstDate, subscription.getFirstBillingDate());
     }
 
+    @SuppressWarnings("deprecation")
+    @Test
+    public void createSimpleSubscriptionWithPaymentMethodNonce() {
+        Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
+        String customerId = creditCard.getCustomerId();
+        String nonce = TestHelper.generateUnlockedNonce(gateway, customerId, "4111111111111111");
+        SubscriptionRequest request = new SubscriptionRequest().
+                paymentMethodNonce(nonce).
+                planId(plan.getId());
+
+        Result<Subscription> createResult = gateway.subscription().create(request);
+        assertTrue(createResult.isSuccess());
+
+        Subscription subscription = createResult.getTarget();
+        assertEquals("1111", subscription.getTransactions().get(0).getCreditCard().getLast4());
+    }
+
     @Test
     public void createReturnsTransactionWithSubscriptionBillingPeriod() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
@@ -993,6 +1010,35 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
         assertEquals("discount_7", discounts.get(1).getId());
         assertEquals(new BigDecimal("15.00"), discounts.get(1).getAmount());
         assertEquals(new Integer(1), discounts.get(1).getQuantity());
+    }
+
+    @Test
+    public void updateWithPaymentMethodNonce() {
+        Plan originalPlan = PlanFixture.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest createRequest = new SubscriptionRequest().
+                paymentMethodToken(creditCard.getToken()).
+                planId(originalPlan.getId());
+
+        Result<Subscription> createResult = gateway.subscription().create(createRequest);
+        assertTrue(createResult.isSuccess());
+        Subscription subscription = createResult.getTarget();
+        String customerId = creditCard.getCustomerId();
+
+        CreditCardRequest request = new CreditCardRequest().
+                customerId(customer.getId()).
+                cardholderName("John Doe").
+                cvv("123").
+                number("5105105105105100").
+                expirationDate("05/12");
+
+        CreditCard newCreditCard = gateway.creditCard().create(request).getTarget();
+        String nonce = TestHelper.generateUnlockedNonce(gateway, customerId, "4111111111111111");
+
+        SubscriptionRequest updateRequest = new SubscriptionRequest().paymentMethodNonce(nonce);
+        Result<Subscription> result = gateway.subscription().update(subscription.getId(), updateRequest);
+
+        assertTrue(result.isSuccess());
+        subscription = result.getTarget();
     }
 
     @Test

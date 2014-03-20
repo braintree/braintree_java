@@ -110,6 +110,14 @@ public class BraintreeGateway {
         return environment.baseURL + "/merchants/" + merchantId;
     }
 
+    public String clientApiURL() {
+      return baseMerchantURL() + "/client_api";
+    }
+
+    public ClientTokenGateway clientToken() {
+        return new ClientTokenGateway(http, configuration);
+    }
+
     /**
      * Returns an {@link CreditCardGateway} for interacting with
      * {@link CreditCard} objects.

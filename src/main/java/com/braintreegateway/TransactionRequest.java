@@ -34,6 +34,7 @@ public class TransactionRequest extends Request {
     private Boolean taxExempt;
     private Type type;
     private String venmoSdkPaymentMethodCode;
+    private String paymentMethodNonce;
     private BigDecimal serviceFeeAmount;
 
     public TransactionRequest() {
@@ -165,6 +166,11 @@ public class TransactionRequest extends Request {
       return this;
     }
 
+    public TransactionRequest paymentMethodNonce(String paymentMethodNonce) {
+      this.paymentMethodNonce = paymentMethodNonce;
+      return this;
+    }
+
     @Override
     public String toQueryString() {
         return toQueryString("transaction");
@@ -194,6 +200,7 @@ public class TransactionRequest extends Request {
             addElement("merchantAccountId", merchantAccountId).
             addElement("orderId", orderId).
             addElement("paymentMethodToken", paymentMethodToken).
+            addElement("paymentMethodNonce", paymentMethodNonce).
             addElement("purchaseOrderNumber", purchaseOrderNumber).
             addElement("taxAmount", taxAmount).
             addElement("taxExempt", taxExempt).

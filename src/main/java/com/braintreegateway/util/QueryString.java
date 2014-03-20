@@ -29,6 +29,16 @@ public class QueryString {
         return appendString(key, value.toString());
     }
 
+    public QueryString appendWithoutEncoding(String key, Object value) {
+        if (key != null && !key.equals("") && value != null) {
+            if (builder.length() > 0) {
+                builder.append("&");
+            }
+            builder.append(key + "=" + value.toString());
+        }
+        return this;
+    }
+
     public QueryString appendEncodedData(String alreadyEncodedData) {
         if (alreadyEncodedData != null && alreadyEncodedData.length() > 0) {
             builder.append('&');

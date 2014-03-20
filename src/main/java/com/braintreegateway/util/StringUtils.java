@@ -9,7 +9,7 @@ public class StringUtils {
     public static <T> String classToXMLName(Class<T> klass) {
         return dasherize(klass.getSimpleName()).toLowerCase();
     }
-    
+
     public static String dasherize(String str) {
         return str == null ? null : str.replaceAll("([a-z])([A-Z])", "$1-$2").replaceAll("_", "-").toLowerCase();
     }
@@ -21,7 +21,7 @@ public class StringUtils {
     private static ClassLoader getClassLoader() {
         return Thread.currentThread().getContextClassLoader();
     }
-    
+
     public static String inputStreamToString(InputStream inputStream) throws IOException {
         InputStreamReader inputReader = new InputStreamReader(inputStream);
         StringBuilder builder = new StringBuilder();
@@ -33,7 +33,7 @@ public class StringUtils {
         }
         return builder.toString();
     }
-    
+
     public static String nullIfEmpty(String str) {
         return str == null || str.length() == 0 ? null : str;
     }
@@ -98,5 +98,27 @@ public class StringUtils {
             valueStrings[i] = toString(value.get(i));
         }
         return "[" + join(", ", valueStrings) + "]";
+    }
+
+    public static String unescapeUtf8(String encodedString) {
+      int i = 0;
+      int len = encodedString.length();
+      char c;
+      StringBuffer buffer = new StringBuffer(len);
+
+      while (i < len) {
+          c = encodedString.charAt(i++);
+          if (c == '\\') {
+              if (i < len) {
+                  c = encodedString.charAt(i++);
+                  if (c == 'u') {
+                      c = (char) Integer.parseInt(encodedString.substring(i,i+4),16);
+                      i += 4;
+                  }
+              }
+          }
+          buffer.append(c);
+      }
+      return buffer.toString();
     }
 }

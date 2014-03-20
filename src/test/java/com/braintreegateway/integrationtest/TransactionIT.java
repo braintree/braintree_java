@@ -87,6 +87,16 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void createWithPaymentMethodNonce() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce);
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assert(result.isSuccess());
+    }
+
+    @Test
     public void cloneTransaction() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).

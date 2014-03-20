@@ -364,6 +364,20 @@ public class CustomerIT {
     }
 
     @Test
+    public void createWithPaymentMethodNonce() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway);
+        CustomerRequest request = new CustomerRequest().
+            firstName("Fred").
+            creditCard().
+              paymentMethodNonce(nonce).
+              done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        assertEquals(1, result.getTarget().getCreditCards().size());
+    }
+
+    @Test
     public void createCustomerFromTransparentRedirect() {
         CustomerRequest request = new CustomerRequest().firstName("John");
         CustomerRequest trParams = new CustomerRequest().
