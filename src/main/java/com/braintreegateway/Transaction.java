@@ -47,6 +47,7 @@ public class Transaction {
         CVV("cvv"),
         DUPLICATE("duplicate"),
         FRAUD("fraud"),
+        THREE_D_SECURE("three_d_secure"),
         UNRECOGNIZED("unrecognized");
 
         private final String name;
