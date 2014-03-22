@@ -1973,6 +1973,58 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void searchOnDisputeDate() throws ParseException {
+        Calendar disputeTime = CalendarTestUtils.dateTime("2014-03-01T00:00:00Z");
+
+        Calendar threeDaysEarlier = ((Calendar) disputeTime.clone());
+        threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
+
+        Calendar oneDayEarlier = ((Calendar) disputeTime.clone());
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
+
+        Calendar oneDayLater = ((Calendar) disputeTime.clone());
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+                id().is(DISPUTED_TRANSACTION_ID).
+                disputeDate().between(oneDayEarlier, oneDayLater);
+
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+                id().is(DISPUTED_TRANSACTION_ID).
+                disputeDate().greaterThanOrEqualTo(oneDayEarlier);
+
+        assertEquals(2, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+                id().is(DISPUTED_TRANSACTION_ID).
+                disputeDate().lessThanOrEqualTo(oneDayLater);
+
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+                id().is(DISPUTED_TRANSACTION_ID).
+                disputeDate().between(threeDaysEarlier, oneDayEarlier);
+
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    @Test
+    public void searchOnDisputeDateUsingLocalTime() throws ParseException {
+
+        Calendar oneDayEarlier = CalendarTestUtils.dateTime("2014-02-28T00:00:00Z", "CST");
+        Calendar oneDayLater = CalendarTestUtils.dateTime("2014-03-02T00:00:00Z", "CST");
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+                id().is(DISPUTED_TRANSACTION_ID).
+                disputeDate().between(oneDayEarlier, oneDayLater);
+
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+
+    @Test
     public void searchOnCreatedAt() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).

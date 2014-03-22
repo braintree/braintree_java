@@ -221,6 +221,10 @@ public class TransactionSearchRequest extends SearchRequest {
         return dateRange("disbursement_date");
     }
 
+    public DateRangeNode<TransactionSearchRequest> disputeDate() {
+        return dateRange("dispute_date");
+    }
+
     private DateRangeNode<TransactionSearchRequest> dateRange(String fieldName) {
         return new DateRangeNode<TransactionSearchRequest>(fieldName, this);
     }
