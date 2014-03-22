@@ -27,6 +27,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     private BraintreeGateway gateway;
     private BraintreeGateway threeDSecureGateway;
     public static final String DISBURSEMENT_TRANSACTION_ID = "deposittransaction";
+    public static final String DISPUTED_TRANSACTION_ID = "disputedtransaction";
 
     @Before
     public void createGateway() {
@@ -1299,6 +1300,21 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals(false, disbursementDetails.isFundsHeld());
         assertEquals(new BigDecimal("1"), disbursementDetails.getSettlementCurrencyExchangeRate());
         assertEquals(new BigDecimal("100.00"), disbursementDetails.getSettlementAmount());
+    }
+
+    @Test
+    public void findWithDisputes() throws Exception {
+        Calendar disputeCalendar = CalendarTestUtils.date("2014-03-01");
+
+        Transaction foundTransaction = gateway.transaction().find(DISPUTED_TRANSACTION_ID);
+        List<Dispute> disputes = foundTransaction.getDisputes();
+        Dispute dispute = disputes.get(0);
+
+        assertEquals(disputeCalendar, dispute.getReceivedDate());
+        assertEquals("USD", dispute.getCurrencyIsoCode());
+        assertEquals(Dispute.Reason.FRAUD, dispute.getReason());
+        assertEquals(Dispute.Status.WON, dispute.getStatus());
+        assertEquals(new BigDecimal("250.00"), dispute.getAmount());
     }
 
     @Test
