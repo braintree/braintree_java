@@ -8,6 +8,7 @@ import java.util.Calendar;
 
 public final class Dispute {
     public enum Status {
+        OPEN,
         LOST,
         WON;
     }
