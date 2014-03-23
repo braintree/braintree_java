@@ -27,6 +27,7 @@ public final class Dispute {
     }
 
     private final Calendar receivedDate;
+    private final Calendar replyByDate;
     private final String currencyIsoCode;
     private final Reason reason;
     private final Status status;
@@ -34,6 +35,7 @@ public final class Dispute {
 
     public Dispute(NodeWrapper node) {
         receivedDate = node.findDate("received-date");
+        replyByDate = node.findDate("reply-by-date");
         currencyIsoCode = node.findString("currency-iso-code");
         reason = EnumUtils.findByName(Reason.class, node.findString("reason"));
         status = EnumUtils.findByName(Status.class, node.findString("status"));
@@ -42,6 +44,10 @@ public final class Dispute {
 
     public Calendar getReceivedDate() {
         return receivedDate;
+    }
+
+    public Calendar getReplyByDate() {
+        return replyByDate;
     }
 
     public String getCurrencyIsoCode() {
