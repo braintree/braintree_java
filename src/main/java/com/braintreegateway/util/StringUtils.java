@@ -11,7 +11,13 @@ public class StringUtils {
     }
 
     public static String dasherize(String str) {
-        return str == null ? null : str.replaceAll("([a-z])([A-Z])", "$1-$2").replaceAll("_", "-").toLowerCase();
+        if (str == null)
+            return null;
+
+        return str.replaceAll("([A-Z]+)([A-Z][a-z])", "$1-$2").
+            replaceAll("([a-z])([A-Z])", "$1-$2").
+            replaceAll("_", "-").
+            toLowerCase();
     }
 
     public static String getFullPathOfFile(String filename) {
@@ -39,8 +45,15 @@ public class StringUtils {
     }
 
     public static String underscore(String str) {
-        return str == null ? null : str.replaceAll("([a-z])([A-Z])", "$1_$2").replaceAll("-", "_").toLowerCase();
+        if (str == null)
+            return null;
+
+        return str.replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2").
+            replaceAll("([a-z])([A-Z])", "$1_$2").
+            replaceAll("-", "_").
+            toLowerCase();
     }
+
     public static String join(Object[] tokens, String delimiter)
      {
        if(tokens.length == 0)

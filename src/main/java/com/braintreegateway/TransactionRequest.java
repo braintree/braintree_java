@@ -36,10 +36,13 @@ public class TransactionRequest extends Request {
     private String venmoSdkPaymentMethodCode;
     private String paymentMethodNonce;
     private BigDecimal serviceFeeAmount;
+
     private String threeDSecureToken;
+    private Boolean threeDSecureTransaction;
 
     public TransactionRequest() {
         this.customFields = new HashMap<String, String>();
+        this.threeDSecureTransaction = false;
     }
 
     public TransactionRequest amount(BigDecimal amount) {
@@ -173,6 +176,7 @@ public class TransactionRequest extends Request {
     }
 
     public TransactionRequest threeDSecureToken(String threeDSecureToken) {
+      this.threeDSecureTransaction = true;
       this.threeDSecureToken = threeDSecureToken;
       return this;
     }
@@ -222,14 +226,18 @@ public class TransactionRequest extends Request {
             addElement("deviceSessionId", deviceSessionId).
             addElement("fraudMerchantId", fraudMerchantId).
             addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode).
-            addElement("serviceFeeAmount", serviceFeeAmount).
-            addElement("threeDSecureToken", threeDSecureToken);
+            addElement("serviceFeeAmount", serviceFeeAmount);
 
         if (!customFields.isEmpty()) {
             builder.addElement("customFields", customFields);
         }
         if (type != null) {
             builder.addElement("type", type.toString().toLowerCase());
+        }
+
+        if (threeDSecureTransaction) {
+            String token = threeDSecureToken != null ? threeDSecureToken : "";
+            builder.addElement("threeDSecureToken", token);
         }
 
         return builder;

@@ -627,7 +627,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
-    public void saleRejectedWithThreeDSecureToken() {
+    public void saleRejectedWithUnauthorizedThreeDSecureToken() {
         String threeDSecureToken = TestHelper.createTest3DS(three_d_secure_gateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
             number(CreditCardNumber.VISA.number).
             expirationMonth("05").
@@ -649,6 +649,24 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
         assertEquals(Transaction.Status.GATEWAY_REJECTED, transaction.getStatus());
         assertEquals(Transaction.GatewayRejectionReason.THREE_D_SECURE, transaction.getGatewayRejectionReason());
+    }
+
+    @Test
+    public void saleErrorWithNullThreeDSecureToken() {
+        String threeDSecureToken = null;
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            threeDSecureToken(threeDSecureToken).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = three_d_secure_gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_TOKEN_IS_INVALID,
+                result.getErrors().forObject("transaction").onField("threeDSecureToken").get(0).getCode());
     }
 
     @Test
