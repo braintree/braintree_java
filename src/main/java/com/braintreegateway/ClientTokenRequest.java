@@ -6,6 +6,7 @@ package com.braintreegateway;
  */
 public class ClientTokenRequest extends Request {
     private String customerId;
+    private String merchantAccountId;
     private ClientTokenOptionsRequest optionsRequest;
 
     public String getCustomerId() {
@@ -14,6 +15,15 @@ public class ClientTokenRequest extends Request {
 
     public ClientTokenRequest customerId(String customerId) {
         this.customerId = customerId;
+        return this;
+    }
+
+    public String getMerchantAccountId() {
+        return merchantAccountId;
+    }
+
+    public ClientTokenRequest merchantAccountId(String merchantAccountId) {
+        this.merchantAccountId = merchantAccountId;
         return this;
     }
 
@@ -35,11 +45,15 @@ public class ClientTokenRequest extends Request {
         RequestBuilder builder = new RequestBuilder(root);
 
         if (customerId != null) {
-          builder.addElement("customerId", customerId);
+            builder.addElement("customerId", customerId);
+        }
+
+        if (merchantAccountId != null) {
+            builder.addElement("merchantAccountId", merchantAccountId);
         }
 
         if (optionsRequest != null) {
-          builder.addElement("options", optionsRequest);
+            builder.addElement("options", optionsRequest);
         }
 
         return builder;
