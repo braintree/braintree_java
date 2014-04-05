@@ -827,7 +827,7 @@ public class CreditCardIT implements MerchantAccountTestConstants {
         String clientToken = gateway.clientToken().generate(request);
 
         String authorizationFingerprint = TestHelper.extractParamFromJson("authorizationFingerprint", clientToken);
-        String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
+        String url = gateway.baseMerchantURL() + "/client_api/nonces.json";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("shared_customer_identifier_type", "testing").

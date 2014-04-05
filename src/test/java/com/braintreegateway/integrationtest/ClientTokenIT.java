@@ -75,7 +75,7 @@ public class ClientTokenIT {
             throw new RuntimeException(e);
         }
 
-        String url = gateway.baseMerchantURL()  + "/client_api/credit_cards.json?";
+        String url = gateway.baseMerchantURL()  + "/client_api/nonces.json?";
         url += "authorizationFingerprint=" + encodedFingerprint;
         url += "&sharedCustomerIdentifierType=testing&sharedCustomerIdentifier=test-identifier";
 
@@ -109,7 +109,7 @@ public class ClientTokenIT {
             throw new RuntimeException(e);
         }
 
-        String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json?";
+        String url = gateway.baseMerchantURL() + "/client_api/nonces.json?";
         url += "authorizationFingerprint=" + encodedFingerprint;
         url += "&sharedCustomerIdentifierType=testing&sharedCustomerIdentifier=test-identifier";
 
@@ -148,7 +148,7 @@ public class ClientTokenIT {
 
         String authorizationFingerprint = _getFingerprint(clientToken);
 
-        String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
+        String url = gateway.baseMerchantURL() + "/client_api/nonces.json";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("shared_customer_identifier_type", "testing").
@@ -186,7 +186,7 @@ public class ClientTokenIT {
 
         String authorizationFingerprint = _getFingerprint(clientToken);
 
-        String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
+        String url = gateway.baseMerchantURL() + "/client_api/nonces.json";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("shared_customer_identifier_type", "testing").
@@ -221,7 +221,7 @@ public class ClientTokenIT {
 
         String authorizationFingerprint = _getFingerprint(clientToken);
 
-        String url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
+        String url = gateway.baseMerchantURL() + "/client_api/nonces.json";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("shared_customer_identifier_type", "testing").
@@ -240,7 +240,7 @@ public class ClientTokenIT {
 
         authorizationFingerprint = _getFingerprint(clientToken);
 
-        url = gateway.baseMerchantURL() + "/client_api/credit_cards.json";
+        url = gateway.baseMerchantURL() + "/client_api/nonces.json";
         payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("shared_customer_identifier_type", "testing").
