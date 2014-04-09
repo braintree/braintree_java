@@ -635,7 +635,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
-    public void saleWithSecuirtyParams() {
+    public void saleWithSecurityParams() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             deviceSessionId("abc123").
