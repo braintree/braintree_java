@@ -26,6 +26,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     private BraintreeGateway gateway;
     public static final String DISBURSEMENT_TRANSACTION_ID = "deposittransaction";
     public static final String DISPUTED_TRANSACTION_ID = "disputedtransaction";
+    public static final String TWO_DISPUTE_TRANSACTION_ID = "2disputetransaction";
 
     @Before
     public void createGateway() {
@@ -1233,13 +1234,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
         Transaction foundTransaction = gateway.transaction().find(DISPUTED_TRANSACTION_ID);
         List<Dispute> disputes = foundTransaction.getDisputes();
-
-        Dispute dispute = null;
-        for (Dispute d : disputes) {
-          if (d.getAmount().equals(new BigDecimal("250.00"))) {
-            dispute = d;
-          }
-        }
+        Dispute dispute = disputes.get(0);
 
         assertEquals(disputeCalendar, dispute.getReceivedDate());
         assertEquals(replyCalendar, dispute.getReplyByDate());
@@ -1924,7 +1919,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
-                id().is(DISPUTED_TRANSACTION_ID).
+                id().is(TWO_DISPUTE_TRANSACTION_ID).
                 disputeDate().greaterThanOrEqualTo(oneDayEarlier);
 
         assertEquals(2, gateway.transaction().search(searchRequest).getMaximumSize());
