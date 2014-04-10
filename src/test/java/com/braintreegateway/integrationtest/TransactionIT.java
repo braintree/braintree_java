@@ -1233,7 +1233,13 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
         Transaction foundTransaction = gateway.transaction().find(DISPUTED_TRANSACTION_ID);
         List<Dispute> disputes = foundTransaction.getDisputes();
-        Dispute dispute = disputes.get(0);
+
+        Dispute dispute = null;
+        for (Dispute d : disputes) {
+          if (d.getAmount().equals(new BigDecimal("250.00"))) {
+            dispute = d;
+          }
+        }
 
         assertEquals(disputeCalendar, dispute.getReceivedDate());
         assertEquals(replyCalendar, dispute.getReplyByDate());
