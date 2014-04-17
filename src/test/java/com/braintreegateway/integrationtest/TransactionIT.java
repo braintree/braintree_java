@@ -25,7 +25,6 @@ import static org.junit.Assert.*;
 public class TransactionIT implements MerchantAccountTestConstants {
 
     private BraintreeGateway gateway;
-    private BraintreeGateway threeDSecureGateway;
     public static final String DISBURSEMENT_TRANSACTION_ID = "deposittransaction";
     public static final String DISPUTED_TRANSACTION_ID = "disputedtransaction";
     public static final String TWO_DISPUTE_TRANSACTION_ID = "2disputetransaction";
@@ -33,7 +32,6 @@ public class TransactionIT implements MerchantAccountTestConstants {
     @Before
     public void createGateway() {
         this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
-        this.threeDSecureGateway = new BraintreeGateway(Environment.DEVELOPMENT, "cardinal_integration_merchant_id", "cardinal_integration_public_key", "cardinal_integration_private_key");
     }
 
     @SuppressWarnings("deprecation")
@@ -607,13 +605,14 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
     @Test
     public void saleWithThreeDSecureToken() {
-        String threeDSecureToken = TestHelper.createTest3DS(threeDSecureGateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
+        String threeDSecureToken = TestHelper.createTest3DS(gateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
             number(CreditCardNumber.VISA.number).
             expirationMonth("05").
             expirationYear("2009")
         );
 
         TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
             amount(TransactionAmount.AUTHORIZE.amount).
             threeDSecureToken(threeDSecureToken).
             creditCard().
@@ -621,7 +620,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
                 expirationDate("05/2009").
                 done();
 
-        Result<Transaction> result = threeDSecureGateway.transaction().sale(request);
+        Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
@@ -633,6 +632,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         String threeDSecureToken = null;
 
         TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
             amount(TransactionAmount.AUTHORIZE.amount).
             threeDSecureToken(threeDSecureToken).
             creditCard().
@@ -640,7 +640,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
                 expirationDate("05/2009").
                 done();
 
-        Result<Transaction> result = threeDSecureGateway.transaction().sale(request);
+        Result<Transaction> result = gateway.transaction().sale(request);
         assertFalse(result.isSuccess());
         assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_TOKEN_IS_INVALID,
                 result.getErrors().forObject("transaction").onField("threeDSecureToken").get(0).getCode());
@@ -648,13 +648,14 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
     @Test
     public void saleErrorWithMismatchedThreeDSecureData() {
-        String threeDSecureToken = TestHelper.createTest3DS(threeDSecureGateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
+        String threeDSecureToken = TestHelper.createTest3DS(gateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
             number(CreditCardNumber.VISA.number).
             expirationMonth("05").
             expirationYear("2009")
         );
 
         TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
             amount(TransactionAmount.AUTHORIZE.amount).
             threeDSecureToken(threeDSecureToken).
             creditCard().
@@ -662,7 +663,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
                 expirationDate("05/2009").
                 done();
 
-        Result<Transaction> result = threeDSecureGateway.transaction().sale(request);
+        Result<Transaction> result = gateway.transaction().sale(request);
         assertFalse(result.isSuccess());
         assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_TRANSACTION_DATA_DOESNT_MATCH_VERIFY,
                 result.getErrors().forObject("transaction").onField("threeDSecureToken").get(0).getCode());

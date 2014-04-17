@@ -5,20 +5,13 @@ import com.braintreegateway.RequestBuilder;
 
 public class ThreeDSecureRequestForTests extends Request {
 
-    private String publicId;
     private String expirationMonth;
     private String expirationYear;
     private String number;
-    private String status;
     protected String tagName;
 
     public ThreeDSecureRequestForTests() {
-        this.tagName = "cardinal_verification";
-    }
-
-    public ThreeDSecureRequestForTests publicId(String publicId) {
-        this.publicId = publicId;
-        return this;
+        this.tagName = "threeDSecureVerification";
     }
 
     public ThreeDSecureRequestForTests expirationMonth(String expirationMonth) {
@@ -33,11 +26,6 @@ public class ThreeDSecureRequestForTests extends Request {
 
     public ThreeDSecureRequestForTests number(String number) {
         this.number = number;
-        return this;
-    }
-
-    public ThreeDSecureRequestForTests status(String status) {
-        this.status = status;
         return this;
     }
 
@@ -58,8 +46,6 @@ public class ThreeDSecureRequestForTests extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
-            addElement("publicId", publicId).
-            addElement("status", status).
             addElement("expirationMonth", expirationMonth).
             addElement("expirationYear", expirationYear).
             addElement("number", number);
