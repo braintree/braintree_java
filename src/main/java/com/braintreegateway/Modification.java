@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 
 public class Modification {
     private BigDecimal amount;
+    private Integer currentBillingCycle;
     private String description;
     private String id;
     private String kind;
@@ -17,6 +18,7 @@ public class Modification {
 
     public Modification(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
+        currentBillingCycle = node.findInteger("current-billing-cycle");
         description = node.findString("description");
         id = node.findString("id");
         kind = node.findString("kind");
@@ -29,6 +31,10 @@ public class Modification {
 
     public BigDecimal getAmount() {
         return amount;
+    }
+
+    public Integer getCurrentBillingCycle() {
+      return currentBillingCycle;
     }
 
     public String getId() {

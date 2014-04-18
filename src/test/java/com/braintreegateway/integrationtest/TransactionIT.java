@@ -25,6 +25,8 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
     private BraintreeGateway gateway;
     public static final String DISBURSEMENT_TRANSACTION_ID = "deposittransaction";
+    public static final String DISPUTED_TRANSACTION_ID = "disputedtransaction";
+    public static final String TWO_DISPUTE_TRANSACTION_ID = "2disputetransaction";
 
     @Before
     public void createGateway() {
@@ -644,7 +646,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
-    public void saleWithSecuirtyParams() {
+    public void saleWithSecurityParams() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             deviceSessionId("abc123").
@@ -813,7 +815,6 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals("S", transaction.getCvvResponseCode());
     }
 
-
     @Test
     public void saleUsesShippingAddressFromVault() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -838,6 +839,32 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
         assertEquals(shippingAddress.getId(), transaction.getShippingAddress().getId());
         assertEquals("Carl", transaction.getShippingAddress().getFirstName());
+    }
+
+    @Test
+    public void saleUsesBillingAddressFromVault() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+
+        gateway.creditCard().create(new CreditCardRequest().
+            customerId(customer.getId()).
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12")).getTarget();
+
+        Address billingAddress = gateway.address().create(customer.getId(),
+                new AddressRequest().firstName("Carl")).getTarget();
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            customerId(customer.getId()).
+            billingAddressId(billingAddress.getId());
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(billingAddress.getId(), transaction.getBillingAddress().getId());
+        assertEquals("Carl", transaction.getBillingAddress().getFirstName());
     }
 
     @Test
@@ -1208,6 +1235,23 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals(false, disbursementDetails.isFundsHeld());
         assertEquals(new BigDecimal("1"), disbursementDetails.getSettlementCurrencyExchangeRate());
         assertEquals(new BigDecimal("100.00"), disbursementDetails.getSettlementAmount());
+    }
+
+    @Test
+    public void findWithDisputes() throws Exception {
+        Calendar disputeCalendar = CalendarTestUtils.date("2014-03-01");
+        Calendar replyCalendar = CalendarTestUtils.date("2014-03-21");
+
+        Transaction foundTransaction = gateway.transaction().find(DISPUTED_TRANSACTION_ID);
+        List<Dispute> disputes = foundTransaction.getDisputes();
+        Dispute dispute = disputes.get(0);
+
+        assertEquals(disputeCalendar, dispute.getReceivedDate());
+        assertEquals(replyCalendar, dispute.getReplyByDate());
+        assertEquals("USD", dispute.getCurrencyIsoCode());
+        assertEquals(Dispute.Reason.FRAUD, dispute.getReason());
+        assertEquals(Dispute.Status.WON, dispute.getStatus());
+        assertEquals(new BigDecimal("250.00"), dispute.getAmount());
     }
 
     @Test
@@ -1864,6 +1908,58 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
         assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
     }
+
+    @Test
+    public void searchOnDisputeDate() throws ParseException {
+        Calendar disputeTime = CalendarTestUtils.dateTime("2014-03-01T00:00:00Z");
+
+        Calendar threeDaysEarlier = ((Calendar) disputeTime.clone());
+        threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
+
+        Calendar oneDayEarlier = ((Calendar) disputeTime.clone());
+        oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
+
+        Calendar oneDayLater = ((Calendar) disputeTime.clone());
+        oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+                id().is(DISPUTED_TRANSACTION_ID).
+                disputeDate().between(oneDayEarlier, oneDayLater);
+
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+                id().is(TWO_DISPUTE_TRANSACTION_ID).
+                disputeDate().greaterThanOrEqualTo(oneDayEarlier);
+
+        assertEquals(2, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+                id().is(DISPUTED_TRANSACTION_ID).
+                disputeDate().lessThanOrEqualTo(oneDayLater);
+
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+                id().is(DISPUTED_TRANSACTION_ID).
+                disputeDate().between(threeDaysEarlier, oneDayEarlier);
+
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    @Test
+    public void searchOnDisputeDateUsingLocalTime() throws ParseException {
+
+        Calendar oneDayEarlier = CalendarTestUtils.dateTime("2014-02-28T00:00:00Z", "CST");
+        Calendar oneDayLater = CalendarTestUtils.dateTime("2014-03-02T00:00:00Z", "CST");
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+                id().is(DISPUTED_TRANSACTION_ID).
+                disputeDate().between(oneDayEarlier, oneDayLater);
+
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
 
     @Test
     public void searchOnCreatedAt() {

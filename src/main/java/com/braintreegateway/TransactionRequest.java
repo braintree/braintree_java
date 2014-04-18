@@ -26,6 +26,7 @@ public class TransactionRequest extends Request {
     private String purchaseOrderNumber;
     private Boolean recurring;
     private String shippingAddressId;
+    private String billingAddressId;
     private TransactionDescriptorRequest descriptorRequest;
     private TransactionAddressRequest shippingAddressRequest;
     private TransactionOptionsRequest transactionOptionsRequest;
@@ -145,6 +146,11 @@ public class TransactionRequest extends Request {
         return this;
     }
 
+    public TransactionRequest billingAddressId(String billingAddressId) {
+        this.billingAddressId = billingAddressId;
+        return this;
+    }
+
     public TransactionRequest taxAmount(BigDecimal taxAmount) {
         this.taxAmount = taxAmount;
         return this;
@@ -199,6 +205,7 @@ public class TransactionRequest extends Request {
             addElement("taxAmount", taxAmount).
             addElement("taxExempt", taxExempt).
             addElement("shippingAddressId", shippingAddressId).
+            addElement("billingAddressId", billingAddressId).
             addElement("creditCard", creditCardRequest).
             addElement("customer", customerRequest).
             addElement("descriptor", descriptorRequest).

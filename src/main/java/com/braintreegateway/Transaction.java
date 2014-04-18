@@ -114,6 +114,7 @@ public class Transaction {
     private Map<String, String> customFields;
     private String cvvResponseCode;
     private DisbursementDetails disbursementDetails;
+    private List<Dispute> disputes;
     private Descriptor descriptor;
     private List<Discount> discounts;
     private EscrowStatus escrowStatus;
@@ -202,6 +203,11 @@ public class Transaction {
         for (NodeWrapper discountResponse : node.findAll("discounts/discount")) {
             discounts.add(new Discount(discountResponse));
         }
+
+        disputes = new ArrayList<Dispute>();
+        for (NodeWrapper dispute : node.findAll("disputes/dispute")) {
+            disputes.add(new Dispute(dispute));
+        }
     }
 
     public List<AddOn> getAddOns() {
@@ -258,6 +264,10 @@ public class Transaction {
 
     public DisbursementDetails getDisbursementDetails() {
         return disbursementDetails;
+    }
+
+    public List<Dispute> getDisputes() {
+        return disputes;
     }
 
     public Descriptor getDescriptor() {
