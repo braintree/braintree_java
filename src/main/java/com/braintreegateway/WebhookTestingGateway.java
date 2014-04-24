@@ -22,7 +22,7 @@ public class WebhookTestingGateway {
         String timestamp = dateFormat.format(new Date());
         String payload = "<notification><timestamp type=\"datetime\">" + timestamp + "</timestamp><kind>" + kind + "</kind><subject>" + subjectXml(kind, id) + "</subject></notification>";
 
-        return Base64.encodeBase64String(payload.getBytes()).trim();
+        return Base64.encodeBase64String(payload.getBytes()).replace("\r", "");
     }
 
     private String publicKeySignaturePair(String stringToSign) {

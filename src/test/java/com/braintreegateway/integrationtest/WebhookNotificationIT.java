@@ -95,11 +95,77 @@ public class WebhookNotificationIT {
         this.gateway.webhookNotification().parse(sampleNotification.get("signature") + "bad_stuff", sampleNotification.get("payload"));
     }
 
-    @Test(expected = InvalidSignatureException.class)
+    @Test
     public void signatureWithoutMatchingPublicKeyRaisesException() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
 
-        this.gateway.webhookNotification().parse("uknown_public_key|signature", sampleNotification.get("payload"));
+        try {
+          this.gateway.webhookNotification().parse("unknown_public_key|signature", sampleNotification.get("payload"));
+          fail("Should have throw exception, but did not.");
+        }
+        catch(final InvalidSignatureException e)
+        {
+          final String expectedMessage = "no matching public key";
+          assertEquals(expectedMessage, e.getMessage());
+        }
+    }
+
+    @Test
+    public void retriesPayloadWithNewLine() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
+
+        try {
+          this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload").trim());
+        }
+        catch(final InvalidSignatureException e)
+        {
+          fail("Threw an exception, but it should not have: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void signatureWithChangedPayloadRaisesException() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
+
+        try {
+          this.gateway.webhookNotification().parse(sampleNotification.get("signature"), "badstuff" + sampleNotification.get("payload"));
+          fail("Should have throw exception, but did not.");
+        }
+        catch(final InvalidSignatureException e)
+        {
+          final String expectedMessage = "signature does not match payload - one has been modified";
+          assertEquals(expectedMessage, e.getMessage());
+        }
+    }
+
+    @Test
+    public void payloadWithInvalidCharactersRaisesException() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
+
+        try {
+          this.gateway.webhookNotification().parse(sampleNotification.get("signature"), "~*~* Invalid! *~*~");
+          fail("Should have throw exception, but did not.");
+        }
+        catch(final InvalidSignatureException e)
+        {
+          final String expectedMessage = "payload contains illegal characters";
+          assertEquals(expectedMessage, e.getMessage());
+        }
+    }
+
+    @Test
+    public void parseAllowsAllValidCharacters() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
+
+        try {
+          this.gateway.webhookNotification().parse(sampleNotification.get("signature"), "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+=/\n");
+          fail("Should have throw exception, but did not.");
+        }
+        catch(final InvalidSignatureException e)
+        {
+          final String unexpectedMessage = "payload contains illegal characters";
+          assertFalse(unexpectedMessage.equals(e.getMessage()));
+        }
     }
 
     @Test
