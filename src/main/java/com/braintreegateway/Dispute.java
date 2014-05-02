@@ -33,6 +33,7 @@ public final class Dispute {
     private final Reason reason;
     private final Status status;
     private final BigDecimal amount;
+    private final TransactionDetails transactionDetails;
 
     public Dispute(NodeWrapper node) {
         receivedDate = node.findDate("received-date");
@@ -42,6 +43,7 @@ public final class Dispute {
         status = EnumUtils.findByName(Status.class, node.findString("status"));
         amount = node.findBigDecimal("amount");
         id = node.findString("id");
+        transactionDetails = new TransactionDetails(node.findFirst("transaction"));
     }
 
     public Calendar getReceivedDate() {
@@ -70,5 +72,9 @@ public final class Dispute {
 
     public BigDecimal getAmount() {
         return amount;
+    }
+
+    public TransactionDetails getTransactionDetails() {
+      return transactionDetails;
     }
 }
