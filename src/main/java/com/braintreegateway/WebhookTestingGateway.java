@@ -44,6 +44,9 @@ public class WebhookTestingGateway {
             case SUB_MERCHANT_ACCOUNT_DECLINED: return merchantAccountXmlDeclined(id);
             case TRANSACTION_DISBURSED: return transactionXml(id);
             case DISBURSEMENT: return disbursementXml(id);
+            case DISPUTE_OPENED: return disputeOpenedXml(id);
+            case DISPUTE_LOST: return disputeLostXml(id);
+            case DISPUTE_WON: return disputeWonXml(id);
             case DISBURSEMENT_EXCEPTION: return disbursementExceptionXml(id);
             case PARTNER_MERCHANT_CONNECTED: return partnerMerchantConnectedXml(id);
             case PARTNER_MERCHANT_DISCONNECTED: return partnerMerchantDisconnectedXml(id);
@@ -116,6 +119,54 @@ public class WebhookTestingGateway {
                 node("descriptor"),
                 node("shipping"),
                 node("subscription")
+        );
+    }
+
+    private String disputeOpenedXml(String id) {
+        return node("dispute",
+                node("id", id),
+                node("amount", "250.00"),
+                node("received-date", TYPE_DATE, "2014-03-21"),
+                node("repy-by-date", TYPE_DATE, "2014-03-21"),
+                node("currency-iso-code", "USD"),
+                node("status", "open"),
+                node("reason", "fraud"),
+                node("transaction",
+                    node("id", id),
+                    node("amount", "250.00")
+                )
+        );
+    }
+
+    private String disputeLostXml(String id) {
+        return node("dispute",
+                node("id", id),
+                node("amount", "250.00"),
+                node("received-date", TYPE_DATE, "2014-03-21"),
+                node("repy-by-date", TYPE_DATE, "2014-03-21"),
+                node("currency-iso-code", "USD"),
+                node("status", "lost"),
+                node("reason", "fraud"),
+                node("transaction",
+                    node("id", id),
+                    node("amount", "250.00")
+                )
+        );
+    }
+
+    private String disputeWonXml(String id) {
+        return node("dispute",
+                node("id", id),
+                node("amount", "250.00"),
+                node("received-date", TYPE_DATE, "2014-03-21"),
+                node("repy-by-date", TYPE_DATE, "2014-03-21"),
+                node("currency-iso-code", "USD"),
+                node("status", "won"),
+                node("reason", "fraud"),
+                node("transaction",
+                    node("id", id),
+                    node("amount", "250.00")
+                )
         );
     }
 
