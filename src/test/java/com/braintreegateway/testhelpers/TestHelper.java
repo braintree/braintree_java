@@ -3,9 +3,10 @@ package com.braintreegateway.testhelpers;
 import com.braintreegateway.*;
 import com.braintreegateway.Transaction.Status;
 import com.braintreegateway.exceptions.UnexpectedException;
-import com.braintreegateway.util.Crypto;
+import com.braintreegateway.util.Sha1Hasher;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.QueryString;
 import org.junit.Ignore;
 
 import java.io.IOException;
@@ -15,6 +16,8 @@ import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -60,7 +63,7 @@ public abstract class TestHelper {
         String[] dataSections = trData.split("\\|");
         String trHash = dataSections[0];
         String trContent = dataSections[1];
-        assertEquals(trHash, new Crypto().hmacHash(configuration.privateKey, trContent));
+        assertEquals(trHash, new Sha1Hasher().hmacHash(configuration.privateKey, trContent));
     }
 
     public static boolean listIncludes(List<? extends Object> list, Object expectedItem) {
@@ -132,5 +135,52 @@ public abstract class TestHelper {
         }
 
         return response;
+    }
+
+    public static String generateUnlockedNonce(BraintreeGateway gateway, String customerId, String creditCardNumber) {
+      ClientTokenRequest request = null;
+      if (customerId != null) {
+          request = new ClientTokenRequest().customerId(customerId);
+      }
+      String clientToken = gateway.clientToken().generate(request);
+
+      String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
+      String url = gateway.baseMerchantURL() + "/client_api/nonces.json";
+      QueryString payload = new QueryString();
+      payload.append("authorization_fingerprint", authorizationFingerprint).
+        append("shared_customer_identifier_type", "testing").
+        append("shared_customer_identifier", "test-identifier").
+        append("credit_card[number]", creditCardNumber).
+        append("credit_card[expiration_month]", "11").
+        append("share", "true").
+        append("credit_card[expiration_year]", "2099");
+
+
+      String responseBody;
+      String nonce = "";
+      try {
+        responseBody = HttpHelper.post(url, payload.toString());
+        nonce = extractParamFromJson("nonce", responseBody);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+      return nonce;
+    }
+
+    public static String generateUnlockedNonce(BraintreeGateway gateway) {
+        return generateUnlockedNonce(gateway, null, "4111111111111111");
+    }
+
+    public static String extractParamFromJson(String keyName, String json) {
+        String regex = "\"" + keyName + "\":\\s*\"([^\"]+)\"";
+        Pattern keyPattern = Pattern.compile(regex);
+        Matcher m = keyPattern.matcher(json);
+
+        String value = "";
+        if (m.find()) {
+          value = m.group(1);
+        }
+
+        return value;
     }
 }

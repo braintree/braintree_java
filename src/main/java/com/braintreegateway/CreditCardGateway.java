@@ -14,12 +14,12 @@ import java.util.TimeZone;
  * Provides methods to create, delete, find, and update {@link CreditCard}
  * objects. This class does not need to be instantiated directly. Instead, use
  * {@link BraintreeGateway#creditCard()} to get an instance of this class:
- * 
+ *
  * <pre>
  * BraintreeGateway gateway = new BraintreeGateway(...);
  * gateway.creditCard().create(...)
  * </pre>
- * 
+ *
  * For more detailed information on {@link CreditCard CreditCards}, see <a
  * href="http://www.braintreepayments.com/gateway/credit-card-api"
  * target
@@ -51,7 +51,7 @@ public class CreditCardGateway {
 
     /**
      * Creates an {@link CreditCard}.
-     * 
+     *
      * @param request
      *            the request.
      * @return a {@link Result}.
@@ -63,7 +63,7 @@ public class CreditCardGateway {
 
     /**
      * Deletes a {@link CreditCard}.
-     * 
+     *
      * @param token
      *            the CreditCard's token.
      * @return a {@link Result}.
@@ -75,7 +75,7 @@ public class CreditCardGateway {
 
     /**
      * Finds a {@link CreditCard}.
-     * 
+     *
      * @param token
      *            the CreditCard's token.
      * @return the {@link CreditCard} or raises a
@@ -86,6 +86,25 @@ public class CreditCardGateway {
             throw new NotFoundException();
 
         return new CreditCard(http.get("/payment_methods/" + token));
+    }
+
+    /**
+     * Exchanges a payment method nonce for a {@link CreditCard}.
+     *
+     * @param nonce
+     *            a payment method nonce.
+     * @return the {@link CreditCard} or raises a
+     *         {@link com.braintreegateway.exceptions.NotFoundException}.
+     */
+    public CreditCard fromNonce(String nonce) {
+        if(nonce.trim().equals("") || nonce == null)
+            throw new NotFoundException();
+
+        try {
+          return new CreditCard(http.get("/payment_methods/from_nonce/" + nonce));
+        } catch (NotFoundException e) {
+          throw new NotFoundException("Payment method with nonce " + nonce + " locked, consumed or not found");
+        }
     }
 
     /**
@@ -106,7 +125,7 @@ public class CreditCardGateway {
 
     /**
      * Updates a {@link CreditCard}.
-     * 
+     *
      * @param token
      *            the CreditCard's token.
      * @param request
@@ -120,7 +139,7 @@ public class CreditCardGateway {
 
     /**
      * Returns a {@link ResourceCollection} of all expired credit cards.
-     * 
+     *
      * @return a {@link ResourceCollection}.
      */
     public ResourceCollection<CreditCard> expired() {

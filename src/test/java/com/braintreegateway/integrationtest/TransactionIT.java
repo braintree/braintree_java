@@ -26,6 +26,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     private BraintreeGateway gateway;
     public static final String DISBURSEMENT_TRANSACTION_ID = "deposittransaction";
     public static final String DISPUTED_TRANSACTION_ID = "disputedtransaction";
+    public static final String TWO_DISPUTE_TRANSACTION_ID = "2disputetransaction";
 
     @Before
     public void createGateway() {
@@ -85,6 +86,16 @@ public class TransactionIT implements MerchantAccountTestConstants {
     public void createViaTransparentRedirectThrowsWhenQueryStringHasBeenTamperedWith() {
         String queryString = TestHelper.simulateFormPostForTR(gateway, new TransactionRequest(), new TransactionRequest(), gateway.transaction().transparentRedirectURLForCreate());
         gateway.transaction().confirmTransparentRedirect(queryString + "this make it invalid");
+    }
+
+    @Test
+    public void createWithPaymentMethodNonce() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce);
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assert(result.isSuccess());
     }
 
     @Test
@@ -635,7 +646,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
-    public void saleWithSecuirtyParams() {
+    public void saleWithSecurityParams() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             deviceSessionId("abc123").
@@ -1918,7 +1929,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
-                id().is(DISPUTED_TRANSACTION_ID).
+                id().is(TWO_DISPUTE_TRANSACTION_ID).
                 disputeDate().greaterThanOrEqualTo(oneDayEarlier);
 
         assertEquals(2, gateway.transaction().search(searchRequest).getMaximumSize());

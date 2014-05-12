@@ -1,7 +1,7 @@
 package com.braintreegateway;
 
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
-import com.braintreegateway.util.Crypto;
+import com.braintreegateway.util.Sha1Hasher;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,11 +22,11 @@ public class WebhookTestingGateway {
         String timestamp = dateFormat.format(new Date());
         String payload = "<notification><timestamp type=\"datetime\">" + timestamp + "</timestamp><kind>" + kind + "</kind><subject>" + subjectXml(kind, id) + "</subject></notification>";
 
-        return Base64.encodeBase64String(payload.getBytes()).trim();
+        return Base64.encodeBase64String(payload.getBytes()).replace("\r", "");
     }
 
     private String publicKeySignaturePair(String stringToSign) {
-        return String.format("%s|%s", configuration.publicKey, new Crypto().hmacHash(configuration.privateKey, stringToSign));
+        return String.format("%s|%s", configuration.publicKey, new Sha1Hasher().hmacHash(configuration.privateKey, stringToSign));
     }
 
     public HashMap<String, String> sampleNotification(WebhookNotification.Kind kind, String id) {
