@@ -160,6 +160,10 @@ public class BraintreeGateway {
         return configuration;
     }
 
+    public PaymentMethodGateway paymentMethod() {
+        return new PaymentMethodGateway(http);
+    }
+
     /**
      * Returns an {@link PlanGateway} for interacting with {@link Plan} objects.
      *

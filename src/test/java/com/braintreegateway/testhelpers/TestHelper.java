@@ -176,6 +176,29 @@ public abstract class TestHelper {
       payload.append("authorization_fingerprint", authorizationFingerprint).
         append("shared_customer_identifier_type", "testing").
         append("shared_customer_identifier", "test-identifier").
+        append("paypal_account[access_token]", "access").
+        append("paypal_account[options][validate]", "false");
+
+      String responseBody;
+      String nonce = "";
+      try {
+        responseBody = HttpHelper.post(url, payload.toString());
+        nonce = extractParamFromJson("nonce", responseBody);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+      return nonce;
+    }
+
+    public static String generateFuturePaymentPayPalNonce(BraintreeGateway gateway) {
+      String clientToken = gateway.clientToken().generate(null);
+
+      String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
+      String url = gateway.baseMerchantURL() + "/client_api/v1/payment_methods/paypal_accounts";
+      QueryString payload = new QueryString();
+      payload.append("authorization_fingerprint", authorizationFingerprint).
+        append("shared_customer_identifier_type", "testing").
+        append("shared_customer_identifier", "test-identifier").
         append("paypal_account[consent_code]", "consent").
         append("paypal_account[options][validate]", "false");
 
@@ -188,7 +211,6 @@ public abstract class TestHelper {
         throw new RuntimeException(e);
       }
       return nonce;
-
     }
 
     public static String generateUnlockedNonce(BraintreeGateway gateway) {
