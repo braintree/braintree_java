@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class CreditCard {
+public class CreditCard implements PaymentMethod {
     public static final String VALUE_YES = "Yes";
     public static final String VALUE_NO = "No";
     public static final String VALUE_UNKNOWN = "Unknown";

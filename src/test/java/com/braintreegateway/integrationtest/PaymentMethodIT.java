@@ -36,4 +36,25 @@ public class PaymentMethodIT {
         PayPalAccount paypalAccount = (PayPalAccount) paymentMethod;
         assertNotNull(paypalAccount.getEmail());
     }
+
+    @Test
+    public void createCreditCardWithNonce() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway, null, SandboxValues.CreditCardNumber.VISA.number);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+        assertNotNull(paymentMethod.getToken());
+
+        CreditCard creditCard = (CreditCard) paymentMethod;
+        assertEquals("1111", creditCard.getLast4());
+    }
 }
