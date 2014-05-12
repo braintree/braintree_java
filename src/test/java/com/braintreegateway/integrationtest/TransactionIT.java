@@ -2903,4 +2903,22 @@ public class TransactionIT implements MerchantAccountTestConstants {
                 cancelResult.getErrors().forObject("transaction").onField("base").get(0).getCode()
                 );
     }
+
+    @Test
+    public void createOneTimePayPalTransaction() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce);
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getSaleId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerFirstName());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerLastName());
+    }
 }

@@ -122,6 +122,7 @@ public class Transaction {
     private String id;
     private String merchantAccountId;
     private String orderId;
+    private PayPalDetails paypalDetails;
     private String planId;
     private String processorAuthorizationCode;
     private String processorResponseCode;
@@ -164,6 +165,10 @@ public class Transaction {
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
         orderId = node.findString("order-id");
+        NodeWrapper paypalNode = node.findFirst("paypal");
+        if (paypalNode != null) {
+            paypalDetails = new PayPalDetails(paypalNode);
+        }
         planId = node.findString("plan-id");
         processorAuthorizationCode = node.findString("processor-authorization-code");
         processorResponseCode = node.findString("processor-response-code");
@@ -296,6 +301,10 @@ public class Transaction {
 
     public String getOrderId() {
         return orderId;
+    }
+
+    public PayPalDetails getPayPalDetails() {
+        return paypalDetails;
     }
 
     public String getPlanId() {
