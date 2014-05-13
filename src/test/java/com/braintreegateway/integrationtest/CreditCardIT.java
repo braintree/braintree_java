@@ -787,6 +787,27 @@ public class CreditCardIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void findWithPayPalAccountToken() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+
+        try {
+            gateway.creditCard().find(result.getTarget().getToken());
+            fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+        }
+    }
+
+    @Test
     public void fromNonce() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         String nonce = TestHelper.generateUnlockedNonce(gateway, customer.getId(), "4012888888881881");

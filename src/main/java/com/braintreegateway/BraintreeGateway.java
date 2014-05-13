@@ -164,6 +164,10 @@ public class BraintreeGateway {
         return new PaymentMethodGateway(http);
     }
 
+    public PayPalAccountGateway paypalAccount() {
+        return new PayPalAccountGateway(http);
+    }
+
     /**
      * Returns an {@link PlanGateway} for interacting with {@link Plan} objects.
      *

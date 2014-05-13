@@ -85,7 +85,7 @@ public class CreditCardGateway {
         if(token.trim().equals("") || token == null)
             throw new NotFoundException();
 
-        return new CreditCard(http.get("/payment_methods/" + token));
+        return new CreditCard(http.get("/payment_methods/credit_cards/" + token));
     }
 
     /**
