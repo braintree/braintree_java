@@ -11,7 +11,7 @@ public class PayPalAccountGateway {
     }
 
     public PayPalAccount find(String token) {
-        return new PayPalAccount(http.get("/payment_methods/paypal_accounts/" + token));
+        return new PayPalAccount(http.get("/payment_methods/paypal_account/" + token));
     }
 
 }

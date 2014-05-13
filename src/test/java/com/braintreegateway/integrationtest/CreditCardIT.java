@@ -690,6 +690,35 @@ public class CreditCardIT implements MerchantAccountTestConstants {
         assertEquals(creditCard.getBillingAddress().getId(), updatedCreditCard.getBillingAddress().getId());
     }
 
+    @Test
+    public void updateWillNotUpdatePayPalAccounts() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+
+        CreditCardRequest updateRequest = new CreditCardRequest().
+            billingAddress().
+                lastName("Jones").
+                options().
+                    updateExisting(true).
+                    done().
+                done();
+
+        try {
+            gateway.creditCard().update(result.getTarget().getToken(), updateRequest);
+            fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+        }
+    }
+
     @SuppressWarnings("deprecation")
     @Test
     public void updateWithBillingAddressUpdatesAddressWhenUpdateExistingIsTrueForTransparentRedirect() {
@@ -904,6 +933,27 @@ public class CreditCardIT implements MerchantAccountTestConstants {
 
         try {
             gateway.creditCard().find(card.getToken());
+            fail();
+        } catch (NotFoundException e) {
+        }
+    }
+
+    @Test
+    public void deleteWillNotDeletePayPalAccount() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+
+        try {
+            gateway.creditCard().delete(result.getTarget().getToken());
             fail();
         } catch (NotFoundException e) {
         }

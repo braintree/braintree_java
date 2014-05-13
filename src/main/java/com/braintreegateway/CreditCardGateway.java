@@ -69,7 +69,7 @@ public class CreditCardGateway {
      * @return a {@link Result}.
      */
     public Result<CreditCard> delete(String token) {
-        http.delete("/payment_methods/" + token);
+        http.delete("/payment_methods/credit_card/" + token);
         return new Result<CreditCard>();
     }
 
@@ -85,7 +85,7 @@ public class CreditCardGateway {
         if(token.trim().equals("") || token == null)
             throw new NotFoundException();
 
-        return new CreditCard(http.get("/payment_methods/credit_cards/" + token));
+        return new CreditCard(http.get("/payment_methods/credit_card/" + token));
     }
 
     /**
@@ -133,7 +133,7 @@ public class CreditCardGateway {
      * @return a {@link Result}.
      */
     public Result<CreditCard> update(String token, CreditCardRequest request) {
-        NodeWrapper node = http.put("/payment_methods/" + token, request);
+        NodeWrapper node = http.put("/payment_methods/credit_card/" + token, request);
         return new Result<CreditCard>(node, CreditCard.class);
     }
 
