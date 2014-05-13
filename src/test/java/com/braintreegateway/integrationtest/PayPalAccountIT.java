@@ -5,6 +5,7 @@ import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
+import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -58,6 +59,60 @@ public class PayPalAccountIT {
         CreditCard card = gateway.creditCard().create(cardRequest).getTarget();
         try {
             gateway.paypalAccount().find(card.getToken());
+            fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+        }
+    }
+
+    @Test
+    public void deletePayPalAccount() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+
+        Result<PayPalAccount> deleteResult = gateway.paypalAccount().delete(result.getTarget().getToken());
+        assertTrue(deleteResult.isSuccess());
+    }
+
+    @Test
+    public void updateCanUpdateToken() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+
+        String newToken = String.valueOf(new Random().nextInt());
+        PayPalAccountRequest updateRequest = new PayPalAccountRequest().
+            token(newToken);
+
+        Result<PayPalAccount> updateResult = gateway.paypalAccount().update(result.getTarget().getToken(), updateRequest);
+        assertTrue(updateResult.isSuccess());
+        assertEquals(newToken, updateResult.getTarget().getToken());
+    }
+
+    @Test
+    public void updateMissingRaisesNotFoundError() {
+        String newToken = String.valueOf(new Random().nextInt());
+        PayPalAccountRequest updateRequest = new PayPalAccountRequest().
+            token(newToken);
+
+        try {
+            gateway.paypalAccount().update("missing", updateRequest);
             fail("Should throw NotFoundException");
         } catch (NotFoundException e) {
         }

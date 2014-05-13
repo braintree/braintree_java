@@ -14,4 +14,13 @@ public class PayPalAccountGateway {
         return new PayPalAccount(http.get("/payment_methods/paypal_account/" + token));
     }
 
+    public Result<PayPalAccount> delete(String token) {
+        http.delete("/payment_methods/paypal_account/" + token);
+        return new Result<PayPalAccount>();
+    }
+
+    public Result<PayPalAccount> update(String token, PayPalAccountRequest request) {
+        NodeWrapper response = http.put("/payment_methods/paypal_account/" + token, request);
+        return new Result<PayPalAccount>(response, PayPalAccount.class);
+    }
 }
