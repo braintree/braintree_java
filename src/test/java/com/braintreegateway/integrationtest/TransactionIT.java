@@ -2920,5 +2920,129 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(saleResult.getTarget().getPayPalDetails().getSaleId());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerFirstName());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerLastName());
+        assertNull(saleResult.getTarget().getPayPalDetails().getToken());
+    }
+
+    @Test
+    public void createOneTimePayPalTransactionAndAttemptToVault() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce).
+            options().
+                storeInVault(true).
+                done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getSaleId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerFirstName());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerLastName());
+        assertNull(saleResult.getTarget().getPayPalDetails().getToken());
+    }
+
+    @Test
+    public void createFuturePaymentPayPalTransactionAndAttemptToVault() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce).
+            options().
+                storeInVault(true).
+                done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getSaleId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerFirstName());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerLastName());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getToken());
+    }
+
+    @Test
+    public void createPayPalTransactionFromVaultRecord() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest vaultRequest = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> vaultResult = gateway.paymentMethod().create(vaultRequest);
+        assertTrue(vaultResult.isSuccess());
+
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodToken(vaultResult.getTarget().getToken());
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getSaleId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerFirstName());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerLastName());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getToken());
+    }
+
+    @Test
+    public void submitPayPalTransactionForSettlement() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce);
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+
+        Result<Transaction> submitForSettlementResult = gateway.transaction().submitForSettlement(saleResult.getTarget().getId());
+        assertTrue(submitForSettlementResult.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
+    }
+
+    @Test
+    public void voidPayPalTransaction() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce);
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+        assertTrue(saleResult.isSuccess());
+
+        Result<Transaction> submitForSettlementResult = gateway.transaction().voidTransaction(saleResult.getTarget().getId());
+        assertTrue(submitForSettlementResult.isSuccess());
+        assertEquals(Transaction.Status.VOIDED, submitForSettlementResult.getTarget().getStatus());
+    }
+
+    @Test
+    public void refundPayPalTransaction() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce).
+            options().
+                submitForSettlement(true).
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)));
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
+        assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), result.getTarget().getAmount());
     }
 }

@@ -9,6 +9,7 @@ public class PayPalDetails {
     private String payerId;
     private String paymentId;
     private String saleId;
+    private String token;
 
     public PayPalDetails(NodeWrapper node) {
         payerEmail = node.findString("payer-email");
@@ -16,6 +17,7 @@ public class PayPalDetails {
         payerLastName = node.findString("payer-last-name");
         paymentId = node.findString("payment-id");
         saleId = node.findString("sale-id");
+        token = node.findString("token");
     }
 
     public String getPayerEmail() {
@@ -40,5 +42,9 @@ public class PayPalDetails {
 
     public String getSaleId() {
         return saleId;
+    }
+
+    public String getToken() {
+        return token;
     }
 }
