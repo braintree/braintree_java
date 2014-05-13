@@ -2421,6 +2421,24 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
+    @Test
+    public void searchOnPayPalFields() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce);
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            paypalPaymentId().startsWith("PAY").
+            paypalPayerEmail().is("payer@example.com").
+            paypalSaleId().startsWith("SALE");
+
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
     @Test(expected = DownForMaintenanceException.class)
     public void searchReturnsAndHandlesInvalidCriteria() {
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().

@@ -101,6 +101,18 @@ public class TransactionSearchRequest extends SearchRequest {
         return textNode("payment_method_token");
     }
 
+    public TextNode<TransactionSearchRequest> paypalPaymentId() {
+        return textNode("paypal_payment_id");
+    }
+
+    public TextNode<TransactionSearchRequest> paypalPayerEmail() {
+        return textNode("paypal_payer_email");
+    }
+
+    public TextNode<TransactionSearchRequest> paypalSaleId() {
+        return textNode("paypal_sale_id");
+    }
+
     public TextNode<TransactionSearchRequest> processorAuthorizationCode() {
         return textNode("processor_authorization_code");
     }
