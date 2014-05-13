@@ -102,4 +102,20 @@ public class Customer {
     public List<PayPalAccount> getPayPalAccounts() {
         return Collections.unmodifiableList(paypalAccounts);
     }
+
+    public List<? extends PaymentMethod> getPaymentMethods() {
+        List<PaymentMethod> paymentMethods = new ArrayList<PaymentMethod>();
+        paymentMethods.addAll(getCreditCards());
+        paymentMethods.addAll(getPayPalAccounts());
+        return Collections.unmodifiableList(paymentMethods);
+    }
+
+    public PaymentMethod getDefaultPaymentMethod() {
+        for (PaymentMethod paymentMethod : getPaymentMethods()) {
+            if (paymentMethod.isDefault()) {
+                return paymentMethod;
+            }
+        }
+        return null;
+    }
 }
