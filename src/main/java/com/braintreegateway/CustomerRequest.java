@@ -20,6 +20,7 @@ public class CustomerRequest extends Request {
     private String lastName;
     private String phone;
     private String website;
+    private String paymentMethodNonce;
     private Map<String, String> customFields;
     private CreditCardRequest creditCardRequest;
     private TransactionRequest parent;
@@ -120,6 +121,11 @@ public class CustomerRequest extends Request {
         return this;
     }
 
+    public CustomerRequest paymentMethodNonce(String nonce) {
+        this.paymentMethodNonce = nonce;
+        return this;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("customer").toXML();
@@ -148,6 +154,7 @@ public class CustomerRequest extends Request {
             addElement("lastName", lastName).
             addElement("phone", phone).
             addElement("website", website).
+            addElement("paymentMethodNonce", paymentMethodNonce).
             addElement("creditCard", creditCardRequest);
 
         if (customFields.size() > 0) {

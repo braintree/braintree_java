@@ -18,6 +18,7 @@ public class Customer {
     private String website;
     private Map<String, String> customFields;
     private List<CreditCard> creditCards;
+    private List<PayPalAccount> paypalAccounts;
     private List<Address> addresses;
 
     public Customer(NodeWrapper node) {
@@ -35,6 +36,10 @@ public class Customer {
         creditCards = new ArrayList<CreditCard>();
         for (NodeWrapper creditCardResponse : node.findAll("credit-cards/credit-card")) {
             creditCards.add(new CreditCard(creditCardResponse));
+        }
+        paypalAccounts = new ArrayList<PayPalAccount>();
+        for (NodeWrapper paypalResponse : node.findAll("paypal-accounts/paypal-account")) {
+            paypalAccounts.add(new PayPalAccount(paypalResponse));
         }
         addresses = new ArrayList<Address>();
         for (NodeWrapper addressResponse : node.findAll("addresses/address")) {
@@ -92,5 +97,9 @@ public class Customer {
 
     public List<CreditCard> getCreditCards() {
         return Collections.unmodifiableList(creditCards);
+    }
+
+    public List<PayPalAccount> getPayPalAccounts() {
+        return Collections.unmodifiableList(paypalAccounts);
     }
 }

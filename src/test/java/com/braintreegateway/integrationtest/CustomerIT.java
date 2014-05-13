@@ -377,6 +377,29 @@ public class CustomerIT {
         assertEquals(1, result.getTarget().getCreditCards().size());
     }
 
+
+    @Test
+    public void createWithFuturePaymentPayPalAccountNonce() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(nonce);
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        assertEquals(1, result.getTarget().getPayPalAccounts().size());
+    }
+
+    @Test
+    public void createWithOneTimePayPalAccountNonce() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(nonce);
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getErrors().getAllDeepValidationErrors().size());
+    }
+
     @Test
     public void createCustomerFromTransparentRedirect() {
         CustomerRequest request = new CustomerRequest().firstName("John");
