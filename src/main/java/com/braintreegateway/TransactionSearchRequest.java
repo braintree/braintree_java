@@ -109,8 +109,8 @@ public class TransactionSearchRequest extends SearchRequest {
         return textNode("paypal_payer_email");
     }
 
-    public TextNode<TransactionSearchRequest> paypalSaleId() {
-        return textNode("paypal_sale_id");
+    public TextNode<TransactionSearchRequest> paypalAuthorizationId() {
+        return textNode("paypal_authorization_id");
     }
 
     public TextNode<TransactionSearchRequest> processorAuthorizationCode() {

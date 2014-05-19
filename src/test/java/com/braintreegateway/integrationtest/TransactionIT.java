@@ -2434,7 +2434,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
             id().is(transaction.getId()).
             paypalPaymentId().startsWith("PAY").
             paypalPayerEmail().is("payer@example.com").
-            paypalSaleId().startsWith("SALE");
+            paypalAuthorizationId().startsWith("SALE");
 
         assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
     }
@@ -2935,9 +2935,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(saleResult.getTarget().getPayPalDetails());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
-        assertNotNull(saleResult.getTarget().getPayPalDetails().getSaleId());
-        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerFirstName());
-        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerLastName());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
         assertNull(saleResult.getTarget().getPayPalDetails().getToken());
     }
 
@@ -2957,9 +2955,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(saleResult.getTarget().getPayPalDetails());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
-        assertNotNull(saleResult.getTarget().getPayPalDetails().getSaleId());
-        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerFirstName());
-        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerLastName());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
         assertNull(saleResult.getTarget().getPayPalDetails().getToken());
     }
 
@@ -2979,9 +2975,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(saleResult.getTarget().getPayPalDetails());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
-        assertNotNull(saleResult.getTarget().getPayPalDetails().getSaleId());
-        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerFirstName());
-        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerLastName());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getToken());
     }
 
@@ -3009,9 +3003,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(saleResult.getTarget().getPayPalDetails());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
-        assertNotNull(saleResult.getTarget().getPayPalDetails().getSaleId());
-        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerFirstName());
-        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerLastName());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getToken());
     }
 
