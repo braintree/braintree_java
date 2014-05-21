@@ -37,8 +37,12 @@ public class TransactionRequest extends Request {
     private String paymentMethodNonce;
     private BigDecimal serviceFeeAmount;
 
+    private String threeDSecureToken;
+    private Boolean threeDSecureTransaction;
+
     public TransactionRequest() {
         this.customFields = new HashMap<String, String>();
+        this.threeDSecureTransaction = false;
     }
 
     public TransactionRequest amount(BigDecimal amount) {
@@ -171,6 +175,12 @@ public class TransactionRequest extends Request {
       return this;
     }
 
+    public TransactionRequest threeDSecureToken(String threeDSecureToken) {
+      this.threeDSecureTransaction = true;
+      this.threeDSecureToken = threeDSecureToken;
+      return this;
+    }
+
     @Override
     public String toQueryString() {
         return toQueryString("transaction");
@@ -223,6 +233,11 @@ public class TransactionRequest extends Request {
         }
         if (type != null) {
             builder.addElement("type", type.toString().toLowerCase());
+        }
+
+        if (threeDSecureTransaction) {
+            String token = threeDSecureToken != null ? threeDSecureToken : "";
+            builder.addElement("threeDSecureToken", token);
         }
 
         return builder;
