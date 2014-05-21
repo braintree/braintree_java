@@ -7,7 +7,7 @@ import java.util.Arrays;
  */
 public class Environment {
     /** For Braintree internal development. */
-    public static final Environment DEVELOPMENT = new Environment("http://localhost:" + developmentPort(), "http://auth.venmo.dev:9292", new String[] {});
+    public static final Environment DEVELOPMENT = new Environment("http://0.0.0.0:" + developmentPort(), "http://auth.venmo.dev:9292", new String[] {});
 
     /** For production. */
     public static final Environment PRODUCTION = new Environment("https://api.braintreegateway.com:443", "https://auth.venmo.com", new String[] {"ssl/api_braintreegateway_com.ca.crt"});

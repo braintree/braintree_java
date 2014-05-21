@@ -14,7 +14,7 @@ public class BraintreeGatewayIT {
         BraintreeGateway config = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "publicKey",
                 "privateKey");
         String port = System.getenv().get("GATEWAY_PORT") == null ? "3000" : System.getenv().get("GATEWAY_PORT");
-        assertEquals("http://localhost:" + port + "/merchants/integration_merchant_id", config.baseMerchantURL());
+        assertEquals("http://0.0.0.0:" + port + "/merchants/integration_merchant_id", config.baseMerchantURL());
     }
 
     @Test

@@ -190,6 +190,38 @@ public abstract class TestHelper {
       return nonce;
     }
 
+    public static String generateSEPABankAccountNonce(BraintreeGateway gateway, Customer customer) {
+        SEPAClientTokenRequest request = new SEPAClientTokenRequest();
+        request.customerId(customer.getId());
+        request.mandateType("b2b");
+
+        String clientToken = gateway.clientToken().generate(request);
+
+        String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
+        String url = gateway.baseMerchantURL() + "/client_api/v1/sepa_mandates";
+        QueryString payload = new QueryString();
+        payload.append("authorization_fingerprint", authorizationFingerprint)
+               .append("sepa_mandate[bic]", "DEUTDEFF")
+               .append("sepa_mandate[iban]", "DE89370400440532013000")
+               .append("sepa_mandate[accountHolderName]", "Bob Holder")
+               .append("sepa_mandate[billingAddress][region]", "Hesse");
+
+        QueryString acceptPayload = new QueryString();
+        acceptPayload.append("authorization_fingerprint", authorizationFingerprint);
+
+        String acceptResponseBody;
+        String mandateReferenceNumber = "";
+        try {
+            String responseBody = HttpHelper.post(url, payload.toString());
+            mandateReferenceNumber = extractParamFromJson("mandateReferenceNumber", responseBody);
+            String acceptUrl = gateway.baseMerchantURL() + "/client_api/v1/sepa_mandates/" + mandateReferenceNumber + "/accept";
+            acceptResponseBody = HttpHelper.put(acceptUrl, acceptPayload.toString());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return extractParamFromJson("nonce", acceptResponseBody);
+    }
+
     public static String generateFuturePaymentPayPalNonce(BraintreeGateway gateway) {
       String clientToken = gateway.clientToken().generate(null);
 
