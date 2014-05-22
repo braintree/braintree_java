@@ -201,10 +201,11 @@ public abstract class TestHelper {
         String url = gateway.baseMerchantURL() + "/client_api/v1/sepa_mandates";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint)
-               .append("sepa_mandate[bic]", "DEUTDEFF")
-               .append("sepa_mandate[iban]", "DE89370400440532013000")
-               .append("sepa_mandate[accountHolderName]", "Bob Holder")
-               .append("sepa_mandate[billingAddress][region]", "Hesse");
+              .append("sepa_mandate[locale]", "de-DE")
+              .append("sepa_mandate[bic]", "DEUTDEFF")
+              .append("sepa_mandate[iban]", "DE89370400440532013000")
+              .append("sepa_mandate[accountHolderName]", "Bob Holder")
+              .append("sepa_mandate[billingAddress][region]", "Hesse");
 
         QueryString acceptPayload = new QueryString();
         acceptPayload.append("authorization_fingerprint", authorizationFingerprint);
