@@ -7,6 +7,7 @@ import com.braintreegateway.util.Sha1Hasher;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.QueryString;
+import com.braintreegateway.SEPABankAccount.MandateType;
 import org.junit.Ignore;
 
 import java.io.IOException;
@@ -193,7 +194,8 @@ public abstract class TestHelper {
     public static String generateSEPABankAccountNonce(BraintreeGateway gateway, Customer customer) {
         SEPAClientTokenRequest request = new SEPAClientTokenRequest();
         request.customerId(customer.getId());
-        request.mandateType("b2b");
+        request.mandateType(SEPABankAccount.MandateType.BUSINESS);
+        request.mandateAcceptanceLocation("Rostock, Germany");
 
         String clientToken = gateway.clientToken().generate(request);
 
@@ -205,6 +207,13 @@ public abstract class TestHelper {
               .append("sepa_mandate[bic]", "DEUTDEFF")
               .append("sepa_mandate[iban]", "DE89370400440532013000")
               .append("sepa_mandate[accountHolderName]", "Bob Holder")
+              .append("sepa_mandate[billingAddress][streetAddress]", "123 Currywurst Way")
+              .append("sepa_mandate[billingAddress][extendedAddress]", "Lager Suite")
+              .append("sepa_mandate[billingAddress][firstName]", "Wilhelm")
+              .append("sepa_mandate[billingAddress][lastName]", "Dix")
+              .append("sepa_mandate[billingAddress][locality]", "Frankfurt")
+              .append("sepa_mandate[billingAddress][postalCode]", "60001")
+              .append("sepa_mandate[billingAddress][countryCodeAlpha2]", "DE")
               .append("sepa_mandate[billingAddress][region]", "Hesse");
 
         QueryString acceptPayload = new QueryString();

@@ -31,6 +31,8 @@ public class PaymentMethodGateway {
             return new PayPalAccount(response);
         } else if (response.getElementName() == "credit-card") {
             return new CreditCard(response);
+        } else if (response.getElementName() == "sepa-bank-account") {
+            return new SEPABankAccount(response);
         } else {
             return new UnknownPaymentMethod(response);
         }
@@ -41,6 +43,8 @@ public class PaymentMethodGateway {
             return new Result<PayPalAccount>(response, PayPalAccount.class);
         } else if (response.getElementName() == "credit-card") {
             return new Result<CreditCard>(response, CreditCard.class);
+        } else if (response.getElementName() == "sepa-bank-account") {
+            return new Result<SEPABankAccount>(response, SEPABankAccount.class);
         } else {
             return new Result<UnknownPaymentMethod>(response, UnknownPaymentMethod.class);
         }
