@@ -91,6 +91,14 @@ public class ClientTokenIT {
     }
 
     @Test
+    public void versionOptionSupported() {
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest().version(1);
+        String clientToken = gateway.clientToken().generate(clientTokenRequest);
+        int version = TestHelper.extractIntParamFromJson("version", clientToken);
+        assertEquals(1, version);
+    }
+
+    @Test
     public void fingerprintCanContainCustomerId() {
         CustomerRequest customerRequest = new CustomerRequest();
         Result<Customer> result = gateway.customer().create(customerRequest);

@@ -192,4 +192,17 @@ public abstract class TestHelper {
 
         return value;
     }
+
+    public static int extractIntParamFromJson(String keyName, String json) {
+        String regex = "\"" + keyName + "\":\\s*(\\d+)";
+        Pattern keyPattern = Pattern.compile(regex);
+        Matcher m = keyPattern.matcher(json);
+
+        int value = 0;
+        if (m.find()) {
+          value = Integer.parseInt(m.group(1));
+        }
+
+        return value;
+    }
 }
