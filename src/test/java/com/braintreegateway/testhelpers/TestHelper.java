@@ -20,8 +20,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @Ignore("Testing utility class")
 public abstract class TestHelper {
@@ -104,6 +103,16 @@ public abstract class TestHelper {
     public static void escrow(BraintreeGateway gateway, String transactionId) {
         NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).put("/transactions/" + transactionId + "/escrow");
         assertTrue(response.isSuccess());
+    }
+
+    public static String createTest3DS(BraintreeGateway gateway, String merchantAccountId, ThreeDSecureRequestForTests request) {
+        String url = "/three_d_secure/create_verification/" + merchantAccountId;
+        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).post(url, request);
+        assertTrue(response.isSuccess());
+
+        String token = response.findString("three-d-secure-token");
+        assertNotNull(token);
+        return token;
     }
 
     public static String simulateFormPostForTR(BraintreeGateway gateway, Request trParams, Request request, String postUrl) {
@@ -267,6 +276,19 @@ public abstract class TestHelper {
         String value = "";
         if (m.find()) {
           value = m.group(1);
+        }
+
+        return value;
+    }
+
+    public static int extractIntParamFromJson(String keyName, String json) {
+        String regex = "\"" + keyName + "\":\\s*(\\d+)";
+        Pattern keyPattern = Pattern.compile(regex);
+        Matcher m = keyPattern.matcher(json);
+
+        int value = 0;
+        if (m.find()) {
+          value = Integer.parseInt(m.group(1));
         }
 
         return value;

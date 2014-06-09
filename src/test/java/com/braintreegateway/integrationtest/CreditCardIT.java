@@ -916,6 +916,90 @@ public class CreditCardIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void forward() {
+        BraintreeGateway forwardGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "forward_payment_method_merchant_id",
+            "forward_payment_method_public_key",
+            "forward_payment_method_private_key"
+        );
+
+        Customer customer = forwardGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12");
+        Result<CreditCard> createResult = forwardGateway.creditCard().create(request);
+        assertTrue(createResult.isSuccess());
+        CreditCard card = createResult.getTarget();
+
+        PaymentMethodForwardRequest forwardRequest = new PaymentMethodForwardRequest()
+            .token(card.getToken())
+            .receivingMerchantId("integration_merchant_id");
+        Result<PaymentMethodNonce> forwardResult = forwardGateway.creditCard()
+            .forward(forwardRequest);
+
+        assertTrue(forwardResult.isSuccess());
+        PaymentMethodNonce nonce = forwardResult.getTarget();
+        assertTrue(nonce.getPublicId().matches("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}"));
+        assertFalse(nonce.isLocked());
+        assertFalse(nonce.isConsumed());
+    }
+
+    @Test
+    public void forwardInvalidToken() {
+        BraintreeGateway forwardGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "forward_payment_method_merchant_id",
+            "forward_payment_method_public_key",
+            "forward_payment_method_private_key"
+        );
+
+        try {
+            PaymentMethodForwardRequest forwardRequest = new PaymentMethodForwardRequest()
+                .token("invalid")
+                .receivingMerchantId("integration_merchant_id");
+            Result<PaymentMethodNonce> forwardResult = forwardGateway.creditCard()
+                .forward(forwardRequest);
+            fail();
+        } catch (NotFoundException e) {
+        }
+    }
+
+    @Test
+    public void forwardInvalidReceivingMerchantId() {
+        BraintreeGateway forwardGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "forward_payment_method_merchant_id",
+            "forward_payment_method_public_key",
+            "forward_payment_method_private_key"
+        );
+
+        Customer customer = forwardGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12");
+        Result<CreditCard> createResult = forwardGateway.creditCard().create(request);
+        assertTrue(createResult.isSuccess());
+        CreditCard card = createResult.getTarget();
+
+        try {
+            PaymentMethodForwardRequest forwardRequest = new PaymentMethodForwardRequest()
+                .token(card.getToken())
+                .receivingMerchantId("invalid_merchant_id");
+            Result<PaymentMethodNonce> forwardResult = forwardGateway.creditCard()
+                .forward(forwardRequest);
+            fail();
+        } catch (NotFoundException e) {
+        }
+    }
+
+    @Test
     public void delete() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().

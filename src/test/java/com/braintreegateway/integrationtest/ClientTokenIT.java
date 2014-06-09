@@ -91,6 +91,14 @@ public class ClientTokenIT {
     }
 
     @Test
+    public void versionOptionSupported() {
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest().version(1);
+        String clientToken = gateway.clientToken().generate(clientTokenRequest);
+        int version = TestHelper.extractIntParamFromJson("version", clientToken);
+        assertEquals(1, version);
+    }
+
+    @Test
     public void fingerprintCanContainCustomerId() {
         CustomerRequest customerRequest = new CustomerRequest();
         Result<Customer> result = gateway.customer().create(customerRequest);
@@ -122,6 +130,16 @@ public class ClientTokenIT {
           fail();
         }
         assertEquals(200, responseCode);
+    }
+
+    @Test
+    public void gatewayAcceptsMerchantAccountId() {
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
+            .merchantAccountId("my_merchant_account");
+        String clientToken = gateway.clientToken().generate(clientTokenRequest);
+        String merchantAccountId = TestHelper.extractParamFromJson("merchantAccountId", clientToken);
+
+        assertEquals("my_merchant_account", merchantAccountId);
     }
 
     @Test
