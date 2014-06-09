@@ -106,6 +106,40 @@ public class PayPalAccountIT {
     }
 
     @Test
+    public void updateCanMakeDefault() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest cardRequest = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12");
+        Result<CreditCard> creditCardRequest = gateway.creditCard().create(cardRequest);
+        assertTrue(creditCardRequest.isSuccess());
+
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+
+        PayPalAccountRequest updateRequest = new PayPalAccountRequest().
+            options().
+              makeDefault(true).
+              done();
+
+        Result<PayPalAccount> updateResult = gateway.paypalAccount().update(result.getTarget().getToken(), updateRequest);
+        assertTrue(updateResult.isSuccess());
+        assertTrue(updateResult.getTarget().isDefault());
+    }
+
+    @Test
     public void updateMissingRaisesNotFoundError() {
         String newToken = String.valueOf(new Random().nextInt());
         PayPalAccountRequest updateRequest = new PayPalAccountRequest().
