@@ -1768,6 +1768,22 @@ public class TransactionIT implements MerchantAccountTestConstants {
         collection = gateway.transaction().search(searchRequest);
 
         assertEquals(0, collection.getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            status().is(Transaction.Status.SETTLEMENT_CONFIRMED);
+
+        collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(0, collection.getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            status().is(Transaction.Status.SETTLEMENT_DECLINED);
+
+        collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(0, collection.getMaximumSize());
     }
 
     @Test
