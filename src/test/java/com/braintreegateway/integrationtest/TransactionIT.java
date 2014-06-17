@@ -1735,6 +1735,34 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void searchOnSEPABankAccountIban() {
+        BraintreeGateway altpayGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "altpay_merchant",
+            "altpay_merchant_public_key",
+            "altpay_merchant_private_key"
+        );
+        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId("sepa_ma").
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce);
+
+        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            sepaBankAccountIban().is("DE89370400440532013000");
+
+        assertEquals(1, altpayGateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    @Test
     public void searchOnStatus() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).

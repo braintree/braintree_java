@@ -237,6 +237,10 @@ public class TransactionSearchRequest extends SearchRequest {
         return dateRange("dispute_date");
     }
 
+    public TextNode<TransactionSearchRequest> sepaBankAccountIban() {
+      return textNode("sepa_bank_account_iban");
+    }
+
     private DateRangeNode<TransactionSearchRequest> dateRange(String fieldName) {
         return new DateRangeNode<TransactionSearchRequest>(fieldName, this);
     }
