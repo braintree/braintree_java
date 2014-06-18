@@ -60,5 +60,7 @@ public class SEPABankAccount implements PaymentMethod {
         return accountHolderName;
     }
 
-
+    public String getImageUrl() {
+        return "";
+    }
 }

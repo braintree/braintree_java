@@ -33,9 +33,11 @@ public class PaymentMethodIT {
         assertTrue(result.isSuccess());
         PaymentMethod paymentMethod = result.getTarget();
         assertNotNull(paymentMethod.getToken());
+        assertNotNull(paymentMethod.getImageUrl());
 
         PayPalAccount paypalAccount = (PayPalAccount) paymentMethod;
         assertNotNull(paypalAccount.getEmail());
+        assertNotNull(paypalAccount.getImageUrl());
     }
 
     @Test

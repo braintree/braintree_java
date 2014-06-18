@@ -18,4 +18,8 @@ public class UnknownPaymentMethod implements PaymentMethod {
     public boolean isDefault() {
         return isDefault;
     }
+
+    public String getImageUrl() {
+        return "";
+    }
 }
