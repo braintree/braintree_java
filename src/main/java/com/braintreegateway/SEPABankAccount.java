@@ -11,6 +11,7 @@ public class SEPABankAccount implements PaymentMethod {
     private String bic;
     private String mandateReferenceNumber;
     private String accountHolderName;
+    private String imageUrl;
 
     public enum MandateType {
         BUSINESS("business"),
@@ -34,6 +35,7 @@ public class SEPABankAccount implements PaymentMethod {
         this.bic = node.findString("bic");
         this.mandateReferenceNumber = node.findString("mandate-reference-number");
         this.accountHolderName = node.findString("account-holder-name");
+        this.imageUrl = node.findString("image-url");
     }
 
     public String getToken() {
@@ -61,6 +63,6 @@ public class SEPABankAccount implements PaymentMethod {
     }
 
     public String getImageUrl() {
-        return "";
+        return imageUrl;
     }
 }

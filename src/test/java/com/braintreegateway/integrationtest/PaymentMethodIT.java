@@ -124,6 +124,8 @@ public class PaymentMethodIT {
 
         Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
         assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+        assertNotNull(paymentMethod.getImageUrl());
     }
 
     @Test

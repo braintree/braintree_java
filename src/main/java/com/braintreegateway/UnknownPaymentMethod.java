@@ -20,6 +20,6 @@ public class UnknownPaymentMethod implements PaymentMethod {
     }
 
     public String getImageUrl() {
-        return "";
+        return "https://assets.braintreegateway.com/payment_method_logo/unknown.png";
     }
 }

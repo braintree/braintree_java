@@ -37,5 +37,6 @@ public class SEPABankAccountIT {
         assertEquals(bankAccount.getBic(), "DEUTDEFF");
         assertNotNull(bankAccount.getMaskedIban());
         assertNotNull(bankAccount.getMandateReferenceNumber());
+        assertNotNull(bankAccount.getImageUrl());
     }
 }
