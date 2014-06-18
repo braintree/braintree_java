@@ -96,8 +96,15 @@ public abstract class TestHelper {
     }
 
     public static void settle(BraintreeGateway gateway, String transactionId) {
-        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).put("/transactions/" + transactionId + "/settle");
-        assertTrue(response.isSuccess());
+      gateway.testing().settle(transactionId);
+    }
+
+    public static void settlement_confirm(BraintreeGateway gateway, String transactionId) {
+      gateway.testing().settlementConfirm(transactionId);
+    }
+
+    public static void settlement_decline(BraintreeGateway gateway, String transactionId) {
+      gateway.testing().settlementDecline(transactionId);
     }
 
     public static void escrow(BraintreeGateway gateway, String transactionId) {

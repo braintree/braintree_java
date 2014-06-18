@@ -245,4 +245,8 @@ public class BraintreeGateway {
     public String getPublicKey() {
       return publicKey;
     }
+
+    public TestingGateway testing() {
+        return new TestingGateway(http);
+    }
 }

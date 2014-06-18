@@ -1749,7 +1749,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
 
         TransactionRequest request = new TransactionRequest().
-            merchantAccountId("sepa_ma").
+            merchantAccountId("fake_sepa_ma").
             amount(TransactionAmount.AUTHORIZE.amount).
             paymentMethodNonce(nonce);
 
@@ -3165,5 +3165,104 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertTrue(result.isSuccess());
         assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
         assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), result.getTarget().getAmount());
+    }
+
+    @Test
+    public void settleAltPayTransaction() {
+        BraintreeGateway altpayGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "altpay_merchant",
+            "altpay_merchant_public_key",
+            "altpay_merchant_private_key"
+        );
+        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId("fake_sepa_ma").
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce).
+            options().
+            submitForSettlement(true).
+            done();
+
+        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
+        TestHelper.settle(altpayGateway, transaction.getId());
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId());
+
+        ResourceCollection<Transaction> searchResult = altpayGateway.transaction().search(searchRequest);
+        assertEquals(1, searchResult.getMaximumSize());
+        assertEquals(Transaction.Status.SETTLED, searchResult.getFirst().getStatus());
+    }
+
+    @Test
+    public void settlementConfirmTransaction() {
+        BraintreeGateway altpayGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "altpay_merchant",
+            "altpay_merchant_public_key",
+            "altpay_merchant_private_key"
+        );
+        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId("fake_sepa_ma").
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce).
+            options().
+            submitForSettlement(true).
+            done();
+
+        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
+        TestHelper.settlement_confirm(altpayGateway, transaction.getId());
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId());
+
+        ResourceCollection<Transaction> searchResult = altpayGateway.transaction().search(searchRequest);
+        assertEquals(1, searchResult.getMaximumSize());
+        assertEquals(Transaction.Status.SETTLEMENT_CONFIRMED, searchResult.getFirst().getStatus());
+    }
+
+    @Test
+    public void settlementDeclineTransaction() {
+        BraintreeGateway altpayGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "altpay_merchant",
+            "altpay_merchant_public_key",
+            "altpay_merchant_private_key"
+        );
+        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId("fake_sepa_ma").
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce).
+            options().
+            submitForSettlement(true).
+            done();
+
+        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
+        TestHelper.settlement_decline(altpayGateway, transaction.getId());
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId());
+
+        ResourceCollection<Transaction> searchResult = altpayGateway.transaction().search(searchRequest);
+        assertEquals(1, searchResult.getMaximumSize());
+        assertEquals(Transaction.Status.SETTLEMENT_DECLINED, searchResult.getFirst().getStatus());
     }
 }
