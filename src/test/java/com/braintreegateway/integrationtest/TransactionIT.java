@@ -3047,6 +3047,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getImageUrl());
         assertNull(saleResult.getTarget().getPayPalDetails().getToken());
     }
 
