@@ -31,11 +31,13 @@ public class PayPalAccountIT {
 
         Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
         assertTrue(result.isSuccess());
+        /* assertNotNull(result.getTarget().getImageUrl()); */
 
 
         PayPalAccount found = gateway.paypalAccount().find(result.getTarget().getToken());
         assertNotNull(found);
         assertEquals(found.getToken(), result.getTarget().getToken());
+        assertNotNull(found.getImageUrl());
     }
 
     @Test
