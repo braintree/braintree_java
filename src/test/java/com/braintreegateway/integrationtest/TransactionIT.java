@@ -3235,6 +3235,32 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void settlementConfirmTransactionReturnsValidationError() {
+        BraintreeGateway altpayGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "altpay_merchant",
+            "altpay_merchant_public_key",
+            "altpay_merchant_private_key"
+        );
+        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId("fake_sepa_ma").
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce);
+
+        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
+        Result<Transaction> result = TestHelper.settlement_decline(altpayGateway, transaction.getId());
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_SIMULATE_SETTLEMENT, result.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
+
+
+    @Test
     public void settlementDeclineTransaction() {
         BraintreeGateway altpayGateway = new BraintreeGateway(
             Environment.DEVELOPMENT,

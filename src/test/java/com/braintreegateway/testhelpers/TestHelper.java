@@ -95,16 +95,16 @@ public abstract class TestHelper {
         return false;
     }
 
-    public static void settle(BraintreeGateway gateway, String transactionId) {
-      gateway.testing().settle(transactionId);
+    public static Result<Transaction> settle(BraintreeGateway gateway, String transactionId) {
+      return gateway.testing().settle(transactionId);
     }
 
-    public static void settlement_confirm(BraintreeGateway gateway, String transactionId) {
-      gateway.testing().settlementConfirm(transactionId);
+    public static Result<Transaction> settlement_confirm(BraintreeGateway gateway, String transactionId) {
+      return gateway.testing().settlementConfirm(transactionId);
     }
 
-    public static void settlement_decline(BraintreeGateway gateway, String transactionId) {
-      gateway.testing().settlementDecline(transactionId);
+    public static Result<Transaction> settlement_decline(BraintreeGateway gateway, String transactionId) {
+      return gateway.testing().settlementDecline(transactionId);
     }
 
     public static void escrow(BraintreeGateway gateway, String transactionId) {
