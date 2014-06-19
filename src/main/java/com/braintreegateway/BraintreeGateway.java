@@ -247,6 +247,6 @@ public class BraintreeGateway {
     }
 
     public TestingGateway testing() {
-        return new TestingGateway(http);
+        return new TestingGateway(http, environment);
     }
 }
