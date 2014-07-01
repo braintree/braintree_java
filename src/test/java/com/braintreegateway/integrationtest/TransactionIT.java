@@ -749,6 +749,24 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void saleReturnsCreditCardPaymentInstrumentType() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(
+            PaymentInstrumentType.CREDIT_CARD,
+            transaction.getPaymentInstrumentType()
+        );
+    }
+
+    @Test
     public void saleWithRecurringFlag() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -3049,6 +3067,11 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getImageUrl());
         assertNull(saleResult.getTarget().getPayPalDetails().getToken());
+
+        assertEquals(
+            PaymentInstrumentType.PAYPAL_ACCOUNT,
+            saleResult.getTarget().getPaymentInstrumentType()
+        );
     }
 
     @Test

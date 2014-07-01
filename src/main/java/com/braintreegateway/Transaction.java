@@ -144,6 +144,7 @@ public class Transaction {
     private Type type;
     private Calendar updatedAt;
     private BigDecimal serviceFeeAmount;
+    private String paymentInstrumentType;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -213,6 +214,8 @@ public class Transaction {
         for (NodeWrapper dispute : node.findAll("disputes/dispute")) {
             disputes.add(new Dispute(dispute));
         }
+
+        paymentInstrumentType = node.findString("payment-instrument-type");
     }
 
     public List<AddOn> getAddOns() {
@@ -421,5 +424,9 @@ public class Transaction {
 
     public Boolean isTaxExempt() {
         return taxExempt;
+    }
+
+    public String getPaymentInstrumentType() {
+        return paymentInstrumentType;
     }
 }
