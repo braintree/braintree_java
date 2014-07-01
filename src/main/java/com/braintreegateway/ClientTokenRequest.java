@@ -5,6 +5,8 @@ package com.braintreegateway;
  *   used to authenticate requests clients make directly on behalf of merchants
  */
 public class ClientTokenRequest extends Request {
+    private static final int DEFAULT_VERSION = 2;
+
     private String customerId;
     private int version;
     private String merchantAccountId;
@@ -56,6 +58,8 @@ public class ClientTokenRequest extends Request {
 
         if (version != 0) {
             builder.addElement("version", version);
+        } else {
+            builder.addElement("version", DEFAULT_VERSION);
         }
 
         if (merchantAccountId != null) {

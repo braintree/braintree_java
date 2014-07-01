@@ -874,7 +874,8 @@ public class CreditCardIT implements MerchantAccountTestConstants {
     @Test
     public void fromLockedNonce() {
         ClientTokenRequest request = new ClientTokenRequest();
-        String clientToken = gateway.clientToken().generate(request);
+        String encodedClientToken = gateway.clientToken().generate(request);
+        String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
         String authorizationFingerprint = TestHelper.extractParamFromJson("authorizationFingerprint", clientToken);
         String url = gateway.baseMerchantURL() + "/client_api/nonces.json";

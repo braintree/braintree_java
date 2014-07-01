@@ -51,7 +51,8 @@ public class ClientTokenIT {
     }
 
     private String _getFingerprint(String rawClientToken) {
-        return TestHelper.extractParamFromJson("authorizationFingerprint", rawClientToken);
+        String decodedClientToken = TestHelper.decodeClientToken(rawClientToken);
+        return TestHelper.extractParamFromJson("authorizationFingerprint", decodedClientToken);
     }
 
     @Before
@@ -99,6 +100,23 @@ public class ClientTokenIT {
     }
 
     @Test
+    public void versionDefaultsToTwo() {
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest();
+        String encodedClientToken = gateway.clientToken().generate(clientTokenRequest);
+        String decodedClientToken = TestHelper.decodeClientToken(encodedClientToken);
+        String version = TestHelper.extractParamFromJson("version", decodedClientToken);
+        assertEquals("2", version);
+    }
+
+    @Test
+    public void versionDefaultsToTwoWithoutRequest() {
+        String encodedClientToken = gateway.clientToken().generate();
+        String decodedClientToken = TestHelper.decodeClientToken(encodedClientToken);
+        String version = TestHelper.extractParamFromJson("version", decodedClientToken);
+        assertEquals("2", version);
+    }
+
+    @Test
     public void fingerprintCanContainCustomerId() {
         CustomerRequest customerRequest = new CustomerRequest();
         Result<Customer> result = gateway.customer().create(customerRequest);
@@ -136,7 +154,8 @@ public class ClientTokenIT {
     public void gatewayAcceptsMerchantAccountId() {
         ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
             .merchantAccountId("my_merchant_account");
-        String clientToken = gateway.clientToken().generate(clientTokenRequest);
+        String encodedClientToken = gateway.clientToken().generate(clientTokenRequest);
+        String clientToken = TestHelper.decodeClientToken(encodedClientToken);
         String merchantAccountId = TestHelper.extractParamFromJson("merchantAccountId", clientToken);
 
         assertEquals("my_merchant_account", merchantAccountId);

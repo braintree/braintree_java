@@ -28,17 +28,13 @@ public class ClientTokenGateway {
     }
 
     public String generate() {
-      return generate(null);
+      return generate(new ClientTokenRequest());
     }
 
     public String generate(ClientTokenRequest request) {
       NodeWrapper response = null;
-      if (request != null) {
-        verifyOptions(request);
-        response = http.post("/client_token", request);
-      } else {
-        response = http.post("/client_token");
-      }
+      verifyOptions(request);
+      response = http.post("/client_token", request);
 
       String token = response.findString("value");
       if (token != null) {
