@@ -30,6 +30,7 @@ public class HttpHelper {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod(method);
         connection.addRequestProperty("X-ApiVersion", Configuration.apiVersion());
+        connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         connection.setDoOutput(true);
         if (body != null) {
             connection.getOutputStream().write(body.getBytes("UTF-8"));
