@@ -38,6 +38,8 @@ public class PayPalAccountIT {
         assertNotNull(found);
         assertEquals(found.getToken(), result.getTarget().getToken());
         assertNotNull(found.getImageUrl());
+        assertNotNull(found.getCreatedAt());
+        assertNotNull(found.getUpdatedAt());
     }
 
     @Test
