@@ -7,20 +7,24 @@ import com.braintreegateway.util.Sha1Hasher;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.QueryString;
+import com.braintreegateway.SEPABankAccount.MandateType;
+
+import com.braintreegateway.org.apache.commons.codec.binary.Base64;
+
 import org.junit.Ignore;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @Ignore("Testing utility class")
 public abstract class TestHelper {
@@ -95,14 +99,31 @@ public abstract class TestHelper {
         return false;
     }
 
-    public static void settle(BraintreeGateway gateway, String transactionId) {
-        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).put("/transactions/" + transactionId + "/settle");
-        assertTrue(response.isSuccess());
+    public static Result<Transaction> settle(BraintreeGateway gateway, String transactionId) {
+      return gateway.testing().settle(transactionId);
+    }
+
+    public static Result<Transaction> settlement_confirm(BraintreeGateway gateway, String transactionId) {
+      return gateway.testing().settlementConfirm(transactionId);
+    }
+
+    public static Result<Transaction> settlement_decline(BraintreeGateway gateway, String transactionId) {
+      return gateway.testing().settlementDecline(transactionId);
     }
 
     public static void escrow(BraintreeGateway gateway, String transactionId) {
         NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).put("/transactions/" + transactionId + "/escrow");
         assertTrue(response.isSuccess());
+    }
+
+    public static String createTest3DS(BraintreeGateway gateway, String merchantAccountId, ThreeDSecureRequestForTests request) {
+        String url = "/three_d_secure/create_verification/" + merchantAccountId;
+        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).post(url, request);
+        assertTrue(response.isSuccess());
+
+        String token = response.findString("three-d-secure-token");
+        assertNotNull(token);
+        return token;
     }
 
     public static String simulateFormPostForTR(BraintreeGateway gateway, Request trParams, Request request, String postUrl) {
@@ -138,11 +159,12 @@ public abstract class TestHelper {
     }
 
     public static String generateUnlockedNonce(BraintreeGateway gateway, String customerId, String creditCardNumber) {
-      ClientTokenRequest request = null;
+      ClientTokenRequest request = new ClientTokenRequest();
       if (customerId != null) {
-          request = new ClientTokenRequest().customerId(customerId);
+          request = request.customerId(customerId);
       }
-      String clientToken = gateway.clientToken().generate(request);
+      String encodedClientToken = gateway.clientToken().generate(request);
+      String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
       String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
       String url = gateway.baseMerchantURL() + "/client_api/nonces.json";
@@ -167,6 +189,101 @@ public abstract class TestHelper {
       return nonce;
     }
 
+    public static String decodeClientToken(String rawClientToken) {
+        String decodedClientToken = new String(Base64.decodeBase64(rawClientToken), Charset.forName("UTF-8"));
+        return decodedClientToken.replace("\\u0026", "&");
+    }
+
+    public static String generateOneTimePayPalNonce(BraintreeGateway gateway) {
+      String encodedClientToken = gateway.clientToken().generate();
+      String clientToken = TestHelper.decodeClientToken(encodedClientToken);
+
+      String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
+      String url = gateway.baseMerchantURL() + "/client_api/v1/payment_methods/paypal_accounts";
+      QueryString payload = new QueryString();
+      payload.append("authorization_fingerprint", authorizationFingerprint).
+        append("shared_customer_identifier_type", "testing").
+        append("shared_customer_identifier", "test-identifier").
+        append("paypal_account[access_token]", "access").
+        append("paypal_account[options][validate]", "false");
+
+      String responseBody;
+      String nonce = "";
+      try {
+        responseBody = HttpHelper.post(url, payload.toString());
+        nonce = extractParamFromJson("nonce", responseBody);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+      return nonce;
+    }
+
+    public static String generateSEPABankAccountNonce(BraintreeGateway gateway, Customer customer) {
+        SEPAClientTokenRequest request = new SEPAClientTokenRequest();
+        request.customerId(customer.getId());
+        request.mandateType(SEPABankAccount.MandateType.BUSINESS);
+        request.mandateAcceptanceLocation("Rostock, Germany");
+
+        String encodedClientToken = gateway.clientToken().generate(request);
+        String clientToken = TestHelper.decodeClientToken(encodedClientToken);
+
+        String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
+        String url = gateway.baseMerchantURL() + "/client_api/v1/sepa_mandates";
+        QueryString payload = new QueryString();
+        payload.append("authorization_fingerprint", authorizationFingerprint)
+              .append("sepa_mandate[locale]", "de-DE")
+              .append("sepa_mandate[bic]", "DEUTDEFF")
+              .append("sepa_mandate[iban]", "DE89370400440532013000")
+              .append("sepa_mandate[accountHolderName]", "Bob Holder")
+              .append("sepa_mandate[billingAddress][streetAddress]", "123 Currywurst Way")
+              .append("sepa_mandate[billingAddress][extendedAddress]", "Lager Suite")
+              .append("sepa_mandate[billingAddress][firstName]", "Wilhelm")
+              .append("sepa_mandate[billingAddress][lastName]", "Dix")
+              .append("sepa_mandate[billingAddress][locality]", "Frankfurt")
+              .append("sepa_mandate[billingAddress][postalCode]", "60001")
+              .append("sepa_mandate[billingAddress][countryCodeAlpha2]", "DE")
+              .append("sepa_mandate[billingAddress][region]", "Hesse");
+
+        QueryString acceptPayload = new QueryString();
+        acceptPayload.append("authorization_fingerprint", authorizationFingerprint);
+
+        String acceptResponseBody;
+        String mandateReferenceNumber = "";
+        try {
+            String responseBody = HttpHelper.post(url, payload.toString());
+            mandateReferenceNumber = extractParamFromJson("mandateReferenceNumber", responseBody);
+            String acceptUrl = gateway.baseMerchantURL() + "/client_api/v1/sepa_mandates/" + mandateReferenceNumber + "/accept";
+            acceptResponseBody = HttpHelper.put(acceptUrl, acceptPayload.toString());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return extractParamFromJson("nonce", acceptResponseBody);
+    }
+
+    public static String generateFuturePaymentPayPalNonce(BraintreeGateway gateway) {
+      String encodedClientToken = gateway.clientToken().generate();
+      String clientToken = TestHelper.decodeClientToken(encodedClientToken);
+
+      String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
+      String url = gateway.baseMerchantURL() + "/client_api/v1/payment_methods/paypal_accounts";
+      QueryString payload = new QueryString();
+      payload.append("authorization_fingerprint", authorizationFingerprint).
+        append("shared_customer_identifier_type", "testing").
+        append("shared_customer_identifier", "test-identifier").
+        append("paypal_account[consent_code]", "consent").
+        append("paypal_account[options][validate]", "false");
+
+      String responseBody;
+      String nonce = "";
+      try {
+        responseBody = HttpHelper.post(url, payload.toString());
+        nonce = extractParamFromJson("nonce", responseBody);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+      return nonce;
+    }
+
     public static String generateUnlockedNonce(BraintreeGateway gateway) {
         return generateUnlockedNonce(gateway, null, "4111111111111111");
     }
@@ -179,6 +296,19 @@ public abstract class TestHelper {
         String value = "";
         if (m.find()) {
           value = m.group(1);
+        }
+
+        return value;
+    }
+
+    public static int extractIntParamFromJson(String keyName, String json) {
+        String regex = "\"" + keyName + "\":\\s*(\\d+)";
+        Pattern keyPattern = Pattern.compile(regex);
+        Matcher m = keyPattern.matcher(json);
+
+        int value = 0;
+        if (m.find()) {
+          value = Integer.parseInt(m.group(1));
         }
 
         return value;

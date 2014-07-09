@@ -377,6 +377,29 @@ public class CustomerIT {
         assertEquals(1, result.getTarget().getCreditCards().size());
     }
 
+
+    @Test
+    public void createWithFuturePaymentPayPalAccountNonce() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(nonce);
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        assertEquals(1, result.getTarget().getPayPalAccounts().size());
+    }
+
+    @Test
+    public void createWithOneTimePayPalAccountNonce() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(nonce);
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getErrors().getAllDeepValidationErrors().size());
+    }
+
     @Test
     public void createCustomerFromTransparentRedirect() {
         CustomerRequest request = new CustomerRequest().firstName("John");
@@ -578,6 +601,22 @@ public class CustomerIT {
         assertEquals(0, gateway.customer().search(searchRequest).getMaximumSize());
     }
 
+    @Test
+    public void searchOnPayPalAccountEmail() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(nonce);
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        CustomerSearchRequest searchRequest = new CustomerSearchRequest().
+             id().is(customer.getId()).
+             paypalAccountEmail().is("jane.doe@example.com");
+
+        assertEquals(1, gateway.customer().search(searchRequest).getMaximumSize());
+    }
 
     @Test
     public void update() {
@@ -958,6 +997,47 @@ public class CustomerIT {
         assertEquals("419-555-1234", updatedCustomer.getFax());
         assertEquals("614-555-1234", updatedCustomer.getPhone());
         assertEquals("http://example.com", updatedCustomer.getWebsite());
+    }
+
+    @Test
+    public void updateWithFuturePaymentPayPalAccountNonce() {
+        CustomerRequest request = new CustomerRequest().
+            creditCard().
+                number("4111111111111111").
+                expirationDate("12/12").
+                done();
+
+        Customer customer = gateway.customer().create(request).getTarget();
+        assertEquals(customer.getDefaultPaymentMethod().getToken(), customer.getCreditCards().get(0).getToken());
+
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        CustomerRequest updateRequest = new CustomerRequest().
+            paymentMethodNonce(nonce);
+
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+        assertTrue(updateResult.isSuccess());
+
+        customer = updateResult.getTarget();
+        assertEquals(1, customer.getPayPalAccounts().size());
+    }
+
+    @Test
+    public void updateWithOneTimePayPalAccountNonce() {
+        CustomerRequest request = new CustomerRequest().
+            creditCard().
+                number("4111111111111111").
+                expirationDate("12/12").
+                done();
+
+        Customer customer = gateway.customer().create(request).getTarget();
+        assertEquals(customer.getDefaultPaymentMethod().getToken(), customer.getCreditCards().get(0).getToken());
+
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        CustomerRequest updateRequest = new CustomerRequest().
+            paymentMethodNonce(nonce);
+
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+        assertFalse(updateResult.isSuccess());
     }
 
     @Test

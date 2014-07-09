@@ -11,6 +11,7 @@ import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
 import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -603,6 +604,72 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void saleWithThreeDSecureToken() {
+        String threeDSecureToken = TestHelper.createTest3DS(gateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
+            number(CreditCardNumber.VISA.number).
+            expirationMonth("05").
+            expirationYear("2009")
+        );
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            threeDSecureToken(threeDSecureToken).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+    }
+
+    @Test
+    public void saleErrorWithNullThreeDSecureToken() {
+        String threeDSecureToken = null;
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            threeDSecureToken(threeDSecureToken).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_TOKEN_IS_INVALID,
+                result.getErrors().forObject("transaction").onField("threeDSecureToken").get(0).getCode());
+    }
+
+    @Test
+    public void saleErrorWithMismatchedThreeDSecureData() {
+        String threeDSecureToken = TestHelper.createTest3DS(gateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
+            number(CreditCardNumber.VISA.number).
+            expirationMonth("05").
+            expirationYear("2009")
+        );
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            threeDSecureToken(threeDSecureToken).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_TRANSACTION_DATA_DOESNT_MATCH_VERIFY,
+                result.getErrors().forObject("transaction").onField("threeDSecureToken").get(0).getCode());
+    }
+
+    @Test
     public void saleDeclined() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.DECLINE.amount).
@@ -679,6 +746,24 @@ public class TransactionIT implements MerchantAccountTestConstants {
         expected.put("another_stored_field", "custom value2");
 
         assertEquals(expected, transaction.getCustomFields());
+    }
+
+    @Test
+    public void saleReturnsCreditCardPaymentInstrumentType() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(
+            PaymentInstrumentType.CREDIT_CARD,
+            transaction.getPaymentInstrumentType()
+        );
     }
 
     @Test
@@ -1668,6 +1753,34 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void searchOnSEPABankAccountIban() {
+        BraintreeGateway altpayGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "altpay_merchant",
+            "altpay_merchant_public_key",
+            "altpay_merchant_private_key"
+        );
+        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId("fake_sepa_ma").
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce);
+
+        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            sepaBankAccountIban().is("DE89370400440532013000");
+
+        assertEquals(1, altpayGateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    @Test
     public void searchOnStatus() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -1697,6 +1810,22 @@ public class TransactionIT implements MerchantAccountTestConstants {
         searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
             status().is(Transaction.Status.GATEWAY_REJECTED);
+
+        collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(0, collection.getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            status().is(Transaction.Status.SETTLEMENT_CONFIRMED);
+
+        collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(0, collection.getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            status().is(Transaction.Status.SETTLEMENT_DECLINED);
 
         collection = gateway.transaction().search(searchRequest);
 
@@ -2421,6 +2550,24 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
+    @Test
+    public void searchOnPayPalFields() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce);
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            paypalPaymentId().startsWith("PAY").
+            paypalPayerEmail().is("payer@example.com").
+            paypalAuthorizationId().startsWith("SALE");
+
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
     @Test(expected = DownForMaintenanceException.class)
     public void searchReturnsAndHandlesInvalidCriteria() {
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
@@ -2902,5 +3049,270 @@ public class TransactionIT implements MerchantAccountTestConstants {
                 ValidationErrorCode.TRANSACTION_CANNOT_CANCEL_RELEASE,
                 cancelResult.getErrors().forObject("transaction").onField("base").get(0).getCode()
                 );
+    }
+
+    @Test
+    public void createOneTimePayPalTransaction() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce);
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getImageUrl());
+        assertNull(saleResult.getTarget().getPayPalDetails().getToken());
+
+        assertEquals(
+            PaymentInstrumentType.PAYPAL_ACCOUNT,
+            saleResult.getTarget().getPaymentInstrumentType()
+        );
+    }
+
+    @Test
+    public void createOneTimePayPalTransactionAndAttemptToVault() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce).
+            options().
+                storeInVault(true).
+                done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
+        assertNull(saleResult.getTarget().getPayPalDetails().getToken());
+    }
+
+    @Test
+    public void createFuturePaymentPayPalTransactionAndAttemptToVault() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce).
+            options().
+                storeInVault(true).
+                done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getToken());
+    }
+
+    @Test
+    public void createPayPalTransactionFromVaultRecord() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest vaultRequest = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> vaultResult = gateway.paymentMethod().create(vaultRequest);
+        assertTrue(vaultResult.isSuccess());
+
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodToken(vaultResult.getTarget().getToken());
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getToken());
+    }
+
+    @Test
+    public void submitPayPalTransactionForSettlement() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce);
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+
+        Result<Transaction> submitForSettlementResult = gateway.transaction().submitForSettlement(saleResult.getTarget().getId());
+        assertTrue(submitForSettlementResult.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
+    }
+
+    @Test
+    public void voidPayPalTransaction() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce);
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+        assertTrue(saleResult.isSuccess());
+
+        Result<Transaction> submitForSettlementResult = gateway.transaction().voidTransaction(saleResult.getTarget().getId());
+        assertTrue(submitForSettlementResult.isSuccess());
+        assertEquals(Transaction.Status.VOIDED, submitForSettlementResult.getTarget().getStatus());
+    }
+
+    @Test
+    public void refundPayPalTransaction() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce).
+            options().
+                submitForSettlement(true).
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)));
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
+        assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), result.getTarget().getAmount());
+    }
+
+    @Test
+    public void settleAltPayTransaction() {
+        BraintreeGateway altpayGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "altpay_merchant",
+            "altpay_merchant_public_key",
+            "altpay_merchant_private_key"
+        );
+        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId("fake_sepa_ma").
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce).
+            options().
+            submitForSettlement(true).
+            done();
+
+        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
+        TestHelper.settle(altpayGateway, transaction.getId());
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId());
+
+        ResourceCollection<Transaction> searchResult = altpayGateway.transaction().search(searchRequest);
+        assertEquals(1, searchResult.getMaximumSize());
+        assertEquals(Transaction.Status.SETTLED, searchResult.getFirst().getStatus());
+    }
+
+    @Test
+    public void settlementConfirmTransaction() {
+        BraintreeGateway altpayGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "altpay_merchant",
+            "altpay_merchant_public_key",
+            "altpay_merchant_private_key"
+        );
+        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId("fake_sepa_ma").
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce).
+            options().
+            submitForSettlement(true).
+            done();
+
+        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
+        TestHelper.settlement_confirm(altpayGateway, transaction.getId());
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId());
+
+        ResourceCollection<Transaction> searchResult = altpayGateway.transaction().search(searchRequest);
+        assertEquals(1, searchResult.getMaximumSize());
+        assertEquals(Transaction.Status.SETTLEMENT_CONFIRMED, searchResult.getFirst().getStatus());
+    }
+
+    @Test
+    public void settlementConfirmTransactionReturnsValidationError() {
+        BraintreeGateway altpayGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "altpay_merchant",
+            "altpay_merchant_public_key",
+            "altpay_merchant_private_key"
+        );
+        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId("fake_sepa_ma").
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce);
+
+        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
+        Result<Transaction> result = TestHelper.settlement_decline(altpayGateway, transaction.getId());
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_SIMULATE_SETTLEMENT, result.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
+
+
+    @Test
+    public void settlementDeclineTransaction() {
+        BraintreeGateway altpayGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "altpay_merchant",
+            "altpay_merchant_public_key",
+            "altpay_merchant_private_key"
+        );
+        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId("fake_sepa_ma").
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce).
+            options().
+            submitForSettlement(true).
+            done();
+
+        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
+        TestHelper.settlement_decline(altpayGateway, transaction.getId());
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId());
+
+        ResourceCollection<Transaction> searchResult = altpayGateway.transaction().search(searchRequest);
+        assertEquals(1, searchResult.getMaximumSize());
+        assertEquals(Transaction.Status.SETTLEMENT_DECLINED, searchResult.getFirst().getStatus());
     }
 }

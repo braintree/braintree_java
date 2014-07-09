@@ -151,6 +151,34 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void createWithPayPalAccountToken() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> paypalResult = gateway.paymentMethod().create(paymentMethodRequest);
+        assertTrue(paypalResult.isSuccess());
+
+        PaymentMethod paymentMethod = paypalResult.getTarget();
+
+        Plan plan = PlanFixture.PLAN_WITH_TRIAL;
+        SubscriptionRequest request = new SubscriptionRequest().
+                paymentMethodToken(paymentMethod.getToken()).
+                planId(plan.getId());
+
+        Result<Subscription> createResult = gateway.subscription().create(request);
+        assertTrue(createResult.isSuccess());
+        Subscription subscription = createResult.getTarget();
+
+        assertEquals(paymentMethod.getToken(), subscription.getPaymentMethodToken());
+    }
+
+    @Test
     public void overridePlanAddTrial() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
