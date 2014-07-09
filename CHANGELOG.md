@@ -1,4 +1,4 @@
-## 2.30.0
+## 2.30.1
 * Support for v.zero SDKs.
 
 ## 2.29.1
