@@ -1,3 +1,6 @@
+## 2.30.0
+* Support for v.zero SDKs.
+
 ## 2.29.1
 
 * Make webhook parsing more robust with newlines
