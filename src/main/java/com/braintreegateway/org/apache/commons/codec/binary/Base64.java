@@ -65,7 +65,7 @@ public class Base64 implements BinaryEncoder, BinaryDecoder {
      * 
      * @see <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045 section 6.8</a>
      */
-    static final int CHUNK_SIZE = 76;
+    static final int CHUNK_SIZE = 0;
 
     /**
      * Chunk separator per RFC 2045 section 2.1.

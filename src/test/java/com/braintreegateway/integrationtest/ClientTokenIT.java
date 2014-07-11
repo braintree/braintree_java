@@ -51,7 +51,8 @@ public class ClientTokenIT {
     }
 
     private String _getFingerprint(String rawClientToken) {
-        return TestHelper.extractParamFromJson("authorizationFingerprint", rawClientToken);
+        String decodedClientToken = TestHelper.decodeClientToken(rawClientToken);
+        return TestHelper.extractParamFromJson("authorizationFingerprint", decodedClientToken);
     }
 
     @Before
@@ -91,6 +92,31 @@ public class ClientTokenIT {
     }
 
     @Test
+    public void versionOptionSupported() {
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest().version(1);
+        String clientToken = gateway.clientToken().generate(clientTokenRequest);
+        int version = TestHelper.extractIntParamFromJson("version", clientToken);
+        assertEquals(1, version);
+    }
+
+    @Test
+    public void versionDefaultsToTwo() {
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest();
+        String encodedClientToken = gateway.clientToken().generate(clientTokenRequest);
+        String decodedClientToken = TestHelper.decodeClientToken(encodedClientToken);
+        String version = TestHelper.extractParamFromJson("version", decodedClientToken);
+        assertEquals("2", version);
+    }
+
+    @Test
+    public void versionDefaultsToTwoWithoutRequest() {
+        String encodedClientToken = gateway.clientToken().generate();
+        String decodedClientToken = TestHelper.decodeClientToken(encodedClientToken);
+        String version = TestHelper.extractParamFromJson("version", decodedClientToken);
+        assertEquals("2", version);
+    }
+
+    @Test
     public void fingerprintCanContainCustomerId() {
         CustomerRequest customerRequest = new CustomerRequest();
         Result<Customer> result = gateway.customer().create(customerRequest);
@@ -122,6 +148,17 @@ public class ClientTokenIT {
           fail();
         }
         assertEquals(200, responseCode);
+    }
+
+    @Test
+    public void gatewayAcceptsMerchantAccountId() {
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
+            .merchantAccountId("my_merchant_account");
+        String encodedClientToken = gateway.clientToken().generate(clientTokenRequest);
+        String clientToken = TestHelper.decodeClientToken(encodedClientToken);
+        String merchantAccountId = TestHelper.extractParamFromJson("merchantAccountId", clientToken);
+
+        assertEquals("my_merchant_account", merchantAccountId);
     }
 
     @Test

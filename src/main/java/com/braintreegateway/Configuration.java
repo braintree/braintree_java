@@ -6,7 +6,7 @@ public class Configuration {
     public String publicKey;
 
     public static String apiVersion() {
-        return "3";
+        return "4";
     }
 
     public Configuration(String baseMerchantURL, String publicKey, String privateKey) {

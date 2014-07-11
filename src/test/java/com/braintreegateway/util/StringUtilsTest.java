@@ -39,6 +39,11 @@ public class StringUtilsTest {
     }
 
     @Test
+    public void underscoreWorksForCamelCaseStringWithContiguousUppercaseLetters() {
+        assertEquals("headline_cnn_news", StringUtils.underscore("HeadlineCNNNews"));
+    }
+
+    @Test
     public void dasherizeReturnsNullForNullString() {
         assertNull(StringUtils.dasherize(null));
     }
@@ -61,6 +66,11 @@ public class StringUtilsTest {
     @Test
     public void dasherizeWorksForUnderscoreString() {
         assertEquals("first-name", StringUtils.dasherize("first_name"));
+    }
+
+    @Test
+    public void dasherizeWorksForCamelCaseStringWithContiguousUppercaseLetters() {
+        assertEquals("headline-cnn-news", StringUtils.dasherize("HeadlineCNNNews"));
     }
 
     @Test

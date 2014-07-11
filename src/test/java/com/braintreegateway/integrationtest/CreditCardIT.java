@@ -690,6 +690,35 @@ public class CreditCardIT implements MerchantAccountTestConstants {
         assertEquals(creditCard.getBillingAddress().getId(), updatedCreditCard.getBillingAddress().getId());
     }
 
+    @Test
+    public void updateWillNotUpdatePayPalAccounts() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+
+        CreditCardRequest updateRequest = new CreditCardRequest().
+            billingAddress().
+                lastName("Jones").
+                options().
+                    updateExisting(true).
+                    done().
+                done();
+
+        try {
+            gateway.creditCard().update(result.getTarget().getToken(), updateRequest);
+            fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+        }
+    }
+
     @SuppressWarnings("deprecation")
     @Test
     public void updateWithBillingAddressUpdatesAddressWhenUpdateExistingIsTrueForTransparentRedirect() {
@@ -787,6 +816,27 @@ public class CreditCardIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void findWithPayPalAccountToken() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+
+        try {
+            gateway.creditCard().find(result.getTarget().getToken());
+            fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+        }
+    }
+
+    @Test
     public void fromNonce() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         String nonce = TestHelper.generateUnlockedNonce(gateway, customer.getId(), "4012888888881881");
@@ -824,7 +874,8 @@ public class CreditCardIT implements MerchantAccountTestConstants {
     @Test
     public void fromLockedNonce() {
         ClientTokenRequest request = new ClientTokenRequest();
-        String clientToken = gateway.clientToken().generate(request);
+        String encodedClientToken = gateway.clientToken().generate(request);
+        String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
         String authorizationFingerprint = TestHelper.extractParamFromJson("authorizationFingerprint", clientToken);
         String url = gateway.baseMerchantURL() + "/client_api/nonces.json";
@@ -866,6 +917,90 @@ public class CreditCardIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void forward() {
+        BraintreeGateway forwardGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "forward_payment_method_merchant_id",
+            "forward_payment_method_public_key",
+            "forward_payment_method_private_key"
+        );
+
+        Customer customer = forwardGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12");
+        Result<CreditCard> createResult = forwardGateway.creditCard().create(request);
+        assertTrue(createResult.isSuccess());
+        CreditCard card = createResult.getTarget();
+
+        PaymentMethodForwardRequest forwardRequest = new PaymentMethodForwardRequest()
+            .token(card.getToken())
+            .receivingMerchantId("integration_merchant_id");
+        Result<PaymentMethodNonce> forwardResult = forwardGateway.creditCard()
+            .forward(forwardRequest);
+
+        assertTrue(forwardResult.isSuccess());
+        PaymentMethodNonce nonce = forwardResult.getTarget();
+        assertTrue(nonce.getPublicId().matches("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}"));
+        assertFalse(nonce.isLocked());
+        assertFalse(nonce.isConsumed());
+    }
+
+    @Test
+    public void forwardInvalidToken() {
+        BraintreeGateway forwardGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "forward_payment_method_merchant_id",
+            "forward_payment_method_public_key",
+            "forward_payment_method_private_key"
+        );
+
+        try {
+            PaymentMethodForwardRequest forwardRequest = new PaymentMethodForwardRequest()
+                .token("invalid")
+                .receivingMerchantId("integration_merchant_id");
+            Result<PaymentMethodNonce> forwardResult = forwardGateway.creditCard()
+                .forward(forwardRequest);
+            fail();
+        } catch (NotFoundException e) {
+        }
+    }
+
+    @Test
+    public void forwardInvalidReceivingMerchantId() {
+        BraintreeGateway forwardGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "forward_payment_method_merchant_id",
+            "forward_payment_method_public_key",
+            "forward_payment_method_private_key"
+        );
+
+        Customer customer = forwardGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12");
+        Result<CreditCard> createResult = forwardGateway.creditCard().create(request);
+        assertTrue(createResult.isSuccess());
+        CreditCard card = createResult.getTarget();
+
+        try {
+            PaymentMethodForwardRequest forwardRequest = new PaymentMethodForwardRequest()
+                .token(card.getToken())
+                .receivingMerchantId("invalid_merchant_id");
+            Result<PaymentMethodNonce> forwardResult = forwardGateway.creditCard()
+                .forward(forwardRequest);
+            fail();
+        } catch (NotFoundException e) {
+        }
+    }
+
+    @Test
     public void delete() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
@@ -883,6 +1018,27 @@ public class CreditCardIT implements MerchantAccountTestConstants {
 
         try {
             gateway.creditCard().find(card.getToken());
+            fail();
+        } catch (NotFoundException e) {
+        }
+    }
+
+    @Test
+    public void deleteWillNotDeletePayPalAccount() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+
+        try {
+            gateway.creditCard().delete(result.getTarget().getToken());
             fail();
         } catch (NotFoundException e) {
         }

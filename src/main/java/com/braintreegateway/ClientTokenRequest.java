@@ -5,11 +5,23 @@ package com.braintreegateway;
  *   used to authenticate requests clients make directly on behalf of merchants
  */
 public class ClientTokenRequest extends Request {
+    private static final int DEFAULT_VERSION = 2;
+
     private String customerId;
+    private int version;
+    private String merchantAccountId;
     private ClientTokenOptionsRequest optionsRequest;
 
     public String getCustomerId() {
         return customerId;
+    }
+
+    public String getMerchantAccountId() {
+        return merchantAccountId;
+    }
+
+    public ClientTokenOptionsRequest getOptions() {
+        return optionsRequest;
     }
 
     public ClientTokenRequest customerId(String customerId) {
@@ -17,8 +29,14 @@ public class ClientTokenRequest extends Request {
         return this;
     }
 
-    public ClientTokenOptionsRequest getOptions() {
-        return optionsRequest;
+    public ClientTokenRequest version(int version) {
+        this.version = version;
+        return this;
+    }
+
+    public ClientTokenRequest merchantAccountId(String merchantAccountId) {
+        this.merchantAccountId = merchantAccountId;
+        return this;
     }
 
     public ClientTokenRequest options(ClientTokenOptionsRequest optionsRequest) {
@@ -35,11 +53,21 @@ public class ClientTokenRequest extends Request {
         RequestBuilder builder = new RequestBuilder(root);
 
         if (customerId != null) {
-          builder.addElement("customerId", customerId);
+            builder.addElement("customerId", customerId);
+        }
+
+        if (version != 0) {
+            builder.addElement("version", version);
+        } else {
+            builder.addElement("version", DEFAULT_VERSION);
+        }
+
+        if (merchantAccountId != null) {
+            builder.addElement("merchantAccountId", merchantAccountId);
         }
 
         if (optionsRequest != null) {
-          builder.addElement("options", optionsRequest);
+            builder.addElement("options", optionsRequest);
         }
 
         return builder;

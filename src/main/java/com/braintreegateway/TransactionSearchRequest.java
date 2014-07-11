@@ -101,6 +101,18 @@ public class TransactionSearchRequest extends SearchRequest {
         return textNode("payment_method_token");
     }
 
+    public TextNode<TransactionSearchRequest> paypalPaymentId() {
+        return textNode("paypal_payment_id");
+    }
+
+    public TextNode<TransactionSearchRequest> paypalPayerEmail() {
+        return textNode("paypal_payer_email");
+    }
+
+    public TextNode<TransactionSearchRequest> paypalAuthorizationId() {
+        return textNode("paypal_authorization_id");
+    }
+
     public TextNode<TransactionSearchRequest> processorAuthorizationCode() {
         return textNode("processor_authorization_code");
     }
@@ -223,6 +235,10 @@ public class TransactionSearchRequest extends SearchRequest {
 
     public DateRangeNode<TransactionSearchRequest> disputeDate() {
         return dateRange("dispute_date");
+    }
+
+    public TextNode<TransactionSearchRequest> sepaBankAccountIban() {
+      return textNode("sepa_bank_account_iban");
     }
 
     private DateRangeNode<TransactionSearchRequest> dateRange(String fieldName) {

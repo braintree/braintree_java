@@ -69,7 +69,7 @@ public class CreditCardGateway {
      * @return a {@link Result}.
      */
     public Result<CreditCard> delete(String token) {
-        http.delete("/payment_methods/" + token);
+        http.delete("/payment_methods/credit_card/" + token);
         return new Result<CreditCard>();
     }
 
@@ -85,7 +85,7 @@ public class CreditCardGateway {
         if(token.trim().equals("") || token == null)
             throw new NotFoundException();
 
-        return new CreditCard(http.get("/payment_methods/" + token));
+        return new CreditCard(http.get("/payment_methods/credit_card/" + token));
     }
 
     /**
@@ -104,6 +104,32 @@ public class CreditCardGateway {
           return new CreditCard(http.get("/payment_methods/from_nonce/" + nonce));
         } catch (NotFoundException e) {
           throw new NotFoundException("Payment method with nonce " + nonce + " locked, consumed or not found");
+        }
+    }
+
+    /**
+     * Returns a PaymentMethodNonce which can be used by another merchant
+     *
+     * @param token
+     *            the token representing the CreditCard to forward
+     * @param receiving_merchant_id
+     *            the public ID of the merchant to forward to
+     * @return a {@link Result} containing a PaymentMethodNonce or raises a
+     *         {@link com.braintreegateway.exceptions.NotFoundException}.
+     */
+    public Result<PaymentMethodNonce> forward(PaymentMethodForwardRequest forwardRequest) {
+        String receivingMerchantId = forwardRequest.getReceivingMerchantId();
+        String token = forwardRequest.getToken();
+        if (token.trim().equals("") || token == null)
+            throw new NotFoundException("Token is required");
+        if(receivingMerchantId.trim().equals("") || receivingMerchantId == null)
+            throw new NotFoundException("Receiving merchant ID is required");
+
+        try {
+          NodeWrapper node = http.post("/payment_methods/forward", forwardRequest);
+          return new Result<PaymentMethodNonce>(node, PaymentMethodNonce.class);
+        } catch (NotFoundException e) {
+          throw new NotFoundException("Receiving merchant or payment metod not found");
         }
     }
 
@@ -133,7 +159,7 @@ public class CreditCardGateway {
      * @return a {@link Result}.
      */
     public Result<CreditCard> update(String token, CreditCardRequest request) {
-        NodeWrapper node = http.put("/payment_methods/" + token, request);
+        NodeWrapper node = http.put("/payment_methods/credit_card/" + token, request);
         return new Result<CreditCard>(node, CreditCard.class);
     }
 

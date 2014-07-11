@@ -69,6 +69,10 @@ public class CustomerSearchRequest extends SearchRequest {
         return textNode("payment_method_token");
     }
 
+    public TextNode<CustomerSearchRequest> paypalAccountEmail() {
+        return textNode("paypal_account_email");
+    }
+
     public TextNode<CustomerSearchRequest> phone() {
         return textNode("phone");
     }
@@ -80,11 +84,11 @@ public class CustomerSearchRequest extends SearchRequest {
     public IsNode<CustomerSearchRequest> paymentMethodTokenWithDuplicates() {
         return new IsNode<CustomerSearchRequest>("payment_method_token_with_duplicates", this);
     }
-    
+
     public MultipleValueNode<CustomerSearchRequest, String> ids() {
         return new MultipleValueNode<CustomerSearchRequest, String>("ids", this);
     }
-    
+
     public PartialMatchNode<CustomerSearchRequest> creditCardNumber() {
         return new PartialMatchNode<CustomerSearchRequest>("credit_card_number", this);
     }

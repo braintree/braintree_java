@@ -160,6 +160,14 @@ public class BraintreeGateway {
         return configuration;
     }
 
+    public PaymentMethodGateway paymentMethod() {
+        return new PaymentMethodGateway(http);
+    }
+
+    public PayPalAccountGateway paypalAccount() {
+        return new PayPalAccountGateway(http);
+    }
+
     /**
      * Returns an {@link PlanGateway} for interacting with {@link Plan} objects.
      *
@@ -236,5 +244,9 @@ public class BraintreeGateway {
 
     public String getPublicKey() {
       return publicKey;
+    }
+
+    public TestingGateway testing() {
+        return new TestingGateway(http, environment);
     }
 }

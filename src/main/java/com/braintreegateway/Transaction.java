@@ -80,7 +80,7 @@ public class Transaction {
     }
 
     public enum Status {
-        AUTHORIZATION_EXPIRED, AUTHORIZED, AUTHORIZING, FAILED, GATEWAY_REJECTED, PROCESSOR_DECLINED, SETTLED, SETTLING, SUBMITTED_FOR_SETTLEMENT, UNRECOGNIZED, VOIDED;
+        AUTHORIZATION_EXPIRED, AUTHORIZED, AUTHORIZING, FAILED, GATEWAY_REJECTED, PROCESSOR_DECLINED, SETTLED, SETTLEMENT_CONFIRMED, SETTLEMENT_DECLINED, SETTLING, SUBMITTED_FOR_SETTLEMENT, UNRECOGNIZED, VOIDED;
     }
 
     public enum Type {
@@ -122,6 +122,7 @@ public class Transaction {
     private String id;
     private String merchantAccountId;
     private String orderId;
+    private PayPalDetails paypalDetails;
     private String planId;
     private String processorAuthorizationCode;
     private String processorResponseCode;
@@ -143,6 +144,7 @@ public class Transaction {
     private Type type;
     private Calendar updatedAt;
     private BigDecimal serviceFeeAmount;
+    private String paymentInstrumentType;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -164,6 +166,10 @@ public class Transaction {
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
         orderId = node.findString("order-id");
+        NodeWrapper paypalNode = node.findFirst("paypal");
+        if (paypalNode != null) {
+            paypalDetails = new PayPalDetails(paypalNode);
+        }
         planId = node.findString("plan-id");
         processorAuthorizationCode = node.findString("processor-authorization-code");
         processorResponseCode = node.findString("processor-response-code");
@@ -208,6 +214,8 @@ public class Transaction {
         for (NodeWrapper dispute : node.findAll("disputes/dispute")) {
             disputes.add(new Dispute(dispute));
         }
+
+        paymentInstrumentType = node.findString("payment-instrument-type");
     }
 
     public List<AddOn> getAddOns() {
@@ -296,6 +304,10 @@ public class Transaction {
 
     public String getOrderId() {
         return orderId;
+    }
+
+    public PayPalDetails getPayPalDetails() {
+        return paypalDetails;
     }
 
     public String getPlanId() {
@@ -412,5 +424,9 @@ public class Transaction {
 
     public Boolean isTaxExempt() {
         return taxExempt;
+    }
+
+    public String getPaymentInstrumentType() {
+        return paymentInstrumentType;
     }
 }

@@ -24,6 +24,7 @@ task :jar do
 end
 
 # e.g. rake single_test testclass=com.braintreegateway.integrationtest.TransactionIT
+# OR rake single_test testclass=com.braintreegateway.integrationtest.TransactionIT#sale_is_success
 desc "run a single unit or integration test class"
 task :single_test do
   test_class = ENV['testclass']
