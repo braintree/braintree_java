@@ -26,16 +26,16 @@ public class Environment {
     }
 
     private static String developmentBaseURL() {
-        if (System.getenv().get("GATEWAY_BASE_URL") != null) {
-            return System.getenv().get("GATEWAY_BASE_URL");
+        if (System.getProperty("GATEWAY_BASE_URL") != null) {
+            return System.getProperty("GATEWAY_BASE_URL");
         } else {
             return "http://localhost";
         }
     }
 
     public static String developmentPort() {
-        if (System.getenv().get("GATEWAY_PORT") != null) {
-            return System.getenv().get("GATEWAY_PORT");
+        if (System.getProperty("GATEWAY_PORT") != null) {
+            return System.getProperty("GATEWAY_PORT");
         } else {
             return "3000";
         }
