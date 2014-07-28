@@ -260,6 +260,35 @@ public abstract class TestHelper {
         return extractParamFromJson("nonce", acceptResponseBody);
     }
 
+    public static String getNonceForPayPalAccount(BraintreeGateway gateway, String consentCode) {
+        return getNonceForPayPalAccount(gateway, consentCode, null);
+    }
+
+    public static String getNonceForPayPalAccount(BraintreeGateway gateway, String consentCode, String token) {
+      String encodedClientToken = gateway.clientToken().generate();
+      String clientToken = TestHelper.decodeClientToken(encodedClientToken);
+
+      String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
+      String url = gateway.baseMerchantURL() + "/client_api/v1/payment_methods/paypal_accounts";
+      QueryString payload = new QueryString();
+      payload.append("authorization_fingerprint", authorizationFingerprint).
+        append("shared_customer_identifier_type", "testing").
+        append("shared_customer_identifier", "test-identifier").
+        append("paypal_account[consent_code]", consentCode).
+        append("paypal_account[token]", token).
+        append("paypal_account[options][validate]", "false");
+
+      String responseBody;
+      String nonce = "";
+      try {
+        responseBody = HttpHelper.post(url, payload.toString());
+        nonce = extractParamFromJson("nonce", responseBody);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+      return nonce;
+    }
+
     public static String generateFuturePaymentPayPalNonce(BraintreeGateway gateway) {
       String encodedClientToken = gateway.clientToken().generate();
       String clientToken = TestHelper.decodeClientToken(encodedClientToken);

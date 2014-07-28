@@ -16,6 +16,11 @@ public class PaymentMethodGateway {
         return parseResponse(response);
     }
 
+    public Result<? extends PaymentMethod> update(String token, PaymentMethodRequest request) {
+        NodeWrapper response = http.put("/payment_methods/any/" + token, request);
+        return parseResponse(response);
+    }
+
     public Result<? extends PaymentMethod> delete(String token) {
         http.delete("/payment_methods/any/" + token);
         return new Result<UnknownPaymentMethod>();
