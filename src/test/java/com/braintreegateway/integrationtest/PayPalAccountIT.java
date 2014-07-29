@@ -43,6 +43,40 @@ public class PayPalAccountIT {
     }
 
     @Test
+    public void findReturnsSubscriptionsAssociatedWithAPaypalAccount() {
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest paypalRequest = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> paypalResult = gateway.paymentMethod().create(paypalRequest);
+        assertTrue(paypalResult.isSuccess());
+
+        PaymentMethod paymentMethod = paypalResult.getTarget();
+
+        Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest subscriptionRequest = new SubscriptionRequest().
+                paymentMethodToken(paymentMethod.getToken()).
+                planId(plan.getId());
+
+        Result<Subscription> subscriptionResult = gateway.subscription().create(subscriptionRequest);
+        assertTrue(subscriptionResult.isSuccess());
+        Subscription subscription1 = subscriptionResult.getTarget();
+        subscriptionResult = gateway.subscription().create(subscriptionRequest);
+        assertTrue(subscriptionResult.isSuccess());
+        Subscription subscription2 = subscriptionResult.getTarget();
+
+        PayPalAccount found = gateway.paypalAccount().find(paymentMethod.getToken());
+        assertNotNull(found);
+        assertTrue(found.getSubscriptions().contains(subscription1));
+        assertTrue(found.getSubscriptions().contains(subscription2));
+    }
+
+    @Test
     public void findThrowsNotFoundExceptionWhenPayPalAccountIsMissing() {
         try {
             gateway.paypalAccount().find(" ");

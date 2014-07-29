@@ -110,7 +110,7 @@ public class Subscription {
     public BigDecimal getBalance() {
         return balance;
     }
-    
+
     public Integer getBillingDayOfMonth() {
         return billingDayOfMonth;
     }
@@ -163,7 +163,7 @@ public class Subscription {
     public Calendar getNextBillingDate() {
         return nextBillingDate;
     }
-    
+
     public BigDecimal getNextBillingPeriodAmount() {
         return nextBillingPeriodAmount;
     }
@@ -171,7 +171,7 @@ public class Subscription {
     public Integer getNumberOfBillingCycles() {
         return numberOfBillingCycles;
     }
-    
+
     public Calendar getPaidThroughDate() {
         return paidThroughDate;
     }
@@ -210,5 +210,13 @@ public class Subscription {
 
     public boolean neverExpires() {
         return neverExpires;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Subscription))
+            return false;
+
+        return this.getId().equals(((Subscription)other).getId());
     }
 }
