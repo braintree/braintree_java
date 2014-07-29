@@ -691,4 +691,26 @@ public class PaymentMethodIT {
         assertFalse(updatedResult.isSuccess());
         assertEquals(updatedResult.getErrors().getAllDeepValidationErrors().get(0).getCode().code, "92906");
     }
+
+    @Test
+    public void updateDoesNotReturnErrorIfCardOptionsArePresentForPaypalNonce() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+        String originalToken = "paypal-account-" + new Random().nextInt();
+        String nonce = TestHelper.getNonceForPayPalAccount(
+            gateway,
+            "consent-code",
+            originalToken);
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            paymentMethodNonce(nonce).
+            customerId(customer.getId()).
+            options().
+                verifyCard(true).
+                failOnDuplicatePaymentMethod(true).
+                verificationMerchantAccountId("not_a_real_merchant_account_id").
+                done();
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+    }
 }
