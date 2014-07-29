@@ -152,6 +152,42 @@ public class PaymentMethodIT {
     }
 
     @Test
+    public void allowsPassingBillingAddressIdOutsideOfTheNonce() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+         CreditCardRequest request = new CreditCardRequest().
+            number("4111111111111111").
+            expirationMonth("12").
+            expirationYear("2020");
+
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, request, customer.getId(), false);
+
+        AddressRequest addressRequest = new AddressRequest().
+            firstName("Bobby").
+            lastName("Tables");
+        Result<Address> addressResult = gateway.address().create(customer.getId(), addressRequest);
+
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
+            paymentMethodNonce(nonce).
+            customerId(customer.getId()).
+            billingAddressId(addressResult.getTarget().getId());
+        Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(paymentMethodRequest);
+
+        assertTrue(paymentMethodResult.isSuccess());
+
+        PaymentMethod paymentMethod = paymentMethodResult.getTarget();
+        assertTrue(paymentMethod instanceof CreditCard);
+        String token = paymentMethod.getToken();
+
+        CreditCard foundCreditCard = gateway.creditCard().find(token);
+        assertTrue(foundCreditCard instanceof CreditCard);
+        assertEquals("Bobby", foundCreditCard.getBillingAddress().getFirstName());
+        assertEquals("Tables", foundCreditCard.getBillingAddress().getLastName());
+    }
+
+    @Test
     public void deletePayPalAccount() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
@@ -219,6 +255,36 @@ public class PaymentMethodIT {
         PaymentMethod found = gateway.paymentMethod().find(paymentMethod.getToken());
         assertNotNull(found);
         assertTrue(found instanceof PayPalAccount);
+    }
+
+    @Test
+    public void paypalIgnoresPassedBillingAddressId() {
+        String nonce = TestHelper.getNonceForPayPalAccount(gateway, "PAYPAL_CONSENT_CODE");
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        AddressRequest addressRequest = new AddressRequest().
+            firstName("Bobby").
+            lastName("Tables");
+        Result<Address> addressResult = gateway.address().create(customer.getId(), addressRequest);
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            paymentMethodNonce(nonce).
+            customerId(customer.getId()).
+            billingAddressId(addressResult.getTarget().getId());
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget() instanceof PayPalAccount);
+
+        PayPalAccount account = (PayPalAccount)result.getTarget();
+        assertFalse(account.getImageUrl() == null);
+
+        String token = result.getTarget().getToken();
+
+        PayPalAccount foundAccount = gateway.paypalAccount().find(token);
+        assertFalse(foundAccount == null);
     }
 
     @Test
