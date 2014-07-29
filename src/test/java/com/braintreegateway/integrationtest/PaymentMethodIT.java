@@ -314,6 +314,26 @@ public class PaymentMethodIT {
     }
 
     @Test
+    public void doesNotReturnErrorIfCreditCardOptionsArePresentForPaypalNonce() {
+        String nonce = TestHelper.getNonceForPayPalAccount(gateway, "PAYPAL_CONSENT_CODE");
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            paymentMethodNonce(nonce).
+            customerId(customer.getId()).
+            options().
+                verifyCard(true).
+                failOnDuplicatePaymentMethod(true).
+                verificationMerchantAccountId("not_a_real_merchant_account_id").
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
     public void findCreditCard() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
