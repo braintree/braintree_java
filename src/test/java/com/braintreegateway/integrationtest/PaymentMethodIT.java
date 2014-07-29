@@ -222,6 +222,32 @@ public class PaymentMethodIT {
     }
 
     @Test
+    public void ignoresPassedBillingAddressParams() {
+        String nonce = TestHelper.getNonceForPayPalAccount(gateway, "PAYPAL_CONSENT_CODE");
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            paymentMethodNonce(nonce).
+            customerId(customer.getId()).
+            billingAddress().
+                streetAddress("123 Abc Way").
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget() instanceof PayPalAccount);
+
+        PayPalAccount account = (PayPalAccount)result.getTarget();
+        assertFalse(account.getImageUrl() == null);
+        String token = result.getTarget().getToken();
+
+        PayPalAccount foundAccount = gateway.paypalAccount().find(token);
+        assertFalse(foundAccount == null);
+    }
+
+    @Test
     public void findCreditCard() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
@@ -712,5 +738,94 @@ public class PaymentMethodIT {
                 done();
         Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
         assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void allowsPassingTheBillingAddressOutsideNonce() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+            number("4111111111111111").
+            expirationMonth("12").
+            expirationYear("2020");
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, creditCardRequest, customer.getId(), false);
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            paymentMethodNonce(nonce).
+            customerId(customer.getId()).
+            billingAddress().
+                streetAddress("123 Abc Way").
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget() instanceof CreditCard);
+
+        String token = result.getTarget().getToken();
+        CreditCard foundCreditCard = gateway.creditCard().find(token);
+        assertFalse(foundCreditCard == null);
+        assertEquals(foundCreditCard.getBillingAddress().getStreetAddress(), "123 Abc Way");
+    }
+
+    @Test
+    public void updateOverridesTheBillingAddressInTheNonce() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+            number("4111111111111111").
+            expirationMonth("12").
+            expirationYear("2020").
+            billingAddress().
+                streetAddress("456 Xyz Way").
+                done();
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, creditCardRequest, customer.getId(), false);
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            paymentMethodNonce(nonce).
+            customerId(customer.getId()).
+            billingAddress().
+                streetAddress("123 Abc Way").
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget() instanceof CreditCard);
+        String token = result.getTarget().getToken();
+
+        CreditCard foundCreditCard = gateway.creditCard().find(token);
+        assertFalse(foundCreditCard == null);
+        assertEquals(foundCreditCard.getBillingAddress().getStreetAddress(), "123 Abc Way");
+    }
+
+    @Test
+    public void updateDoesNotOverrideBillingAddressForVaultedCreditCards() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+            number("4111111111111111").
+            expirationMonth("12").
+            expirationYear("2020").
+            billingAddress().
+                streetAddress("456 Xyz Way").
+                done();
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, creditCardRequest, customer.getId(), true);
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            paymentMethodNonce(nonce).
+            customerId(customer.getId()).
+            billingAddress().
+                streetAddress("123 Abc Way").
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget() instanceof CreditCard);
+        String token = result.getTarget().getToken();
+
+        CreditCard foundCreditCard = gateway.creditCard().find(token);
+        assertFalse(foundCreditCard == null);
+        assertEquals(foundCreditCard.getBillingAddress().getStreetAddress(), "456 Xyz Way");
     }
 }

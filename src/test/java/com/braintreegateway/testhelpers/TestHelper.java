@@ -218,6 +218,34 @@ public abstract class TestHelper {
       return nonce;
     }
 
+    public static String generateNonceForCreditCard(BraintreeGateway gateway, CreditCardRequest creditCardRequest, String customerId, boolean validate) {
+      ClientTokenRequest clientTokenRequest = new ClientTokenRequest().
+        customerId(customerId);
+
+      String encodedClientToken = gateway.clientToken().generate(clientTokenRequest);
+      String clientToken = TestHelper.decodeClientToken(encodedClientToken);
+
+      String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
+      String url = gateway.baseMerchantURL() + "/client_api/v1/payment_methods/credit_cards";
+      QueryString payload = new QueryString();
+      payload.append("authorization_fingerprint", authorizationFingerprint).
+        append("shared_customer_identifier_type", "testing").
+        append("shared_customer_identifier", "fake_identifier").
+        append("credit_card[options][validate]", new Boolean(validate).toString());
+
+      String responseBody;
+      String nonce = "";
+      try {
+        String payloadString = payload.toString();
+        payloadString += "&" + creditCardRequest.toQueryString();
+        responseBody = HttpHelper.post(url, payloadString);
+        nonce = extractParamFromJson("nonce", responseBody);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+      return nonce;
+    }
+
     public static String generateSEPABankAccountNonce(BraintreeGateway gateway, Customer customer) {
         SEPAClientTokenRequest request = new SEPAClientTokenRequest();
         request.customerId(customer.getId());
