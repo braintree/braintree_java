@@ -104,16 +104,16 @@ public class ClientTokenIT {
         ClientTokenRequest clientTokenRequest = new ClientTokenRequest();
         String encodedClientToken = gateway.clientToken().generate(clientTokenRequest);
         String decodedClientToken = TestHelper.decodeClientToken(encodedClientToken);
-        String version = TestHelper.extractParamFromJson("version", decodedClientToken);
-        assertEquals("2", version);
+        int version = TestHelper.extractIntParamFromJson("version", decodedClientToken);
+        assertEquals(2, version);
     }
 
     @Test
     public void versionDefaultsToTwoWithoutRequest() {
         String encodedClientToken = gateway.clientToken().generate();
         String decodedClientToken = TestHelper.decodeClientToken(encodedClientToken);
-        String version = TestHelper.extractParamFromJson("version", decodedClientToken);
-        assertEquals("2", version);
+        int version = TestHelper.extractIntParamFromJson("version", decodedClientToken);
+        assertEquals(2, version);
     }
 
     @Test
