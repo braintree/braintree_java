@@ -1159,6 +1159,7 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
                 descriptor().
                 name("123*123456789012345678").
                 phone("3334445555").
+                url("ebay.com").
                 done();
 
         Result<Subscription> createResult = gateway.subscription().create(request);
@@ -1171,6 +1172,7 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
         Transaction transaction = subscription.getTransactions().get(0);
         assertEquals("123*123456789012345678", transaction.getDescriptor().getName());
         assertEquals("3334445555", transaction.getDescriptor().getPhone());
+        assertEquals("ebay.com", transaction.getDescriptor().getUrl());
     }
 
     @Test
@@ -1182,6 +1184,7 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
                 descriptor().
                 name("xxxx").
                 phone("xxx").
+                url("12345678901234").
                 done();
 
         Result<Subscription> result = gateway.subscription().create(request);
@@ -1192,6 +1195,9 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
 
         assertEquals(ValidationErrorCode.DESCRIPTOR_PHONE_FORMAT_IS_INVALID,
                 result.getErrors().forObject("subscription").forObject("descriptor").onField("phone").get(0).getCode());
+
+        assertEquals(ValidationErrorCode.DESCRIPTOR_URL_FORMAT_IS_INVALID,
+                result.getErrors().forObject("subscription").forObject("descriptor").onField("url").get(0).getCode());
     }
 
     @Test

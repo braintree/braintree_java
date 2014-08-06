@@ -17,6 +17,11 @@ public class SubscriptionDescriptorRequest extends DescriptorRequest {
         return this;
     }
 
+    public SubscriptionDescriptorRequest url(String url) {
+        super.url(url);
+        return this;
+    }
+
     public SubscriptionRequest done() {
         return parent;
     }

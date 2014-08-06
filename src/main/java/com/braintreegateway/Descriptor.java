@@ -9,16 +9,18 @@ import com.braintreegateway.util.NodeWrapper;
  * <li>a Customer as an address
  * <li>a Transaction as a billing or shipping address
  * </ul>
- * 
+ *
  */
 public class Descriptor {
 
     private String name;
     private String phone;
+    private String url;
 
     public Descriptor(NodeWrapper node) {
         name = node.findString("name");
         phone = node.findString("phone");
+        url = node.findString("url");
     }
 
     public String getName() {
@@ -27,5 +29,9 @@ public class Descriptor {
 
     public String getPhone() {
         return phone;
+    }
+
+    public String getUrl() {
+        return url;
     }
 }
