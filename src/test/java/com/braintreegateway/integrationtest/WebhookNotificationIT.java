@@ -1,5 +1,6 @@
 package com.braintreegateway.integrationtest;
 
+import com.braintreegateway.*;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Environment;
 import com.braintreegateway.MerchantAccount;
@@ -86,6 +87,37 @@ public class WebhookNotificationIT {
         assertEquals("my_id", notification.getMerchantAccount().getId());
         TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
         assertEquals(ValidationErrorCode.MERCHANT_ACCOUNT_DECLINED_OFAC, notification.getErrors().forObject("merchantAccount").onField("base").get(0).getCode());
+    }
+
+    @Test
+    public void createsSampleDisputeOpenedNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_OPENED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+
+        assertEquals(WebhookNotification.Kind.DISPUTE_OPENED, notification.getKind());
+        assertEquals("my_id", notification.getDispute().getId());
+        assertEquals(Dispute.Status.OPEN, notification.getDispute().getStatus());
+    }
+
+    public void createsSampleDisputeWonNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_WON, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+
+        assertEquals(WebhookNotification.Kind.DISPUTE_WON, notification.getKind());
+        assertEquals("my_id", notification.getDispute().getId());
+        assertEquals(Dispute.Status.WON, notification.getDispute().getStatus());
+    }
+
+    public void createsSampleDisputeLostNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_LOST, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+
+        assertEquals(WebhookNotification.Kind.DISPUTE_LOST, notification.getKind());
+        assertEquals("my_id", notification.getDispute().getId());
+        assertEquals(Dispute.Status.LOST, notification.getDispute().getStatus());
     }
 
     @Test(expected = InvalidSignatureException.class)

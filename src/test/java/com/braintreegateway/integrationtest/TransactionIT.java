@@ -1337,6 +1337,8 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals(Dispute.Reason.FRAUD, dispute.getReason());
         assertEquals(Dispute.Status.WON, dispute.getStatus());
         assertEquals(new BigDecimal("250.00"), dispute.getAmount());
+        assertEquals(new BigDecimal("1000.00"), dispute.getTransactionDetails().getAmount());
+        assertEquals(DISPUTED_TRANSACTION_ID, dispute.getTransactionDetails().getId());
     }
 
     @Test

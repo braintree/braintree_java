@@ -2,6 +2,8 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 import java.util.Calendar;
+import java.util.List;
+import java.util.ArrayList;
 
 public class PayPalAccount implements PaymentMethod {
     private String email;
@@ -10,6 +12,7 @@ public class PayPalAccount implements PaymentMethod {
     private String imageUrl;
     private Calendar createdAt;
     private Calendar updatedAt;
+    private List<Subscription> subscriptions;
 
     public PayPalAccount(NodeWrapper node) {
         this.email = node.findString("email");
@@ -19,6 +22,10 @@ public class PayPalAccount implements PaymentMethod {
         this.imageUrl = node.findString("image-url");
         this.createdAt = node.findDateTime("created-at");
         this.updatedAt = node.findDateTime("updated-at");
+        this.subscriptions = new ArrayList<Subscription>();
+        for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
+            this.subscriptions.add(new Subscription(subscriptionResponse));
+        }
     }
 
     public String getEmail() {
@@ -43,5 +50,9 @@ public class PayPalAccount implements PaymentMethod {
 
     public Calendar getUpdatedAt() {
         return updatedAt;
+    }
+
+    public List<Subscription> getSubscriptions() {
+        return subscriptions;
     }
 }

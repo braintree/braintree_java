@@ -1,4 +1,4 @@
-package come.braintegreegateway.integrationtest;
+package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
 import com.braintreegateway.SandboxValues.CreditCardNumber;

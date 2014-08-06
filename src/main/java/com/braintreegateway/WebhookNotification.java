@@ -22,6 +22,9 @@ public class WebhookNotification {
         TRANSACTION_DISBURSED("transaction_disbursed"),
         DISBURSEMENT_EXCEPTION("disbursement_exception"),
         DISBURSEMENT("disbursement"),
+        DISPUTE_OPENED("dispute_opened"),
+        DISPUTE_LOST("dispute_lost"),
+        DISPUTE_WON("dispute_won"),
         UNRECOGNIZED("unrecognized");
 
         private final String name;
@@ -41,6 +44,7 @@ public class WebhookNotification {
     private Subscription subscription;
     private Transaction transaction;
     private Disbursement disbursement;
+    private Dispute dispute;
     private Kind kind;
     private Calendar timestamp;
     private PartnerMerchant partnerMerchant;
@@ -65,6 +69,10 @@ public class WebhookNotification {
 
         if (wrapperNode.findFirst("merchant-account") != null) {
             this.merchantAccount = new MerchantAccount(wrapperNode.findFirst("merchant-account"));
+        }
+
+        if (wrapperNode.findFirst("dispute") != null) {
+            this.dispute = new Dispute(wrapperNode.findFirst("dispute"));
         }
 
         if (wrapperNode.findFirst("transaction") != null) {
@@ -102,6 +110,10 @@ public class WebhookNotification {
 
     public Disbursement getDisbursement() {
         return this.disbursement;
+    }
+
+    public Dispute getDispute() {
+        return this.dispute;
     }
 
     public Calendar getTimestamp() {

@@ -5,6 +5,19 @@ public class PaymentMethodRequest extends Request {
     private String customerId;
     private String token;
     private PaymentMethodOptionsRequest optionsRequest;
+    private PaymentMethodAddressRequest billingAddressRequest;
+    private String billingAddressId;
+    private String deviceData;
+    private String cardholderName;
+    private String cvv;
+    private String deviceSessionId;
+    private String fraudMerchantId;
+    private String expirationDate;
+    private String expirationMonth;
+    private String expirationYear;
+    private String number;
+    private String paymentMethodToken;
+    private String venmoSdkPaymentMethodCode;
 
     public PaymentMethodRequest() {
     }
@@ -19,6 +32,46 @@ public class PaymentMethodRequest extends Request {
         return this;
     }
 
+    public PaymentMethodRequest cvv(String cvv) {
+        this.cvv = cvv;
+        return this;
+    }
+
+    public PaymentMethodRequest deviceSessionId(String deviceSessionId) {
+        this.deviceSessionId = deviceSessionId;
+        return this;
+    }
+
+    public PaymentMethodRequest fraudMerchantId(String fraudMerchantId) {
+        this.fraudMerchantId = fraudMerchantId;
+        return this;
+    }
+
+    public PaymentMethodRequest expirationDate(String expirationDate) {
+        this.expirationDate = expirationDate;
+        return this;
+    }
+
+    public PaymentMethodRequest expirationMonth(String expirationMonth) {
+        this.expirationMonth = expirationMonth;
+        return this;
+    }
+
+    public PaymentMethodRequest expirationYear(String expirationYear) {
+        this.expirationYear = expirationYear;
+        return this;
+    }
+
+    public PaymentMethodRequest number(String number) {
+        this.number = number;
+        return this;
+    }
+
+    public PaymentMethodRequest venmoSdkPaymentMethodCode(String venmoSdkPaymentMethodCode) {
+        this.venmoSdkPaymentMethodCode = venmoSdkPaymentMethodCode;
+        return this;
+    }
+
     public PaymentMethodOptionsRequest options() {
         this.optionsRequest = new PaymentMethodOptionsRequest(this);
         return optionsRequest;
@@ -28,8 +81,37 @@ public class PaymentMethodRequest extends Request {
         return token;
     }
 
+    public String getCustomerId() {
+        return customerId;
+    }
+
     public PaymentMethodRequest token(String token) {
         this.token = token;
+        return this;
+    }
+
+    public PaymentMethodRequest paymentMethodToken(String paymentMethodToken) {
+        this.paymentMethodToken = paymentMethodToken;
+        return this;
+    }
+
+    public PaymentMethodRequest deviceData(String deviceData) {
+        this.deviceData = deviceData;
+        return this;
+    }
+
+    public PaymentMethodRequest cardholderName(String cardholderName) {
+        this.cardholderName = cardholderName;
+        return this;
+    }
+
+    public PaymentMethodAddressRequest billingAddress() {
+        billingAddressRequest = new PaymentMethodAddressRequest(this);
+        return billingAddressRequest;
+    }
+
+    public PaymentMethodRequest billingAddressId(String billingAddressId) {
+        this.billingAddressId = billingAddressId;
         return this;
     }
 
@@ -43,7 +125,22 @@ public class PaymentMethodRequest extends Request {
             addElement("customer-id", customerId).
             addElement("token", token).
             addElement("options", optionsRequest).
-            addElement("payment-method-nonce", paymentMethodNonce);
+            addElement("payment-method-nonce", paymentMethodNonce).
+            addElement("billingAddress", billingAddressRequest).
+            addElement("billingAddressId", billingAddressId).
+            addElement("deviceData", deviceData).
+            addElement("options", optionsRequest).
+            addElement("customerId", customerId).
+            addElement("cardholderName", cardholderName).
+            addElement("cvv", cvv).
+            addElement("number", number).
+            addElement("deviceSessionId", deviceSessionId).
+            addElement("fraudMerchantId", fraudMerchantId).
+            addElement("expirationDate", expirationDate).
+            addElement("expirationMonth", expirationMonth).
+            addElement("expirationYear", expirationYear).
+            addElement("paymentMethodNonce", paymentMethodNonce).
+            addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode);
 
         return builder;
     }

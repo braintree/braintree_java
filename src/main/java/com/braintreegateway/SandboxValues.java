@@ -17,6 +17,15 @@ public class SandboxValues {
         }
     }
 
+    public enum FailsVerification {
+        MASTER_CARD("5105105105105100");
+        public String number;
+
+        private FailsVerification(String number) {
+            this.number = number;
+        }
+    }
+
     public enum TransactionAmount {
         AUTHORIZE("1000.00"), DECLINE("2000.00"), FAILED("3000.00");
 
