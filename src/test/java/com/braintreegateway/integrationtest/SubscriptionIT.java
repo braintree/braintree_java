@@ -1175,7 +1175,10 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
 
     @Test
     public void createWithDescriptorValidation() {
+        Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId()).
                 descriptor().
                 name("xxxx").
                 phone("xxx").
