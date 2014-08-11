@@ -82,7 +82,7 @@ public class CreditCardGateway {
      *         {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public CreditCard find(String token) {
-        if(token.trim().equals("") || token == null)
+        if(token == null || token.trim().equals(""))
             throw new NotFoundException();
 
         return new CreditCard(http.get("/payment_methods/credit_card/" + token));
@@ -97,7 +97,7 @@ public class CreditCardGateway {
      *         {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public CreditCard fromNonce(String nonce) {
-        if(nonce.trim().equals("") || nonce == null)
+        if(nonce == null || nonce.trim().equals(""))
             throw new NotFoundException();
 
         try {
@@ -120,9 +120,9 @@ public class CreditCardGateway {
     public Result<PaymentMethodNonce> forward(PaymentMethodForwardRequest forwardRequest) {
         String receivingMerchantId = forwardRequest.getReceivingMerchantId();
         String token = forwardRequest.getToken();
-        if (token.trim().equals("") || token == null)
+        if (token == null || token.trim().equals(""))
             throw new NotFoundException("Token is required");
-        if(receivingMerchantId.trim().equals("") || receivingMerchantId == null)
+        if(receivingMerchantId == null || receivingMerchantId.trim().equals(""))
             throw new NotFoundException("Receiving merchant ID is required");
 
         try {
