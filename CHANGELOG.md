@@ -1,3 +1,7 @@
+## 2.32.0
+
+* Add descriptor url support
+
 ## 2.31.0
 
 * Allow credit card verification options to be passed outside of the nonce for PaymentMethod.create
