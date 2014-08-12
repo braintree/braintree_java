@@ -17,6 +17,11 @@ public class TransactionDescriptorRequest extends DescriptorRequest {
         return this;
     }
 
+    public TransactionDescriptorRequest url(String url) {
+        super.url(url);
+        return this;
+    }
+
     public TransactionRequest done() {
         return parent;
     }

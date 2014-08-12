@@ -2,6 +2,7 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
+import com.braintreegateway.exceptions.NotFoundException;
 
 import org.junit.Test;
 import org.junit.Before;
@@ -29,5 +30,11 @@ public class PaymentMethodGatewayTest {
 
         assertEquals("foo", result.getTarget().getToken());
         assertTrue(result.getTarget() instanceof UnknownPaymentMethod);
+    }
+
+    @Test(expected=NotFoundException.class)
+    public void findHandlesNullPointer() {
+        PaymentMethodGateway paymentMethodGateway = this.gateway.paymentMethod();
+        paymentMethodGateway.find(null);
     }
 }

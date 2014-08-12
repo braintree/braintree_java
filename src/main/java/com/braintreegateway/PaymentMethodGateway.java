@@ -27,7 +27,7 @@ public class PaymentMethodGateway {
     }
 
     public PaymentMethod find(String token) {
-        if(token.trim().equals("") || token == null)
+        if(token == null || token.trim().equals(""))
             throw new NotFoundException();
 
         NodeWrapper response = http.get("/payment_methods/any/" + token);
