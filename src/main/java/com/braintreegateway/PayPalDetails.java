@@ -9,6 +9,8 @@ public class PayPalDetails {
     private String token;
     private String imageUrl;
     private String debugId;
+    private String payeeEmail;
+    private String bnCode;
 
     public PayPalDetails(NodeWrapper node) {
         payerEmail = node.findString("payer-email");
@@ -17,6 +19,8 @@ public class PayPalDetails {
         token = node.findString("token");
         imageUrl = node.findString("image-url");
         debugId = node.findString("debug-id");
+        payeeEmail = node.findString("payee-email");
+        bnCode = node.findString("bn-code");
     }
 
     public String getPayerEmail() {
@@ -41,5 +45,13 @@ public class PayPalDetails {
 
     public String getDebugId() {
         return debugId;
+    }
+
+    public String getPayeeEmail() {
+      return payeeEmail;
+    }
+
+    public String getBnCode() {
+      return bnCode;
     }
 }

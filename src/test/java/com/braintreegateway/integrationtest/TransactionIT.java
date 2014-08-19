@@ -3084,6 +3084,35 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void createPayPalTransactionWithPayeeEmailAndBnCode() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce).
+            paypalAccount().
+              payeeEmail("payee@example.com").
+              bnCode("BN12345").
+              done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getImageUrl());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
+        assertNull(saleResult.getTarget().getPayPalDetails().getToken());
+        assertEquals("payee@example.com", saleResult.getTarget().getPayPalDetails().getPayeeEmail());
+        assertEquals("BN12345", saleResult.getTarget().getPayPalDetails().getBnCode());
+        assertEquals(
+            PaymentInstrumentType.PAYPAL_ACCOUNT,
+            saleResult.getTarget().getPaymentInstrumentType()
+        );
+    }
+
+    @Test
     public void createOneTimePayPalTransactionAndAttemptToVault() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
         TransactionRequest request = new TransactionRequest().

@@ -14,6 +14,7 @@ public class TransactionRequest extends Request {
     private TransactionAddressRequest billingAddressRequest;
     private String deviceData;
     private TransactionCreditCardRequest creditCardRequest;
+    private TransactionPayPalRequest paypalRequest;
     private String channel;
     private String customerId;
     private String deviceSessionId;
@@ -68,6 +69,11 @@ public class TransactionRequest extends Request {
     public TransactionCreditCardRequest creditCard() {
         creditCardRequest = new TransactionCreditCardRequest(this);
         return creditCardRequest;
+    }
+
+    public TransactionPayPalRequest paypalAccount() {
+        paypalRequest = new TransactionPayPalRequest(this);
+        return paypalRequest;
     }
 
     public TransactionRequest serviceFeeAmount(BigDecimal fee) {
@@ -217,6 +223,7 @@ public class TransactionRequest extends Request {
             addElement("shippingAddressId", shippingAddressId).
             addElement("billingAddressId", billingAddressId).
             addElement("creditCard", creditCardRequest).
+            addElement("paypalAccount", paypalRequest).
             addElement("customer", customerRequest).
             addElement("descriptor", descriptorRequest).
             addElement("billing", billingAddressRequest).
