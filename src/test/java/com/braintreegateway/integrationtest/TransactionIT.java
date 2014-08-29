@@ -3084,14 +3084,13 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
-    public void createPayPalTransactionWithPayeeEmailAndBnCode() {
+    public void createPayPalTransactionWithPayeeEmail() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("100.00")).
             paymentMethodNonce(nonce).
             paypalAccount().
               payeeEmail("payee@example.com").
-              bnCode("BN12345").
               done();
 
         Result<Transaction> saleResult = gateway.transaction().sale(request);
@@ -3105,7 +3104,6 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
         assertNull(saleResult.getTarget().getPayPalDetails().getToken());
         assertEquals("payee@example.com", saleResult.getTarget().getPayPalDetails().getPayeeEmail());
-        assertEquals("BN12345", saleResult.getTarget().getPayPalDetails().getBnCode());
         assertEquals(
             PaymentInstrumentType.PAYPAL_ACCOUNT,
             saleResult.getTarget().getPaymentInstrumentType()
