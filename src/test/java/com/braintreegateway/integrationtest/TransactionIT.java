@@ -3231,6 +3231,24 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void paypalTransactionReturnsSettlementResponseCode() {
+        BraintreeGateway altpayGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "altpay_merchant",
+            "altpay_merchant_public_key",
+            "altpay_merchant_private_key"
+        );
+
+        TransactionSearchRequest request = new TransactionSearchRequest().
+            status().is(Transaction.Status.SETTLEMENT_DECLINED);
+
+        ResourceCollection<Transaction> collection = altpayGateway.transaction().search(request);
+        Transaction transaction = collection.getFirst();
+        assertEquals("4001", transaction.getProcessorSettlementResponseCode());
+        assertEquals("Settlement Declined", transaction.getProcessorSettlementResponseText());
+    }
+
+    @Test
     public void settleAltPayTransaction() {
         BraintreeGateway altpayGateway = new BraintreeGateway(
             Environment.DEVELOPMENT,
