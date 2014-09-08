@@ -3240,10 +3240,12 @@ public class TransactionIT implements MerchantAccountTestConstants {
         );
 
         TransactionSearchRequest request = new TransactionSearchRequest().
-            status().is(Transaction.Status.SETTLEMENT_DECLINED);
+            status().is(Transaction.Status.SETTLEMENT_DECLINED).
+            paypalPayerEmail().is("jane.doe@example.com");
 
         ResourceCollection<Transaction> collection = altpayGateway.transaction().search(request);
         Transaction transaction = collection.getFirst();
+        assertEquals(1, collection.getMaximumSize());
         assertEquals("4001", transaction.getProcessorSettlementResponseCode());
         assertEquals("Settlement Declined", transaction.getProcessorSettlementResponseText());
     }
