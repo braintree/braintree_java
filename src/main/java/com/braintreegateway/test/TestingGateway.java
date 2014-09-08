@@ -32,6 +32,12 @@ public class TestingGateway {
         return new Result<Transaction>(node, Transaction.class);
     }
 
+    public Result<Transaction> settlementPending(String transactionId) {
+        checkEnvironment();
+        NodeWrapper node = this.http.put("/transactions/" + transactionId + "/settlement_pending");
+        return new Result<Transaction>(node, Transaction.class);
+    }
+
     private void checkEnvironment() throws TestOperationPerformedInProductionException {
         if (this.environment == Environment.PRODUCTION) {
           throw new TestOperationPerformedInProductionException();
