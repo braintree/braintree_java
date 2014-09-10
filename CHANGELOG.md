@@ -1,3 +1,8 @@
+## 2.33.0
+
+* Added paypal specific fields to transaction calls
+* Added SettlementPending, SettlementDeclined transaction statuses
+
 ## 2.32.0
 
 * Add descriptor url support
@@ -48,7 +53,7 @@
 
 * Adds holdInEscrow method
 * Add error codes for verification not supported error
-* Add companyName and taxId to ApplicantDetailsRequest 
+* Add companyName and taxId to ApplicantDetailsRequest
 * Adds cancelRelease method
 * Adds releaseFromEscrow functionality
 * Adds merchant account phone error code.
