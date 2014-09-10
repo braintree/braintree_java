@@ -14,6 +14,13 @@ public class TestingGateway {
         this.http = http;
     }
 
+    public TestingGateway(BraintreeGateway gateway, Environment environment) {
+        this(
+            new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), environment.certificateFilenames, BraintreeGateway.VERSION),
+            environment
+        );
+    }
+
     public Result<Transaction> settle(String transactionId) {
         checkEnvironment();
         NodeWrapper node = this.http.put("/transactions/" + transactionId + "/settle");

@@ -7,11 +7,13 @@ import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.test.CreditCardNumbers;
+import com.braintreegateway.test.Nonce;
 import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
+import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -3232,20 +3234,21 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
     @Test
     public void paypalTransactionReturnsSettlementResponseCode() {
-        BraintreeGateway altpayGateway = new BraintreeGateway(
-            Environment.DEVELOPMENT,
-            "altpay_merchant",
-            "altpay_merchant_public_key",
-            "altpay_merchant_private_key"
-        );
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(Nonce.PayPalFuturePayment).
+            options().
+                submitForSettlement(true).
+                done();
 
-        TransactionSearchRequest request = new TransactionSearchRequest().
-            status().is(Transaction.Status.SETTLEMENT_DECLINED).
-            paypalPayerEmail().is("jane.doe@example.com");
+        Result<Transaction> authResult = gateway.transaction().sale(request);
+        assertTrue(authResult.isSuccess());
 
-        ResourceCollection<Transaction> collection = altpayGateway.transaction().search(request);
-        Transaction transaction = collection.getFirst();
-        assertEquals(1, collection.getMaximumSize());
+        TestingGateway testingGateway = new TestingGateway(gateway, Environment.DEVELOPMENT);
+        testingGateway.settlementDecline(authResult.getTarget().getId());
+
+        Transaction transaction = gateway.transaction().find(authResult.getTarget().getId());
+        assertEquals(Transaction.Status.SETTLEMENT_DECLINED, transaction.getStatus());
         assertEquals("4001", transaction.getProcessorSettlementResponseCode());
         assertEquals("Settlement Declined", transaction.getProcessorSettlementResponseText());
     }
