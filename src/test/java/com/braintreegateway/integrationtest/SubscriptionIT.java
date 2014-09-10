@@ -77,6 +77,11 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
         assertEquals(false, subscription.hasTrialPeriod());
         assertEquals(DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
 
+        Calendar expectedCreateUpdateDate = Calendar.getInstance();
+        expectedCreateUpdateDate.add(Calendar.HOUR, -1);
+        assertTrue(expectedCreateUpdateDate.compareTo(subscription.getCreatedAt()) < 0);
+        assertTrue(expectedCreateUpdateDate.compareTo(subscription.getUpdatedAt()) < 0);
+
         TestHelper.assertDatesEqual(expectedBillingPeriodEndDate, subscription.getBillingPeriodEndDate());
         TestHelper.assertDatesEqual(expectedBillingPeriodStartDate, subscription.getBillingPeriodStartDate());
         TestHelper.assertDatesEqual(expectedBillingPeriodEndDate, subscription.getPaidThroughDate());

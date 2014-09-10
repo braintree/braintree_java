@@ -46,5 +46,29 @@ public class TestingGatewayIT implements MerchantAccountTestConstants {
         gateway.testing().settlementDecline("transaction_id");
     }
 
+    @SuppressWarnings("deprecation")
+    @Test(expected = TestOperationPerformedInProductionException.class)
+    public void testSettlementPendingRaisesErrorInProduction() {
+        BraintreeGateway gateway = new BraintreeGateway(Environment.PRODUCTION, "merchant_id", "public_key", "private_key");
 
+        gateway.testing().settlementPending("transaction_id");
+    }
+
+    @SuppressWarnings("deprecation")
+    @Test
+    public void testSettlementPendingReturnsSettlementPendingTransaction() {
+        BraintreeGateway gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
+
+        String nonce = TestHelper.generateUnlockedNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce).
+            options().
+                submitForSettlement(true).
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+
+        result = gateway.testing().settlementPending(result.getTarget().getId());
+        assertEquals(result.getTarget().getStatus(), Transaction.Status.SETTLEMENT_PENDING);
+    }
 }

@@ -14,6 +14,13 @@ public class TestingGateway {
         this.http = http;
     }
 
+    public TestingGateway(BraintreeGateway gateway, Environment environment) {
+        this(
+            new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), environment.certificateFilenames, BraintreeGateway.VERSION),
+            environment
+        );
+    }
+
     public Result<Transaction> settle(String transactionId) {
         checkEnvironment();
         NodeWrapper node = this.http.put("/transactions/" + transactionId + "/settle");
@@ -29,6 +36,12 @@ public class TestingGateway {
     public Result<Transaction> settlementDecline(String transactionId) {
         checkEnvironment();
         NodeWrapper node = this.http.put("/transactions/" + transactionId + "/settlement_decline");
+        return new Result<Transaction>(node, Transaction.class);
+    }
+
+    public Result<Transaction> settlementPending(String transactionId) {
+        checkEnvironment();
+        NodeWrapper node = this.http.put("/transactions/" + transactionId + "/settlement_pending");
         return new Result<Transaction>(node, Transaction.class);
     }
 

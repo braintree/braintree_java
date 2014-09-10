@@ -7,11 +7,13 @@ import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.test.CreditCardNumbers;
+import com.braintreegateway.test.Nonce;
 import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
+import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -3074,8 +3076,36 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getImageUrl());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
         assertNull(saleResult.getTarget().getPayPalDetails().getToken());
 
+        assertEquals(
+            PaymentInstrumentType.PAYPAL_ACCOUNT,
+            saleResult.getTarget().getPaymentInstrumentType()
+        );
+    }
+
+    @Test
+    public void createPayPalTransactionWithPayeeEmail() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce).
+            paypalAccount().
+              payeeEmail("payee@example.com").
+              done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getImageUrl());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
+        assertNull(saleResult.getTarget().getPayPalDetails().getToken());
+        assertEquals("payee@example.com", saleResult.getTarget().getPayPalDetails().getPayeeEmail());
         assertEquals(
             PaymentInstrumentType.PAYPAL_ACCOUNT,
             saleResult.getTarget().getPaymentInstrumentType()
@@ -3099,6 +3129,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
         assertNull(saleResult.getTarget().getPayPalDetails().getToken());
     }
 
@@ -3120,6 +3151,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getToken());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
     }
 
     @Test
@@ -3148,6 +3180,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getToken());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
     }
 
     @Test
@@ -3197,6 +3230,27 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertTrue(result.isSuccess());
         assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
         assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), result.getTarget().getAmount());
+    }
+
+    @Test
+    public void paypalTransactionReturnsSettlementResponseCode() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(Nonce.PayPalFuturePayment).
+            options().
+                submitForSettlement(true).
+                done();
+
+        Result<Transaction> authResult = gateway.transaction().sale(request);
+        assertTrue(authResult.isSuccess());
+
+        TestingGateway testingGateway = new TestingGateway(gateway, Environment.DEVELOPMENT);
+        testingGateway.settlementDecline(authResult.getTarget().getId());
+
+        Transaction transaction = gateway.transaction().find(authResult.getTarget().getId());
+        assertEquals(Transaction.Status.SETTLEMENT_DECLINED, transaction.getStatus());
+        assertEquals("4001", transaction.getProcessorSettlementResponseCode());
+        assertEquals("Settlement Declined", transaction.getProcessorSettlementResponseText());
     }
 
     @Test

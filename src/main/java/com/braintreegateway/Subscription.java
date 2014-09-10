@@ -44,6 +44,8 @@ public class Subscription {
     private Descriptor descriptor;
     private ArrayList<Discount> discounts;
     private Integer failureCount;
+    private Calendar createdAt;
+    private Calendar updatedAt;
     private Calendar firstBillingDate;
     private Boolean hasTrialPeriod;
     private String id;
@@ -87,6 +89,8 @@ public class Subscription {
         neverExpires = node.findBoolean("never-expires");
         nextBillAmount = node.findBigDecimal("next-bill-amount");
         nextBillingDate = node.findDate("next-billing-date");
+        createdAt = node.findDateTime("created-at");
+        updatedAt = node.findDateTime("updated-at");
         nextBillingPeriodAmount = node.findBigDecimal("next-billing-period-amount");
         numberOfBillingCycles = node.findInteger("number-of-billing-cycles");
         paidThroughDate = node.findDate("paid-through-date");
@@ -170,6 +174,14 @@ public class Subscription {
 
     public Integer getNumberOfBillingCycles() {
         return numberOfBillingCycles;
+    }
+
+    public Calendar getCreatedAt() {
+        return createdAt;
+    }
+
+    public Calendar getUpdatedAt() {
+        return updatedAt;
     }
 
     public Calendar getPaidThroughDate() {
