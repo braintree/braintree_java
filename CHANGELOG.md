@@ -1,3 +1,7 @@
+## 2.33.1
+
+* Allow payee_email to be passed in options params for Transaction create
+
 ## 2.33.0
 
 * Added paypal specific fields to transaction calls
