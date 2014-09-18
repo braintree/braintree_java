@@ -42,6 +42,7 @@ public class Transaction {
     }
 
     public enum GatewayRejectionReason {
+        APPLICATION_INCOMPLETE("application_incomplete"),
         AVS("avs"),
         AVS_AND_CVV("avs_and_cvv"),
         CVV("cvv"),
