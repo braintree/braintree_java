@@ -2753,27 +2753,6 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
-    public void gatewayRejectedOnApplicationIncomplete() {
-        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
-        TransactionRequest request = new TransactionRequest().
-            amount(TransactionAmount.APPLICATION_INCOMPLETE.amount).
-            billingAddress().
-                postalCode("20001").
-                done().
-            creditCard().
-                number(CreditCardNumber.VISA.number).
-                expirationDate("05/2009").
-                cvv("200").
-                done();
-
-        Result<Transaction> result = processingRulesGateway.transaction().sale(request);
-        assertFalse(result.isSuccess());
-        Transaction transaction = result.getTransaction();
-
-        assertEquals(Transaction.GatewayRejectionReason.APPLICATION_INCOMPLETE, transaction.getGatewayRejectionReason());
-    }
-
-    @Test
     public void fieldsWithUnrecognizedValuesAreCategorizedAsSuch() {
       Transaction transaction = gateway.transaction().find("unrecognized_transaction_id");
 
