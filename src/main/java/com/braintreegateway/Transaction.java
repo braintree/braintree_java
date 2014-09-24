@@ -129,6 +129,7 @@ public class Transaction {
     private String processorResponseText;
     private String processorSettlementResponseCode;
     private String processorSettlementResponseText;
+    private String additionalProcessorResponse;
     private String voiceReferralNumber;
     private String purchaseOrderNumber;
     private Boolean recurring;
@@ -178,6 +179,7 @@ public class Transaction {
         processorResponseText = node.findString("processor-response-text");
         processorSettlementResponseCode = node.findString("processor-settlement-response-code");
         processorSettlementResponseText = node.findString("processor-settlement-response-text");
+        additionalProcessorResponse = node.findString("additional-processor-response");
         voiceReferralNumber = node.findString("voice-referral-number");
         purchaseOrderNumber = node.findString("purchase-order-number");
         recurring = node.findBoolean("recurring");
@@ -337,6 +339,11 @@ public class Transaction {
     public String getProcessorSettlementResponseText() {
         return processorSettlementResponseText;
     }
+
+    public String getAdditionalProcessorResponse() {
+        return additionalProcessorResponse;
+    }
+
     public String getVoiceReferralNumber() {
         return voiceReferralNumber;
     }

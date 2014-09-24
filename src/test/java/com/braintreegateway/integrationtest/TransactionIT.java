@@ -688,6 +688,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals(Transaction.Status.PROCESSOR_DECLINED, transaction.getStatus());
         assertEquals("2000", transaction.getProcessorResponseCode());
         assertNotNull(transaction.getProcessorResponseText());
+        assertEquals("2000 : Do Not Honor", transaction.getAdditionalProcessorResponse());
 
         CreditCard creditCard = transaction.getCreditCard();
         assertEquals("411111", creditCard.getBin());
