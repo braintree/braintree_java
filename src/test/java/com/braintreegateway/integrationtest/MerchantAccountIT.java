@@ -161,6 +161,7 @@ public class MerchantAccountIT {
         assertEquals("3125551212", merchantAccount.getFundingDetails().getMobilePhone());
         assertEquals("122100024", merchantAccount.getFundingDetails().getRoutingNumber());
         assertEquals("8799", merchantAccount.getFundingDetails().getAccountNumberLast4());
+        assertEquals("Job Leoggs OH", merchantAccount.getFundingDetails().getDescriptor());
     }
 
     @Test
@@ -328,6 +329,7 @@ public class MerchantAccountIT {
                 accountNumber("98479798799").
                 email("joe+funding@bloggs.com").
                 mobilePhone("3125551212").
+                descriptor("Job Leoggs OH").
                 done().
             tosAccepted(true).
             masterMerchantAccountId("sandbox_master_merchant_account");
