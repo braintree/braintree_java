@@ -8,6 +8,7 @@ public class FundingRequest extends Request {
     private String mobilePhone;
     private String routingNumber;
     private String accountNumber;
+    private String descriptor;
     private MerchantAccountRequest parent;
 
     public FundingRequest(MerchantAccountRequest parent) {
@@ -39,6 +40,11 @@ public class FundingRequest extends Request {
         return this;
     }
 
+    public FundingRequest descriptor(String descriptor) {
+        this.descriptor = descriptor;
+        return this;
+    }
+
     public MerchantAccountRequest done() {
         return this.parent;
     }
@@ -64,6 +70,7 @@ public class FundingRequest extends Request {
                 addElement("email", email).
                 addElement("mobilePhone", mobilePhone).
                 addElement("routingNumber", routingNumber).
-                addElement("accountNumber", accountNumber);
+                addElement("accountNumber", accountNumber).
+                addElement("descriptor", descriptor);
     }
 }
