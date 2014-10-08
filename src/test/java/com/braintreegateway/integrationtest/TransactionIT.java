@@ -3226,7 +3226,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
         Result<Transaction> submitForSettlementResult = gateway.transaction().submitForSettlement(saleResult.getTarget().getId());
         assertTrue(submitForSettlementResult.isSuccess());
-        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
+        assertEquals(Transaction.Status.SETTLING, submitForSettlementResult.getTarget().getStatus());
     }
 
     @Test
