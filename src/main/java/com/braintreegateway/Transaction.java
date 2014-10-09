@@ -123,6 +123,7 @@ public class Transaction {
     private String merchantAccountId;
     private String orderId;
     private PayPalDetails paypalDetails;
+    private ApplePayDetails applePayDetails;
     private String planId;
     private String processorAuthorizationCode;
     private String processorResponseCode;
@@ -172,6 +173,10 @@ public class Transaction {
         NodeWrapper paypalNode = node.findFirst("paypal");
         if (paypalNode != null) {
             paypalDetails = new PayPalDetails(paypalNode);
+        }
+        NodeWrapper applePayNode = node.findFirst("apple-pay");
+        if (applePayNode != null) {
+            applePayDetails = new ApplePayDetails(applePayNode);
         }
         planId = node.findString("plan-id");
         processorAuthorizationCode = node.findString("processor-authorization-code");
@@ -314,6 +319,10 @@ public class Transaction {
 
     public PayPalDetails getPayPalDetails() {
         return paypalDetails;
+    }
+
+    public ApplePayDetails getApplePayDetails() {
+        return applePayDetails;
     }
 
     public String getPlanId() {

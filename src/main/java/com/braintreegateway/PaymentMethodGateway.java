@@ -38,6 +38,8 @@ public class PaymentMethodGateway {
             return new CreditCard(response);
         } else if (response.getElementName() == "sepa-bank-account") {
             return new SEPABankAccount(response);
+        } else if (response.getElementName() == "apple-pay-card") {
+            return new ApplePayCard(response);
         } else {
             return new UnknownPaymentMethod(response);
         }
@@ -50,6 +52,8 @@ public class PaymentMethodGateway {
             return new Result<CreditCard>(response, CreditCard.class);
         } else if (response.getElementName() == "sepa-bank-account") {
             return new Result<SEPABankAccount>(response, SEPABankAccount.class);
+        } else if (response.getElementName() == "apple-pay-card") {
+            return new Result<ApplePayCard>(response, ApplePayCard.class);
         } else {
             return new Result<UnknownPaymentMethod>(response, UnknownPaymentMethod.class);
         }

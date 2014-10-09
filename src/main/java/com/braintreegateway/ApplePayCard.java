@@ -5,42 +5,57 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.ArrayList;
 
-public class PayPalAccount implements PaymentMethod {
-    private String email;
+public class ApplePayCard implements PaymentMethod {
+    private String imageUrl;
     private String token;
     private boolean isDefault;
-    private String imageUrl;
+    private String cardType;
+    private String last4;
+    private String expirationMonth;
+    private String expirationYear;
     private Calendar createdAt;
     private Calendar updatedAt;
     private List<Subscription> subscriptions;
 
-    public PayPalAccount(NodeWrapper node) {
-        this.email = node.findString("email");
+    public ApplePayCard(NodeWrapper node) {
         this.token = node.findString("token");
-        this.isDefault = node.findBoolean("default");
         this.imageUrl = node.findString("image-url");
+        this.isDefault = node.findBoolean("default");
+        this.cardType = node.findString("card-type");
+        this.last4 = node.findString("last-4");
+        this.expirationMonth = node.findString("expiraiton-month");
+        this.expirationYear = node.findString("expiration-year");
         this.createdAt = node.findDateTime("created-at");
         this.updatedAt = node.findDateTime("updated-at");
         this.subscriptions = new ArrayList<Subscription>();
         for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
             this.subscriptions.add(new Subscription(subscriptionResponse));
         }
-    }
 
-    public String getEmail() {
-        return email;
     }
 
     public String getToken() {
         return token;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
     public boolean isDefault() {
         return isDefault;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getCardType() {
+        return cardType;
+    }
+
+    public String getExpirationMonth() {
+        return expirationMonth;
+    }
+
+    public String getExpirationYear() {
+        return expirationYear;
     }
 
     public Calendar getCreatedAt() {

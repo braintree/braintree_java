@@ -43,6 +43,55 @@ public class PaymentMethodIT {
     }
 
     @Test
+    public void createApplePayCardFromNonce() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = SandboxValues.PaymentMethodNonce.APPLE_PAY_AMEX.nonce;
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+        assertNotNull(paymentMethod.getToken());
+        assertNotNull(paymentMethod.getImageUrl());
+
+        ApplePayCard applePayCard = (ApplePayCard) paymentMethod;
+        assertNotNull(applePayCard.getCardType());
+        assertNotNull(applePayCard.getCreatedAt());
+        assertNotNull(applePayCard.getUpdatedAt());
+        assertNotNull(applePayCard.getSubscriptions());
+        assertTrue(applePayCard.getSubscriptions().isEmpty());
+    }
+
+    @Test
+    public void createApplePayCardFromNonceWithDefault() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = SandboxValues.PaymentMethodNonce.APPLE_PAY_AMEX.nonce;
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce).
+            options().
+                makeDefault(true).
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+        assertNotNull(paymentMethod.getToken());
+        assertNotNull(paymentMethod.getImageUrl());
+        assertTrue(paymentMethod.isDefault());
+    }
+
+    @Test
     public void createPaymentMethodAndMakeDefault() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
