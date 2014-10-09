@@ -617,7 +617,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        assertEquals("apple_pay", transaction.getPaymentInstrumentType());
+        assertEquals("apple_pay_card", transaction.getPaymentInstrumentType());
         assertNotNull(transaction.getApplePayDetails());
         assertNotNull(transaction.getApplePayDetails().getCardType());
         assertNotNull(transaction.getApplePayDetails().getExpirationMonth());
