@@ -1,3 +1,7 @@
+## 2.35.0
+
+* Allow descriptor to be passed in Funding Details options params for Merchant Account create and update.
+
 ## 2.34.0
 
 * Add additionalProcessorResponse to transaction

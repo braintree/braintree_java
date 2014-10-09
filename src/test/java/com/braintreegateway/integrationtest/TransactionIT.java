@@ -606,6 +606,26 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void saleWithApplePayNonce() {
+        String applePayNonce = SandboxValues.PaymentMethodNonce.APPLE_PAY_AMEX.nonce;
+
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(applePayNonce);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals("apple_pay", transaction.getPaymentInstrumentType());
+        assertNotNull(transaction.getApplePayDetails());
+        assertNotNull(transaction.getApplePayDetails().getCardType());
+        assertNotNull(transaction.getApplePayDetails().getExpirationMonth());
+        assertNotNull(transaction.getApplePayDetails().getExpirationYear());
+        assertNotNull(transaction.getApplePayDetails().getCardholderName());
+    }
+
+    @Test
     public void saleWithThreeDSecureToken() {
         String threeDSecureToken = TestHelper.createTest3DS(gateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
             number(CreditCardNumber.VISA.number).
@@ -3226,7 +3246,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
         Result<Transaction> submitForSettlementResult = gateway.transaction().submitForSettlement(saleResult.getTarget().getId());
         assertTrue(submitForSettlementResult.isSuccess());
-        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
+        assertEquals(Transaction.Status.SETTLING, submitForSettlementResult.getTarget().getStatus());
     }
 
     @Test

@@ -9,6 +9,7 @@ public final class FundingDetails {
     private final String mobilePhone;
     private final String routingNumber;
     private final String accountNumberLast4;
+    private final String descriptor;
 
     public FundingDetails(NodeWrapper node) {
         destination = EnumUtils.findByName(MerchantAccount.FundingDestination.class, node.findString("destination"));
@@ -16,6 +17,7 @@ public final class FundingDetails {
         mobilePhone = node.findString("mobile-phone");
         routingNumber = node.findString("routing-number");
         accountNumberLast4 = node.findString("account-number-last-4");
+        descriptor = node.findString("descriptor");
     }
 
     public String getEmail() {
@@ -36,5 +38,9 @@ public final class FundingDetails {
 
     public MerchantAccount.FundingDestination getDestination() {
         return destination;
+    }
+
+    public String getDescriptor() {
+        return descriptor;
     }
 }
