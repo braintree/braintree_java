@@ -1,3 +1,7 @@
+## 2.36.0
+
+* ApplePay support
+
 ## 2.35.0
 
 * Allow descriptor to be passed in Funding Details options params for Merchant Account create and update.
