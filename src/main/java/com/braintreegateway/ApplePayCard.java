@@ -23,7 +23,7 @@ public class ApplePayCard implements PaymentMethod {
         this.isDefault = node.findBoolean("default");
         this.cardType = node.findString("card-type");
         this.last4 = node.findString("last-4");
-        this.expirationMonth = node.findString("expiraiton-month");
+        this.expirationMonth = node.findString("expiration-month");
         this.expirationYear = node.findString("expiration-year");
         this.createdAt = node.findDateTime("created-at");
         this.updatedAt = node.findDateTime("updated-at");
