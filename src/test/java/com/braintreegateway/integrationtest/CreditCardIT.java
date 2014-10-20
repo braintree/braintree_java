@@ -872,51 +872,6 @@ public class CreditCardIT implements MerchantAccountTestConstants {
     }
 
     @Test
-    public void fromLockedNonce() {
-        ClientTokenRequest request = new ClientTokenRequest();
-        String encodedClientToken = gateway.clientToken().generate(request);
-        String clientToken = TestHelper.decodeClientToken(encodedClientToken);
-
-        String authorizationFingerprint = TestHelper.extractParamFromJson("authorizationFingerprint", clientToken);
-        String url = gateway.baseMerchantURL() + "/client_api/nonces.json";
-        QueryString payload = new QueryString();
-        payload.append("authorization_fingerprint", authorizationFingerprint).
-            append("shared_customer_identifier_type", "testing").
-            append("shared_customer_identifier", "test-identifier").
-            append("credit_card[number]", "4012888888881881").
-            append("credit_card[expiration_month]", "11").
-            append("credit_card[expiration_year]", "2099").
-            append("share", "true");
-
-        try {
-            HttpHelper.post(url, payload.toString());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        payload = new QueryString();
-        payload.append("authorization_fingerprint", authorizationFingerprint).
-            append("shared_customer_identifier_type", "testing").
-            append("shared_customer_identifier", "test-identifier");
-
-        String responseBody;
-        try {
-            responseBody = HttpHelper.get(url + "?" + payload.toString());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        String nonce = TestHelper.extractParamFromJson("nonce", responseBody);
-
-        try {
-            gateway.creditCard().fromNonce(nonce);
-            fail("Should throw NotFoundException");
-        } catch (NotFoundException e) {
-            assertTrue(e.getMessage().matches(".*locked.*"));
-        }
-    }
-
-    @Test
     public void forward() {
         BraintreeGateway forwardGateway = new BraintreeGateway(
             Environment.DEVELOPMENT,
