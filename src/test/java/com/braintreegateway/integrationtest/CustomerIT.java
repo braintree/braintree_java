@@ -3,6 +3,7 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.test.Nonce;
 import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Before;
@@ -473,6 +474,22 @@ public class CustomerIT {
         } catch (NotFoundException e) {
         }
 
+    }
+
+    @Test
+    public void findWithApplePayCard() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.ApplePayVisa);
+        Customer customer = gateway.customer().create(request).getTarget();
+
+        Customer foundCustomer = gateway.customer().find(customer.getId());
+        assertEquals(customer.getId(), foundCustomer.getId());
+        assertNotNull(foundCustomer.getApplePayCards());
+        assertEquals(1, foundCustomer.getApplePayCards().size());
+        ApplePayCard card = foundCustomer.getApplePayCards().get(0);
+        assertNotNull(card);
+        assertNotNull(card.getExpirationMonth());
+        assertEquals(1, foundCustomer.getPaymentMethods().size());
     }
 
     @Test
