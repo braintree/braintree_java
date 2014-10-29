@@ -29,6 +29,7 @@ public class TransactionRequest extends Request {
     private String shippingAddressId;
     private String billingAddressId;
     private TransactionDescriptorRequest descriptorRequest;
+    private TransactionIndustryRequest industryRequest;
     private TransactionAddressRequest shippingAddressRequest;
     private TransactionOptionsRequest transactionOptionsRequest;
     private BigDecimal taxAmount;
@@ -109,6 +110,11 @@ public class TransactionRequest extends Request {
     public TransactionDescriptorRequest descriptor() {
         descriptorRequest = new TransactionDescriptorRequest(this);
         return descriptorRequest;
+    }
+
+    public TransactionIndustryRequest industry() {
+        industryRequest = new TransactionIndustryRequest(this);
+        return industryRequest;
     }
 
     @Override
@@ -226,6 +232,7 @@ public class TransactionRequest extends Request {
             addElement("paypalAccount", paypalRequest).
             addElement("customer", customerRequest).
             addElement("descriptor", descriptorRequest).
+            addElement("industry", industryRequest).
             addElement("billing", billingAddressRequest).
             addElement("shipping", shippingAddressRequest).
             addElement("options", transactionOptionsRequest).

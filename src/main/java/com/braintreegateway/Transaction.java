@@ -83,6 +83,22 @@ public class Transaction {
         AUTHORIZATION_EXPIRED, AUTHORIZED, AUTHORIZING, FAILED, GATEWAY_REJECTED, PROCESSOR_DECLINED, SETTLED, SETTLEMENT_CONFIRMED, SETTLEMENT_DECLINED, SETTLEMENT_PENDING, SETTLING, SUBMITTED_FOR_SETTLEMENT, UNRECOGNIZED, VOIDED;
     }
 
+    public enum IndustryType {
+        LODGING("lodging"),
+        TRAVEL_CRUISE("travel_cruise");
+
+        private final String name;
+
+        IndustryType(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
     public enum Type {
         CREDIT("credit"),
         SALE("sale"),
