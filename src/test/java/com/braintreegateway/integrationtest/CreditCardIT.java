@@ -1040,6 +1040,24 @@ public class CreditCardIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void verifyValidCreditCardWithCustomVerificationAmount() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("4111111111111111").
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                verificationAmount("1.02").
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
     public void verifyCreditCardAgainstSpecificMerchantAccount() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
