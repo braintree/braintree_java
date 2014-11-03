@@ -607,7 +607,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
     @Test
     public void saleWithApplePayNonce() {
-        String applePayNonce = SandboxValues.PaymentMethodNonce.APPLE_PAY_AMEX.nonce;
+        String applePayNonce = Nonce.ApplePayAmex;
 
         TransactionRequest request = new TransactionRequest().
             amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
