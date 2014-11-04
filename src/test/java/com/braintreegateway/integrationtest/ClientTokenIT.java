@@ -151,17 +151,6 @@ public class ClientTokenIT {
     }
 
     @Test
-    public void gatewayAcceptsMerchantAccountId() {
-        ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
-            .merchantAccountId("my_merchant_account");
-        String encodedClientToken = gateway.clientToken().generate(clientTokenRequest);
-        String clientToken = TestHelper.decodeClientToken(encodedClientToken);
-        String merchantAccountId = TestHelper.extractParamFromJson("merchantAccountId", clientToken);
-
-        assertEquals("my_merchant_account", merchantAccountId);
-    }
-
-    @Test
     public void gatewayRespectsVerifyCard() {
         CustomerRequest customerRequest = new CustomerRequest();
         Result<Customer> result = gateway.customer().create(customerRequest);
