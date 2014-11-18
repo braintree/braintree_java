@@ -32,8 +32,8 @@ public class WebhookTestingGateway {
     public HashMap<String, String> sampleNotification(WebhookNotification.Kind kind, String id) {
         HashMap<String, String> response = new HashMap<String, String>();
         String payload = buildPayload(kind, id);
-        response.put("payload", payload);
-        response.put("signature", publicKeySignaturePair(payload));
+        response.put("bt_payload", payload);
+        response.put("bt_signature", publicKeySignaturePair(payload));
 
         return response;
     }
