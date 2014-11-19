@@ -11,6 +11,7 @@ public class TransactionIndustryDataRequest extends Request {
     private String lodgingCheckInDate;
     private String lodgingCheckOutDate;
     private String lodgingName;
+    private String roomRate;
 
     public TransactionIndustryDataRequest(IndustryRequest parent) {
         this.parent = (TransactionIndustryRequest) parent;
@@ -35,20 +36,29 @@ public class TransactionIndustryDataRequest extends Request {
         this.travelPackage = travelPackage;
         return this;
     }
+
     public TransactionIndustryDataRequest departureDate(String departureDate){
         this.departureDate = departureDate;
         return this;
     }
+
     public TransactionIndustryDataRequest lodgingCheckInDate(String lodgingCheckInDate){
         this.lodgingCheckInDate = lodgingCheckInDate;
         return this;
     }
+
     public TransactionIndustryDataRequest lodgingCheckOutDate(String lodgingCheckOutDate){
         this.lodgingCheckOutDate = lodgingCheckOutDate;
         return this;
     }
+
     public TransactionIndustryDataRequest lodgingName(String lodgingName){
         this.lodgingName = lodgingName;
+        return this;
+    }
+
+    public TransactionIndustryDataRequest roomRate(String roomRate){
+        this.roomRate = roomRate;
         return this;
     }
 
@@ -71,7 +81,8 @@ public class TransactionIndustryDataRequest extends Request {
                 addElement("departureDate", departureDate).
                 addElement("lodgingCheckInDate", lodgingCheckInDate).
                 addElement("lodgingCheckOutDate", lodgingCheckOutDate).
-                addElement("lodgingName", lodgingName);
+                addElement("lodgingName", lodgingName).
+                addElement("roomRate", roomRate);
     }
 
     public TransactionIndustryRequest done() {

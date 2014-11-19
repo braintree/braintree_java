@@ -1078,6 +1078,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
                         folioNumber("aaa").
                         checkInDate("2014-07-07").
                         checkOutDate("2014-08-08").
+                        roomRate("2.00").
                         done().
                     done();
 
