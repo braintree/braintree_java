@@ -25,6 +25,7 @@ public class CreditCardVerification {
     private CreditCard creditCard;
     private Address billingAddress;
     private Calendar createdAt;
+    private RiskData riskData;
 
     public CreditCardVerification(NodeWrapper node) {
         this.avsErrorResponseCode = node.findString("avs-error-response-code");
@@ -37,8 +38,22 @@ public class CreditCardVerification {
         this.merchantAccountId = node.findString("merchant-account-id");
         this.status = EnumUtils.findByName(Status.class, node.findString("status"));
         this.id = node.findString("id");
-        this.creditCard = new CreditCard(node.findFirst("credit-card"));
-        this.billingAddress = new Address(node.findFirst("billing"));
+
+        NodeWrapper riskDataNode = node.findFirst("risk-data");
+        if (riskDataNode != null) {
+            this.riskData = new RiskData(riskDataNode);
+        }
+
+        NodeWrapper creditCardNode = node.findFirst("credit-card");
+        if(creditCardNode != null) {
+            this.creditCard = new CreditCard(creditCardNode);
+        }
+
+        NodeWrapper billingAddressNode = node.findFirst("billing");
+        if(billingAddressNode != null) {
+            this.billingAddress = new Address(billingAddressNode);
+        }
+
         this.createdAt = node.findDateTime("created-at");
     }
 
@@ -72,6 +87,11 @@ public class CreditCardVerification {
 
     public String getId() {
         return id;
+    }
+
+    public RiskData getRiskData(){
+        return riskData;
+
     }
 
     public GatewayRejectionReason getGatewayRejectionReason() {

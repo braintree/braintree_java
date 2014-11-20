@@ -217,6 +217,23 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void saleReturnsRiskData() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertNotNull(transaction.getRiskData());
+        assertNotNull(transaction.getRiskData().getDecision());
+    }
+
+    @Test
     public void saleWithCardTypeIndicators() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).

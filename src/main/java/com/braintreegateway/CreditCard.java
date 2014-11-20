@@ -5,6 +5,8 @@ import com.braintreegateway.util.NodeWrapper;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Comparator;
+import java.util.Collections;
 
 public class CreditCard implements PaymentMethod {
     public static final String VALUE_YES = "Yes";
@@ -181,6 +183,7 @@ public class CreditCard implements PaymentMethod {
     private List<Subscription> subscriptions;
     private String token;
     private Calendar updatedAt;
+    private CreditCardVerification verification;
 
     public CreditCard(NodeWrapper node) {
         token = node.findString("token");
@@ -216,6 +219,26 @@ public class CreditCard implements PaymentMethod {
         for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
             subscriptions.add(new Subscription(subscriptionResponse));
         }
+
+        final List<NodeWrapper> verificationNodes = node.findAll("verifications/verification");
+        verification = findNewestVerification(verificationNodes);
+    }
+
+    private CreditCardVerification findNewestVerification(List<NodeWrapper> verificationNodes) {
+        if(verificationNodes.size() > 0) {
+            Collections.sort(verificationNodes, new Comparator<NodeWrapper>() {
+                public int compare(NodeWrapper node1, NodeWrapper node2) {
+                    Calendar createdAt1 = node1.findDateTime("created-at");
+                    Calendar createdAt2 = node2.findDateTime("created-at");
+
+                    return createdAt2.compareTo(createdAt1);
+                }
+            });
+
+            return new CreditCardVerification(verificationNodes.get(0));
+        }
+
+        return null;
     }
 
     public Address getBillingAddress() {
@@ -372,5 +395,9 @@ public class CreditCard implements PaymentMethod {
 
     public boolean isExpired() {
         return isExpired;
+    }
+
+    public CreditCardVerification getVerification() {
+        return verification;
     }
 }

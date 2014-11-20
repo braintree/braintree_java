@@ -165,6 +165,7 @@ public class Transaction {
     private Calendar updatedAt;
     private BigDecimal serviceFeeAmount;
     private String paymentInstrumentType;
+    private RiskData riskData;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -206,6 +207,12 @@ public class Transaction {
         recurring = node.findBoolean("recurring");
         refundedTransactionId = node.findString("refunded-transaction-id");
         refundId = node.findString("refund-id");
+
+        NodeWrapper riskDataNode = node.findFirst("risk-data");
+        if (riskDataNode != null) {
+            riskData = new RiskData(riskDataNode);
+        }
+
         serviceFeeAmount = node.findBigDecimal("service-fee-amount");
         settlementBatchId = node.findString("settlement-batch-id");
         shippingAddress = new Address(node.findFirst("shipping"));
@@ -391,6 +398,10 @@ public class Transaction {
 
     public List<String> getRefundIds() {
         return refundIds;
+    }
+
+    public RiskData getRiskData() {
+        return riskData;
     }
 
     public BigDecimal getServiceFeeAmount() {
