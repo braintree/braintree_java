@@ -5,6 +5,7 @@ import java.util.Random;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.test.Nonce;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,7 +49,7 @@ public class PaymentMethodIT {
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
 
-        String nonce = SandboxValues.PaymentMethodNonce.APPLE_PAY_AMEX.nonce;
+        String nonce = Nonce.ApplePayAmex;
         PaymentMethodRequest request = new PaymentMethodRequest().
             customerId(customer.getId()).
             paymentMethodNonce(nonce);
@@ -76,7 +77,7 @@ public class PaymentMethodIT {
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
 
-        String nonce = SandboxValues.PaymentMethodNonce.APPLE_PAY_AMEX.nonce;
+        String nonce = Nonce.ApplePayAmex;
         PaymentMethodRequest request = new PaymentMethodRequest().
             customerId(customer.getId()).
             paymentMethodNonce(nonce).
@@ -91,6 +92,23 @@ public class PaymentMethodIT {
         assertNotNull(paymentMethod.getToken());
         assertNotNull(paymentMethod.getImageUrl());
         assertTrue(paymentMethod.isDefault());
+    }
+
+    @Test
+    public void createAbstractPaymentMethod() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(Nonce.AbstractTransactable);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+        assertNotNull(paymentMethod.getToken());
+        assertNotNull(paymentMethod.getImageUrl());
     }
 
     @Test
@@ -404,6 +422,28 @@ public class PaymentMethodIT {
         assertNotNull(found);
         assertTrue(found instanceof CreditCard);
     }
+
+    @Test
+    public void findAbstractPaymentMethod() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(Nonce.AbstractTransactable);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+
+        PaymentMethod found = gateway.paymentMethod().find(paymentMethod.getToken());
+        assertNotNull(found);
+        assertNotNull(found.getToken());
+        assertEquals(found.getToken(), paymentMethod.getToken());
+    }
+
 
     @Test
     public void findBlankRaisesNotFoundError() {

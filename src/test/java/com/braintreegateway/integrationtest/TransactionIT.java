@@ -3,6 +3,7 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
+import com.braintreegateway.TestingGateway;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
@@ -13,7 +14,6 @@ import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
-import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -214,6 +214,23 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals("05", creditCard.getExpirationMonth());
         assertEquals("2009", creditCard.getExpirationYear());
         assertEquals("05/2009", creditCard.getExpirationDate());
+    }
+
+    @Test
+    public void saleReturnsRiskData() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertNotNull(transaction.getRiskData());
+        assertNotNull(transaction.getRiskData().getDecision());
     }
 
     @Test
@@ -607,7 +624,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
     @Test
     public void saleWithApplePayNonce() {
-        String applePayNonce = SandboxValues.PaymentMethodNonce.APPLE_PAY_AMEX.nonce;
+        String applePayNonce = Nonce.ApplePayAmex;
 
         TransactionRequest request = new TransactionRequest().
             amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
@@ -617,7 +634,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        assertEquals("apple_pay_card", transaction.getPaymentInstrumentType());
+        assertEquals(PaymentInstrumentType.APPLE_PAY_CARD, transaction.getPaymentInstrumentType());
         assertNotNull(transaction.getApplePayDetails());
         assertNotNull(transaction.getApplePayDetails().getCardType());
         assertNotNull(transaction.getApplePayDetails().getExpirationMonth());
@@ -1062,6 +1079,101 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
         assertEquals(ValidationErrorCode.DESCRIPTOR_URL_FORMAT_IS_INVALID,
                 result.getErrors().forObject("transaction").forObject("descriptor").onField("url").get(0).getCode());
+    }
+
+    @Test
+    public void saleWithLodgingIndustryData() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
+                    number(CreditCardNumber.VISA.number).
+                    expirationDate("05/2009").
+                    done().
+                industry().
+                    industryType(Transaction.IndustryType.LODGING).
+                    data().
+                        folioNumber("aaa").
+                        checkInDate("2014-07-07").
+                        checkOutDate("2014-08-08").
+                        roomRate("2.00").
+                        done().
+                    done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void saleWithIndustryDataValidation() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
+                    number(CreditCardNumber.VISA.number).
+                    expirationDate("05/2009").
+                    done().
+                industry().
+                    industryType(Transaction.IndustryType.LODGING).
+                    data().
+                        folioNumber("aaa").
+                        checkInDate("2014-07-07").
+                        checkOutDate("2014-06-06").
+                        done().
+                    done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.INDUSTRY_DATA_LODGING_CHECK_OUT_DATE_MUST_FOLLOW_CHECK_IN_DATE,
+                result.getErrors().forObject("transaction").forObject("industry").onField("checkOutDate").get(0).getCode());
+    }
+
+    @Test
+    public void saleWithTravelCruiseIndustryData() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
+                    number(CreditCardNumber.VISA.number).
+                    expirationDate("05/2009").
+                    done().
+                industry().
+                    industryType(Transaction.IndustryType.TRAVEL_CRUISE).
+                    data().
+                        travelPackage("flight").
+                        departureDate("2014-07-07").
+                        lodgingCheckInDate("2014-07-07").
+                        lodgingCheckOutDate("2014-08-08").
+                        lodgingName("Disney").
+                        done().
+                    done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void saleWithTravelCruiseIndustryDataValidation() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
+                    number(CreditCardNumber.VISA.number).
+                    expirationDate("05/2009").
+                    done().
+                industry().
+                    industryType(Transaction.IndustryType.TRAVEL_CRUISE).
+                    data().
+                        travelPackage("plane").
+                        departureDate("2014-07-07").
+                        lodgingCheckInDate("2014-07-07").
+                        lodgingCheckOutDate("2014-08-08").
+                        lodgingName("Disney").
+                        done().
+                    done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.INDUSTRY_DATA_TRAVEL_CRUISE_TRAVEL_PACKAGE_IS_INVALID,
+                result.getErrors().forObject("transaction").forObject("industry").onField("travelPackage").get(0).getCode());
     }
 
     @Test

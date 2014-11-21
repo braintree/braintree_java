@@ -46,7 +46,7 @@ public class WebhookNotificationIT {
     public void createsSampleSubscriptionNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
 
-        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
 
         assertEquals(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, notification.getKind());
         assertEquals("my_id", notification.getSubscription().getId());
@@ -57,7 +57,7 @@ public class WebhookNotificationIT {
     public void createsSampleMerchantAccountApprovedNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_APPROVED, "my_id");
 
-        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
 
         assertEquals(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_APPROVED, notification.getKind());
         assertEquals("my_id", notification.getMerchantAccount().getId());
@@ -69,7 +69,7 @@ public class WebhookNotificationIT {
     public void createsSampleMerchantAccountDeclinedNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED, "my_id");
 
-        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
 
         assertEquals(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED, notification.getKind());
         assertEquals("my_id", notification.getMerchantAccount().getId());
@@ -81,7 +81,7 @@ public class WebhookNotificationIT {
     public void createsSampleMerchantAccountDeclinedNotificationWithErrorCodes() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED, "my_id");
 
-        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
 
         assertEquals(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED, notification.getKind());
         assertEquals("my_id", notification.getMerchantAccount().getId());
@@ -93,7 +93,7 @@ public class WebhookNotificationIT {
     public void createsSampleDisputeOpenedNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_OPENED, "my_id");
 
-        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
 
         assertEquals(WebhookNotification.Kind.DISPUTE_OPENED, notification.getKind());
         assertEquals("my_id", notification.getDispute().getId());
@@ -103,7 +103,7 @@ public class WebhookNotificationIT {
     public void createsSampleDisputeWonNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_WON, "my_id");
 
-        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
 
         assertEquals(WebhookNotification.Kind.DISPUTE_WON, notification.getKind());
         assertEquals("my_id", notification.getDispute().getId());
@@ -113,7 +113,7 @@ public class WebhookNotificationIT {
     public void createsSampleDisputeLostNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_LOST, "my_id");
 
-        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
 
         assertEquals(WebhookNotification.Kind.DISPUTE_LOST, notification.getKind());
         assertEquals("my_id", notification.getDispute().getId());
@@ -124,7 +124,7 @@ public class WebhookNotificationIT {
     public void invalidSignatureRaisesException() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
 
-        this.gateway.webhookNotification().parse(sampleNotification.get("signature") + "bad_stuff", sampleNotification.get("payload"));
+        this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature") + "bad_stuff", sampleNotification.get("bt_payload"));
     }
 
     @Test
@@ -132,7 +132,7 @@ public class WebhookNotificationIT {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
 
         try {
-          this.gateway.webhookNotification().parse("unknown_public_key|signature", sampleNotification.get("payload"));
+          this.gateway.webhookNotification().parse("unknown_public_key|signature", sampleNotification.get("bt_payload"));
           fail("Should have throw exception, but did not.");
         }
         catch(final InvalidSignatureException e)
@@ -147,7 +147,7 @@ public class WebhookNotificationIT {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
 
         try {
-          this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload").trim());
+          this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload").trim());
         }
         catch(final InvalidSignatureException e)
         {
@@ -160,7 +160,7 @@ public class WebhookNotificationIT {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
 
         try {
-          this.gateway.webhookNotification().parse(sampleNotification.get("signature"), "badstuff" + sampleNotification.get("payload"));
+          this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), "badstuff" + sampleNotification.get("bt_payload"));
           fail("Should have throw exception, but did not.");
         }
         catch(final InvalidSignatureException e)
@@ -175,7 +175,7 @@ public class WebhookNotificationIT {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
 
         try {
-          this.gateway.webhookNotification().parse(sampleNotification.get("signature"), "~*~* Invalid! *~*~");
+          this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), "~*~* Invalid! *~*~");
           fail("Should have throw exception, but did not.");
         }
         catch(final InvalidSignatureException e)
@@ -190,7 +190,7 @@ public class WebhookNotificationIT {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
 
         try {
-          this.gateway.webhookNotification().parse(sampleNotification.get("signature"), "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+=/\n");
+          this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+=/\n");
           fail("Should have throw exception, but did not.");
         }
         catch(final InvalidSignatureException e)
@@ -204,7 +204,7 @@ public class WebhookNotificationIT {
     public void createsSampleTransactionDisbursedNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.TRANSACTION_DISBURSED, "my_id");
 
-        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
 
         assertEquals(WebhookNotification.Kind.TRANSACTION_DISBURSED, notification.getKind());
         assertEquals("my_id", notification.getTransaction().getId());
@@ -217,7 +217,7 @@ public class WebhookNotificationIT {
     public void createsSampleDisbursementNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISBURSEMENT, "my_id");
 
-        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
 
         assertEquals(WebhookNotification.Kind.DISBURSEMENT, notification.getKind());
         assertEquals("my_id", notification.getDisbursement().getId());
@@ -232,7 +232,7 @@ public class WebhookNotificationIT {
     public void createsSampleDisbursementExceptionNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISBURSEMENT_EXCEPTION, "my_id");
 
-        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
 
         assertEquals(WebhookNotification.Kind.DISBURSEMENT_EXCEPTION, notification.getKind());
         assertEquals("my_id", notification.getDisbursement().getId());
@@ -250,7 +250,7 @@ public class WebhookNotificationIT {
             .sampleNotification(WebhookNotification.Kind.PARTNER_MERCHANT_CONNECTED, "my_id");
 
         WebhookNotification notification = this.gateway.webhookNotification()
-            .parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+            .parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
 
         assertEquals(WebhookNotification.Kind.PARTNER_MERCHANT_CONNECTED, notification.getKind());
         assertEquals("public_id", notification.getPartnerMerchant().getMerchantPublicId());
@@ -270,7 +270,7 @@ public class WebhookNotificationIT {
             .sampleNotification(WebhookNotification.Kind.PARTNER_MERCHANT_DECLINED, "my_id");
 
         WebhookNotification notification = this.gateway.webhookNotification()
-            .parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+            .parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
 
         assertEquals(WebhookNotification.Kind.PARTNER_MERCHANT_DECLINED, notification.getKind());
         assertEquals("abc123", notification.getPartnerMerchant().getPartnerMerchantId());
@@ -286,7 +286,7 @@ public class WebhookNotificationIT {
             .sampleNotification(WebhookNotification.Kind.PARTNER_MERCHANT_DISCONNECTED, "my_id");
 
         WebhookNotification notification = this.gateway.webhookNotification()
-            .parse(sampleNotification.get("signature"), sampleNotification.get("payload"));
+            .parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
 
         assertEquals(WebhookNotification.Kind.PARTNER_MERCHANT_DISCONNECTED, notification.getKind());
         assertEquals("abc123", notification.getPartnerMerchant().getPartnerMerchantId());

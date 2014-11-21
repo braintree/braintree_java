@@ -83,6 +83,22 @@ public class Transaction {
         AUTHORIZATION_EXPIRED, AUTHORIZED, AUTHORIZING, FAILED, GATEWAY_REJECTED, PROCESSOR_DECLINED, SETTLED, SETTLEMENT_CONFIRMED, SETTLEMENT_DECLINED, SETTLEMENT_PENDING, SETTLING, SUBMITTED_FOR_SETTLEMENT, UNRECOGNIZED, VOIDED;
     }
 
+    public enum IndustryType {
+        LODGING("lodging"),
+        TRAVEL_CRUISE("travel_cruise");
+
+        private final String name;
+
+        IndustryType(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
     public enum Type {
         CREDIT("credit"),
         SALE("sale"),
@@ -149,6 +165,7 @@ public class Transaction {
     private Calendar updatedAt;
     private BigDecimal serviceFeeAmount;
     private String paymentInstrumentType;
+    private RiskData riskData;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -190,6 +207,12 @@ public class Transaction {
         recurring = node.findBoolean("recurring");
         refundedTransactionId = node.findString("refunded-transaction-id");
         refundId = node.findString("refund-id");
+
+        NodeWrapper riskDataNode = node.findFirst("risk-data");
+        if (riskDataNode != null) {
+            riskData = new RiskData(riskDataNode);
+        }
+
         serviceFeeAmount = node.findBigDecimal("service-fee-amount");
         settlementBatchId = node.findString("settlement-batch-id");
         shippingAddress = new Address(node.findFirst("shipping"));
@@ -375,6 +398,10 @@ public class Transaction {
 
     public List<String> getRefundIds() {
         return refundIds;
+    }
+
+    public RiskData getRiskData() {
+        return riskData;
     }
 
     public BigDecimal getServiceFeeAmount() {

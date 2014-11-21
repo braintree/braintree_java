@@ -5,6 +5,7 @@ public class CreditCardOptionsRequest extends Request {
     private String verificationMerchantAccountId;
     private Boolean failOnDuplicatePaymentMethod;
     private Boolean verifyCard;
+    private String verificationAmount;
     private Boolean makeDefault;
     private String updateExistingToken;
     private String venmoSdkSession;
@@ -24,6 +25,11 @@ public class CreditCardOptionsRequest extends Request {
 
     public CreditCardOptionsRequest failOnDuplicatePaymentMethod(Boolean failOnDuplicatePaymentMethod) {
         this.failOnDuplicatePaymentMethod = failOnDuplicatePaymentMethod;
+        return this;
+    }
+
+    public CreditCardOptionsRequest verificationAmount(String verificationAmount) {
+        this.verificationAmount = verificationAmount;
         return this;
     }
 
@@ -67,6 +73,7 @@ public class CreditCardOptionsRequest extends Request {
 
         builder.addElement("failOnDuplicatePaymentMethod", failOnDuplicatePaymentMethod);
         builder.addElement("verifyCard", verifyCard);
+        builder.addElement("verificationAmount", verificationAmount);
         builder.addElement("verificationMerchantAccountId", verificationMerchantAccountId);
         if (makeDefault != null && makeDefault.booleanValue()) {
             builder.addElement("makeDefault", makeDefault);
