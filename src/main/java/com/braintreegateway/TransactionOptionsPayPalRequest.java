@@ -2,6 +2,7 @@ package com.braintreegateway;
 
 public class TransactionOptionsPayPalRequest extends Request {
     private TransactionOptionsRequest parent;
+    private String customField;
     private String payeeEmail;
 
     public TransactionOptionsPayPalRequest(TransactionOptionsRequest parent) {
@@ -10,6 +11,11 @@ public class TransactionOptionsPayPalRequest extends Request {
 
     public TransactionOptionsRequest done() {
         return parent;
+    }
+
+    public TransactionOptionsPayPalRequest customField(String customField) {
+        this.customField = customField;
+        return this;
     }
 
     public TransactionOptionsPayPalRequest payeeEmail(String payeeEmail) {
@@ -34,6 +40,7 @@ public class TransactionOptionsPayPalRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
+            addElement("customField", customField).
             addElement("payeeEmail", payeeEmail);
     }
 }
