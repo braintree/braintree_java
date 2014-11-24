@@ -10,6 +10,7 @@ public class TransactionOptionsRequest extends Request {
     private Boolean submitForSettlement;
     private String venmoSdkSession;
     private String payeeEmail;
+    private TransactionOptionsPayPalRequest transactionOptionsPayPalRequest;
 
     public TransactionOptionsRequest(TransactionRequest parent) {
         this.parent = parent;
@@ -59,6 +60,11 @@ public class TransactionOptionsRequest extends Request {
         return this;
     }
 
+    public TransactionOptionsPayPalRequest paypal() {
+        transactionOptionsPayPalRequest = new TransactionOptionsPayPalRequest(this);
+        return transactionOptionsPayPalRequest;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("options").toXML();
@@ -83,6 +89,7 @@ public class TransactionOptionsRequest extends Request {
             addElement("storeShippingAddressInVault", storeShippingAddressInVault).
             addElement("submitForSettlement", submitForSettlement).
             addElement("venmoSdkSession", venmoSdkSession).
-            addElement("payeeEmail", payeeEmail);
+            addElement("payeeEmail", payeeEmail).
+            addElement("paypal", transactionOptionsPayPalRequest);
     }
 }
