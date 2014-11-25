@@ -10,7 +10,8 @@ public final class Dispute {
     public enum Status {
         OPEN,
         LOST,
-        WON;
+        WON,
+        UNRECOGNIZED;
     }
 
     public enum Reason {
@@ -23,7 +24,8 @@ public final class Dispute {
         NOT_RECOGNIZED,
         PRODUCT_NOT_RECEIVED,
         PRODUCT_UNSATISFACTORY,
-        TRANSACTION_AMOUNT_DIFFERS;
+        TRANSACTION_AMOUNT_DIFFERS,
+        RETRIEVAL;
     }
 
     private final Calendar receivedDate;
@@ -39,8 +41,8 @@ public final class Dispute {
         receivedDate = node.findDate("received-date");
         replyByDate = node.findDate("reply-by-date");
         currencyIsoCode = node.findString("currency-iso-code");
-        reason = EnumUtils.findByName(Reason.class, node.findString("reason"));
-        status = EnumUtils.findByName(Status.class, node.findString("status"));
+        reason = EnumUtils.findByName(Reason.class, node.findString("reason"), Reason.GENERAL);
+        status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);
         amount = node.findBigDecimal("amount");
         id = node.findString("id");
         transactionDetails = new TransactionDetails(node.findFirst("transaction"));

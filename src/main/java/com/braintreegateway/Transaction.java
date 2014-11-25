@@ -182,8 +182,8 @@ public class Transaction {
         cvvResponseCode = node.findString("cvv-response-code");
         disbursementDetails = new DisbursementDetails(node.findFirst("disbursement-details"));
         descriptor = new Descriptor(node.findFirst("descriptor"));
-        escrowStatus = EnumUtils.findByName(EscrowStatus.class, node.findString("escrow-status"));
-        gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"));
+        escrowStatus = EnumUtils.findByName(EscrowStatus.class, node.findString("escrow-status"), EscrowStatus.UNRECOGNIZED);
+        gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"), GatewayRejectionReason.UNRECOGNIZED);
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
         orderId = node.findString("order-id");
@@ -216,12 +216,12 @@ public class Transaction {
         serviceFeeAmount = node.findBigDecimal("service-fee-amount");
         settlementBatchId = node.findString("settlement-batch-id");
         shippingAddress = new Address(node.findFirst("shipping"));
-        status = EnumUtils.findByName(Status.class, node.findString("status"));
+        status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);
         subscription = new Subscription(node.findFirst("subscription"));
         subscriptionId = node.findString("subscription-id");
         taxAmount = node.findBigDecimal("tax-amount");
         taxExempt = node.findBoolean("tax-exempt");
-        type = EnumUtils.findByName(Type.class, node.findString("type"));
+        type = EnumUtils.findByName(Type.class, node.findString("type"), Type.UNRECOGNIZED);
         updatedAt = node.findDateTime("updated-at");
 
         refundIds = new ArrayList<String>();

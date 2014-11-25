@@ -1483,6 +1483,23 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void findWithRetrievals() throws Exception {
+        Calendar disputeCalendar = CalendarTestUtils.date("2014-03-01");
+        Calendar replyCalendar = CalendarTestUtils.date("2014-03-21");
+
+        Transaction foundTransaction = gateway.transaction().find("retrievaltransaction");
+        List<Dispute> disputes = foundTransaction.getDisputes();
+        Dispute dispute = disputes.get(0);
+
+        assertEquals("USD", dispute.getCurrencyIsoCode());
+        assertEquals(Dispute.Reason.RETRIEVAL, dispute.getReason());
+        assertEquals(Dispute.Status.OPEN, dispute.getStatus());
+        assertEquals(new BigDecimal("1000.00"), dispute.getAmount());
+        assertEquals(new BigDecimal("1000.00"), dispute.getTransactionDetails().getAmount());
+        assertEquals("retrievaltransaction", dispute.getTransactionDetails().getId());
+    }
+
+    @Test
     public void voidVoidsTheTransaction() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -3268,6 +3285,68 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
         assertNull(saleResult.getTarget().getPayPalDetails().getToken());
         assertEquals("payee@example.com", saleResult.getTarget().getPayPalDetails().getPayeeEmail());
+        assertEquals(
+            PaymentInstrumentType.PAYPAL_ACCOUNT,
+            saleResult.getTarget().getPaymentInstrumentType()
+        );
+    }
+
+    @Test
+    public void createPayPalTransactionWithPayeeEmailInOptionsPayPalParams() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce).
+            paypalAccount().
+              done().
+            options().
+              paypal().
+                payeeEmail("payee@example.com").
+                done().
+              done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getImageUrl());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
+        assertNull(saleResult.getTarget().getPayPalDetails().getToken());
+        assertEquals("payee@example.com", saleResult.getTarget().getPayPalDetails().getPayeeEmail());
+        assertEquals(
+            PaymentInstrumentType.PAYPAL_ACCOUNT,
+            saleResult.getTarget().getPaymentInstrumentType()
+        );
+    }
+
+    @Test
+    public void createPayPalTransactionWithPayPalCustomField() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce).
+            paypalAccount().
+              done().
+            options().
+              paypal().
+                customField("custom field stuff").
+                done().
+              done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getImageUrl());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
+        assertNull(saleResult.getTarget().getPayPalDetails().getToken());
+        assertEquals("custom field stuff", saleResult.getTarget().getPayPalDetails().getCustomField());
         assertEquals(
             PaymentInstrumentType.PAYPAL_ACCOUNT,
             saleResult.getTarget().getPaymentInstrumentType()
