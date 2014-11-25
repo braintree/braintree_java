@@ -97,10 +97,10 @@ public class Subscription {
         paymentMethodToken = node.findString("payment-method-token");
         planId = node.findString("plan-id");
         price = node.findBigDecimal("price");
-        status = EnumUtils.findByName(Status.class, node.findString("status"));
+        status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);
         hasTrialPeriod = node.findBoolean("trial-period");
         trialDuration = node.findInteger("trial-duration");
-        trialDurationUnit = EnumUtils.findByName(DurationUnit.class, node.findString("trial-duration-unit"));
+        trialDurationUnit = EnumUtils.findByName(DurationUnit.class, node.findString("trial-duration-unit"), DurationUnit.UNRECOGNIZED);
         transactions = new ArrayList<Transaction>();
         for (NodeWrapper transactionResponse : node.findAll("transactions/transaction")) {
             transactions.add(new Transaction(transactionResponse));

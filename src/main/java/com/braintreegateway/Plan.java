@@ -53,7 +53,7 @@ public class Plan {
         price = node.findBigDecimal("price");
         trialPeriod = node.findBoolean("trial-period");
         trialDuration = node.findInteger("trial-duration");
-        trialDurationUnit = EnumUtils.findByName(Plan.DurationUnit.class, node.findString("trial-duration-unit"));
+        trialDurationUnit = EnumUtils.findByName(Plan.DurationUnit.class, node.findString("trial-duration-unit"), Plan.DurationUnit.UNRECOGNIZED);
         updatedAt = node.findDateTime("updated-at");
     }
 

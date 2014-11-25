@@ -50,7 +50,7 @@ public class WebhookNotification {
     private PartnerMerchant partnerMerchant;
 
     public WebhookNotification(NodeWrapper node) {
-        this.kind = EnumUtils.findByName(Kind.class, node.findString("kind"));
+        this.kind = EnumUtils.findByName(Kind.class, node.findString("kind"), Kind.UNRECOGNIZED);
         this.timestamp = node.findDateTime("timestamp");
 
         NodeWrapper wrapperNode = node.findFirst("subject");

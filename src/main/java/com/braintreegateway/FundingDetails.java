@@ -12,7 +12,7 @@ public final class FundingDetails {
     private final String descriptor;
 
     public FundingDetails(NodeWrapper node) {
-        destination = EnumUtils.findByName(MerchantAccount.FundingDestination.class, node.findString("destination"));
+        destination = EnumUtils.findByName(MerchantAccount.FundingDestination.class, node.findString("destination"), MerchantAccount.FundingDestination.UNRECOGNIZED);
         email = node.findString("email");
         mobilePhone = node.findString("mobile-phone");
         routingNumber = node.findString("routing-number");

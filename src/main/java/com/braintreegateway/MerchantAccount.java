@@ -39,7 +39,7 @@ public class MerchantAccount {
 
     public MerchantAccount(NodeWrapper node) {
         this.id = node.findString("id");
-        this.status = EnumUtils.findByName(Status.class, node.findString("status"));
+        this.status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);
 
         NodeWrapper masterNode = node.findFirst("master-merchant-account");
         if (masterNode != null)

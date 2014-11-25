@@ -32,11 +32,11 @@ public class CreditCardVerification {
         this.avsPostalCodeResponseCode = node.findString("avs-postal-code-response-code");
         this.avsStreetAddressResponseCode = node.findString("avs-street-address-response-code");
         this.cvvResponseCode = node.findString("cvv-response-code");
-        this.gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"));
+        this.gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"), GatewayRejectionReason.UNRECOGNIZED);
         this.processorResponseCode = node.findString("processor-response-code");
         this.processorResponseText = node.findString("processor-response-text");
         this.merchantAccountId = node.findString("merchant-account-id");
-        this.status = EnumUtils.findByName(Status.class, node.findString("status"));
+        this.status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);
         this.id = node.findString("id");
 
         NodeWrapper riskDataNode = node.findFirst("risk-data");
