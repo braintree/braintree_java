@@ -1,4 +1,9 @@
-## 2.27.0
+## 2.38.0
+* Allow payee_email in transaction.options.paypal
+* Allow PayPal custom field on transaction create
+* Add support for Retrieval dispute reasons.
+
+## 2.37.0
 
 * Add risk_data to Transaction and Verification with Kount decision and id
 * Add verification_amount an option when creating a credit card
