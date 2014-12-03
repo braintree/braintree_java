@@ -83,7 +83,6 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
         assertTrue(expectedCreateUpdateDate.compareTo(subscription.getUpdatedAt()) < 0);
 
         assertEquals(Subscription.Status.ACTIVE, subscription.getStatusHistory().get(0).getStatus());
-        assertEquals(Subscription.Source.API, subscription.getStatusHistory().get(0).getSource());
         assertEquals(new BigDecimal("12.34"), subscription.getStatusHistory().get(0).getPrice());
         assertEquals(new BigDecimal("0.00"), subscription.getStatusHistory().get(0).getBalance());
 
