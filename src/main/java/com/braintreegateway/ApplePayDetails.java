@@ -7,14 +7,16 @@ public class ApplePayDetails {
     private String cardholderName;
     private String expirationMonth;
     private String expirationYear;
+    private String last4;
     private String token;
 
     public ApplePayDetails(NodeWrapper node) {
-        token = node.findString("token");
         cardType = node.findString("card-type");
         cardholderName = node.findString("cardholder-name");
         expirationMonth = node.findString("expiration-month");
         expirationYear = node.findString("expiration-year");
+        last4 = node.findString("last-4");
+        token = node.findString("token");
     }
 
     public String getToken() {
@@ -35,5 +37,9 @@ public class ApplePayDetails {
 
     public String getExpirationYear() {
         return expirationYear;
+    }
+
+    public String getLast4() {
+        return last4;
     }
 }
