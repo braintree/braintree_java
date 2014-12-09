@@ -68,6 +68,7 @@ public class PaymentMethodIT {
         assertNotNull(applePayCard.getExpirationMonth());
         assertNotNull(applePayCard.getExpirationYear());
         assertNotNull(applePayCard.getSubscriptions());
+        assertNotNull(applePayCard.getLast4());
         assertTrue(applePayCard.getSubscriptions().isEmpty());
     }
 
