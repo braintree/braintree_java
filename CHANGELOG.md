@@ -1,4 +1,4 @@
-## 2.39.0
+## 2.39.1
 * New validation error constants
 * Add ApplyPayDetails#getLast4
 * More searchs from CreditCardVerificationSearchRequest
