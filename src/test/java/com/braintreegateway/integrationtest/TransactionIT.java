@@ -640,6 +640,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(transaction.getApplePayDetails().getExpirationMonth());
         assertNotNull(transaction.getApplePayDetails().getExpirationYear());
         assertNotNull(transaction.getApplePayDetails().getCardholderName());
+        assertNotNull(transaction.getApplePayDetails().getLast4());
     }
 
     @Test

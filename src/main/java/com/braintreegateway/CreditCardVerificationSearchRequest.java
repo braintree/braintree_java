@@ -28,4 +28,20 @@ public class CreditCardVerificationSearchRequest extends SearchRequest {
     public DateRangeNode<CreditCardVerificationSearchRequest> createdAt() {
         return new DateRangeNode<CreditCardVerificationSearchRequest>("created_at", this);
     }
+
+    public MultipleValueNode<CreditCardVerificationSearchRequest, CreditCardVerification.Status> status() {
+        return new MultipleValueNode<CreditCardVerificationSearchRequest, CreditCardVerification.Status>("status", this);
+    }
+
+    public TextNode<CreditCardVerificationSearchRequest> billingPostalCode() {
+        return new TextNode<CreditCardVerificationSearchRequest>("billing_address_details_postal_code", this);
+    }
+
+    public TextNode<CreditCardVerificationSearchRequest> customerEmail() {
+        return new TextNode<CreditCardVerificationSearchRequest>("customer_email", this);
+    }
+
+    public TextNode<CreditCardVerificationSearchRequest> customerId() {
+        return new TextNode<CreditCardVerificationSearchRequest>("customer_id", this);
+    }
 }

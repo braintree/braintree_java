@@ -1,3 +1,8 @@
+## 2.39.0
+* New validation error constants
+* Add ApplyPayDetails#getLast4
+* More searchs from CreditCardVerificationSearchRequest
+
 ## 2.38.0
 * Allow payee_email in transaction.options.paypal
 * Allow PayPal custom field on transaction create

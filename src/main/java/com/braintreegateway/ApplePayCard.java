@@ -69,4 +69,8 @@ public class ApplePayCard implements PaymentMethod {
     public List<Subscription> getSubscriptions() {
         return subscriptions;
     }
+
+    public String getLast4() {
+        return last4;
+    }
 }

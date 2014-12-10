@@ -65,12 +65,11 @@ public class CreditCardVerificationIT {
     }
 
     @Test
-    public void searchOnAllTextFields() {
+    public void searchOnVerificationId() {
         CustomerRequest request = new CustomerRequest().
             creditCard().
                 number("4000111111111115").
                 expirationDate("11/12").
-                cardholderName("Tom Smith").
                 options().
                     verifyCard(true).
                     done().
@@ -81,15 +80,45 @@ public class CreditCardVerificationIT {
         CreditCardVerification verification = result.getCreditCardVerification();
 
         CreditCardVerificationSearchRequest searchRequest = new CreditCardVerificationSearchRequest().
-            id().is(verification.getId()).
-            creditCardCardholderName().is("Tom Smith").
-            creditCardExpirationDate().is("11/2012").
-            creditCardNumber().is("4000111111111115");
+            id().is(verification.getId());
 
         ResourceCollection<CreditCardVerification> collection = gateway.creditCardVerification().search(searchRequest);
 
         assertEquals(1, collection.getMaximumSize());
         assertEquals(verification.getId(), collection.getFirst().getId());
+    }
+
+    @Test
+    public void searchOnAllTextFields() {
+        CustomerRequest request = new CustomerRequest().
+            email("mark.a@example.com").
+            creditCard().
+                number("4111111111111111").
+                expirationDate("11/12").
+                cardholderName("Tom Smith").
+                billingAddress().
+                    postalCode("44444").
+                    done().
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        CreditCardVerification verification = result.getCreditCardVerification();
+
+        CreditCardVerificationSearchRequest searchRequest = new CreditCardVerificationSearchRequest().
+            customerId().is(result.getTarget().getId()).
+            creditCardCardholderName().is("Tom Smith").
+            creditCardExpirationDate().is("11/2012").
+            creditCardNumber().is("4111111111111111").
+            billingPostalCode().is("44444").
+            customerEmail().is("mark.a@example.com");
+
+        ResourceCollection<CreditCardVerification> collection = gateway.creditCardVerification().search(searchRequest);
+
+        assertEquals(result.getTarget().getCreditCards().get(0).getToken(), collection.getFirst().getCreditCard().getToken());
     }
 
     @Test
@@ -122,7 +151,8 @@ public class CreditCardVerificationIT {
 
         CreditCardVerificationSearchRequest searchRequest = new CreditCardVerificationSearchRequest().
             ids().in(verificationOne.getId(), verificationTwo.getId()).
-            creditCardCardType().in(CreditCard.CardType.VISA, CreditCard.CardType.MASTER_CARD);
+            creditCardCardType().in(CreditCard.CardType.VISA, CreditCard.CardType.MASTER_CARD).
+            status().in(verificationOne.getStatus(), verificationTwo.getStatus());
 
         ResourceCollection<CreditCardVerification> collection = gateway.creditCardVerification().search(searchRequest);
 
