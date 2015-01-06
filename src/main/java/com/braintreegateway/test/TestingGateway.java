@@ -1,5 +1,9 @@
-package com.braintreegateway;
+package com.braintreegateway.test;
 
+import com.braintreegateway.BraintreeGateway;
+import com.braintreegateway.Environment;
+import com.braintreegateway.Result;
+import com.braintreegateway.Transaction;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.TestOperationPerformedInProductionException;
 import com.braintreegateway.util.Http;

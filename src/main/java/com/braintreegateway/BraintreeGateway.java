@@ -1,6 +1,7 @@
 package com.braintreegateway;
 
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
+import com.braintreegateway.test.TestingGateway;
 import com.braintreegateway.util.ClientLibraryProperties;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.TrUtil;
