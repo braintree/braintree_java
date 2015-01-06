@@ -168,6 +168,10 @@ public class BraintreeGateway {
         return new PayPalAccountGateway(http);
     }
 
+    public CoinbaseAccountGateway coinbaseAccount() {
+        return new CoinbaseAccountGateway(http);
+    }
+
     /**
      * Returns an {@link PlanGateway} for interacting with {@link Plan} objects.
      *
