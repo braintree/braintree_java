@@ -1,5 +1,7 @@
 package com.braintreegateway.integrationtest;
 
+import java.util.List;
+
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.SandboxValues.TransactionAmount;
@@ -59,7 +61,7 @@ public class CoinbaseIT {
     @Rule public ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void canDeleteCoinbaseAccount() {
+    public void canVault() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
@@ -73,6 +75,10 @@ public class CoinbaseIT {
 
         PaymentMethod paymentMethodFindResult = gateway.paymentMethod().find(paymentMethodToken);
         assertNotNull(paymentMethodFindResult);
+
+        List<CoinbaseAccount> accounts = gateway.customer().find(customer.getId()).getCoinbaseAccounts();
+        assertEquals(1, accounts.size());
+        assertEquals(accounts.get(0).getToken(), paymentMethodToken);
 
         gateway.coinbaseAccount().delete(paymentMethodToken);
 
