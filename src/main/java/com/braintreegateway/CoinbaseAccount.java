@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class CoinbaseAccount implements PaymentMethod {
+    private String userId;
     private String userEmail;
     private String userName;
     private String token;
@@ -16,6 +17,7 @@ public class CoinbaseAccount implements PaymentMethod {
     private List<Subscription> subscriptions;
 
     public CoinbaseAccount(NodeWrapper node) {
+        this.userId = node.findString("user-id");
         this.userEmail = node.findString("user-email");
         this.userName = node.findString("user-name");
         this.token = node.findString("token");
@@ -27,6 +29,10 @@ public class CoinbaseAccount implements PaymentMethod {
         for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
             this.subscriptions.add(new Subscription(subscriptionResponse));
         }
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getUserEmail() {

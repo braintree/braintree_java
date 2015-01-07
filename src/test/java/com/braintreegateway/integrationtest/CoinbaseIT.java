@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 public class CoinbaseIT {
 
@@ -30,8 +31,16 @@ public class CoinbaseIT {
 
         Result<Transaction> authResult = gateway.transaction().sale(request);
         assertTrue(authResult.isSuccess());
-        assertNotNull(authResult.getTarget().getCoinbaseDetails());
-        assertNull(authResult.getTarget().getCoinbaseDetails().getToken());
+
+        CoinbaseDetails details = authResult.getTarget().getCoinbaseDetails();
+        assertNotNull(details);
+        assertNull(details.getToken());
+        assertNotNull(details.getUserId());
+        assertThat(details.getUserId(), not(equalTo("")));
+        assertNotNull(details.getUserName());
+        assertThat(details.getUserName(), not(equalTo("")));
+        assertNotNull(details.getUserEmail());
+        assertThat(details.getUserEmail(), not(equalTo("")));
     }
 
     @Test
@@ -54,35 +63,56 @@ public class CoinbaseIT {
         String token = details.getToken();
         assertNotNull(token);
 
-        CoinbaseAccount account = gateway.coinbaseAccount().find(token);
+        PaymentMethod account = gateway.paymentMethod().find(token);
+        assertTrue(account instanceof CoinbaseAccount);
         assertNotNull(account);
+    }
+
+    @Test
+    public void canVault() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        String customerId = customerResult.getTarget().getId();
+
+        Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(new PaymentMethodRequest().customerId(customerId).paymentMethodNonce(Nonce.Coinbase));
+        assertTrue(paymentMethodResult.isSuccess());
+
+        CoinbaseAccount account = (CoinbaseAccount) paymentMethodResult.getTarget();
+        assertNotNull(account);
+        assertNotNull(account.getToken());
+        assertNotNull(account.getUserId());
+        assertThat(account.getUserId(), not(equalTo("")));
+        assertNotNull(account.getUserName());
+        assertThat(account.getUserName(), not(equalTo("")));
+        assertNotNull(account.getUserEmail());
+        assertThat(account.getUserEmail(), not(equalTo("")));
     }
 
     @Rule public ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void canVault() {
-        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+    public void onCustomer() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest().paymentMethodNonce(Nonce.Coinbase));
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
 
-        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest()
-            .customerId(customer.getId())
-            .paymentMethodNonce(Nonce.Coinbase);
-        Result<? extends PaymentMethod> paymentMethodCreateResult = gateway.paymentMethod().create(paymentMethodRequest);
-        assertTrue(paymentMethodCreateResult.isSuccess());
-        String paymentMethodToken = paymentMethodCreateResult.getTarget().getToken();
-
-        PaymentMethod paymentMethodFindResult = gateway.paymentMethod().find(paymentMethodToken);
-        assertNotNull(paymentMethodFindResult);
-
         List<CoinbaseAccount> accounts = gateway.customer().find(customer.getId()).getCoinbaseAccounts();
         assertEquals(1, accounts.size());
-        assertEquals(accounts.get(0).getToken(), paymentMethodToken);
 
-        gateway.coinbaseAccount().delete(paymentMethodToken);
+        CoinbaseAccount account = accounts.get(0);
+        assertNotNull(account);
+        assertNotNull(account.getToken());
+        assertNotNull(account.getUserId());
+        assertThat(account.getUserId(), not(equalTo("")));
+        assertNotNull(account.getUserName());
+        assertThat(account.getUserName(), not(equalTo("")));
+        assertNotNull(account.getUserEmail());
+        assertThat(account.getUserEmail(), not(equalTo("")));
+
+        String token = account.getToken();
+
+        gateway.paymentMethod().delete(token);
 
         exception.expect(NotFoundException.class);
-        gateway.coinbaseAccount().find(paymentMethodToken);
+        gateway.paymentMethod().find(token);
     }
 }

@@ -40,6 +40,8 @@ public class PaymentMethodGateway {
             return new SEPABankAccount(response);
         } else if (response.getElementName() == "apple-pay-card") {
             return new ApplePayCard(response);
+        } else if (response.getElementName() == "coinbase-account") {
+            return new CoinbaseAccount(response);
         } else {
             return new UnknownPaymentMethod(response);
         }
@@ -54,6 +56,8 @@ public class PaymentMethodGateway {
             return new Result<SEPABankAccount>(response, SEPABankAccount.class);
         } else if (response.getElementName() == "apple-pay-card") {
             return new Result<ApplePayCard>(response, ApplePayCard.class);
+        } else if (response.getElementName() == "coinbase-account") {
+            return new Result<CoinbaseAccount>(response, CoinbaseAccount.class);
         } else {
             return new Result<UnknownPaymentMethod>(response, UnknownPaymentMethod.class);
         }
