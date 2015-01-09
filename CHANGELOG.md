@@ -1,3 +1,6 @@
+## 2.39.2
+* Explicitly disconnect the HttpURLConnection after use (Thanks, @gsharma)
+
 ## 2.39.1
 * New validation error constants
 * Add ApplyPayDetails#getLast4
