@@ -7,6 +7,7 @@ import com.braintreegateway.exceptions.*;
 import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -68,33 +69,57 @@ public class Http {
     }
 
     private NodeWrapper httpRequest(RequestMethod requestMethod, String url, String postBody) {
+        HttpURLConnection connection = null;
+        NodeWrapper nodeWrapper = null;
+
         try {
-            HttpURLConnection connection = buildConnection(requestMethod, url);
+            connection = buildConnection(requestMethod, url);
 
             if (connection instanceof HttpsURLConnection) {
                 ((HttpsURLConnection) connection).setSSLSocketFactory(getSSLSocketFactory());
             }
 
             if (postBody != null) {
-                connection.getOutputStream().write(postBody.getBytes("UTF-8"));
-                connection.getOutputStream().close();
+                OutputStream outputStream = null;
+                try {
+                    outputStream = connection.getOutputStream();
+                    outputStream.write(postBody.getBytes("UTF-8"));
+                } finally {
+                    if (outputStream != null) {
+                        outputStream.close();
+                    }
+                }
             }
+
             throwExceptionIfErrorStatusCode(connection.getResponseCode(), null);
             if (requestMethod.equals(RequestMethod.DELETE)) {
                 return null;
             }
-            InputStream responseStream = connection.getResponseCode() == 422 ? connection.getErrorStream() : connection.getInputStream();
 
-            if ("gzip".equalsIgnoreCase(connection.getContentEncoding())) {
-                responseStream = new GZIPInputStream(responseStream);
+            InputStream responseStream = null;
+            try {
+                responseStream = connection.getResponseCode() == 422 ? connection.getErrorStream() : connection.getInputStream();
+
+                if ("gzip".equalsIgnoreCase(connection.getContentEncoding())) {
+                    responseStream = new GZIPInputStream(responseStream);
+                }
+
+                String xml = StringUtils.inputStreamToString(responseStream);
+                nodeWrapper = NodeWrapperFactory.instance.create(xml);
+            } finally {
+                if (responseStream != null) {
+                    responseStream.close();
+                }
             }
-            String xml = StringUtils.inputStreamToString(responseStream);
-
-            responseStream.close();
-            return NodeWrapperFactory.instance.create(xml);
         } catch (IOException e) {
             throw new UnexpectedException(e.getMessage(), e);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
+
+        return nodeWrapper;
     }
 
     private SSLSocketFactory getSSLSocketFactory() {
