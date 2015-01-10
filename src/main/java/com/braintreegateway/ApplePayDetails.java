@@ -4,6 +4,7 @@ import com.braintreegateway.util.NodeWrapper;
 
 public class ApplePayDetails {
     private String cardType;
+    private String paymentInstrumentName;
     private String cardholderName;
     private String expirationMonth;
     private String expirationYear;
@@ -12,6 +13,7 @@ public class ApplePayDetails {
 
     public ApplePayDetails(NodeWrapper node) {
         cardType = node.findString("card-type");
+        paymentInstrumentName = node.findString("payment-instrument-name");
         cardholderName = node.findString("cardholder-name");
         expirationMonth = node.findString("expiration-month");
         expirationYear = node.findString("expiration-year");
@@ -25,6 +27,10 @@ public class ApplePayDetails {
 
     public String getCardType() {
         return cardType;
+    }
+
+    public String getPaymentInstrumentName() {
+        return paymentInstrumentName;
     }
 
     public String getCardholderName() {

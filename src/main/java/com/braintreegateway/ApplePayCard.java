@@ -10,6 +10,7 @@ public class ApplePayCard implements PaymentMethod {
     private String token;
     private boolean isDefault;
     private String cardType;
+    private String paymentInstrumentName;
     private String last4;
     private String expirationMonth;
     private String expirationYear;
@@ -22,6 +23,7 @@ public class ApplePayCard implements PaymentMethod {
         this.imageUrl = node.findString("image-url");
         this.isDefault = node.findBoolean("default");
         this.cardType = node.findString("card-type");
+        this.paymentInstrumentName = node.findString("payment-instrument-name");
         this.last4 = node.findString("last-4");
         this.expirationMonth = node.findString("expiration-month");
         this.expirationYear = node.findString("expiration-year");
@@ -48,6 +50,10 @@ public class ApplePayCard implements PaymentMethod {
 
     public String getCardType() {
         return cardType;
+    }
+
+    public String getPaymentInstrumentName() {
+        return paymentInstrumentName;
     }
 
     public String getExpirationMonth() {
