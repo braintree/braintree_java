@@ -51,7 +51,7 @@ The Braintree library provides integration access to the Braintree Gateway.
 
 ## Documentation
 
- * [Official documentation](http://www.braintreepayments.com/docs/java)
+ * [Official documentation](https://developers.braintreepayments.com/java/sdk/server/overview)
 
 ## Maven
 
