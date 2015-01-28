@@ -11,6 +11,7 @@ public class TransactionOptionsRequest extends Request {
     private String venmoSdkSession;
     private String payeeEmail;
     private TransactionOptionsPayPalRequest transactionOptionsPayPalRequest;
+    private TransactionOptionsThreeDSecureRequest transactionOptionsThreeDSecureRequest;
 
     public TransactionOptionsRequest(TransactionRequest parent) {
         this.parent = parent;
@@ -65,6 +66,11 @@ public class TransactionOptionsRequest extends Request {
         return transactionOptionsPayPalRequest;
     }
 
+    public TransactionOptionsThreeDSecureRequest threeDSecure() {
+        transactionOptionsThreeDSecureRequest = new TransactionOptionsThreeDSecureRequest(this);
+        return transactionOptionsThreeDSecureRequest;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("options").toXML();
@@ -90,6 +96,7 @@ public class TransactionOptionsRequest extends Request {
             addElement("submitForSettlement", submitForSettlement).
             addElement("venmoSdkSession", venmoSdkSession).
             addElement("payeeEmail", payeeEmail).
+            addElement("threeDSecure", transactionOptionsThreeDSecureRequest).
             addElement("paypal", transactionOptionsPayPalRequest);
     }
 }
