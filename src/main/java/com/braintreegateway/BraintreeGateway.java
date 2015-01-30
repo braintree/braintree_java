@@ -164,6 +164,10 @@ public class BraintreeGateway {
         return new PaymentMethodGateway(http);
     }
 
+    public PaymentMethodNonceGateway paymentMethodNonce() {
+        return new PaymentMethodNonceGateway(http);
+    }
+
     public PayPalAccountGateway paypalAccount() {
         return new PayPalAccountGateway(http);
     }

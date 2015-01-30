@@ -637,10 +637,34 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals(PaymentInstrumentType.APPLE_PAY_CARD, transaction.getPaymentInstrumentType());
         assertNotNull(transaction.getApplePayDetails());
         assertNotNull(transaction.getApplePayDetails().getCardType());
+        assertNotNull(transaction.getApplePayDetails().getPaymentInstrumentName());
         assertNotNull(transaction.getApplePayDetails().getExpirationMonth());
         assertNotNull(transaction.getApplePayDetails().getExpirationYear());
         assertNotNull(transaction.getApplePayDetails().getCardholderName());
         assertNotNull(transaction.getApplePayDetails().getLast4());
+    }
+
+    @Test
+    public void saleWithThreeDSecureOptionRequired() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            options().
+                threeDSecure().
+                    required(true).
+                    done().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        Transaction transaction = result.getTransaction();
+        assertEquals(Transaction.Status.GATEWAY_REJECTED, transaction.getStatus());
+        assertEquals(Transaction.GatewayRejectionReason.THREE_D_SECURE, transaction.getGatewayRejectionReason());
     }
 
     @Test

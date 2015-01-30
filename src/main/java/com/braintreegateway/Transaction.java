@@ -47,6 +47,7 @@ public class Transaction {
         CVV("cvv"),
         DUPLICATE("duplicate"),
         FRAUD("fraud"),
+        THREE_D_SECURE("three_d_secure"),
         UNRECOGNIZED("unrecognized");
 
         private final String name;
@@ -166,6 +167,7 @@ public class Transaction {
     private BigDecimal serviceFeeAmount;
     private String paymentInstrumentType;
     private RiskData riskData;
+    private CoinbaseDetails coinbaseDetails;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -194,6 +196,10 @@ public class Transaction {
         NodeWrapper applePayNode = node.findFirst("apple-pay");
         if (applePayNode != null) {
             applePayDetails = new ApplePayDetails(applePayNode);
+        }
+        NodeWrapper coinbaseNode = node.findFirst("coinbase-account");
+        if (coinbaseNode != null) {
+            coinbaseDetails = new CoinbaseDetails(coinbaseNode);
         }
         planId = node.findString("plan-id");
         processorAuthorizationCode = node.findString("processor-authorization-code");
@@ -346,6 +352,10 @@ public class Transaction {
 
     public ApplePayDetails getApplePayDetails() {
         return applePayDetails;
+    }
+
+    public CoinbaseDetails getCoinbaseDetails() {
+        return coinbaseDetails;
     }
 
     public String getPlanId() {

@@ -17,6 +17,10 @@ public class PaymentMethodNonce {
         return publicId;
     }
 
+    public String getNonce() {
+        return getPublicId();
+    }
+
     public Boolean isLocked() {
         return isLocked;
     }

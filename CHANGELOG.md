@@ -1,3 +1,8 @@
+## 2.40.0
+* Surface Apple Pay payment instrument name in responses
+* Support making 3DSecure required
+* Add support for Coinbase
+
 ## 2.39.2
 * Explicitly disconnect the HttpURLConnection after use (Thanks, @gsharma)
 

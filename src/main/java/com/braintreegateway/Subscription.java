@@ -34,6 +34,24 @@ public class Subscription {
         }
     }
 
+    public enum Source {
+        API("api"),
+        CONTROL_PANEL("control_panel"),
+        RECURRING("recurring"),
+        UNRECOGNIZED("unrecognized");
+
+        private final String name;
+
+        Source(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
     private ArrayList<AddOn> addOns;
     private BigDecimal balance;
     private Integer billingDayOfMonth;
@@ -60,6 +78,7 @@ public class Subscription {
     private String planId;
     private BigDecimal price;
     private Status status;
+    private List<SubscriptionStatusEvent> statusHistory;
     private List<Transaction> transactions;
     private Integer trialDuration;
     private DurationUnit trialDurationUnit;
@@ -98,6 +117,10 @@ public class Subscription {
         planId = node.findString("plan-id");
         price = node.findBigDecimal("price");
         status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);
+        statusHistory = new ArrayList<SubscriptionStatusEvent>();
+        for (NodeWrapper statusNode : node.findAll("status-history/status-event")) {
+            statusHistory.add(new SubscriptionStatusEvent(statusNode));
+        }
         hasTrialPeriod = node.findBoolean("trial-period");
         trialDuration = node.findInteger("trial-duration");
         trialDurationUnit = EnumUtils.findByName(DurationUnit.class, node.findString("trial-duration-unit"), DurationUnit.UNRECOGNIZED);
@@ -198,6 +221,10 @@ public class Subscription {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public List<SubscriptionStatusEvent> getStatusHistory() {
+        return statusHistory;
     }
 
     public Status getStatus() {
