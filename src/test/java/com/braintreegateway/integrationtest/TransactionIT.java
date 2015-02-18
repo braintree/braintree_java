@@ -3520,6 +3520,20 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void returnsAllRequiredPaypalFields() {
+        Transaction transaction = gateway.transaction().find("settledtransaction");
+        assertNotNull(transaction.getPayPalDetails().getDebugId());
+        assertNotNull(transaction.getPayPalDetails().getPayerEmail());
+        assertNotNull(transaction.getPayPalDetails().getAuthorizationId());
+        assertNotNull(transaction.getPayPalDetails().getPayerId());
+        assertNotNull(transaction.getPayPalDetails().getPayerFirstName());
+        assertNotNull(transaction.getPayPalDetails().getPayerLastName());
+        assertNotNull(transaction.getPayPalDetails().getSellerProtectionStatus());
+        assertNotNull(transaction.getPayPalDetails().getCaptureId());
+        assertNotNull(transaction.getPayPalDetails().getRefundId());
+    }
+
+    @Test
     public void settleAltPayTransaction() {
         BraintreeGateway altpayGateway = new BraintreeGateway(
             Environment.DEVELOPMENT,

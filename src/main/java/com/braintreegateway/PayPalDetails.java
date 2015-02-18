@@ -11,6 +11,12 @@ public class PayPalDetails {
     private String debugId;
     private String payeeEmail;
     private String customField;
+    private String payerId;
+    private String payerFirstName;
+    private String payerLastName;
+    private String sellerProtectionStatus;
+    private String captureId;
+    private String refundId;
 
     public PayPalDetails(NodeWrapper node) {
         payerEmail = node.findString("payer-email");
@@ -21,6 +27,12 @@ public class PayPalDetails {
         debugId = node.findString("debug-id");
         payeeEmail = node.findString("payee-email");
         customField = node.findString("custom-field");
+        payerId = node.findString("payer-id");
+        payerFirstName = node.findString("payer-first-name");
+        payerLastName = node.findString("payer-last-name");
+        sellerProtectionStatus = node.findString("seller-protection-status");
+        refundId = node.findString("refund-id");
+        captureId = node.findString("capture-id");
     }
 
     public String getPayerEmail() {
@@ -53,5 +65,29 @@ public class PayPalDetails {
 
     public String getCustomField() {
       return customField;
+    }
+
+    public String getPayerId() {
+      return payerId;
+    }
+
+    public String getPayerFirstName() {
+      return payerFirstName;
+    }
+
+    public String getPayerLastName() {
+      return payerLastName;
+    }
+
+    public String getSellerProtectionStatus() {
+      return sellerProtectionStatus;
+    }
+
+    public String getCaptureId() {
+      return captureId;
+    }
+
+    public String getRefundId() {
+      return refundId;
     }
 }
