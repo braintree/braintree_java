@@ -129,15 +129,22 @@ public class Http {
 
             for (String certificateFilename : certificateFilenames) {
                 CertificateFactory cf = CertificateFactory.getInstance("X.509");
-                InputStream certStream = Http.class.getClassLoader().getResourceAsStream(certificateFilename);
+                InputStream certStream = null;
+                try {
+                    certStream = Http.class.getClassLoader().getResourceAsStream(certificateFilename);
 
-                Collection<? extends Certificate> coll = cf.generateCertificates(certStream);
-                for (Certificate cert : coll) {
-                    if (cert instanceof X509Certificate) {
-                      X509Certificate x509cert = (X509Certificate) cert;
-                      Principal principal = x509cert.getSubjectDN();
-                      String subject = principal.getName();
-                      keyStore.setCertificateEntry(subject, cert);
+                    Collection<? extends Certificate> coll = cf.generateCertificates(certStream);
+                    for (Certificate cert : coll) {
+                        if (cert instanceof X509Certificate) {
+                          X509Certificate x509cert = (X509Certificate) cert;
+                          Principal principal = x509cert.getSubjectDN();
+                          String subject = principal.getName();
+                          keyStore.setCertificateEntry(subject, cert);
+                        }
+                    }
+                } finally {
+                    if (certStream != null) {
+                        certStream.close();
                     }
                 }
             }
