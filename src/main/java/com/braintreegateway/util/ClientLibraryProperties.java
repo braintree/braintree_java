@@ -19,10 +19,17 @@ public class ClientLibraryProperties {
 
     private Properties loadProperties(String propertyFile) {
         try {
-            InputStream is = getClass().getClassLoader().getResourceAsStream(propertyFile);
-            Properties p = new Properties();
-            p.load(is);
-            return p;
+            InputStream is = null;
+            try {
+                is = getClass().getClassLoader().getResourceAsStream(propertyFile);
+                Properties p = new Properties();
+                p.load(is);
+                return p;
+            } finally {
+                if (is != null) {
+                    is.close();
+                }
+            }
         } catch (IOException e) {
             throw new UnexpectedException("Couldn't load " + BRAINTREE_PROPERTY_FILE + " can't continue", e);
         }

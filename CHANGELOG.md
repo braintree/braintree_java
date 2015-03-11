@@ -1,3 +1,7 @@
+## 2.41.0
+* Close InputStreams after use
+* Add additional PayPalDetails getters
+
 ## 2.40.0
 * Surface Apple Pay payment instrument name in responses
 * Support making 3DSecure required
