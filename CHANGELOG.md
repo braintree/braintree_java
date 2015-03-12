@@ -1,3 +1,4 @@
+## 2.41.1
 ## 2.41.0
 * Close InputStreams after use
 * Add additional PayPalDetails getters
