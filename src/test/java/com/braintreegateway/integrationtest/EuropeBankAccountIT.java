@@ -9,7 +9,7 @@ import java.util.Random;
 
 import static org.junit.Assert.*;
 
-public class SEPABankAccountIT {
+public class EuropeBankAccountIT {
 
     private BraintreeGateway gateway;
 
@@ -19,12 +19,12 @@ public class SEPABankAccountIT {
     }
 
     @Test
-    public void canExchangeNonceForSEPABankAccount() {
+    public void canExchangeNonceForEuropeBankAccount() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
 
-        String nonce = TestHelper.generateSEPABankAccountNonce(gateway, customer);
+        String nonce = TestHelper.generateEuropeBankAccountNonce(gateway, customer);
         PaymentMethodRequest request = new PaymentMethodRequest().
                 customerId(customer.getId()).
                 paymentMethodNonce(nonce);
@@ -32,7 +32,7 @@ public class SEPABankAccountIT {
         assertTrue(result.isSuccess());
         PaymentMethod paymentMethod = result.getTarget();
         assertNotNull(paymentMethod.getToken());
-        SEPABankAccount bankAccount =  (SEPABankAccount) gateway.paymentMethod().find(paymentMethod.getToken());
+        EuropeBankAccount bankAccount =  (EuropeBankAccount) gateway.paymentMethod().find(paymentMethod.getToken());
         assertEquals(paymentMethod.getToken(), bankAccount.getToken());
         assertEquals(bankAccount.getBic(), "DEUTDEFF");
         assertNotNull(bankAccount.getMaskedIban());

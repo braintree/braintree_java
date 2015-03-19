@@ -7,7 +7,7 @@ import com.braintreegateway.util.Sha1Hasher;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.QueryString;
-import com.braintreegateway.SEPABankAccount.MandateType;
+import com.braintreegateway.EuropeBankAccount.MandateType;
 
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 
@@ -246,10 +246,10 @@ public abstract class TestHelper {
       return nonce;
     }
 
-    public static String generateSEPABankAccountNonce(BraintreeGateway gateway, Customer customer) {
+    public static String generateEuropeBankAccountNonce(BraintreeGateway gateway, Customer customer) {
         SEPAClientTokenRequest request = new SEPAClientTokenRequest();
         request.customerId(customer.getId());
-        request.mandateType(SEPABankAccount.MandateType.BUSINESS);
+        request.mandateType(EuropeBankAccount.MandateType.BUSINESS);
         request.mandateAcceptanceLocation("Rostock, Germany");
 
         String encodedClientToken = gateway.clientToken().generate(request);
@@ -272,20 +272,16 @@ public abstract class TestHelper {
               .append("sepa_mandate[billingAddress][countryCodeAlpha2]", "DE")
               .append("sepa_mandate[billingAddress][region]", "Hesse");
 
-        QueryString acceptPayload = new QueryString();
-        acceptPayload.append("authorization_fingerprint", authorizationFingerprint);
-
-        String acceptResponseBody;
-        String mandateReferenceNumber = "";
+        String responseBody;
+        String nonce = "";
         try {
-            String responseBody = HttpHelper.post(url, payload.toString());
-            mandateReferenceNumber = extractParamFromJson("mandateReferenceNumber", responseBody);
-            String acceptUrl = gateway.baseMerchantURL() + "/client_api/v1/sepa_mandates/" + mandateReferenceNumber + "/accept";
-            acceptResponseBody = HttpHelper.put(acceptUrl, acceptPayload.toString());
+            responseBody = HttpHelper.post(url, payload.toString());
+            nonce = extractParamFromJson("nonce", responseBody);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return extractParamFromJson("nonce", acceptResponseBody);
+
+        return nonce;
     }
 
     public static String getNonceForPayPalAccount(BraintreeGateway gateway, String consentCode) {

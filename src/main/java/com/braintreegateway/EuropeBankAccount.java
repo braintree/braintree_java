@@ -4,7 +4,7 @@ import com.braintreegateway.util.NodeWrapper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SEPABankAccount implements PaymentMethod {
+public class EuropeBankAccount implements PaymentMethod {
     private String token;
     private boolean isDefault;
     private String maskedIban;
@@ -28,7 +28,7 @@ public class SEPABankAccount implements PaymentMethod {
         }
     }
 
-    public SEPABankAccount(NodeWrapper node) {
+    public EuropeBankAccount(NodeWrapper node) {
         this.token = node.findString("token");
         this.isDefault = node.findBoolean("default");
         this.maskedIban = node.findString("masked-iban");

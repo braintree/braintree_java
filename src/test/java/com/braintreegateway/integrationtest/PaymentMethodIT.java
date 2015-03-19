@@ -185,12 +185,12 @@ public class PaymentMethodIT {
     }
 
     @Test
-    public void createSEPABankAccountWithNonce() {
+    public void createEuropeBankAccountWithNonce() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
 
-        String nonce = TestHelper.generateSEPABankAccountNonce(gateway, customer);
+        String nonce = TestHelper.generateEuropeBankAccountNonce(gateway, customer);
         PaymentMethodRequest request = new PaymentMethodRequest().
                 customerId(customer.getId()).
                 paymentMethodNonce(nonce);

@@ -36,8 +36,8 @@ public class PaymentMethodGateway {
             return new PayPalAccount(response);
         } else if (response.getElementName() == "credit-card") {
             return new CreditCard(response);
-        } else if (response.getElementName() == "sepa-bank-account") {
-            return new SEPABankAccount(response);
+        } else if (response.getElementName() == "europe-bank-account") {
+            return new EuropeBankAccount(response);
         } else if (response.getElementName() == "apple-pay-card") {
             return new ApplePayCard(response);
         } else if (response.getElementName() == "coinbase-account") {
@@ -52,8 +52,8 @@ public class PaymentMethodGateway {
             return new Result<PayPalAccount>(response, PayPalAccount.class);
         } else if (response.getElementName() == "credit-card") {
             return new Result<CreditCard>(response, CreditCard.class);
-        } else if (response.getElementName() == "sepa-bank-account") {
-            return new Result<SEPABankAccount>(response, SEPABankAccount.class);
+        } else if (response.getElementName() == "europe-bank-account") {
+            return new Result<EuropeBankAccount>(response, EuropeBankAccount.class);
         } else if (response.getElementName() == "apple-pay-card") {
             return new Result<ApplePayCard>(response, ApplePayCard.class);
         } else if (response.getElementName() == "coinbase-account") {
