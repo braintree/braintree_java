@@ -4,7 +4,7 @@ public class SEPAClientTokenRequest extends ClientTokenRequest {
     private String mandateType;
     private String mandateAcceptanceLocation;
 
-    public SEPAClientTokenRequest mandateType(SEPABankAccount.MandateType mandateType) {
+    public SEPAClientTokenRequest mandateType(EuropeBankAccount.MandateType mandateType) {
         this.mandateType = mandateType.toString();
 
         return this;

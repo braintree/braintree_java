@@ -1938,7 +1938,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
-    public void searchOnSEPABankAccountIban() {
+    public void searchOnEuropeBankAccountIban() {
         BraintreeGateway altpayGateway = new BraintreeGateway(
             Environment.DEVELOPMENT,
             "altpay_merchant",
@@ -1949,7 +1949,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
 
-        String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
+        String nonce = TestHelper.generateEuropeBankAccountNonce(altpayGateway, customer);
 
         TransactionRequest request = new TransactionRequest().
             merchantAccountId("fake_sepa_ma").
@@ -1960,7 +1960,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            sepaBankAccountIban().is("DE89370400440532013000");
+            europeBankAccountIban().is("DE89370400440532013000");
 
         assertEquals(1, altpayGateway.transaction().search(searchRequest).getMaximumSize());
     }
@@ -3545,7 +3545,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
 
-        String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
+        String nonce = TestHelper.generateEuropeBankAccountNonce(altpayGateway, customer);
 
         TransactionRequest request = new TransactionRequest().
             merchantAccountId("fake_sepa_ma").
@@ -3578,7 +3578,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
 
-        String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
+        String nonce = TestHelper.generateEuropeBankAccountNonce(altpayGateway, customer);
 
         TransactionRequest request = new TransactionRequest().
             merchantAccountId("fake_sepa_ma").
@@ -3611,7 +3611,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
 
-        String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
+        String nonce = TestHelper.generateEuropeBankAccountNonce(altpayGateway, customer);
 
         TransactionRequest request = new TransactionRequest().
             merchantAccountId("fake_sepa_ma").
@@ -3637,7 +3637,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
 
-        String nonce = TestHelper.generateSEPABankAccountNonce(altpayGateway, customer);
+        String nonce = TestHelper.generateEuropeBankAccountNonce(altpayGateway, customer);
 
         TransactionRequest request = new TransactionRequest().
             merchantAccountId("fake_sepa_ma").
