@@ -1,3 +1,6 @@
+## 2.41.2
+* Simplified SEPA workflow
+
 ## 2.41.1
 ## 2.41.0
 * Close InputStreams after use
