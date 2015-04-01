@@ -120,7 +120,7 @@ public class HttpTest {
     public void sslBadCertificate() throws Exception {
         startSSLServer();
         try {
-            Http http = new Http(gateway.getAuthorizationHeader(), "https://localhost:9443", Environment.SANDBOX.certificateFilenames, BraintreeGateway.VERSION);
+            Http http = new Http(gateway.getAuthorizationHeader(), "https://localhost:19443", Environment.SANDBOX.certificateFilenames, BraintreeGateway.VERSION);
             http.get("/");
             fail();
         } catch (Exception e) {
