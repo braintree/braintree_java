@@ -16,8 +16,8 @@
 
 ## 2.39.1
 * New validation error constants
-* Add ApplyPayDetails#getLast4
-* More searchs from CreditCardVerificationSearchRequest
+* Add ApplePayDetails#getLast4
+* More searches from CreditCardVerificationSearchRequest
 
 ## 2.38.0
 * Allow payee_email in transaction.options.paypal
