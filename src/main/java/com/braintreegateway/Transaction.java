@@ -221,7 +221,7 @@ public class Transaction {
         }
 
         NodeWrapper threeDSecureInfoNode = node.findFirst("three-d-secure-info");
-        if (threeDSecureInfoNode != null) {
+        if (threeDSecureInfoNode != null && !threeDSecureInfoNode.isBlank()) {
             threeDSecureInfo = new ThreeDSecureInfo(threeDSecureInfoNode);
         }
 
