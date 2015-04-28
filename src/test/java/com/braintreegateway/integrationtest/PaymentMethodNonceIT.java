@@ -46,4 +46,35 @@ public class PaymentMethodNonceIT {
         } catch (NotFoundException e) {
         }
     }
+
+    @Test
+    public void findReturnsPaymentMethodNonce() {
+        Result<PaymentMethodNonce> result = gateway.paymentMethodNonce().find("three-d-secured-nonce");
+
+        PaymentMethodNonce nonce = result.getTarget();
+        assertTrue(result.isSuccess());
+        assertEquals("three-d-secured-nonce", nonce.getNonce());
+        assertTrue(nonce.getThreeDSecureInfo().isLiabilityShifted());
+    }
+
+    @Test
+    public void findReturnsNull3DSDetailsIfNotPresent() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+        String nonce = TestHelper.generateUnlockedNonce(gateway, null, SandboxValues.CreditCardNumber.VISA.number);
+
+        Result<PaymentMethodNonce> result = gateway.paymentMethodNonce().find(nonce);
+
+        PaymentMethodNonce foundNonce = result.getTarget();
+        assertTrue(result.isSuccess());
+        assertNull(foundNonce.getThreeDSecureInfo());
+    }
+    @Test
+    public void findRaisesIfNotFound() {
+        try {
+            gateway.paymentMethodNonce().find("not-a-nonce");
+            fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+        }
+    }
 }
