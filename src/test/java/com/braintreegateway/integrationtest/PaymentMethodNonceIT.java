@@ -49,11 +49,11 @@ public class PaymentMethodNonceIT {
 
     @Test
     public void findReturnsPaymentMethodNonce() {
-        Result<PaymentMethodNonce> result = gateway.paymentMethodNonce().find("three-d-secured-nonce");
+        Result<PaymentMethodNonce> result = gateway.paymentMethodNonce().find("threedsecurednonce");
 
         PaymentMethodNonce nonce = result.getTarget();
         assertTrue(result.isSuccess());
-        assertEquals("three-d-secured-nonce", nonce.getNonce());
+        assertEquals("threedsecurednonce", nonce.getNonce());
         assertTrue(nonce.getThreeDSecureInfo().isLiabilityShifted());
     }
 

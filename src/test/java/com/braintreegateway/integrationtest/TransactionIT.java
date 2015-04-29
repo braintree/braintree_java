@@ -1526,7 +1526,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
     @Test
     public void findWithThreeDSecureInfo() throws Exception {
-        Transaction foundTransaction = gateway.transaction().find("three-d-secured-transaction");
+        Transaction foundTransaction = gateway.transaction().find("threedsecuredtransaction");
         ThreeDSecureInfo info = foundTransaction.getThreeDSecureInfo();
 
         assertEquals("Y", info.getEnrolled());
