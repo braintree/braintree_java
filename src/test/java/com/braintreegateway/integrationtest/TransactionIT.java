@@ -1533,8 +1533,6 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertTrue(info.isLiabilityShifted());
         assertTrue(info.isLiabilityShiftPossible());
         assertEquals("authenticate_successful", info.getStatus());
-        assertEquals("xidvalue", info.getXID());
-        assertEquals("somebase64value", info.getCAVV());
     }
 
     @Test
