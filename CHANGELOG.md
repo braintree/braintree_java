@@ -1,3 +1,6 @@
+## 2.43.0
+* Fix ThreeDSecureInfo#find to be more consistent
+
 ## 2.42.0
 * Add 3DS info to the server side
 
