@@ -248,4 +248,18 @@ public class SimpleNodeWrapperTest {
         assertEquals("{child[grandchild]: sonny, id: invalid id}",
                 StringUtils.toString(node.findFirst("ps").getFormParameters()));
     }
+
+    @Test
+    public void isBlankWithBlankNode() {
+        String xml = "<toplevel><foo nil=\"true\"/></toplevel>";
+        NodeWrapper node = SimpleNodeWrapper.parse(xml).findFirst("foo");
+        assertTrue(node.isBlank());
+    }
+
+    @Test
+    public void isBlankWithPresentNode() {
+        String xml = "<toplevel><foo>test</foo></toplevel>";
+        NodeWrapper node = SimpleNodeWrapper.parse(xml).findFirst("foo");
+        assertFalse(node.isBlank());
+    }
 }

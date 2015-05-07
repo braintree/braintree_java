@@ -1,3 +1,6 @@
+## 2.42.0
+* Add 3DS info to the server side
+
 ## 2.41.2
 * Simplified SEPA workflow
 
@@ -16,8 +19,8 @@
 
 ## 2.39.1
 * New validation error constants
-* Add ApplyPayDetails#getLast4
-* More searchs from CreditCardVerificationSearchRequest
+* Add ApplePayDetails#getLast4
+* More searches from CreditCardVerificationSearchRequest
 
 ## 2.38.0
 * Allow payee_email in transaction.options.paypal

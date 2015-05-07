@@ -167,6 +167,7 @@ public class Transaction {
     private BigDecimal serviceFeeAmount;
     private String paymentInstrumentType;
     private RiskData riskData;
+    private ThreeDSecureInfo threeDSecureInfo;
     private CoinbaseDetails coinbaseDetails;
 
     public Transaction(NodeWrapper node) {
@@ -217,6 +218,11 @@ public class Transaction {
         NodeWrapper riskDataNode = node.findFirst("risk-data");
         if (riskDataNode != null) {
             riskData = new RiskData(riskDataNode);
+        }
+
+        NodeWrapper threeDSecureInfoNode = node.findFirst("three-d-secure-info");
+        if (threeDSecureInfoNode != null && !threeDSecureInfoNode.isBlank()) {
+            threeDSecureInfo = new ThreeDSecureInfo(threeDSecureInfoNode);
         }
 
         serviceFeeAmount = node.findBigDecimal("service-fee-amount");
@@ -412,6 +418,10 @@ public class Transaction {
 
     public RiskData getRiskData() {
         return riskData;
+    }
+
+    public ThreeDSecureInfo getThreeDSecureInfo() {
+        return threeDSecureInfo;
     }
 
     public BigDecimal getServiceFeeAmount() {

@@ -91,4 +91,6 @@ public abstract class NodeWrapper {
     }
 
     public abstract Map<String, String> getFormParameters();
+
+    public abstract boolean isBlank();
 }

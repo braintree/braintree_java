@@ -101,6 +101,11 @@ public class SimpleNodeWrapper extends NodeWrapper {
             return node.stringValue();
     }
 
+    @Override
+    public boolean isBlank() {
+        return "true".equals(attributes.get("nil"));
+    }
+
     private String stringValue() {
         if (content.size() == 1 && content.get(0) == null)
             return null;
