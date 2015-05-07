@@ -1,3 +1,6 @@
+## 2.42.0
+* Add 3DS info to the server side
+
 ## 2.41.2
 * Simplified SEPA workflow
 
