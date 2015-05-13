@@ -141,6 +141,7 @@ public class Transaction {
     private String orderId;
     private PayPalDetails paypalDetails;
     private ApplePayDetails applePayDetails;
+    private AndroidPayDetails androidPayDetails;
     private String planId;
     private String processorAuthorizationCode;
     private String processorResponseCode;
@@ -197,6 +198,10 @@ public class Transaction {
         NodeWrapper applePayNode = node.findFirst("apple-pay");
         if (applePayNode != null) {
             applePayDetails = new ApplePayDetails(applePayNode);
+        }
+        NodeWrapper androidPayCardNode = node.findFirst("android-pay-card");
+        if (androidPayCardNode != null) {
+            androidPayDetails = new AndroidPayDetails(androidPayCardNode);
         }
         NodeWrapper coinbaseNode = node.findFirst("coinbase-account");
         if (coinbaseNode != null) {
@@ -358,6 +363,10 @@ public class Transaction {
 
     public ApplePayDetails getApplePayDetails() {
         return applePayDetails;
+    }
+
+    public AndroidPayDetails getAndroidPayDetails() {
+        return androidPayDetails;
     }
 
     public CoinbaseDetails getCoinbaseDetails() {

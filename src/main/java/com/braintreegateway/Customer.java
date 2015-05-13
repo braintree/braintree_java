@@ -20,6 +20,7 @@ public class Customer {
     private List<CreditCard> creditCards;
     private List<PayPalAccount> paypalAccounts;
     private List<ApplePayCard> applePayCards;
+    private List<AndroidPayCard> androidPayCards;
     private List<CoinbaseAccount> coinbaseAccounts;
     private List<Address> addresses;
 
@@ -46,6 +47,10 @@ public class Customer {
         applePayCards = new ArrayList<ApplePayCard>();
         for (NodeWrapper applePayCardResponse : node.findAll("apple-pay-cards/apple-pay-card")) {
             applePayCards.add(new ApplePayCard(applePayCardResponse));
+        }
+        androidPayCards = new ArrayList<AndroidPayCard>();
+        for (NodeWrapper androidPayCardResponse : node.findAll("android-pay-cards/android-pay-card")) {
+            androidPayCards.add(new AndroidPayCard(androidPayCardResponse));
         }
         coinbaseAccounts = new ArrayList<CoinbaseAccount>();
         for (NodeWrapper coinbaseAccountResponse : node.findAll("coinbase-accounts/coinbase-account")) {
@@ -121,11 +126,16 @@ public class Customer {
         return Collections.unmodifiableList(applePayCards);
     }
 
+    public List<AndroidPayCard> getAndroidPayCards() {
+        return Collections.unmodifiableList(androidPayCards);
+    }
+
     public List<? extends PaymentMethod> getPaymentMethods() {
         List<PaymentMethod> paymentMethods = new ArrayList<PaymentMethod>();
         paymentMethods.addAll(getCreditCards());
         paymentMethods.addAll(getPayPalAccounts());
         paymentMethods.addAll(getApplePayCards());
+        paymentMethods.addAll(getAndroidPayCards());
         return Collections.unmodifiableList(paymentMethods);
     }
 

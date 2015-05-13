@@ -477,7 +477,7 @@ public class CustomerIT {
     }
 
     @Test
-    public void findWithApplePayCard() {
+    public void createWithApplePayCard() {
         CustomerRequest request = new CustomerRequest().
             paymentMethodNonce(Nonce.ApplePayVisa);
         Customer customer = gateway.customer().create(request).getTarget();
@@ -489,6 +489,22 @@ public class CustomerIT {
         ApplePayCard card = foundCustomer.getApplePayCards().get(0);
         assertNotNull(card);
         assertNotNull(card.getExpirationMonth());
+        assertEquals(1, foundCustomer.getPaymentMethods().size());
+    }
+
+    @Test
+    public void createWithAndroidPayCard() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.AndroidPay);
+        Customer customer = gateway.customer().create(request).getTarget();
+
+        Customer foundCustomer = gateway.customer().find(customer.getId());
+        assertEquals(customer.getId(), foundCustomer.getId());
+        assertNotNull(foundCustomer.getAndroidPayCards());
+        assertEquals(1, foundCustomer.getAndroidPayCards().size());
+        AndroidPayCard card = foundCustomer.getAndroidPayCards().get(0);
+        assertNotNull(card);
+        assertNotNull(card.getGoogleTransactionId());
         assertEquals(1, foundCustomer.getPaymentMethods().size());
     }
 

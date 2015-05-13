@@ -40,6 +40,8 @@ public class PaymentMethodGateway {
             return new EuropeBankAccount(response);
         } else if (response.getElementName() == "apple-pay-card") {
             return new ApplePayCard(response);
+        } else if (response.getElementName() == "android-pay-card") {
+            return new AndroidPayCard(response);
         } else if (response.getElementName() == "coinbase-account") {
             return new CoinbaseAccount(response);
         } else {
@@ -56,6 +58,8 @@ public class PaymentMethodGateway {
             return new Result<EuropeBankAccount>(response, EuropeBankAccount.class);
         } else if (response.getElementName() == "apple-pay-card") {
             return new Result<ApplePayCard>(response, ApplePayCard.class);
+        } else if (response.getElementName() == "android-pay-card") {
+            return new Result<AndroidPayCard>(response, AndroidPayCard.class);
         } else if (response.getElementName() == "coinbase-account") {
             return new Result<CoinbaseAccount>(response, CoinbaseAccount.class);
         } else {

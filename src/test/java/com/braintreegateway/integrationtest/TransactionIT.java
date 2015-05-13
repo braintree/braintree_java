@@ -645,6 +645,37 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void saleWithAndroidPayCardNonce() {
+        String androidPayCardNonce = Nonce.AndroidPay;
+
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(androidPayCardNonce);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(PaymentInstrumentType.ANDROID_PAY_CARD, transaction.getPaymentInstrumentType());
+
+        assertNotNull(transaction.getAndroidPayDetails());
+        AndroidPayDetails androidPayDetails = transaction.getAndroidPayDetails();
+
+        assertNull(androidPayDetails.getToken());
+        assertNotNull(androidPayDetails.getBin());
+        assertNotNull(androidPayDetails.getImageUrl());
+        assertNotNull(androidPayDetails.getSourceCardType());
+        assertNotNull(androidPayDetails.getSourceCardLast4());
+        assertNotNull(androidPayDetails.getVirtualCardType());
+        assertNotNull(androidPayDetails.getVirtualCardLast4());
+        assertNotNull(androidPayDetails.getGoogleTransactionId());
+        assertNotNull(androidPayDetails.getCardType());
+        assertNotNull(androidPayDetails.getLast4());
+        assertNotNull(androidPayDetails.getExpirationMonth());
+        assertNotNull(androidPayDetails.getExpirationYear());
+    }
+
+    @Test
     public void saleWithThreeDSecureOptionRequired() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
