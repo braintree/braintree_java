@@ -6,6 +6,7 @@ import com.braintreegateway.Environment;
 import com.braintreegateway.MerchantAccount;
 import com.braintreegateway.WebhookNotification;
 import com.braintreegateway.exceptions.InvalidSignatureException;
+import com.braintreegateway.exceptions.InvalidChallengeException;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
@@ -38,8 +39,21 @@ public class WebhookNotificationIT {
 
     @Test
     public void verifyCreatesAVerificationString() {
-        String verification = this.gateway.webhookNotification().verify("verification_token");
-        assertEquals("integration_public_key|c9f15b74b0d98635cd182c51e2703cffa83388c3", verification);
+        String verification = this.gateway.webhookNotification().verify("20f9f8ed05f77439fe955c977e4c8a53");
+        assertEquals("integration_public_key|d9b899556c966b3f06945ec21311865d35df3ce4", verification);
+    }
+
+    @Test
+    public void invalidChallengeRaisesException() {
+        try {
+          this.gateway.webhookNotification().verify("goodbye cruel world");
+          fail("Should have throw exception, but did not.");
+        }
+        catch(final InvalidChallengeException e)
+        {
+          final String expectedMessage = "challenge contains non-hex characters";
+          assertEquals(expectedMessage, e.getMessage());
+        }
     }
 
     @Test
