@@ -46,7 +46,7 @@ public class WebhookNotificationIT {
     @Test
     public void invalidChallengeRaisesException() {
         try {
-          this.gateway.webhookNotification().verify("goodbye cruel world");
+          this.gateway.webhookNotification().verify("bad challenge");
           fail("Should have throw exception, but did not.");
         }
         catch(final InvalidChallengeException e)
