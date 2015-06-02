@@ -3,6 +3,7 @@ package com.braintreegateway;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import com.braintreegateway.exceptions.InvalidChallengeException;
 import com.braintreegateway.exceptions.InvalidSignatureException;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 import com.braintreegateway.util.Crypto;
@@ -58,6 +59,9 @@ public class WebhookNotificationGateway {
     }
 
     public String verify(String challenge) {
+        if (!challenge.matches("^[a-f0-9]{20,32}$")) {
+          throw new InvalidChallengeException("challenge contains non-hex characters");
+        }
         return publicKeySignaturePair(challenge);
     }
 
