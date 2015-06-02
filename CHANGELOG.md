@@ -1,3 +1,6 @@
+## 2.44.0
+* Validate webhook challenge payload
+
 ## 2.43.0
 * Fix ThreeDSecureInfo#find to be more consistent
 
