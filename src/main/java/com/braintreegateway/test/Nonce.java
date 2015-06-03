@@ -11,4 +11,5 @@ public class Nonce {
     public static String AbstractTransactable = "fake-abstract-transactable-nonce";
     public static String Europe = "fake-europe-bank-account-nonce";
     public static String Coinbase = "fake-coinbase-nonce";
+    public static String AndroidPay = "fake-android-pay-nonce";
 }

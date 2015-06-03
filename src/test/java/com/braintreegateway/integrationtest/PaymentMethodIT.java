@@ -97,6 +97,67 @@ public class PaymentMethodIT {
     }
 
     @Test
+    public void createAndroidPayCardFromNonce() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = Nonce.AndroidPay;
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+        assertNotNull(paymentMethod.getToken());
+        assertNotNull(paymentMethod.getImageUrl());
+    }
+
+    @Test
+    public void createAndroidPayCardFromNonceWithDefault() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = Nonce.AndroidPay;
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce).
+            options().
+                makeDefault(true).
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+        assertNotNull(paymentMethod.getToken());
+        assertNotNull(paymentMethod.getImageUrl());
+        assertTrue(paymentMethod.isDefault());
+
+        AndroidPayCard androidPayCard = (AndroidPayCard) paymentMethod;
+        assertNotNull(androidPayCard.getSourceCardType());
+        assertNotNull(androidPayCard.getSourceCardLast4());
+        assertNotNull(androidPayCard.getVirtualCardType());
+        assertNotNull(androidPayCard.getVirtualCardLast4());
+        assertNotNull(androidPayCard.getCardType());
+        assertNotNull(androidPayCard.getLast4());
+        assertNotNull(androidPayCard.getExpirationMonth());
+        assertNotNull(androidPayCard.getExpirationYear());
+        assertNotNull(androidPayCard.getToken());
+        assertNotNull(androidPayCard.getGoogleTransactionId());
+        assertNotNull(androidPayCard.getBin());
+        assertTrue(androidPayCard.isDefault());
+        assertNotNull(androidPayCard.getImageUrl());
+        assertNotNull(androidPayCard.getCreatedAt());
+        assertNotNull(androidPayCard.getUpdatedAt());
+        assertNotNull(androidPayCard.getSubscriptions());
+        assertTrue(androidPayCard.getSubscriptions().isEmpty());
+    }
+
+    @Test
     public void createAbstractPaymentMethod() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
@@ -305,6 +366,27 @@ public class PaymentMethodIT {
             fail("Should throw NotFoundException");
         } catch (NotFoundException e) {
         }
+    }
+
+    @Test
+    public void findAndroidPayCard() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = Nonce.AndroidPay;
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+
+        PaymentMethod found = gateway.paymentMethod().find(paymentMethod.getToken());
+        assertNotNull(found);
+        assertTrue(found instanceof AndroidPayCard);
     }
 
     @Test
