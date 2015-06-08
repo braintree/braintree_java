@@ -1790,6 +1790,101 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
         collection = gateway.transaction().search(searchRequest);
         assertEquals(0, collection.getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            user().is("integration_user_public_id").
+            id().is(transaction.getId());
+
+        collection = gateway.transaction().search(searchRequest);
+        assertEquals(1, collection.getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            creditCardUniqueIdentifier().is(transaction.getCreditCard().getUniqueNumberIdentifier()).
+            id().is(transaction.getId());
+
+        collection = gateway.transaction().search(searchRequest);
+        assertEquals(1, collection.getMaximumSize());
+    }
+
+    @Test
+    public void searchOnsPaymentInstrumentTypeIsCreditCard() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            creditCard().
+                number("4111111111111111").
+                expirationDate("05/2012").
+                cardholderName("Tom Smith").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            paymentInstrumentType().is("CreditCardDetail");
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        assertEquals(collection.getFirst().getPaymentInstrumentType(), PaymentInstrumentType.CREDIT_CARD);
+    }
+
+    @Test
+    public void searchOnsPaymentInstrumentTypeIsPayPal() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            paymentMethodNonce(Nonce.PayPalFuturePayment);
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            paymentInstrumentType().is("PayPalDetail");
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        assertEquals(collection.getFirst().getPaymentInstrumentType(), PaymentInstrumentType.PAYPAL_ACCOUNT);
+    }
+
+    @Test
+    public void searchOnsPaymentInstrumentTypeIsApplePay() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            paymentMethodNonce(Nonce.ApplePayVisa);
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            paymentInstrumentType().is("ApplePayDetail");
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        assertEquals(collection.getFirst().getPaymentInstrumentType(), PaymentInstrumentType.APPLE_PAY_CARD);
+    }
+
+    @Test
+    public void searchOnPaymentInstrumentTypeIsEuropeBank() {
+        BraintreeGateway altpayGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "altpay_merchant",
+            "altpay_merchant_public_key",
+            "altpay_merchant_private_key"
+        );
+        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateEuropeBankAccountNonce(altpayGateway, customer);
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId("fake_sepa_ma").
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce);
+
+        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            paymentInstrumentType().is("EuropeBankAccountDetail");
+
+        ResourceCollection<Transaction> collection = altpayGateway.transaction().search(searchRequest);
+
+        assertEquals(collection.getFirst().getPaymentInstrumentType(), PaymentInstrumentType.EUROPE_BANK_ACCOUNT);
     }
 
     @Test
