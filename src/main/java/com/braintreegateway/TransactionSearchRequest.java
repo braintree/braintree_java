@@ -45,6 +45,10 @@ public class TransactionSearchRequest extends SearchRequest {
         return textNode("credit_card_cardholder_name");
     }
 
+    public TextNode<TransactionSearchRequest> creditCardUniqueIdentifier() {
+        return textNode("credit_card_unique_identifier");
+    }
+
     public EqualityNode<TransactionSearchRequest> creditCardExpirationDate() {
         return new EqualityNode<TransactionSearchRequest>("credit_card_expiration_date", this);
     }
@@ -91,6 +95,10 @@ public class TransactionSearchRequest extends SearchRequest {
 
     public MultipleValueNode<TransactionSearchRequest, String> ids() {
         return multiTypeNode("ids");
+    }
+
+    public MultipleValueNode<TransactionSearchRequest, String> user() {
+        return multiTypeNode("user");
     }
 
     public TextNode<TransactionSearchRequest> orderId() {
@@ -155,6 +163,10 @@ public class TransactionSearchRequest extends SearchRequest {
 
     public TextNode<TransactionSearchRequest> shippingStreetAddress() {
         return textNode("shipping_street_address");
+    }
+
+    public MultipleValueNode<TransactionSearchRequest, String> paymentInstrumentType() {
+        return multiTypeNode("payment_instrument_type");
     }
 
     public MultipleValueNode<TransactionSearchRequest, Transaction.CreatedUsing> createdUsing() {
