@@ -366,4 +366,38 @@ public abstract class TestHelper {
 
         return value;
     }
+
+    public static final class OAuthGrantRequest extends Request {
+
+        private String scope;
+        private String merchantId;
+
+        public OAuthGrantRequest scope(String scope) {
+            this.scope = scope;
+            return this;
+        }
+
+        public OAuthGrantRequest merchantId(String merchantId) {
+            this.merchantId = merchantId;
+            return this;
+        }
+
+        @Override
+        public String toXML() {
+            return new RequestBuilder("grant").
+                addElement("scope", scope).
+                addElement("merchant_public_id", merchantId).
+                toXML();
+        }
+    }
+
+    public static String createOAuthGrant(BraintreeGateway gateway, String merchantId, String scope) {
+        Http http = gateway.getHttp();
+        OAuthGrantRequest request = new OAuthGrantRequest().
+            scope(scope).
+            merchantId(merchantId);
+
+        NodeWrapper node = http.post("/oauth_testing/grants", request);
+        return node.findString("code");
+    }
 }
