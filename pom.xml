@@ -8,6 +8,10 @@
     <name>Braintree Gateway Java Client Library</name>
     <url>https://www.braintreegateway.com</url>
     <inceptionYear>2013</inceptionYear>
+    <properties>
+      <scmConnection>
+      </scmConnection>
+    </properties>
 
     <licenses>
       <license>
@@ -21,13 +25,13 @@
         https://github.com/braintree/braintree_java.git
       </url>
       <connection>
-        scm:git:ssh://git@github.braintreeps.com/braintree/braintree-java.git
+        ${scmConnection}
       </connection>
       <developerConnection>
-        scm:git:ssh://git@github.braintreeps.com/braintree/braintree-java.git
+        ${scmConnection}
       </developerConnection>
       <tag>2.45.0</tag>
-  </scm>
+    </scm>
 
     <distributionManagement>
         <snapshotRepository>
@@ -190,6 +194,9 @@
                 <version>2.5.1</version>
                 <configuration>
                   <mavenExecutorId>forked-path</mavenExecutorId>
+                  <checkModificationExcludes>
+                      <checkModificationExclude>pom.xml</checkModificationExclude>
+                  </checkModificationExcludes>
                 </configuration>
             </plugin>
         </plugins>
