@@ -34,4 +34,19 @@ public class OAuthIT {
         assertNotNull(result.getTarget().getExpiresAt());
         assertEquals("bearer", result.getTarget().getTokenType());
     }
+
+    @Test
+    public void createTokenFromBadCodeReturnsOAuthCredentials() {
+        OAuthCredentialsRequest oauthCredentials = new OAuthCredentialsRequest().
+             code("bad_code").
+             scope("read_write");
+
+        Result<OAuthCredentials> result = gateway.oauth().createTokenFromCode(oauthCredentials);
+        ValidationErrors errors = result.getErrors();
+
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.OAUTH_INVALID_GRANT, errors.forObject("credentials").onField("code").get(0).getCode());
+        assertEquals("Invalid grant: code not found", errors.forObject("credentials").onField("code").get(0).getMessage());
+    }
 }
+
