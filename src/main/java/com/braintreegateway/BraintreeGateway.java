@@ -69,10 +69,11 @@ public class BraintreeGateway {
         this.http = new Http(getAuthorizationHeader(), baseMerchantURL(), environment.certificateFilenames, BraintreeGateway.VERSION);
     }
 
-    public BraintreeGateway(Environment environment, String clientId, String clientSecret) {
-        this.environment = environment;
-        this.publicKey = clientId;
-        this.privateKey = clientSecret;
+    public BraintreeGateway(String clientId, String clientSecret) {
+        CredentialsParser parser = new CredentialsParser(clientId, clientSecret);
+        this.environment = parser.environment;
+        this.publicKey = parser.clientId;
+        this.privateKey = parser.clientSecret;
         this.configuration = new Configuration(baseMerchantURL(), clientId, clientSecret);
         this.http = new Http(getAuthorizationHeader(), environment.baseURL, environment.certificateFilenames, BraintreeGateway.VERSION);
     }

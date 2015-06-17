@@ -15,7 +15,7 @@ public class OAuthIT {
 
     @Before
     public void createGateway() {
-        this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+        this.gateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
     }
 
     @Test
