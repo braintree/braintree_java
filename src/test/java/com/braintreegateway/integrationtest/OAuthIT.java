@@ -48,5 +48,28 @@ public class OAuthIT {
         assertEquals(ValidationErrorCode.OAUTH_INVALID_GRANT, errors.forObject("credentials").onField("code").get(0).getCode());
         assertEquals("Invalid grant: code not found", errors.forObject("credentials").onField("code").get(0).getMessage());
     }
+
+    @Test
+    public void createTokenFromRefreshToken() {
+        String code = TestHelper.createOAuthGrant(gateway, "integration_merchant_id", "read_write");
+
+        OAuthCredentialsRequest oauthCredentials = new OAuthCredentialsRequest().
+             code(code).
+             scope("read_write");
+
+        Result<OAuthCredentials> result = gateway.oauth().createTokenFromCode(oauthCredentials);
+
+        OAuthCredentialsRequest refreshTokenRequest = new OAuthCredentialsRequest().
+            refreshToken(result.getTarget().getRefreshToken()).
+            scope("read_write");
+
+        Result<OAuthCredentials> refreshTokenResult = gateway.oauth().createTokenFromRefreshToken(refreshTokenRequest);
+
+        assertTrue(refreshTokenResult.isSuccess());
+        assertNotNull(refreshTokenResult.getTarget().getAccessToken());
+        assertNotNull(refreshTokenResult.getTarget().getRefreshToken());
+        assertNotNull(refreshTokenResult.getTarget().getExpiresAt());
+        assertEquals("bearer", refreshTokenResult.getTarget().getTokenType());
+    }
 }
 

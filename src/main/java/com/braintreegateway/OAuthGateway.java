@@ -18,4 +18,10 @@ public class OAuthGateway {
         return new Result<OAuthCredentials>(response, OAuthCredentials.class);
     }
 
+    public Result<OAuthCredentials> createTokenFromRefreshToken(OAuthCredentialsRequest request) {
+        request.grantType("refresh_token");
+
+        NodeWrapper response = http.post("/oauth/access_tokens", request);
+        return new Result<OAuthCredentials>(response, OAuthCredentials.class);
+    }
 }
