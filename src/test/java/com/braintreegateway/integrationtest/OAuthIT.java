@@ -30,9 +30,9 @@ public class OAuthIT {
         Result<OAuthCredentials> result = gateway.oauth().createTokenFromCode(oauthCredentials);
 
         assertTrue(result.isSuccess());
-        assertNotNull(result.getTarget().getAccessToken());
-        assertNotNull(result.getTarget().getRefreshToken());
-        assertNotNull(result.getTarget().getExpiresAt());
+        assertTrue(result.getTarget().getAccessToken().startsWith("access_token"));
+        assertTrue(result.getTarget().getExpiresAt().after(Calendar.getInstance()));
+        assertTrue(result.getTarget().getRefreshToken().startsWith("refresh_token"));
         assertEquals("bearer", result.getTarget().getTokenType());
     }
 
