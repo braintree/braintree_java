@@ -14,10 +14,13 @@ public class MerchantIT {
 
     private BraintreeGateway gateway;
 
+    @Before
+    public void createGateway() {
+        this.gateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+    }
+
     @Test
     public void createMerchantTest() {
-        this.gateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
-
         MerchantRequest request = new MerchantRequest().
             email("name@email.com").
             countryCodeAlpha3("USA").
@@ -38,5 +41,19 @@ public class MerchantIT {
         assertTrue(result.getTarget().getCredentials().getExpiresAt().after(Calendar.getInstance()));
         assertTrue(result.getTarget().getCredentials().getRefreshToken() == null || result.getTarget().getCredentials().getRefreshToken().isEmpty());
         assertEquals("bearer", result.getTarget().getCredentials().getTokenType());
+    }
+
+    @Test
+    public void createFailsWithInvalidPaymentMethods() {
+        MerchantRequest request = new MerchantRequest().
+            email("name@email.com").
+            countryCodeAlpha3("USA").
+            paymentMethods(Arrays.asList("fake_money"));
+
+        Result<Merchant> result = gateway.merchant().create(request);
+
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.MERCHANT_PAYMENT_METHODS_ARE_INVALID, result.getErrors().forObject("merchant").onField("payment-methods").get(0).getCode());
+
     }
 }
