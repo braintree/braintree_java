@@ -115,13 +115,13 @@ public abstract class TestHelper {
     }
 
     public static void escrow(BraintreeGateway gateway, String transactionId) {
-        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).put("/transactions/" + transactionId + "/escrow");
+        NodeWrapper response = new Http(gateway.getConfiguration()).put("/transactions/" + transactionId + "/escrow");
         assertTrue(response.isSuccess());
     }
 
     public static String createTest3DS(BraintreeGateway gateway, String merchantAccountId, ThreeDSecureRequestForTests request) {
         String url = "/three_d_secure/create_verification/" + merchantAccountId;
-        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).post(url, request);
+        NodeWrapper response = new Http(gateway.getConfiguration()).post(url, request);
         assertTrue(response.isSuccess());
 
         String token = response.findString("three-d-secure-token");

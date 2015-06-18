@@ -3,6 +3,7 @@ package com.braintreegateway.util;
 import com.braintreegateway.Configuration;
 import com.braintreegateway.Request;
 import com.braintreegateway.exceptions.*;
+import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -28,16 +29,10 @@ public class Http {
         DELETE, GET, POST, PUT;
     }
 
-    private String authorizationHeader;
-    private String baseMerchantURL;
-    private String[] certificateFilenames;
-    private String version;
+    private Configuration configuration;
 
-    public Http(String authorizationHeader, String baseMerchantURL, String[] certificateFilenames, String version) {
-        this.authorizationHeader = authorizationHeader;
-        this.baseMerchantURL = baseMerchantURL;
-        this.certificateFilenames = Arrays.copyOf(certificateFilenames, certificateFilenames.length);
-        this.version = version;
+    public Http(Configuration configuration) {
+        this.configuration = configuration;
     }
 
     public void delete(String url) {
@@ -127,7 +122,7 @@ public class Http {
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             keyStore.load(null);
 
-            for (String certificateFilename : certificateFilenames) {
+            for (String certificateFilename : configuration.environment.certificateFilenames) {
                 CertificateFactory cf = CertificateFactory.getInstance("X.509");
                 InputStream certStream = null;
                 try {
@@ -164,13 +159,13 @@ public class Http {
     }
 
     private HttpURLConnection buildConnection(RequestMethod requestMethod, String urlString) throws java.io.IOException {
-        URL url = new URL(baseMerchantURL + urlString);
+        URL url = new URL(configuration.baseMerchantURL + urlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod(requestMethod.toString());
         connection.addRequestProperty("Accept", "application/xml");
-        connection.addRequestProperty("User-Agent", "Braintree Java " + version);
+        connection.addRequestProperty("User-Agent", "Braintree Java " + Configuration.VERSION);
         connection.addRequestProperty("X-ApiVersion", Configuration.apiVersion());
-        connection.addRequestProperty("Authorization", authorizationHeader);
+        connection.addRequestProperty("Authorization", authorizationHeader());
         connection.addRequestProperty("Accept-Encoding", "gzip");
         connection.addRequestProperty("Content-Type", "application/xml");
         connection.setDoOutput(true);
@@ -211,5 +206,9 @@ public class Http {
 
     private static boolean isErrorCode(int responseCode) {
         return responseCode != 200 && responseCode != 201 && responseCode != 422;
+    }
+
+    public String authorizationHeader() {
+        return "Basic " + Base64.encodeBase64String((configuration.publicKey + ":" + configuration.privateKey).getBytes()).trim();
     }
 }

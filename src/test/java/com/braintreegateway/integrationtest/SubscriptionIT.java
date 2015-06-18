@@ -1802,7 +1802,7 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
     }
 
     private void makePastDue(Subscription subscription, int numberOfDaysPastDue) {
-        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).put("/subscriptions/" + subscription.getId() + "/make_past_due?days_past_due=" + numberOfDaysPastDue);
+        NodeWrapper response = new Http(gateway.getConfiguration()).put("/subscriptions/" + subscription.getId() + "/make_past_due?days_past_due=" + numberOfDaysPastDue);
         assertTrue(response.isSuccess());
     }
 }

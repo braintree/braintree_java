@@ -1,7 +1,5 @@
 package com.braintreegateway;
 
-import com.braintreegateway.org.apache.commons.codec.binary.Base64;
-import com.braintreegateway.util.ClientLibraryProperties;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.TrUtil;
 
@@ -38,8 +36,6 @@ import com.braintreegateway.util.TrUtil;
  */
 public class BraintreeGateway {
 
-    public static final String VERSION = new ClientLibraryProperties().version();
-
     private Configuration configuration;
     private Environment environment;
     private Http http;
@@ -65,8 +61,8 @@ public class BraintreeGateway {
         this.merchantId = merchantId;
         this.publicKey = publicKey;
         this.privateKey = privateKey;
-        this.configuration = new Configuration(baseMerchantURL(), publicKey, privateKey);
-        this.http = new Http(getAuthorizationHeader(), baseMerchantURL(), environment.certificateFilenames, BraintreeGateway.VERSION);
+        this.configuration = new Configuration(baseMerchantURL(), publicKey, privateKey, environment);
+        this.http = new Http(configuration);
     }
 
     public BraintreeGateway(String clientId, String clientSecret) {
@@ -74,8 +70,8 @@ public class BraintreeGateway {
         this.environment = parser.environment;
         this.publicKey = parser.clientId;
         this.privateKey = parser.clientSecret;
-        this.configuration = new Configuration(baseMerchantURL(), clientId, clientSecret);
-        this.http = new Http(getAuthorizationHeader(), environment.baseURL, environment.certificateFilenames, BraintreeGateway.VERSION);
+        this.configuration = new Configuration(baseURL(), clientId, clientSecret, environment);
+        this.http = new Http(configuration);
     }
 
     /**
@@ -163,10 +159,6 @@ public class BraintreeGateway {
      */
     public DiscountGateway discount() {
         return new DiscountGateway(http);
-    }
-
-    public String getAuthorizationHeader() {
-        return "Basic " + Base64.encodeBase64String((publicKey + ":" + privateKey).getBytes()).trim();
     }
 
     public Configuration getConfiguration() {

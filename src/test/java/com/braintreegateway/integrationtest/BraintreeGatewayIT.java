@@ -37,11 +37,4 @@ public class BraintreeGatewayIT {
         assertEquals(config.getPrivateKey(), "privateKey");
     }
 
-    @Test
-    public void getAuthorizationHeader() {
-        BraintreeGateway config = new BraintreeGateway(Environment.DEVELOPMENT, "development_merchant_id",
-                "integration_public_key", "integration_private_key");
-        assertEquals("Basic aW50ZWdyYXRpb25fcHVibGljX2tleTppbnRlZ3JhdGlvbl9wcml2YXRlX2tleQ==", config
-                .getAuthorizationHeader());
-    }
 }

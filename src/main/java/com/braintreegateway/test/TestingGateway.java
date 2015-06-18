@@ -15,10 +15,7 @@ public class TestingGateway {
     }
 
     public TestingGateway(BraintreeGateway gateway, Environment environment) {
-        this(
-            new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), environment.certificateFilenames, BraintreeGateway.VERSION),
-            environment
-        );
+        this(new Http(gateway.getConfiguration()), environment);
     }
 
     public Result<Transaction> settle(String transactionId) {

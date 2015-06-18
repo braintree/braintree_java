@@ -1,8 +1,6 @@
 package com.braintreegateway.util;
 
-import com.braintreegateway.Configuration;
-import com.braintreegateway.CreditCardRequest;
-import com.braintreegateway.TransactionRequest;
+import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +14,7 @@ public class TrUtilTest {
 
     @Before
     public void createConfiguration() {
-        this.configuration = new Configuration("baseMerchantURL", "integration_public_key", "integration_private_key");
+        this.configuration = new Configuration("baseMerchantURL", "integration_public_key", "integration_private_key", Environment.DEVELOPMENT);
     }
 
     @Test

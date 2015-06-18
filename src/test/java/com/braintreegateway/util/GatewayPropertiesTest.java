@@ -1,6 +1,6 @@
 package com.braintreegateway.util;
 
-import com.braintreegateway.BraintreeGateway;
+import com.braintreegateway.*;
 import org.junit.Test;
 
 import java.util.regex.Pattern;
@@ -43,9 +43,9 @@ public class GatewayPropertiesTest {
 
     @Test
     public void gatewayUsesProperties() {
-        String gatewayVersion = BraintreeGateway.VERSION;
+        String configurationVersion = Configuration.VERSION;
         String propertiesVersion = new ClientLibraryProperties().version();
-        assertEquals(gatewayVersion, propertiesVersion);
+        assertEquals(configurationVersion, propertiesVersion);
     }
 
 }
