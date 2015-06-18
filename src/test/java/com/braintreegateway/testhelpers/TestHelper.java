@@ -17,12 +17,15 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.*;
+import java.io.UnsupportedEncodingException;
 
 import static org.junit.Assert.*;
 
@@ -399,5 +402,17 @@ public abstract class TestHelper {
 
         NodeWrapper node = http.post("/oauth_testing/grants", request);
         return node.findString("code");
+    }
+
+    /* http://stackoverflow.com/questions/13592236/parse-the-uri-string-into-name-value-collection-in-java */
+    public static Map<String, String> splitQuery(URL url) throws UnsupportedEncodingException {
+        Map<String, String> queryPairs = new LinkedHashMap<String, String>();
+        String query = url.getQuery();
+        String[] pairs = query.split("&");
+        for (String pair : pairs) {
+            int idx = pair.indexOf("=");
+            queryPairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+        }
+        return queryPairs;
     }
 }

@@ -256,7 +256,7 @@ public class BraintreeGateway {
     }
 
     public OAuthGateway oauth() {
-        return new OAuthGateway(http);
+        return new OAuthGateway(http, configuration, environment);
     }
 
     public String getPrivateKey() {
