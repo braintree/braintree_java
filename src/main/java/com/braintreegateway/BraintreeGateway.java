@@ -255,6 +255,10 @@ public class BraintreeGateway {
         return new MerchantAccountGateway(http);
     }
 
+    public MerchantGateway merchant() {
+        return new MerchantGateway(http);
+    }
+
     public OAuthGateway oauth() {
         return new OAuthGateway(http, configuration, environment);
     }
