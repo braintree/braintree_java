@@ -53,15 +53,14 @@ public class BraintreeGateway {
      *            the private key provided by Braintree.
      */
     public BraintreeGateway(Environment environment, String merchantId, String publicKey, String privateKey) {
-        String baseMerchantURL = environment.baseURL + "/merchants/" + merchantId;
-        this.configuration = new Configuration(baseMerchantURL, publicKey, privateKey, environment);
+        this.configuration = new Configuration(environment, merchantId, publicKey, privateKey);
         this.http = new Http(configuration);
     }
 
     public BraintreeGateway(String clientId, String clientSecret) {
         CredentialsParser parser = new CredentialsParser(clientId, clientSecret);
         Environment environment = parser.environment;
-        this.configuration = new Configuration(environment.baseURL, parser.clientId, parser.clientSecret, environment);
+        this.configuration = new Configuration(environment, "", parser.clientId, parser.clientSecret);
         this.http = new Http(configuration);
     }
 
@@ -89,7 +88,7 @@ public class BraintreeGateway {
      * @return an {@link AddOnGateway}.
      */
     public AddOnGateway addOn() {
-        return new AddOnGateway(http);
+        return new AddOnGateway(http, configuration);
     }
 
     /**
@@ -99,7 +98,7 @@ public class BraintreeGateway {
      * @return an {@link AddressGateway}.
      */
     public AddressGateway address() {
-        return new AddressGateway(http);
+        return new AddressGateway(http, configuration);
     }
 
     public ClientTokenGateway clientToken() {
@@ -137,7 +136,7 @@ public class BraintreeGateway {
      * @return an {@link DiscountGateway}.
      */
     public DiscountGateway discount() {
-        return new DiscountGateway(http);
+        return new DiscountGateway(http, configuration);
     }
 
     public Configuration getConfiguration() {
@@ -145,15 +144,15 @@ public class BraintreeGateway {
     }
 
     public PaymentMethodGateway paymentMethod() {
-        return new PaymentMethodGateway(http);
+        return new PaymentMethodGateway(http, configuration);
     }
 
     public PaymentMethodNonceGateway paymentMethodNonce() {
-        return new PaymentMethodNonceGateway(http);
+        return new PaymentMethodNonceGateway(http, configuration);
     }
 
     public PayPalAccountGateway paypalAccount() {
-        return new PayPalAccountGateway(http);
+        return new PayPalAccountGateway(http, configuration);
     }
 
     /**
@@ -162,11 +161,11 @@ public class BraintreeGateway {
      * @return an {@link PlanGateway}.
      */
     public PlanGateway plan() {
-        return new PlanGateway(http);
+        return new PlanGateway(http, configuration);
     }
 
     public SettlementBatchSummaryGateway settlementBatchSummary() {
-        return new SettlementBatchSummaryGateway(http);
+        return new SettlementBatchSummaryGateway(http, configuration);
     }
 
     /**
@@ -176,7 +175,7 @@ public class BraintreeGateway {
      * @return an {@link SubscriptionGateway}.
      */
     public SubscriptionGateway subscription() {
-        return new SubscriptionGateway(http);
+        return new SubscriptionGateway(http, configuration);
     }
 
     /**
@@ -223,11 +222,11 @@ public class BraintreeGateway {
      * @return an {@link MerchantAccountGateway}.
      */
     public MerchantAccountGateway merchantAccount() {
-        return new MerchantAccountGateway(http);
+        return new MerchantAccountGateway(http, configuration);
     }
 
     public MerchantGateway merchant() {
-        return new MerchantGateway(http);
+        return new MerchantGateway(http, configuration);
     }
 
     public OAuthGateway oauth() {
@@ -239,6 +238,6 @@ public class BraintreeGateway {
     }
 
     public TestingGateway testing() {
-        return new TestingGateway(http, configuration.environment);
+        return new TestingGateway(http, configuration);
     }
 }

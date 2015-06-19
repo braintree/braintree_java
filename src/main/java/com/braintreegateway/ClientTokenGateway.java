@@ -34,7 +34,7 @@ public class ClientTokenGateway {
     public String generate(ClientTokenRequest request) {
       NodeWrapper response = null;
       verifyOptions(request);
-      response = http.post("/client_token", request);
+      response = http.post(configuration.getMerchantPath() + "/client_token", request);
 
       String token = response.findString("value");
       if (token != null) {

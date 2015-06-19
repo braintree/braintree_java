@@ -34,7 +34,7 @@ public class AddOnIT {
                 .name("java test add-on name")
                 .neverExpires(false)
                 .numberOfBillingCycles(12);
-        http.post("/modifications/create_modification_for_tests", addOnRequest);
+        http.post(gateway.getConfiguration().getMerchantPath() + "/modifications/create_modification_for_tests", addOnRequest);
 
         List<AddOn> addOns = gateway.addOn().all();
         AddOn actualAddOn = null;

@@ -8,13 +8,15 @@ import java.util.List;
 
 public class PlanGateway {
     private Http http;
+    private Configuration configuration;
 
-    public PlanGateway(Http http) {
+    public PlanGateway(Http http, Configuration configuration) {
         this.http = http;
+        this.configuration = configuration;
     }
 
     public List<Plan> all() {
-        NodeWrapper node = http.get("/plans");
+        NodeWrapper node = http.get(configuration.getMerchantPath() + "/plans");
 
         List<Plan> plans = new ArrayList<Plan>();
 

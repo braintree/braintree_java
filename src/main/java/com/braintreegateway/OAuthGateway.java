@@ -31,7 +31,7 @@ public class OAuthGateway {
     public String connectUrl(OAuthConnectUrlRequest request) {
         request.clientId(configuration.publicKey);
         String queryString = request.toQueryString();
-        String url = configuration.baseMerchantURL + "/oauth/connect?" + queryString;
+        String url = configuration.getBaseURL() + "/oauth/connect?" + queryString;
         return String.format("%1$s&signature=%2$s&algorithm=SHA256", url, computeSignature(url));
     }
 

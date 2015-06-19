@@ -8,9 +8,11 @@ import java.util.Calendar;
 public class SettlementBatchSummaryGateway {
 
     private Http http;
+    private Configuration configuration;
 
-    public SettlementBatchSummaryGateway(Http http) {
+    public SettlementBatchSummaryGateway(Http http, Configuration configuration) {
         this.http = http;
+        this.configuration = configuration;
     }
 
     public Result<SettlementBatchSummary> generate(Calendar settlementDate) {
@@ -27,8 +29,8 @@ public class SettlementBatchSummaryGateway {
     }
 
     private Result<SettlementBatchSummary> doGenerate(SettlementBatchSummaryRequest request) {
-        NodeWrapper node = http.post("/settlement_batch_summary", request);
+        NodeWrapper node = http.post(configuration.getMerchantPath() + "/settlement_batch_summary", request);
         return new Result<SettlementBatchSummary>(node, SettlementBatchSummary.class);
     }
-    
+
 }

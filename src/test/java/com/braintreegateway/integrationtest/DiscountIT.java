@@ -34,7 +34,7 @@ public class DiscountIT {
                 .name("java test discount name")
                 .neverExpires(false)
                 .numberOfBillingCycles(12);
-        http.post("/modifications/create_modification_for_tests", discountRequest);
+        http.post(gateway.getConfiguration().getMerchantPath() + "/modifications/create_modification_for_tests", discountRequest);
 
         List<Discount> discounts = gateway.discount().all();
         Discount actualDiscount = null;

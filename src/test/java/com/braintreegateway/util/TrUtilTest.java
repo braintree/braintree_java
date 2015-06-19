@@ -14,7 +14,7 @@ public class TrUtilTest {
 
     @Before
     public void createConfiguration() {
-        this.configuration = new Configuration("baseMerchantURL", "integration_public_key", "integration_private_key", Environment.DEVELOPMENT);
+        this.configuration = new Configuration(Environment.DEVELOPMENT, "baseMerchantURL", "integration_public_key", "integration_private_key");
     }
 
     @Test

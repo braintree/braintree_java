@@ -18,7 +18,7 @@ public class CreditCardVerificationGateway {
 
     List<CreditCardVerification> fetchCreditCardVerifications(CreditCardVerificationSearchRequest query, List<String> ids) {
         query.ids().in(ids);
-        NodeWrapper response = http.post("/verifications/advanced_search", query);
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/verifications/advanced_search", query);
 
         List<CreditCardVerification> items = new ArrayList<CreditCardVerification>();
         for (NodeWrapper node : response.findAll("verification")) {
@@ -32,11 +32,11 @@ public class CreditCardVerificationGateway {
         if(id == null || id.trim().equals(""))
             throw new NotFoundException();
 
-        return new CreditCardVerification(http.get("/verifications/" + id));
+        return new CreditCardVerification(http.get(configuration.getMerchantPath() + "/verifications/" + id));
     }
 
     public ResourceCollection<CreditCardVerification> search(CreditCardVerificationSearchRequest query) {
-        NodeWrapper node = http.post("/verifications/advanced_search_ids", query);
+        NodeWrapper node = http.post(configuration.getMerchantPath() + "/verifications/advanced_search_ids", query);
         return new ResourceCollection<CreditCardVerification>(new CreditCardVerificationPager(this, query), node);
     }
 }

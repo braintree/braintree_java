@@ -3,6 +3,7 @@ package com.braintreegateway.util;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Environment;
+import com.braintreegateway.Configuration;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
@@ -29,28 +30,32 @@ public class HttpTest {
 
     @Test
     public void smokeTestGet() {
-        NodeWrapper node = new Http(gateway.getConfiguration()).get("/customers/131866");
+        Configuration configuration = gateway.getConfiguration();
+        NodeWrapper node = new Http(configuration).get(configuration.getMerchantPath() + "/customers/131866");
         assertNotNull(node.findString("first-name"));
     }
 
     @Test
     public void smokeTestPostWithRequest() {
         CustomerRequest request = new CustomerRequest().firstName("Dan").lastName("Manges").company("Braintree");
-        NodeWrapper node = new Http(gateway.getConfiguration()).post("/customers", request);
+        Configuration configuration = gateway.getConfiguration();
+        NodeWrapper node = new Http(configuration).post(configuration.getMerchantPath() + "/customers", request);
         assertEquals("Dan", node.findString("first-name"));
     }
 
     @Test
     public void smokeTestPut() {
         CustomerRequest request = new CustomerRequest().firstName("NewName");
-        NodeWrapper node = new Http(gateway.getConfiguration()).put("/customers/131866", request);
+        Configuration configuration = gateway.getConfiguration();
+        NodeWrapper node = new Http(configuration).put(configuration.getMerchantPath() + "/customers/131866", request);
         assertEquals("NewName", node.findString("first-name"));
     }
 
     @Test
     public void smokeTestDelete() {
-        NodeWrapper node = new Http(gateway.getConfiguration()).post("/customers", new CustomerRequest());
-        new Http(gateway.getConfiguration()).delete("/customers/" + node.findString("id"));
+        Configuration configuration = gateway.getConfiguration();
+        NodeWrapper node = new Http(configuration).post(configuration.getMerchantPath() + "/customers", new CustomerRequest());
+        new Http(gateway.getConfiguration()).delete(configuration.getMerchantPath() + "/customers/" + node.findString("id"));
     }
 
     @Test(expected = AuthenticationException.class)
@@ -76,14 +81,16 @@ public class HttpTest {
     @Test(expected = DownForMaintenanceException.class)
     public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingServerToServer() {
         CustomerRequest request = new CustomerRequest();
-        new Http(gateway.getConfiguration()).put("/test/maintenance", request);
+        Configuration configuration = gateway.getConfiguration();
+        new Http(configuration).put(configuration.getMerchantPath() + "/test/maintenance", request);
     }
 
     @Test(expected = DownForMaintenanceException.class)
     public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingTR() {
         CustomerRequest request = new CustomerRequest();
         CustomerRequest trParams = new CustomerRequest();
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.getConfiguration().baseMerchantURL + "/test/maintenance");
+        Configuration configuration = gateway.getConfiguration();
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, configuration.getBaseURL() + configuration.getMerchantPath() + "/test/maintenance");
         gateway.customer().confirmTransparentRedirect(queryString);
     }
 
@@ -91,7 +98,8 @@ public class HttpTest {
     public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingNewTR() {
         CustomerRequest request = new CustomerRequest();
         CustomerRequest trParams = new CustomerRequest();
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.getConfiguration().baseMerchantURL + "/test/maintenance");
+        Configuration configuration = gateway.getConfiguration();
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, configuration.getBaseURL() + configuration.getMerchantPath() + "/test/maintenance");
         gateway.transparentRedirect().confirmCustomer(queryString);
     }
 

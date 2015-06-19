@@ -8,13 +8,15 @@ import java.util.List;
 
 public class DiscountGateway {
     private Http http;
+    private Configuration configuration;
 
-    public DiscountGateway(Http http) {
+    public DiscountGateway(Http http, Configuration configuration) {
         this.http = http;
+        this.configuration = configuration;
     }
 
     public List<Discount> all() {
-        NodeWrapper node = http.get("/discounts");
+        NodeWrapper node = http.get(configuration.getMerchantPath() + "/discounts");
 
         List<Discount> discounts = new ArrayList<Discount>();
 

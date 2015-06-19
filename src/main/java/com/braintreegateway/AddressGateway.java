@@ -5,10 +5,10 @@ import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
 /**
- * Provides methods to create, delete, find, and update {@link Address} objects.  
- * This class does not need to be instantiated directly.  
+ * Provides methods to create, delete, find, and update {@link Address} objects.
+ * This class does not need to be instantiated directly.
  * Instead, use {@link BraintreeGateway#address()} to get an instance of this class:
- * 
+ *
  * <pre>
  * BraintreeGateway gateway = new BraintreeGateway(...);
  * gateway.address().create(...)
@@ -17,9 +17,11 @@ import com.braintreegateway.util.NodeWrapper;
 public class AddressGateway {
 
     private Http http;
+    private Configuration configuration;
 
-    public AddressGateway(Http http) {
+    public AddressGateway(Http http, Configuration configuration) {
         this.http = http;
+        this.configuration = configuration;
     }
 
     /**
@@ -29,7 +31,7 @@ public class AddressGateway {
      * @return a {@link Result} object.
      */
     public Result<Address> create(String customerId, AddressRequest request) {
-        NodeWrapper node = http.post("/customers/" + customerId + "/addresses", request);
+        NodeWrapper node = http.post(configuration.getMerchantPath() + "/customers/" + customerId + "/addresses", request);
         return new Result<Address>(node, Address.class);
     }
 
@@ -40,7 +42,7 @@ public class AddressGateway {
      * @return a {@link Result} object.
      */
     public Result<Address> delete(String customerId, String id) {
-        http.delete("/customers/" + customerId + "/addresses/" + id);
+        http.delete(configuration.getMerchantPath() + "/customers/" + customerId + "/addresses/" + id);
         return new Result<Address>();
     }
 
@@ -54,10 +56,10 @@ public class AddressGateway {
         if(customerId == null || customerId.trim().equals("") || id == null || id.trim().equals(""))
             throw new NotFoundException();
 
-        return new Address(http.get("/customers/" + customerId + "/addresses/" + id));
+        return new Address(http.get(configuration.getMerchantPath() + "/customers/" + customerId + "/addresses/" + id));
     }
 
-    
+
     /**
      * Updates a Customer's {@link Address}.
      * @param customerId the id of the {@link Customer}.
@@ -66,7 +68,7 @@ public class AddressGateway {
      * @return the {@link Address} or raises a {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Result<Address> update(String customerId, String id, AddressRequest request) {
-        NodeWrapper node = http.put("/customers/" + customerId + "/addresses/" + id, request);
+        NodeWrapper node = http.put(configuration.getMerchantPath() + "/customers/" + customerId + "/addresses/" + id, request);
         return new Result<Address>(node, Address.class);
     }
 }

@@ -8,13 +8,15 @@ import java.util.List;
 
 public class AddOnGateway {
     private Http http;
+    private Configuration configuration;
 
-    public AddOnGateway(Http http) {
+    public AddOnGateway(Http http, Configuration configuration) {
         this.http = http;
+        this.configuration = configuration;
     }
 
     public List<AddOn> all() {
-        NodeWrapper node = http.get("/add_ons");
+        NodeWrapper node = http.get(configuration.getMerchantPath() + "/add_ons");
 
         List<AddOn> addOns = new ArrayList<AddOn>();
 

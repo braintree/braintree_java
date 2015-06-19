@@ -56,6 +56,6 @@ public class TrUtil {
     }
 
     public String url() {
-        return configuration.baseMerchantURL + "/transparent_redirect_requests";
+        return configuration.getBaseURL() + configuration.getMerchantPath() + "/transparent_redirect_requests";
     }
 }

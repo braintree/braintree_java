@@ -39,7 +39,8 @@ public class TransactionIT implements MerchantAccountTestConstants {
     @SuppressWarnings("deprecation")
     @Test
     public void transparentRedirectURLForCreate() {
-        assertEquals(gateway.getConfiguration().baseMerchantURL + "/transactions/all/create_via_transparent_redirect_request",
+        Configuration configuration = gateway.getConfiguration();
+        assertEquals(configuration.getBaseURL() + configuration.getMerchantPath() + "/transactions/all/create_via_transparent_redirect_request",
                 gateway.transaction().transparentRedirectURLForCreate());
     }
 
@@ -3654,7 +3655,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Result<Transaction> authResult = gateway.transaction().sale(request);
         assertTrue(authResult.isSuccess());
 
-        TestingGateway testingGateway = new TestingGateway(gateway, Environment.DEVELOPMENT);
+        TestingGateway testingGateway = gateway.testing();
         testingGateway.settlementDecline(authResult.getTarget().getId());
 
         Transaction transaction = gateway.transaction().find(authResult.getTarget().getId());

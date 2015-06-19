@@ -2,6 +2,7 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Environment;
+import com.braintreegateway.Configuration;
 import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Test;
 
@@ -14,19 +15,22 @@ public class BraintreeGatewayIT {
         BraintreeGateway gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "publicKey",
                 "privateKey");
         String port = System.getenv().get("GATEWAY_PORT") == null ? "3000" : System.getenv().get("GATEWAY_PORT");
-        assertEquals("http://localhost:" + port + "/merchants/integration_merchant_id", gateway.getConfiguration().baseMerchantURL);
+        Configuration configuration = gateway.getConfiguration();
+        assertEquals("http://localhost:" + port + "/merchants/integration_merchant_id", configuration.getBaseURL() + configuration.getMerchantPath());
     }
 
     @Test
     public void sandboxBaseMerchantUrl() {
         BraintreeGateway gateway = new BraintreeGateway(Environment.SANDBOX, "sandbox_merchant_id", "publicKey", "privateKey");
-        assertEquals("https://api.sandbox.braintreegateway.com:443/merchants/sandbox_merchant_id", gateway.getConfiguration().baseMerchantURL);
+        Configuration configuration = gateway.getConfiguration();
+        assertEquals("https://api.sandbox.braintreegateway.com:443/merchants/sandbox_merchant_id", configuration.getBaseURL() + configuration.getMerchantPath());
     }
 
     @Test
     public void productionBaseMerchantUrl() {
         BraintreeGateway gateway = new BraintreeGateway(Environment.PRODUCTION, "production_merchant_id", "publicKey", "privateKey");
-        assertEquals("https://api.braintreegateway.com:443/merchants/production_merchant_id", gateway.getConfiguration().baseMerchantURL);
+        Configuration configuration = gateway.getConfiguration();
+        assertEquals("https://api.braintreegateway.com:443/merchants/production_merchant_id", configuration.getBaseURL() + configuration.getMerchantPath());
     }
 
     @Test

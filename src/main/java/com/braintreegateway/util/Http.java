@@ -159,7 +159,7 @@ public class Http {
     }
 
     private HttpURLConnection buildConnection(RequestMethod requestMethod, String urlString) throws java.io.IOException {
-        URL url = new URL(configuration.baseMerchantURL + urlString);
+        URL url = new URL(configuration.getBaseURL() + urlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod(requestMethod.toString());
         connection.addRequestProperty("Accept", "application/xml");
