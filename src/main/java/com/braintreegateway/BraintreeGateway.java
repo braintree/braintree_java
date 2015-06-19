@@ -38,9 +38,6 @@ public class BraintreeGateway {
 
     private Configuration configuration;
     private Http http;
-    private String merchantId;
-    private String privateKey;
-    private String publicKey;
 
     /**
      * Instantiates a BraintreeGateway. Use the values provided by Braintree.
@@ -56,9 +53,6 @@ public class BraintreeGateway {
      *            the private key provided by Braintree.
      */
     public BraintreeGateway(Environment environment, String merchantId, String publicKey, String privateKey) {
-        this.merchantId = merchantId;
-        this.publicKey = publicKey;
-        this.privateKey = privateKey;
         String baseMerchantURL = environment.baseURL + "/merchants/" + merchantId;
         this.configuration = new Configuration(baseMerchantURL, publicKey, privateKey, environment);
         this.http = new Http(configuration);
@@ -66,10 +60,8 @@ public class BraintreeGateway {
 
     public BraintreeGateway(String clientId, String clientSecret) {
         CredentialsParser parser = new CredentialsParser(clientId, clientSecret);
-        this.publicKey = parser.clientId;
-        this.privateKey = parser.clientSecret;
         Environment environment = parser.environment;
-        this.configuration = new Configuration(environment.baseURL, clientId, clientSecret, environment);
+        this.configuration = new Configuration(environment.baseURL, parser.clientId, parser.clientSecret, environment);
         this.http = new Http(configuration);
     }
 
@@ -240,14 +232,6 @@ public class BraintreeGateway {
 
     public OAuthGateway oauth() {
         return new OAuthGateway(http, configuration);
-    }
-
-    public String getPrivateKey() {
-      return privateKey;
-    }
-
-    public String getPublicKey() {
-      return publicKey;
     }
 
     public Http getHttp() {

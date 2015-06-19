@@ -32,8 +32,8 @@ public class BraintreeGatewayIT {
     @Test
     public void partnerIdAlias() {
         BraintreeGateway gateway = BraintreeGateway.forPartner(Environment.DEVELOPMENT, "partner_id", "publicKey", "privateKey");
-        assertEquals(gateway.getPublicKey(), "publicKey");
-        assertEquals(gateway.getPrivateKey(), "privateKey");
+        assertEquals(gateway.getConfiguration().publicKey, "publicKey");
+        assertEquals(gateway.getConfiguration().privateKey, "privateKey");
     }
 
 }
