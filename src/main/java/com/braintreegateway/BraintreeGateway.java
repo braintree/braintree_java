@@ -58,9 +58,7 @@ public class BraintreeGateway {
     }
 
     public BraintreeGateway(String clientId, String clientSecret) {
-        CredentialsParser parser = new CredentialsParser(clientId, clientSecret);
-        Environment environment = parser.environment;
-        this.configuration = new Configuration(environment, "", parser.clientId, parser.clientSecret);
+        this.configuration = new Configuration(clientId, clientSecret);
         this.http = new Http(configuration);
     }
 

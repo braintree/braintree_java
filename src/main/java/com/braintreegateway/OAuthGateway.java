@@ -29,7 +29,7 @@ public class OAuthGateway {
     }
 
     public String connectUrl(OAuthConnectUrlRequest request) {
-        request.clientId(configuration.getPublicKey());
+        request.clientId(configuration.getClientId());
         String queryString = request.toQueryString();
         String url = configuration.getBaseURL() + "/oauth/connect?" + queryString;
         return String.format("%1$s&signature=%2$s&algorithm=SHA256", url, computeSignature(url));
@@ -37,6 +37,6 @@ public class OAuthGateway {
 
     private String computeSignature(String url) {
         Sha256Hasher hasher = new Sha256Hasher();
-        return hasher.hmacHash(configuration.getPrivateKey(), url);
+        return hasher.hmacHash(configuration.getClientSecret(), url);
     }
 }

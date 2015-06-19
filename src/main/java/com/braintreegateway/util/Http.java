@@ -209,6 +209,12 @@ public class Http {
     }
 
     public String authorizationHeader() {
-        return "Basic " + Base64.encodeBase64String((configuration.getPublicKey() + ":" + configuration.getPrivateKey()).getBytes()).trim();
+        String credentials;
+        if (configuration.isClientCredentials()) {
+            credentials = configuration.getClientId() + ":" + configuration.getClientSecret();
+        } else {
+            credentials = configuration.getPublicKey() + ":" + configuration.getPrivateKey();
+        }
+        return "Basic " + Base64.encodeBase64String(credentials.getBytes()).trim();
     }
 }
