@@ -25,13 +25,13 @@ public class CustomerIT {
 
     @Test
     public void transparentRedirectURLForCreate() {
-        assertEquals(gateway.baseMerchantURL() + "/customers/all/create_via_transparent_redirect_request",
+        assertEquals(gateway.getConfiguration().baseMerchantURL + "/customers/all/create_via_transparent_redirect_request",
                 gateway.customer().transparentRedirectURLForCreate());
     }
 
     @Test
     public void transparentRedirectURLForUpdate() {
-        assertEquals(gateway.baseMerchantURL() + "/customers/all/update_via_transparent_redirect_request",
+        assertEquals(gateway.getConfiguration().baseMerchantURL + "/customers/all/update_via_transparent_redirect_request",
                 gateway.customer().transparentRedirectURLForUpdate());
     }
 

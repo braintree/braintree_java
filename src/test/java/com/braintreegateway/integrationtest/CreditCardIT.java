@@ -31,14 +31,14 @@ public class CreditCardIT implements MerchantAccountTestConstants {
     @SuppressWarnings("deprecation")
     @Test
     public void transparentRedirectURLForCreate() {
-        assertEquals(gateway.baseMerchantURL() + "/payment_methods/all/create_via_transparent_redirect_request",
+        assertEquals(gateway.getConfiguration().baseMerchantURL + "/payment_methods/all/create_via_transparent_redirect_request",
                 gateway.creditCard().transparentRedirectURLForCreate());
     }
 
     @SuppressWarnings("deprecation")
     @Test
     public void transparentRedirectURLForUpdate() {
-        assertEquals(gateway.baseMerchantURL() + "/payment_methods/all/update_via_transparent_redirect_request",
+        assertEquals(gateway.getConfiguration().baseMerchantURL + "/payment_methods/all/update_via_transparent_redirect_request",
                 gateway.creditCard().transparentRedirectURLForUpdate());
     }
 

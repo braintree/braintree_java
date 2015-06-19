@@ -39,7 +39,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     @SuppressWarnings("deprecation")
     @Test
     public void transparentRedirectURLForCreate() {
-        assertEquals(gateway.baseMerchantURL() + "/transactions/all/create_via_transparent_redirect_request",
+        assertEquals(gateway.getConfiguration().baseMerchantURL + "/transactions/all/create_via_transparent_redirect_request",
                 gateway.transaction().transparentRedirectURLForCreate());
     }
 

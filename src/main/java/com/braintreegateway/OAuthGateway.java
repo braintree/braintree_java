@@ -8,12 +8,10 @@ public class OAuthGateway {
 
     private Http http;
     private Configuration configuration;
-    private Environment environment;
 
-    public OAuthGateway(Http http, Configuration configuration, Environment environment) {
+    public OAuthGateway(Http http, Configuration configuration) {
         this.http = http;
         this.configuration = configuration;
-        this.environment = environment;
     }
 
     public Result<OAuthCredentials> createTokenFromCode(OAuthCredentialsRequest request) {
@@ -33,7 +31,7 @@ public class OAuthGateway {
     public String connectUrl(OAuthConnectUrlRequest request) {
         request.clientId(configuration.publicKey);
         String queryString = request.toQueryString();
-        String url = environment.baseURL + "/oauth/connect?" + queryString;
+        String url = configuration.baseMerchantURL + "/oauth/connect?" + queryString;
         return String.format("%1$s&signature=%2$s&algorithm=SHA256", url, computeSignature(url));
     }
 

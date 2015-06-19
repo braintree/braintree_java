@@ -170,7 +170,7 @@ public abstract class TestHelper {
       String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
       String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
-      String url = gateway.baseMerchantURL() + "/client_api/nonces.json";
+      String url = gateway.getConfiguration().baseMerchantURL + "/client_api/nonces.json";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", authorizationFingerprint).
         append("shared_customer_identifier_type", "testing").
@@ -202,7 +202,7 @@ public abstract class TestHelper {
       String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
       String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
-      String url = gateway.baseMerchantURL() + "/client_api/v1/payment_methods/paypal_accounts";
+      String url = gateway.getConfiguration().baseMerchantURL + "/client_api/v1/payment_methods/paypal_accounts";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", authorizationFingerprint).
         append("shared_customer_identifier_type", "testing").
@@ -229,7 +229,7 @@ public abstract class TestHelper {
       String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
       String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
-      String url = gateway.baseMerchantURL() + "/client_api/v1/payment_methods/credit_cards";
+      String url = gateway.getConfiguration().baseMerchantURL + "/client_api/v1/payment_methods/credit_cards";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", authorizationFingerprint).
         append("shared_customer_identifier_type", "testing").
@@ -259,7 +259,7 @@ public abstract class TestHelper {
         String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
         String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
-        String url = gateway.baseMerchantURL() + "/client_api/v1/sepa_mandates";
+        String url = gateway.getConfiguration().baseMerchantURL + "/client_api/v1/sepa_mandates";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint)
               .append("sepa_mandate[locale]", "de-DE")
@@ -296,7 +296,7 @@ public abstract class TestHelper {
       String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
       String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
-      String url = gateway.baseMerchantURL() + "/client_api/v1/payment_methods/paypal_accounts";
+      String url = gateway.getConfiguration().baseMerchantURL + "/client_api/v1/payment_methods/paypal_accounts";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", authorizationFingerprint).
         append("shared_customer_identifier_type", "testing").
@@ -321,7 +321,7 @@ public abstract class TestHelper {
       String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
       String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
-      String url = gateway.baseMerchantURL() + "/client_api/v1/payment_methods/paypal_accounts";
+      String url = gateway.getConfiguration().baseMerchantURL + "/client_api/v1/payment_methods/paypal_accounts";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", authorizationFingerprint).
         append("shared_customer_identifier_type", "testing").

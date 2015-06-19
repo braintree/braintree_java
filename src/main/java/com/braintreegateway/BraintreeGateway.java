@@ -37,7 +37,6 @@ import com.braintreegateway.util.TrUtil;
 public class BraintreeGateway {
 
     private Configuration configuration;
-    private Environment environment;
     private Http http;
     private String merchantId;
     private String privateKey;
@@ -57,20 +56,20 @@ public class BraintreeGateway {
      *            the private key provided by Braintree.
      */
     public BraintreeGateway(Environment environment, String merchantId, String publicKey, String privateKey) {
-        this.environment = environment;
         this.merchantId = merchantId;
         this.publicKey = publicKey;
         this.privateKey = privateKey;
-        this.configuration = new Configuration(baseMerchantURL(), publicKey, privateKey, environment);
+        String baseMerchantURL = environment.baseURL + "/merchants/" + merchantId;
+        this.configuration = new Configuration(baseMerchantURL, publicKey, privateKey, environment);
         this.http = new Http(configuration);
     }
 
     public BraintreeGateway(String clientId, String clientSecret) {
         CredentialsParser parser = new CredentialsParser(clientId, clientSecret);
-        this.environment = parser.environment;
         this.publicKey = parser.clientId;
         this.privateKey = parser.clientSecret;
-        this.configuration = new Configuration(baseURL(), clientId, clientSecret, environment);
+        Environment environment = parser.environment;
+        this.configuration = new Configuration(environment.baseURL, clientId, clientSecret, environment);
         this.http = new Http(configuration);
     }
 
@@ -109,18 +108,6 @@ public class BraintreeGateway {
      */
     public AddressGateway address() {
         return new AddressGateway(http);
-    }
-
-    public String baseURL() {
-        return environment.baseURL;
-    }
-
-    public String baseMerchantURL() {
-        return baseURL() + "/merchants/" + merchantId;
-    }
-
-    public String clientApiURL() {
-      return baseMerchantURL() + "/client_api";
     }
 
     public ClientTokenGateway clientToken() {
@@ -252,7 +239,7 @@ public class BraintreeGateway {
     }
 
     public OAuthGateway oauth() {
-        return new OAuthGateway(http, configuration, environment);
+        return new OAuthGateway(http, configuration);
     }
 
     public String getPrivateKey() {
@@ -268,6 +255,6 @@ public class BraintreeGateway {
     }
 
     public TestingGateway testing() {
-        return new TestingGateway(http, environment);
+        return new TestingGateway(http, configuration.environment);
     }
 }
