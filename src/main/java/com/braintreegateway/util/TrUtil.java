@@ -24,13 +24,13 @@ public class TrUtil {
 
         QueryString trContent = new QueryString()
                 .append("api_version", Configuration.apiVersion())
-                .append("public_key", configuration.publicKey)
+                .append("public_key", configuration.getPublicKey())
                 .append("redirect_url", redirectURL)
                 .append("time", dateString)
                 .append("kind", request.getKind())
                 .appendEncodedData(request.toQueryString());
 
-        return new SignatureService(configuration.privateKey, new Sha1Hasher()).sign(trContent.toString());
+        return new SignatureService(configuration.getPrivateKey(), new Sha1Hasher()).sign(trContent.toString());
     }
 
     public boolean isValidTrQueryString(String queryString) {
@@ -38,7 +38,7 @@ public class TrUtil {
         String queryStringWithoutHash = pieces[0];
         String hash = pieces[1];
 
-        return hash.equals(new Sha1Hasher().hmacHash(configuration.privateKey, queryStringWithoutHash));
+        return hash.equals(new Sha1Hasher().hmacHash(configuration.getPrivateKey(), queryStringWithoutHash));
     }
 
     protected String encodeMap(Map<String, String> map) {

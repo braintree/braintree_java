@@ -70,7 +70,7 @@ public abstract class TestHelper {
         String[] dataSections = trData.split("\\|");
         String trHash = dataSections[0];
         String trContent = dataSections[1];
-        assertEquals(trHash, new Sha1Hasher().hmacHash(configuration.privateKey, trContent));
+        assertEquals(trHash, new Sha1Hasher().hmacHash(configuration.getPrivateKey(), trContent));
     }
 
     public static boolean listIncludes(List<? extends Object> list, Object expectedItem) {

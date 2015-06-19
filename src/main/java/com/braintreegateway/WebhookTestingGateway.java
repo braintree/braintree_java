@@ -26,7 +26,7 @@ public class WebhookTestingGateway {
     }
 
     private String publicKeySignaturePair(String stringToSign) {
-        return String.format("%s|%s", configuration.publicKey, new Sha1Hasher().hmacHash(configuration.privateKey, stringToSign));
+        return String.format("%s|%s", configuration.getPublicKey(), new Sha1Hasher().hmacHash(configuration.getPrivateKey(), stringToSign));
     }
 
     public HashMap<String, String> sampleNotification(WebhookNotification.Kind kind, String id) {

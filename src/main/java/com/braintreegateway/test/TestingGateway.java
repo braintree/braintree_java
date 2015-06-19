@@ -39,7 +39,7 @@ public class TestingGateway {
     }
 
     private void checkEnvironment() throws TestOperationPerformedInProductionException {
-        if (configuration.environment == Environment.PRODUCTION) {
+        if (configuration.getEnvironment() == Environment.PRODUCTION) {
           throw new TestOperationPerformedInProductionException();
         }
     }

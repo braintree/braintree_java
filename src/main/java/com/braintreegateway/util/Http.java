@@ -122,7 +122,7 @@ public class Http {
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             keyStore.load(null);
 
-            for (String certificateFilename : configuration.environment.certificateFilenames) {
+            for (String certificateFilename : configuration.getEnvironment().certificateFilenames) {
                 CertificateFactory cf = CertificateFactory.getInstance("X.509");
                 InputStream certStream = null;
                 try {
@@ -209,6 +209,6 @@ public class Http {
     }
 
     public String authorizationHeader() {
-        return "Basic " + Base64.encodeBase64String((configuration.publicKey + ":" + configuration.privateKey).getBytes()).trim();
+        return "Basic " + Base64.encodeBase64String((configuration.getPublicKey() + ":" + configuration.getPrivateKey()).getBytes()).trim();
     }
 }
