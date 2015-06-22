@@ -231,10 +231,6 @@ public class BraintreeGateway {
         return new OAuthGateway(http, configuration);
     }
 
-    public Http getHttp() {
-        return http;
-    }
-
     public TestingGateway testing() {
         return new TestingGateway(http, configuration);
     }

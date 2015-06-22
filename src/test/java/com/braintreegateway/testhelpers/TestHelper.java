@@ -401,7 +401,7 @@ public abstract class TestHelper {
     }
 
     public static String createOAuthGrant(BraintreeGateway gateway, String merchantId, String scope) {
-        Http http = gateway.getHttp();
+        Http http = new Http(gateway.getConfiguration());
         OAuthGrantRequest request = new OAuthGrantRequest().
             scope(scope).
             merchantId(merchantId);
