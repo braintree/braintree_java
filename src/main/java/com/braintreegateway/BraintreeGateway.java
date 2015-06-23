@@ -69,6 +69,15 @@ public class BraintreeGateway {
         this.http = new Http(getAuthorizationHeader(), baseMerchantURL(), environment.certificateFilenames, BraintreeGateway.VERSION);
     }
 
+    public BraintreeGateway(String clientId, String clientSecret) {
+        CredentialsParser parser = new CredentialsParser(clientId, clientSecret);
+        this.environment = parser.environment;
+        this.publicKey = parser.clientId;
+        this.privateKey = parser.clientSecret;
+        this.configuration = new Configuration(baseMerchantURL(), clientId, clientSecret);
+        this.http = new Http(getAuthorizationHeader(), environment.baseURL, environment.certificateFilenames, BraintreeGateway.VERSION);
+    }
+
     /**
      * Returns a BraintreeGateway specifically for Partner usage. Unless you are a partner, use the regular constructor instead.
      *
@@ -106,8 +115,12 @@ public class BraintreeGateway {
         return new AddressGateway(http);
     }
 
+    public String baseURL() {
+        return environment.baseURL;
+    }
+
     public String baseMerchantURL() {
-        return environment.baseURL + "/merchants/" + merchantId;
+        return baseURL() + "/merchants/" + merchantId;
     }
 
     public String clientApiURL() {
@@ -242,12 +255,24 @@ public class BraintreeGateway {
         return new MerchantAccountGateway(http);
     }
 
+    public MerchantGateway merchant() {
+        return new MerchantGateway(http);
+    }
+
+    public OAuthGateway oauth() {
+        return new OAuthGateway(http, configuration, environment);
+    }
+
     public String getPrivateKey() {
       return privateKey;
     }
 
     public String getPublicKey() {
       return publicKey;
+    }
+
+    public Http getHttp() {
+        return http;
     }
 
     public TestingGateway testing() {
