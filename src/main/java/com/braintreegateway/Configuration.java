@@ -9,6 +9,7 @@ public class Configuration {
     private String publicKey;
     private String clientId;
     private String clientSecret;
+    private String accessToken;
 
     public static final String VERSION = new ClientLibraryProperties().version();
 
@@ -28,6 +29,13 @@ public class Configuration {
         this.environment = parser.environment;
         this.clientId = parser.clientId;
         this.clientSecret = parser.clientSecret;
+    }
+
+    public Configuration(String accessToken) {
+        CredentialsParser parser = new CredentialsParser(accessToken);
+        this.environment = parser.environment;
+        this.merchantId = parser.merchantId;
+        this.accessToken = parser.accessToken;
     }
 
     public Environment getEnvironment() {
@@ -52,6 +60,14 @@ public class Configuration {
 
     public Boolean isClientCredentials() {
         return clientId != null;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public Boolean isAccessToken() {
+        return accessToken != null;
     }
 
     public String getMerchantPath() {

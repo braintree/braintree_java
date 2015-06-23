@@ -62,6 +62,11 @@ public class BraintreeGateway {
         this.http = new Http(configuration);
     }
 
+    public BraintreeGateway(String accessToken) {
+        this.configuration = new Configuration(accessToken);
+        this.http = new Http(configuration);
+    }
+
     /**
      * Returns a BraintreeGateway specifically for Partner usage. Unless you are a partner, use the regular constructor instead.
      *

@@ -5,8 +5,10 @@ import com.braintreegateway.exceptions.ConfigurationException;
 public class CredentialsParser{
 
     public Environment environment;
+    public String merchantId;
     public String clientId;
     public String clientSecret;
+    public String accessToken;
 
     public CredentialsParser(String clientId, String clientSecret) {
         if (clientSecret.startsWith("client_secret")) {
@@ -31,6 +33,17 @@ public class CredentialsParser{
         }
     }
 
+    public CredentialsParser(String accessToken) {
+        if (accessToken.startsWith("access_token")) {
+            this.accessToken = accessToken;
+        } else {
+            throw new ConfigurationException("Value passed for accessToken is not a valid accessToken");
+        }
+
+        this.merchantId = parseMerchantId(accessToken);
+        this.environment = parseEnvironment(accessToken);
+    }
+
     private Environment parseEnvironment(String credential) {
         String environment = credential.split("\\$")[1];
         if (environment.equals("development") || environment.equals("integration")) {
@@ -42,5 +55,9 @@ public class CredentialsParser{
         } else {
             throw new IllegalArgumentException("Unknown environment: " + environment);
         }
+    }
+
+    private String parseMerchantId(String accessToken) {
+        return accessToken.split("\\$")[2];
     }
 }

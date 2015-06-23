@@ -63,6 +63,38 @@ public class CustomerIT {
     }
 
     @Test
+    public void createWithAccessToken() {
+        BraintreeGateway oauthGateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+
+        String code = TestHelper.createOAuthGrant(oauthGateway, "integration_merchant_id", "read_write");
+
+        OAuthCredentialsRequest oauthRequest = new OAuthCredentialsRequest().
+             code(code).
+             scope("read_write");
+
+        Result<OAuthCredentials> accessTokenResult = oauthGateway.oauth().createTokenFromCode(oauthRequest);
+
+        BraintreeGateway gateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
+
+        CustomerRequest request = new CustomerRequest().
+            firstName("Mark").
+            lastName("Jones").
+            company("Jones Co.").
+            email("mark.jones@example.com").
+            fax("419-555-1234").
+            phone("614-555-1234").
+            website("http://example.com");
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        assertEquals("Mark", customer.getFirstName());
+        assertEquals("Jones", customer.getLastName());
+        assertEquals("Jones Co.", customer.getCompany());
+        assertEquals("mark.jones@example.com", customer.getEmail());
+    }
+
+    @Test
     public void createViaTransparentRedirect() {
         CustomerRequest trParams = new CustomerRequest();
         CustomerRequest request = new CustomerRequest().firstName("John").lastName("Doe");

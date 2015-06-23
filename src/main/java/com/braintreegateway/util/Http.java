@@ -209,6 +209,9 @@ public class Http {
     }
 
     public String authorizationHeader() {
+        if (configuration.isAccessToken()) {
+            return "Bearer " + configuration.getAccessToken();
+        }
         String credentials;
         if (configuration.isClientCredentials()) {
             credentials = configuration.getClientId() + ":" + configuration.getClientSecret();

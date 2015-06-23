@@ -35,4 +35,18 @@ public class CredentialsParserTest {
     public void credentialsParserThrowsErrorOnInvalidClientId() {
         new CredentialsParser("client_secret$development$integration_client_secret", "client_secret$development$integration_client_secret");
     }
+
+    @Test
+    public void credentialsParserParsesAccessToken() {
+        CredentialsParser parser = new CredentialsParser("access_token$development$integration_merchant_id$4bff9793ed");
+
+        assertEquals("access_token$development$integration_merchant_id$4bff9793ed", parser.accessToken);
+        assertEquals("integration_merchant_id", parser.merchantId);
+        assertEquals(Environment.DEVELOPMENT, parser.environment);
+    }
+
+    @Test(expected=ConfigurationException.class)
+    public void credentialsParserThrowsErrorOnInvalidAccessToken() {
+        new CredentialsParser("client_id$development$integration_client_id");
+    }
 }
