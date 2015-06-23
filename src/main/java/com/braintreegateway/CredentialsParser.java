@@ -33,7 +33,7 @@ public class CredentialsParser{
 
     private Environment parseEnvironment(String credential) {
         String environment = credential.split("\\$")[1];
-        if (environment.equals("development")) {
+        if (environment.equals("development") || environment.equals("integration")) {
             return Environment.DEVELOPMENT;
         } else if (environment.equals("sandbox")) {
             return Environment.SANDBOX;
