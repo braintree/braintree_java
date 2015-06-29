@@ -417,7 +417,13 @@ public abstract class TestHelper {
         String[] pairs = query.split("&");
         for (String pair : pairs) {
             int idx = pair.indexOf("=");
-            queryPairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+            String key = URLDecoder.decode(pair.substring(0, idx), "UTF-8");
+            if (queryPairs.get(key) == null) {
+                queryPairs.put(key, URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+            }
+            else {
+                queryPairs.put(key, queryPairs.get(key) + ", " + URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+            }
         }
         return queryPairs;
     }

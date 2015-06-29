@@ -193,4 +193,27 @@ public class OAuthIT {
             fail("malformed url");
         }
     }
+
+    @Test
+    public void connectUrlReturnsCorrectPaymentMethods() {
+        OAuthConnectUrlRequest request = new OAuthConnectUrlRequest().
+            paymentMethods(new String[] {"credit_card", "paypal"});
+
+        String urlString = gateway.oauth().connectUrl(request);
+
+        URL url;
+
+        try {
+            url = new URL(urlString);
+
+            Map<String, String> query = TestHelper.splitQuery(url);
+
+            assertNull(query.get("redirect_uri"));
+            assertEquals("credit_card, paypal", query.get("payment_methods[]"));
+        } catch (java.io.UnsupportedEncodingException e) {
+            fail("unsupported encoding");
+        } catch (java.net.MalformedURLException e) {
+            fail("malformed url");
+        }
+    }
 }

@@ -129,7 +129,6 @@ public class PaymentMethodRequest extends Request {
             addElement("billingAddress", billingAddressRequest).
             addElement("billingAddressId", billingAddressId).
             addElement("deviceData", deviceData).
-            addElement("options", optionsRequest).
             addElement("customerId", customerId).
             addElement("cardholderName", cardholderName).
             addElement("cvv", cvv).

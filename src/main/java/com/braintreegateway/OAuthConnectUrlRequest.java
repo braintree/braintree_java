@@ -10,6 +10,7 @@ public class OAuthConnectUrlRequest extends Request {
     private String clientId;
     private String state;
     private String redirectUri;
+    private String[] paymentMethods = new String[0];
 
     private OAuthConnectUrlUserRequest user;
     private OAuthConnectUrlBusinessRequest business;
@@ -39,6 +40,11 @@ public class OAuthConnectUrlRequest extends Request {
         return this;
     }
 
+    public OAuthConnectUrlRequest paymentMethods(String[] paymentMethods) {
+        this.paymentMethods = paymentMethods;
+        return this;
+    }
+
     public OAuthConnectUrlUserRequest user() {
         user = new OAuthConnectUrlUserRequest(this);
         return this.user;
@@ -56,8 +62,13 @@ public class OAuthConnectUrlRequest extends Request {
             addTopLevelElement("scope", scope).
             addTopLevelElement("clientId", clientId).
             addTopLevelElement("state", state).
-            addTopLevelElement("redirectUri", redirectUri).
-            addElement("user", user).
+            addTopLevelElement("redirectUri", redirectUri);
+
+            for (String paymentMethod : paymentMethods) {
+                builder.addTopLevelElement("payment_methods[]", paymentMethod);
+            }
+
+            builder.addElement("user", user).
             addElement("business", business);
 
         return builder.toQueryString();
