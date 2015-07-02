@@ -3063,6 +3063,33 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void gatewayRejectedOnApplicationIncomplete() {
+        gateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+
+        MerchantRequest request = new MerchantRequest().
+            email("name@email.com").
+            countryCodeAlpha3("USA").
+            paymentMethods(Arrays.asList("credit_card", "paypal"));
+
+        Result<Merchant> merchantResult = gateway.merchant().create(request);
+
+        gateway = new BraintreeGateway(merchantResult.getTarget().getCredentials().getAccessToken());
+
+        TransactionRequest transactionRequest = new TransactionRequest().
+            amount(new BigDecimal(4000.00)).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2020").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(transactionRequest);
+        assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        assertEquals(Transaction.GatewayRejectionReason.APPLICATION_INCOMPLETE, transaction.getGatewayRejectionReason());
+    }
+
+    @Test
     public void gatewayRejectedOnAvs() {
         BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
         TransactionRequest request = new TransactionRequest().
