@@ -7,46 +7,39 @@ import com.braintreegateway.util.NodeWrapper;
 
 public class TestingGateway {
     private Http http;
-    private Environment environment;
+    private Configuration configuration;
 
-    public TestingGateway(Http http, Environment environment) {
-        this.environment = environment;
+    public TestingGateway(Http http, Configuration configuration) {
+        this.configuration = configuration;
         this.http = http;
-    }
-
-    public TestingGateway(BraintreeGateway gateway, Environment environment) {
-        this(
-            new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), environment.certificateFilenames, BraintreeGateway.VERSION),
-            environment
-        );
     }
 
     public Result<Transaction> settle(String transactionId) {
         checkEnvironment();
-        NodeWrapper node = this.http.put("/transactions/" + transactionId + "/settle");
+        NodeWrapper node = http.put(configuration.getMerchantPath() + "/transactions/" + transactionId + "/settle");
         return new Result<Transaction>(node, Transaction.class);
     }
 
     public Result<Transaction> settlementConfirm(String transactionId) {
         checkEnvironment();
-        NodeWrapper node = this.http.put("/transactions/" + transactionId + "/settlement_confirm");
+        NodeWrapper node = http.put(configuration.getMerchantPath() + "/transactions/" + transactionId + "/settlement_confirm");
         return new Result<Transaction>(node, Transaction.class);
     }
 
     public Result<Transaction> settlementDecline(String transactionId) {
         checkEnvironment();
-        NodeWrapper node = this.http.put("/transactions/" + transactionId + "/settlement_decline");
+        NodeWrapper node = http.put(configuration.getMerchantPath() + "/transactions/" + transactionId + "/settlement_decline");
         return new Result<Transaction>(node, Transaction.class);
     }
 
     public Result<Transaction> settlementPending(String transactionId) {
         checkEnvironment();
-        NodeWrapper node = this.http.put("/transactions/" + transactionId + "/settlement_pending");
+        NodeWrapper node = http.put(configuration.getMerchantPath() + "/transactions/" + transactionId + "/settlement_pending");
         return new Result<Transaction>(node, Transaction.class);
     }
 
     private void checkEnvironment() throws TestOperationPerformedInProductionException {
-        if (this.environment == Environment.PRODUCTION) {
+        if (configuration.getEnvironment() == Environment.PRODUCTION) {
           throw new TestOperationPerformedInProductionException();
         }
     }

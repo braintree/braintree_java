@@ -40,7 +40,7 @@ public class CreditCardRequestIT {
             billingAddress().
                 region("Chicago").
                 done();
-        assertEquals("credit_card%5Bcardholder_name%5D=Drew&credit_card%5Bbilling_address%5D%5Bregion%5D=Chicago", request.toQueryString());
+        assertEquals("credit_card%5Bbilling_address%5D%5Bregion%5D=Chicago&credit_card%5Bcardholder_name%5D=Drew", request.toQueryString());
     }
 
     @Test
@@ -50,6 +50,6 @@ public class CreditCardRequestIT {
             billingAddress().
                 region("Chicago").
                 done();
-        assertEquals("customer%5Bcredit_card%5D%5Bcardholder_name%5D=Drew&customer%5Bcredit_card%5D%5Bbilling_address%5D%5Bregion%5D=Chicago", request.toQueryString("customer[credit_card]"));
+        assertEquals("customer%5Bcredit_card%5D%5Bbilling_address%5D%5Bregion%5D=Chicago&customer%5Bcredit_card%5D%5Bcardholder_name%5D=Drew", request.toQueryString("customer[credit_card]"));
     }
 }

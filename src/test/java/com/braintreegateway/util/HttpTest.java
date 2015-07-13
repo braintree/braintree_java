@@ -3,6 +3,7 @@ package com.braintreegateway.util;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Environment;
+import com.braintreegateway.Configuration;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
@@ -29,59 +30,67 @@ public class HttpTest {
 
     @Test
     public void smokeTestGet() {
-        NodeWrapper node = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.SANDBOX.certificateFilenames, BraintreeGateway.VERSION).get("/customers/131866");
+        Configuration configuration = gateway.getConfiguration();
+        NodeWrapper node = new Http(configuration).get(configuration.getMerchantPath() + "/customers/131866");
         assertNotNull(node.findString("first-name"));
     }
 
     @Test
     public void smokeTestPostWithRequest() {
         CustomerRequest request = new CustomerRequest().firstName("Dan").lastName("Manges").company("Braintree");
-        NodeWrapper node = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.SANDBOX.certificateFilenames, BraintreeGateway.VERSION).post("/customers", request);
+        Configuration configuration = gateway.getConfiguration();
+        NodeWrapper node = new Http(configuration).post(configuration.getMerchantPath() + "/customers", request);
         assertEquals("Dan", node.findString("first-name"));
     }
 
     @Test
     public void smokeTestPut() {
         CustomerRequest request = new CustomerRequest().firstName("NewName");
-        NodeWrapper node = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.SANDBOX.certificateFilenames, BraintreeGateway.VERSION).put("/customers/131866", request);
+        Configuration configuration = gateway.getConfiguration();
+        NodeWrapper node = new Http(configuration).put(configuration.getMerchantPath() + "/customers/131866", request);
         assertEquals("NewName", node.findString("first-name"));
     }
 
     @Test
     public void smokeTestDelete() {
-        NodeWrapper node = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.SANDBOX.certificateFilenames, BraintreeGateway.VERSION).post("/customers", new CustomerRequest());
-        new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.SANDBOX.certificateFilenames, BraintreeGateway.VERSION).delete("/customers/" + node.findString("id"));
+        Configuration configuration = gateway.getConfiguration();
+        NodeWrapper node = new Http(configuration).post(configuration.getMerchantPath() + "/customers", new CustomerRequest());
+        new Http(gateway.getConfiguration()).delete(configuration.getMerchantPath() + "/customers/" + node.findString("id"));
     }
 
     @Test(expected = AuthenticationException.class)
     public void authenticationException() {
-        String authHeader = "Basic " + Base64.encodeBase64String(("bad_public_key:bad_private_key").getBytes()).trim();
-        new Http(authHeader, gateway.baseMerchantURL(), Environment.SANDBOX.certificateFilenames, BraintreeGateway.VERSION).get("/");
+        BraintreeGateway gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "bad_public_key", "bad_private_key");
+        new Http(gateway.getConfiguration()).get("/");
     }
 
     @Test(expected = AuthenticationException.class)
     public void sslCertificateSuccessfulInSandbox() {
-        Http http = new Http("", Environment.SANDBOX.baseURL, Environment.SANDBOX.certificateFilenames, BraintreeGateway.VERSION);
+        BraintreeGateway gateway = new BraintreeGateway(Environment.SANDBOX, "integration_merchant_id", "integration_public_key", "integration_private_key");
+        Http http = new Http(gateway.getConfiguration());
         http.get("/");
     }
 
     @Test(expected = AuthenticationException.class)
     public void sslCertificateSuccessfulInProduction() {
-        Http http = new Http("", Environment.PRODUCTION.baseURL, Environment.PRODUCTION.certificateFilenames, BraintreeGateway.VERSION);
+        BraintreeGateway gateway = new BraintreeGateway(Environment.PRODUCTION, "integration_merchant_id", "integration_public_key", "integration_private_key");
+        Http http = new Http(gateway.getConfiguration());
         http.get("/");
     }
 
     @Test(expected = DownForMaintenanceException.class)
     public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingServerToServer() {
         CustomerRequest request = new CustomerRequest();
-        new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.SANDBOX.certificateFilenames, "1.0.0").put("/test/maintenance", request);
+        Configuration configuration = gateway.getConfiguration();
+        new Http(configuration).put(configuration.getMerchantPath() + "/test/maintenance", request);
     }
 
     @Test(expected = DownForMaintenanceException.class)
     public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingTR() {
         CustomerRequest request = new CustomerRequest();
         CustomerRequest trParams = new CustomerRequest();
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.getConfiguration().baseMerchantURL + "/test/maintenance");
+        Configuration configuration = gateway.getConfiguration();
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, configuration.getBaseURL() + configuration.getMerchantPath() + "/test/maintenance");
         gateway.customer().confirmTransparentRedirect(queryString);
     }
 
@@ -89,7 +98,8 @@ public class HttpTest {
     public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingNewTR() {
         CustomerRequest request = new CustomerRequest();
         CustomerRequest trParams = new CustomerRequest();
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.getConfiguration().baseMerchantURL + "/test/maintenance");
+        Configuration configuration = gateway.getConfiguration();
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, configuration.getBaseURL() + configuration.getMerchantPath() + "/test/maintenance");
         gateway.transparentRedirect().confirmCustomer(queryString);
     }
 
@@ -113,14 +123,16 @@ public class HttpTest {
 
     @Test(expected = UpgradeRequiredException.class)
     public void throwUpgradeRequiredIfClientLibraryIsTooOld() {
-        new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.SANDBOX.certificateFilenames, "1.0.0").get("/");
+        Http.throwExceptionIfErrorStatusCode(426, "Too old");
     }
 
     @Test
     public void sslBadCertificate() throws Exception {
+        Environment environment = new Environment("https://localhost:19443", "", new String[] {"ssl/api_braintreegateway_com.ca.crt"}, "testing");
+        BraintreeGateway gateway = new BraintreeGateway(environment, "integration_merchant_id", "bad_public", "bad_private");
         startSSLServer();
         try {
-            Http http = new Http(gateway.getAuthorizationHeader(), "https://localhost:19443", Environment.SANDBOX.certificateFilenames, BraintreeGateway.VERSION);
+            Http http = new Http(gateway.getConfiguration());
             http.get("/");
             fail();
         } catch (Exception e) {
@@ -128,6 +140,14 @@ public class HttpTest {
         } finally {
             stopSSLServer();
         }
+    }
+
+    @Test
+    public void getAuthorizationHeader() {
+        BraintreeGateway config = new BraintreeGateway(Environment.DEVELOPMENT, "development_merchant_id", "integration_public_key", "integration_private_key");
+        Http http = new Http(config.getConfiguration());
+
+        assertEquals("Basic aW50ZWdyYXRpb25fcHVibGljX2tleTppbnRlZ3JhdGlvbl9wcml2YXRlX2tleQ==", http.authorizationHeader());
     }
 
     private void startSSLServer() throws Exception {

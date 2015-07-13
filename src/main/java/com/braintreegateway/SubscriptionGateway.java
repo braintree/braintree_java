@@ -11,22 +11,24 @@ import java.util.List;
 /**
  * Provides methods to interact with {@link Subscription Subscriptions}.
  * Including create, find, update, cancel, etc.
- * This class does not need to be instantiated directly.  
+ * This class does not need to be instantiated directly.
  * Instead, use {@link BraintreeGateway#subscription()} to get an instance of this class:
- * 
+ *
  * <pre>
  * BraintreeGateway gateway = new BraintreeGateway(...);
  * gateway.subscription().create(...)
  * </pre>
- * 
+ *
  * For more detailed information on {@link Subscription Subscriptions}, see <a href="http://www.braintreepayments.com/gateway/subscription-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/subscription-api</a>
  */
 public class SubscriptionGateway {
 
     private Http http;
+    private Configuration configuration;
 
-    public SubscriptionGateway(Http http) {
+    public SubscriptionGateway(Http http, Configuration configuration) {
         this.http = http;
+        this.configuration = configuration;
     }
 
     /**
@@ -35,7 +37,7 @@ public class SubscriptionGateway {
      * @return a {@link Result}.
      */
     public Result<Subscription> cancel(String id) {
-        NodeWrapper node = http.put("/subscriptions/" + id + "/cancel");
+        NodeWrapper node = http.put(configuration.getMerchantPath() + "/subscriptions/" + id + "/cancel");
         return new Result<Subscription>(node, Subscription.class);
     }
 
@@ -45,12 +47,12 @@ public class SubscriptionGateway {
      * @return a {@link Result}.
      */
     public Result<Subscription> create(SubscriptionRequest request) {
-        NodeWrapper node = http.post("/subscriptions", request);
+        NodeWrapper node = http.post(configuration.getMerchantPath() + "/subscriptions", request);
         return new Result<Subscription>(node, Subscription.class);
     }
 
     public Result<Subscription> delete(String customerId, String id) {
-        http.delete("/subscriptions/" + id);
+        http.delete(configuration.getMerchantPath() + "/subscriptions/" + id);
         return new Result<Subscription>();
     }
 
@@ -62,7 +64,7 @@ public class SubscriptionGateway {
     public Subscription find(String id) {
         if(id == null || id.trim().equals(""))
             throw new NotFoundException();
-        return new Subscription(http.get("/subscriptions/" + id));
+        return new Subscription(http.get(configuration.getMerchantPath() + "/subscriptions/" + id));
     }
 
     /**
@@ -72,34 +74,34 @@ public class SubscriptionGateway {
      * @return a {@link Result}.
      */
     public Result<Subscription> update(String id, SubscriptionRequest request) {
-        NodeWrapper node = http.put("/subscriptions/" + id, request);
+        NodeWrapper node = http.put(configuration.getMerchantPath() + "/subscriptions/" + id, request);
         return new Result<Subscription>(node, Subscription.class);
     }
-    
+
     /**
      * Search for a {@link Subscription}.
      * @param searchRequest the {@link SubscriptionSearchRequest}.
      * @return a {@link Result}.
      */
     public ResourceCollection<Subscription> search(SubscriptionSearchRequest searchRequest) {
-        NodeWrapper node = http.post("/subscriptions/advanced_search_ids", searchRequest);
+        NodeWrapper node = http.post(configuration.getMerchantPath() + "/subscriptions/advanced_search_ids", searchRequest);
         return new ResourceCollection<Subscription>(new SubscriptionPager(this, searchRequest), node);
     }
 
     List<Subscription> fetchSubscriptions(SubscriptionSearchRequest search, List<String> ids) {
         search.ids().in(ids);
-        NodeWrapper response = http.post("/subscriptions/advanced_search", search);
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/subscriptions/advanced_search", search);
 
         List<Subscription> items = new ArrayList<Subscription>();
         for (NodeWrapper node : response.findAll("subscription")) {
             items.add(new Subscription(node));
         }
-        
+
         return items;
     }
-        
+
     private Result<Transaction> retryCharge(SubscriptionTransactionRequest txnRequest) {
-        NodeWrapper response = http.post("/transactions", txnRequest);
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions", txnRequest);
         return new Result<Transaction>(response, Transaction.class);
     }
 

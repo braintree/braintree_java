@@ -159,6 +159,8 @@ public class MerchantAccountIT {
         assertEquals(MerchantAccount.FundingDestination.EMAIL, merchantAccount.getFundingDetails().getDestination());
         assertEquals("joe+funding@bloggs.com", merchantAccount.getFundingDetails().getEmail());
         assertEquals("3125551212", merchantAccount.getFundingDetails().getMobilePhone());
+        assertEquals("122100024", merchantAccount.getFundingDetails().getRoutingNumber());
+        assertEquals("8799", merchantAccount.getFundingDetails().getAccountNumberLast4());
         assertEquals("Job Leoggs OH", merchantAccount.getFundingDetails().getDescriptor());
     }
 
@@ -323,6 +325,8 @@ public class MerchantAccountIT {
                 done().
             funding().
                 destination(MerchantAccount.FundingDestination.EMAIL).
+                routingNumber("122100024").
+                accountNumber("98479798799").
                 email("joe+funding@bloggs.com").
                 mobilePhone("3125551212").
                 descriptor("Job Leoggs OH").

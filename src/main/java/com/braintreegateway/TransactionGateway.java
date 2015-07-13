@@ -35,7 +35,7 @@ public class TransactionGateway {
     }
 
     public Result<Transaction> cloneTransaction(String id, TransactionCloneRequest request) {
-        NodeWrapper response = http.post("/transactions/" + id + "/clone", request);
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/clone", request);
         return new Result<Transaction>(response, Transaction.class);
     }
 
@@ -45,7 +45,7 @@ public class TransactionGateway {
     @Deprecated
     public Result<Transaction> confirmTransparentRedirect(String queryString) {
         TransparentRedirectRequest trRequest = new TransparentRedirectRequest(configuration, queryString);
-        NodeWrapper node = http.post("/transactions/all/confirm_transparent_redirect_request", trRequest);
+        NodeWrapper node = http.post(configuration.getMerchantPath() + "/transactions/all/confirm_transparent_redirect_request", trRequest);
         return new Result<Transaction>(node, Transaction.class);
     }
 
@@ -55,7 +55,7 @@ public class TransactionGateway {
      * @return a {@link Result}
      */
     public Result<Transaction> credit(TransactionRequest request) {
-        NodeWrapper response = http.post("/transactions", request.type(Type.CREDIT));
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions", request.type(Type.CREDIT));
         return new Result<Transaction>(response, Transaction.class);
     }
 
@@ -77,7 +77,7 @@ public class TransactionGateway {
     public Transaction find(String id) {
         if(id == null || id.trim().equals(""))
             throw new NotFoundException();
-        return new Transaction(http.get("/transactions/" + id));
+        return new Transaction(http.get(configuration.getMerchantPath() + "/transactions/" + id));
     }
 
     /**
@@ -86,13 +86,13 @@ public class TransactionGateway {
      * @return a {@link Result}.
      */
     public Result<Transaction> refund(String id) {
-        NodeWrapper response = http.post("/transactions/" + id + "/refund");
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/refund");
         return new Result<Transaction>(response, Transaction.class);
     }
 
     public Result<Transaction> refund(String id, BigDecimal amount) {
         TransactionRequest request = new TransactionRequest().amount(amount);
-        NodeWrapper response = http.post("/transactions/" + id + "/refund", request);
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/refund", request);
         return new Result<Transaction>(response, Transaction.class);
     }
 
@@ -102,7 +102,7 @@ public class TransactionGateway {
      * @return a {@link Result}.
      */
     public Result<Transaction> sale(TransactionRequest request) {
-        NodeWrapper response = http.post("/transactions", request.type(Type.SALE));
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions", request.type(Type.SALE));
         return new Result<Transaction>(response, Transaction.class);
     }
 
@@ -122,7 +122,7 @@ public class TransactionGateway {
      * @return a {@link ResourceCollection} or raises a {@link DownForMaintenanceException}.
      */
     public ResourceCollection<Transaction> search(TransactionSearchRequest query) {
-        NodeWrapper node = http.post("/transactions/advanced_search_ids", query);
+        NodeWrapper node = http.post(configuration.getMerchantPath() + "/transactions/advanced_search_ids", query);
         if (node.getElementName() == "search-results") {
           return new ResourceCollection<Transaction>(new TransactionPager(this, query), node);
         } else {
@@ -132,7 +132,7 @@ public class TransactionGateway {
 
     List<Transaction> fetchTransactions(TransactionSearchRequest query, List<String> ids) {
         query.ids().in(ids);
-        NodeWrapper response = http.post("/transactions/advanced_search", query);
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/advanced_search", query);
 
         List<Transaction> items = new ArrayList<Transaction>();
         for (NodeWrapper node : response.findAll("transaction")) {
@@ -149,7 +149,7 @@ public class TransactionGateway {
      */
     public Result<Transaction> cancelRelease(String id) {
         TransactionRequest request = new TransactionRequest();
-        NodeWrapper response = http.put("/transactions/" + id + "/cancel_release", request);
+        NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/cancel_release", request);
         return new Result<Transaction>(response, Transaction.class);
     }
 
@@ -160,7 +160,7 @@ public class TransactionGateway {
      */
     public Result<Transaction> holdInEscrow(String id) {
         TransactionRequest request = new TransactionRequest();
-        NodeWrapper response = http.put("/transactions/" + id + "/hold_in_escrow", request);
+        NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/hold_in_escrow", request);
         return new Result<Transaction>(response, Transaction.class);
     }
 
@@ -171,7 +171,7 @@ public class TransactionGateway {
      */
     public Result<Transaction> releaseFromEscrow(String id) {
         TransactionRequest request = new TransactionRequest();
-        NodeWrapper response = http.put("/transactions/" + id + "/release_from_escrow", request);
+        NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/release_from_escrow", request);
         return new Result<Transaction>(response, Transaction.class);
     }
 
@@ -192,7 +192,7 @@ public class TransactionGateway {
      */
     public Result<Transaction> submitForSettlement(String id, BigDecimal amount) {
         TransactionRequest request = new TransactionRequest().amount(amount);
-        NodeWrapper response = http.put("/transactions/" + id + "/submit_for_settlement", request);
+        NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/submit_for_settlement", request);
         return new Result<Transaction>(response, Transaction.class);
     }
 
@@ -201,7 +201,7 @@ public class TransactionGateway {
      */
     @Deprecated
     public String transparentRedirectURLForCreate() {
-        return configuration.baseMerchantURL + "/transactions/all/create_via_transparent_redirect_request";
+        return configuration.getBaseURL() + configuration.getMerchantPath() + "/transactions/all/create_via_transparent_redirect_request";
     }
 
     /**
@@ -210,7 +210,7 @@ public class TransactionGateway {
      * @return {@link Result}.
      */
     public Result<Transaction> voidTransaction(String id) {
-        NodeWrapper response = http.put("/transactions/" + id + "/void");
+        NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/void");
         return new Result<Transaction>(response, Transaction.class);
     }
 }

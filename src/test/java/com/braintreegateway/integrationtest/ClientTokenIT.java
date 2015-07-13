@@ -13,16 +13,8 @@ import com.braintreegateway.testhelpers.HttpHelper;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.QueryString;
-import com.braintreegateway.CreditCardRequest;
-import com.braintreegateway.CustomerRequest;
-import com.braintreegateway.CreditCard;
-import com.braintreegateway.Customer;
-import com.braintreegateway.Result;
-import com.braintreegateway.Environment;
-import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.ClientTokenRequest;
-import com.braintreegateway.ClientTokenOptionsRequest;
+import com.braintreegateway.*;
 
 public class ClientTokenIT {
     private BraintreeGateway gateway;
@@ -76,7 +68,8 @@ public class ClientTokenIT {
             throw new RuntimeException(e);
         }
 
-        String url = gateway.baseMerchantURL()  + "/client_api/nonces.json?";
+        Configuration configuration = gateway.getConfiguration();
+        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/nonces.json?";
         url += "authorizationFingerprint=" + encodedFingerprint;
         url += "&sharedCustomerIdentifierType=testing&sharedCustomerIdentifier=test-identifier";
 
@@ -135,7 +128,8 @@ public class ClientTokenIT {
             throw new RuntimeException(e);
         }
 
-        String url = gateway.baseMerchantURL() + "/client_api/nonces.json?";
+        Configuration configuration = gateway.getConfiguration();
+        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/nonces.json?";
         url += "authorizationFingerprint=" + encodedFingerprint;
         url += "&sharedCustomerIdentifierType=testing&sharedCustomerIdentifier=test-identifier";
 
@@ -164,7 +158,8 @@ public class ClientTokenIT {
 
         String authorizationFingerprint = _getFingerprint(clientToken);
 
-        String url = gateway.baseMerchantURL() + "/client_api/nonces.json";
+        Configuration configuration = gateway.getConfiguration();
+        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/nonces.json";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("shared_customer_identifier_type", "testing").
@@ -202,7 +197,8 @@ public class ClientTokenIT {
 
         String authorizationFingerprint = _getFingerprint(clientToken);
 
-        String url = gateway.baseMerchantURL() + "/client_api/nonces.json";
+        Configuration configuration = gateway.getConfiguration();
+        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/nonces.json";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("shared_customer_identifier_type", "testing").
@@ -237,7 +233,8 @@ public class ClientTokenIT {
 
         String authorizationFingerprint = _getFingerprint(clientToken);
 
-        String url = gateway.baseMerchantURL() + "/client_api/nonces.json";
+        Configuration configuration = gateway.getConfiguration();
+        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/nonces.json";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("shared_customer_identifier_type", "testing").
@@ -256,7 +253,7 @@ public class ClientTokenIT {
 
         authorizationFingerprint = _getFingerprint(clientToken);
 
-        url = gateway.baseMerchantURL() + "/client_api/nonces.json";
+        url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/nonces.json";
         payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("shared_customer_identifier_type", "testing").

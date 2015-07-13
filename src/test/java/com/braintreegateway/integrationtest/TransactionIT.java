@@ -39,7 +39,8 @@ public class TransactionIT implements MerchantAccountTestConstants {
     @SuppressWarnings("deprecation")
     @Test
     public void transparentRedirectURLForCreate() {
-        assertEquals(gateway.baseMerchantURL() + "/transactions/all/create_via_transparent_redirect_request",
+        Configuration configuration = gateway.getConfiguration();
+        assertEquals(configuration.getBaseURL() + configuration.getMerchantPath() + "/transactions/all/create_via_transparent_redirect_request",
                 gateway.transaction().transparentRedirectURLForCreate());
     }
 
@@ -214,6 +215,38 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals("05", creditCard.getExpirationMonth());
         assertEquals("2009", creditCard.getExpirationYear());
         assertEquals("05/2009", creditCard.getExpirationDate());
+    }
+
+    @Test
+    public void saleWithAccessToken() {
+        BraintreeGateway oauthGateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+
+        String code = TestHelper.createOAuthGrant(oauthGateway, "integration_merchant_id", "read_write");
+
+        OAuthCredentialsRequest oauthRequest = new OAuthCredentialsRequest().
+             code(code).
+             scope("read_write");
+
+        Result<OAuthCredentials> accessTokenResult = oauthGateway.oauth().createTokenFromCode(oauthRequest);
+
+        BraintreeGateway gateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
+        assertEquals("USD", transaction.getCurrencyIsoCode());
+        assertNotNull(transaction.getProcessorAuthorizationCode());
+        assertEquals(Transaction.Type.SALE, transaction.getType());
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
     }
 
     @Test
@@ -1821,6 +1854,101 @@ public class TransactionIT implements MerchantAccountTestConstants {
 
         collection = gateway.transaction().search(searchRequest);
         assertEquals(0, collection.getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            user().is("integration_user_public_id").
+            id().is(transaction.getId());
+
+        collection = gateway.transaction().search(searchRequest);
+        assertEquals(1, collection.getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            creditCardUniqueIdentifier().is(transaction.getCreditCard().getUniqueNumberIdentifier()).
+            id().is(transaction.getId());
+
+        collection = gateway.transaction().search(searchRequest);
+        assertEquals(1, collection.getMaximumSize());
+    }
+
+    @Test
+    public void searchOnsPaymentInstrumentTypeIsCreditCard() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            creditCard().
+                number("4111111111111111").
+                expirationDate("05/2012").
+                cardholderName("Tom Smith").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            paymentInstrumentType().is("CreditCardDetail");
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        assertEquals(collection.getFirst().getPaymentInstrumentType(), PaymentInstrumentType.CREDIT_CARD);
+    }
+
+    @Test
+    public void searchOnsPaymentInstrumentTypeIsPayPal() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            paymentMethodNonce(Nonce.PayPalFuturePayment);
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            paymentInstrumentType().is("PayPalDetail");
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        assertEquals(collection.getFirst().getPaymentInstrumentType(), PaymentInstrumentType.PAYPAL_ACCOUNT);
+    }
+
+    @Test
+    public void searchOnsPaymentInstrumentTypeIsApplePay() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            paymentMethodNonce(Nonce.ApplePayVisa);
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            paymentInstrumentType().is("ApplePayDetail");
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        assertEquals(collection.getFirst().getPaymentInstrumentType(), PaymentInstrumentType.APPLE_PAY_CARD);
+    }
+
+    @Test
+    public void searchOnPaymentInstrumentTypeIsEuropeBank() {
+        BraintreeGateway altpayGateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "altpay_merchant",
+            "altpay_merchant_public_key",
+            "altpay_merchant_private_key"
+        );
+        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateEuropeBankAccountNonce(altpayGateway, customer);
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId("fake_sepa_ma").
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce);
+
+        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            paymentInstrumentType().is("EuropeBankAccountDetail");
+
+        ResourceCollection<Transaction> collection = altpayGateway.transaction().search(searchRequest);
+
+        assertEquals(collection.getFirst().getPaymentInstrumentType(), PaymentInstrumentType.EUROPE_BANK_ACCOUNT);
     }
 
     @Test
@@ -2935,6 +3063,33 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void gatewayRejectedOnApplicationIncomplete() {
+        gateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+
+        MerchantRequest request = new MerchantRequest().
+            email("name@email.com").
+            countryCodeAlpha3("USA").
+            paymentMethods(Arrays.asList("credit_card", "paypal"));
+
+        Result<Merchant> merchantResult = gateway.merchant().create(request);
+
+        gateway = new BraintreeGateway(merchantResult.getTarget().getCredentials().getAccessToken());
+
+        TransactionRequest transactionRequest = new TransactionRequest().
+            amount(new BigDecimal(4000.00)).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2020").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(transactionRequest);
+        assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        assertEquals(Transaction.GatewayRejectionReason.APPLICATION_INCOMPLETE, transaction.getGatewayRejectionReason());
+    }
+
+    @Test
     public void gatewayRejectedOnAvs() {
         BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
         TransactionRequest request = new TransactionRequest().
@@ -3559,7 +3714,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Result<Transaction> authResult = gateway.transaction().sale(request);
         assertTrue(authResult.isSuccess());
 
-        TestingGateway testingGateway = new TestingGateway(gateway, Environment.DEVELOPMENT);
+        TestingGateway testingGateway = gateway.testing();
         testingGateway.settlementDecline(authResult.getTarget().getId());
 
         Transaction transaction = gateway.transaction().find(authResult.getTarget().getId());

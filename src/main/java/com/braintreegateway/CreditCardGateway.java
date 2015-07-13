@@ -45,7 +45,7 @@ public class CreditCardGateway {
     @Deprecated
     public Result<CreditCard> confirmTransparentRedirect(String queryString) {
         TransparentRedirectRequest trRequest = new TransparentRedirectRequest(configuration, queryString);
-        NodeWrapper node = http.post("/payment_methods/all/confirm_transparent_redirect_request", trRequest);
+        NodeWrapper node = http.post(configuration.getMerchantPath() + "/payment_methods/all/confirm_transparent_redirect_request", trRequest);
         return new Result<CreditCard>(node, CreditCard.class);
     }
 
@@ -57,7 +57,7 @@ public class CreditCardGateway {
      * @return a {@link Result}.
      */
     public Result<CreditCard> create(CreditCardRequest request) {
-        NodeWrapper node = http.post("/payment_methods", request);
+        NodeWrapper node = http.post(configuration.getMerchantPath() + "/payment_methods", request);
         return new Result<CreditCard>(node, CreditCard.class);
     }
 
@@ -69,7 +69,7 @@ public class CreditCardGateway {
      * @return a {@link Result}.
      */
     public Result<CreditCard> delete(String token) {
-        http.delete("/payment_methods/credit_card/" + token);
+        http.delete(configuration.getMerchantPath() + "/payment_methods/credit_card/" + token);
         return new Result<CreditCard>();
     }
 
@@ -85,7 +85,7 @@ public class CreditCardGateway {
         if(token == null || token.trim().equals(""))
             throw new NotFoundException();
 
-        return new CreditCard(http.get("/payment_methods/credit_card/" + token));
+        return new CreditCard(http.get(configuration.getMerchantPath() + "/payment_methods/credit_card/" + token));
     }
 
     /**
@@ -101,7 +101,7 @@ public class CreditCardGateway {
             throw new NotFoundException();
 
         try {
-          return new CreditCard(http.get("/payment_methods/from_nonce/" + nonce));
+          return new CreditCard(http.get(configuration.getMerchantPath() + "/payment_methods/from_nonce/" + nonce));
         } catch (NotFoundException e) {
           throw new NotFoundException("Payment method with nonce " + nonce + " locked, consumed or not found");
         }
@@ -126,10 +126,10 @@ public class CreditCardGateway {
             throw new NotFoundException("Receiving merchant ID is required");
 
         try {
-          NodeWrapper node = http.post("/payment_methods/forward", forwardRequest);
+          NodeWrapper node = http.post(configuration.getMerchantPath() + "/payment_methods/forward", forwardRequest);
           return new Result<PaymentMethodNonce>(node, PaymentMethodNonce.class);
         } catch (NotFoundException e) {
-          throw new NotFoundException("Receiving merchant or payment metod not found");
+          throw new NotFoundException("Receiving merchant or payment method not found");
         }
     }
 
@@ -138,7 +138,7 @@ public class CreditCardGateway {
      */
     @Deprecated
     public String transparentRedirectURLForCreate() {
-        return configuration.baseMerchantURL + "/payment_methods/all/create_via_transparent_redirect_request";
+        return configuration.getBaseURL() + configuration.getMerchantPath() + "/payment_methods/all/create_via_transparent_redirect_request";
     }
 
     /**
@@ -146,7 +146,7 @@ public class CreditCardGateway {
      */
     @Deprecated
     public String transparentRedirectURLForUpdate() {
-        return configuration.baseMerchantURL + "/payment_methods/all/update_via_transparent_redirect_request";
+        return configuration.getBaseURL() + configuration.getMerchantPath() + "/payment_methods/all/update_via_transparent_redirect_request";
     }
 
     /**
@@ -159,7 +159,7 @@ public class CreditCardGateway {
      * @return a {@link Result}.
      */
     public Result<CreditCard> update(String token, CreditCardRequest request) {
-        NodeWrapper node = http.put("/payment_methods/credit_card/" + token, request);
+        NodeWrapper node = http.put(configuration.getMerchantPath() + "/payment_methods/credit_card/" + token, request);
         return new Result<CreditCard>(node, CreditCard.class);
     }
 
@@ -169,14 +169,14 @@ public class CreditCardGateway {
      * @return a {@link ResourceCollection}.
      */
     public ResourceCollection<CreditCard> expired() {
-        NodeWrapper response = http.post("/payment_methods/all/expired_ids");
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/payment_methods/all/expired_ids");
         return new ResourceCollection<CreditCard>(new ExpiredCreditCardPager(this), response);
     }
 
     List<CreditCard> fetchExpiredCreditCards(List<String> ids) {
         IdsSearchRequest query = new IdsSearchRequest().ids().in(ids);
 
-        NodeWrapper response = http.post("/payment_methods/all/expired", query);
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/payment_methods/all/expired", query);
 
         List<CreditCard> items = new ArrayList<CreditCard>();
         for (NodeWrapper node : response.findAll("credit-card")) {
@@ -194,14 +194,14 @@ public class CreditCardGateway {
      */
     public ResourceCollection<CreditCard> expiringBetween(Calendar start, Calendar end) {
         String queryString = dateQueryString(start, end);
-        NodeWrapper response = http.post("/payment_methods/all/expiring_ids?" + queryString);
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/payment_methods/all/expiring_ids?" + queryString);
         return new ResourceCollection<CreditCard>(new ExpiringCreditCardPager(this, queryString), response);
     }
 
     List<CreditCard> fetchExpiringCreditCards(List<String> ids, String queryString) {
         IdsSearchRequest query = new IdsSearchRequest().ids().in(ids);
 
-        NodeWrapper response = http.post("/payment_methods/all/expiring?" + queryString, query);
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/payment_methods/all/expiring?" + queryString, query);
 
         List<CreditCard> items = new ArrayList<CreditCard>();
         for (NodeWrapper node : response.findAll("credit-card")) {

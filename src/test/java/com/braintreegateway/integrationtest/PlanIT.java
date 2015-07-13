@@ -18,7 +18,7 @@ public class PlanIT {
     @Before
     public void createGateway() {
         this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
-        http = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION);
+        http = new Http(gateway.getConfiguration());
     }
 
     @Test
@@ -34,7 +34,7 @@ public class PlanIT {
                 .numberOfBillingCycles(12)
                 .price(new BigDecimal("100.00"))
                 .trialPeriod(false);
-        http.post("/plans/create_plan_for_tests", request);
+        http.post(gateway.getConfiguration().getMerchantPath() + "/plans/create_plan_for_tests", request);
 
         FakeModificationRequest addOnRequest = new FakeModificationRequest()
                 .amount(new BigDecimal("100.00"))
@@ -44,7 +44,7 @@ public class PlanIT {
                 .neverExpires(false)
                 .numberOfBillingCycles(12)
                 .planId(planId);
-        http.post("/modifications/create_modification_for_tests", addOnRequest);
+        http.post(gateway.getConfiguration().getMerchantPath() + "/modifications/create_modification_for_tests", addOnRequest);
 
         FakeModificationRequest discountRequest = new FakeModificationRequest()
                 .amount(new BigDecimal("100.00"))
@@ -54,7 +54,7 @@ public class PlanIT {
                 .neverExpires(false)
                 .numberOfBillingCycles(12)
                 .planId(planId);
-        http.post("/modifications/create_modification_for_tests", discountRequest);
+        http.post(gateway.getConfiguration().getMerchantPath() + "/modifications/create_modification_for_tests", discountRequest);
 
         List<Plan> plans = gateway.plan().all();
         Plan actualPlan = null;

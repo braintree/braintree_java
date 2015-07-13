@@ -17,12 +17,15 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.*;
+import java.io.UnsupportedEncodingException;
 
 import static org.junit.Assert.*;
 
@@ -67,7 +70,7 @@ public abstract class TestHelper {
         String[] dataSections = trData.split("\\|");
         String trHash = dataSections[0];
         String trContent = dataSections[1];
-        assertEquals(trHash, new Sha1Hasher().hmacHash(configuration.privateKey, trContent));
+        assertEquals(trHash, new Sha1Hasher().hmacHash(configuration.getPrivateKey(), trContent));
     }
 
     public static boolean listIncludes(List<? extends Object> list, Object expectedItem) {
@@ -112,13 +115,13 @@ public abstract class TestHelper {
     }
 
     public static void escrow(BraintreeGateway gateway, String transactionId) {
-        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).put("/transactions/" + transactionId + "/escrow");
+        NodeWrapper response = new Http(gateway.getConfiguration()).put(gateway.getConfiguration().getMerchantPath() + "/transactions/" + transactionId + "/escrow");
         assertTrue(response.isSuccess());
     }
 
     public static String createTest3DS(BraintreeGateway gateway, String merchantAccountId, ThreeDSecureRequestForTests request) {
-        String url = "/three_d_secure/create_verification/" + merchantAccountId;
-        NodeWrapper response = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION).post(url, request);
+        String url = gateway.getConfiguration().getMerchantPath() + "/three_d_secure/create_verification/" + merchantAccountId;
+        NodeWrapper response = new Http(gateway.getConfiguration()).post(url, request);
         assertTrue(response.isSuccess());
 
         String token = response.findString("three-d-secure-token");
@@ -167,7 +170,8 @@ public abstract class TestHelper {
       String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
       String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
-      String url = gateway.baseMerchantURL() + "/client_api/nonces.json";
+      Configuration configuration = gateway.getConfiguration();
+      String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/nonces.json";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", authorizationFingerprint).
         append("shared_customer_identifier_type", "testing").
@@ -199,7 +203,8 @@ public abstract class TestHelper {
       String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
       String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
-      String url = gateway.baseMerchantURL() + "/client_api/v1/payment_methods/paypal_accounts";
+      Configuration configuration = gateway.getConfiguration();
+      String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods/paypal_accounts";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", authorizationFingerprint).
         append("shared_customer_identifier_type", "testing").
@@ -226,7 +231,8 @@ public abstract class TestHelper {
       String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
       String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
-      String url = gateway.baseMerchantURL() + "/client_api/v1/payment_methods/credit_cards";
+      Configuration configuration = gateway.getConfiguration();
+      String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods/credit_cards";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", authorizationFingerprint).
         append("shared_customer_identifier_type", "testing").
@@ -256,7 +262,8 @@ public abstract class TestHelper {
         String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
         String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
-        String url = gateway.baseMerchantURL() + "/client_api/v1/sepa_mandates";
+        Configuration configuration = gateway.getConfiguration();
+        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/sepa_mandates";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint)
               .append("sepa_mandate[locale]", "de-DE")
@@ -293,7 +300,8 @@ public abstract class TestHelper {
       String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
       String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
-      String url = gateway.baseMerchantURL() + "/client_api/v1/payment_methods/paypal_accounts";
+      Configuration configuration = gateway.getConfiguration();
+      String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods/paypal_accounts";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", authorizationFingerprint).
         append("shared_customer_identifier_type", "testing").
@@ -318,7 +326,8 @@ public abstract class TestHelper {
       String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
       String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
-      String url = gateway.baseMerchantURL() + "/client_api/v1/payment_methods/paypal_accounts";
+      Configuration configuration = gateway.getConfiguration();
+      String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods/paypal_accounts";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", authorizationFingerprint).
         append("shared_customer_identifier_type", "testing").
@@ -365,5 +374,57 @@ public abstract class TestHelper {
         }
 
         return value;
+    }
+
+    public static final class OAuthGrantRequest extends Request {
+
+        private String scope;
+        private String merchantId;
+
+        public OAuthGrantRequest scope(String scope) {
+            this.scope = scope;
+            return this;
+        }
+
+        public OAuthGrantRequest merchantId(String merchantId) {
+            this.merchantId = merchantId;
+            return this;
+        }
+
+        @Override
+        public String toXML() {
+            return new RequestBuilder("grant").
+                addElement("scope", scope).
+                addElement("merchant_public_id", merchantId).
+                toXML();
+        }
+    }
+
+    public static String createOAuthGrant(BraintreeGateway gateway, String merchantId, String scope) {
+        Http http = new Http(gateway.getConfiguration());
+        OAuthGrantRequest request = new OAuthGrantRequest().
+            scope(scope).
+            merchantId(merchantId);
+
+        NodeWrapper node = http.post("/oauth_testing/grants", request);
+        return node.findString("code");
+    }
+
+    /* http://stackoverflow.com/questions/13592236/parse-the-uri-string-into-name-value-collection-in-java */
+    public static Map<String, String> splitQuery(URL url) throws UnsupportedEncodingException {
+        Map<String, String> queryPairs = new LinkedHashMap<String, String>();
+        String query = url.getQuery();
+        String[] pairs = query.split("&");
+        for (String pair : pairs) {
+            int idx = pair.indexOf("=");
+            String key = URLDecoder.decode(pair.substring(0, idx), "UTF-8");
+            if (queryPairs.get(key) == null) {
+                queryPairs.put(key, URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+            }
+            else {
+                queryPairs.put(key, queryPairs.get(key) + ", " + URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+            }
+        }
+        return queryPairs;
     }
 }

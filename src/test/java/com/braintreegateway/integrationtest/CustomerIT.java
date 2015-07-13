@@ -25,13 +25,15 @@ public class CustomerIT {
 
     @Test
     public void transparentRedirectURLForCreate() {
-        assertEquals(gateway.baseMerchantURL() + "/customers/all/create_via_transparent_redirect_request",
+        Configuration configuration = gateway.getConfiguration();
+        assertEquals(configuration.getBaseURL() + configuration.getMerchantPath() + "/customers/all/create_via_transparent_redirect_request",
                 gateway.customer().transparentRedirectURLForCreate());
     }
 
     @Test
     public void transparentRedirectURLForUpdate() {
-        assertEquals(gateway.baseMerchantURL() + "/customers/all/update_via_transparent_redirect_request",
+        Configuration configuration = gateway.getConfiguration();
+        assertEquals(configuration.getBaseURL() + configuration.getMerchantPath() + "/customers/all/update_via_transparent_redirect_request",
                 gateway.customer().transparentRedirectURLForUpdate());
     }
 
@@ -58,6 +60,38 @@ public class CustomerIT {
         assertEquals("http://example.com", customer.getWebsite());
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), customer.getCreatedAt().get(Calendar.YEAR));
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), customer.getUpdatedAt().get(Calendar.YEAR));
+    }
+
+    @Test
+    public void createWithAccessToken() {
+        BraintreeGateway oauthGateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+
+        String code = TestHelper.createOAuthGrant(oauthGateway, "integration_merchant_id", "read_write");
+
+        OAuthCredentialsRequest oauthRequest = new OAuthCredentialsRequest().
+             code(code).
+             scope("read_write");
+
+        Result<OAuthCredentials> accessTokenResult = oauthGateway.oauth().createTokenFromCode(oauthRequest);
+
+        BraintreeGateway gateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
+
+        CustomerRequest request = new CustomerRequest().
+            firstName("Mark").
+            lastName("Jones").
+            company("Jones Co.").
+            email("mark.jones@example.com").
+            fax("419-555-1234").
+            phone("614-555-1234").
+            website("http://example.com");
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        assertEquals("Mark", customer.getFirstName());
+        assertEquals("Jones", customer.getLastName());
+        assertEquals("Jones Co.", customer.getCompany());
+        assertEquals("mark.jones@example.com", customer.getEmail());
     }
 
     @Test

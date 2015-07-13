@@ -10,46 +10,46 @@ import java.util.*;
 public class RequestBuilder {
 
     private String parent;
-    private Map<String, String> topLevelElements;
-    private Map<String, Object> elements;
+    private List<Map.Entry<String, String>> topLevelElements;
+    private List<Map.Entry<String, Object>> elements;
 
     public RequestBuilder(String parent) {
         this.parent = parent;
-        this.topLevelElements = new HashMap<String, String>();
-        this.elements = new HashMap<String, Object>();
+        this.topLevelElements = new ArrayList<Map.Entry<String, String>>();
+        this.elements = new ArrayList<Map.Entry<String, Object>>();
     }
-    
+
     public RequestBuilder addTopLevelElement(String name, String value) {
-        topLevelElements.put(name, value);
+        topLevelElements.add(new AbstractMap.SimpleEntry<String, String>(name, value));
         return this;
     }
 
     public RequestBuilder addElement(String name, Object value) {
-        elements.put(name, value);
+        elements.add(new AbstractMap.SimpleEntry<String, Object>(name, value));
         return this;
     }
-    
+
     public String toQueryString() {
         QueryString queryString = new QueryString();
-        for (Map.Entry<String, String> entry : topLevelElements.entrySet()) {
+        for (Map.Entry<String, String> entry : topLevelElements) {
             queryString.append(StringUtils.underscore(entry.getKey()), entry.getValue());
         }
-        for (Map.Entry<String, Object> entry : elements.entrySet()) {
+        for (Map.Entry<String, Object> entry : elements) {
             queryString.append(parentBracketChildString(StringUtils.underscore(parent), StringUtils.underscore(entry.getKey())), entry.getValue());
         }
         return queryString.toString();
     }
-    
+
     public String toXML() {
         StringBuilder builder = new StringBuilder();
         builder.append(String.format("<%s>", parent));
-        for (Map.Entry<String, Object> entry : elements.entrySet()) {
+        for (Map.Entry<String, Object> entry : elements) {
             builder.append(buildXMLElement(entry.getKey(), entry.getValue()));
         }
         builder.append(String.format("</%s>", parent));
         return builder.toString();
     }
-     
+
     protected static String buildXMLElement(Object element) {
         return buildXMLElement("", element);
     }
@@ -76,7 +76,7 @@ public class RequestBuilder {
             return String.format("<%s>%s</%s>", xmlEscape(name), element == null ? "" : xmlEscape(element.toString()), xmlEscape(name));
         }
     }
-    
+
     protected static String formatAsXML(String name, Map<String, Object> map) {
         if (map == null)
             return "";

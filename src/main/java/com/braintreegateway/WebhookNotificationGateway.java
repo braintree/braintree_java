@@ -37,7 +37,7 @@ public class WebhookNotificationGateway {
         for (String signaturePair : signaturePairs) {
             if (signaturePair.indexOf("|") >= 0) {
                 String[] candidatePair = signaturePair.split("\\|");
-                if (this.configuration.publicKey.equals(candidatePair[0])) {
+                if (this.configuration.getPublicKey().equals(candidatePair[0])) {
                     matchingSignature = candidatePair[1];
                     break;
                 }
@@ -54,7 +54,7 @@ public class WebhookNotificationGateway {
     }
 
     private Boolean matchSignature(String payload, String matchingSignature) {
-      String computedSignature = new Sha1Hasher().hmacHash(configuration.privateKey, payload);
+      String computedSignature = new Sha1Hasher().hmacHash(configuration.getPrivateKey(), payload);
       return new Crypto().secureCompare(computedSignature, matchingSignature);
     }
 
@@ -66,6 +66,6 @@ public class WebhookNotificationGateway {
     }
 
     private String publicKeySignaturePair(String stringToSign) {
-        return String.format("%s|%s", configuration.publicKey, new Sha1Hasher().hmacHash(configuration.privateKey, stringToSign));
+        return String.format("%s|%s", configuration.getPublicKey(), new Sha1Hasher().hmacHash(configuration.getPrivateKey(), stringToSign));
     }
 }

@@ -20,7 +20,7 @@ public class DiscountIT {
     @Before
     public void createGateway() {
         this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
-        http = new Http(gateway.getAuthorizationHeader(), gateway.baseMerchantURL(), Environment.DEVELOPMENT.certificateFilenames, BraintreeGateway.VERSION);
+        http = new Http(gateway.getConfiguration());
     }
 
     @Test
@@ -34,7 +34,7 @@ public class DiscountIT {
                 .name("java test discount name")
                 .neverExpires(false)
                 .numberOfBillingCycles(12);
-        http.post("/modifications/create_modification_for_tests", discountRequest);
+        http.post(gateway.getConfiguration().getMerchantPath() + "/modifications/create_modification_for_tests", discountRequest);
 
         List<Discount> discounts = gateway.discount().all();
         Discount actualDiscount = null;
