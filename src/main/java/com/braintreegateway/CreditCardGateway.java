@@ -129,7 +129,7 @@ public class CreditCardGateway {
           NodeWrapper node = http.post(configuration.getMerchantPath() + "/payment_methods/forward", forwardRequest);
           return new Result<PaymentMethodNonce>(node, PaymentMethodNonce.class);
         } catch (NotFoundException e) {
-          throw new NotFoundException("Receiving merchant or payment metod not found");
+          throw new NotFoundException("Receiving merchant or payment method not found");
         }
     }
 
