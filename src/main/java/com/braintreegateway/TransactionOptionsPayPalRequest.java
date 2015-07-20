@@ -4,6 +4,7 @@ public class TransactionOptionsPayPalRequest extends Request {
     private TransactionOptionsRequest parent;
     private String customField;
     private String payeeEmail;
+    private String description;
 
     public TransactionOptionsPayPalRequest(TransactionOptionsRequest parent) {
         this.parent = parent;
@@ -20,6 +21,11 @@ public class TransactionOptionsPayPalRequest extends Request {
 
     public TransactionOptionsPayPalRequest payeeEmail(String payeeEmail) {
         this.payeeEmail = payeeEmail;
+        return this;
+    }
+
+    public TransactionOptionsPayPalRequest description(String description) {
+        this.description = description;
         return this;
     }
 
@@ -40,6 +46,7 @@ public class TransactionOptionsPayPalRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
+            addElement("description", description).
             addElement("customField", customField).
             addElement("payeeEmail", payeeEmail);
     }

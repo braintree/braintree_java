@@ -3583,6 +3583,27 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void createPayPalTransactionWithPayPalDescription() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce).
+            paypalAccount().
+              done().
+            options().
+              paypal().
+                description("Product description").
+                done().
+              done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertEquals("Product description", saleResult.getTarget().getPayPalDetails().getDescription());
+    }
+
+    @Test
     public void createOneTimePayPalTransactionAndAttemptToVault() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
         TransactionRequest request = new TransactionRequest().
