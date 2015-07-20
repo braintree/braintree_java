@@ -17,6 +17,8 @@ public class PayPalDetails {
     private String sellerProtectionStatus;
     private String captureId;
     private String refundId;
+    private String transactionFeeAmount;
+    private String transactionFeeCurrencyIsoCode;
 
     public PayPalDetails(NodeWrapper node) {
         payerEmail = node.findString("payer-email");
@@ -33,6 +35,8 @@ public class PayPalDetails {
         sellerProtectionStatus = node.findString("seller-protection-status");
         refundId = node.findString("refund-id");
         captureId = node.findString("capture-id");
+        transactionFeeAmount = node.findString("transaction-fee-amount");
+        transactionFeeCurrencyIsoCode = node.findString("transaction-fee-currency-iso-code");
     }
 
     public String getPayerEmail() {
@@ -89,5 +93,13 @@ public class PayPalDetails {
 
     public String getRefundId() {
       return refundId;
+    }
+
+    public String getTransactionFeeAmount() {
+      return transactionFeeAmount;
+    }
+
+    public String getTransactionFeeCurrencyIsoCode() {
+      return transactionFeeCurrencyIsoCode;
     }
 }
