@@ -1,5 +1,6 @@
 package com.braintreegateway.integrationtest;
 
+import com.braintreegateway.test.Nonce;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.NotFoundException;
@@ -40,6 +41,62 @@ public class PayPalAccountIT {
         assertNotNull(found.getImageUrl());
         assertNotNull(found.getCreatedAt());
         assertNotNull(found.getUpdatedAt());
+        assertNotNull(found.isDefault());
+        assertNotNull(found.getEmail());
+    }
+
+    @Test
+    public void findsBillingAgreementsPayPalAccountsByToken() {
+        String nonce = TestHelper.generateBillingAgreementPayPalNonce(gateway);
+
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+        assertNotNull(result.getTarget().getImageUrl());
+
+        PayPalAccount found = gateway.paypalAccount().find(result.getTarget().getToken());
+        assertNotNull(found);
+        assertEquals(found.getToken(), result.getTarget().getToken());
+        assertNotNull(found.getImageUrl());
+        assertNotNull(found.getCreatedAt());
+        assertNotNull(found.getUpdatedAt());
+        assertNotNull(found.isDefault());
+        assertNotNull(found.getEmail());
+        assertNotNull(found.getBillingAgreementId());
+    }
+
+    @Test
+    public void findsBillingAgreementsPayPalAccountsByTokenFromFakeNonce() {
+        String nonce = Nonce.PayPalBillingAgreement;
+
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+        assertNotNull(result.getTarget().getImageUrl());
+
+        PayPalAccount found = gateway.paypalAccount().find(result.getTarget().getToken());
+        assertNotNull(found);
+        assertEquals(found.getToken(), result.getTarget().getToken());
+        assertNotNull(found.getImageUrl());
+        assertNotNull(found.getCreatedAt());
+        assertNotNull(found.getUpdatedAt());
+        assertNotNull(found.isDefault());
+        assertNotNull(found.getEmail());
+        assertNotNull(found.getBillingAgreementId());
     }
 
     @Test
