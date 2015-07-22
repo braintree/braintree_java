@@ -322,17 +322,30 @@ public abstract class TestHelper {
     }
 
     public static String generateFuturePaymentPayPalNonce(BraintreeGateway gateway) {
+      QueryString payload = new QueryString();
+      payload.append("paypal_account[consent_code]", "consent");
+
+      return generatePayPalNonce(gateway, payload);
+    }
+
+    public static String generateBillingAgreementPayPalNonce(BraintreeGateway gateway) {
+      QueryString payload = new QueryString();
+      payload.append("paypal_account[billing_agreement_token]", "fake_ba_token");
+
+      return generatePayPalNonce(gateway, payload);
+    }
+
+    private static String generatePayPalNonce(BraintreeGateway gateway, QueryString payload) {
       String encodedClientToken = gateway.clientToken().generate();
       String clientToken = TestHelper.decodeClientToken(encodedClientToken);
 
       String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
       Configuration configuration = gateway.getConfiguration();
       String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods/paypal_accounts";
-      QueryString payload = new QueryString();
+
       payload.append("authorization_fingerprint", authorizationFingerprint).
         append("shared_customer_identifier_type", "testing").
         append("shared_customer_identifier", "test-identifier").
-        append("paypal_account[consent_code]", "consent").
         append("paypal_account[options][validate]", "false");
 
       String responseBody;

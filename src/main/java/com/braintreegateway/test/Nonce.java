@@ -9,6 +9,7 @@ public class Nonce {
     public static String ApplePayMastercard = "fake-apple-pay-mastercard-nonce";
     public static String ApplePayAmex = "fake-apple-pay-amex-nonce";
     public static String AbstractTransactable = "fake-abstract-transactable-nonce";
+    public static String PayPalBillingAgreement = "fake-paypal-billing-agreement-nonce";
     public static String Europe = "fake-europe-bank-account-nonce";
     public static String Coinbase = "fake-coinbase-nonce";
     public static String AndroidPay = "fake-android-pay-nonce";
