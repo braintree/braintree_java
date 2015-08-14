@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class PayPalAccount implements PaymentMethod {
     private String email;
     private String token;
+    private String billingAgreementId;
     private boolean isDefault;
     private String imageUrl;
     private Calendar createdAt;
@@ -17,6 +18,7 @@ public class PayPalAccount implements PaymentMethod {
     public PayPalAccount(NodeWrapper node) {
         this.email = node.findString("email");
         this.token = node.findString("token");
+        this.billingAgreementId = node.findString("billing-agreement-id");
         this.isDefault = node.findBoolean("default");
         this.imageUrl = node.findString("image-url");
         this.createdAt = node.findDateTime("created-at");
@@ -33,6 +35,10 @@ public class PayPalAccount implements PaymentMethod {
 
     public String getToken() {
         return token;
+    }
+
+    public String getBillingAgreementId() {
+        return billingAgreementId;
     }
 
     public boolean isDefault() {

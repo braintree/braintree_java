@@ -1,3 +1,6 @@
+## 2.47.0
+* Add support for PayPal billing agreements
+
 ## 2.46.0
 * Add oauth support
 
