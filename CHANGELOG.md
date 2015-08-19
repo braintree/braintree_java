@@ -1,3 +1,8 @@
+## 2.48.0
+* Add new test payment method nonces
+* Allow passing description on PayPal transactions
+* Expose transaction fee details on PayPal transactions
+
 ## 2.47.0
 * Add support for PayPal billing agreements
 

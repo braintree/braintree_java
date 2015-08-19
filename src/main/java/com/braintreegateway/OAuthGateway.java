@@ -35,7 +35,7 @@ public class OAuthGateway {
         return String.format("%1$s&signature=%2$s&algorithm=SHA256", url, computeSignature(url));
     }
 
-    private String computeSignature(String url) {
+    public String computeSignature(String url) {
         Sha256Hasher hasher = new Sha256Hasher();
         return hasher.hmacHash(configuration.getClientSecret(), url);
     }
