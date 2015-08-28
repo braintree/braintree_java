@@ -10,6 +10,7 @@ public class AndroidPayCard implements PaymentMethod {
     private String last4;
     private String sourceCardType;
     private String sourceCardLast4;
+    private String sourceDescription;
     private String virtualCardType;
     private String virtualCardLast4;
     private String expirationMonth;
@@ -26,6 +27,7 @@ public class AndroidPayCard implements PaymentMethod {
     public AndroidPayCard(NodeWrapper node) {
         this.sourceCardType = node.findString("source-card-type");
         this.sourceCardLast4 = node.findString("source-card-last-4");
+        this.sourceDescription = node.findString("source-description");
         this.virtualCardType = node.findString("virtual-card-type");
         this.virtualCardLast4 = node.findString("virtual-card-last-4");
         this.cardType = this.virtualCardType;
@@ -60,6 +62,10 @@ public class AndroidPayCard implements PaymentMethod {
 
     public String getSourceCardLast4() {
         return sourceCardLast4;
+    }
+
+    public String getSourceDescription() {
+        return sourceDescription;
     }
 
     public String getVirtualCardType() {

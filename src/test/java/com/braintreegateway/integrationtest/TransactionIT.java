@@ -672,6 +672,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(transaction.getApplePayDetails());
         assertNotNull(transaction.getApplePayDetails().getCardType());
         assertNotNull(transaction.getApplePayDetails().getPaymentInstrumentName());
+        assertNotNull(transaction.getApplePayDetails().getSourceDescription());
         assertNotNull(transaction.getApplePayDetails().getExpirationMonth());
         assertNotNull(transaction.getApplePayDetails().getExpirationYear());
         assertNotNull(transaction.getApplePayDetails().getCardholderName());
@@ -679,8 +680,8 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
-    public void saleWithAndroidPayCardNonce() {
-        String androidPayCardNonce = Nonce.AndroidPay;
+    public void saleWithAndroidPayProxyCardNonce() {
+        String androidPayCardNonce = Nonce.AndroidPayDiscover;
 
         TransactionRequest request = new TransactionRequest().
             amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
@@ -700,6 +701,39 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertNotNull(androidPayDetails.getImageUrl());
         assertNotNull(androidPayDetails.getSourceCardType());
         assertNotNull(androidPayDetails.getSourceCardLast4());
+        assertNotNull(androidPayDetails.getSourceDescription());
+        assertNotNull(androidPayDetails.getVirtualCardType());
+        assertNotNull(androidPayDetails.getVirtualCardLast4());
+        assertNotNull(androidPayDetails.getGoogleTransactionId());
+        assertNotNull(androidPayDetails.getCardType());
+        assertNotNull(androidPayDetails.getLast4());
+        assertNotNull(androidPayDetails.getExpirationMonth());
+        assertNotNull(androidPayDetails.getExpirationYear());
+    }
+
+    @Test
+    public void saleWithAndroidPayNetworkTokenNonce() {
+        String androidPayCardNonce = Nonce.AndroidPayMasterCard;
+
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(androidPayCardNonce);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(PaymentInstrumentType.ANDROID_PAY_CARD, transaction.getPaymentInstrumentType());
+
+        assertNotNull(transaction.getAndroidPayDetails());
+        AndroidPayDetails androidPayDetails = transaction.getAndroidPayDetails();
+
+        assertNull(androidPayDetails.getToken());
+        assertNotNull(androidPayDetails.getBin());
+        assertNotNull(androidPayDetails.getImageUrl());
+        assertNotNull(androidPayDetails.getSourceCardType());
+        assertNotNull(androidPayDetails.getSourceCardLast4());
+        assertNotNull(androidPayDetails.getSourceDescription());
         assertNotNull(androidPayDetails.getVirtualCardType());
         assertNotNull(androidPayDetails.getVirtualCardLast4());
         assertNotNull(androidPayDetails.getGoogleTransactionId());
