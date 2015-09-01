@@ -11,6 +11,7 @@ public class TransactionOptionsRequest extends Request {
     private String venmoSdkSession;
     private String payeeEmail;
     private TransactionOptionsPayPalRequest transactionOptionsPayPalRequest;
+    private TransactionOptionsAmexRewardsRequest transactionOptionsAmexRewardsRequest;
     private TransactionOptionsThreeDSecureRequest transactionOptionsThreeDSecureRequest;
 
     public TransactionOptionsRequest(TransactionRequest parent) {
@@ -66,6 +67,11 @@ public class TransactionOptionsRequest extends Request {
         return transactionOptionsPayPalRequest;
     }
 
+    public TransactionOptionsAmexRewardsRequest amexRewards() {
+        transactionOptionsAmexRewardsRequest = new TransactionOptionsAmexRewardsRequest(this);
+        return transactionOptionsAmexRewardsRequest;
+    }
+
     public TransactionOptionsThreeDSecureRequest threeDSecure() {
         transactionOptionsThreeDSecureRequest = new TransactionOptionsThreeDSecureRequest(this);
         return transactionOptionsThreeDSecureRequest;
@@ -97,6 +103,7 @@ public class TransactionOptionsRequest extends Request {
             addElement("venmoSdkSession", venmoSdkSession).
             addElement("payeeEmail", payeeEmail).
             addElement("threeDSecure", transactionOptionsThreeDSecureRequest).
-            addElement("paypal", transactionOptionsPayPalRequest);
+            addElement("paypal", transactionOptionsPayPalRequest).
+            addElement("payWithAmexRewards", transactionOptionsAmexRewardsRequest);
     }
 }

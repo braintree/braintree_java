@@ -97,12 +97,31 @@ public class PaymentMethodIT {
     }
 
     @Test
-    public void createAndroidPayCardFromNonce() {
+    public void createAndroidPayProxyCardFromNonce() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
 
-        String nonce = Nonce.AndroidPay;
+        String nonce = Nonce.AndroidPayDiscover;
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+        assertNotNull(paymentMethod.getToken());
+        assertNotNull(paymentMethod.getImageUrl());
+    }
+
+    @Test
+    public void createAndroidPayNetworkTokenFromNonce() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = Nonce.AndroidPayMasterCard;
         PaymentMethodRequest request = new PaymentMethodRequest().
             customerId(customer.getId()).
             paymentMethodNonce(nonce);

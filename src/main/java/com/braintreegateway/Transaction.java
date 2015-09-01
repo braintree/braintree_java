@@ -171,6 +171,7 @@ public class Transaction {
     private RiskData riskData;
     private ThreeDSecureInfo threeDSecureInfo;
     private CoinbaseDetails coinbaseDetails;
+    private String amexRewardsResponse;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -268,6 +269,7 @@ public class Transaction {
         }
 
         paymentInstrumentType = node.findString("payment-instrument-type");
+        amexRewardsResponse = node.findString("amex-rewards-response");
     }
 
     public List<AddOn> getAddOns() {
@@ -372,6 +374,10 @@ public class Transaction {
 
     public CoinbaseDetails getCoinbaseDetails() {
         return coinbaseDetails;
+    }
+
+    public String getAmexRewardsResponse() {
+        return amexRewardsResponse;
     }
 
     public String getPlanId() {

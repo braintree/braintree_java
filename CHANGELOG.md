@@ -1,3 +1,8 @@
+## 2.49.0
+* Add sourceDescription attribute to Android Pay and Apple Pay
+* Add new Android Pay test nonces
+* Add support for amex rewards transactions
+
 ## 2.48.0
 * Add new test payment method nonces
 * Allow passing description on PayPal transactions

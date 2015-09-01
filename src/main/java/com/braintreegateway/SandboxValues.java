@@ -9,7 +9,8 @@ public class SandboxValues {
     public enum CreditCardNumber {
         VISA("4111111111111111"),
         MASTER_CARD("5555555555554444"),
-        FRAUD("4000111111111511");
+        FRAUD("4000111111111511"),
+        AMEX("378282246310005");
         public String number;
 
         private CreditCardNumber(String number) {
@@ -25,6 +26,17 @@ public class SandboxValues {
 
         private PaymentMethodNonce(String nonce) {
             this.nonce = nonce;
+        }
+    }
+
+    public enum AmexRewardsRequestId {
+        INTERNAL_ERROR("INTERNAL_ERROR"),
+        CARD_INELIGIBLE("CARD_INELIGIBLE"),
+        PERFORM_EXTERNAL_REQUEST("PERFORM_EXTERNAL_REQUEST");
+        public String requestId;
+
+        private AmexRewardsRequestId(String requestId) {
+            this.requestId = requestId;
         }
     }
 
