@@ -51,6 +51,7 @@ public class WebhookTestingGateway {
             case PARTNER_MERCHANT_CONNECTED: return partnerMerchantConnectedXml(id);
             case PARTNER_MERCHANT_DISCONNECTED: return partnerMerchantDisconnectedXml(id);
             case PARTNER_MERCHANT_DECLINED: return partnerMerchantDeclinedXml(id);
+            case SUBSCRIPTION_CHARGED_SUCCESSFULLY: return subscriptionChargedSuccessfullyXml(id);
             default: return subscriptionXml(id);
         }
     }
@@ -102,6 +103,28 @@ public class WebhookTestingGateway {
                 node("id", id),
                 node("transactions", TYPE_ARRAY),
                 node("add_ons", TYPE_ARRAY),
+                node("discounts", TYPE_ARRAY)
+        );
+    }
+
+    private String subscriptionChargedSuccessfullyXml(String id) {
+        return node("subscription",
+                node("id", id),
+                node("add_ons", TYPE_ARRAY),
+                node("transactions",
+                    node("transaction",
+                        node("id", "1"),
+                        node("status", "submitted_for_settlement"),
+                        node("amount", "49.99"),
+                        node("billing"),
+                        node("credit-card"),
+                        node("customer"),
+                        node("descriptor"),
+                        node("shipping"),
+                        node("disbursement-details", TYPE_ARRAY),
+                        node("subscription")
+                    )
+                ),
                 node("discounts", TYPE_ARRAY)
         );
     }
