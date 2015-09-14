@@ -3,7 +3,6 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
-import com.braintreegateway.SandboxValues.AmexRewardsRequestId;
 import com.braintreegateway.TestingGateway;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
@@ -837,7 +836,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
-                number(CreditCardNumber.AMEX.number).
+                number(CreditCardNumber.AmexPayWithPoints.SUCCESS.number).
                 expirationDate("12/2020").
                 done()
             .options().
@@ -855,21 +854,20 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Transaction transaction = result.getTarget();
 
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
-        assertEquals("success", transaction.getAmexRewardsResponse());
     }
 
     @Test
-    public void saleErrorWithIneligibleAmexRewards() {
+    public void saleWithAmexRewardsSucceedsEvenIfCardIneligible() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
-                number(CreditCardNumber.AMEX.number).
+                number(CreditCardNumber.AmexPayWithPoints.INELIGIBLE_CARD.number).
                 expirationDate("12/2020").
                 done()
             .options().
                 submitForSettlement(true).
                 amexRewards().
-                    requestId(AmexRewardsRequestId.CARD_INELIGIBLE.requestId).
+                    requestId("ABC123").
                     points("1000").
                     currencyAmount("10.00").
                     currencyIsoCode("USD").
@@ -881,7 +879,31 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Transaction transaction = result.getTarget();
 
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
-        assertEquals("RDM2002 Card is not eligible for redemption", transaction.getAmexRewardsResponse());
+    }
+
+    @Test
+    public void saleWithAmexRewardsSucceedsEvenIfCardBalanceIsInsufficient() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.AmexPayWithPoints.INSUFFICIENT_POINTS.number).
+                expirationDate("12/2020").
+                done()
+            .options().
+                submitForSettlement(true).
+                amexRewards().
+                    requestId("ABC123").
+                    points("1000").
+                    currencyAmount("10.00").
+                    currencyIsoCode("USD").
+                    done().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
     }
 
     @Test
@@ -891,7 +913,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("100.00")).
             creditCard().
-                number(CreditCardNumber.AMEX.number).
+                number(CreditCardNumber.AmexPayWithPoints.SUCCESS.number).
                 expirationDate("12/2020").
                 done()
             .options().
@@ -911,22 +933,21 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Result<Transaction> submitForSettlementResult = gateway.transaction().submitForSettlement(saleResult.getTarget().getId());
         assertTrue(submitForSettlementResult.isSuccess());
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
-        assertEquals("success", submitForSettlementResult.getTarget().getAmexRewardsResponse());
     }
 
     @Test
-    public void submitForSettlementErrorWithIneligibleAmexRewards() {
+    public void submitForSettlementWithAmexRewardsSucceedsEvenIfCardIsIneligible() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
 
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("100.00")).
             creditCard().
-                number(CreditCardNumber.AMEX.number).
+                number(CreditCardNumber.AmexPayWithPoints.INELIGIBLE_CARD.number).
                 expirationDate("12/2020").
                 done()
             .options().
                 amexRewards().
-                    requestId(AmexRewardsRequestId.CARD_INELIGIBLE.requestId).
+                    requestId("ABC123").
                     points("1000").
                     currencyAmount("10.00").
                     currencyIsoCode("USD").
@@ -941,7 +962,35 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Result<Transaction> submitForSettlementResult = gateway.transaction().submitForSettlement(saleResult.getTarget().getId());
         assertTrue(submitForSettlementResult.isSuccess());
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
-        assertEquals("RDM2002 Card is not eligible for redemption", submitForSettlementResult.getTarget().getAmexRewardsResponse());
+    }
+
+    @Test
+    public void submitForSettlementWithAmexRewardsSucceedsEvenIfCardBalanceIsInsufficient() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number(CreditCardNumber.AmexPayWithPoints.INSUFFICIENT_POINTS.number).
+                expirationDate("12/2020").
+                done()
+            .options().
+                amexRewards().
+                    requestId("ABC123").
+                    points("1000").
+                    currencyAmount("10.00").
+                    currencyIsoCode("USD").
+                    done().
+                done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertEquals(Transaction.Status.AUTHORIZED, saleResult.getTarget().getStatus());
+
+        Result<Transaction> submitForSettlementResult = gateway.transaction().submitForSettlement(saleResult.getTarget().getId());
+        assertTrue(submitForSettlementResult.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
     }
 
     @Test
