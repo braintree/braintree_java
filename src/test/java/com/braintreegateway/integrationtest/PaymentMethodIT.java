@@ -41,6 +41,7 @@ public class PaymentMethodIT {
         PayPalAccount paypalAccount = (PayPalAccount) paymentMethod;
         assertNotNull(paypalAccount.getEmail());
         assertNotNull(paypalAccount.getImageUrl());
+        assertNotNull(paypalAccount.getCustomerId());
     }
 
     @Test
@@ -70,6 +71,7 @@ public class PaymentMethodIT {
         assertNotNull(applePayCard.getExpirationYear());
         assertNotNull(applePayCard.getSubscriptions());
         assertNotNull(applePayCard.getLast4());
+        assertNotNull(applePayCard.getCustomerId());
         assertTrue(applePayCard.getSubscriptions().isEmpty());
     }
 
@@ -93,6 +95,7 @@ public class PaymentMethodIT {
         PaymentMethod paymentMethod = result.getTarget();
         assertNotNull(paymentMethod.getToken());
         assertNotNull(paymentMethod.getImageUrl());
+        assertNotNull(paymentMethod.getCustomerId());
         assertTrue(paymentMethod.isDefault());
     }
 
@@ -113,6 +116,7 @@ public class PaymentMethodIT {
         PaymentMethod paymentMethod = result.getTarget();
         assertNotNull(paymentMethod.getToken());
         assertNotNull(paymentMethod.getImageUrl());
+        assertNotNull(paymentMethod.getCustomerId());
     }
 
     @Test
@@ -132,6 +136,7 @@ public class PaymentMethodIT {
         PaymentMethod paymentMethod = result.getTarget();
         assertNotNull(paymentMethod.getToken());
         assertNotNull(paymentMethod.getImageUrl());
+        assertNotNull(paymentMethod.getCustomerId());
     }
 
     @Test
@@ -173,6 +178,7 @@ public class PaymentMethodIT {
         assertNotNull(androidPayCard.getCreatedAt());
         assertNotNull(androidPayCard.getUpdatedAt());
         assertNotNull(androidPayCard.getSubscriptions());
+        assertNotNull(androidPayCard.getCustomerId());
         assertTrue(androidPayCard.getSubscriptions().isEmpty());
     }
 
@@ -191,6 +197,7 @@ public class PaymentMethodIT {
         PaymentMethod paymentMethod = result.getTarget();
         assertNotNull(paymentMethod.getToken());
         assertNotNull(paymentMethod.getImageUrl());
+        assertNotNull(paymentMethod.getCustomerId());
     }
 
     @Test
@@ -279,6 +286,7 @@ public class PaymentMethodIT {
         assertTrue(result.isSuccess());
         PaymentMethod paymentMethod = result.getTarget();
         assertNotNull(paymentMethod.getImageUrl());
+        assertNotNull(paymentMethod.getCustomerId());
     }
 
     @Test
