@@ -12,6 +12,7 @@ public class EuropeBankAccount implements PaymentMethod {
     private String mandateReferenceNumber;
     private String accountHolderName;
     private String imageUrl;
+    private String customerId;
 
     public enum MandateType {
         BUSINESS("business"),
@@ -36,6 +37,7 @@ public class EuropeBankAccount implements PaymentMethod {
         this.mandateReferenceNumber = node.findString("mandate-reference-number");
         this.accountHolderName = node.findString("account-holder-name");
         this.imageUrl = node.findString("image-url");
+        this.customerId = node.findString("customer-id");
     }
 
     public String getToken() {
@@ -64,5 +66,9 @@ public class EuropeBankAccount implements PaymentMethod {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public String getCustomerId() {
+        return customerId;
     }
 }
