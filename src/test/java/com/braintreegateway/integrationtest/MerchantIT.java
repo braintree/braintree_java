@@ -54,6 +54,26 @@ public class MerchantIT {
 
         assertFalse(result.isSuccess());
         assertEquals(ValidationErrorCode.MERCHANT_PAYMENT_METHODS_ARE_INVALID, result.getErrors().forObject("merchant").onField("payment-methods").get(0).getCode());
+    }
 
+    @Test
+    public void createWithPayPalOnly() {
+        MerchantRequest request = new MerchantRequest().
+            email("name2@email.com").
+            countryCodeAlpha3("USA").
+            paymentMethods(Arrays.asList("paypal")).
+            payPalAccount().
+                clientId("paypal_client_id").
+                clientSecret("paypal_client_secret").
+                done();
+
+        Result<Merchant> result = gateway.merchant().create(request);
+
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget().getId() != null && !result.getTarget().getId().isEmpty());
+        assertTrue(result.getTarget().getCredentials().getAccessToken().startsWith("access_token"));
+        assertTrue(result.getTarget().getCredentials().getExpiresAt().after(Calendar.getInstance()));
+        assertTrue(result.getTarget().getCredentials().getRefreshToken() == null || result.getTarget().getCredentials().getRefreshToken().isEmpty());
+        assertEquals("bearer", result.getTarget().getCredentials().getTokenType());
     }
 }
