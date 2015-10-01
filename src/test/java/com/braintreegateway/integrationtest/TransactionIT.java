@@ -834,6 +834,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     @Test
     public void saleWithAmexRewards() {
         TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
                 number(CreditCardNumber.AmexPayWithPoints.SUCCESS.number).
@@ -859,6 +860,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     @Test
     public void saleWithAmexRewardsSucceedsEvenIfCardIneligible() {
         TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
                 number(CreditCardNumber.AmexPayWithPoints.INELIGIBLE_CARD.number).
@@ -884,6 +886,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
     @Test
     public void saleWithAmexRewardsSucceedsEvenIfCardBalanceIsInsufficient() {
         TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
                 number(CreditCardNumber.AmexPayWithPoints.INSUFFICIENT_POINTS.number).
@@ -911,6 +914,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
 
         TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).
             amount(new BigDecimal("100.00")).
             creditCard().
                 number(CreditCardNumber.AmexPayWithPoints.SUCCESS.number).
@@ -940,6 +944,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
 
         TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).
             amount(new BigDecimal("100.00")).
             creditCard().
                 number(CreditCardNumber.AmexPayWithPoints.INELIGIBLE_CARD.number).
@@ -969,6 +974,7 @@ public class TransactionIT implements MerchantAccountTestConstants {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
 
         TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).
             amount(new BigDecimal("100.00")).
             creditCard().
                 number(CreditCardNumber.AmexPayWithPoints.INSUFFICIENT_POINTS.number).
