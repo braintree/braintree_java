@@ -1,6 +1,9 @@
 package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
+import com.braintreegateway.SandboxValues.CreditCardNumber;
+import com.braintreegateway.SandboxValues.TransactionAmount;
+import com.braintreegateway.test.Nonce;
 import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +61,8 @@ public class MerchantIT {
 
     @Test
     public void createWithPayPalOnly() {
+        this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
+
         MerchantRequest request = new MerchantRequest().
             email("name2@email.com").
             countryCodeAlpha3("USA").
@@ -75,5 +80,37 @@ public class MerchantIT {
         assertTrue(result.getTarget().getCredentials().getExpiresAt().after(Calendar.getInstance()));
         assertTrue(result.getTarget().getCredentials().getRefreshToken() == null || result.getTarget().getCredentials().getRefreshToken().isEmpty());
         assertEquals("bearer", result.getTarget().getCredentials().getTokenType());
+    }
+
+    @Test
+    public void payPalOnlyAccountCannotRunCreditCardTransactions() {
+        this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
+
+        MerchantRequest merchantRequest = new MerchantRequest().
+            email("name2@email.com").
+            countryCodeAlpha3("USA").
+            paymentMethods(Arrays.asList("paypal")).
+            payPalAccount().
+                clientId("paypal_client_id").
+                clientSecret("paypal_client_secret").
+                done();
+
+        Result<Merchant> result = gateway.merchant().create(merchantRequest);
+
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget().getId() != null && !result.getTarget().getId().isEmpty());
+
+        BraintreeGateway gateway = new BraintreeGateway(result.getTarget().getCredentials().getAccessToken());
+        TransactionRequest transactionRequest = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> transactionResult = gateway.transaction().sale(transactionRequest);
+
+        assertTrue(transactionResult.getMessage().contains("Merchant account does not support payment instrument."));
+        assertFalse(transactionResult.isSuccess());
     }
 }
