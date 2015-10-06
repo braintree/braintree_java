@@ -4086,4 +4086,67 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals(1, searchResult.getMaximumSize());
         assertEquals(Transaction.Status.SETTLEMENT_DECLINED, searchResult.getFirst().getStatus());
     }
+
+    @Test
+    public void successfulPartialSettlementSale()
+    {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction authorizedTransaction = result.getTarget();
+
+        assertEquals(TransactionAmount.AUTHORIZE.amount, authorizedTransaction.getAmount());
+        assertEquals(Transaction.Type.SALE, authorizedTransaction.getType());
+        assertNotNull(authorizedTransaction.getProcessorAuthorizationCode());
+        assertEquals(Transaction.Status.AUTHORIZED, authorizedTransaction.getStatus());
+
+        BigDecimal amount1 = new BigDecimal("400.00");
+        Result<Transaction> partialSettlementResult1 = gateway.transaction().submitForPartialSettlement(authorizedTransaction.getId(), amount1);
+        Transaction partialSettlementTransaction1 = partialSettlementResult1.getTarget();
+        assertEquals(amount1, partialSettlementTransaction1.getAmount());
+        assertEquals(Transaction.Type.SALE, partialSettlementTransaction1.getType());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, partialSettlementTransaction1.getStatus());
+        assertEquals(authorizedTransaction.getId(), partialSettlementTransaction1.getAuthorizedTransactionId());
+
+        BigDecimal amount2 = new BigDecimal("600.00");
+        Result<Transaction> partialSettlementResult2 = gateway.transaction().submitForPartialSettlement(authorizedTransaction.getId(), amount2);
+        Transaction partialSettlementTransaction2 = partialSettlementResult2.getTarget();
+        assertEquals(amount2, partialSettlementTransaction2.getAmount());
+        assertEquals(Transaction.Type.SALE, partialSettlementTransaction2.getType());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, partialSettlementTransaction2.getStatus());
+
+        Transaction refreshedAuthorizedTransaction = gateway.transaction().find(authorizedTransaction.getId());
+        assertEquals(2, refreshedAuthorizedTransaction.getPartialSettlementTransactionIds().size());
+    }
+
+    @Test
+    public void cannotCreatePartialSettlementTransactionsOnPartialSettlementTransactions() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction authorizedTransaction = result.getTarget();
+
+        BigDecimal amount1 = new BigDecimal("400.00");
+        Result<Transaction> partialSettlementResult1 = gateway.transaction().submitForPartialSettlement(authorizedTransaction.getId(), amount1);
+        Transaction partialSettlementTransaction = partialSettlementResult1.getTarget();
+
+        BigDecimal amount2 = new BigDecimal("100.00");
+        Result<Transaction> partialSettlementResult2 = gateway.transaction().submitForPartialSettlement(partialSettlementTransaction.getId(), amount2);
+        assertFalse(partialSettlementResult2.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_SUBMIT_FOR_PARTIAL_SETTLEMENT,
+                partialSettlementResult2.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
 }
