@@ -28,12 +28,20 @@ public final class Dispute {
         RETRIEVAL;
     }
 
+    public enum Kind {
+        CHARGEBACK,
+        PRE_ARBITRATION,
+        RETRIEVAL,
+        UNRECOGNIZED;
+    }
+
     private final Calendar receivedDate;
     private final Calendar replyByDate;
     private final String currencyIsoCode;
     private final String id;
     private final Reason reason;
     private final Status status;
+    private final Kind kind;
     private final BigDecimal amount;
     private final TransactionDetails transactionDetails;
 
@@ -43,6 +51,7 @@ public final class Dispute {
         currencyIsoCode = node.findString("currency-iso-code");
         reason = EnumUtils.findByName(Reason.class, node.findString("reason"), Reason.GENERAL);
         status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);
+        kind = EnumUtils.findByName(Kind.class, node.findString("kind"), Kind.UNRECOGNIZED);
         amount = node.findBigDecimal("amount");
         id = node.findString("id");
         transactionDetails = new TransactionDetails(node.findFirst("transaction"));
@@ -70,6 +79,10 @@ public final class Dispute {
 
     public Status getStatus() {
         return status;
+    }
+
+    public Kind getKind() {
+        return kind;
     }
 
     public BigDecimal getAmount() {
