@@ -42,7 +42,7 @@ public class MerchantIT {
 
         assertTrue(result.getTarget().getCredentials().getAccessToken().startsWith("access_token"));
         assertTrue(result.getTarget().getCredentials().getExpiresAt().after(Calendar.getInstance()));
-        assertTrue(result.getTarget().getCredentials().getRefreshToken() == null || result.getTarget().getCredentials().getRefreshToken().isEmpty());
+        assertTrue(result.getTarget().getCredentials().getRefreshToken().startsWith("refresh_token"));
         assertEquals("bearer", result.getTarget().getCredentials().getTokenType());
     }
 
@@ -77,8 +77,8 @@ public class MerchantIT {
         assertTrue(result.isSuccess());
         assertTrue(result.getTarget().getId() != null && !result.getTarget().getId().isEmpty());
         assertTrue(result.getTarget().getCredentials().getAccessToken().startsWith("access_token"));
+        assertTrue(result.getTarget().getCredentials().getRefreshToken().startsWith("refresh_token"));
         assertTrue(result.getTarget().getCredentials().getExpiresAt().after(Calendar.getInstance()));
-        assertTrue(result.getTarget().getCredentials().getRefreshToken() == null || result.getTarget().getCredentials().getRefreshToken().isEmpty());
         assertEquals("bearer", result.getTarget().getCredentials().getTokenType());
     }
 
