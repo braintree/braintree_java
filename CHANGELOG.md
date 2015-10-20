@@ -1,3 +1,6 @@
+## 2.51.0
+* Fixes broken maven release
+
 ## 2.50.0
 * Add kind, openedDate, and wonDate to Dispute
 * Add support for partial settlement transactions
