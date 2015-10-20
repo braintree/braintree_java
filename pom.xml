@@ -169,6 +169,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.14.1</version>
                 <configuration>
+                  <excludes>
+                    <exclude>**/integrationtest/**</exclude>
+                    <exclude>**/HttpTest.java</exclude>
+                  </excludes>
                   <disableXmlReport>true</disableXmlReport>
                   <useFile>false</useFile>
                 </configuration>
