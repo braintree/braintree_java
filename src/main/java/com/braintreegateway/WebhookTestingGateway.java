@@ -51,6 +51,7 @@ public class WebhookTestingGateway {
             case PARTNER_MERCHANT_CONNECTED: return partnerMerchantConnectedXml(id);
             case PARTNER_MERCHANT_DISCONNECTED: return partnerMerchantDisconnectedXml(id);
             case PARTNER_MERCHANT_DECLINED: return partnerMerchantDeclinedXml(id);
+            case SUBSCRIPTION_CHARGED_SUCCESSFULLY: return subscriptionChargedSuccessfullyXml(id);
             default: return subscriptionXml(id);
         }
     }
@@ -106,6 +107,28 @@ public class WebhookTestingGateway {
         );
     }
 
+    private String subscriptionChargedSuccessfullyXml(String id) {
+        return node("subscription",
+                node("id", id),
+                node("add_ons", TYPE_ARRAY),
+                node("transactions",
+                    node("transaction",
+                        node("id", "1"),
+                        node("status", "submitted_for_settlement"),
+                        node("amount", "49.99"),
+                        node("billing"),
+                        node("credit-card"),
+                        node("customer"),
+                        node("descriptor"),
+                        node("shipping"),
+                        node("disbursement-details", TYPE_ARRAY),
+                        node("subscription")
+                    )
+                ),
+                node("discounts", TYPE_ARRAY)
+        );
+    }
+
     private String transactionXml(String id) {
         return node("transaction",
                 node("id", id),
@@ -127,7 +150,9 @@ public class WebhookTestingGateway {
                 node("id", id),
                 node("amount", "250.00"),
                 node("received-date", TYPE_DATE, "2014-03-21"),
-                node("repy-by-date", TYPE_DATE, "2014-03-21"),
+                node("reply-by-date", TYPE_DATE, "2014-03-21"),
+                node("date-opened", TYPE_DATE, "2014-03-21"),
+                node("kind", "chargeback"),
                 node("currency-iso-code", "USD"),
                 node("status", "open"),
                 node("reason", "fraud"),
@@ -143,7 +168,9 @@ public class WebhookTestingGateway {
                 node("id", id),
                 node("amount", "250.00"),
                 node("received-date", TYPE_DATE, "2014-03-21"),
-                node("repy-by-date", TYPE_DATE, "2014-03-21"),
+                node("reply-by-date", TYPE_DATE, "2014-03-21"),
+                node("date-opened", TYPE_DATE, "2014-03-21"),
+                node("kind", "chargeback"),
                 node("currency-iso-code", "USD"),
                 node("status", "lost"),
                 node("reason", "fraud"),
@@ -159,7 +186,10 @@ public class WebhookTestingGateway {
                 node("id", id),
                 node("amount", "250.00"),
                 node("received-date", TYPE_DATE, "2014-03-21"),
-                node("repy-by-date", TYPE_DATE, "2014-03-21"),
+                node("reply-by-date", TYPE_DATE, "2014-03-21"),
+                node("date-opened", TYPE_DATE, "2014-03-21"),
+                node("date-won", TYPE_DATE, "2014-03-22"),
+                node("kind", "chargeback"),
                 node("currency-iso-code", "USD"),
                 node("status", "won"),
                 node("reason", "fraud"),

@@ -16,6 +16,17 @@ public class SandboxValues {
         private CreditCardNumber(String number) {
             this.number = number;
         }
+
+        public enum AmexPayWithPoints {
+            SUCCESS("371260714673002"),
+            INELIGIBLE_CARD("378267515471109"),
+            INSUFFICIENT_POINTS("371544868764018");
+            public String number;
+
+            private AmexPayWithPoints(String number) {
+                this.number = number;
+            }
+        }
     }
 
     public enum PaymentMethodNonce {
@@ -26,17 +37,6 @@ public class SandboxValues {
 
         private PaymentMethodNonce(String nonce) {
             this.nonce = nonce;
-        }
-    }
-
-    public enum AmexRewardsRequestId {
-        INTERNAL_ERROR("INTERNAL_ERROR"),
-        CARD_INELIGIBLE("CARD_INELIGIBLE"),
-        PERFORM_EXTERNAL_REQUEST("PERFORM_EXTERNAL_REQUEST");
-        public String requestId;
-
-        private AmexRewardsRequestId(String requestId) {
-            this.requestId = requestId;
         }
     }
 

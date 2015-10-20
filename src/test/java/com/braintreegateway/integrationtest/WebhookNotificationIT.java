@@ -68,6 +68,21 @@ public class WebhookNotificationIT {
     }
 
     @Test
+    public void createsSampleSubscriptionChargedSuccessfullyNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_CHARGED_SUCCESSFULLY, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.SUBSCRIPTION_CHARGED_SUCCESSFULLY, notification.getKind());
+        assertEquals("my_id", notification.getSubscription().getId());
+        assertEquals(1, notification.getSubscription().getTransactions().size());
+
+        Transaction transaction = notification.getSubscription().getTransactions().get(0);
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
+        assertEquals("49.99", transaction.getAmount().toString());
+    }
+
+    @Test
     public void createsSampleMerchantAccountApprovedNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_APPROVED, "my_id");
 
@@ -112,6 +127,8 @@ public class WebhookNotificationIT {
         assertEquals(WebhookNotification.Kind.DISPUTE_OPENED, notification.getKind());
         assertEquals("my_id", notification.getDispute().getId());
         assertEquals(Dispute.Status.OPEN, notification.getDispute().getStatus());
+        assertEquals(Dispute.Kind.CHARGEBACK, notification.getDispute().getKind());
+        assertNotNull(notification.getDispute().getOpenedDate());
     }
 
     public void createsSampleDisputeWonNotification() {
@@ -122,6 +139,8 @@ public class WebhookNotificationIT {
         assertEquals(WebhookNotification.Kind.DISPUTE_WON, notification.getKind());
         assertEquals("my_id", notification.getDispute().getId());
         assertEquals(Dispute.Status.WON, notification.getDispute().getStatus());
+        assertEquals(Dispute.Kind.CHARGEBACK, notification.getDispute().getKind());
+        assertNotNull(notification.getDispute().getOpenedDate());
     }
 
     public void createsSampleDisputeLostNotification() {
@@ -132,6 +151,9 @@ public class WebhookNotificationIT {
         assertEquals(WebhookNotification.Kind.DISPUTE_LOST, notification.getKind());
         assertEquals("my_id", notification.getDispute().getId());
         assertEquals(Dispute.Status.LOST, notification.getDispute().getStatus());
+        assertEquals(Dispute.Kind.CHARGEBACK, notification.getDispute().getKind());
+        assertNotNull(notification.getDispute().getOpenedDate());
+        assertNotNull(notification.getDispute().getWonDate());
     }
 
     @Test(expected = InvalidSignatureException.class)

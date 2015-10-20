@@ -5,6 +5,7 @@ public class MerchantRequest extends Request {
 
     public String email;
     public String countryCodeAlpha3;
+    public PayPalOnlyAccountRequest payPalOnlyAccountRequest;
     public List<String> paymentMethods;
 
     public MerchantRequest email(String email) {
@@ -28,6 +29,12 @@ public class MerchantRequest extends Request {
             addElement("email", email).
             addElement("countryCodeAlpha3", countryCodeAlpha3).
             addElement("paymentMethods", paymentMethods).
+            addElement("paypalAccount", payPalOnlyAccountRequest).
             toXML();
+    }
+
+    public PayPalOnlyAccountRequest payPalAccount() {
+        this.payPalOnlyAccountRequest = new PayPalOnlyAccountRequest(this);
+        return this.payPalOnlyAccountRequest;
     }
 }

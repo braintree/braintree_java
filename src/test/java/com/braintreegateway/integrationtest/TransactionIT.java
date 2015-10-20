@@ -3,7 +3,6 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
-import com.braintreegateway.SandboxValues.AmexRewardsRequestId;
 import com.braintreegateway.TestingGateway;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
@@ -835,9 +834,10 @@ public class TransactionIT implements MerchantAccountTestConstants {
     @Test
     public void saleWithAmexRewards() {
         TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
-                number(CreditCardNumber.AMEX.number).
+                number(CreditCardNumber.AmexPayWithPoints.SUCCESS.number).
                 expirationDate("12/2020").
                 done()
             .options().
@@ -855,21 +855,21 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Transaction transaction = result.getTarget();
 
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
-        assertEquals("success", transaction.getAmexRewardsResponse());
     }
 
     @Test
-    public void saleErrorWithIneligibleAmexRewards() {
+    public void saleWithAmexRewardsSucceedsEvenIfCardIneligible() {
         TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
-                number(CreditCardNumber.AMEX.number).
+                number(CreditCardNumber.AmexPayWithPoints.INELIGIBLE_CARD.number).
                 expirationDate("12/2020").
                 done()
             .options().
                 submitForSettlement(true).
                 amexRewards().
-                    requestId(AmexRewardsRequestId.CARD_INELIGIBLE.requestId).
+                    requestId("ABC123").
                     points("1000").
                     currencyAmount("10.00").
                     currencyIsoCode("USD").
@@ -881,7 +881,32 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Transaction transaction = result.getTarget();
 
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
-        assertEquals("RDM2002 Card is not eligible for redemption", transaction.getAmexRewardsResponse());
+    }
+
+    @Test
+    public void saleWithAmexRewardsSucceedsEvenIfCardBalanceIsInsufficient() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.AmexPayWithPoints.INSUFFICIENT_POINTS.number).
+                expirationDate("12/2020").
+                done()
+            .options().
+                submitForSettlement(true).
+                amexRewards().
+                    requestId("ABC123").
+                    points("1000").
+                    currencyAmount("10.00").
+                    currencyIsoCode("USD").
+                    done().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
     }
 
     @Test
@@ -889,9 +914,10 @@ public class TransactionIT implements MerchantAccountTestConstants {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
 
         TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).
             amount(new BigDecimal("100.00")).
             creditCard().
-                number(CreditCardNumber.AMEX.number).
+                number(CreditCardNumber.AmexPayWithPoints.SUCCESS.number).
                 expirationDate("12/2020").
                 done()
             .options().
@@ -911,22 +937,22 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Result<Transaction> submitForSettlementResult = gateway.transaction().submitForSettlement(saleResult.getTarget().getId());
         assertTrue(submitForSettlementResult.isSuccess());
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
-        assertEquals("success", submitForSettlementResult.getTarget().getAmexRewardsResponse());
     }
 
     @Test
-    public void submitForSettlementErrorWithIneligibleAmexRewards() {
+    public void submitForSettlementWithAmexRewardsSucceedsEvenIfCardIsIneligible() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
 
         TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).
             amount(new BigDecimal("100.00")).
             creditCard().
-                number(CreditCardNumber.AMEX.number).
+                number(CreditCardNumber.AmexPayWithPoints.INELIGIBLE_CARD.number).
                 expirationDate("12/2020").
                 done()
             .options().
                 amexRewards().
-                    requestId(AmexRewardsRequestId.CARD_INELIGIBLE.requestId).
+                    requestId("ABC123").
                     points("1000").
                     currencyAmount("10.00").
                     currencyIsoCode("USD").
@@ -941,7 +967,36 @@ public class TransactionIT implements MerchantAccountTestConstants {
         Result<Transaction> submitForSettlementResult = gateway.transaction().submitForSettlement(saleResult.getTarget().getId());
         assertTrue(submitForSettlementResult.isSuccess());
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
-        assertEquals("RDM2002 Card is not eligible for redemption", submitForSettlementResult.getTarget().getAmexRewardsResponse());
+    }
+
+    @Test
+    public void submitForSettlementWithAmexRewardsSucceedsEvenIfCardBalanceIsInsufficient() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number(CreditCardNumber.AmexPayWithPoints.INSUFFICIENT_POINTS.number).
+                expirationDate("12/2020").
+                done()
+            .options().
+                amexRewards().
+                    requestId("ABC123").
+                    points("1000").
+                    currencyAmount("10.00").
+                    currencyIsoCode("USD").
+                    done().
+                done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertEquals(Transaction.Status.AUTHORIZED, saleResult.getTarget().getStatus());
+
+        Result<Transaction> submitForSettlementResult = gateway.transaction().submitForSettlement(saleResult.getTarget().getId());
+        assertTrue(submitForSettlementResult.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
     }
 
     @Test
@@ -4030,5 +4085,68 @@ public class TransactionIT implements MerchantAccountTestConstants {
         ResourceCollection<Transaction> searchResult = altpayGateway.transaction().search(searchRequest);
         assertEquals(1, searchResult.getMaximumSize());
         assertEquals(Transaction.Status.SETTLEMENT_DECLINED, searchResult.getFirst().getStatus());
+    }
+
+    @Test
+    public void successfulPartialSettlementSale()
+    {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction authorizedTransaction = result.getTarget();
+
+        assertEquals(TransactionAmount.AUTHORIZE.amount, authorizedTransaction.getAmount());
+        assertEquals(Transaction.Type.SALE, authorizedTransaction.getType());
+        assertNotNull(authorizedTransaction.getProcessorAuthorizationCode());
+        assertEquals(Transaction.Status.AUTHORIZED, authorizedTransaction.getStatus());
+
+        BigDecimal amount1 = new BigDecimal("400.00");
+        Result<Transaction> partialSettlementResult1 = gateway.transaction().submitForPartialSettlement(authorizedTransaction.getId(), amount1);
+        Transaction partialSettlementTransaction1 = partialSettlementResult1.getTarget();
+        assertEquals(amount1, partialSettlementTransaction1.getAmount());
+        assertEquals(Transaction.Type.SALE, partialSettlementTransaction1.getType());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, partialSettlementTransaction1.getStatus());
+        assertEquals(authorizedTransaction.getId(), partialSettlementTransaction1.getAuthorizedTransactionId());
+
+        BigDecimal amount2 = new BigDecimal("600.00");
+        Result<Transaction> partialSettlementResult2 = gateway.transaction().submitForPartialSettlement(authorizedTransaction.getId(), amount2);
+        Transaction partialSettlementTransaction2 = partialSettlementResult2.getTarget();
+        assertEquals(amount2, partialSettlementTransaction2.getAmount());
+        assertEquals(Transaction.Type.SALE, partialSettlementTransaction2.getType());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, partialSettlementTransaction2.getStatus());
+
+        Transaction refreshedAuthorizedTransaction = gateway.transaction().find(authorizedTransaction.getId());
+        assertEquals(2, refreshedAuthorizedTransaction.getPartialSettlementTransactionIds().size());
+    }
+
+    @Test
+    public void cannotCreatePartialSettlementTransactionsOnPartialSettlementTransactions() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction authorizedTransaction = result.getTarget();
+
+        BigDecimal amount1 = new BigDecimal("400.00");
+        Result<Transaction> partialSettlementResult1 = gateway.transaction().submitForPartialSettlement(authorizedTransaction.getId(), amount1);
+        Transaction partialSettlementTransaction = partialSettlementResult1.getTarget();
+
+        BigDecimal amount2 = new BigDecimal("100.00");
+        Result<Transaction> partialSettlementResult2 = gateway.transaction().submitForPartialSettlement(partialSettlementTransaction.getId(), amount2);
+        assertFalse(partialSettlementResult2.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_SUBMIT_FOR_PARTIAL_SETTLEMENT,
+                partialSettlementResult2.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 }

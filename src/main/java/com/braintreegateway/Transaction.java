@@ -171,7 +171,8 @@ public class Transaction {
     private RiskData riskData;
     private ThreeDSecureInfo threeDSecureInfo;
     private CoinbaseDetails coinbaseDetails;
-    private String amexRewardsResponse;
+    private String authorizedTransactionId;
+    private List<String> partialSettlementTransactionIds;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -269,7 +270,13 @@ public class Transaction {
         }
 
         paymentInstrumentType = node.findString("payment-instrument-type");
-        amexRewardsResponse = node.findString("amex-rewards-response");
+
+        authorizedTransactionId = node.findString("authorized-transaction-id");
+
+        partialSettlementTransactionIds = new ArrayList<String>();
+        for (NodeWrapper partialSettlementTransactionIdNode : node.findAll("partial-settlement-transaction-ids/*")) {
+            partialSettlementTransactionIds.add(partialSettlementTransactionIdNode.findString("."));
+        }
     }
 
     public List<AddOn> getAddOns() {
@@ -374,10 +381,6 @@ public class Transaction {
 
     public CoinbaseDetails getCoinbaseDetails() {
         return coinbaseDetails;
-    }
-
-    public String getAmexRewardsResponse() {
-        return amexRewardsResponse;
     }
 
     public String getPlanId() {
@@ -518,5 +521,13 @@ public class Transaction {
 
     public String getPaymentInstrumentType() {
         return paymentInstrumentType;
+    }
+
+    public String getAuthorizedTransactionId() {
+        return authorizedTransactionId;
+    }
+
+    public List<String> getPartialSettlementTransactionIds() {
+        return partialSettlementTransactionIds;
     }
 }

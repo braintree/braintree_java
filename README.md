@@ -21,12 +21,12 @@ public class BraintreeExample {
             "the_private_key"
         );
 
-        TransactionRequest request = new TransactionRequest().
-            amount(new BigDecimal("1000.00")).
-            creditCard().
-                number("4111111111111111").
-                expirationDate("05/2009").
-                done();
+        TransactionRequest request = new TransactionRequest()
+            .amount(new BigDecimal("1000.00")
+            .paymentMethodNonce(nonceFromTheClient)
+            .options()
+                .submitForSettlement(true)
+                .done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
 
