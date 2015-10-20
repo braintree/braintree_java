@@ -1928,6 +1928,52 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void submitForSettlementWithOrderId() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionRequest submitForSettlementRequest = new TransactionRequest().
+            orderId("1234");
+
+        Result<Transaction> result = gateway.transaction().submitForSettlement(transaction.getId(), submitForSettlementRequest);
+
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
+        assertEquals(new String("1234"), result.getTarget().getOrderId());
+    }
+
+    @Test
+    public void submitForSettlementWithDescriptors() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionRequest submitForSettlementRequest = new TransactionRequest().
+            descriptor().
+                name("123*123456789012345678").
+                phone("3334445555").
+                url("ebay.com").
+                done();
+
+        Result<Transaction> result = gateway.transaction().submitForSettlement(transaction.getId(), submitForSettlementRequest);
+
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
+        assertEquals("123*123456789012345678", result.getTarget().getDescriptor().getName());
+        assertEquals("3334445555", result.getTarget().getDescriptor().getPhone());
+        assertEquals("ebay.com", result.getTarget().getDescriptor().getUrl());
+    }
+
+    @Test
     public void submitForSettlementWithBadStatus() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
