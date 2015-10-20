@@ -128,6 +128,7 @@ public class WebhookNotificationIT {
         assertEquals("my_id", notification.getDispute().getId());
         assertEquals(Dispute.Status.OPEN, notification.getDispute().getStatus());
         assertEquals(Dispute.Kind.CHARGEBACK, notification.getDispute().getKind());
+        assertNotNull(notification.getDispute().getOpenedDate());
     }
 
     public void createsSampleDisputeWonNotification() {
@@ -139,6 +140,7 @@ public class WebhookNotificationIT {
         assertEquals("my_id", notification.getDispute().getId());
         assertEquals(Dispute.Status.WON, notification.getDispute().getStatus());
         assertEquals(Dispute.Kind.CHARGEBACK, notification.getDispute().getKind());
+        assertNotNull(notification.getDispute().getOpenedDate());
     }
 
     public void createsSampleDisputeLostNotification() {
@@ -150,6 +152,8 @@ public class WebhookNotificationIT {
         assertEquals("my_id", notification.getDispute().getId());
         assertEquals(Dispute.Status.LOST, notification.getDispute().getStatus());
         assertEquals(Dispute.Kind.CHARGEBACK, notification.getDispute().getKind());
+        assertNotNull(notification.getDispute().getOpenedDate());
+        assertNotNull(notification.getDispute().getWonDate());
     }
 
     @Test(expected = InvalidSignatureException.class)
