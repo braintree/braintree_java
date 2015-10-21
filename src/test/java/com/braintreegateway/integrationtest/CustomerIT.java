@@ -559,6 +559,22 @@ public class CustomerIT {
     }
 
     @Test
+    public void createWithAmexExpressCheckoutCard() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.AmexExpressCheckout);
+        Customer customer = gateway.customer().create(request).getTarget();
+
+        Customer foundCustomer = gateway.customer().find(customer.getId());
+        assertEquals(customer.getId(), foundCustomer.getId());
+        assertNotNull(foundCustomer.getAmexExpressCheckoutCards());
+        assertEquals(1, foundCustomer.getAmexExpressCheckoutCards().size());
+        AmexExpressCheckoutCard card = foundCustomer.getAmexExpressCheckoutCards().get(0);
+        assertNotNull(card);
+        assertNotNull(card.getCardMemberNumber());
+        assertEquals(1, foundCustomer.getPaymentMethods().size());
+    }
+
+    @Test
     public void findDuplicateCreditCardsGivenPaymentMethodToken() {
         CustomerRequest request = new CustomerRequest().
                 creditCard().

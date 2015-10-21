@@ -743,6 +743,35 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void saleWithAmexExpressCheckoutCardNonce() {
+        String amexExpressCheckoutCardNonce = Nonce.AmexExpressCheckout;
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(amexExpressCheckoutCardNonce);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(PaymentInstrumentType.AMEX_EXPRESS_CHECKOUT_CARD, transaction.getPaymentInstrumentType());
+
+        assertNotNull(transaction.getAmexExpressCheckoutDetails());
+        AmexExpressCheckoutDetails amexExpressCheckoutDetails = transaction.getAmexExpressCheckoutDetails();
+
+        assertNull(amexExpressCheckoutDetails.getToken());
+        assertNotNull(amexExpressCheckoutDetails.getCardType());
+        assertNotNull(amexExpressCheckoutDetails.getBin());
+        assertNotNull(amexExpressCheckoutDetails.getExpirationMonth());
+        assertNotNull(amexExpressCheckoutDetails.getExpirationYear());
+        assertNotNull(amexExpressCheckoutDetails.getCardMemberNumber());
+        assertNotNull(amexExpressCheckoutDetails.getCardMemberExpiryDate());
+        assertNotNull(amexExpressCheckoutDetails.getImageUrl());
+        assertNotNull(amexExpressCheckoutDetails.getSourceDescription());
+    }
+
+    @Test
     public void saleWithThreeDSecureOptionRequired() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).

@@ -184,6 +184,44 @@ public class PaymentMethodIT {
     }
 
     @Test
+    public void createAmexExpressCheckoutCardFromNonce() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = Nonce.AmexExpressCheckout;
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce).
+            options().
+                makeDefault(true).
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+        assertNotNull(paymentMethod.getToken());
+        assertNotNull(paymentMethod.getImageUrl());
+        assertTrue(paymentMethod.isDefault());
+
+        AmexExpressCheckoutCard amexExpressCheckoutCard = (AmexExpressCheckoutCard) paymentMethod;
+        assertNotNull(amexExpressCheckoutCard.getCreatedAt());
+        assertNotNull(amexExpressCheckoutCard.getUpdatedAt());
+        assertNotNull(amexExpressCheckoutCard.getSubscriptions());
+        assertNotNull(amexExpressCheckoutCard.getBin());
+        assertNotNull(amexExpressCheckoutCard.getCardMemberExpiryDate());
+        assertNotNull(amexExpressCheckoutCard.getCardMemberNumber());
+        assertNotNull(amexExpressCheckoutCard.getCardType());
+        assertNotNull(amexExpressCheckoutCard.getCustomerId());
+        assertNotNull(amexExpressCheckoutCard.getExpirationMonth());
+        assertNotNull(amexExpressCheckoutCard.getExpirationYear());
+        assertNotNull(amexExpressCheckoutCard.getImageUrl());
+        assertNotNull(amexExpressCheckoutCard.getSourceDescription());
+        assertNotNull(amexExpressCheckoutCard.getToken());
+    }
+
+    @Test
     public void createAbstractPaymentMethod() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());

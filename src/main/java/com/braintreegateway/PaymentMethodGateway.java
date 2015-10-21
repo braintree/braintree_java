@@ -44,6 +44,8 @@ public class PaymentMethodGateway {
             return new ApplePayCard(response);
         } else if (response.getElementName() == "android-pay-card") {
             return new AndroidPayCard(response);
+        } else if (response.getElementName() == "amex-express-checkout-card") {
+            return new AmexExpressCheckoutCard(response);
         } else if (response.getElementName() == "coinbase-account") {
             return new CoinbaseAccount(response);
         } else {
@@ -62,6 +64,8 @@ public class PaymentMethodGateway {
             return new Result<ApplePayCard>(response, ApplePayCard.class);
         } else if (response.getElementName() == "android-pay-card") {
             return new Result<AndroidPayCard>(response, AndroidPayCard.class);
+        } else if (response.getElementName() == "amex-express-checkout-card") {
+            return new Result<AmexExpressCheckoutCard>(response, AmexExpressCheckoutCard.class);
         } else if (response.getElementName() == "coinbase-account") {
             return new Result<CoinbaseAccount>(response, CoinbaseAccount.class);
         } else {

@@ -17,6 +17,7 @@ public class Nonce {
     public static String AndroidPayVisa = "fake-android-pay-visa-nonce";
     public static String AndroidPayMasterCard = "fake-android-pay-mastercard-nonce";
     public static String AndroidPayAmEx = "fake-android-pay-amex-nonce";
+    public static String AmexExpressCheckout = "fake-amex-express-checkout-nonce";
     public static String TransactableVisa = "fake-valid-visa-nonce";
     public static String TransactableAmEx = "fake-valid-amex-nonce";
     public static String TransactableMasterCard = "fake-valid-mastercard-nonce";

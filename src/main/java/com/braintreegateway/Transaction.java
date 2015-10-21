@@ -143,6 +143,7 @@ public class Transaction {
     private PayPalDetails paypalDetails;
     private ApplePayDetails applePayDetails;
     private AndroidPayDetails androidPayDetails;
+    private AmexExpressCheckoutDetails amexExpressCheckoutDetails;
     private String planId;
     private String processorAuthorizationCode;
     private String processorResponseCode;
@@ -205,6 +206,10 @@ public class Transaction {
         NodeWrapper androidPayCardNode = node.findFirst("android-pay-card");
         if (androidPayCardNode != null) {
             androidPayDetails = new AndroidPayDetails(androidPayCardNode);
+        }
+        NodeWrapper amexExpressCheckoutCardNode = node.findFirst("amex-express-checkout-card");
+        if (amexExpressCheckoutCardNode != null) {
+            amexExpressCheckoutDetails = new AmexExpressCheckoutDetails(amexExpressCheckoutCardNode);
         }
         NodeWrapper coinbaseNode = node.findFirst("coinbase-account");
         if (coinbaseNode != null) {
@@ -377,6 +382,10 @@ public class Transaction {
 
     public AndroidPayDetails getAndroidPayDetails() {
         return androidPayDetails;
+    }
+
+    public AmexExpressCheckoutDetails getAmexExpressCheckoutDetails() {
+        return amexExpressCheckoutDetails;
     }
 
     public CoinbaseDetails getCoinbaseDetails() {
