@@ -12,10 +12,19 @@ task :compile do
   sh "mvn compile"
 end
 
-desc "run unit and integration tests"
-task :test do
-  sh "mvn verify"
+namespace :test do
+  desc "run unit tests"
+  task :unit do
+    sh "mvn verify -DskipITs"
+  end
+
+  desc "run unit and integration tests"
+  task :all do
+    sh "mvn verify"
+  end
 end
+
+task :test => "test:all"
 
 desc "compile, test, build a jar"
 task :jar do
