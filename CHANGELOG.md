@@ -1,3 +1,6 @@
+## 2.52.0
+* Adds `CHECK` webhook kind
+
 ## 2.51.0
 * Fixes broken maven release
 
