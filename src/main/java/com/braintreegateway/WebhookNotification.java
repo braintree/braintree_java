@@ -7,6 +7,7 @@ import java.util.Calendar;
 
 public class WebhookNotification {
     public enum Kind {
+        CHECK("check"),
         PARTNER_MERCHANT_DISCONNECTED("partner_merchant_disconnected"),
         PARTNER_MERCHANT_CONNECTED("partner_merchant_connected"),
         PARTNER_MERCHANT_DECLINED("partner_merchant_declined"),
