@@ -40,6 +40,7 @@ public class WebhookTestingGateway {
 
     private String subjectXml(WebhookNotification.Kind kind, String id) {
         switch(kind) {
+            case CHECK: return checkXml();
             case SUB_MERCHANT_ACCOUNT_APPROVED: return merchantAccountXmlActive(id);
             case SUB_MERCHANT_ACCOUNT_DECLINED: return merchantAccountXmlDeclined(id);
             case TRANSACTION_DISBURSED: return transactionXml(id);
@@ -264,6 +265,10 @@ public class WebhookTestingGateway {
         return node("partner-merchant",
                 node("partner-merchant-id", "abc123")
         );
+    }
+
+    private String checkXml() {
+        return node("check", TYPE_BOOLEAN, "true");
     }
 
     private static String node(String name, String... contents) {

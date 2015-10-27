@@ -333,4 +333,19 @@ public class WebhookNotificationIT {
         long age = now - notification.getTimestamp().getTime().getTime();
         assertTrue(age < 5000);
     }
+
+    @Test
+    public void buildsSampleNotificationForCheck()
+    {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting()
+            .sampleNotification(WebhookNotification.Kind.CHECK, "");
+
+        WebhookNotification notification = this.gateway.webhookNotification()
+            .parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.CHECK, notification.getKind());
+        long now = new Date().getTime();
+        long age = now - notification.getTimestamp().getTime().getTime();
+        assertTrue(age < 5000);
+    }
 }
