@@ -181,8 +181,7 @@ public class TransactionGateway {
      * @return a {@link Result}.
      */
     public Result<Transaction> submitForSettlement(String id) {
-        TransactionRequest request = new TransactionRequest();
-        return submitForSettlement(id, request);
+        return submitForSettlement(id, null);
     }
 
     /**
@@ -193,16 +192,6 @@ public class TransactionGateway {
      */
     public Result<Transaction> submitForSettlement(String id, BigDecimal amount) {
         TransactionRequest request = new TransactionRequest().amount(amount);
-        return submitForSettlement(id, request);
-    }
-
-    /**
-     * Submits the transaction with the given id to be settled along with a TransactionRequest object.
-     * @param id of the transaction to submit for settlement.
-     * @param request the request.
-     * @return {@link Result}.
-     */
-    public Result<Transaction> submitForSettlement(String id, TransactionRequest request) {
         NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/submit_for_settlement", request);
         return new Result<Transaction>(response, Transaction.class);
     }
