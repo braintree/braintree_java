@@ -160,7 +160,12 @@ public class Http {
 
     private HttpURLConnection buildConnection(RequestMethod requestMethod, String urlString) throws java.io.IOException {
         URL url = new URL(configuration.getBaseURL() + urlString);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection;
+        if (configuration.usesProxy()) {
+            connection = (HttpURLConnection) url.openConnection(configuration.getProxy());
+        } else {
+            connection = (HttpURLConnection) url.openConnection();
+        }
         connection.setRequestMethod(requestMethod.toString());
         connection.addRequestProperty("Accept", "application/xml");
         connection.addRequestProperty("User-Agent", "Braintree Java " + Configuration.VERSION);
