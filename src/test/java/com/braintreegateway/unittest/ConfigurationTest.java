@@ -14,7 +14,6 @@ public class ConfigurationTest {
 
     @Test
     public void configurationUsesNoProxyIfNotSpecified() {
-
         Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", "integration_public_key", "integration_private_key");
 
         assertNull(configuration.getProxy());
@@ -22,7 +21,6 @@ public class ConfigurationTest {
 
     @Test
     public void configurationReturnsProxyObject() {
-
         Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", "integration_public_key", "integration_private_key");
 
         configuration.setProxy("localhost", 3000);
@@ -32,7 +30,6 @@ public class ConfigurationTest {
 
     @Test
     public void testConfigurationIsUsingProxy() {
-
         Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", "integration_public_key", "integration_private_key");
 
         assertFalse(configuration.usesProxy());
