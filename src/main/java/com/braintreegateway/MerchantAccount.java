@@ -36,9 +36,11 @@ public class MerchantAccount {
     private final IndividualDetails individualDetails;
     private final BusinessDetails businessDetails;
     private final FundingDetails fundingDetails;
+    private final String currencyIsoCode;
 
     public MerchantAccount(NodeWrapper node) {
         this.id = node.findString("id");
+        this.currencyIsoCode = node.findString("currency-iso-code");
         this.status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);
 
         NodeWrapper masterNode = node.findFirst("master-merchant-account");
@@ -92,6 +94,10 @@ public class MerchantAccount {
 
     public FundingDetails getFundingDetails() {
         return fundingDetails;
+    }
+
+    public String getCurrencyIsoCode() {
+        return currencyIsoCode;
     }
 
     public boolean isSubMerchant() {

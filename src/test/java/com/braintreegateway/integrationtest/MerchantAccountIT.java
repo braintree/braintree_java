@@ -272,6 +272,13 @@ public class MerchantAccountIT {
             errors.forObject("funding").onField("mobile-phone").get(0).getCode());
     }
 
+    @Test
+    public void retrievesCurrencyIsoCode() {
+        MerchantAccount ma = gateway.merchantAccount().find("sandbox_master_merchant_account");
+
+        assertEquals("USD", ma.getCurrencyIsoCode());
+    }
+
     private MerchantAccountRequest deprecatedCreationRequest() {
         return new MerchantAccountRequest().
             applicantDetails().
