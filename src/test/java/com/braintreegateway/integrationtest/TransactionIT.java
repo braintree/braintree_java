@@ -3908,6 +3908,27 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void createPayPalTransactionWithPayPalSupplementaryData() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce).
+            paypalAccount().
+              done().
+            options().
+              paypal().
+                supplementaryData("key1", "value1").
+                supplementaryData("key2", "value2").
+                done().
+              done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        // note - supplementary data is not returned in response
+        assertTrue(saleResult.isSuccess());
+    }
+
+    @Test
     public void createPayPalTransactionWithPayPalDescription() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
         TransactionRequest request = new TransactionRequest().

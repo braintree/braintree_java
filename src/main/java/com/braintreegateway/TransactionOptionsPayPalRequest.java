@@ -1,13 +1,18 @@
 package com.braintreegateway;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TransactionOptionsPayPalRequest extends Request {
     private TransactionOptionsRequest parent;
     private String customField;
     private String payeeEmail;
     private String description;
+    private Map<String, String> supplementaryData;
 
     public TransactionOptionsPayPalRequest(TransactionOptionsRequest parent) {
         this.parent = parent;
+        this.supplementaryData = new HashMap<String, String>();
     }
 
     public TransactionOptionsRequest done() {
@@ -29,6 +34,11 @@ public class TransactionOptionsPayPalRequest extends Request {
         return this;
     }
 
+    public TransactionOptionsPayPalRequest supplementaryData(String key, String value) {
+        this.supplementaryData.put(key, value);
+        return this;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("paypal").toXML();
@@ -45,9 +55,15 @@ public class TransactionOptionsPayPalRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
+        RequestBuilder builder = new RequestBuilder(root).
             addElement("description", description).
             addElement("customField", customField).
             addElement("payeeEmail", payeeEmail);
+
+        if(!supplementaryData.isEmpty()) {
+            builder.addElement("supplementaryData", supplementaryData);
+        }
+
+        return builder;
     }
 }
