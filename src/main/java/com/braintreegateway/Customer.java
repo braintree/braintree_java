@@ -136,6 +136,7 @@ public class Customer {
         paymentMethods.addAll(getPayPalAccounts());
         paymentMethods.addAll(getApplePayCards());
         paymentMethods.addAll(getAndroidPayCards());
+        paymentMethods.addAll(getCoinbaseAccounts());
         return Collections.unmodifiableList(paymentMethods);
     }
 
