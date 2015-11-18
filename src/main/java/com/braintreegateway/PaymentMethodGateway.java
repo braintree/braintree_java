@@ -34,25 +34,7 @@ public class PaymentMethodGateway {
 
         NodeWrapper response = http.get(configuration.getMerchantPath() + "/payment_methods/any/" + token);
 
-        if (response.getElementName() == "paypal-account") {
-            return new PayPalAccount(response);
-        } else if (response.getElementName() == "credit-card") {
-            return new CreditCard(response);
-        } else if (response.getElementName() == "europe-bank-account") {
-            return new EuropeBankAccount(response);
-        } else if (response.getElementName() == "apple-pay-card") {
-            return new ApplePayCard(response);
-        } else if (response.getElementName() == "android-pay-card") {
-            return new AndroidPayCard(response);
-        } else if (response.getElementName() == "amex-express-checkout-card") {
-            return new AmexExpressCheckoutCard(response);
-        } else if (response.getElementName() == "coinbase-account") {
-            return new CoinbaseAccount(response);
-        } else if (response.getElementName() == "venmo-account") {
-            return new VenmoAccount(response);
-        } else {
-            return new UnknownPaymentMethod(response);
-        }
+        return parseResponse(response).getTarget();
     }
 
     public Result<? extends PaymentMethod> parseResponse(NodeWrapper response) {
