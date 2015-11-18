@@ -144,6 +144,7 @@ public class Transaction {
     private ApplePayDetails applePayDetails;
     private AndroidPayDetails androidPayDetails;
     private AmexExpressCheckoutDetails amexExpressCheckoutDetails;
+    private VenmoAccountDetails venmoAccountDetails;
     private String planId;
     private String processorAuthorizationCode;
     private String processorResponseCode;
@@ -214,6 +215,10 @@ public class Transaction {
         NodeWrapper coinbaseNode = node.findFirst("coinbase-account");
         if (coinbaseNode != null) {
             coinbaseDetails = new CoinbaseDetails(coinbaseNode);
+        }
+        NodeWrapper venmoAccountNode = node.findFirst("venmo-account");
+        if (venmoAccountNode != null) {
+            venmoAccountDetails = new VenmoAccountDetails(venmoAccountNode);
         }
         planId = node.findString("plan-id");
         processorAuthorizationCode = node.findString("processor-authorization-code");
@@ -390,6 +395,10 @@ public class Transaction {
 
     public CoinbaseDetails getCoinbaseDetails() {
         return coinbaseDetails;
+    }
+
+    public VenmoAccountDetails getVenmoAccountDetails() {
+        return venmoAccountDetails;
     }
 
     public String getPlanId() {

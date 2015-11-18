@@ -575,6 +575,24 @@ public class CustomerIT {
     }
 
     @Test
+    public void createWithVenmoAccount() {
+        CustomerRequest request = new CustomerRequest()
+            .paymentMethodNonce(Nonce.VenmoAccount);
+        Customer customer = gateway.customer().create(request).getTarget();
+
+        Customer foundCustomer = gateway.customer().find(customer.getId());
+        assertEquals(customer.getId(), foundCustomer.getId());
+        assertNotNull(foundCustomer.getVenmoAccounts());
+        assertEquals(1, foundCustomer.getVenmoAccounts().size());
+        assertEquals(1, foundCustomer.getPaymentMethods().size());
+
+        VenmoAccount account = foundCustomer.getVenmoAccounts().get(0);
+        assertNotNull(account);
+        assertEquals(account.getUsername(), "venmojoe");
+        assertEquals(account.getVenmoUserId(), "Venmo-Joe-1");
+    }
+
+    @Test
     public void findDuplicateCreditCardsGivenPaymentMethodToken() {
         CustomerRequest request = new CustomerRequest().
                 creditCard().

@@ -48,6 +48,8 @@ public class PaymentMethodGateway {
             return new AmexExpressCheckoutCard(response);
         } else if (response.getElementName() == "coinbase-account") {
             return new CoinbaseAccount(response);
+        } else if (response.getElementName() == "venmo-account") {
+            return new VenmoAccount(response);
         } else {
             return new UnknownPaymentMethod(response);
         }
@@ -68,6 +70,8 @@ public class PaymentMethodGateway {
             return new Result<AmexExpressCheckoutCard>(response, AmexExpressCheckoutCard.class);
         } else if (response.getElementName() == "coinbase-account") {
             return new Result<CoinbaseAccount>(response, CoinbaseAccount.class);
+        } else if (response.getElementName() == "venmo-account") {
+            return new Result<VenmoAccount>(response, VenmoAccount.class);
         } else {
             return new Result<UnknownPaymentMethod>(response, UnknownPaymentMethod.class);
         }

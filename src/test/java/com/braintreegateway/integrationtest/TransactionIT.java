@@ -772,6 +772,31 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void saleWithVenmoAccountNonce() {
+        String venmoAccountNonce = Nonce.VenmoAccount;
+
+        TransactionRequest request = new TransactionRequest()
+            .merchantAccountId(FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID)
+            .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
+            .paymentMethodNonce(venmoAccountNonce);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(PaymentInstrumentType.VENMO_ACCOUNT, transaction.getPaymentInstrumentType());
+
+        VenmoAccountDetails venmoAccountDetails = transaction.getVenmoAccountDetails();
+        assertNotNull(venmoAccountDetails);
+
+        assertNull(venmoAccountDetails.getToken());
+        assertNotNull(venmoAccountDetails.getUsername());
+        assertNotNull(venmoAccountDetails.getVenmoUserId());
+        assertNotNull(venmoAccountDetails.getImageUrl());
+        assertNotNull(venmoAccountDetails.getSourceDescription());
+    }
+
+    @Test
     public void saleWithThreeDSecureOptionRequired() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
