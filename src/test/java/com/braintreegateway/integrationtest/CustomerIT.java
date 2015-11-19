@@ -575,6 +575,23 @@ public class CustomerIT {
     }
 
     @Test
+    public void createWithCoinbaseAccount() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.Coinbase);
+        Customer customer = gateway.customer().create(request).getTarget();
+
+        Customer foundCustomer = gateway.customer().find(customer.getId());
+        assertEquals(customer.getId(), foundCustomer.getId());
+        assertNotNull(foundCustomer.getCoinbaseAccounts());
+        assertEquals(1, foundCustomer.getCoinbaseAccounts().size());
+        CoinbaseAccount account = foundCustomer.getCoinbaseAccounts().get(0);
+        assertNotNull(account);
+        assertNotNull(account.getUserId());
+        assertNotNull(account.getToken());
+        assertEquals(1, foundCustomer.getPaymentMethods().size());
+    }
+
+    @Test
     public void createWithVenmoAccount() {
         CustomerRequest request = new CustomerRequest()
             .paymentMethodNonce(Nonce.VenmoAccount);
