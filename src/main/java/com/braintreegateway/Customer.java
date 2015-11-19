@@ -156,6 +156,7 @@ public class Customer {
         paymentMethods.addAll(getAndroidPayCards());
         paymentMethods.addAll(getAmexExpressCheckoutCards());
         paymentMethods.addAll(getVenmoAccounts());
+        paymentMethods.addAll(getCoinbaseAccounts());
         return Collections.unmodifiableList(paymentMethods);
     }
 
