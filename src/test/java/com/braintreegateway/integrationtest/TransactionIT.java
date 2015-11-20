@@ -1812,6 +1812,8 @@ public class TransactionIT implements MerchantAccountTestConstants {
     public void findWithDisputes() throws Exception {
         Calendar disputeCalendar = CalendarTestUtils.date("2014-03-01");
         Calendar replyCalendar = CalendarTestUtils.date("2014-03-21");
+        Calendar openedCalendar = CalendarTestUtils.date("2014-03-01");
+        Calendar wonCalendar = CalendarTestUtils.date("2014-03-07");
 
         Transaction foundTransaction = gateway.transaction().find(DISPUTED_TRANSACTION_ID);
         List<Dispute> disputes = foundTransaction.getDisputes();
@@ -1825,6 +1827,9 @@ public class TransactionIT implements MerchantAccountTestConstants {
         assertEquals(new BigDecimal("250.00"), dispute.getAmount());
         assertEquals(new BigDecimal("1000.00"), dispute.getTransactionDetails().getAmount());
         assertEquals(DISPUTED_TRANSACTION_ID, dispute.getTransactionDetails().getId());
+        assertEquals(Dispute.Kind.CHARGEBACK, dispute.getKind());
+        assertEquals(openedCalendar, dispute.getOpenedDate());
+        assertEquals(wonCalendar, dispute.getWonDate());
     }
 
     @Test
