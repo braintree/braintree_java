@@ -1,5 +1,6 @@
 ## 2.53.0
 * Include Coinbase Accounts in `Customer#getPaymentMethods` (Thanks @danmidwood)
+* Add VenmoAccount
 
 ## 2.52.0
 * Adds `CHECK` webhook kind
