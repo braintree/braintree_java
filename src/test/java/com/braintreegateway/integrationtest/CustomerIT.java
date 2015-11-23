@@ -559,6 +559,57 @@ public class CustomerIT {
     }
 
     @Test
+    public void createWithAmexExpressCheckoutCard() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.AmexExpressCheckout);
+        Customer customer = gateway.customer().create(request).getTarget();
+
+        Customer foundCustomer = gateway.customer().find(customer.getId());
+        assertEquals(customer.getId(), foundCustomer.getId());
+        assertNotNull(foundCustomer.getAmexExpressCheckoutCards());
+        assertEquals(1, foundCustomer.getAmexExpressCheckoutCards().size());
+        AmexExpressCheckoutCard card = foundCustomer.getAmexExpressCheckoutCards().get(0);
+        assertNotNull(card);
+        assertNotNull(card.getCardMemberNumber());
+        assertEquals(1, foundCustomer.getPaymentMethods().size());
+    }
+
+    @Test
+    public void createWithCoinbaseAccount() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.Coinbase);
+        Customer customer = gateway.customer().create(request).getTarget();
+
+        Customer foundCustomer = gateway.customer().find(customer.getId());
+        assertEquals(customer.getId(), foundCustomer.getId());
+        assertNotNull(foundCustomer.getCoinbaseAccounts());
+        assertEquals(1, foundCustomer.getCoinbaseAccounts().size());
+        CoinbaseAccount account = foundCustomer.getCoinbaseAccounts().get(0);
+        assertNotNull(account);
+        assertNotNull(account.getUserId());
+        assertNotNull(account.getToken());
+        assertEquals(1, foundCustomer.getPaymentMethods().size());
+    }
+
+    @Test
+    public void createWithVenmoAccount() {
+        CustomerRequest request = new CustomerRequest()
+            .paymentMethodNonce(Nonce.VenmoAccount);
+        Customer customer = gateway.customer().create(request).getTarget();
+
+        Customer foundCustomer = gateway.customer().find(customer.getId());
+        assertEquals(customer.getId(), foundCustomer.getId());
+        assertNotNull(foundCustomer.getVenmoAccounts());
+        assertEquals(1, foundCustomer.getVenmoAccounts().size());
+        assertEquals(1, foundCustomer.getPaymentMethods().size());
+
+        VenmoAccount account = foundCustomer.getVenmoAccounts().get(0);
+        assertNotNull(account);
+        assertEquals(account.getUsername(), "venmojoe");
+        assertEquals(account.getVenmoUserId(), "Venmo-Joe-1");
+    }
+
+    @Test
     public void findDuplicateCreditCardsGivenPaymentMethodToken() {
         CustomerRequest request = new CustomerRequest().
                 creditCard().

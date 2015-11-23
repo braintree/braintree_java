@@ -1,6 +1,8 @@
 package com.braintreegateway;
 
 import com.braintreegateway.util.ClientLibraryProperties;
+import java.net.Proxy;
+import java.net.InetSocketAddress;
 
 public class Configuration {
     private Environment environment;
@@ -10,6 +12,7 @@ public class Configuration {
     private String clientId;
     private String clientSecret;
     private String accessToken;
+    private Proxy proxy;
 
     public static final String VERSION = new ClientLibraryProperties().version();
 
@@ -76,5 +79,17 @@ public class Configuration {
 
     public String getBaseURL() {
         return environment.baseURL;
+    }
+
+    public Boolean usesProxy() {
+        return proxy != null;
+    }
+
+    public void setProxy(String url, Integer port) {
+        this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(url, port));
+    }
+
+    public Proxy getProxy() {
+        return proxy;
     }
 }

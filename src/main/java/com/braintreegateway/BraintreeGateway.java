@@ -146,6 +146,10 @@ public class BraintreeGateway {
         return configuration;
     }
 
+    public void setProxy(String url, Integer port) {
+        configuration.setProxy(url, port);
+    }
+
     public PaymentMethodGateway paymentMethod() {
         return new PaymentMethodGateway(http, configuration);
     }
