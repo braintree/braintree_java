@@ -4,11 +4,14 @@
     <artifactId>braintree-java</artifactId>
     <version>2.53.0-SNAPSHOT</version>
     <description>Java Client Library for Braintree Payments Gateway</description>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <name>Braintree Gateway Java Client Library</name>
     <url>https://www.braintreegateway.com</url>
     <inceptionYear>2013</inceptionYear>
+
     <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
       <scmConnection>
       </scmConnection>
     </properties>
@@ -202,6 +205,74 @@
                       <checkModificationExclude>pom.xml</checkModificationExclude>
                   </checkModificationExcludes>
                 </configuration>
+            </plugin>
+
+            <!--
+                Bnd-LastModified = 1449665218259
+                Build-Jdk = 1.8.0_66
+                Built-By = lburgazz
+                Created-By = Apache Maven Bundle Plugin
+                Implementation-Title = Braintree Gateway Java Client Library
+                Implementation-Version = 2.53.0-SNAPSHOT
+                Manifest-Version = 1.0
+                Tool = Bnd-3.0.0.201509101326
+
+                Bundle-Description = Java Client Library for Braintree Payments Gateway
+                Bundle-License = http://www.opensource.org/licenses/mit-license.php
+                Bundle-ManifestVersion = 2
+                Bundle-Name = Braintree Gateway Java Client Library
+                Bundle-SymbolicName = com.braintreepayments.gateway.braintree-java
+                Bundle-Version = 2.53.0.SNAPSHOT
+
+                Require-Capability = 
+                    osgi.ee;filter:=(&(osgi.ee=JavaSE)(version=1.5))
+
+                Export-Package = 
+                    com.braintreegateway;uses:=com.braintreegateway.util;version=2.53.0,
+                    com.braintreegateway.exceptions;version=2.53.0,
+                    com.braintreegateway.util;uses:=com.braintreegateway;version=2.53.0,
+                    com.braintreegateway.test;version=2.53.0
+                Import-Package = 
+                    javax.crypto,
+                    javax.crypto.spec,
+                    javax.net.ssl,
+                    javax.xml.parsers,
+                    org.xml.sax,
+                    org.xml.sax.helpers
+            -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>3.0.1</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Name>${project.name}</Bundle-Name>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <Export-Package>
+                            com.braintreegateway;-noimport:=true,
+                            com.braintreegateway.exceptions;-noimport:=true,,
+                            com.braintreegateway.util;-noimport:=true,,
+                            com.braintreegateway.test;-noimport:=true
+                        </Export-Package>
+                        <Private-Package>
+                            com.braintreegateway.org.*
+                        </Private-Package>
+                        <Implementation-Title>${project.name}</Implementation-Title>
+                        <Implementation-Version>${project.version}</Implementation-Version>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <!--
+                      This execution makes sure that the manifest is available
+                      when the tests are executed
+                    -->
+                    <execution>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
