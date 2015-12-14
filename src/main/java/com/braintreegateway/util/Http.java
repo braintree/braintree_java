@@ -150,6 +150,11 @@ public class Http {
             tmf.init(keyStore);
 
             SSLContext sslContext = SSLContext.getInstance("TLS");
+            try {
+                sslContext = SSLContext.getInstance("TLSv1.2");
+            } catch (NoSuchAlgorithmException e) {
+                System.err.println("TLS 1.2 is not supported. Reverting to default protocol.");
+            }
             sslContext.init((KeyManager[]) kmf.getKeyManagers(), tmf.getTrustManagers(), SecureRandom.getInstance("SHA1PRNG"));
 
             return sslContext.getSocketFactory();
