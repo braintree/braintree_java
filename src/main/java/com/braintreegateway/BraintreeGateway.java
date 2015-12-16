@@ -57,6 +57,11 @@ public class BraintreeGateway {
         this.http = new Http(configuration);
     }
 
+    public BraintreeGateway(String environment, String merchantId, String publicKey, String privateKey) {
+        this.configuration = new Configuration(environment, merchantId, publicKey, privateKey);
+        this.http = new Http(configuration);
+    }
+
     public BraintreeGateway(String clientId, String clientSecret) {
         this.configuration = new Configuration(clientId, clientSecret);
         this.http = new Http(configuration);

@@ -28,6 +28,19 @@ public class Environment {
         this.environmentName = environmentName;
     }
 
+    public static Environment parseEnvironment(String environment) {
+        environment = environment.toLowerCase();
+        if (environment.equals("development") || environment.equals("integration")) {
+            return DEVELOPMENT;
+        } else if (environment.equals("sandbox")) {
+            return SANDBOX;
+        } else if (environment.equals("production")) {
+            return PRODUCTION;
+        } else {
+            throw new IllegalArgumentException("Unknown environment: " + environment);
+        }
+    }
+
     private static String developmentBaseURL() {
         if (System.getenv().get("GATEWAY_BASE_URL") != null) {
             return System.getenv().get("GATEWAY_BASE_URL");
