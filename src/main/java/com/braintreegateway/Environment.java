@@ -47,4 +47,8 @@ public class Environment {
     public String getEnvironmentName() {
         return this.environmentName;
     }
+
+    public String toString() {
+        return getEnvironmentName();
+    }
 }
