@@ -29,7 +29,6 @@ public class Environment {
     }
 
     public static Environment parseEnvironment(String environment) {
-        environment = environment.toLowerCase();
         if (environment.equals("development") || environment.equals("integration")) {
             return DEVELOPMENT;
         } else if (environment.equals("sandbox")) {

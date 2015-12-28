@@ -33,11 +33,6 @@ public class EnvironmentTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void testParseEnvironmentThrowsError() {
-        Environment.parseEnvironment("snowy");
-    }
-
-    @Test
-    public void testParseEnvironmentCaseInsensitive() {
-        assertEquals(Environment.DEVELOPMENT, Environment.parseEnvironment("DeVeLoPMeNT"));
+       Environment.parseEnvironment("Development_2");
     }
 }
