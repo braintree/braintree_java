@@ -39,4 +39,9 @@ public class CreditCardVerificationGateway {
         NodeWrapper node = http.post(configuration.getMerchantPath() + "/verifications/advanced_search_ids", query);
         return new ResourceCollection<CreditCardVerification>(new CreditCardVerificationPager(this, query), node);
     }
+
+    public Result<CreditCardVerification> create(CreditCardVerificationRequest request) {
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/verifications", request);
+        return new Result<CreditCardVerification>(response, CreditCardVerification.class);
+    }
 }

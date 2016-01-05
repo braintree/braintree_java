@@ -71,7 +71,7 @@ public class TransactionCreditCardRequest extends Request {
     public String toQueryString() {
         return toQueryString("creditCard");
     }
-    
+
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
             addElement("cardholderName", cardholderName).
