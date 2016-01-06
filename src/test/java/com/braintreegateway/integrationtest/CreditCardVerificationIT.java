@@ -47,7 +47,6 @@ public class CreditCardVerificationIT {
                     done().
                 done().
             options().
-                merchantAccountId("integration_merchant_account").
                 amount("5.00").
                 done();
 
@@ -55,6 +54,43 @@ public class CreditCardVerificationIT {
         assertTrue(result.isSuccess());
         CreditCardVerification verification = result.getTarget();
         assertEquals(verification.getBillingAddress().getPostalCode(), "60606");
+    }
+
+    @Test
+    public void createVerificationFailsForInvalidOptions() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                cvv("123").
+                billingAddress().
+                    company("Braintree").
+                    countryCodeAlpha2("US").
+                    countryCodeAlpha3("USA").
+                    countryCodeNumeric("840").
+                    countryName("United States of America").
+                    extendedAddress("Unit B").
+                    firstName("John").
+                    lastName("Smith").
+                    locality("San Francisco").
+                    postalCode("60606").
+                    region("CA").
+                    streetAddress("123 Townsend St").
+                    done().
+                done().
+            options().
+                amount("-5.00").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.VERIFICATION_OPTIONS_AMOUNT_CANNOT_BE_NEGATIVE,
+                result.getErrors().
+                    forObject("verification").
+                    forObject("options").
+                    onField("amount").
+                    get(0).
+                    getCode());
     }
 
     @Test

@@ -22,4 +22,16 @@ public class CreditCardVerificationOptionsRequest extends Request {
     public CreditCardVerificationRequest done() {
         return parent;
     }
+
+    @Override
+    public String toXML() {
+        return buildRequest("options").toXML();
+    }
+
+    protected RequestBuilder buildRequest(String root) {
+        RequestBuilder builder = new RequestBuilder(root).
+            addElement("merchantAccountId", merchantAccountId).
+            addElement("amount", amount);
+        return builder;
+    }
 }

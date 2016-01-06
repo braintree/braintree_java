@@ -25,7 +25,8 @@ public class CreditCardVerificationRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root).
-            addElement("creditCard", creditCardRequest);
+            addElement("creditCard", creditCardRequest).
+            addElement("options", optionsRequest);
         return builder;
     }
 }
