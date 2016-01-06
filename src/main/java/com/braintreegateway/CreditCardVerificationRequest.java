@@ -3,6 +3,7 @@ package com.braintreegateway;
 public class CreditCardVerificationRequest extends Request {
 
     private CreditCardVerificationCreditCardRequest creditCardRequest;
+    private CreditCardVerificationOptionsRequest optionsRequest;
 
     public CreditCardVerificationRequest() {
     }
@@ -10,6 +11,11 @@ public class CreditCardVerificationRequest extends Request {
     public CreditCardVerificationCreditCardRequest creditCard() {
         creditCardRequest = new CreditCardVerificationCreditCardRequest(this);
         return creditCardRequest;
+    }
+
+    public CreditCardVerificationOptionsRequest options() {
+        optionsRequest = new CreditCardVerificationOptionsRequest(this);
+        return optionsRequest;
     }
 
     @Override

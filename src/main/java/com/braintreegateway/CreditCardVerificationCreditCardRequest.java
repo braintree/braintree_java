@@ -8,6 +8,7 @@ public class CreditCardVerificationCreditCardRequest extends Request {
     private String expirationMonth;
     private String expirationYear;
     private String number;
+    private CreditCardVerificationBillingAddressRequest billingAddress;
 
     public CreditCardVerificationCreditCardRequest(CreditCardVerificationRequest parent) {
         this.parent = parent;
@@ -47,6 +48,11 @@ public class CreditCardVerificationCreditCardRequest extends Request {
         return this;
     }
 
+    public CreditCardVerificationBillingAddressRequest billingAddress() {
+        billingAddress = new CreditCardVerificationBillingAddressRequest(this);
+        return billingAddress;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("creditCard").toXML();
@@ -59,6 +65,7 @@ public class CreditCardVerificationCreditCardRequest extends Request {
             addElement("number", number).
             addElement("expirationDate", expirationDate).
             addElement("expirationMonth", expirationMonth).
-            addElement("expirationYear", expirationYear);
+            addElement("expirationYear", expirationYear).
+            addElement("billingAddress", billingAddress);
     }
 }
