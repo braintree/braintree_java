@@ -19,7 +19,6 @@ import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.zip.GZIPInputStream;
 
@@ -127,6 +126,9 @@ public class Http {
                 InputStream certStream = null;
                 try {
                     certStream = Http.class.getClassLoader().getResourceAsStream(certificateFilename);
+                    if(certStream == null) {
+                        certStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(certificateFilename);
+                    }
 
                     Collection<? extends Certificate> coll = cf.generateCertificates(certStream);
                     for (Certificate cert : coll) {
