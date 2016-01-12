@@ -4252,6 +4252,57 @@ public class TransactionIT implements MerchantAccountTestConstants {
     }
 
     @Test
+    public void submitForPartialSettlementWithOrderId() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        BigDecimal amount = new BigDecimal("400.00");
+        TransactionRequest submitForPartialSettlementRequest = new TransactionRequest().
+            amount(amount).
+            orderId("1234");
+
+        Result<Transaction> result = gateway.transaction().submitForPartialSettlement(transaction.getId(), submitForPartialSettlementRequest);
+
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
+        assertEquals("1234", result.getTarget().getOrderId());
+    }
+
+    @Test
+    public void submitForPartialSettlementWithDescriptors()
+    {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
+        Transaction authorizedTransaction = gateway.transaction().sale(request).getTarget();
+
+        BigDecimal amount = new BigDecimal("400.00");
+        TransactionRequest submitForPartialSettlementRequest = new TransactionRequest().
+            amount(amount).
+            descriptor().
+                name("123*123456789012345678").
+                phone("3334445555").
+                url("ebay.com").
+                done();
+
+        Result<Transaction> result = gateway.transaction().submitForPartialSettlement(authorizedTransaction.getId(), submitForPartialSettlementRequest);
+
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
+        assertEquals("123*123456789012345678", result.getTarget().getDescriptor().getName());
+        assertEquals("3334445555", result.getTarget().getDescriptor().getPhone());
+        assertEquals("ebay.com", result.getTarget().getDescriptor().getUrl());
+    }
+
+    @Test
     public void cannotCreatePartialSettlementTransactionsOnPartialSettlementTransactions() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).

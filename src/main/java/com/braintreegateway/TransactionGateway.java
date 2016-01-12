@@ -233,7 +233,18 @@ public class TransactionGateway {
      */
     public Result<Transaction> submitForPartialSettlement(String id, BigDecimal amount) {
         TransactionRequest request = new TransactionRequest().amount(amount);
+        return submitForPartialSettlement(id, request);
+    }
+
+    /**
+     * Submits a partial settlement transaction for the given id.
+     * @param id of the transaction to add the partial settlement transaction for.
+     * @param request the request.
+     * @return {@link Result}.
+     */
+    public Result<Transaction> submitForPartialSettlement(String id, TransactionRequest request) {
         NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/submit_for_partial_settlement", request);
         return new Result<Transaction>(response, Transaction.class);
     }
+
 }
