@@ -1,3 +1,7 @@
+## 2.54.0
+* Add verification create API
+* Add support for options in `submit_for_settlement` transaction flows
+
 ## 2.53.0
 * Include Coinbase Accounts in `Customer#getPaymentMethods` (Thanks @danmidwood)
 * Add VenmoAccount

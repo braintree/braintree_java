@@ -1,75 +1,61 @@
 package com.braintreegateway;
 
-public class TransactionCreditCardRequest extends Request {
+public class CreditCardVerificationCreditCardRequest extends Request {
+    private CreditCardVerificationRequest parent;
     private String cardholderName;
     private String cvv;
     private String expirationDate;
     private String expirationMonth;
     private String expirationYear;
     private String number;
-    private TransactionRequest parent;
-    private String token;
+    private CreditCardVerificationBillingAddressRequest billingAddress;
 
-    public TransactionCreditCardRequest(TransactionRequest parent) {
+    public CreditCardVerificationCreditCardRequest(CreditCardVerificationRequest parent) {
         this.parent = parent;
     }
 
-    public TransactionCreditCardRequest cardholderName(String cardholderName) {
+    public CreditCardVerificationRequest done() {
+        return parent;
+    }
+
+    public CreditCardVerificationCreditCardRequest cardholderName(String cardholderName) {
         this.cardholderName = cardholderName;
         return this;
     }
 
-    public TransactionCreditCardRequest cvv(String cvv) {
+    public CreditCardVerificationCreditCardRequest cvv(String cvv) {
         this.cvv = cvv;
         return this;
     }
 
-    public TransactionRequest done() {
-        return parent;
-    }
-
-    public TransactionCreditCardRequest expirationDate(String expirationDate) {
+    public CreditCardVerificationCreditCardRequest expirationDate(String expirationDate) {
         this.expirationDate = expirationDate;
         return this;
     }
 
-    public TransactionCreditCardRequest expirationMonth(String expirationMonth) {
+    public CreditCardVerificationCreditCardRequest expirationMonth(String expirationMonth) {
         this.expirationMonth = expirationMonth;
         return this;
     }
 
-    public TransactionCreditCardRequest expirationYear(String expirationYear) {
+    public CreditCardVerificationCreditCardRequest expirationYear(String expirationYear) {
         this.expirationYear = expirationYear;
         return this;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public TransactionCreditCardRequest number(String number) {
+    public CreditCardVerificationCreditCardRequest number(String number) {
         this.number = number;
         return this;
     }
 
-    public TransactionCreditCardRequest token(String token) {
-        this.token = token;
-        return this;
+    public CreditCardVerificationBillingAddressRequest billingAddress() {
+        billingAddress = new CreditCardVerificationBillingAddressRequest(this);
+        return billingAddress;
     }
 
     @Override
     public String toXML() {
         return buildRequest("creditCard").toXML();
-    }
-
-    @Override
-    public String toQueryString(String root) {
-        return buildRequest(root).toQueryString();
-    }
-
-    @Override
-    public String toQueryString() {
-        return toQueryString("creditCard");
     }
 
     protected RequestBuilder buildRequest(String root) {
@@ -80,6 +66,6 @@ public class TransactionCreditCardRequest extends Request {
             addElement("expirationDate", expirationDate).
             addElement("expirationMonth", expirationMonth).
             addElement("expirationYear", expirationYear).
-            addElement("token", token);
+            addElement("billingAddress", billingAddress);
     }
 }

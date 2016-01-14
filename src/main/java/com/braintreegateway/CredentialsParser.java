@@ -46,15 +46,7 @@ public class CredentialsParser{
 
     private Environment parseEnvironment(String credential) {
         String environment = credential.split("\\$")[1];
-        if (environment.equals("development") || environment.equals("integration")) {
-            return Environment.DEVELOPMENT;
-        } else if (environment.equals("sandbox")) {
-            return Environment.SANDBOX;
-        } else if (environment.equals("production")) {
-            return Environment.PRODUCTION;
-        } else {
-            throw new IllegalArgumentException("Unknown environment: " + environment);
-        }
+        return Environment.parseEnvironment(environment);
     }
 
     private String parseMerchantId(String accessToken) {

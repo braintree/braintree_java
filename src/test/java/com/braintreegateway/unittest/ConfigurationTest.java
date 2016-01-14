@@ -13,6 +13,12 @@ import static org.junit.Assert.*;
 public class ConfigurationTest {
 
     @Test
+    public void testStringEnvironmentConstructor() {
+       Configuration configuration = new Configuration("development", "merchant_id", "public_key", "private_key");
+       assertEquals(Environment.DEVELOPMENT, configuration.getEnvironment());
+    }
+
+    @Test
     public void configurationUsesNoProxyIfNotSpecified() {
         Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", "integration_public_key", "integration_private_key");
 

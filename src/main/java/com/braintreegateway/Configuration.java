@@ -27,6 +27,13 @@ public class Configuration {
         this.privateKey = privateKey;
     }
 
+    public Configuration(String environment, String merchantId, String publicKey, String privateKey) {
+        this.environment = Environment.parseEnvironment(environment);
+        this.merchantId = merchantId;
+        this.publicKey = publicKey;
+        this.privateKey = privateKey;
+    }
+
     public Configuration(String clientId, String clientSecret) {
         CredentialsParser parser = new CredentialsParser(clientId, clientSecret);
         this.environment = parser.environment;

@@ -2,6 +2,7 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Before;
@@ -21,6 +22,75 @@ public class CreditCardVerificationIT {
     @Before
     public void createGateway() {
         this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
+    }
+
+    @Test
+    public void createVerification() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                cvv("123").
+                billingAddress().
+                    company("Braintree").
+                    countryCodeAlpha2("US").
+                    countryCodeAlpha3("USA").
+                    countryCodeNumeric("840").
+                    countryName("United States of America").
+                    extendedAddress("Unit B").
+                    firstName("John").
+                    lastName("Smith").
+                    locality("San Francisco").
+                    postalCode("60606").
+                    region("CA").
+                    streetAddress("123 Townsend St").
+                    done().
+                done().
+            options().
+                amount("5.00").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+        CreditCardVerification verification = result.getTarget();
+        assertEquals(verification.getBillingAddress().getPostalCode(), "60606");
+    }
+
+    @Test
+    public void createVerificationFailsForInvalidOptions() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                cvv("123").
+                billingAddress().
+                    company("Braintree").
+                    countryCodeAlpha2("US").
+                    countryCodeAlpha3("USA").
+                    countryCodeNumeric("840").
+                    countryName("United States of America").
+                    extendedAddress("Unit B").
+                    firstName("John").
+                    lastName("Smith").
+                    locality("San Francisco").
+                    postalCode("60606").
+                    region("CA").
+                    streetAddress("123 Townsend St").
+                    done().
+                done().
+            options().
+                amount("-5.00").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.VERIFICATION_OPTIONS_AMOUNT_CANNOT_BE_NEGATIVE,
+                result.getErrors().
+                    forObject("verification").
+                    forObject("options").
+                    onField("amount").
+                    get(0).
+                    getCode());
     }
 
     @Test
