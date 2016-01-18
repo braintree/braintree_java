@@ -22,6 +22,13 @@ public class ClientLibraryProperties {
             InputStream is = null;
             try {
                 is = getClass().getClassLoader().getResourceAsStream(propertyFile);
+                if(is == null) {
+                    is = Thread.currentThread().getContextClassLoader().getResourceAsStream(propertyFile);
+                }
+                if(is == null) {
+                    throw new UnexpectedException("Couldn't load " + BRAINTREE_PROPERTY_FILE + " can't continue");
+                }
+
                 Properties p = new Properties();
                 p.load(is);
                 return p;
