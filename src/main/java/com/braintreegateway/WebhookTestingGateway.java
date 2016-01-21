@@ -53,6 +53,7 @@ public class WebhookTestingGateway {
             case PARTNER_MERCHANT_DISCONNECTED: return partnerMerchantDisconnectedXml(id);
             case PARTNER_MERCHANT_DECLINED: return partnerMerchantDeclinedXml(id);
             case SUBSCRIPTION_CHARGED_SUCCESSFULLY: return subscriptionChargedSuccessfullyXml(id);
+            case ACCOUNT_UPDATER_DAILY_REPORT: return accountUpdaterDailyReportXml(id);
             default: return subscriptionXml(id);
         }
     }
@@ -264,6 +265,13 @@ public class WebhookTestingGateway {
     private String partnerMerchantDeclinedXml(String id) {
         return node("partner-merchant",
                 node("partner-merchant-id", "abc123")
+        );
+    }
+
+    private String accountUpdaterDailyReportXml(String id) {
+        return node("account-updater-daily-report",
+                node("report-url", "link-to-csv-report"),
+                node("report-date", TYPE_DATE, "2016-01-14")
         );
     }
 

@@ -348,4 +348,21 @@ public class WebhookNotificationIT {
         long age = now - notification.getTimestamp().getTime().getTime();
         assertTrue(age < 5000);
     }
+
+    @Test
+    public void buildsSampleNotificationForAccountUpdaterDailyReportWebhook()
+    {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting()
+            .sampleNotification(WebhookNotification.Kind.ACCOUNT_UPDATER_DAILY_REPORT, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification()
+            .parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.ACCOUNT_UPDATER_DAILY_REPORT, notification.getKind());
+        assertEquals("link-to-csv-report", notification.getAccountUpdaterDailyReport().getReportUrl());
+
+        assertEquals(2016, notification.getAccountUpdaterDailyReport().getReportDate().get(Calendar.YEAR));
+        assertEquals(Calendar.JANUARY, notification.getAccountUpdaterDailyReport().getReportDate().get(Calendar.MONTH));
+        assertEquals(14, notification.getAccountUpdaterDailyReport().getReportDate().get(Calendar.DAY_OF_MONTH));
+    }
 }
