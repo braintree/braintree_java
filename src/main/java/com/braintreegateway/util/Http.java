@@ -6,6 +6,7 @@ import com.braintreegateway.exceptions.*;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 
 import javax.net.ssl.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,7 +20,6 @@ import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.zip.GZIPInputStream;
 
@@ -30,7 +30,13 @@ public class Http {
     }
 
     private Configuration configuration;
+    private Logger logger = Logger.DUMMY_LOGGER;
 
+    public Http(Configuration configuration, Logger logger) {
+        this.configuration = configuration;
+        this.logger = logger;
+    }
+    
     public Http(Configuration configuration) {
         this.configuration = configuration;
     }
@@ -66,14 +72,18 @@ public class Http {
     private NodeWrapper httpRequest(RequestMethod requestMethod, String url, String postBody) {
         HttpURLConnection connection = null;
         NodeWrapper nodeWrapper = null;
-
+        String xml = null;
+        String connectionInfo = null;
         try {
             connection = buildConnection(requestMethod, url);
-
+            if (getLogger().isEnabled()) {
+            	connectionInfo = connection.getURL().toString() + "," + connection.getRequestProperties().toString();            	
+            }
+            
             if (connection instanceof HttpsURLConnection) {
                 ((HttpsURLConnection) connection).setSSLSocketFactory(getSSLSocketFactory());
             }
-
+            
             if (postBody != null) {
                 OutputStream outputStream = null;
                 try {
@@ -99,7 +109,7 @@ public class Http {
                     responseStream = new GZIPInputStream(responseStream);
                 }
 
-                String xml = StringUtils.inputStreamToString(responseStream);
+                xml = StringUtils.inputStreamToString(responseStream);
                 nodeWrapper = NodeWrapperFactory.instance.create(xml);
             } finally {
                 if (responseStream != null) {
@@ -112,6 +122,9 @@ public class Http {
             if (connection != null) {
                 connection.disconnect();
             }
+            
+            getLogger().httpLogging(connectionInfo,requestMethod.name(), url, postBody, xml);
+            
         }
 
         return nodeWrapper;
@@ -177,7 +190,7 @@ public class Http {
         connection.setReadTimeout(60000);
         return connection;
     }
-
+    
     public static void throwExceptionIfErrorStatusCode(int statusCode, String message) {
         String decodedMessage = null;
         if (message != null) {
@@ -224,5 +237,9 @@ public class Http {
             credentials = configuration.getPublicKey() + ":" + configuration.getPrivateKey();
         }
         return "Basic " + Base64.encodeBase64String(credentials.getBytes()).trim();
+    }
+    
+    public Logger getLogger() {
+    	return logger;
     }
 }
