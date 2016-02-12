@@ -1,3 +1,6 @@
+## 2.55.0
+* Add support for OSGi bundling. Thanks, @lburgazzoli!
+
 ## 2.54.0
 * Add verification create API
 * Add support for options in `submit_for_settlement` transaction flows
