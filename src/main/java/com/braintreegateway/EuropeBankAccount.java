@@ -2,6 +2,7 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class EuropeBankAccount implements PaymentMethod {
@@ -70,5 +71,9 @@ public class EuropeBankAccount implements PaymentMethod {
 
     public String getCustomerId() {
         return customerId;
+    }
+
+    public List<Subscription> getSubscriptions() {
+        return Collections.EMPTY_LIST;
     }
 }

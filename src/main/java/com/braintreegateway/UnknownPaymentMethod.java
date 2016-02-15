@@ -2,6 +2,9 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 
+import java.util.Collections;
+import java.util.List;
+
 public class UnknownPaymentMethod implements PaymentMethod {
     private String token;
     private String customerId;
@@ -27,5 +30,9 @@ public class UnknownPaymentMethod implements PaymentMethod {
 
     public String getCustomerId() {
         return customerId;
+    }
+
+    public List<Subscription> getSubscriptions() {
+        return Collections.EMPTY_LIST;
     }
 }
