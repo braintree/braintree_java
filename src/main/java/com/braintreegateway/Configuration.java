@@ -1,8 +1,12 @@
 package com.braintreegateway;
 
 import com.braintreegateway.util.ClientLibraryProperties;
+
 import java.net.Proxy;
 import java.net.InetSocketAddress;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Configuration {
     private Environment environment;
@@ -13,6 +17,13 @@ public class Configuration {
     private String clientSecret;
     private String accessToken;
     private Proxy proxy;
+    private static Logger logger;
+    
+    static {
+        logger = Logger.getLogger("Braintree");
+        logger.addHandler(new ConsoleHandler());
+        logger.setLevel(Level.INFO);
+    }
 
     public static final String VERSION = new ClientLibraryProperties().version();
 
@@ -99,4 +110,13 @@ public class Configuration {
     public Proxy getProxy() {
         return proxy;
     }
+    
+    public Logger getLogger() {     
+        return logger;
+    }
+
+    public void setLogger(Logger log) {
+        logger = log;
+    }
+    
 }
