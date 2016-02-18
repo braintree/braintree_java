@@ -11,7 +11,6 @@ import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
 import com.braintreegateway.util.NodeWrapperFactory;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;

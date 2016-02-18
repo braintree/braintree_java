@@ -6,7 +6,6 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.Nonce;
 import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.*;
@@ -14,14 +13,7 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 @SuppressWarnings("deprecation")
-public class CustomerIT {
-
-    private BraintreeGateway gateway;
-
-    @Before
-    public void createGateway() {
-        this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
-    }
+public class CustomerIT extends IntegrationTest {
 
     @Test
     public void transparentRedirectURLForCreate() {

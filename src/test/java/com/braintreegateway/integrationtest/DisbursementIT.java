@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import com.braintreegateway.*;
 import com.braintreegateway.util.NodeWrapperFactory;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -17,13 +16,7 @@ import java.util.Calendar;
 import java.util.List;
 
 
-public class DisbursementIT {
-    private BraintreeGateway gateway;
-
-    @Before
-    public void setUp() {
-        this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
-    }
+public class DisbursementIT extends IntegrationTest {
 
     @Test
     public void createDisbursement() {

@@ -5,21 +5,22 @@ import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.test.Nonce;
 import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.Before;
 
 import java.net.URL;
 import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class MerchantIT {
-
-    private BraintreeGateway gateway;
+public class MerchantIT extends IntegrationTest {
 
     @Before
     public void createGateway() {
-        this.gateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+        this.gateway = new BraintreeGateway(
+                "client_id$development$integration_client_id",
+                "client_secret$development$integration_client_secret"
+        );
     }
 
     @Test

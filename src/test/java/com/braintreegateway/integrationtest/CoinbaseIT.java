@@ -8,20 +8,12 @@ import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.test.*;
 
 import org.junit.Test;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
-public class CoinbaseIT {
-
-    private BraintreeGateway gateway;
-
-    @Before
-    public void createGateway() {
-        this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
-    }
+public class CoinbaseIT extends IntegrationTest{
 
     @Test
     public void canCreateTransaction() {

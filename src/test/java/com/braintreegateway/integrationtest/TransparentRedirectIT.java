@@ -5,20 +5,13 @@ import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 
 import static org.junit.Assert.*;
 
-public class TransparentRedirectIT implements MerchantAccountTestConstants {
-    private BraintreeGateway gateway;
-
-    @Before
-    public void createGateway() {
-        this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
-    }
+public class TransparentRedirectIT extends IntegrationTest implements MerchantAccountTestConstants {
 
     @Test
     public void createTransactionFromTransparentRedirect() {

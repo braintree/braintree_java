@@ -14,15 +14,13 @@ import java.util.TimeZone;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SettlementBatchSummaryIT {
+public class SettlementBatchSummaryIT extends IntegrationTest {
 
-    private BraintreeGateway gateway;
     private TimeZone eastern_timezone;
 
     @Before
-    public void createGateway() {
+    public void setTimezone() {
         this.eastern_timezone = TimeZone.getTimeZone("America/New_York");
-        this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
     }
 
     @Test

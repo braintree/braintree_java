@@ -13,14 +13,13 @@ import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 
-public class DiscountIT {
-    private BraintreeGateway gateway;
+public class DiscountIT extends IntegrationTest {
+
     private Http http;
 
     @Before
-    public void createGateway() {
-        this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
-        http = new Http(gateway.getConfiguration());
+    public void createHttp() {
+        http = new Http(this.gateway.getConfiguration());
     }
 
     @Test

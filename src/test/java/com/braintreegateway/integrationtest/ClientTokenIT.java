@@ -4,7 +4,6 @@ import java.net.URLEncoder;
 import java.util.List;
 
 import org.junit.Test;
-import org.junit.Before;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -16,9 +15,7 @@ import com.braintreegateway.util.QueryString;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.*;
 
-public class ClientTokenIT {
-    private BraintreeGateway gateway;
-
+public class ClientTokenIT extends IntegrationTest {
     private String urlencode(String string) {
         String encodedString = "";
         try {
@@ -45,16 +42,6 @@ public class ClientTokenIT {
     private String _getFingerprint(String rawClientToken) {
         String decodedClientToken = TestHelper.decodeClientToken(rawClientToken);
         return TestHelper.extractParamFromJson("authorizationFingerprint", decodedClientToken);
-    }
-
-    @Before
-    public void createGateway() {
-        this.gateway = new BraintreeGateway(
-            Environment.DEVELOPMENT,
-            "integration_merchant_id",
-            "integration_public_key",
-            "integration_private_key"
-        );
     }
 
     @Test
