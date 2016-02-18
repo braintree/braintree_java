@@ -1,11 +1,5 @@
 package com.braintreegateway.util;
 
-import com.braintreegateway.Configuration;
-import com.braintreegateway.Request;
-import com.braintreegateway.exceptions.*;
-import com.braintreegateway.org.apache.commons.codec.binary.Base64;
-
-import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,9 +13,32 @@ import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
+
+import com.braintreegateway.Configuration;
+import com.braintreegateway.Request;
+import com.braintreegateway.exceptions.AuthenticationException;
+import com.braintreegateway.exceptions.AuthorizationException;
+import com.braintreegateway.exceptions.DownForMaintenanceException;
+import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.exceptions.ServerException;
+import com.braintreegateway.exceptions.UnexpectedException;
+import com.braintreegateway.exceptions.UpgradeRequiredException;
+import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 
 public class Http {
 
@@ -70,6 +87,11 @@ public class Http {
         try {
             connection = buildConnection(requestMethod, url);
 
+            Logger logger = configuration.getLogger();
+            if (logger.getLevel().intValue() <= Level.FINE.intValue() && postBody != null) {
+                logger.log(Level.FINE, formatSanitizeBodyForLog(postBody));
+            }
+
             if (connection instanceof HttpsURLConnection) {
                 ((HttpsURLConnection) connection).setSSLSocketFactory(getSSLSocketFactory());
             }
@@ -100,6 +122,14 @@ public class Http {
                 }
 
                 String xml = StringUtils.inputStreamToString(responseStream);
+
+                logger.log(Level.INFO, "[Braintree] [{0}]] {1} {2}", new Object[] { getCurrentTime(), requestMethod.toString(), url });
+                logger.log(Level.FINE, "[Braintree] [{0}] {1} {2} {3}", new Object[] { getCurrentTime(), requestMethod.toString(), url, connection.getResponseCode() });
+
+                if (logger.getLevel().intValue() <= Level.FINE.intValue() && xml != null) {
+                    logger.log(Level.FINE, formatSanitizeBodyForLog(xml));
+                }
+
                 nodeWrapper = NodeWrapperFactory.instance.create(xml);
             } finally {
                 if (responseStream != null) {
@@ -115,6 +145,32 @@ public class Http {
         }
 
         return nodeWrapper;
+    }
+
+    private String formatSanitizeBodyForLog(String body) {
+        if (body == null) {
+            return body;
+        }
+
+        Pattern regex = Pattern.compile("(^)", Pattern.MULTILINE);
+        Matcher regexMatcher = regex.matcher(body);
+        if (regexMatcher.find()) {
+            body = regexMatcher.replaceAll("[Braintree] $1");
+        }
+
+        regex = Pattern.compile("<number>(.{6}).+?(.{4})</number>");
+        regexMatcher = regex.matcher(body);
+        if (regexMatcher.find()) {
+            body = regexMatcher.replaceAll("<number>$1******$2</number>");
+        }
+
+        body = body.replaceAll("<cvv>.+?</cvv>", "<cvv>***</cvv>");
+
+        return body;
+    }
+
+    private String getCurrentTime() {
+        return new SimpleDateFormat("d/MMM/yyyy HH:mm:ss Z").format(new Date());
     }
 
     private SSLSocketFactory getSSLSocketFactory() {
@@ -154,6 +210,8 @@ public class Http {
 
             return sslContext.getSocketFactory();
         } catch (Exception e) {
+            Logger logger = configuration.getLogger();
+            logger.log(Level.SEVERE, "SSL Verification failed. Error message: {0}", new Object[] { e.getMessage() });
             throw new UnexpectedException(e.getMessage(), e);
         }
     }
