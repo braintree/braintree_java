@@ -26,6 +26,7 @@ public class WebhookNotification {
         DISPUTE_OPENED("dispute_opened"),
         DISPUTE_LOST("dispute_lost"),
         DISPUTE_WON("dispute_won"),
+        ACCOUNT_UPDATER_DAILY_REPORT("account_updater_daily_report"),
         UNRECOGNIZED("unrecognized");
 
         private final String name;
@@ -49,6 +50,7 @@ public class WebhookNotification {
     private Kind kind;
     private Calendar timestamp;
     private PartnerMerchant partnerMerchant;
+    private AccountUpdaterDailyReport accountUpdaterDailyReport;
 
     public WebhookNotification(NodeWrapper node) {
         this.kind = EnumUtils.findByName(Kind.class, node.findString("kind"), Kind.UNRECOGNIZED);
@@ -82,6 +84,10 @@ public class WebhookNotification {
 
         if (wrapperNode.findFirst("partner-merchant") != null) {
             this.partnerMerchant = new PartnerMerchant(wrapperNode.findFirst("partner-merchant"));
+        }
+
+        if (wrapperNode.findFirst("account-updater-daily-report") != null) {
+            this.accountUpdaterDailyReport = new AccountUpdaterDailyReport(wrapperNode.findFirst("account-updater-daily-report"));
         }
 
         if (!wrapperNode.isSuccess()) {
@@ -123,5 +129,9 @@ public class WebhookNotification {
 
     public PartnerMerchant getPartnerMerchant() {
         return this.partnerMerchant;
+    }
+
+    public AccountUpdaterDailyReport getAccountUpdaterDailyReport() {
+        return this.accountUpdaterDailyReport;
     }
 }
