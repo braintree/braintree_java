@@ -1,3 +1,6 @@
+## 2.56.0
+* Add AccountUpdaterDailyReport webhook parsing
+
 ## 2.55.0
 * Add support for OSGi bundling. Thanks, @lburgazzoli!
 
