@@ -1,20 +1,35 @@
 package com.braintreegateway.util;
 
 import com.braintreegateway.BraintreeGateway;
+import com.braintreegateway.Configuration;
+import com.braintreegateway.CreditCard;
+import com.braintreegateway.CreditCardRequest;
+import com.braintreegateway.Customer;
 import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Environment;
-import com.braintreegateway.Configuration;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
+import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
+import com.braintreegateway.Result;
 import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.util.Http;
+import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.StringUtils;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.util.logging.StreamHandler;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+import java.util.logging.Handler;
+import java.io.OutputStream;
 import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.File;
+import java.io.ByteArrayOutputStream;
 
 import static org.junit.Assert.*;
 
@@ -22,10 +37,29 @@ import static org.junit.Assert.*;
 public class HttpTest {
 
     private BraintreeGateway gateway;
+    private static OutputStream logCapturingStream;
+    private static StreamHandler customLogHandler;
 
     @Before
     public void createGateway() {
         this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
+    }
+
+    public void attachLogCapturer()
+    {
+        Configuration configuration = this.gateway.getConfiguration();
+        Logger logger = configuration.getLogger();
+        logCapturingStream = new ByteArrayOutputStream();
+        Handler[] handlers = logger.getParent().getHandlers();
+        customLogHandler = new StreamHandler(logCapturingStream, handlers[0].getFormatter());
+        customLogHandler.setLevel(Level.FINE);
+        logger.addHandler(customLogHandler);
+    }
+
+    public String getTestCapturedLog()
+    {
+      customLogHandler.flush();
+      return logCapturingStream.toString();
     }
 
     @Test
@@ -56,6 +90,67 @@ public class HttpTest {
         Configuration configuration = gateway.getConfiguration();
         NodeWrapper node = new Http(configuration).post(configuration.getMerchantPath() + "/customers", new CustomerRequest());
         new Http(gateway.getConfiguration()).delete(configuration.getMerchantPath() + "/customers/" + node.findString("id"));
+    }
+
+    @Test
+    public void smokeTestLogsRequests() {
+        Configuration configuration = gateway.getConfiguration();
+        attachLogCapturer();
+
+        NodeWrapper node = new Http(configuration).get(configuration.getMerchantPath() + "/customers/131866");
+        String capturedLog = getTestCapturedLog();
+
+        assertTrue(capturedLog.contains("[Braintree]"));
+        assertTrue(capturedLog.contains("GET /merchants/integration_merchant_id/customers"));
+    }
+
+    @Test
+    public void smokeTestLogsFullRequestInDebugMode() {
+        Configuration configuration = gateway.getConfiguration();
+        configuration.getLogger().setLevel(Level.FINEST);
+        attachLogCapturer();
+
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12");
+        Result<CreditCard> result = gateway.creditCard().create(request);
+
+        String capturedLog = getTestCapturedLog();
+        assertTrue(capturedLog.contains("[Braintree]"));
+        assertTrue(capturedLog.contains("POST /merchants/integration_merchant_id/payment_methods"));
+        assertTrue(capturedLog.contains("<cardholder-name>John Doe</cardholder-name>"));
+        assertTrue(capturedLog.contains("<number>510510******5100</number>"));
+    }
+
+    @Test
+    public void smokeTestLogsErrors() {
+        Environment fake_environment = new Environment(
+            "https://api.sandbox.braintreegateway.com:443",
+            "http://auth.sandbox.venmo.com",
+            new String[] {"fake_ca_cert"},
+            "sandbox"
+        );
+        this.gateway = new BraintreeGateway(
+            fake_environment,
+            "integration_merchant_id",
+            "integration_public_key",
+            "integration_private_key"
+        );
+
+        String capturedLog = "";
+        try {
+            Configuration configuration = this.gateway.getConfiguration();
+            attachLogCapturer();
+            NodeWrapper node = new Http(configuration).get(configuration.getMerchantPath() + "/customers/131866");
+        } catch (UnexpectedException e) {
+        } finally {
+            capturedLog = getTestCapturedLog();
+            assertTrue(capturedLog.contains("SEVERE: SSL Verification failed. Error message:"));
+        }
     }
 
     @Test(expected = AuthenticationException.class)
