@@ -179,7 +179,6 @@
                 <configuration>
                   <excludes>
                     <exclude>**/integrationtest/**</exclude>
-                    <exclude>**/HttpTest.java</exclude>
                   </excludes>
                   <disableXmlReport>true</disableXmlReport>
                   <useFile>false</useFile>

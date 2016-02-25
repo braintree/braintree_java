@@ -1,4 +1,4 @@
-package com.braintreegateway.util;
+package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Configuration;
@@ -34,16 +34,10 @@ import java.io.ByteArrayOutputStream;
 import static org.junit.Assert.*;
 
 @SuppressWarnings("deprecation")
-public class HttpTest {
+public class HttpTestIT extends IntegrationTest {
 
-    private BraintreeGateway gateway;
     private static OutputStream logCapturingStream;
     private static StreamHandler customLogHandler;
-
-    @Before
-    public void createGateway() {
-        this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
-    }
 
     public void attachLogCapturer()
     {
