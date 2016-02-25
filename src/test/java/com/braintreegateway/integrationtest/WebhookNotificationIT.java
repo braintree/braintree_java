@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
-public class WebhookNotificationIT extends IntegrationTest{
+public class WebhookNotificationIT extends IntegrationTest {
 
     @Test
     public void createNotificationWithUnrecognizedKind() {

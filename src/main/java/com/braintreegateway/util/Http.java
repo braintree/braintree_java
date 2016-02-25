@@ -88,7 +88,7 @@ public class Http {
             connection = buildConnection(requestMethod, url);
 
             Logger logger = configuration.getLogger();
-            if (logger.getLevel().intValue() <= Level.FINE.intValue() && postBody != null) {
+            if (postBody != null) {
                 logger.log(Level.FINE, formatSanitizeBodyForLog(postBody));
             }
 
@@ -126,7 +126,7 @@ public class Http {
                 logger.log(Level.INFO, "[Braintree] [{0}]] {1} {2}", new Object[] { getCurrentTime(), requestMethod.toString(), url });
                 logger.log(Level.FINE, "[Braintree] [{0}] {1} {2} {3}", new Object[] { getCurrentTime(), requestMethod.toString(), url, connection.getResponseCode() });
 
-                if (logger.getLevel().intValue() <= Level.FINE.intValue() && xml != null) {
+                if (xml != null) {
                     logger.log(Level.FINE, formatSanitizeBodyForLog(xml));
                 }
 

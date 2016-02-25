@@ -118,6 +118,7 @@ public class HttpTestIT extends IntegrationTest {
         assertTrue(capturedLog.contains("POST /merchants/integration_merchant_id/payment_methods"));
         assertTrue(capturedLog.contains("<cardholder-name>John Doe</cardholder-name>"));
         assertTrue(capturedLog.contains("<number>510510******5100</number>"));
+        assertTrue(capturedLog.contains("<cvv>***</cvv>"));
     }
 
     @Test
@@ -143,7 +144,7 @@ public class HttpTestIT extends IntegrationTest {
         } catch (UnexpectedException e) {
         } finally {
             capturedLog = getTestCapturedLog();
-            assertTrue(capturedLog.contains("SEVERE: SSL Verification failed. Error message:"));
+            assertTrue(capturedLog.contains("SEVERE: SSL Verification failed. Error message: Missing input stream"));
         }
     }
 

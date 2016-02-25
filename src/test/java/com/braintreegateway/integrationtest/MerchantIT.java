@@ -18,8 +18,8 @@ public class MerchantIT extends IntegrationTest {
     @Before
     public void createGateway() {
         this.gateway = new BraintreeGateway(
-                "client_id$development$integration_client_id",
-                "client_secret$development$integration_client_secret"
+            "client_id$development$integration_client_id",
+            "client_secret$development$integration_client_secret"
         );
     }
 
