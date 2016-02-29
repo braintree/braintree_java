@@ -232,7 +232,7 @@ public class Http {
         connection.addRequestProperty("Accept-Encoding", "gzip");
         connection.addRequestProperty("Content-Type", "application/xml");
         connection.setDoOutput(true);
-        connection.setReadTimeout(60000);
+        connection.setReadTimeout(configuration.getReadTimeout());
         return connection;
     }
 
