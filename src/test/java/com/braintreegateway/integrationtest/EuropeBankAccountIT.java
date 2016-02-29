@@ -3,20 +3,12 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.NotFoundException;
-import org.junit.Before;
 import org.junit.Test;
 import java.util.Random;
 
 import static org.junit.Assert.*;
 
-public class EuropeBankAccountIT {
-
-    private BraintreeGateway gateway;
-
-    @Before
-    public void createGateway() {
-        this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "altpay_merchant", "altpay_merchant_public_key", "altpay_merchant_private_key");
-    }
+public class EuropeBankAccountIT extends IntegrationTest {
 
     @Test
     public void canExchangeNonceForEuropeBankAccount() {

@@ -1,3 +1,6 @@
+## 2.57.0
+* Add support for logging. Thanks @yatsenko-ihor!
+
 ## 2.56.0
 * Add AccountUpdaterDailyReport webhook parsing
 

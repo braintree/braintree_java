@@ -17,15 +17,13 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class SubscriptionIT implements MerchantAccountTestConstants {
+public class SubscriptionIT extends IntegrationTest implements MerchantAccountTestConstants {
 
-    private BraintreeGateway gateway;
     private Customer customer;
     private CreditCard creditCard;
 
     @Before
-    public void createGateway() {
-        this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
+    public void createCustomer() {
         CustomerRequest request = new CustomerRequest();
         request.
                 creditCard().
@@ -34,7 +32,7 @@ public class SubscriptionIT implements MerchantAccountTestConstants {
                 expirationDate("05/12").
                 done();
 
-        Result<Customer> result = gateway.customer().create(request);
+        Result<Customer> result = this.gateway.customer().create(request);
         assertTrue(result.isSuccess());
         this.customer = result.getTarget();
         this.creditCard = customer.getCreditCards().get(0);

@@ -2,21 +2,21 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.Before;
 
 import java.util.*;
 import java.net.URL;
 
 import static org.junit.Assert.*;
 
-public class OAuthIT {
-
-    private BraintreeGateway gateway;
+public class OAuthIT extends IntegrationTest {
 
     @Before
     public void createGateway() {
-        this.gateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+        this.gateway = new BraintreeGateway("client_id$development$integration_client_id",
+           "client_secret$development$integration_client_secret"
+        );
     }
 
     @Test

@@ -10,7 +10,6 @@ import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.HttpHelper;
 import com.braintreegateway.util.QueryString;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -18,15 +17,7 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class CreditCardIT implements MerchantAccountTestConstants {
-
-    private BraintreeGateway gateway;
-
-    @Before
-    public void createGateway() {
-        this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key",
-                "integration_private_key");
-    }
+public class CreditCardIT extends IntegrationTest implements MerchantAccountTestConstants {
 
     @SuppressWarnings("deprecation")
     @Test

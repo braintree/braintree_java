@@ -15,7 +15,6 @@ import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
 import com.braintreegateway.util.NodeWrapperFactory;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -24,17 +23,11 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class TransactionIT implements MerchantAccountTestConstants {
+public class TransactionIT extends IntegrationTest implements MerchantAccountTestConstants {
 
-    private BraintreeGateway gateway;
     public static final String DISBURSEMENT_TRANSACTION_ID = "deposittransaction";
     public static final String DISPUTED_TRANSACTION_ID = "disputedtransaction";
     public static final String TWO_DISPUTE_TRANSACTION_ID = "2disputetransaction";
-
-    @Before
-    public void createGateway() {
-        this.gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
-    }
 
     @SuppressWarnings("deprecation")
     @Test
