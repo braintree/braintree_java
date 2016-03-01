@@ -68,6 +68,10 @@ public class Http {
         return httpRequest(RequestMethod.POST, url, request.toXML());
     }
 
+    public NodeWrapper post(String url, String request) {
+        return httpRequest(RequestMethod.POST, url, request);
+    }
+
     public NodeWrapper put(String url) {
         return httpRequest(RequestMethod.PUT, url, null);
     }
