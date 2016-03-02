@@ -4319,4 +4319,43 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_SUBMIT_FOR_PARTIAL_SETTLEMENT,
                 partialSettlementResult2.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
+
+    @Test
+    public void sharedPaymentMethods() {
+        BraintreeGateway sharerGateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_public_id", "oauth_app_partner_user_public_key", "oauth_app_partner_user_private_key");
+        Customer customer = sharerGateway.customer().create(new CustomerRequest().
+                creditCard().
+                number("5105105105105100").
+                expirationDate("05/19").
+                billingAddress().
+                    postalCode("94107").
+                    done().
+                done()
+        ).getTarget();
+        CreditCard card = customer.getCreditCards().get(0);
+        Address billingAddress = card.getBillingAddress();
+        Address shippingAddress = sharerGateway.address().create(customer.getId(),
+                new AddressRequest().postalCode("94107")).getTarget();
+
+        BraintreeGateway oauthGateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+        String code = TestHelper.createOAuthGrant(oauthGateway, "integration_merchant_id", "shared_vault_transactions");
+
+        OAuthCredentialsRequest oauthRequest = new OAuthCredentialsRequest().
+             code(code).
+             scope("shared_vault_transactions");
+
+        Result<OAuthCredentials> accessTokenResult = oauthGateway.oauth().createTokenFromCode(oauthRequest);
+
+        BraintreeGateway gateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            sharedPaymentMethodToken(card.getToken()).
+            sharedCustomerId(customer.getId()).
+            sharedShippingAddressId(shippingAddress.getId()).
+            sharedBillingAddressId(billingAddress.getId());
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+    }
 }
