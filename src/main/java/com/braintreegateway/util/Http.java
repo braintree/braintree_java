@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.security.KeyStore;
@@ -36,6 +37,7 @@ import com.braintreegateway.exceptions.AuthorizationException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.ServerException;
+import com.braintreegateway.exceptions.TimeoutException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
@@ -140,6 +142,8 @@ public class Http {
                     responseStream.close();
                 }
             }
+        } catch (SocketTimeoutException e) {
+            throw new TimeoutException(e.getMessage(), e);
         } catch (IOException e) {
             throw new UnexpectedException(e.getMessage(), e);
         } finally {
