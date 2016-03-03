@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public class Configuration {
     private Environment environment;
-    private int readTimeout;
+    private int timeout;
     private Proxy proxy;
     private String accessToken;
     private String clientId;
@@ -120,11 +120,11 @@ public class Configuration {
         logger = log;
     }
 
-    public int getReadTimeout() {
-        return (readTimeout == 0) ? 60000 : readTimeout;
+    public int getTimeout() {
+        return (timeout == 0) ? 60000 : timeout;
     }
 
-    public void setReadTimeout(Integer readTimeout) {
-        this.readTimeout = readTimeout;
+    public void setTimeout(Integer timeout) {
+        this.timeout = timeout;
     }
 }
