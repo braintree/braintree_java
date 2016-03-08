@@ -4,7 +4,6 @@ import com.braintreegateway.util.ClientLibraryProperties;
 
 import java.net.Proxy;
 import java.net.InetSocketAddress;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +21,6 @@ public class Configuration {
 
     static {
         logger = Logger.getLogger("Braintree");
-        logger.addHandler(new ConsoleHandler());
         logger.setLevel(Level.INFO);
     }
 
