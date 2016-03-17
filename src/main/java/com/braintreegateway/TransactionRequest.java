@@ -42,6 +42,11 @@ public class TransactionRequest extends Request {
     private String threeDSecureToken;
     private Boolean threeDSecureTransaction;
 
+    private String sharedPaymentMethodToken;
+    private String sharedCustomerId;
+    private String sharedShippingAddressId;
+    private String sharedBillingAddressId;
+
     public TransactionRequest() {
         this.customFields = new HashMap<String, String>();
         this.threeDSecureTransaction = false;
@@ -193,6 +198,26 @@ public class TransactionRequest extends Request {
       return this;
     }
 
+    public TransactionRequest sharedPaymentMethodToken(String sharedPaymentMethodToken) {
+        this.sharedPaymentMethodToken = sharedPaymentMethodToken;
+        return this;
+    }
+
+    public TransactionRequest sharedCustomerId(String sharedCustomerId) {
+        this.sharedCustomerId = sharedCustomerId;
+        return this;
+    }
+
+    public TransactionRequest sharedShippingAddressId(String sharedShippingAddressId) {
+        this.sharedShippingAddressId = sharedShippingAddressId;
+        return this;
+    }
+
+    public TransactionRequest sharedBillingAddressId(String sharedBillingAddressId) {
+        this.sharedBillingAddressId = sharedBillingAddressId;
+        return this;
+    }
+
     @Override
     public String toQueryString() {
         return toQueryString("transaction");
@@ -240,6 +265,10 @@ public class TransactionRequest extends Request {
             addElement("deviceSessionId", deviceSessionId).
             addElement("fraudMerchantId", fraudMerchantId).
             addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode).
+            addElement("sharedPaymentMethodToken", sharedPaymentMethodToken).
+            addElement("sharedCustomerId", sharedCustomerId).
+            addElement("sharedShippingAddressId", sharedShippingAddressId).
+            addElement("sharedBillingAddressId", sharedBillingAddressId).
             addElement("serviceFeeAmount", serviceFeeAmount);
 
         if (!customFields.isEmpty()) {

@@ -1,3 +1,7 @@
+## 2.58.0
+* Add timeout attribute to Configuration
+* Adds shared vault parameters
+
 ## 2.57.0
 * Add support for logging. Thanks @yatsenko-ihor!
 

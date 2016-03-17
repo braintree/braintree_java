@@ -6,6 +6,8 @@ import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.Nonce;
+import com.braintreegateway.util.NodeWrapper;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -1180,4 +1182,33 @@ public class PaymentMethodIT extends IntegrationTest {
         assertFalse(foundCreditCard == null);
         assertEquals(foundCreditCard.getBillingAddress().getStreetAddress(), "456 Xyz Way");
     }
+
+    @Test
+    public void grantAndRevoke() {
+        BraintreeGateway partnerMerchantGateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_public_id", "oauth_app_partner_user_public_key", "oauth_app_partner_user_private_key");
+        Result<Customer> customerResult = partnerMerchantGateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            paymentMethodNonce(Nonce.Transactable).
+            customerId(customer.getId());
+        Result<? extends PaymentMethod> result = partnerMerchantGateway.paymentMethod().create(request);
+        String paymentMethodToken = result.getTarget().getToken();
+        BraintreeGateway oauthGateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+        String code = TestHelper.createOAuthGrant(oauthGateway, "integration_merchant_id", "grant_payment_method");
+
+        OAuthCredentialsRequest oauthRequest = new OAuthCredentialsRequest().
+            code(code).
+            scope("grant_payment_method");
+
+
+        Result<OAuthCredentials> accessTokenResult = oauthGateway.oauth().createTokenFromCode(oauthRequest);
+
+        BraintreeGateway accessTokenGateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
+        Result<PaymentMethodNonce> grantResult = accessTokenGateway.paymentMethod().grant(paymentMethodToken);
+        assertTrue(grantResult.isSuccess());
+        NodeWrapper revokeResult = accessTokenGateway.paymentMethod().revoke(paymentMethodToken);
+        assertTrue(revokeResult.isSuccess());
+    }
+
 }

@@ -10,13 +10,14 @@ import java.util.logging.Logger;
 
 public class Configuration {
     private Environment environment;
+    private int timeout;
+    private Proxy proxy;
+    private String accessToken;
+    private String clientId;
+    private String clientSecret;
     private String merchantId;
     private String privateKey;
     private String publicKey;
-    private String clientId;
-    private String clientSecret;
-    private String accessToken;
-    private Proxy proxy;
     private static Logger logger;
 
     static {
@@ -117,5 +118,13 @@ public class Configuration {
 
     public void setLogger(Logger log) {
         logger = log;
+    }
+
+    public int getTimeout() {
+        return (timeout == 0) ? 60000 : timeout;
+    }
+
+    public void setTimeout(Integer timeout) {
+        this.timeout = timeout;
     }
 }

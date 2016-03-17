@@ -44,4 +44,17 @@ public class ConfigurationTest {
 
         assertTrue(configuration.usesProxy());
     }
+
+    @Test
+    public void testReadtimeoutDefaultsToSixtySeconds() {
+        Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", "integration_public_key", "integration_private_key");
+        assertEquals(configuration.getTimeout(), 60000);
+    }
+
+    @Test
+    public void testSettingReadTimeout() {
+        Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", "integration_public_key", "integration_private_key");
+        configuration.setTimeout(30000);
+        assertEquals(configuration.getTimeout(), 30000);
+    }
 }
