@@ -227,8 +227,6 @@ public class HttpTestIT extends IntegrationTest {
             fail();
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("Cert"));
-        } finally {
-            stopSSLServer();
         }
     }
 
@@ -241,13 +239,6 @@ public class HttpTestIT extends IntegrationTest {
     }
 
     private void startSSLServer() throws Exception {
-        String fileName = StringUtils.getFullPathOfFile("script/httpsd.rb");
-        new File(fileName).setExecutable(true);
-        new ProcessBuilder(fileName, "/tmp/httpsd.pid").start().waitFor();
-    }
-
-    private void stopSSLServer() throws IOException {
-        String pid = StringUtils.inputStreamToString(new FileInputStream("/tmp/httpsd.pid"));
-        new ProcessBuilder("kill", "-9", pid).start();
+        new ProcessBuilder("java", "com.braintreegateway.util.HttpsTest").directory(new File("target/test-classes")).start(); Thread.sleep(2000);
     }
 }
