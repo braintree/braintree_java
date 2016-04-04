@@ -1,3 +1,7 @@
+## 2.59.0
+* Remove java.util.logging.ConsoleHandler
+* Add isInvalid error code for addresses
+
 ## 2.58.0
 * Add timeout attribute to Configuration
 * Adds shared vault parameters
