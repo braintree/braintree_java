@@ -2,6 +2,9 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Merchant {
 
     private String id;
@@ -12,6 +15,7 @@ public class Merchant {
     private String countryCodeNumeric;
     private String countryName;
     private OAuthCredentials credentials;
+    private List<MerchantAccount> merchantAccounts;
 
     public Merchant(NodeWrapper node) {
         NodeWrapper merchantNode = node.findFirst("merchant");
@@ -25,6 +29,11 @@ public class Merchant {
         countryName = merchantNode.findString("country-name");
 
         credentials = new OAuthCredentials(node.findFirst("credentials"));
+
+        merchantAccounts = new ArrayList<MerchantAccount>();
+        for (NodeWrapper merchantAccountsResponse : merchantNode.findAll("merchant-accounts/merchant-account")) {
+            merchantAccounts.add(new MerchantAccount(merchantAccountsResponse));
+        }
     }
 
     public String getId() {
@@ -57,5 +66,9 @@ public class Merchant {
 
     public OAuthCredentials getCredentials() {
         return credentials;
+    }
+
+    public List<MerchantAccount> getMerchantAccounts() {
+        return merchantAccounts;
     }
 }

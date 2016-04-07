@@ -7,6 +7,7 @@ public class MerchantRequest extends Request {
     public String countryCodeAlpha3;
     public PayPalOnlyAccountRequest payPalOnlyAccountRequest;
     public List<String> paymentMethods;
+    public List<String> currencies;
 
     public MerchantRequest email(String email) {
         this.email = email;
@@ -23,12 +24,18 @@ public class MerchantRequest extends Request {
         return this;
     }
 
+    public MerchantRequest currencies(List<String> currencies) {
+        this.currencies = currencies;
+        return this;
+    }
+
     @Override
     public String toXML() {
         return new RequestBuilder("merchant").
             addElement("email", email).
             addElement("countryCodeAlpha3", countryCodeAlpha3).
             addElement("paymentMethods", paymentMethods).
+            addElement("currencies", currencies).
             addElement("paypalAccount", payPalOnlyAccountRequest).
             toXML();
     }
