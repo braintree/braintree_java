@@ -22,6 +22,7 @@ public class OAuthConnectUrlBusinessRequest extends Request {
     private Integer fulfillmentCompletedIn;
     private String currency;
     private String website;
+    private String establishedOn;
 
     public OAuthConnectUrlBusinessRequest(OAuthConnectUrlRequest parent) {
         this.parentRequest = parent;
@@ -107,6 +108,11 @@ public class OAuthConnectUrlBusinessRequest extends Request {
         return this;
     }
 
+    public OAuthConnectUrlBusinessRequest establishedOn(String establishedOn) {
+        this.establishedOn = establishedOn;
+        return this;
+    }
+
     @Override
     public String toQueryString(String root) {
         RequestBuilder builder = new RequestBuilder("business").
@@ -125,7 +131,8 @@ public class OAuthConnectUrlBusinessRequest extends Request {
             addElement("shipPhysicalGoods", shipPhysicalGoods).
             addElement("fulfillmentCompletedIn", fulfillmentCompletedIn).
             addElement("currency", currency).
-            addElement("website", website);
+            addElement("website", website).
+            addElement("establishedOn", establishedOn);
 
         return builder.toQueryString();
     }
