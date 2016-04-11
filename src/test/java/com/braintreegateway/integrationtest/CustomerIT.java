@@ -258,6 +258,26 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void createWithValidCreditCardAndVerificationAmount() {
+        CustomerRequest request = new CustomerRequest();
+        request.firstName("Fred").
+            creditCard().
+                cardholderName("Fred Jones").
+                number("4111111111111111").
+                cvv("123").
+                expirationDate("05/12").
+                options().
+                    verifyCard(true).
+                    verificationAmount("6.00").
+                    done().
+                done().
+            lastName("Jones");
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
     public void createWithInvalidCreditCardAndVerification() {
         CustomerRequest request = new CustomerRequest();
         request.firstName("Fred").
@@ -852,6 +872,24 @@ public class CustomerIT extends IntegrationTest {
 
         assertEquals(address.getId(), updatedAddress.getId());
         assertEquals("John", updatedAddress.getFirstName());
+    }
+
+    @Test
+    public void updateWithNewCreditCardAndVerificationAmount() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+
+        CustomerRequest request = new CustomerRequest().
+            creditCard().
+                number("4111111111111111").
+                expirationDate("12/12").
+                options().
+                    verifyCard(true).
+                    verificationAmount("6.00").
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
     }
 
     @Test
