@@ -111,6 +111,7 @@ public class OAuthIT extends IntegrationTest {
                 fulfillmentCompletedIn(7).
                 currency("USD").
                 website("http://example.com").
+                establishedOn("1988-10").
                 done();
 
         String urlString = gateway.oauth().connectUrl(request);
@@ -161,6 +162,7 @@ public class OAuthIT extends IntegrationTest {
             assertEquals("7", query.get("business[fulfillment_completed_in]"));
             assertEquals("USD", query.get("business[currency]"));
             assertEquals("http://example.com", query.get("business[website]"));
+            assertEquals("1988-10", query.get("business[established_on]"));
 
             assertEquals(64, query.get("signature").length());
             assertTrue(query.get("signature").matches("^[a-f0-9]+$"));
