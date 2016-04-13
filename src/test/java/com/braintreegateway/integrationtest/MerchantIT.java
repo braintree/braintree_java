@@ -122,6 +122,7 @@ public class MerchantIT extends IntegrationTest {
         MerchantRequest request = new MerchantRequest().
             email("name@email.com").
             countryCodeAlpha3("USA").
+            companyName("Ziarog LTD").
             paymentMethods(Arrays.asList("paypal")).
             currencies(Arrays.asList("GBP", "USD")).
             payPalAccount().
@@ -134,7 +135,7 @@ public class MerchantIT extends IntegrationTest {
         assertTrue(result.isSuccess());
         assertTrue(result.getTarget().getId() != null && !result.getTarget().getId().isEmpty());
         assertEquals("name@email.com", result.getTarget().getEmail());
-        assertEquals("name@email.com", result.getTarget().getCompanyName());
+        assertEquals("Ziarog LTD", result.getTarget().getCompanyName());
         assertEquals("USA", result.getTarget().getCountryCodeAlpha3());
         assertEquals("US", result.getTarget().getCountryCodeAlpha2());
         assertEquals("840", result.getTarget().getCountryCodeNumeric());

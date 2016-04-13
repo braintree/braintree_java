@@ -5,6 +5,7 @@ public class MerchantRequest extends Request {
 
     public String email;
     public String countryCodeAlpha3;
+    public String companyName;
     public PayPalOnlyAccountRequest payPalOnlyAccountRequest;
     public List<String> paymentMethods;
     public List<String> currencies;
@@ -16,6 +17,11 @@ public class MerchantRequest extends Request {
 
     public MerchantRequest countryCodeAlpha3(String countryCodeAlpha3) {
         this.countryCodeAlpha3 = countryCodeAlpha3;
+        return this;
+    }
+
+    public MerchantRequest companyName(String companyName) {
+        this.companyName = companyName;
         return this;
     }
 
@@ -34,6 +40,7 @@ public class MerchantRequest extends Request {
         return new RequestBuilder("merchant").
             addElement("email", email).
             addElement("countryCodeAlpha3", countryCodeAlpha3).
+            addElement("companyName", companyName).
             addElement("paymentMethods", paymentMethods).
             addElement("currencies", currencies).
             addElement("paypalAccount", payPalOnlyAccountRequest).
