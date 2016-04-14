@@ -107,4 +107,29 @@ public class CoinbaseIT extends IntegrationTest{
         exception.expect(NotFoundException.class);
         gateway.paymentMethod().find(token);
     }
+
+    @Test
+    public void updateUpdatesCoinbaseAccount() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        String customerId = customerResult.getTarget().getId();
+        PaymentMethodRequest request = new PaymentMethodRequest().customerId(customerId).paymentMethodNonce(Nonce.Coinbase);
+
+        Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(request);
+
+        assertTrue(paymentMethodResult.isSuccess());
+        String token = paymentMethodResult.getTarget().getToken();
+
+        PaymentMethodRequest updatePaymentMethodRequest = new PaymentMethodRequest().
+            options().
+                makeDefault(true).
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().update(token, updatePaymentMethodRequest);
+
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget() instanceof CoinbaseAccount);
+        CoinbaseAccount coinbaseAccount = (CoinbaseAccount) result.getTarget();
+        assertTrue(coinbaseAccount.isDefault());
+    }
+
 }
