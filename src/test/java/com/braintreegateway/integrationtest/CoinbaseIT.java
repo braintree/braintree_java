@@ -112,8 +112,13 @@ public class CoinbaseIT extends IntegrationTest{
     public void updateUpdatesCoinbaseAccount() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         String customerId = customerResult.getTarget().getId();
-        PaymentMethodRequest request = new PaymentMethodRequest().customerId(customerId).paymentMethodNonce(Nonce.Coinbase);
 
+        PaymentMethodRequest venmoRequest = new PaymentMethodRequest().customerId(customerId).paymentMethodNonce(Nonce.VenmoAccount);
+        Result<? extends PaymentMethod> venmoResult = gateway.paymentMethod().create(venmoRequest);
+        VenmoAccount venmoAccount = (VenmoAccount) venmoResult.getTarget();
+        assertTrue(venmoAccount.isDefault());
+
+        PaymentMethodRequest request = new PaymentMethodRequest().customerId(customerId).paymentMethodNonce(Nonce.Coinbase);
         Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(request);
 
         assertTrue(paymentMethodResult.isSuccess());
