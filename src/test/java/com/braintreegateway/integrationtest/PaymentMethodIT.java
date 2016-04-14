@@ -1,6 +1,8 @@
 package com.braintreegateway.integrationtest;
 
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
@@ -36,6 +38,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(paypalAccount.getEmail());
         assertNotNull(paypalAccount.getImageUrl());
         assertNotNull(paypalAccount.getCustomerId());
+        assertNotNull(paypalAccount.getSubscriptions());
     }
 
     @Test
@@ -92,6 +95,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(paymentMethod.getImageUrl());
         assertNotNull(paymentMethod.getCustomerId());
         assertTrue(paymentMethod.isDefault());
+        assertNotNull(paymentMethod.getSubscriptions());
     }
 
     @Test
@@ -112,6 +116,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(paymentMethod.getToken());
         assertNotNull(paymentMethod.getImageUrl());
         assertNotNull(paymentMethod.getCustomerId());
+        assertNotNull(paymentMethod.getSubscriptions());
     }
 
     @Test
@@ -132,6 +137,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(paymentMethod.getToken());
         assertNotNull(paymentMethod.getImageUrl());
         assertNotNull(paymentMethod.getCustomerId());
+        assertNotNull(paymentMethod.getSubscriptions());
     }
 
     @Test
@@ -264,6 +270,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(paymentMethod.getToken());
         assertNotNull(paymentMethod.getImageUrl());
         assertNotNull(paymentMethod.getCustomerId());
+        assertNotNull(paymentMethod.getSubscriptions());
     }
 
     @Test
@@ -353,6 +360,7 @@ public class PaymentMethodIT extends IntegrationTest {
         PaymentMethod paymentMethod = result.getTarget();
         assertNotNull(paymentMethod.getImageUrl());
         assertNotNull(paymentMethod.getCustomerId());
+        assertNotNull(paymentMethod.getSubscriptions());
     }
 
     @Test
@@ -557,6 +565,55 @@ public class PaymentMethodIT extends IntegrationTest {
 
         PayPalAccount foundAccount = gateway.paypalAccount().find(token);
         assertFalse(foundAccount == null);
+    }
+
+    @Test
+    public void getSubscriptionsForAllPaymentMethodTypes() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String[] nonces = {
+            Nonce.AndroidPay, Nonce.ApplePayVisa, Nonce.Coinbase,
+            Nonce.Transactable, Nonce.PayPalFuturePayment
+        };
+
+        List<String> subscriptionIds = new ArrayList<String>();
+
+        for (String nonce : nonces) {
+            PaymentMethodRequest request = new PaymentMethodRequest()
+                .paymentMethodNonce(nonce)
+                .customerId(customer.getId());
+
+            Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(request);
+            assertTrue(paymentMethodResult.isSuccess());
+
+            Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
+            SubscriptionRequest subscriptionRequest = new SubscriptionRequest()
+                .paymentMethodToken(paymentMethodResult.getTarget().getToken())
+                .planId(plan.getId());
+
+            Result<? extends Subscription> subscriptionResult = gateway.subscription().create(subscriptionRequest);
+            assertTrue(subscriptionResult.isSuccess());
+            assertNotNull(subscriptionResult.getTarget().getId());
+            subscriptionIds.add(subscriptionResult.getTarget().getId());
+        }
+
+        Customer foundCustomer = gateway.customer().find(customer.getId());
+
+        List<? extends PaymentMethod> paymentMethods = foundCustomer.getPaymentMethods();
+        assertEquals(paymentMethods.size(), nonces.length);
+
+        int subscriptionCount = 0;
+        for (PaymentMethod paymentMethod : paymentMethods) {
+            List<Subscription> subscriptions = paymentMethod.getSubscriptions();
+            for (Subscription subscription : subscriptions) {
+                subscriptionCount++;
+                assertTrue(subscriptionIds.contains(subscription.getId()));
+            }
+        }
+
+        assertEquals(subscriptionCount, nonces.length);
     }
 
     @Test
