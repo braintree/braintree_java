@@ -14,6 +14,14 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 public class MerchantIT extends IntegrationTest {
+    private MerchantAccount getMerchantAccountForCurrency(Merchant merchant, String currency) {
+        for (MerchantAccount merchantAccount : merchant.getMerchantAccounts()) {
+            if (merchantAccount.getId().equals(currency)) {
+                return merchantAccount;
+            }
+        }
+        return null;
+    }
 
     @Before
     public void createGateway() {
@@ -148,13 +156,15 @@ public class MerchantIT extends IntegrationTest {
 
         assertEquals(2, result.getTarget().getMerchantAccounts().size());
 
-        assertEquals("USD", result.getTarget().getMerchantAccounts().get(0).getId());
-        assertEquals("USD", result.getTarget().getMerchantAccounts().get(0).getCurrencyIsoCode());
-        assertTrue(result.getTarget().getMerchantAccounts().get(0).isDefault());
+        MerchantAccount usdMerchantAccount = getMerchantAccountForCurrency(result.getTarget(), "USD");
+        assertNotNull(usdMerchantAccount);
+        assertEquals("USD", usdMerchantAccount.getCurrencyIsoCode());
+        assertTrue(usdMerchantAccount.isDefault());
 
-        assertEquals("GBP", result.getTarget().getMerchantAccounts().get(1).getId());
-        assertEquals("GBP", result.getTarget().getMerchantAccounts().get(1).getCurrencyIsoCode());
-        assertFalse(result.getTarget().getMerchantAccounts().get(1).isDefault());
+        MerchantAccount gbpMerchantAccount = getMerchantAccountForCurrency(result.getTarget(), "GBP");
+        assertNotNull(gbpMerchantAccount);
+        assertEquals("GBP", gbpMerchantAccount.getCurrencyIsoCode());
+        assertFalse(gbpMerchantAccount.isDefault());
     }
 
     @Test
