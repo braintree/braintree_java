@@ -1,3 +1,8 @@
+## 2.60.0
+* Add getSubscriptions method to PaymentMethod interface (Thanks @singhalkul!)
+* Add establishedOn attribute to partner business data
+* Allow passing companyName and currencies to `Merchant#create`
+
 ## 2.59.0
 * Remove java.util.logging.ConsoleHandler
 * Add isInvalid error code for addresses
