@@ -4,7 +4,6 @@ import com.braintreegateway.util.ClientLibraryProperties;
 
 import java.net.Proxy;
 import java.net.InetSocketAddress;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Configuration {
@@ -17,12 +16,7 @@ public class Configuration {
     private String merchantId;
     private String privateKey;
     private String publicKey;
-    private static Logger logger;
-
-    static {
-        logger = Logger.getLogger("Braintree");
-        logger.setLevel(Level.INFO);
-    }
+    private static final Logger logger = Logger.getLogger("Braintree");
 
     public static final String VERSION = new ClientLibraryProperties().version();
 
