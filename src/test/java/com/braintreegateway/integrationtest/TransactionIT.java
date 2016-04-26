@@ -2723,7 +2723,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 id().is(TWO_DISPUTE_TRANSACTION_ID).
                 disputeDate().greaterThanOrEqualTo(oneDayEarlier);
 
-        assertEquals(2, gateway.transaction().search(searchRequest).getMaximumSize());
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
                 id().is(DISPUTED_TRANSACTION_ID).
