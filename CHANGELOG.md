@@ -1,3 +1,6 @@
+## 2.61.0
+* Add new landing_page param to OAuthConnectUrlRequest
+
 ## 2.60.0
 * Add getSubscriptions method to PaymentMethod interface (Thanks @singhalkul!)
 * Add establishedOn attribute to partner business data
