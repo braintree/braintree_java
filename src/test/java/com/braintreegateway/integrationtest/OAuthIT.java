@@ -80,6 +80,7 @@ public class OAuthIT extends IntegrationTest {
             redirectUri("http://bar.example.com").
             scope("read_write").
             state("baz_state").
+            landingPage("login").
             user().
                 country("USA").
                 email("foo@example.com").
@@ -130,6 +131,7 @@ public class OAuthIT extends IntegrationTest {
             assertEquals("http://bar.example.com", query.get("redirect_uri"));
             assertEquals("read_write", query.get("scope"));
             assertEquals("baz_state", query.get("state"));
+            assertEquals("login", query.get("landing_page"));
 
             assertEquals("USA", query.get("user[country]"));
 
