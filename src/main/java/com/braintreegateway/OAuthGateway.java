@@ -28,6 +28,14 @@ public class OAuthGateway {
         return new Result<OAuthCredentials>(response, OAuthCredentials.class);
     }
 
+    public Result<OAuthResult> revokeAccessToken(String accessToken) {
+        OAuthRevokeAccessTokenRequest request = new OAuthRevokeAccessTokenRequest().
+            token(accessToken);
+
+        NodeWrapper response = http.post("/oauth/revoke_access_token", request);
+        return new Result<OAuthResult>(response, OAuthResult.class);
+    }
+
     public String connectUrl(OAuthConnectUrlRequest request) {
         request.clientId(configuration.getClientId());
         String queryString = request.toQueryString();

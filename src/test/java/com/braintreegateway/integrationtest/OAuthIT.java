@@ -1,6 +1,7 @@
 package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
+import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Test;
 import org.junit.Before;
@@ -71,6 +72,26 @@ public class OAuthIT extends IntegrationTest {
         assertNotNull(refreshTokenResult.getTarget().getRefreshToken());
         assertNotNull(refreshTokenResult.getTarget().getExpiresAt());
         assertEquals("bearer", refreshTokenResult.getTarget().getTokenType());
+    }
+
+    @Test(expected = AuthenticationException.class)
+    public void revokeAccessToken() {
+        String code = TestHelper.createOAuthGrant(gateway, "integration_merchant_id", "read_write");
+
+        OAuthCredentialsRequest oauthCredentials = new OAuthCredentialsRequest().
+             code(code).
+             scope("read_write");
+
+        Result<OAuthCredentials> result = gateway.oauth().createTokenFromCode(oauthCredentials);
+
+        String accessToken = result.getTarget().getAccessToken();
+        Result<OAuthResult> revokeAccessTokenResult = gateway.oauth().revokeAccessToken(accessToken);
+
+        assertTrue(revokeAccessTokenResult.isSuccess());
+        assertTrue(revokeAccessTokenResult.getTarget().getResult());
+
+        gateway = new BraintreeGateway(accessToken);
+        gateway.customer().create(new CustomerRequest());
     }
 
     @Test
