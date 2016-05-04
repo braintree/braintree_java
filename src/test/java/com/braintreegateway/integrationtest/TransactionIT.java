@@ -2014,6 +2014,158 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 
+    @Test
+    public void updateDetails() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionRequest updateDetailsRequest = new TransactionRequest().
+            amount(new BigDecimal("123.45")).
+            descriptor().
+                name("123*123456789012345678").
+                phone("3334445555").
+                url("ebay.com").
+                done().
+            orderId("1234");
+
+        Result<Transaction> result = gateway.transaction().updateDetails(transaction.getId(), updateDetailsRequest);
+
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
+        assertEquals(new BigDecimal("123.45"), result.getTarget().getAmount());
+        assertEquals(new String("1234"), result.getTarget().getOrderId());
+        assertEquals("123*123456789012345678", result.getTarget().getDescriptor().getName());
+        assertEquals("3334445555", result.getTarget().getDescriptor().getPhone());
+        assertEquals("ebay.com", result.getTarget().getDescriptor().getUrl());
+    }
+
+    @Test
+    public void updateDetailsWithInvalidAmount() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionRequest updateDetailsRequest = new TransactionRequest().
+            amount(new BigDecimal("9999")).
+            descriptor().
+                name("123*123456789012345678").
+                phone("3334445555").
+                url("ebay.com").
+                done().
+            orderId("1234");
+
+        Result<Transaction> result = gateway.transaction().updateDetails(transaction.getId(), updateDetailsRequest);
+
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_SETTLEMENT_AMOUNT_IS_TOO_LARGE,
+                result.getErrors().forObject("transaction").onField("amount").get(0).getCode());
+    }
+
+    @Test
+    public void updateDetailsWithInvalidDescriptor() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionRequest updateDetailsRequest = new TransactionRequest().
+            descriptor().
+                name("invalid name").
+                phone("invalid phone").
+                url("invalid url is way too long to be valid").
+                done().
+            orderId("1234");
+
+        Result<Transaction> result = gateway.transaction().updateDetails(transaction.getId(), updateDetailsRequest);
+
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.DESCRIPTOR_NAME_FORMAT_IS_INVALID,
+                result.getErrors().forObject("transaction").forObject("descriptor").onField("name").get(0).getCode());
+        assertEquals(ValidationErrorCode.DESCRIPTOR_PHONE_FORMAT_IS_INVALID,
+                result.getErrors().forObject("transaction").forObject("descriptor").onField("phone").get(0).getCode());
+        assertEquals(ValidationErrorCode.DESCRIPTOR_URL_FORMAT_IS_INVALID,
+                result.getErrors().forObject("transaction").forObject("descriptor").onField("url").get(0).getCode());
+    }
+
+    @Test
+    public void updateDetailsWithBadStatus() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionRequest updateDetailsRequest = new TransactionRequest().
+            amount(new BigDecimal("123.45")).
+            descriptor().
+                name("123*123456789012345678").
+                phone("3334445555").
+                url("ebay.com").
+                done().
+            orderId("1234");
+
+        Result<Transaction> result = gateway.transaction().updateDetails(transaction.getId(), updateDetailsRequest);
+
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_UPDATE_DETAILS_NOT_SUBMITTED_FOR_SETTLEMENT,
+                result.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
+
+    @Test
+    public void updateDetailsWithInvalidProcessor() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.AmexPayWithPoints.SUCCESS.number).
+                expirationDate("12/2020").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionRequest updateDetailsRequest = new TransactionRequest().
+            amount(new BigDecimal("123.45")).
+            descriptor().
+                name("123*123456789012345678").
+                phone("3334445555").
+                url("ebay.com").
+                done().
+            orderId("1234");
+
+        Result<Transaction> result = gateway.transaction().updateDetails(transaction.getId(), updateDetailsRequest);
+
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_PROCESSOR_DOES_NOT_SUPPORT_UPDATING_DETAILS,
+                result.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
+
     @Test(expected = NotFoundException.class)
     public void submitForSettlementWithBadId() {
         gateway.transaction().submitForSettlement("badId");
