@@ -9,6 +9,7 @@ public final class IndividualDetails {
     private final String email;
     private final String phone;
     private final Address address;
+    private final String ssnLast4;
 
     public IndividualDetails(NodeWrapper node) {
         firstName = node.findString("first-name");
@@ -16,6 +17,7 @@ public final class IndividualDetails {
         dateOfBirth = node.findString("date-of-birth");
         email = node.findString("email");
         phone = node.findString("phone");
+        ssnLast4 = node.findString("ssn-last-4");
         NodeWrapper addressNode = node.findFirst("address");
         if (addressNode != null)
             this.address = new Address(addressNode);
@@ -45,5 +47,9 @@ public final class IndividualDetails {
 
     public Address getAddress() {
         return address;
+    }
+
+    public String getSsnLast4() {
+        return ssnLast4;
     }
 }

@@ -140,6 +140,7 @@ public class MerchantAccountIT extends IntegrationTest {
         assertEquals("Avondale", merchantAccount.getIndividualDetails().getAddress().getLocality());
         assertEquals("IN", merchantAccount.getIndividualDetails().getAddress().getRegion());
         assertEquals("1985-09-10", merchantAccount.getIndividualDetails().getDateOfBirth());
+        assertEquals("1235", merchantAccount.getIndividualDetails().getSsnLast4());
         assertEquals("Calculon", merchantAccount.getBusinessDetails().getLegalName());
         assertEquals("Calculon", merchantAccount.getBusinessDetails().getDbaName());
         assertEquals("123456780", merchantAccount.getBusinessDetails().getTaxId());
