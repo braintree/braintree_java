@@ -1,3 +1,8 @@
+## 2.62.0
+* Add transaction `UpdateDetails`
+* Add ssnLast4 to merchant account individual details
+* Support for Too Many Requests response codes
+
 ## 2.61.0
 * Add new landing_page param to OAuthConnectUrlRequest
 
