@@ -38,6 +38,7 @@ import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.ServerException;
 import com.braintreegateway.exceptions.TimeoutException;
+import com.braintreegateway.exceptions.TooManyRequestsException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
@@ -264,6 +265,8 @@ public class Http {
                 throw new NotFoundException();
             case 426:
                 throw new UpgradeRequiredException();
+            case 429:
+                throw new TooManyRequestsException();
             case 500:
                 throw new ServerException();
             case 503:

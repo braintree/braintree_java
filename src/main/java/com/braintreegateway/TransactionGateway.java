@@ -208,6 +208,17 @@ public class TransactionGateway {
     }
 
     /**
+     * Updates details for a transaction that has been submitted for settlement.
+     * @param id of the transaction to update the details for.
+     * @param request the request.
+     * @return {@link Result}.
+     */
+    public Result<Transaction> updateDetails(String id, TransactionRequest request) {
+        NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/update_details", request);
+        return new Result<Transaction>(response, Transaction.class);
+    }
+
+    /**
      * Please use gateway.transparentRedirect().url() instead
      */
     @Deprecated

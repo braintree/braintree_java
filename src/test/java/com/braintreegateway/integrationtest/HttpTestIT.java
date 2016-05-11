@@ -9,6 +9,7 @@ import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Environment;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
+import com.braintreegateway.exceptions.TooManyRequestsException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
@@ -214,6 +215,11 @@ public class HttpTestIT extends IntegrationTest {
     @Test(expected = UpgradeRequiredException.class)
     public void throwUpgradeRequiredIfClientLibraryIsTooOld() {
         Http.throwExceptionIfErrorStatusCode(426, "Too old");
+    }
+
+    @Test(expected = TooManyRequestsException.class)
+    public void throwTooManyRequestsIfRateLimitExceeded() {
+        Http.throwExceptionIfErrorStatusCode(429, null);
     }
 
     @Test
