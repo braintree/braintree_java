@@ -20,6 +20,13 @@ public class BraintreeGatewayIT {
     }
 
     @Test
+    public void qaBaseMerchantUrl() {
+        BraintreeGateway gateway = new BraintreeGateway(Environment.QA, "qa_merchant_id", "publicKey", "privateKey");
+        Configuration configuration = gateway.getConfiguration();
+        assertEquals("https://gateway.qa.braintreepayments.com:443/merchants/qa_merchant_id", configuration.getBaseURL() + configuration.getMerchantPath());
+    }
+
+    @Test
     public void sandboxBaseMerchantUrl() {
         BraintreeGateway gateway = new BraintreeGateway(Environment.SANDBOX, "sandbox_merchant_id", "publicKey", "privateKey");
         Configuration configuration = gateway.getConfiguration();
