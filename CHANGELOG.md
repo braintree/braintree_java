@@ -1,3 +1,6 @@
+## 2.63.0
+* Add method of revoking OAuth access tokens.
+
 ## 2.62.0
 * Add transaction `UpdateDetails`
 * Add ssnLast4 to merchant account individual details

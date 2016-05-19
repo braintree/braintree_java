@@ -31,8 +31,13 @@ public class EnvironmentTest {
         assertEquals(Environment.PRODUCTION, Environment.parseEnvironment("production"));
     }
 
+    @Test
+    public void testParseEnvironmentReturnsQA() {
+        assertEquals(Environment.QA, Environment.parseEnvironment("qa"));
+    }
+
     @Test(expected=IllegalArgumentException.class)
     public void testParseEnvironmentThrowsError() {
-       Environment.parseEnvironment("Development_2");
+        Environment.parseEnvironment("Development_2");
     }
 }
