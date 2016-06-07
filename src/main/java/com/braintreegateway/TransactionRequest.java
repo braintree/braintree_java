@@ -32,6 +32,7 @@ public class TransactionRequest extends Request {
     private TransactionIndustryRequest industryRequest;
     private TransactionAddressRequest shippingAddressRequest;
     private TransactionOptionsRequest transactionOptionsRequest;
+    private TransactionThreeDSecurePassThruRequest threeDSecurePassThruRequest;
     private BigDecimal taxAmount;
     private Boolean taxExempt;
     private Type type;
@@ -135,6 +136,11 @@ public class TransactionRequest extends Request {
     public TransactionOptionsRequest options() {
         transactionOptionsRequest = new TransactionOptionsRequest(this);
         return transactionOptionsRequest;
+    }
+
+    public TransactionThreeDSecurePassThruRequest threeDSecurePassThru() {
+        threeDSecurePassThruRequest = new TransactionThreeDSecurePassThruRequest(this);
+        return threeDSecurePassThruRequest;
     }
 
     public TransactionRequest orderId(String orderId) {
@@ -261,6 +267,7 @@ public class TransactionRequest extends Request {
             addElement("billing", billingAddressRequest).
             addElement("shipping", shippingAddressRequest).
             addElement("options", transactionOptionsRequest).
+            addElement("threeDSecurePassThru", threeDSecurePassThruRequest).
             addElement("recurring", recurring).
             addElement("deviceSessionId", deviceSessionId).
             addElement("fraudMerchantId", fraudMerchantId).
