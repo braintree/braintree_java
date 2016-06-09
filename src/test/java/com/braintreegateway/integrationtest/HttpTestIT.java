@@ -219,16 +219,6 @@ public class HttpTestIT extends IntegrationTest {
         gateway.transparentRedirect().confirmCustomer(queryString);
     }
 
-    @Test(expected = UpgradeRequiredException.class)
-    public void throwUpgradeRequiredIfClientLibraryIsTooOld() {
-        Http.throwExceptionIfErrorStatusCode(426, "Too old");
-    }
-
-    @Test(expected = TooManyRequestsException.class)
-    public void throwTooManyRequestsIfRateLimitExceeded() {
-        Http.throwExceptionIfErrorStatusCode(429, null);
-    }
-
     @Test
     public void sslBadCertificate() throws Exception {
         Environment environment = new Environment("https://localhost:19443", "", new String[] {"ssl/api_braintreegateway_com.ca.crt"}, "testing");
@@ -241,14 +231,6 @@ public class HttpTestIT extends IntegrationTest {
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("Cert"));
         }
-    }
-
-    @Test
-    public void getAuthorizationHeader() {
-        BraintreeGateway config = new BraintreeGateway(Environment.DEVELOPMENT, "development_merchant_id", "integration_public_key", "integration_private_key");
-        Http http = new Http(config.getConfiguration());
-
-        assertEquals("Basic aW50ZWdyYXRpb25fcHVibGljX2tleTppbnRlZ3JhdGlvbl9wcml2YXRlX2tleQ==", http.authorizationHeader());
     }
 
     private void startSSLServer() throws Exception {
