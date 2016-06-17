@@ -3530,6 +3530,51 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void refundTransactionWithOrderId() {
+        TransactionRequest request = new TransactionRequest().
+        amount(TransactionAmount.AUTHORIZE.amount).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done().
+        options().
+            submitForSettlement(true).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+
+        TransactionRefundRequest refundRequest = new TransactionRefundRequest().orderId("12345678");
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), refundRequest);
+        assertTrue(result.isSuccess());
+        assertEquals("12345678", result.getTarget().getOrderId());
+    }
+
+    @Test
+    public void refundTransactionWithAmountAndOrderId() {
+        TransactionRequest request = new TransactionRequest().
+        amount(TransactionAmount.AUTHORIZE.amount).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done().
+        options().
+            submitForSettlement(true).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+
+        TransactionRefundRequest refundRequest = new TransactionRefundRequest().
+            orderId("12345678").
+            amount(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal("2")));
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), refundRequest);
+        assertTrue(result.isSuccess());
+        assertEquals("12345678", result.getTarget().getOrderId());
+        assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal("2")), result.getTarget().getAmount());
+    }
+
+    @Test
     public void refundTransactionWithPartialAmount() {
         TransactionRequest request = new TransactionRequest().
         amount(TransactionAmount.AUTHORIZE.amount).
