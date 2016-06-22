@@ -6,6 +6,7 @@ public class MerchantRequest extends Request {
     public String email;
     public String countryCodeAlpha3;
     public String companyName;
+    public String scope;
     public PayPalOnlyAccountRequest payPalOnlyAccountRequest;
     public List<String> paymentMethods;
     public List<String> currencies;
@@ -35,6 +36,11 @@ public class MerchantRequest extends Request {
         return this;
     }
 
+    public MerchantRequest scope(String scope) {
+        this.scope = scope;
+        return this;
+    }
+
     @Override
     public String toXML() {
         return new RequestBuilder("merchant").
@@ -43,6 +49,7 @@ public class MerchantRequest extends Request {
             addElement("companyName", companyName).
             addElement("paymentMethods", paymentMethods).
             addElement("currencies", currencies).
+            addElement("scope", scope).
             addElement("paypalAccount", payPalOnlyAccountRequest).
             toXML();
     }
