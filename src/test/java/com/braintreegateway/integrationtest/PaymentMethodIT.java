@@ -910,6 +910,22 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
+    public void allowsCustomVerificationAmount() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce("fake-valid-nonce").
+            options().
+                verifyCard(true).
+                verificationAmount("1.02").
+                done();
+
+        Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(paymentMethodRequest);
+        assertTrue(paymentMethodResult.isSuccess());
+    }
+
+    @Test
     public void updateCanUpdateTheBillingAddress() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         Customer customer = customerResult.getTarget();

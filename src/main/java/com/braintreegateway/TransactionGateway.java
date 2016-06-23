@@ -96,6 +96,11 @@ public class TransactionGateway {
         return new Result<Transaction>(response, Transaction.class);
     }
 
+    public Result<Transaction> refund(String id, TransactionRefundRequest request) {
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/refund", request);
+        return new Result<Transaction>(response, Transaction.class);
+    }
+
     /**
      * Creates a sale {@link Transaction}.
      * @param request the request.

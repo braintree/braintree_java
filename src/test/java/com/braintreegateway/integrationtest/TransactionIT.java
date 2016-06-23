@@ -879,6 +879,118 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithThreeDSecurePassThru() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            threeDSecurePassThru().
+                eciFlag("02").
+                cavv("some_cavv").
+                xid("some_xid").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+    }
+
+    @Test
+    public void saleErrorWithThreeDSecurePassThruWhenMerchantAccountDoesNotSupportCardType() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId("adyen_ma").
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            threeDSecurePassThru().
+                eciFlag("02").
+                cavv("some_cavv").
+                xid("some_xid").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_PASS_THRU_MERCHANT_ACCOUNT_DOES_NOT_SUPPORT_CARD_TYPE,
+                result.getErrors().forObject("transaction").onField("merchantAccountId").get(0).getCode());
+    }
+
+    @Test
+    public void saleErrorWithMissingThreeDSecurePassThruEciFlag() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            threeDSecurePassThru().
+                eciFlag("").
+                cavv("some_cavv").
+                xid("some_xid").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_PASS_THRU_ECI_FLAG_IS_REQUIRED,
+                result.getErrors().forObject("transaction").forObject("threeDSecurePassThru").onField("eciFlag").get(0).getCode());
+    }
+
+    @Test
+    public void saleErrorWithMissingThreeDSecurePassThruCavvOrXid() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            threeDSecurePassThru().
+                eciFlag("06").
+                cavv("").
+                xid("").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_PASS_THRU_CAVV_IS_REQUIRED,
+                result.getErrors().forObject("transaction").forObject("threeDSecurePassThru").onField("cavv").get(0).getCode());
+        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_PASS_THRU_XID_IS_REQUIRED,
+                result.getErrors().forObject("transaction").forObject("threeDSecurePassThru").onField("xid").get(0).getCode());
+    }
+
+    @Test
+    public void saleErrorWithInvalidThreeDSecurePassThruEciFlag() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            threeDSecurePassThru().
+                eciFlag("bad_eci_flag").
+                cavv("some_cavv").
+                xid("some_xid").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_PASS_THRU_ECI_FLAG_IS_INVALID,
+                result.getErrors().forObject("transaction").forObject("threeDSecurePassThru").onField("eciFlag").get(0).getCode());
+    }
+
+    @Test
     public void saleWithAmexRewards() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).
@@ -3415,6 +3527,51 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(originalTransaction.getAmount(), refund.getAmount());
         assertEquals(refund.getId(), originalTransaction.getRefundId());
         assertEquals(originalTransaction.getId(), refund.getRefundedTransactionId());
+    }
+
+    @Test
+    public void refundTransactionWithOrderId() {
+        TransactionRequest request = new TransactionRequest().
+        amount(TransactionAmount.AUTHORIZE.amount).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done().
+        options().
+            submitForSettlement(true).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+
+        TransactionRefundRequest refundRequest = new TransactionRefundRequest().orderId("12345678");
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), refundRequest);
+        assertTrue(result.isSuccess());
+        assertEquals("12345678", result.getTarget().getOrderId());
+    }
+
+    @Test
+    public void refundTransactionWithAmountAndOrderId() {
+        TransactionRequest request = new TransactionRequest().
+        amount(TransactionAmount.AUTHORIZE.amount).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done().
+        options().
+            submitForSettlement(true).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+
+        TransactionRefundRequest refundRequest = new TransactionRefundRequest().
+            orderId("12345678").
+            amount(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal("2")));
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), refundRequest);
+        assertTrue(result.isSuccess());
+        assertEquals("12345678", result.getTarget().getOrderId());
+        assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal("2")), result.getTarget().getAmount());
     }
 
     @Test

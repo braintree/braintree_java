@@ -60,7 +60,7 @@ public class HttpTestIT extends IntegrationTest {
     @Test
     public void smokeTestGet() {
         Configuration configuration = gateway.getConfiguration();
-        NodeWrapper node = new Http(configuration).get(configuration.getMerchantPath() + "/customers/131866");
+        NodeWrapper node = new Http(configuration).get(configuration.getMerchantPath() + "/customers/big_spender");
         assertNotNull(node.findString("first-name"));
     }
 
@@ -76,7 +76,7 @@ public class HttpTestIT extends IntegrationTest {
     public void smokeTestPut() {
         CustomerRequest request = new CustomerRequest().firstName("NewName");
         Configuration configuration = gateway.getConfiguration();
-        NodeWrapper node = new Http(configuration).put(configuration.getMerchantPath() + "/customers/131866", request);
+        NodeWrapper node = new Http(configuration).put(configuration.getMerchantPath() + "/customers/big_spender", request);
         assertEquals("NewName", node.findString("first-name"));
     }
 
@@ -92,7 +92,7 @@ public class HttpTestIT extends IntegrationTest {
         Configuration configuration = gateway.getConfiguration();
         attachLogCapturer();
 
-        NodeWrapper node = new Http(configuration).get(configuration.getMerchantPath() + "/customers/131866");
+        NodeWrapper node = new Http(configuration).get(configuration.getMerchantPath() + "/customers/big_spender");
         String capturedLog = getTestCapturedLog();
 
         assertTrue(capturedLog.contains("[Braintree]"));
@@ -141,7 +141,7 @@ public class HttpTestIT extends IntegrationTest {
         try {
             Configuration configuration = this.gateway.getConfiguration();
             attachLogCapturer();
-            NodeWrapper node = new Http(configuration).get(configuration.getMerchantPath() + "/customers/131866");
+            NodeWrapper node = new Http(configuration).get(configuration.getMerchantPath() + "/customers/big_spender");
         } catch (UnexpectedException e) {
         } finally {
             capturedLog = getTestCapturedLog();
