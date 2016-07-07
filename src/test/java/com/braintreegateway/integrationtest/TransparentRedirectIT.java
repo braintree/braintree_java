@@ -5,6 +5,8 @@ import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.exceptions.DownForMaintenanceException;
+import com.braintreegateway.exceptions.AuthenticationException;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -203,4 +205,41 @@ public class TransparentRedirectIT extends IntegrationTest implements MerchantAc
         assertFalse(result.isSuccess());
         assertTrue(result.getErrors().deepSize() > 0);
     }
+
+    @Test(expected = DownForMaintenanceException.class)
+    public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingTR() {
+        CustomerRequest request = new CustomerRequest();
+        CustomerRequest trParams = new CustomerRequest();
+        Configuration configuration = gateway.getConfiguration();
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, configuration.getBaseURL() + configuration.getMerchantPath() + "/test/maintenance");
+        gateway.customer().confirmTransparentRedirect(queryString);
+    }
+
+    @Test(expected = DownForMaintenanceException.class)
+    public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingNewTR() {
+        CustomerRequest request = new CustomerRequest();
+        CustomerRequest trParams = new CustomerRequest();
+        Configuration configuration = gateway.getConfiguration();
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, configuration.getBaseURL() + configuration.getMerchantPath() + "/test/maintenance");
+        gateway.transparentRedirect().confirmCustomer(queryString);
+    }
+
+    @Test(expected = AuthenticationException.class)
+    public void authenticationExceptionRaisedWhenBadCredentialsUsingTR() {
+        CustomerRequest request = new CustomerRequest();
+        CustomerRequest trParams = new CustomerRequest();
+        BraintreeGateway gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "bad_public", "bad_private");
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.customer().transparentRedirectURLForCreate());
+        gateway.customer().confirmTransparentRedirect(queryString);
+    }
+
+    @Test(expected = AuthenticationException.class)
+    public void authenticationExceptionRaisedWhenBadCredentialsUsingNewTR() {
+        CustomerRequest request = new CustomerRequest();
+        CustomerRequest trParams = new CustomerRequest();
+        BraintreeGateway gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "bad_public", "bad_private");
+        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
+        gateway.transparentRedirect().confirmCustomer(queryString);
+    }
+
 }
