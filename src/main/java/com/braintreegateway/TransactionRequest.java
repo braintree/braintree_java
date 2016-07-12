@@ -26,6 +26,7 @@ public class TransactionRequest extends Request {
     private String paymentMethodToken;
     private String purchaseOrderNumber;
     private Boolean recurring;
+    private String source;
     private String shippingAddressId;
     private String billingAddressId;
     private TransactionDescriptorRequest descriptorRequest;
@@ -163,6 +164,11 @@ public class TransactionRequest extends Request {
         return this;
     }
 
+    public TransactionRequest transactionSource(String source) {
+        this.source = source;
+        return this;
+    }
+
     public TransactionAddressRequest shippingAddress() {
         shippingAddressRequest = new TransactionAddressRequest(this, "shipping");
         return shippingAddressRequest;
@@ -269,6 +275,7 @@ public class TransactionRequest extends Request {
             addElement("options", transactionOptionsRequest).
             addElement("threeDSecurePassThru", threeDSecurePassThruRequest).
             addElement("recurring", recurring).
+            addElement("transactionSource", source).
             addElement("deviceSessionId", deviceSessionId).
             addElement("fraudMerchantId", fraudMerchantId).
             addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode).
