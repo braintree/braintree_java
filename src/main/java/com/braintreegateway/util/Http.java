@@ -251,7 +251,8 @@ public class Http {
             try {
                 decodedMessage = URLDecoder.decode(message, "UTF-8");
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                Logger logger = Logger.getLogger("Braintree");
+                logger.log(Level.FINEST, e.getMessage(), e.getStackTrace());
             }
         }
 
