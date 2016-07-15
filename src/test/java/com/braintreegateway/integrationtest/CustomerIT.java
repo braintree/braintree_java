@@ -814,6 +814,87 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void updateDefaultPaymentMethodInOptions() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Mark").
+            lastName("Jones");
+
+        Customer customer = gateway.customer().create(request).getTarget();
+
+        String token1 = "TOKEN-" + new Random().nextInt();
+
+        PaymentMethodRequest request1 = new PaymentMethodRequest().
+            paymentMethodNonce(Nonce.TransactableVisa).
+            token(token1).
+            customerId(customer.getId());
+
+        Result<? extends PaymentMethod> result1 = gateway.paymentMethod().create(request1);
+        assertTrue(result1.getTarget().isDefault());
+
+        String token2 = "TOKEN-" + new Random().nextInt();
+
+        PaymentMethodRequest request2 = new PaymentMethodRequest().
+            paymentMethodNonce(Nonce.TransactableMasterCard).
+            token(token2).
+            customerId(customer.getId());
+
+        gateway.paymentMethod().create(request2);
+        PaymentMethod newPaymentMethod = gateway.paymentMethod().find(token2);
+        assertFalse(newPaymentMethod.isDefault());
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            creditCard().
+                options().
+                    updateExistingToken(token2).
+                    makeDefault(true).
+                    done().
+                done();
+
+        gateway.customer().update(customer.getId(), updateRequest).getTarget();
+
+        newPaymentMethod = gateway.paymentMethod().find(token2);
+        assertTrue(newPaymentMethod.isDefault());
+    }
+
+    @Test
+    public void updateDefaultPaymentMethod() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Mark").
+            lastName("Jones");
+
+        Customer customer = gateway.customer().create(request).getTarget();
+
+        String token1 = "TOKEN-" + new Random().nextInt();
+
+        PaymentMethodRequest request1 = new PaymentMethodRequest().
+            paymentMethodNonce(Nonce.TransactableVisa).
+            token(token1).
+            customerId(customer.getId());
+
+        Result<? extends PaymentMethod> result1 = gateway.paymentMethod().create(request1);
+        assertTrue(result1.getTarget().isDefault());
+
+        String token2 = "TOKEN-" + new Random().nextInt();
+
+        PaymentMethodRequest request2 = new PaymentMethodRequest().
+            paymentMethodNonce(Nonce.TransactableMasterCard).
+            token(token2).
+            customerId(customer.getId());
+
+        gateway.paymentMethod().create(request2);
+        PaymentMethod newPaymentMethod = gateway.paymentMethod().find(token2);
+        assertFalse(newPaymentMethod.isDefault());
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            defaultPaymentMethodToken(token2);
+
+        gateway.customer().update(customer.getId(), updateRequest).getTarget();
+
+        newPaymentMethod = gateway.paymentMethod().find(token2);
+        assertTrue(newPaymentMethod.isDefault());
+    }
+
+    @Test
     public void updateWithExistingCreditCardAndAddress() {
         CustomerRequest request = new CustomerRequest().
             firstName("Mark").
