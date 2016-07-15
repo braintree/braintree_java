@@ -49,6 +49,8 @@ public class TransactionRequest extends Request {
     private String sharedShippingAddressId;
     private String sharedBillingAddressId;
 
+    private RiskDataTransactionRequest riskDataTransactionRequest;
+
     public TransactionRequest() {
         this.customFields = new HashMap<String, String>();
         this.threeDSecureTransaction = false;
@@ -230,6 +232,11 @@ public class TransactionRequest extends Request {
         return this;
     }
 
+    public RiskDataTransactionRequest riskData() {
+        riskDataTransactionRequest = new RiskDataTransactionRequest(this);
+        return riskDataTransactionRequest;
+    }
+
     @Override
     public String toQueryString() {
         return toQueryString("transaction");
@@ -283,7 +290,8 @@ public class TransactionRequest extends Request {
             addElement("sharedCustomerId", sharedCustomerId).
             addElement("sharedShippingAddressId", sharedShippingAddressId).
             addElement("sharedBillingAddressId", sharedBillingAddressId).
-            addElement("serviceFeeAmount", serviceFeeAmount);
+            addElement("serviceFeeAmount", serviceFeeAmount).
+            addElement("riskData", riskDataTransactionRequest);
 
         if (!customFields.isEmpty()) {
             builder.addElement("customFields", customFields);

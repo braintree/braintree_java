@@ -23,6 +23,7 @@ public class CustomerRequest extends Request {
     private String paymentMethodNonce;
     private Map<String, String> customFields;
     private CreditCardRequest creditCardRequest;
+    private RiskDataCustomerRequest riskDataCustomerRequest;
     private TransactionRequest parent;
 
     public CustomerRequest() {
@@ -86,6 +87,11 @@ public class CustomerRequest extends Request {
     public CustomerRequest firstName(String firstName) {
         this.firstName = firstName;
         return this;
+    }
+
+    public RiskDataCustomerRequest riskData() {
+        riskDataCustomerRequest = new RiskDataCustomerRequest(this);
+        return this.riskDataCustomerRequest;
     }
 
     @Override

@@ -159,6 +159,22 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void createWithRiskDataParams() {
+        CustomerRequest request = new CustomerRequest().
+            creditCard().
+                number("4111111111111111").
+                expirationDate("05/12").
+                done().
+            riskData().
+                customerBrowser("IE6").
+                customerIP("192.168.0.1").
+                done();
+        Result<Customer> result = gateway.customer().create(request);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
     public void createWithCustomFields() {
         CustomerRequest request = new CustomerRequest().
             customField("store_me", "custom value").
