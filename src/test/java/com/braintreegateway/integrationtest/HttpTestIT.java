@@ -8,10 +8,7 @@ import com.braintreegateway.Customer;
 import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Environment;
 import com.braintreegateway.exceptions.AuthenticationException;
-import com.braintreegateway.exceptions.DownForMaintenanceException;
-import com.braintreegateway.exceptions.TooManyRequestsException;
 import com.braintreegateway.exceptions.UnexpectedException;
-import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 import com.braintreegateway.Result;
 import com.braintreegateway.testhelpers.TestHelper;
@@ -176,59 +173,6 @@ public class HttpTestIT extends IntegrationTest {
         http.get("/");
     }
 
-    @Test(expected = DownForMaintenanceException.class)
-    public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingServerToServer() {
-        CustomerRequest request = new CustomerRequest();
-        Configuration configuration = gateway.getConfiguration();
-        new Http(configuration).put(configuration.getMerchantPath() + "/test/maintenance", request);
-    }
-
-    @Test(expected = DownForMaintenanceException.class)
-    public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingTR() {
-        CustomerRequest request = new CustomerRequest();
-        CustomerRequest trParams = new CustomerRequest();
-        Configuration configuration = gateway.getConfiguration();
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, configuration.getBaseURL() + configuration.getMerchantPath() + "/test/maintenance");
-        gateway.customer().confirmTransparentRedirect(queryString);
-    }
-
-    @Test(expected = DownForMaintenanceException.class)
-    public void downForMaintenanceExceptionRaisedWhenAppInMaintenanceModeUsingNewTR() {
-        CustomerRequest request = new CustomerRequest();
-        CustomerRequest trParams = new CustomerRequest();
-        Configuration configuration = gateway.getConfiguration();
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, configuration.getBaseURL() + configuration.getMerchantPath() + "/test/maintenance");
-        gateway.transparentRedirect().confirmCustomer(queryString);
-    }
-
-    @Test(expected = AuthenticationException.class)
-    public void authenticationExceptionRaisedWhenBadCredentialsUsingTR() {
-        CustomerRequest request = new CustomerRequest();
-        CustomerRequest trParams = new CustomerRequest();
-        BraintreeGateway gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "bad_public", "bad_private");
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.customer().transparentRedirectURLForCreate());
-        gateway.customer().confirmTransparentRedirect(queryString);
-    }
-
-    @Test(expected = AuthenticationException.class)
-    public void authenticationExceptionRaisedWhenBadCredentialsUsingNewTR() {
-        CustomerRequest request = new CustomerRequest();
-        CustomerRequest trParams = new CustomerRequest();
-        BraintreeGateway gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "bad_public", "bad_private");
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
-        gateway.transparentRedirect().confirmCustomer(queryString);
-    }
-
-    @Test(expected = UpgradeRequiredException.class)
-    public void throwUpgradeRequiredIfClientLibraryIsTooOld() {
-        Http.throwExceptionIfErrorStatusCode(426, "Too old");
-    }
-
-    @Test(expected = TooManyRequestsException.class)
-    public void throwTooManyRequestsIfRateLimitExceeded() {
-        Http.throwExceptionIfErrorStatusCode(429, null);
-    }
-
     @Test
     public void sslBadCertificate() throws Exception {
         Environment environment = new Environment("https://localhost:19443", "", new String[] {"ssl/api_braintreegateway_com.ca.crt"}, "testing");
@@ -241,14 +185,6 @@ public class HttpTestIT extends IntegrationTest {
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("Cert"));
         }
-    }
-
-    @Test
-    public void getAuthorizationHeader() {
-        BraintreeGateway config = new BraintreeGateway(Environment.DEVELOPMENT, "development_merchant_id", "integration_public_key", "integration_private_key");
-        Http http = new Http(config.getConfiguration());
-
-        assertEquals("Basic aW50ZWdyYXRpb25fcHVibGljX2tleTppbnRlZ3JhdGlvbl9wcml2YXRlX2tleQ==", http.authorizationHeader());
     }
 
     private void startSSLServer() throws Exception {

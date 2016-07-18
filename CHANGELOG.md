@@ -1,3 +1,9 @@
+## 2.65.0
+* Allow passing OAuth scopes to `Merchant#create`
+* Support passing `transaction_source` for setting moto or recurring ECI flag
+* Add support for passing risk data
+* Allow updating default_payment_method on Customer
+
 ## 2.64.0
 * Add OrderId to refund
 * Add 3DS Pass thru support

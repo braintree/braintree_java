@@ -26,6 +26,7 @@ public class TransactionRequest extends Request {
     private String paymentMethodToken;
     private String purchaseOrderNumber;
     private Boolean recurring;
+    private String source;
     private String shippingAddressId;
     private String billingAddressId;
     private TransactionDescriptorRequest descriptorRequest;
@@ -47,6 +48,8 @@ public class TransactionRequest extends Request {
     private String sharedCustomerId;
     private String sharedShippingAddressId;
     private String sharedBillingAddressId;
+
+    private RiskDataTransactionRequest riskDataTransactionRequest;
 
     public TransactionRequest() {
         this.customFields = new HashMap<String, String>();
@@ -163,6 +166,11 @@ public class TransactionRequest extends Request {
         return this;
     }
 
+    public TransactionRequest transactionSource(String source) {
+        this.source = source;
+        return this;
+    }
+
     public TransactionAddressRequest shippingAddress() {
         shippingAddressRequest = new TransactionAddressRequest(this, "shipping");
         return shippingAddressRequest;
@@ -224,6 +232,11 @@ public class TransactionRequest extends Request {
         return this;
     }
 
+    public RiskDataTransactionRequest riskData() {
+        riskDataTransactionRequest = new RiskDataTransactionRequest(this);
+        return riskDataTransactionRequest;
+    }
+
     @Override
     public String toQueryString() {
         return toQueryString("transaction");
@@ -269,6 +282,7 @@ public class TransactionRequest extends Request {
             addElement("options", transactionOptionsRequest).
             addElement("threeDSecurePassThru", threeDSecurePassThruRequest).
             addElement("recurring", recurring).
+            addElement("transactionSource", source).
             addElement("deviceSessionId", deviceSessionId).
             addElement("fraudMerchantId", fraudMerchantId).
             addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode).
@@ -276,7 +290,8 @@ public class TransactionRequest extends Request {
             addElement("sharedCustomerId", sharedCustomerId).
             addElement("sharedShippingAddressId", sharedShippingAddressId).
             addElement("sharedBillingAddressId", sharedBillingAddressId).
-            addElement("serviceFeeAmount", serviceFeeAmount);
+            addElement("serviceFeeAmount", serviceFeeAmount).
+            addElement("riskData", riskDataTransactionRequest);
 
         if (!customFields.isEmpty()) {
             builder.addElement("customFields", customFields);

@@ -1218,6 +1218,23 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithRiskDataParam() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            riskData().
+                customerBrowser("IE6").
+                customerIP("192.168.0.1").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
     public void saleWithCustomFields() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -1269,6 +1286,36 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
         assertTrue(transaction.getRecurring());
+    }
+
+    @Test
+    public void saleWithTransactinSourceAsRecurring() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            transactionSource("recurring").
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertTrue(transaction.getRecurring());
+    }
+
+    @Test
+    public void saleWithaTransactionAsMoto() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            transactionSource("moto").
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertFalse(transaction.getRecurring());
     }
 
     @Test

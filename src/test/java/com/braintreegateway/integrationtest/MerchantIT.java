@@ -36,7 +36,8 @@ public class MerchantIT extends IntegrationTest {
         MerchantRequest request = new MerchantRequest().
             email("name@email.com").
             countryCodeAlpha3("USA").
-            paymentMethods(Arrays.asList("credit_card", "paypal"));
+            paymentMethods(Arrays.asList("credit_card", "paypal")).
+            scope("read_write,shared_vault_transactions");
 
         Result<Merchant> result = gateway.merchant().create(request);
 
@@ -52,6 +53,7 @@ public class MerchantIT extends IntegrationTest {
         assertTrue(result.getTarget().getCredentials().getAccessToken().startsWith("access_token"));
         assertTrue(result.getTarget().getCredentials().getExpiresAt().after(Calendar.getInstance()));
         assertTrue(result.getTarget().getCredentials().getRefreshToken().startsWith("refresh_token"));
+        assertEquals(result.getTarget().getCredentials().getScope(), "read_write,shared_vault_transactions");
         assertEquals("bearer", result.getTarget().getCredentials().getTokenType());
     }
 

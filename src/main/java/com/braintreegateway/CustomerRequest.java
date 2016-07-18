@@ -21,8 +21,10 @@ public class CustomerRequest extends Request {
     private String phone;
     private String website;
     private String paymentMethodNonce;
+    private String defaultPaymentMethodToken;
     private Map<String, String> customFields;
     private CreditCardRequest creditCardRequest;
+    private RiskDataCustomerRequest riskDataCustomerRequest;
     private TransactionRequest parent;
 
     public CustomerRequest() {
@@ -88,6 +90,11 @@ public class CustomerRequest extends Request {
         return this;
     }
 
+    public RiskDataCustomerRequest riskData() {
+        riskDataCustomerRequest = new RiskDataCustomerRequest(this);
+        return this.riskDataCustomerRequest;
+    }
+
     @Override
     public String getKind() {
         if (this.customerId == null) {
@@ -126,6 +133,11 @@ public class CustomerRequest extends Request {
         return this;
     }
 
+    public CustomerRequest defaultPaymentMethodToken(String token) {
+        this.defaultPaymentMethodToken = token;
+        return this;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("customer").toXML();
@@ -155,6 +167,7 @@ public class CustomerRequest extends Request {
             addElement("phone", phone).
             addElement("website", website).
             addElement("paymentMethodNonce", paymentMethodNonce).
+            addElement("defaultPaymentMethodToken", defaultPaymentMethodToken).
             addElement("creditCard", creditCardRequest);
 
         if (customFields.size() > 0) {
