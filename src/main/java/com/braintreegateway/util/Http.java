@@ -44,6 +44,7 @@ import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 
 public class Http {
+    private volatile SSLSocketFactory sslSocketFactory;
 
     enum RequestMethod {
         DELETE, GET, POST, PUT;
@@ -183,46 +184,53 @@ public class Http {
     }
 
     private SSLSocketFactory getSSLSocketFactory() {
-        try {
-            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keyStore.load(null);
+        if (sslSocketFactory == null) {
+            synchronized (this) {
+                if (sslSocketFactory == null) {
+                    try {
+                        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+                        keyStore.load(null);
 
-            for (String certificateFilename : configuration.getEnvironment().certificateFilenames) {
-                CertificateFactory cf = CertificateFactory.getInstance("X.509");
-                InputStream certStream = null;
-                try {
-                    certStream = Http.class.getClassLoader().getResourceAsStream(certificateFilename);
+                        for (String certificateFilename : configuration.getEnvironment().certificateFilenames) {
+                            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+                            InputStream certStream = null;
+                            try {
+                                certStream = Http.class.getClassLoader().getResourceAsStream(certificateFilename);
 
-                    Collection<? extends Certificate> coll = cf.generateCertificates(certStream);
-                    for (Certificate cert : coll) {
-                        if (cert instanceof X509Certificate) {
-                          X509Certificate x509cert = (X509Certificate) cert;
-                          Principal principal = x509cert.getSubjectDN();
-                          String subject = principal.getName();
-                          keyStore.setCertificateEntry(subject, cert);
+                                Collection<? extends Certificate> coll = cf.generateCertificates(certStream);
+                                for (Certificate cert : coll) {
+                                    if (cert instanceof X509Certificate) {
+                                      X509Certificate x509cert = (X509Certificate) cert;
+                                      Principal principal = x509cert.getSubjectDN();
+                                      String subject = principal.getName();
+                                      keyStore.setCertificateEntry(subject, cert);
+                                    }
+                                }
+                            } finally {
+                                if (certStream != null) {
+                                    certStream.close();
+                                }
+                            }
                         }
-                    }
-                } finally {
-                    if (certStream != null) {
-                        certStream.close();
+
+                        KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+                        kmf.init(keyStore, null);
+                        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                        tmf.init(keyStore);
+
+                        SSLContext sslContext = SSLContext.getInstance("TLS");
+                        sslContext.init((KeyManager[]) kmf.getKeyManagers(), tmf.getTrustManagers(), SecureRandom.getInstance("SHA1PRNG"));
+
+                        sslSocketFactory = sslContext.getSocketFactory();
+                    } catch (Exception e) {
+                        Logger logger = configuration.getLogger();
+                        logger.log(Level.SEVERE, "SSL Verification failed. Error message: {0}", new Object[] { e.getMessage() });
+                        throw new UnexpectedException(e.getMessage(), e);
                     }
                 }
             }
-
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            kmf.init(keyStore, null);
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            tmf.init(keyStore);
-
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init((KeyManager[]) kmf.getKeyManagers(), tmf.getTrustManagers(), SecureRandom.getInstance("SHA1PRNG"));
-
-            return sslContext.getSocketFactory();
-        } catch (Exception e) {
-            Logger logger = configuration.getLogger();
-            logger.log(Level.SEVERE, "SSL Verification failed. Error message: {0}", new Object[] { e.getMessage() });
-            throw new UnexpectedException(e.getMessage(), e);
         }
+        return sslSocketFactory;
     }
 
     private HttpURLConnection buildConnection(RequestMethod requestMethod, String urlString) throws java.io.IOException {
