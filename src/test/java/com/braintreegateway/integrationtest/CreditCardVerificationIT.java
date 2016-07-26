@@ -298,5 +298,6 @@ public class CreditCardVerificationIT extends IntegrationTest {
         assertEquals(CreditCard.Prepaid.UNKNOWN, verification.getCreditCard().getPrepaid());
         assertEquals("Unknown", verification.getCreditCard().getCountryOfIssuance());
         assertEquals("Unknown", verification.getCreditCard().getIssuingBank());
+        assertEquals("Unknown", verification.getCreditCard().getProductId());
     }
 }

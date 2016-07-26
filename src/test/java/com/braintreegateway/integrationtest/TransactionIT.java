@@ -281,6 +281,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(CreditCard.Commercial.UNKNOWN, card.getCommercial());
         assertEquals("Unknown", card.getCountryOfIssuance());
         assertEquals("Unknown", card.getIssuingBank());
+        assertEquals("Unknown", card.getProductId());
     }
 
     @Test
