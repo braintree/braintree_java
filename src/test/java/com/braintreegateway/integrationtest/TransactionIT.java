@@ -1438,6 +1438,30 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithPaymentMethodTokenAndNonce() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12");
+        CreditCard creditCard = gateway.creditCard().create(creditCardRequest).getTarget();
+
+        CreditCardRequest cvvRequest = new CreditCardRequest().cvv("123");
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, cvvRequest, customer.getId(), false);
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodToken(creditCard.getToken()).
+            paymentMethodNonce(nonce);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals("M", transaction.getCvvResponseCode());
+    }
+
+    @Test
     public void saleUsesShippingAddressFromVault() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
 
