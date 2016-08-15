@@ -945,7 +945,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleErrorWithMissingThreeDSecurePassThruCavvOrXid() {
+    public void saleWithMissingThreeDSecurePassThruCavvOrXid() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -960,12 +960,9 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
-        assertFalse(result.isSuccess());
+        assertTrue(result.isSuccess());
 
-        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_PASS_THRU_CAVV_IS_REQUIRED,
-                result.getErrors().forObject("transaction").forObject("threeDSecurePassThru").onField("cavv").get(0).getCode());
-        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_PASS_THRU_XID_IS_REQUIRED,
-                result.getErrors().forObject("transaction").forObject("threeDSecurePassThru").onField("xid").get(0).getCode());
+        assertEquals(Transaction.Status.AUTHORIZED, result.getTarget().getStatus());
     }
 
     @Test
