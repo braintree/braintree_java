@@ -950,6 +950,39 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void updateWithExistingCreditCardFailsOnDuplicatePaymentMethod() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Mark").
+            lastName("Jones").
+            creditCard().
+                number("4111111111111111").
+                expirationDate("12/12").
+                done();
+
+        Customer customer = gateway.customer().create(request).getTarget();
+        CreditCard creditCard = customer.getCreditCards().get(0);
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            firstName("Jane").
+            lastName("Doe").
+            creditCard().
+                number("4111111111111111").
+                expirationDate("12/12").
+                options().
+                    updateExistingToken(creditCard.getToken()).
+                    failOnDuplicatePaymentMethod(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().update(customer.getId(), updateRequest);
+        assertFalse(result.isSuccess());
+        assertEquals(
+                ValidationErrorCode.CREDIT_CARD_DUPLICATE_CARD_EXISTS,
+                result.getErrors().forObject("customer").forObject("creditCard").onField("number").get(0).getCode()
+        );
+    }
+
+    @Test
     public void updateWithNewCreditCardAndExistingAddress() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         AddressRequest addressRequest = new AddressRequest().
