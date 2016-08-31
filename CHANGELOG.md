@@ -1,3 +1,11 @@
+## 2.66.0
+* Log encoding error instead of printing stack trace
+* Reuse SSLSocketFactory for http requests
+* Allow proxy objects to be used to specify proxy config
+* Add currency iso code
+* Expose credit card product ID
+* Add validation error for verifications with submerchants
+
 ## 2.65.0
 * Allow passing OAuth scopes to `Merchant#create`
 * Support passing `transaction_source` for setting moto or recurring ECI flag
