@@ -3,12 +3,12 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
-import com.braintreegateway.TestingGateway;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.test.CreditCardNumbers;
 import com.braintreegateway.test.Nonce;
+import com.braintreegateway.test.TestingGateway;
 import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
@@ -281,6 +281,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(CreditCard.Commercial.UNKNOWN, card.getCommercial());
         assertEquals("Unknown", card.getCountryOfIssuance());
         assertEquals("Unknown", card.getIssuingBank());
+        assertEquals("Unknown", card.getProductId());
     }
 
     @Test
@@ -1435,6 +1436,30 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("510510", transaction.getCreditCard().getBin());
         assertEquals("05/2012", transaction.getCreditCard().getExpirationDate());
         assertEquals("S", transaction.getCvvResponseCode());
+    }
+
+    @Test
+    public void saleWithPaymentMethodTokenAndNonce() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12");
+        CreditCard creditCard = gateway.creditCard().create(creditCardRequest).getTarget();
+
+        CreditCardRequest cvvRequest = new CreditCardRequest().cvv("123");
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, cvvRequest, customer.getId(), false);
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodToken(creditCard.getToken()).
+            paymentMethodNonce(nonce);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals("M", transaction.getCvvResponseCode());
     }
 
     @Test

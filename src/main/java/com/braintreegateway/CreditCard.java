@@ -177,6 +177,7 @@ public class CreditCard implements PaymentMethod {
     private String healthcare;
     private String payroll;
     private String prepaid;
+    private String productId;
     private String countryOfIssuance;
     private String issuingBank;
     private String uniqueNumberIdentifier;
@@ -207,6 +208,7 @@ public class CreditCard implements PaymentMethod {
         healthcare = node.findString("healthcare");
         payroll = node.findString("payroll");
         prepaid = node.findString("prepaid");
+        productId = node.findString("product-id");
         countryOfIssuance = node.findString("country-of-issuance");
         issuingBank = node.findString("issuing-bank");
         uniqueNumberIdentifier = node.findString("unique-number-identifier");
@@ -351,6 +353,14 @@ public class CreditCard implements PaymentMethod {
       } else {
         return Prepaid.UNKNOWN;
       }
+    }
+
+    public String getProductId() {
+        if(productId.equals("")) {
+            return "Unknown";
+        } else {
+            return productId;
+        }
     }
 
     public String getCountryOfIssuance() {

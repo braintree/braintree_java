@@ -1244,6 +1244,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         CreditCard card = result.getTarget();
 
         assertEquals(CreditCard.Healthcare.YES, card.getHealthcare());
+        assertEquals("J3", card.getProductId());
     }
 
     @Test
@@ -1262,6 +1263,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         CreditCard card = result.getTarget();
 
         assertEquals(CreditCard.Payroll.YES, card.getPayroll());
+        assertEquals("MSA", card.getProductId());
     }
 
     @Test
@@ -1339,6 +1341,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertEquals(CreditCard.Healthcare.NO, card.getHealthcare());
         assertEquals(CreditCard.Payroll.NO, card.getPayroll());
         assertEquals(CreditCard.Prepaid.NO, card.getPrepaid());
+        assertEquals("MSB", card.getProductId());
     }
 
 
@@ -1365,5 +1368,6 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertEquals(CreditCard.Prepaid.UNKNOWN, card.getPrepaid());
         assertEquals("Unknown", card.getCountryOfIssuance());
         assertEquals("Unknown", card.getIssuingBank());
+        assertEquals("Unknown", card.getProductId());
     }
 }

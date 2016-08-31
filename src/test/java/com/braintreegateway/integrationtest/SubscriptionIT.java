@@ -84,6 +84,7 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
         assertEquals(Subscription.Source.API, subscription.getStatusHistory().get(0).getSource());
         assertEquals(new BigDecimal("12.34"), subscription.getStatusHistory().get(0).getPrice());
         assertEquals(new BigDecimal("0.00"), subscription.getStatusHistory().get(0).getBalance());
+        assertEquals("USD", subscription.getStatusHistory().get(0).getCurrencyIsoCode());
 
         TestHelper.assertDatesEqual(expectedBillingPeriodEndDate, subscription.getBillingPeriodEndDate());
         TestHelper.assertDatesEqual(expectedBillingPeriodStartDate, subscription.getBillingPeriodStartDate());

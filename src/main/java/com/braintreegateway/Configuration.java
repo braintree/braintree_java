@@ -2,8 +2,8 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.ClientLibraryProperties;
 
-import java.net.Proxy;
 import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -104,6 +104,10 @@ public class Configuration {
 
     public void setProxy(String url, Integer port) {
         this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(url, port));
+    }
+
+    public void setProxy(Proxy proxy) {
+        this.proxy = proxy;
     }
 
     public Proxy getProxy() {

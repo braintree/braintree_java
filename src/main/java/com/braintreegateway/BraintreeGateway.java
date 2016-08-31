@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+import com.braintreegateway.test.TestingGateway;
+
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.TrUtil;
 
