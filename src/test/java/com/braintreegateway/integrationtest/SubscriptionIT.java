@@ -1278,6 +1278,36 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
     }
 
     @Test
+    public void searchCreatedAt() {
+        SubscriptionRequest request = new SubscriptionRequest().
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITH_TRIAL.getId());
+
+        Subscription subscription = gateway.subscription().create(request).getTarget();
+
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.setTime(new Date(System.currentTimeMillis() - 24*60*60*1000));
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.setTime(new Date(System.currentTimeMillis() + 24*60*60*1000));
+        Calendar dayAfterTomorrow = Calendar.getInstance();
+        dayAfterTomorrow.setTime(new Date(System.currentTimeMillis() + 2*24*60*60*1000));
+
+        SubscriptionSearchRequest emptySearch = new SubscriptionSearchRequest().
+            createdAt().between(tomorrow,dayAfterTomorrow);
+
+        ResourceCollection<Subscription> emptyResults = gateway.subscription().search(emptySearch);
+
+        assertTrue(emptyResults.getMaximumSize() == 0);
+
+        SubscriptionSearchRequest search = new SubscriptionSearchRequest().
+            createdAt().between(yesterday,tomorrow);
+
+        ResourceCollection<Subscription> results = gateway.subscription().search(search);
+
+        assertTrue(results.getMaximumSize() > 0);
+    }
+
+    @Test
     public void searchOnBillingCyclesRemaining() {
         SubscriptionRequest request12 = new SubscriptionRequest().
                 numberOfBillingCycles(12).

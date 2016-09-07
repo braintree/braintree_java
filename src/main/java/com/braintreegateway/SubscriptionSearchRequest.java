@@ -9,6 +9,10 @@ public class SubscriptionSearchRequest extends SearchRequest {
         super();
     }
 
+    public DateRangeNode<SubscriptionSearchRequest> createdAt() {
+        return new DateRangeNode<SubscriptionSearchRequest>("created_at", this);
+    }
+
     public RangeNode<SubscriptionSearchRequest> daysPastDue() {
         return new RangeNode<SubscriptionSearchRequest>("days_past_due", this);
     }
@@ -44,7 +48,7 @@ public class SubscriptionSearchRequest extends SearchRequest {
     public MultipleValueNode<SubscriptionSearchRequest, Subscription.Status> status() {
         return new MultipleValueNode<SubscriptionSearchRequest, Subscription.Status>("status", this);
     }
-    
+
     public TextNode<SubscriptionSearchRequest> transactionId() {
         return new TextNode<SubscriptionSearchRequest>("transaction-id", this);
     }
