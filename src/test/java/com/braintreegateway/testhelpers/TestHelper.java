@@ -26,6 +26,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.*;
 import java.io.UnsupportedEncodingException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 import static org.junit.Assert.*;
 
@@ -439,5 +441,34 @@ public abstract class TestHelper {
             }
         }
         return queryPairs;
+    }
+
+    public static String generateValidUsBankAccountNonce() {
+        String nonce = "";
+        try {
+            Process p = Runtime.getRuntime().exec("./src/test/resources/client.sh");
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            while ((nonce = stdInput.readLine()) != null) {
+                break;
+            }
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        return nonce;
+    }
+
+    public static String generateInvalidUsBankAccountNonce() {
+        String[] valid_characters = "bcdfghjkmnpqrstvwxyz23456789".split("");
+        String token = "tokenusbankacct";
+        for(int i=0; i < 4; i++) {
+            token += '_';
+            for(int j=0; j<6; j++) {
+               token += valid_characters[new Random().nextInt(valid_characters.length)];
+            }
+        }
+        return token + "_xxx";
     }
 }
