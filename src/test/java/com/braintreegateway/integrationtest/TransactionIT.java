@@ -955,7 +955,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 expirationDate("05/2009").
                 done().
             threeDSecurePassThru().
-                eciFlag("06").
+                eciFlag("05").
                 cavv("").
                 xid("").
                 done();
