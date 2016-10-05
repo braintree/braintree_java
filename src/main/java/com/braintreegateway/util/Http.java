@@ -10,6 +10,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.security.KeyStore;
 import java.security.Principal;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
@@ -218,7 +219,14 @@ public class Http {
                         TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                         tmf.init(keyStore);
 
-                        SSLContext sslContext = SSLContext.getInstance("TLS");
+                        SSLContext sslContext = null;
+                        try {
+                            // Use TLS v1.2 explicitly for Java 1.6 or Java 7 JVMs that support it but do not turn it on by
+                            // default
+                            sslContext = SSLContext.getInstance("TLSv1.2");
+                        } catch (NoSuchAlgorithmException e) {
+                            sslContext = SSLContext.getInstance("TLS");
+                        }
                         sslContext.init((KeyManager[]) kmf.getKeyManagers(), tmf.getTrustManagers(), SecureRandom.getInstance("SHA1PRNG"));
 
                         sslSocketFactory = sslContext.getSocketFactory();
