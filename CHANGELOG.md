@@ -1,3 +1,8 @@
+## 2.67.0
+* Use TLS v1.2 by default and fallback to TLS
+* Add getPlanId() to SubscriptionStatusEvent
+* Add createdAt to subscription search
+
 ## 2.66.0
 * Log encoding error instead of printing stack trace
 * Reuse SSLSocketFactory for http requests
