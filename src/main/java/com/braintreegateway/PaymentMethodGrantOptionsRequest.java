@@ -4,6 +4,7 @@ public class PaymentMethodGrantOptionsRequest extends Request {
     private String sharedPaymentMethodToken;
     private String allowVaulting;
     private String includeBillingPostalCode;
+    private String revokeAfter;
 
     public PaymentMethodGrantOptionsRequest() {
     }
@@ -23,6 +24,11 @@ public class PaymentMethodGrantOptionsRequest extends Request {
         return this;
     }
 
+    public PaymentMethodGrantOptionsRequest revokeAfter(String revokeAfter) {
+        this.revokeAfter = revokeAfter;
+        return this;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("payment-method").toXML();
@@ -32,7 +38,8 @@ public class PaymentMethodGrantOptionsRequest extends Request {
         RequestBuilder builder = new RequestBuilder(root).
             addElement("shared-payment-method-token", sharedPaymentMethodToken).
             addElement("allow-vaulting", allowVaulting).
-            addElement("include-billing-postal-code", includeBillingPostalCode);
+            addElement("include-billing-postal-code", includeBillingPostalCode).
+            addElement("revoke-after", revokeAfter);
 
         return builder;
     }
