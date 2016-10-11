@@ -9,7 +9,7 @@ public class MapUtils {
             throw new RuntimeException("toMap must be called with an even number of parameters");
         HashMap<String, Object> map = new HashMap<String, Object>();
         for (int i = 0; i < args.length; i += 2) {
-            String key = "" + args[i];
+            String key = String.valueOf(args[i]);
             Object value = args[i + 1];
             map.put(key, value);
         }
