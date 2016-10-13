@@ -996,7 +996,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         TransactionRequest request = new TransactionRequest()
             .merchantAccountId("us_bank_merchant_account")
             .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
-            .paymentMethodNonce(TestHelper.generateValidUsBankAccountNonce())
+            .paymentMethodNonce(TestHelper.generateValidUsBankAccountNonce(gateway))
             .options()
                 .submitForSettlement(true)
                 .storeInVault(true)
@@ -1008,7 +1008,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
         assertEquals("USD", transaction.getCurrencyIsoCode());
-        assertNotNull(transaction.getProcessorAuthorizationCode());
         assertEquals(Transaction.Type.SALE, transaction.getType());
         assertEquals(Transaction.Status.SETTLEMENT_PENDING, transaction.getStatus());
 
@@ -1025,7 +1024,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         TransactionRequest request = new TransactionRequest()
             .merchantAccountId("us_bank_merchant_account")
             .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
-            .paymentMethodNonce(TestHelper.generateValidUsBankAccountNonce())
+            .paymentMethodNonce(TestHelper.generateValidUsBankAccountNonce(gateway))
             .options()
                 .submitForSettlement(true)
                 .storeInVault(true)
@@ -1037,7 +1036,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
         assertEquals("USD", transaction.getCurrencyIsoCode());
-        assertNotNull(transaction.getProcessorAuthorizationCode());
         assertEquals(Transaction.Type.SALE, transaction.getType());
         assertEquals(Transaction.Status.SETTLEMENT_PENDING, transaction.getStatus());
 
@@ -1062,7 +1060,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
         assertEquals("USD", transaction.getCurrencyIsoCode());
-        assertNotNull(transaction.getProcessorAuthorizationCode());
         assertEquals(Transaction.Type.SALE, transaction.getType());
         assertEquals(Transaction.Status.SETTLEMENT_PENDING, transaction.getStatus());
 

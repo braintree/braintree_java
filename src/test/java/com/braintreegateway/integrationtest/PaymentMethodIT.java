@@ -260,7 +260,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
 
-        String nonce = TestHelper.generateValidUsBankAccountNonce();
+        String nonce = TestHelper.generateValidUsBankAccountNonce(gateway);
         PaymentMethodRequest request = new PaymentMethodRequest()
             .customerId(customer.getId())
             .paymentMethodNonce(nonce)

@@ -75,6 +75,11 @@
           <artifactId>org.osgi.core</artifactId>
           <version>4.2.0</version>
         </dependency>
+        <dependency>
+          <groupId>org.json</groupId>
+          <artifactId>json</artifactId>
+          <version>20160810</version>
+        </dependency>
     </dependencies>
 
     <profiles>  <!-- tasks to be performed only when building releases -->

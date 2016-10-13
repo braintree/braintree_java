@@ -7,13 +7,16 @@ import com.braintreegateway.util.Sha1Hasher;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.QueryString;
+import com.braintreegateway.util.StringUtils;
 import com.braintreegateway.EuropeBankAccount.MandateType;
 
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 
 import org.junit.Ignore;
+import org.json.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -443,20 +446,50 @@ public abstract class TestHelper {
         return queryPairs;
     }
 
-    public static String generateValidUsBankAccountNonce() {
+    public static String generateValidUsBankAccountNonce(BraintreeGateway gateway) {
+      String encodedClientToken = gateway.clientToken().generate();
+      String clientToken = TestHelper.decodeClientToken(encodedClientToken);
+      String payload = new StringBuilder()
+          .append("{\n")
+            .append("\"type\": \"us_bank_account\",\n")
+            .append("\"billing_address\": {\n")
+                .append("\"street_address\": \"123 Ave\",\n")
+                .append("\"region\": \"CA\",\n")
+                .append("\"locality\": \"San Francisco\",\n")
+                .append("\"postal_code\": \"94112\"\n")
+            .append("},\n")
+            .append("\"account_type\": \"checking\",\n")
+            .append("\"routing_number\": \"123456789\",\n")
+            .append("\"account_number\": \"567891234\",\n")
+            .append("\"account_holder_name\": \"Dan Schulman\",\n")
+            .append("\"account_description\": \"PayPal Checking - 1234\",\n")
+            .append("\"ach_mandate\": {\n")
+                .append("\"text\": \"\"\n")
+            .append("}\n")
+          .append("}")
+        .toString();
+
         String nonce = "";
         try {
-            Process p = Runtime.getRuntime().exec("./src/test/resources/client.sh");
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            JSONObject json = new JSONObject(clientToken);
+            URL url = new URL(json.getJSONObject("braintree_api").getString("url") + "/tokens");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.addRequestProperty("Content-Type", "application/json");
+            connection.addRequestProperty("Braintree-Version", "2015-11-01");
+            connection.addRequestProperty("Authorization", "Bearer integratexxxxxx_xxxxxx_xxxxxx_xxxxxx_xx1");
+            connection.setDoOutput(true);
+            connection.getOutputStream().write(payload.getBytes("UTF-8"));
+            connection.getOutputStream().close();
 
-            while ((nonce = stdInput.readLine()) != null) {
-                break;
-            }
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            InputStream responseStream = connection.getInputStream();
+            String body = StringUtils.inputStreamToString(responseStream);
+            responseStream.close();
+            JSONObject responseJson = new JSONObject(body);
+            nonce = responseJson.getJSONObject("data").getString("id");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
         return nonce;
     }
 

@@ -15,7 +15,7 @@ public class UsBankAccountIT extends IntegrationTest {
 
     @Test
     public void findsUsBankAccountByToken() {
-        String nonce = TestHelper.generateValidUsBankAccountNonce();
+        String nonce = TestHelper.generateValidUsBankAccountNonce(gateway);
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
@@ -47,7 +47,7 @@ public class UsBankAccountIT extends IntegrationTest {
 
     @Test
     public void saleWithUsBankAccountByToken() {
-        String nonce = TestHelper.generateValidUsBankAccountNonce();
+        String nonce = TestHelper.generateValidUsBankAccountNonce(gateway);
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
@@ -70,7 +70,6 @@ public class UsBankAccountIT extends IntegrationTest {
 
         assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
         assertEquals("USD", transaction.getCurrencyIsoCode());
-        assertNotNull(transaction.getProcessorAuthorizationCode());
         assertEquals(Transaction.Type.SALE, transaction.getType());
         assertEquals(Transaction.Status.SETTLEMENT_PENDING, transaction.getStatus());
 
