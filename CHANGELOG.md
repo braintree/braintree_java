@@ -1,3 +1,6 @@
+## 2.68.0
+* Add 'UsBankAccount' payment method
+
 ## 2.67.0
 * Use TLS v1.2 by default and fallback to TLS
 * Add getPlanId() to SubscriptionStatusEvent
