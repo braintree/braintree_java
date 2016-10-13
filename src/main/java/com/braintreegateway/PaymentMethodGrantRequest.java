@@ -1,30 +1,30 @@
 package com.braintreegateway;
 
-public class PaymentMethodGrantOptionsRequest extends Request {
+public class PaymentMethodGrantRequest extends Request {
     private String sharedPaymentMethodToken;
     private String allowVaulting;
     private String includeBillingPostalCode;
     private String revokeAfter;
 
-    public PaymentMethodGrantOptionsRequest() {
+    public PaymentMethodGrantRequest() {
     }
 
-    protected PaymentMethodGrantOptionsRequest sharedPaymentMethodToken(String sharedPaymentMethodToken) {
+    protected PaymentMethodGrantRequest sharedPaymentMethodToken(String sharedPaymentMethodToken) {
         this.sharedPaymentMethodToken = sharedPaymentMethodToken;
         return this;
     }
 
-    public PaymentMethodGrantOptionsRequest  allowVaulting(String allowVaulting) {
+    public PaymentMethodGrantRequest  allowVaulting(String allowVaulting) {
         this.allowVaulting = allowVaulting;
         return this;
     }
 
-    public PaymentMethodGrantOptionsRequest includeBillingPostalCode(String includeBillingPostalCode) {
+    public PaymentMethodGrantRequest includeBillingPostalCode(String includeBillingPostalCode) {
         this.includeBillingPostalCode = includeBillingPostalCode;
         return this;
     }
 
-    public PaymentMethodGrantOptionsRequest revokeAfter(String revokeAfter) {
+    public PaymentMethodGrantRequest revokeAfter(String revokeAfter) {
         this.revokeAfter = revokeAfter;
         return this;
     }

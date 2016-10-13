@@ -1306,7 +1306,7 @@ public class PaymentMethodIT extends IntegrationTest {
 
         BraintreeGateway accessTokenGateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
 
-        PaymentMethodGrantOptionsRequest grantRequestOptions = new PaymentMethodGrantOptionsRequest().
+        PaymentMethodGrantRequest grantRequestOptions = new PaymentMethodGrantRequest().
             allowVaulting("false").
             includeBillingPostalCode("true");
         Result<PaymentMethodNonce> grantResult = accessTokenGateway.paymentMethod().grant(paymentMethodToken, grantRequestOptions);
