@@ -21,6 +21,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.URLDecoder;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.HttpsURLConnection;
 import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -473,7 +475,10 @@ public abstract class TestHelper {
         try {
             JSONObject json = new JSONObject(clientToken);
             URL url = new URL(json.getJSONObject("braintree_api").getString("url") + "/tokens");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            SSLContext sc = SSLContext.getInstance("TLSv1.1");
+            sc.init(null, null, null);
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(sc.getSocketFactory());
             connection.setRequestMethod("POST");
             connection.addRequestProperty("Content-Type", "application/json");
             connection.addRequestProperty("Braintree-Version", "2015-11-01");
