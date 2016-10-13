@@ -243,6 +243,48 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test
+    public void createsSampleTransactionSettledNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.TRANSACTION_SETTLED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.TRANSACTION_SETTLED, notification.getKind());
+
+        Transaction transaction = notification.getTransaction();
+
+        assertEquals("100", transaction.getAmount().toString());
+        assertEquals(Transaction.Status.SETTLED, transaction.getStatus());
+
+        UsBankAccountDetails usBankAccountDetails = transaction.getUsBankAccountDetails();
+        assertEquals("123456789", usBankAccountDetails.getRoutingNumber());
+        assertEquals("1234", usBankAccountDetails.getLast4());
+        assertEquals("checking", usBankAccountDetails.getAccountType());
+        assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
+        assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
+    }
+
+    @Test
+    public void createsSampleTransactionSettlementDeclinedNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.TRANSACTION_SETTLEMENT_DECLINED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.TRANSACTION_SETTLEMENT_DECLINED, notification.getKind());
+
+        Transaction transaction = notification.getTransaction();
+
+        assertEquals("100", transaction.getAmount().toString());
+        assertEquals(Transaction.Status.SETTLEMENT_DECLINED, transaction.getStatus());
+
+        UsBankAccountDetails usBankAccountDetails = transaction.getUsBankAccountDetails();
+        assertEquals("123456789", usBankAccountDetails.getRoutingNumber());
+        assertEquals("1234", usBankAccountDetails.getLast4());
+        assertEquals("checking", usBankAccountDetails.getAccountType());
+        assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
+        assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
+    }
+
+    @Test
     public void createsSampleDisbursementNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISBURSEMENT, "my_id");
 

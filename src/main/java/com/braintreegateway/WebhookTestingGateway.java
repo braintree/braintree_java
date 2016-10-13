@@ -44,6 +44,8 @@ public class WebhookTestingGateway {
             case SUB_MERCHANT_ACCOUNT_APPROVED: return merchantAccountXmlActive(id);
             case SUB_MERCHANT_ACCOUNT_DECLINED: return merchantAccountXmlDeclined(id);
             case TRANSACTION_DISBURSED: return transactionXml(id);
+            case TRANSACTION_SETTLED: return transactionSettledXml(id);
+            case TRANSACTION_SETTLEMENT_DECLINED: return transactionSettlementDeclinedXml(id);
             case DISBURSEMENT: return disbursementXml(id);
             case DISPUTE_OPENED: return disputeOpenedXml(id);
             case DISPUTE_LOST: return disputeLostXml(id);
@@ -138,6 +140,50 @@ public class WebhookTestingGateway {
                 node("disbursement-details",
                     node("disbursement-date", TYPE_DATE, "2013-07-09")
                 ),
+                node("billing"),
+                node("credit-card"),
+                node("customer"),
+                node("descriptor"),
+                node("shipping"),
+                node("subscription")
+        );
+    }
+
+    private String transactionSettledXml(String id) {
+        return node("transaction",
+                node("id", id),
+                node("status", "settled"),
+                node("amount", "100"),
+                node("us-bank-account",
+                    node("routing-number", "123456789"),
+                    node("last-4", "1234"),
+                    node("account-type", "checking"),
+                    node("account-description", "PayPal Checking - 1234"),
+                    node("account-holder-name", "Dan Schulman")
+                ),
+                node("disbursement-details"),
+                node("billing"),
+                node("credit-card"),
+                node("customer"),
+                node("descriptor"),
+                node("shipping"),
+                node("subscription")
+        );
+    }
+
+    private String transactionSettlementDeclinedXml(String id) {
+        return node("transaction",
+                node("id", id),
+                node("status", "settlement_declined"),
+                node("amount", "100"),
+                node("us-bank-account",
+                    node("routing-number", "123456789"),
+                    node("last-4", "1234"),
+                    node("account-type", "checking"),
+                    node("account-description", "PayPal Checking - 1234"),
+                    node("account-holder-name", "Dan Schulman")
+                ),
+                node("disbursement-details"),
                 node("billing"),
                 node("credit-card"),
                 node("customer"),

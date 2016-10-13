@@ -7,17 +7,22 @@ import com.braintreegateway.util.Sha1Hasher;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.QueryString;
+import com.braintreegateway.util.StringUtils;
 import com.braintreegateway.EuropeBankAccount.MandateType;
 
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 
 import org.junit.Ignore;
+import org.json.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.URLDecoder;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.HttpsURLConnection;
 import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -26,6 +31,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.*;
 import java.io.UnsupportedEncodingException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 import static org.junit.Assert.*;
 
@@ -439,5 +446,67 @@ public abstract class TestHelper {
             }
         }
         return queryPairs;
+    }
+
+    public static String generateValidUsBankAccountNonce(BraintreeGateway gateway) {
+      String encodedClientToken = gateway.clientToken().generate();
+      String clientToken = TestHelper.decodeClientToken(encodedClientToken);
+      String payload = new StringBuilder()
+          .append("{\n")
+            .append("\"type\": \"us_bank_account\",\n")
+            .append("\"billing_address\": {\n")
+                .append("\"street_address\": \"123 Ave\",\n")
+                .append("\"region\": \"CA\",\n")
+                .append("\"locality\": \"San Francisco\",\n")
+                .append("\"postal_code\": \"94112\"\n")
+            .append("},\n")
+            .append("\"account_type\": \"checking\",\n")
+            .append("\"routing_number\": \"123456789\",\n")
+            .append("\"account_number\": \"567891234\",\n")
+            .append("\"account_holder_name\": \"Dan Schulman\",\n")
+            .append("\"account_description\": \"PayPal Checking - 1234\",\n")
+            .append("\"ach_mandate\": {\n")
+                .append("\"text\": \"\"\n")
+            .append("}\n")
+          .append("}")
+        .toString();
+
+        String nonce = "";
+        try {
+            JSONObject json = new JSONObject(clientToken);
+            URL url = new URL(json.getJSONObject("braintree_api").getString("url") + "/tokens");
+            SSLContext sc = SSLContext.getInstance("TLSv1.1");
+            sc.init(null, null, null);
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(sc.getSocketFactory());
+            connection.setRequestMethod("POST");
+            connection.addRequestProperty("Content-Type", "application/json");
+            connection.addRequestProperty("Braintree-Version", "2015-11-01");
+            connection.addRequestProperty("Authorization", "Bearer integratexxxxxx_xxxxxx_xxxxxx_xxxxxx_xx1");
+            connection.setDoOutput(true);
+            connection.getOutputStream().write(payload.getBytes("UTF-8"));
+            connection.getOutputStream().close();
+
+            InputStream responseStream = connection.getInputStream();
+            String body = StringUtils.inputStreamToString(responseStream);
+            responseStream.close();
+            JSONObject responseJson = new JSONObject(body);
+            nonce = responseJson.getJSONObject("data").getString("id");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return nonce;
+    }
+
+    public static String generateInvalidUsBankAccountNonce() {
+        String[] valid_characters = "bcdfghjkmnpqrstvwxyz23456789".split("");
+        String token = "tokenusbankacct";
+        for(int i=0; i < 4; i++) {
+            token += '_';
+            for(int j=0; j<6; j++) {
+               token += valid_characters[new Random().nextInt(valid_characters.length)];
+            }
+        }
+        return token + "_xxx";
     }
 }

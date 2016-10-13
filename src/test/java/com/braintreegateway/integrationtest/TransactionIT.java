@@ -992,6 +992,104 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithUsBankAccountNonce() {
+        TransactionRequest request = new TransactionRequest()
+            .merchantAccountId("us_bank_merchant_account")
+            .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
+            .paymentMethodNonce(TestHelper.generateValidUsBankAccountNonce(gateway))
+            .options()
+                .submitForSettlement(true)
+                .storeInVault(true)
+                .done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
+        assertEquals("USD", transaction.getCurrencyIsoCode());
+        assertEquals(Transaction.Type.SALE, transaction.getType());
+        assertEquals(Transaction.Status.SETTLEMENT_PENDING, transaction.getStatus());
+
+        UsBankAccountDetails usBankAccountDetails = transaction.getUsBankAccountDetails();
+        assertEquals("123456789", usBankAccountDetails.getRoutingNumber());
+        assertEquals("1234", usBankAccountDetails.getLast4());
+        assertEquals("checking", usBankAccountDetails.getAccountType());
+        assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
+        assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
+    }
+
+    @Test
+    public void saleWithUsBankAccountNonceAndVaultedToken() {
+        TransactionRequest request = new TransactionRequest()
+            .merchantAccountId("us_bank_merchant_account")
+            .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
+            .paymentMethodNonce(TestHelper.generateValidUsBankAccountNonce(gateway))
+            .options()
+                .submitForSettlement(true)
+                .storeInVault(true)
+                .done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
+        assertEquals("USD", transaction.getCurrencyIsoCode());
+        assertEquals(Transaction.Type.SALE, transaction.getType());
+        assertEquals(Transaction.Status.SETTLEMENT_PENDING, transaction.getStatus());
+
+        UsBankAccountDetails usBankAccountDetails = transaction.getUsBankAccountDetails();
+        assertEquals("123456789", usBankAccountDetails.getRoutingNumber());
+        assertEquals("1234", usBankAccountDetails.getLast4());
+        assertEquals("checking", usBankAccountDetails.getAccountType());
+        assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
+        assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
+
+        request = new TransactionRequest()
+            .merchantAccountId("us_bank_merchant_account")
+            .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
+            .paymentMethodToken(transaction.getUsBankAccountDetails().getToken())
+            .options()
+                .submitForSettlement(true)
+                .done();
+
+        result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        transaction = result.getTarget();
+
+        assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
+        assertEquals("USD", transaction.getCurrencyIsoCode());
+        assertEquals(Transaction.Type.SALE, transaction.getType());
+        assertEquals(Transaction.Status.SETTLEMENT_PENDING, transaction.getStatus());
+
+        usBankAccountDetails = transaction.getUsBankAccountDetails();
+        assertEquals("123456789", usBankAccountDetails.getRoutingNumber());
+        assertEquals("1234", usBankAccountDetails.getLast4());
+        assertEquals("checking", usBankAccountDetails.getAccountType());
+        assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
+        assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
+    }
+
+    @Test
+    public void saleWithInvalidUsBankAccountNonce() {
+        TransactionRequest request = new TransactionRequest()
+            .merchantAccountId("us_bank_merchant_account")
+            .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
+            .paymentMethodNonce(TestHelper.generateInvalidUsBankAccountNonce())
+            .options()
+                .submitForSettlement(true)
+                .storeInVault(true)
+                .done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_PAYMENT_METHOD_NONCE_UNKNOWN,
+                result.getErrors().forObject("transaction").onField("paymentMethodNonce").get(0).getCode());
+
+    }
+
+    @Test
     public void saleWithAmexRewards() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).

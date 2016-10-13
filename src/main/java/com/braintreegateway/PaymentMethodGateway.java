@@ -64,6 +64,8 @@ public class PaymentMethodGateway {
             return new Result<AmexExpressCheckoutCard>(response, AmexExpressCheckoutCard.class);
         } else if (response.getElementName() == "coinbase-account") {
             return new Result<CoinbaseAccount>(response, CoinbaseAccount.class);
+        } else if (response.getElementName() == "us-bank-account") {
+            return new Result<UsBankAccount>(response, UsBankAccount.class);
         } else if (response.getElementName() == "venmo-account") {
             return new Result<VenmoAccount>(response, VenmoAccount.class);
         } else {
