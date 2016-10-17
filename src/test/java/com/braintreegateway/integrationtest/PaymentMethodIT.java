@@ -1280,7 +1280,8 @@ public class PaymentMethodIT extends IntegrationTest {
         BraintreeGateway accessTokenGateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
         Result<PaymentMethodNonce> grantResult = accessTokenGateway.paymentMethod().grant(paymentMethodToken);
         assertTrue(grantResult.isSuccess());
-        NodeWrapper revokeResult = accessTokenGateway.paymentMethod().revoke(paymentMethodToken);
+
+        Result<? extends PaymentMethod> revokeResult = accessTokenGateway.paymentMethod().revoke(paymentMethodToken);
         assertTrue(revokeResult.isSuccess());
     }
 
@@ -1306,12 +1307,13 @@ public class PaymentMethodIT extends IntegrationTest {
 
         BraintreeGateway accessTokenGateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
 
-        PaymentMethodGrantRequest grantRequestOptions = new PaymentMethodGrantRequest().
-            allowVaulting("false").
-            includeBillingPostalCode("true");
-        Result<PaymentMethodNonce> grantResult = accessTokenGateway.paymentMethod().grant(paymentMethodToken, grantRequestOptions);
+        PaymentMethodGrantRequest grantRequest = new PaymentMethodGrantRequest().
+            allowVaulting(false).
+            includeBillingPostalCode(true);
+        Result<PaymentMethodNonce> grantResult = accessTokenGateway.paymentMethod().grant(paymentMethodToken, grantRequest);
         assertTrue(grantResult.isSuccess());
-        NodeWrapper revokeResult = accessTokenGateway.paymentMethod().revoke(paymentMethodToken);
+
+        Result<? extends PaymentMethod> revokeResult = accessTokenGateway.paymentMethod().revoke(paymentMethodToken);
         assertTrue(revokeResult.isSuccess());
     }
 }

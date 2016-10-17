@@ -4771,7 +4771,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<OAuthCredentials> accessTokenResult = oauthGateway.oauth().createTokenFromCode(oauthRequest);
         BraintreeGateway grantGateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
-        PaymentMethodGrantRequest grantRequest = new PaymentMethodGrantRequest().allowVaulting("false").includeBillingPostalCode("true");
+        PaymentMethodGrantRequest grantRequest = new PaymentMethodGrantRequest().allowVaulting(false).includeBillingPostalCode(true);
         Result<PaymentMethodNonce> grantResult = grantGateway.paymentMethod().grant(creditCard.getToken(), grantRequest);
 
         TransactionRequest request = new TransactionRequest().

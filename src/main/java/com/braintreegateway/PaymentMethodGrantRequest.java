@@ -2,8 +2,8 @@ package com.braintreegateway;
 
 public class PaymentMethodGrantRequest extends Request {
     private String sharedPaymentMethodToken;
-    private String allowVaulting;
-    private String includeBillingPostalCode;
+    private boolean allowVaulting;
+    private boolean includeBillingPostalCode;
     private String revokeAfter;
 
     public PaymentMethodGrantRequest() {
@@ -14,12 +14,12 @@ public class PaymentMethodGrantRequest extends Request {
         return this;
     }
 
-    public PaymentMethodGrantRequest  allowVaulting(String allowVaulting) {
+    public PaymentMethodGrantRequest  allowVaulting(boolean allowVaulting) {
         this.allowVaulting = allowVaulting;
         return this;
     }
 
-    public PaymentMethodGrantRequest includeBillingPostalCode(String includeBillingPostalCode) {
+    public PaymentMethodGrantRequest includeBillingPostalCode(boolean includeBillingPostalCode) {
         this.includeBillingPostalCode = includeBillingPostalCode;
         return this;
     }
