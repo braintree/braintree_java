@@ -1,5 +1,6 @@
 package com.braintreegateway;
 
+import com.braintreegateway.exceptions.ConfigurationException;
 import com.braintreegateway.util.ClientLibraryProperties;
 
 import java.net.InetSocketAddress;
@@ -32,16 +33,28 @@ public class Configuration {
 
     public Configuration(Environment environment, String merchantId, String publicKey, String privateKey) {
         this.environment = environment;
-        this.merchantId = merchantId;
-        this.publicKey = publicKey;
-        this.privateKey = privateKey;
+
+        if (merchantId == null || merchantId.isEmpty()) {
+            throw new ConfigurationException("merchantId needs to be set");
+        } else {
+            this.merchantId = merchantId;
+        }
+
+        if (publicKey == null || publicKey.isEmpty()) {
+            throw new ConfigurationException("publicKey needs to be set");
+        } else {
+            this.publicKey = publicKey;
+        }
+
+        if (privateKey == null || privateKey.isEmpty()) {
+            throw new ConfigurationException("privateKey needs to be set");
+        } else {
+            this.privateKey = privateKey;
+        }
     }
 
     public Configuration(String environment, String merchantId, String publicKey, String privateKey) {
-        this.environment = Environment.parseEnvironment(environment);
-        this.merchantId = merchantId;
-        this.publicKey = publicKey;
-        this.privateKey = privateKey;
+        this(Environment.parseEnvironment(environment), merchantId, publicKey, privateKey);
     }
 
     public Configuration(String clientId, String clientSecret) {
