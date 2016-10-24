@@ -43,10 +43,17 @@ public class PaymentMethodGateway {
         return new Result<PaymentMethodNonce>(response, PaymentMethodNonce.class);
     }
 
-    public NodeWrapper revoke(String token) {
-        String request = new RequestBuilder("payment-method").addElement("shared-payment-method-token", token).toXML();
+    public Result<PaymentMethodNonce> grant(String token, PaymentMethodGrantRequest grantRequest) {
+        String request = grantRequest.sharedPaymentMethodToken(token).toXML();
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/payment_methods/grant", request);
+        return new Result<PaymentMethodNonce>(response, PaymentMethodNonce.class);
+    }
+
+    public Result<? extends PaymentMethod> revoke(String token) {
+        PaymentMethodGrantRevokeRequest revokeRequest = new PaymentMethodGrantRevokeRequest();
+        String request = revokeRequest.sharedPaymentMethodToken(token).toXML();
         NodeWrapper response = http.post(configuration.getMerchantPath() + "/payment_methods/revoke", request);
-        return response;
+        return parseResponse(response);
     }
 
     public Result<? extends PaymentMethod> parseResponse(NodeWrapper response) {
