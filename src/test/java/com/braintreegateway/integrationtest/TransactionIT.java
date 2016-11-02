@@ -1017,6 +1017,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("checking", usBankAccountDetails.getAccountType());
         assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
+        assertEquals("UNKNOWN", usBankAccountDetails.getBankName());
     }
 
     @Test

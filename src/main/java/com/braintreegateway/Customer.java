@@ -24,6 +24,7 @@ public class Customer {
     private List<AmexExpressCheckoutCard> amexExpressCheckoutCards;
     private List<CoinbaseAccount> coinbaseAccounts;
     private List<VenmoAccount> venmoAccounts;
+    private List<UsBankAccount> usBankAccounts;
     private List<Address> addresses;
 
     public Customer(NodeWrapper node) {
@@ -65,6 +66,10 @@ public class Customer {
         venmoAccounts = new ArrayList<VenmoAccount>();
         for (NodeWrapper venmoAccountResponse : node.findAll("venmo-accounts/venmo-account")) {
             venmoAccounts.add(new VenmoAccount(venmoAccountResponse));
+        }
+        usBankAccounts = new ArrayList<UsBankAccount>();
+        for (NodeWrapper usBankAccountResponse : node.findAll("us-bank-accounts/us-bank-account")) {
+            usBankAccounts.add(new UsBankAccount(usBankAccountResponse));
         }
         addresses = new ArrayList<Address>();
         for (NodeWrapper addressResponse : node.findAll("addresses/address")) {
@@ -146,6 +151,10 @@ public class Customer {
 
     public List<VenmoAccount> getVenmoAccounts() {
         return Collections.unmodifiableList(venmoAccounts);
+    }
+
+    public List<UsBankAccount> getUsBankAccounts() {
+        return Collections.unmodifiableList(usBankAccounts);
     }
 
     public List<? extends PaymentMethod> getPaymentMethods() {

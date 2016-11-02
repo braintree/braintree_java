@@ -464,6 +464,25 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void createWithUsBankAccountNonce() {
+        String nonce = TestHelper.generateValidUsBankAccountNonce(gateway);
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(nonce);
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        assertEquals(1, result.getTarget().getUsBankAccounts().size());
+
+        UsBankAccount usBankAccount = result.getTarget().getUsBankAccounts().get(0);
+        assertEquals("123456789", usBankAccount.getRoutingNumber());
+        assertEquals("1234", usBankAccount.getLast4());
+        assertEquals("checking", usBankAccount.getAccountType());
+        assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
+        assertEquals("PayPal Checking - 1234", usBankAccount.getAccountDescription());
+        assertEquals("UNKNOWN", usBankAccount.getBankName());
+    }
+
+    @Test
     public void createCustomerFromTransparentRedirect() {
         CustomerRequest request = new CustomerRequest().firstName("John");
         CustomerRequest trParams = new CustomerRequest().
@@ -526,6 +545,29 @@ public class CustomerIT extends IntegrationTest {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         Customer foundCustomer = gateway.customer().find(customer.getId());
         assertEquals(customer.getId(), foundCustomer.getId());
+    }
+
+    @Test
+    public void findUsBankAccountFromCustomer() {
+        String nonce = TestHelper.generateValidUsBankAccountNonce(gateway);
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(nonce);
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        assertEquals(1, result.getTarget().getUsBankAccounts().size());
+
+        Customer customer = result.getTarget();
+        Customer foundCustomer = gateway.customer().find(customer.getId());
+        assertEquals(customer.getId(), foundCustomer.getId());
+
+        UsBankAccount usBankAccount = customer.getUsBankAccounts().get(0);
+        assertEquals("123456789", usBankAccount.getRoutingNumber());
+        assertEquals("1234", usBankAccount.getLast4());
+        assertEquals("checking", usBankAccount.getAccountType());
+        assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
+        assertEquals("PayPal Checking - 1234", usBankAccount.getAccountDescription());
+        assertEquals("UNKNOWN", usBankAccount.getBankName());
     }
 
     @Test

@@ -10,6 +10,7 @@ public class UsBankAccountDetails {
     private String accountHolderName;
     private String token;
     private String imageUrl;
+    private String bankName;
 
     public UsBankAccountDetails(NodeWrapper node) {
         this.routingNumber= node.findString("routing-number");
@@ -19,6 +20,7 @@ public class UsBankAccountDetails {
         this.accountHolderName = node.findString("account-holder-name");
         this.token = node.findString("token");
         this.imageUrl = node.findString("image-url");
+        this.bankName = node.findString("bank-name");
     }
 
     public String getRoutingNumber() {
@@ -47,5 +49,9 @@ public class UsBankAccountDetails {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public String getBankName() {
+        return bankName;
     }
 }

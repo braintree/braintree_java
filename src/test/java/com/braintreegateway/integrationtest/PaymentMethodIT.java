@@ -280,6 +280,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertEquals("checking", usBankAccount.getAccountType());
         assertEquals("PayPal Checking - 1234", usBankAccount.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
+        assertEquals("UNKNOWN", usBankAccount.getBankName());
     }
 
     @Test

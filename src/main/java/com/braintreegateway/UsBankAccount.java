@@ -11,6 +11,7 @@ public class UsBankAccount implements PaymentMethod {
     private String accountHolderName;
     private String token;
     private String imageUrl;
+    private String bankName;
     private List<Subscription> subscriptions;
     private String customerId;
     private Boolean isDefault;
@@ -23,6 +24,7 @@ public class UsBankAccount implements PaymentMethod {
         this.accountHolderName = node.findString("account-holder-name");
         this.token = node.findString("token");
         this.imageUrl = node.findString("image-url");
+        this.bankName = node.findString("bank-name");
         for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
             this.subscriptions.add(new Subscription(subscriptionResponse));
         }
@@ -56,6 +58,10 @@ public class UsBankAccount implements PaymentMethod {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public String getBankName() {
+        return bankName;
     }
 
     public boolean isDefault() {
