@@ -475,6 +475,7 @@ public abstract class TestHelper {
         try {
             JSONObject json = new JSONObject(clientToken);
             URL url = new URL(json.getJSONObject("braintree_api").getString("url") + "/tokens");
+            String token = json.getJSONObject("braintree_api").getString("access_token");
             SSLContext sc = SSLContext.getInstance("TLSv1.1");
             sc.init(null, null, null);
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
@@ -482,7 +483,7 @@ public abstract class TestHelper {
             connection.setRequestMethod("POST");
             connection.addRequestProperty("Content-Type", "application/json");
             connection.addRequestProperty("Braintree-Version", "2015-11-01");
-            connection.addRequestProperty("Authorization", "Bearer integratexxxxxx_xxxxxx_xxxxxx_xxxxxx_xx1");
+            connection.addRequestProperty("Authorization", "Bearer " + token);
             connection.setDoOutput(true);
             connection.getOutputStream().write(payload.getBytes("UTF-8"));
             connection.getOutputStream().close();
