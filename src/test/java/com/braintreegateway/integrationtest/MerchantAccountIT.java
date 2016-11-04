@@ -4,6 +4,7 @@ import com.braintreegateway.*;
 import org.junit.Test;
 import com.braintreegateway.exceptions.NotFoundException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -293,6 +294,136 @@ public class MerchantAccountIT extends IntegrationTest {
                 done().
             tosAccepted(true).
             masterMerchantAccountId("sandbox_master_merchant_account");
+    }
+
+
+    @Test
+    public void createMerchantAccountForCurrency() {
+        this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
+
+        MerchantRequest merchantRequest = new MerchantRequest().
+            email("name@email.com").
+            countryCodeAlpha3("GBR").
+            companyName("Ziarog LTD").
+            paymentMethods(Arrays.asList("credit_card", "paypal"));
+
+        Result<Merchant> merchantResult = gateway.merchant().create(merchantRequest);
+        assertTrue(merchantResult.isSuccess());
+
+        this.gateway = new BraintreeGateway(merchantResult.getTarget().getCredentials().getAccessToken());
+
+        MerchantAccountCreateForCurrencyRequest request = new MerchantAccountCreateForCurrencyRequest().
+            currency("USD").
+            id("customId");
+
+        Result<MerchantAccount> result = gateway.merchantAccount().createForCurrency(request);
+        assertTrue(result.isSuccess());
+        assertEquals("customId", result.getTarget().getId());
+        assertEquals("USD", result.getTarget().getCurrencyIsoCode());
+    }
+
+    @Test
+    public void createMerchantAccountForCurrencyHandlesMerchantAccountExistsForCurrency() {
+        this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
+
+        MerchantRequest merchantRequest = new MerchantRequest().
+            email("name@email.com").
+            countryCodeAlpha3("GBR").
+            companyName("Ziarog LTD").
+            paymentMethods(Arrays.asList("credit_card", "paypal"));
+
+        Result<Merchant> merchantResult = gateway.merchant().create(merchantRequest);
+        assertTrue(merchantResult.isSuccess());
+
+        this.gateway = new BraintreeGateway(merchantResult.getTarget().getCredentials().getAccessToken());
+
+        MerchantAccountCreateForCurrencyRequest request = new MerchantAccountCreateForCurrencyRequest().
+            currency("GBP");
+
+        Result<MerchantAccount> result = gateway.merchantAccount().createForCurrency(request);
+        assertFalse(result.isSuccess());
+
+        List<ValidationError> errors = result.getErrors().forObject("merchant").onField("currency");
+        assertEquals(1, errors.size());
+        assertEquals(ValidationErrorCode.MERCHANT_MERCHANT_ACCOUNT_EXISTS_FOR_CURRENCY, errors.get(0).getCode());
+    }
+
+    @Test
+    public void createMerchantAccountForCurrencyHandlesCurrencyIsInvalid() {
+        this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
+
+        MerchantRequest merchantRequest = new MerchantRequest().
+            email("name@email.com").
+            countryCodeAlpha3("GBR").
+            companyName("Ziarog LTD").
+            paymentMethods(Arrays.asList("credit_card", "paypal"));
+
+        Result<Merchant> merchantResult = gateway.merchant().create(merchantRequest);
+        assertTrue(merchantResult.isSuccess());
+
+        this.gateway = new BraintreeGateway(merchantResult.getTarget().getCredentials().getAccessToken());
+
+        MerchantAccountCreateForCurrencyRequest request = new MerchantAccountCreateForCurrencyRequest();
+
+        Result<MerchantAccount> result = gateway.merchantAccount().createForCurrency(request);
+        assertFalse(result.isSuccess());
+
+        List<ValidationError> errors = result.getErrors().forObject("merchant").onField("currency");
+        assertEquals(1, errors.size());
+        assertEquals(ValidationErrorCode.MERCHANT_CURRENCY_IS_REQUIRED, errors.get(0).getCode());
+    }
+
+    @Test
+    public void createMerchantAccountForCurrencyHandlesCurrencyIsRequired() {
+        this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
+
+        MerchantRequest merchantRequest = new MerchantRequest().
+            email("name@email.com").
+            countryCodeAlpha3("GBR").
+            companyName("Ziarog LTD").
+            paymentMethods(Arrays.asList("credit_card", "paypal"));
+
+        Result<Merchant> merchantResult = gateway.merchant().create(merchantRequest);
+        assertTrue(merchantResult.isSuccess());
+
+        this.gateway = new BraintreeGateway(merchantResult.getTarget().getCredentials().getAccessToken());
+
+        MerchantAccountCreateForCurrencyRequest request = new MerchantAccountCreateForCurrencyRequest().
+            currency("FAKE_CURRENCY");
+
+        Result<MerchantAccount> result = gateway.merchantAccount().createForCurrency(request);
+        assertFalse(result.isSuccess());
+
+        List<ValidationError> errors = result.getErrors().forObject("merchant").onField("currency");
+        assertEquals(1, errors.size());
+        assertEquals(ValidationErrorCode.MERCHANT_CURRENCY_IS_INVALID, errors.get(0).getCode());
+    }
+
+    @Test
+    public void createMerchantAccountForCurrencyHandlesMerchantAccountExistsForToken() {
+        this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
+
+        MerchantRequest merchantRequest = new MerchantRequest().
+            email("name@email.com").
+            countryCodeAlpha3("GBR").
+            companyName("Ziarog LTD").
+            paymentMethods(Arrays.asList("credit_card", "paypal"));
+
+        Result<Merchant> merchantResult = gateway.merchant().create(merchantRequest);
+        assertTrue(merchantResult.isSuccess());
+
+        this.gateway = new BraintreeGateway(merchantResult.getTarget().getCredentials().getAccessToken());
+
+        MerchantAccountCreateForCurrencyRequest request = new MerchantAccountCreateForCurrencyRequest().
+            currency("USD").
+            id(merchantResult.getTarget().getMerchantAccounts().get(0).getId());
+
+        Result<MerchantAccount> result = gateway.merchantAccount().createForCurrency(request);
+        assertFalse(result.isSuccess());
+
+        List<ValidationError> errors = result.getErrors().forObject("merchant").onField("id");
+        assertEquals(1, errors.size());
+        assertEquals(ValidationErrorCode.MERCHANT_MERCHANT_ACCOUNT_EXISTS_FOR_ID, errors.get(0).getCode());
     }
 
     private MerchantAccountRequest creationRequest() {

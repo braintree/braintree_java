@@ -40,6 +40,11 @@ public class MerchantAccount {
     private final Boolean isDefault;
 
     public MerchantAccount(NodeWrapper node) {
+        NodeWrapper responseNode = node.findFirst("merchant-account");
+        if (responseNode != null) {
+            node = responseNode;
+        }
+
         this.id = node.findString("id");
         this.currencyIsoCode = node.findString("currency-iso-code");
         this.status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);

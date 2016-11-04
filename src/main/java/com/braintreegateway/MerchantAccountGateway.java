@@ -7,6 +7,7 @@ import com.braintreegateway.exceptions.NotFoundException;
 public final class MerchantAccountGateway {
 
     public static final String CREATE_URL = "/merchant_accounts/create_via_api";
+    public static final String CREATE_FOR_CURRENCY_URL = "/merchant_accounts/create_for_currency";
 
     private final Http http;
     private Configuration configuration;
@@ -18,6 +19,11 @@ public final class MerchantAccountGateway {
 
     public Result<MerchantAccount> create(MerchantAccountRequest request) {
         final NodeWrapper response = http.post(configuration.getMerchantPath() + CREATE_URL, request);
+        return new Result<MerchantAccount>(response, MerchantAccount.class);
+    }
+
+    public Result<MerchantAccount> createForCurrency(MerchantAccountCreateForCurrencyRequest request) {
+        final NodeWrapper response = http.post(configuration.getMerchantPath() + CREATE_FOR_CURRENCY_URL, request);
         return new Result<MerchantAccount>(response, MerchantAccount.class);
     }
 
