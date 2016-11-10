@@ -4554,6 +4554,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(transaction.getPayPalDetails().getPayerId());
         assertNotNull(transaction.getPayPalDetails().getPayerFirstName());
         assertNotNull(transaction.getPayPalDetails().getPayerLastName());
+        assertNotNull(transaction.getPayPalDetails().getPayerStatus());
         assertNotNull(transaction.getPayPalDetails().getSellerProtectionStatus());
         assertNotNull(transaction.getPayPalDetails().getCaptureId());
         assertNotNull(transaction.getPayPalDetails().getRefundId());
