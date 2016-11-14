@@ -500,14 +500,6 @@ public abstract class TestHelper {
     }
 
     public static String generateInvalidUsBankAccountNonce() {
-        String[] valid_characters = "bcdfghjkmnpqrstvwxyz23456789".split("");
-        String token = "tokenusbankacct";
-        for(int i=0; i < 4; i++) {
-            token += '_';
-            for(int j=0; j<6; j++) {
-               token += valid_characters[new Random().nextInt(valid_characters.length)];
-            }
-        }
-        return token + "_xxx";
+        return "tokenusbankacct_hvtyzc_cnsc3x_pyb8nt_kfqcxy_xxx";
     }
 }
