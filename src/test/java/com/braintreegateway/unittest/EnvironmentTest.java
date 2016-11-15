@@ -40,4 +40,9 @@ public class EnvironmentTest {
     public void testParseEnvironmentThrowsError() {
         Environment.parseEnvironment("Development_2");
     }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testParseEnvironmentThrowsErrorOnEmptyString() {
+        Environment.parseEnvironment("");
+    }
 }

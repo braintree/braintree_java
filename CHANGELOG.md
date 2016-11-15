@@ -1,3 +1,8 @@
+## 2.69.0
+* Fix `UsBankAccount` support for `Customer`s
+* Throw `ConfigurationException` for missing credentials
+* Refactor payment method grant and revoke APIs to accept `PaymentMethodGrantRequest` and `PaymentMethodGrantRevokeRequest` objects as parameters
+
 ## 2.68.0
 * Add 'UsBankAccount' payment method
 
