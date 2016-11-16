@@ -14,7 +14,6 @@ public class PayPalDetails {
     private String payerId;
     private String payerFirstName;
     private String payerLastName;
-    private String payerStatus;
     private String sellerProtectionStatus;
     private String captureId;
     private String refundId;
@@ -34,7 +33,6 @@ public class PayPalDetails {
         payerId = node.findString("payer-id");
         payerFirstName = node.findString("payer-first-name");
         payerLastName = node.findString("payer-last-name");
-        payerStatus = node.findString("payer-status");
         sellerProtectionStatus = node.findString("seller-protection-status");
         refundId = node.findString("refund-id");
         captureId = node.findString("capture-id");
@@ -85,10 +83,6 @@ public class PayPalDetails {
 
     public String getPayerLastName() {
       return payerLastName;
-    }
-
-    public String getPayerStatus() {
-      return payerStatus;
     }
 
     public String getSellerProtectionStatus() {
