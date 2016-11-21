@@ -10,6 +10,8 @@ import com.braintreegateway.util.QueryString;
 import com.braintreegateway.util.StringUtils;
 import com.braintreegateway.EuropeBankAccount.MandateType;
 
+import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
+
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 
 import org.junit.Ignore;
@@ -198,6 +200,17 @@ public abstract class TestHelper {
         throw new RuntimeException(e);
       }
       return nonce;
+    }
+
+    public static String generateThreeDSecureNonce(BraintreeGateway gateway, CreditCardRequest creditCardRequest) {
+        String merchantAccountId = MerchantAccountTestConstants.THREE_D_SECURE_MERCHANT_ACCOUNT_ID;
+        String url = gateway.getConfiguration().getMerchantPath() + "/three_d_secure/create_nonce/" + merchantAccountId;
+        NodeWrapper response = new Http(gateway.getConfiguration()).post(url, creditCardRequest);
+        assertTrue(response.isSuccess());
+
+        String nonce = response.findString("nonce");
+        assertNotNull(nonce);
+        return nonce;
     }
 
     public static String decodeClientToken(String rawClientToken) {
