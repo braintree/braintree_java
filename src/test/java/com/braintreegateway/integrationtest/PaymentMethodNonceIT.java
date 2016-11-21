@@ -41,10 +41,17 @@ public class PaymentMethodNonceIT extends IntegrationTest {
 
     @Test
     public void findReturnsPaymentMethodNonce() {
-        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find("threedsecurednonce");
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+            number(SandboxValues.CreditCardNumber.VISA.number).
+            expirationMonth("12").
+            expirationYear("2020");
 
-        assertEquals("threedsecurednonce", nonce.getNonce());
-        assertTrue(nonce.getThreeDSecureInfo().isLiabilityShifted());
+        String nonce = TestHelper.generateThreeDSecureNonce(gateway, creditCardRequest);
+
+        PaymentMethodNonce foundNonce = gateway.paymentMethodNonce().find(nonce);
+
+        assertEquals(nonce, foundNonce.getNonce());
+        assertTrue(foundNonce.getThreeDSecureInfo().isLiabilityShifted());
     }
 
     @Test

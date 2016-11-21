@@ -200,6 +200,17 @@ public abstract class TestHelper {
       return nonce;
     }
 
+    public static String generateThreeDSecureNonce(BraintreeGateway gateway, CreditCardRequest creditCardRequest) {
+        String merchantAccountId = MerchantAccountTestConstants.THREE_D_SECURE_MERCHANT_ACCOUNT_ID;
+        String url = gateway.getConfiguration().getMerchantPath() + "/three_d_secure/create_nonce/" + merchantAccountId;
+        NodeWrapper response = new Http(gateway.getConfiguration()).post(url, creditCardRequest);
+        assertTrue(response.isSuccess());
+
+        String nonce = response.findString("nonce");
+        assertNotNull(nonce);
+        return nonce;
+    }
+
     public static String decodeClientToken(String rawClientToken) {
         String decodedClientToken = new String(Base64.decodeBase64(rawClientToken), Charset.forName("UTF-8"));
         return decodedClientToken.replace("\\u0026", "&");
