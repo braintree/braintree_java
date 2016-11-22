@@ -1884,6 +1884,23 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithAdvancedFraudCheckingSkipped() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2016").
+                done().
+                options().
+                skipAdvancedFraudChecking(true).
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        assertNull(result.getTarget().getRiskData().getId());
+    }
+
+    @Test
     public void createTransactionFromTransparentRedirectWithAddress() {
         TransactionRequest request = new TransactionRequest();
 

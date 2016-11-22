@@ -38,4 +38,13 @@ public class TransactionRequestIT {
         TestHelper.assertIncludes("mydsid", request.toXML());
         TestHelper.assertIncludes("myfmid", request.toXML());
     }
+    
+    @Test
+    public void toXmlIncludesAdvancedFraudCheckingFlag() {
+        TransactionRequest request = new TransactionRequest().
+                options().
+                skipAdvancedFraudChecking(false).
+                done();
+        TestHelper.assertIncludes("<skipAdvancedFraudChecking>false</skipAdvancedFraudChecking>", request.toXML());
+    }
 }
