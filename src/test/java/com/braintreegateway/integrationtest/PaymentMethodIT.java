@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.regex.Pattern;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.NotFoundException;
@@ -275,12 +276,12 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(paymentMethod.getToken());
 
         UsBankAccount usBankAccount = (UsBankAccount) paymentMethod;
-        assertEquals("123456789", usBankAccount.getRoutingNumber());
+        assertEquals("021000021", usBankAccount.getRoutingNumber());
         assertEquals("1234", usBankAccount.getLast4());
         assertEquals("checking", usBankAccount.getAccountType());
         assertEquals("PayPal Checking - 1234", usBankAccount.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
-        assertEquals("UNKNOWN", usBankAccount.getBankName());
+        assertTrue(Pattern.compile(".*CHASE.*").matcher(usBankAccount.getBankName()).matches());
     }
 
     @Test

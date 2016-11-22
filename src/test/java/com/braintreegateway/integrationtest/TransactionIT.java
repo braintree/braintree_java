@@ -20,6 +20,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -1012,12 +1013,12 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SETTLEMENT_PENDING, transaction.getStatus());
 
         UsBankAccountDetails usBankAccountDetails = transaction.getUsBankAccountDetails();
-        assertEquals("123456789", usBankAccountDetails.getRoutingNumber());
+        assertEquals("021000021", usBankAccountDetails.getRoutingNumber());
         assertEquals("1234", usBankAccountDetails.getLast4());
         assertEquals("checking", usBankAccountDetails.getAccountType());
         assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
-        assertEquals("UNKNOWN", usBankAccountDetails.getBankName());
+        assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
     }
 
     @Test
@@ -1041,11 +1042,12 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SETTLEMENT_PENDING, transaction.getStatus());
 
         UsBankAccountDetails usBankAccountDetails = transaction.getUsBankAccountDetails();
-        assertEquals("123456789", usBankAccountDetails.getRoutingNumber());
+        assertEquals("021000021", usBankAccountDetails.getRoutingNumber());
         assertEquals("1234", usBankAccountDetails.getLast4());
         assertEquals("checking", usBankAccountDetails.getAccountType());
         assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
+        assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
 
         request = new TransactionRequest()
             .merchantAccountId("us_bank_merchant_account")
@@ -1065,11 +1067,12 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SETTLEMENT_PENDING, transaction.getStatus());
 
         usBankAccountDetails = transaction.getUsBankAccountDetails();
-        assertEquals("123456789", usBankAccountDetails.getRoutingNumber());
+        assertEquals("021000021", usBankAccountDetails.getRoutingNumber());
         assertEquals("1234", usBankAccountDetails.getLast4());
         assertEquals("checking", usBankAccountDetails.getAccountType());
         assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
+        assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
     }
 
     @Test
