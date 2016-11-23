@@ -14,6 +14,7 @@ public class UsBankAccount implements PaymentMethod {
     private List<Subscription> subscriptions;
     private String customerId;
     private Boolean isDefault;
+    private AchMandate achMandate;
 
     public UsBankAccount(NodeWrapper node) {
         this.routingNumber= node.findString("routing-number");
@@ -28,6 +29,7 @@ public class UsBankAccount implements PaymentMethod {
         }
         this.customerId = node.findString("customer-id");
         this.isDefault = node.findBoolean("default");
+        this.achMandate = new AchMandate(node.findFirst("ach-mandate"));
     }
 
     public String getRoutingNumber() {
@@ -60,6 +62,10 @@ public class UsBankAccount implements PaymentMethod {
 
     public boolean isDefault() {
         return isDefault;
+    }
+
+    public AchMandate getAchMandate() {
+        return achMandate;
     }
 
     public String getCustomerId() {

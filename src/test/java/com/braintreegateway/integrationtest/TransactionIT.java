@@ -1018,6 +1018,9 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("checking", usBankAccountDetails.getAccountType());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
+        AchMandate achMandate = usBankAccountDetails.getAchMandate();
+        assertEquals("cl mandate text", achMandate.getText());
+        assertNotNull(achMandate.getAcceptedAt());
     }
 
     @Test
@@ -1046,6 +1049,9 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("checking", usBankAccountDetails.getAccountType());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
+        AchMandate achMandate = usBankAccountDetails.getAchMandate();
+        assertEquals("cl mandate text", achMandate.getText());
+        assertNotNull(achMandate.getAcceptedAt());
 
         request = new TransactionRequest()
             .merchantAccountId("us_bank_merchant_account")
@@ -1070,6 +1076,9 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("checking", usBankAccountDetails.getAccountType());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
+        achMandate = usBankAccountDetails.getAchMandate();
+        assertEquals("cl mandate text", achMandate.getText());
+        assertNotNull(achMandate.getAcceptedAt());
     }
 
     @Test

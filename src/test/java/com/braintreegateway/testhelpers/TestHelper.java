@@ -478,7 +478,7 @@ public abstract class TestHelper {
             .append("\"account_number\": \"567891234\",\n")
             .append("\"account_holder_name\": \"Dan Schulman\",\n")
             .append("\"ach_mandate\": {\n")
-                .append("\"text\": \"\"\n")
+                .append("\"text\": \"cl mandate text\"\n")
             .append("}\n")
           .append("}")
         .toString();

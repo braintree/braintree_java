@@ -6,6 +6,7 @@ import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.NotFoundException;
 import org.junit.Test;
 
+import java.util.Calendar;
 import java.util.Random;
 import java.util.regex.Pattern;
 import java.math.BigDecimal;
@@ -35,6 +36,10 @@ public class UsBankAccountIT extends IntegrationTest {
         assertEquals("checking", usBankAccount.getAccountType());
         assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccount.getBankName()));
+        AchMandate achMandate = usBankAccount.getAchMandate();
+        assertEquals("cl mandate text", achMandate.getText());
+        assertNotNull(achMandate.getAcceptedAt());
+        assertTrue(usBankAccount.isDefault());
     }
 
     @Test
@@ -80,5 +85,8 @@ public class UsBankAccountIT extends IntegrationTest {
         assertEquals("checking", usBankAccountDetails.getAccountType());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
+        AchMandate achMandate = usBankAccountDetails.getAchMandate();
+        assertEquals("cl mandate text", achMandate.getText());
+        assertNotNull(achMandate.getAcceptedAt());
     }
 }

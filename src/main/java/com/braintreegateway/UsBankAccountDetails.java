@@ -10,6 +10,7 @@ public class UsBankAccountDetails {
     private String token;
     private String imageUrl;
     private String bankName;
+    private AchMandate achMandate;
 
     public UsBankAccountDetails(NodeWrapper node) {
         this.routingNumber= node.findString("routing-number");
@@ -19,6 +20,7 @@ public class UsBankAccountDetails {
         this.token = node.findString("token");
         this.imageUrl = node.findString("image-url");
         this.bankName = node.findString("bank-name");
+        this.achMandate = new AchMandate(node.findFirst("ach-mandate"));
     }
 
     public String getRoutingNumber() {
@@ -47,5 +49,9 @@ public class UsBankAccountDetails {
 
     public String getBankName() {
         return bankName;
+    }
+
+    public AchMandate getAchMandate() {
+        return achMandate;
     }
 }
