@@ -3,10 +3,9 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import org.junit.Test;
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.testhelpers.TestHelper;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -424,6 +423,56 @@ public class MerchantAccountIT extends IntegrationTest {
         List<ValidationError> errors = result.getErrors().forObject("merchant").onField("id");
         assertEquals(1, errors.size());
         assertEquals(ValidationErrorCode.MERCHANT_MERCHANT_ACCOUNT_EXISTS_FOR_ID, errors.get(0).getCode());
+    }
+
+    @Test
+    public void returnAllMerchantAccounts() {
+        this.gateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+
+        String code = TestHelper.createOAuthGrant(this.gateway, "integration_merchant_id", "read_write");
+
+        OAuthCredentialsRequest oauthRequest = new OAuthCredentialsRequest().
+             code(code).
+             scope("read_write");
+
+        Result<OAuthCredentials> accessTokenResult = this.gateway.oauth().createTokenFromCode(oauthRequest);
+
+        BraintreeGateway gateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
+
+        PaginatedCollection<MerchantAccount> result = gateway.merchantAccount().all();
+        List<MerchantAccount> merchantAccounts = new ArrayList<MerchantAccount>();
+        for(MerchantAccount merchantAccount : result) {
+            merchantAccounts.add(merchantAccount);
+        }
+
+        assertTrue(merchantAccounts.size() > 20);
+    }
+
+    @Test
+    public void returnsMerchantAccountWithCorrectAttributes() {
+        this.gateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+        MerchantRequest request = new MerchantRequest().
+            email("name@email.com").
+            countryCodeAlpha3("USA").
+            paymentMethods(Arrays.asList("credit_card", "paypal")).
+            scope("read_write,shared_vault_transactions");
+
+        Result<Merchant> merchantResult = gateway.merchant().create(request);
+
+        this.gateway = new BraintreeGateway(merchantResult.getTarget().getCredentials().getAccessToken());
+
+        PaginatedCollection<MerchantAccount> result = gateway.merchantAccount().all();
+        List<MerchantAccount> merchantAccounts = new ArrayList<MerchantAccount>();
+        for(MerchantAccount merchantAccount : result) {
+            merchantAccounts.add(merchantAccount);
+        }
+
+        assertEquals(merchantAccounts.size(), 1);
+
+        MerchantAccount merchantAccount = merchantAccounts.get(0);
+        assertTrue(merchantAccount.getCurrencyIsoCode().equals("USD"));
+        assertEquals(MerchantAccount.Status.ACTIVE, merchantAccount.getStatus());
+        assertTrue(merchantAccount.isDefault());
     }
 
     private MerchantAccountRequest creationRequest() {

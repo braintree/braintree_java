@@ -10,7 +10,7 @@ public class TransactionPager implements Pager<Transaction> {
         this.gateway = gateway;
         this.query = query;
     }
-    
+
     public List<Transaction> getPage(List<String> ids) {
         return gateway.fetchTransactions(query, ids);
     }
