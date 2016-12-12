@@ -28,6 +28,11 @@ public class PaymentMethodGateway {
         return new Result<UnknownPaymentMethod>();
     }
 
+    public Result<? extends PaymentMethod> delete(String token, PaymentMethodDeleteRequest request) {
+        http.delete(configuration.getMerchantPath() + "/payment_methods/any/" + token + "?" + request.toQueryString());
+        return new Result<UnknownPaymentMethod>();
+    }
+
     public PaymentMethod find(String token) {
         if(token == null || token.trim().equals(""))
             throw new NotFoundException();
