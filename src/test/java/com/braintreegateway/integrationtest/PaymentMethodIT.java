@@ -963,7 +963,7 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
-    public void allowsCustomVerificationAmount() {
+    public void createAllowsCustomVerificationAmount() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         Customer customer = customerResult.getTarget();
         PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
@@ -976,6 +976,35 @@ public class PaymentMethodIT extends IntegrationTest {
 
         Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(paymentMethodRequest);
         assertTrue(paymentMethodResult.isSuccess());
+    }
+
+    @Test
+    public void updateAllowsCustomVerificationAmount() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("Card Holder").
+            cvv("123").
+            number(SandboxValues.CreditCardNumber.VISA.number).
+            expirationDate("05/20");
+        Result<CreditCard> creditCardResult = gateway.creditCard().create(creditCardRequest);
+        assertTrue(creditCardResult.isSuccess());
+
+        CreditCard oldCreditCard = creditCardResult.getTarget();
+        PaymentMethodRequest updateCardRequest = new PaymentMethodRequest().
+            paymentMethodNonce(Nonce.ProcessorDeclinedMasterCard).
+            options().
+                verifyCard(true).
+                verificationAmount("2.34").
+                done();
+
+        String token = oldCreditCard.getToken();
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().update(token, updateCardRequest);
+
+        assertFalse(result.isSuccess());
+        assertEquals(result.getCreditCardVerification().getStatus(), CreditCardVerification.Status.PROCESSOR_DECLINED);
+        assertNull(result.getCreditCardVerification().getGatewayRejectionReason());
     }
 
     @Test
