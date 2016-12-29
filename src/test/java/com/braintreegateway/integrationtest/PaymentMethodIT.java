@@ -472,6 +472,22 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
+    public void createAllowsCustomVerificationAmount() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce("fake-valid-nonce").
+            options().
+                verifyCard(true).
+                verificationAmount("1.02").
+                done();
+
+        Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(paymentMethodRequest);
+        assertTrue(paymentMethodResult.isSuccess());
+    }
+
+    @Test
     public void deletePayPalAccount() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
@@ -960,22 +976,6 @@ public class PaymentMethodIT extends IntegrationTest {
         assertFalse(result.isSuccess());
         assertEquals(result.getCreditCardVerification().getStatus(), CreditCardVerification.Status.PROCESSOR_DECLINED);
         assertNull(result.getCreditCardVerification().getGatewayRejectionReason());
-    }
-
-    @Test
-    public void createAllowsCustomVerificationAmount() {
-        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
-        Customer customer = customerResult.getTarget();
-        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
-            customerId(customer.getId()).
-            paymentMethodNonce("fake-valid-nonce").
-            options().
-                verifyCard(true).
-                verificationAmount("1.02").
-                done();
-
-        Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(paymentMethodRequest);
-        assertTrue(paymentMethodResult.isSuccess());
     }
 
     @Test
