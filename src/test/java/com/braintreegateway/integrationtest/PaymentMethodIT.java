@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.regex.Pattern;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.NotFoundException;
@@ -275,12 +276,12 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(paymentMethod.getToken());
 
         UsBankAccount usBankAccount = (UsBankAccount) paymentMethod;
-        assertEquals("123456789", usBankAccount.getRoutingNumber());
+        assertEquals("021000021", usBankAccount.getRoutingNumber());
         assertEquals("1234", usBankAccount.getLast4());
         assertEquals("checking", usBankAccount.getAccountType());
         assertEquals("PayPal Checking - 1234", usBankAccount.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
-        assertEquals("UNKNOWN", usBankAccount.getBankName());
+        assertTrue(Pattern.compile(".*CHASE.*").matcher(usBankAccount.getBankName()).matches());
     }
 
     @Test
@@ -487,7 +488,9 @@ public class PaymentMethodIT extends IntegrationTest {
         assertTrue(result.isSuccess());
         PaymentMethod paymentMethod = result.getTarget();
 
-        Result<? extends PaymentMethod> deleteResult = gateway.paymentMethod().delete(paymentMethod.getToken());
+        PaymentMethodDeleteRequest deleteRequest = new PaymentMethodDeleteRequest().revokeAllGrants(false);
+
+        Result<? extends PaymentMethod> deleteResult = gateway.paymentMethod().delete(paymentMethod.getToken(), deleteRequest);
         assertTrue(deleteResult.isSuccess());
     }
 
@@ -1310,25 +1313,9 @@ public class PaymentMethodIT extends IntegrationTest {
     @Test
     public void grantAndRevoke() {
         BraintreeGateway partnerMerchantGateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_public_id", "oauth_app_partner_user_public_key", "oauth_app_partner_user_private_key");
-        Result<Customer> customerResult = partnerMerchantGateway.customer().create(new CustomerRequest());
-        Customer customer = customerResult.getTarget();
 
-        PaymentMethodRequest request = new PaymentMethodRequest().
-            paymentMethodNonce(Nonce.Transactable).
-            customerId(customer.getId());
-        Result<? extends PaymentMethod> result = partnerMerchantGateway.paymentMethod().create(request);
-        String paymentMethodToken = result.getTarget().getToken();
-        BraintreeGateway oauthGateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
-        String code = TestHelper.createOAuthGrant(oauthGateway, "integration_merchant_id", "grant_payment_method");
-
-        OAuthCredentialsRequest oauthRequest = new OAuthCredentialsRequest().
-            code(code).
-            scope("grant_payment_method");
-
-
-        Result<OAuthCredentials> accessTokenResult = oauthGateway.oauth().createTokenFromCode(oauthRequest);
-
-        BraintreeGateway accessTokenGateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
+        String paymentMethodToken = createPaymentMethodForGrant(partnerMerchantGateway);
+        BraintreeGateway accessTokenGateway = getOAuthAccessTokenForPaymentMethodGrant();
         Result<PaymentMethodNonce> grantResult = accessTokenGateway.paymentMethod().grant(paymentMethodToken);
         assertTrue(grantResult.isSuccess());
 
@@ -1337,26 +1324,34 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
+    public void grantAndVault() {
+        BraintreeGateway partnerMerchantGateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_public_id", "oauth_app_partner_user_public_key", "oauth_app_partner_user_private_key");
+
+        String paymentMethodToken = createPaymentMethodForGrant(partnerMerchantGateway);
+
+        BraintreeGateway accessTokenGateway = getOAuthAccessTokenForPaymentMethodGrant();
+
+        PaymentMethodGrantRequest grantRequest = new PaymentMethodGrantRequest().allowVaulting(true);
+        Result<PaymentMethodNonce> grantResult = accessTokenGateway.paymentMethod().grant(paymentMethodToken, grantRequest);
+        assertTrue(grantResult.isSuccess());
+
+        BraintreeGateway recipientMerchantGateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "integration_public_key", "integration_private_key");
+        Result<Customer> customerResult = recipientMerchantGateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
+            paymentMethodNonce(grantResult.getTarget().getNonce()).
+            customerId(customer.getId());
+        Result<? extends PaymentMethod> paymentMethodVault = recipientMerchantGateway.paymentMethod().create(paymentMethodRequest);
+        assertTrue(paymentMethodVault.isSuccess());
+    }
+
+    @Test
     public void grantWithOptionsAndRevoke() {
         BraintreeGateway partnerMerchantGateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_public_id", "oauth_app_partner_user_public_key", "oauth_app_partner_user_private_key");
-        Result<Customer> customerResult = partnerMerchantGateway.customer().create(new CustomerRequest());
-        Customer customer = customerResult.getTarget();
 
-        PaymentMethodRequest request = new PaymentMethodRequest().
-            paymentMethodNonce(Nonce.Transactable).
-            customerId(customer.getId());
-        Result<? extends PaymentMethod> result = partnerMerchantGateway.paymentMethod().create(request);
-        String paymentMethodToken = result.getTarget().getToken();
-        BraintreeGateway oauthGateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
-        String code = TestHelper.createOAuthGrant(oauthGateway, "integration_merchant_id", "grant_payment_method");
+        String paymentMethodToken = createPaymentMethodForGrant(partnerMerchantGateway);
 
-        OAuthCredentialsRequest oauthRequest = new OAuthCredentialsRequest().
-            code(code).
-            scope("grant_payment_method");
-
-        Result<OAuthCredentials> accessTokenResult = oauthGateway.oauth().createTokenFromCode(oauthRequest);
-
-        BraintreeGateway accessTokenGateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
+        BraintreeGateway accessTokenGateway = getOAuthAccessTokenForPaymentMethodGrant();
 
         PaymentMethodGrantRequest grantRequest = new PaymentMethodGrantRequest().
             allowVaulting(false).
@@ -1366,5 +1361,29 @@ public class PaymentMethodIT extends IntegrationTest {
 
         Result<? extends PaymentMethod> revokeResult = accessTokenGateway.paymentMethod().revoke(paymentMethodToken);
         assertTrue(revokeResult.isSuccess());
+    }
+
+    private String createPaymentMethodForGrant(BraintreeGateway partnerMerchantGateway) {
+        Result<Customer> customerResult = partnerMerchantGateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            paymentMethodNonce(Nonce.Transactable).
+            customerId(customer.getId());
+        Result<? extends PaymentMethod> result = partnerMerchantGateway.paymentMethod().create(request);
+        return result.getTarget().getToken();
+    }
+
+    private BraintreeGateway getOAuthAccessTokenForPaymentMethodGrant() {
+        BraintreeGateway oauthGateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+        String code = TestHelper.createOAuthGrant(oauthGateway, "integration_merchant_id", "grant_payment_method");
+
+        OAuthCredentialsRequest oauthRequest = new OAuthCredentialsRequest().
+            code(code).
+            scope("grant_payment_method");
+
+        Result<OAuthCredentials> accessTokenResult = oauthGateway.oauth().createTokenFromCode(oauthRequest);
+
+        return new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
     }
 }

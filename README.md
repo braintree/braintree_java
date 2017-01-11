@@ -1,4 +1,4 @@
-# Braintree Java Client Library
+# Braintree Java Server Library
 
 The Braintree library provides integration access to the Braintree Gateway.
 

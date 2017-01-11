@@ -7,6 +7,7 @@ import com.braintreegateway.exceptions.NotFoundException;
 import org.junit.Test;
 
 import java.util.Random;
+import java.util.regex.Pattern;
 import java.math.BigDecimal;
 
 import static org.junit.Assert.*;
@@ -29,11 +30,12 @@ public class UsBankAccountIT extends IntegrationTest {
 
         UsBankAccount usBankAccount = gateway.usBankAccount().find(result.getTarget().getToken());
         assertNotNull(usBankAccount);
-        assertEquals("123456789", usBankAccount.getRoutingNumber());
+        assertEquals("021000021", usBankAccount.getRoutingNumber());
         assertEquals("1234", usBankAccount.getLast4());
         assertEquals("checking", usBankAccount.getAccountType());
         assertEquals("PayPal Checking - 1234", usBankAccount.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
+        assertTrue(Pattern.matches(".*CHASE.*", usBankAccount.getBankName()));
     }
 
     @Test
@@ -74,10 +76,11 @@ public class UsBankAccountIT extends IntegrationTest {
         assertEquals(Transaction.Status.SETTLEMENT_PENDING, transaction.getStatus());
 
         UsBankAccountDetails usBankAccountDetails = transaction.getUsBankAccountDetails();
-        assertEquals("123456789", usBankAccountDetails.getRoutingNumber());
+        assertEquals("021000021", usBankAccountDetails.getRoutingNumber());
         assertEquals("1234", usBankAccountDetails.getLast4());
         assertEquals("checking", usBankAccountDetails.getAccountType());
         assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
+        assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
     }
 }

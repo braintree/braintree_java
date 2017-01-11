@@ -10,6 +10,7 @@ public class TransactionOptionsRequest extends Request {
     private Boolean submitForSettlement;
     private String venmoSdkSession;
     private String payeeEmail;
+    private Boolean skipAdvancedFraudChecking;
     private TransactionOptionsPayPalRequest transactionOptionsPayPalRequest;
     private TransactionOptionsAmexRewardsRequest transactionOptionsAmexRewardsRequest;
     private TransactionOptionsThreeDSecureRequest transactionOptionsThreeDSecureRequest;
@@ -62,6 +63,11 @@ public class TransactionOptionsRequest extends Request {
         return this;
     }
 
+    public TransactionOptionsRequest skipAdvancedFraudChecking(Boolean skipAdvancedFraudChecking) {
+        this.skipAdvancedFraudChecking = skipAdvancedFraudChecking;
+        return this;
+    }
+
     public TransactionOptionsPayPalRequest paypal() {
         transactionOptionsPayPalRequest = new TransactionOptionsPayPalRequest(this);
         return transactionOptionsPayPalRequest;
@@ -102,6 +108,7 @@ public class TransactionOptionsRequest extends Request {
             addElement("submitForSettlement", submitForSettlement).
             addElement("venmoSdkSession", venmoSdkSession).
             addElement("payeeEmail", payeeEmail).
+            addElement("skipAdvancedFraudChecking", skipAdvancedFraudChecking).
             addElement("threeDSecure", transactionOptionsThreeDSecureRequest).
             addElement("paypal", transactionOptionsPayPalRequest).
             addElement("payWithAmexRewards", transactionOptionsAmexRewardsRequest);

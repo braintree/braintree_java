@@ -9,6 +9,7 @@ import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -474,12 +475,12 @@ public class CustomerIT extends IntegrationTest {
         assertEquals(1, result.getTarget().getUsBankAccounts().size());
 
         UsBankAccount usBankAccount = result.getTarget().getUsBankAccounts().get(0);
-        assertEquals("123456789", usBankAccount.getRoutingNumber());
+        assertEquals("021000021", usBankAccount.getRoutingNumber());
         assertEquals("1234", usBankAccount.getLast4());
         assertEquals("checking", usBankAccount.getAccountType());
         assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
         assertEquals("PayPal Checking - 1234", usBankAccount.getAccountDescription());
-        assertEquals("UNKNOWN", usBankAccount.getBankName());
+        assertTrue(Pattern.matches(".*CHASE.*", usBankAccount.getBankName()));
     }
 
     @Test
@@ -562,12 +563,12 @@ public class CustomerIT extends IntegrationTest {
         assertEquals(customer.getId(), foundCustomer.getId());
 
         UsBankAccount usBankAccount = customer.getUsBankAccounts().get(0);
-        assertEquals("123456789", usBankAccount.getRoutingNumber());
+        assertEquals("021000021", usBankAccount.getRoutingNumber());
         assertEquals("1234", usBankAccount.getLast4());
         assertEquals("checking", usBankAccount.getAccountType());
         assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
         assertEquals("PayPal Checking - 1234", usBankAccount.getAccountDescription());
-        assertEquals("UNKNOWN", usBankAccount.getBankName());
+        assertTrue(Pattern.matches(".*CHASE.*", usBankAccount.getBankName()));
     }
 
     @Test

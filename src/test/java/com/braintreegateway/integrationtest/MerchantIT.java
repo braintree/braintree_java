@@ -126,7 +126,87 @@ public class MerchantIT extends IntegrationTest {
     }
 
     @Test
-    public void createMultiCurrencyMerchant() {
+    public void createMultiCurrencyUSMerchant() {
+        this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
+
+        MerchantRequest request = new MerchantRequest().
+            email("name@email.com").
+            countryCodeAlpha3("USA").
+            companyName("Ziarog LTD").
+            paymentMethods(Arrays.asList(new String[]{"credit_card", "paypal"})).
+            currencies(Arrays.asList("GBP", "USD"));
+
+        Result<Merchant> result = gateway.merchant().create(request);
+
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget().getId() != null && !result.getTarget().getId().isEmpty());
+        assertEquals("name@email.com", result.getTarget().getEmail());
+        assertEquals("Ziarog LTD", result.getTarget().getCompanyName());
+        assertEquals("USA", result.getTarget().getCountryCodeAlpha3());
+        assertEquals("US", result.getTarget().getCountryCodeAlpha2());
+        assertEquals("840", result.getTarget().getCountryCodeNumeric());
+        assertEquals("United States of America", result.getTarget().getCountryName());
+
+        assertTrue(result.getTarget().getCredentials().getAccessToken().startsWith("access_token"));
+        assertTrue(result.getTarget().getCredentials().getExpiresAt().after(Calendar.getInstance()));
+        assertTrue(result.getTarget().getCredentials().getRefreshToken().startsWith("refresh_token"));
+        assertEquals("bearer", result.getTarget().getCredentials().getTokenType());
+
+        assertEquals(2, result.getTarget().getMerchantAccounts().size());
+
+        MerchantAccount usdMerchantAccount = getMerchantAccountForCurrency(result.getTarget(), "USD");
+        assertNotNull(usdMerchantAccount);
+        assertEquals("USD", usdMerchantAccount.getCurrencyIsoCode());
+        assertTrue(usdMerchantAccount.isDefault());
+
+        MerchantAccount gbpMerchantAccount = getMerchantAccountForCurrency(result.getTarget(), "GBP");
+        assertNotNull(gbpMerchantAccount);
+        assertEquals("GBP", gbpMerchantAccount.getCurrencyIsoCode());
+        assertFalse(gbpMerchantAccount.isDefault());
+    }
+
+    @Test
+    public void createMultiCurrencyEUMerchant() {
+        this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
+
+        MerchantRequest request = new MerchantRequest().
+            email("name@email.com").
+            countryCodeAlpha3("GBR").
+            companyName("Ziarog LTD").
+            paymentMethods(Arrays.asList("credit_card", "paypal")).
+            currencies(Arrays.asList("GBP", "USD"));
+
+        Result<Merchant> result = gateway.merchant().create(request);
+
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget().getId() != null && !result.getTarget().getId().isEmpty());
+        assertEquals("name@email.com", result.getTarget().getEmail());
+        assertEquals("Ziarog LTD", result.getTarget().getCompanyName());
+        assertEquals("GBR", result.getTarget().getCountryCodeAlpha3());
+        assertEquals("GB", result.getTarget().getCountryCodeAlpha2());
+        assertEquals("826", result.getTarget().getCountryCodeNumeric());
+        assertEquals("United Kingdom", result.getTarget().getCountryName());
+
+        assertTrue(result.getTarget().getCredentials().getAccessToken().startsWith("access_token"));
+        assertTrue(result.getTarget().getCredentials().getExpiresAt().after(Calendar.getInstance()));
+        assertTrue(result.getTarget().getCredentials().getRefreshToken().startsWith("refresh_token"));
+        assertEquals("bearer", result.getTarget().getCredentials().getTokenType());
+
+        assertEquals(2, result.getTarget().getMerchantAccounts().size());
+
+        MerchantAccount usdMerchantAccount = getMerchantAccountForCurrency(result.getTarget(), "USD");
+        assertNotNull(usdMerchantAccount);
+        assertEquals("USD", usdMerchantAccount.getCurrencyIsoCode());
+        assertFalse(usdMerchantAccount.isDefault());
+
+        MerchantAccount gbpMerchantAccount = getMerchantAccountForCurrency(result.getTarget(), "GBP");
+        assertNotNull(gbpMerchantAccount);
+        assertEquals("GBP", gbpMerchantAccount.getCurrencyIsoCode());
+        assertTrue(gbpMerchantAccount.isDefault());
+    }
+
+    @Test
+    public void createPayPalOnlyMultiCurrencyMerchant() {
         this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
 
         MerchantRequest request = new MerchantRequest().
@@ -239,60 +319,6 @@ public class MerchantIT extends IntegrationTest {
         assertEquals("USD", result.getTarget().getMerchantAccounts().get(0).getId());
         assertEquals("USD", result.getTarget().getMerchantAccounts().get(0).getCurrencyIsoCode());
         assertTrue(result.getTarget().getMerchantAccounts().get(0).isDefault());
-    }
-
-    @Test
-    public void ignoreMultiCurrencyIfOnboardingApplicationNotInternal() {
-        MerchantRequest request = new MerchantRequest().
-            email("name@email.com").
-            countryCodeAlpha3("USA").
-            paymentMethods(Arrays.asList("paypal")).
-            currencies(Arrays.asList("GBP", "USD")).
-            payPalAccount().
-                clientId("paypal_client_id").
-                clientSecret("paypal_client_secret").
-                done();
-
-        Result<Merchant> result = gateway.merchant().create(request);
-
-        assertTrue(result.isSuccess());
-        assertTrue(result.getTarget().getId() != null && !result.getTarget().getId().isEmpty());
-        assertEquals("name@email.com", result.getTarget().getEmail());
-        assertEquals("name@email.com", result.getTarget().getCompanyName());
-        assertEquals("USA", result.getTarget().getCountryCodeAlpha3());
-        assertEquals("US", result.getTarget().getCountryCodeAlpha2());
-        assertEquals("840", result.getTarget().getCountryCodeNumeric());
-        assertEquals("United States of America", result.getTarget().getCountryName());
-
-        assertTrue(result.getTarget().getCredentials().getAccessToken().startsWith("access_token"));
-        assertTrue(result.getTarget().getCredentials().getExpiresAt().after(Calendar.getInstance()));
-        assertTrue(result.getTarget().getCredentials().getRefreshToken().startsWith("refresh_token"));
-        assertEquals("bearer", result.getTarget().getCredentials().getTokenType());
-
-        assertEquals(1, result.getTarget().getMerchantAccounts().size());
-    }
-
-    @Test
-    public void returnErrorIfValidPaymentMethodOtherThanPayPalPassedForMultiCurrency() {
-        this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
-
-        MerchantRequest request = new MerchantRequest().
-            email("name@email.com").
-            countryCodeAlpha3("USA").
-            paymentMethods(Arrays.asList("credit_card", "paypal")).
-            currencies(Arrays.asList("GBP", "USD")).
-            payPalAccount().
-                clientId("paypal_client_id").
-                clientSecret("paypal_client_secret").
-                done();
-
-        Result<Merchant> result = gateway.merchant().create(request);
-
-        assertFalse(result.isSuccess());
-        assertEquals(
-            ValidationErrorCode.MERCHANT_PAYMENT_METHODS_ARE_NOT_ALLOWED,
-            result.getErrors().forObject("merchant").onField("payment-methods").get(0).getCode()
-        );
     }
 
     @Test
