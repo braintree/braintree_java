@@ -1,3 +1,10 @@
+## 2.70.0
+
+* Add functionality to list all merchant accounts for a merchant with `MerchantAccount.all`.
+* Update UsBank tests to use legal routing numbers.
+* Add option `skip_advanced_fraud_check` for transaction flows.
+* Raise an exception if fetching pages of results times out during a transaction search.
+
 ## 2.69.0
 * Fix `UsBankAccount` support for `Customer`s
 * Throw `ConfigurationException` for missing credentials
