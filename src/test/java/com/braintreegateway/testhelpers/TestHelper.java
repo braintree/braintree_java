@@ -10,6 +10,8 @@ import com.braintreegateway.util.QueryString;
 import com.braintreegateway.util.StringUtils;
 import com.braintreegateway.EuropeBankAccount.MandateType;
 
+import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
+
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 
 import org.junit.Ignore;
