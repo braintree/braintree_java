@@ -158,7 +158,6 @@ public class WebhookTestingGateway {
                     node("routing-number", "123456789"),
                     node("last-4", "1234"),
                     node("account-type", "checking"),
-                    node("account-description", "PayPal Checking - 1234"),
                     node("account-holder-name", "Dan Schulman")
                 ),
                 node("disbursement-details"),
@@ -180,7 +179,6 @@ public class WebhookTestingGateway {
                     node("routing-number", "123456789"),
                     node("last-4", "1234"),
                     node("account-type", "checking"),
-                    node("account-description", "PayPal Checking - 1234"),
                     node("account-holder-name", "Dan Schulman")
                 ),
                 node("disbursement-details"),

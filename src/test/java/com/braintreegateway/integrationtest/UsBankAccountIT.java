@@ -33,7 +33,6 @@ public class UsBankAccountIT extends IntegrationTest {
         assertEquals("021000021", usBankAccount.getRoutingNumber());
         assertEquals("1234", usBankAccount.getLast4());
         assertEquals("checking", usBankAccount.getAccountType());
-        assertEquals("PayPal Checking - 1234", usBankAccount.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccount.getBankName()));
     }
@@ -79,7 +78,6 @@ public class UsBankAccountIT extends IntegrationTest {
         assertEquals("021000021", usBankAccountDetails.getRoutingNumber());
         assertEquals("1234", usBankAccountDetails.getLast4());
         assertEquals("checking", usBankAccountDetails.getAccountType());
-        assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
     }

@@ -1016,7 +1016,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("021000021", usBankAccountDetails.getRoutingNumber());
         assertEquals("1234", usBankAccountDetails.getLast4());
         assertEquals("checking", usBankAccountDetails.getAccountType());
-        assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
     }
@@ -1045,7 +1044,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("021000021", usBankAccountDetails.getRoutingNumber());
         assertEquals("1234", usBankAccountDetails.getLast4());
         assertEquals("checking", usBankAccountDetails.getAccountType());
-        assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
 
@@ -1070,7 +1068,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("021000021", usBankAccountDetails.getRoutingNumber());
         assertEquals("1234", usBankAccountDetails.getLast4());
         assertEquals("checking", usBankAccountDetails.getAccountType());
-        assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
     }

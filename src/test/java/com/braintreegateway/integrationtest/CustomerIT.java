@@ -479,7 +479,6 @@ public class CustomerIT extends IntegrationTest {
         assertEquals("1234", usBankAccount.getLast4());
         assertEquals("checking", usBankAccount.getAccountType());
         assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
-        assertEquals("PayPal Checking - 1234", usBankAccount.getAccountDescription());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccount.getBankName()));
     }
 
@@ -567,7 +566,6 @@ public class CustomerIT extends IntegrationTest {
         assertEquals("1234", usBankAccount.getLast4());
         assertEquals("checking", usBankAccount.getAccountType());
         assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
-        assertEquals("PayPal Checking - 1234", usBankAccount.getAccountDescription());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccount.getBankName()));
     }
 
