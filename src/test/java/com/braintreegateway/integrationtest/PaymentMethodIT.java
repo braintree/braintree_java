@@ -43,6 +43,36 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
+    public void createPayPalAccountFromNonceWithPayeeEmail() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce).
+            options().
+                paypal().
+                    payeeEmail("payee@example.com").
+                    done().
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+        assertNotNull(paymentMethod.getToken());
+        assertNotNull(paymentMethod.getImageUrl());
+
+        PayPalAccount paypalAccount = (PayPalAccount) paymentMethod;
+        assertNotNull(paypalAccount.getEmail());
+        assertNotNull(paypalAccount.getImageUrl());
+        assertNotNull(paypalAccount.getCustomerId());
+        assertNotNull(paypalAccount.getSubscriptions());
+    }
+
+    @Test
     public void createApplePayCardFromNonce() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
