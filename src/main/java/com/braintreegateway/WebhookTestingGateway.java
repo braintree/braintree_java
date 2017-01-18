@@ -158,7 +158,11 @@ public class WebhookTestingGateway {
                     node("routing-number", "123456789"),
                     node("last-4", "1234"),
                     node("account-type", "checking"),
-                    node("account-holder-name", "Dan Schulman")
+                    node("account-holder-name", "Dan Schulman"),
+                    node("ach-mandate",
+                        node("text", "Sample ACH Mandate Text"),
+                        node("accepted-at", "2017-01-17")
+                    )
                 ),
                 node("disbursement-details"),
                 node("billing"),
@@ -179,7 +183,11 @@ public class WebhookTestingGateway {
                     node("routing-number", "123456789"),
                     node("last-4", "1234"),
                     node("account-type", "checking"),
-                    node("account-holder-name", "Dan Schulman")
+                    node("account-holder-name", "Dan Schulman"),
+                    node("ach-mandate",
+                        node("text", "Sample ACH Mandate Text"),
+                        node("accepted-at", "2017-01-17")
+                    )
                 ),
                 node("disbursement-details"),
                 node("billing"),
