@@ -1016,9 +1016,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("021000021", usBankAccountDetails.getRoutingNumber());
         assertEquals("1234", usBankAccountDetails.getLast4());
         assertEquals("checking", usBankAccountDetails.getAccountType());
-        assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
+        AchMandate achMandate = usBankAccountDetails.getAchMandate();
+        assertEquals("cl mandate text", achMandate.getText());
+        assertNotNull(achMandate.getAcceptedAt());
     }
 
     @Test
@@ -1045,9 +1047,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("021000021", usBankAccountDetails.getRoutingNumber());
         assertEquals("1234", usBankAccountDetails.getLast4());
         assertEquals("checking", usBankAccountDetails.getAccountType());
-        assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
+        AchMandate achMandate = usBankAccountDetails.getAchMandate();
+        assertEquals("cl mandate text", achMandate.getText());
+        assertNotNull(achMandate.getAcceptedAt());
 
         request = new TransactionRequest()
             .merchantAccountId("us_bank_merchant_account")
@@ -1070,9 +1074,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("021000021", usBankAccountDetails.getRoutingNumber());
         assertEquals("1234", usBankAccountDetails.getLast4());
         assertEquals("checking", usBankAccountDetails.getAccountType());
-        assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
+        achMandate = usBankAccountDetails.getAchMandate();
+        assertEquals("cl mandate text", achMandate.getText());
+        assertNotNull(achMandate.getAcceptedAt());
     }
 
     @Test

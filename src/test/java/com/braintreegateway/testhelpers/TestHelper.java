@@ -477,9 +477,8 @@ public abstract class TestHelper {
             .append("\"routing_number\": \"021000021\",\n")
             .append("\"account_number\": \"567891234\",\n")
             .append("\"account_holder_name\": \"Dan Schulman\",\n")
-            .append("\"account_description\": \"PayPal Checking - 1234\",\n")
             .append("\"ach_mandate\": {\n")
-                .append("\"text\": \"\"\n")
+                .append("\"text\": \"cl mandate text\"\n")
             .append("}\n")
           .append("}")
         .toString();

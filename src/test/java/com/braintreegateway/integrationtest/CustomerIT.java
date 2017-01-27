@@ -465,6 +465,22 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void createWithOneTimePayPalAccountNonceAndPayeeEmail() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(nonce).
+            options().
+                paypal().
+                    payeeEmail("payee@example.com").
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getErrors().getAllDeepValidationErrors().size());
+    }
+
+    @Test
     public void createWithUsBankAccountNonce() {
         String nonce = TestHelper.generateValidUsBankAccountNonce(gateway);
         CustomerRequest request = new CustomerRequest().
@@ -479,7 +495,6 @@ public class CustomerIT extends IntegrationTest {
         assertEquals("1234", usBankAccount.getLast4());
         assertEquals("checking", usBankAccount.getAccountType());
         assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
-        assertEquals("PayPal Checking - 1234", usBankAccount.getAccountDescription());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccount.getBankName()));
     }
 
@@ -567,7 +582,6 @@ public class CustomerIT extends IntegrationTest {
         assertEquals("1234", usBankAccount.getLast4());
         assertEquals("checking", usBankAccount.getAccountType());
         assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
-        assertEquals("PayPal Checking - 1234", usBankAccount.getAccountDescription());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccount.getBankName()));
     }
 

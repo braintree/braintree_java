@@ -43,6 +43,36 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
+    public void createPayPalAccountFromNonceWithPayeeEmail() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce).
+            options().
+                paypal().
+                    payeeEmail("payee@example.com").
+                    done().
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+        assertNotNull(paymentMethod.getToken());
+        assertNotNull(paymentMethod.getImageUrl());
+
+        PayPalAccount paypalAccount = (PayPalAccount) paymentMethod;
+        assertNotNull(paypalAccount.getEmail());
+        assertNotNull(paypalAccount.getImageUrl());
+        assertNotNull(paypalAccount.getCustomerId());
+        assertNotNull(paypalAccount.getSubscriptions());
+    }
+
+    @Test
     public void createApplePayCardFromNonce() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
@@ -279,7 +309,6 @@ public class PaymentMethodIT extends IntegrationTest {
         assertEquals("021000021", usBankAccount.getRoutingNumber());
         assertEquals("1234", usBankAccount.getLast4());
         assertEquals("checking", usBankAccount.getAccountType());
-        assertEquals("PayPal Checking - 1234", usBankAccount.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
         assertTrue(Pattern.compile(".*CHASE.*").matcher(usBankAccount.getBankName()).matches());
     }
@@ -470,6 +499,22 @@ public class PaymentMethodIT extends IntegrationTest {
         assertTrue(foundCreditCard instanceof CreditCard);
         assertEquals("Bobby", foundCreditCard.getBillingAddress().getFirstName());
         assertEquals("Tables", foundCreditCard.getBillingAddress().getLastName());
+    }
+
+    @Test
+    public void createAllowsCustomVerificationAmount() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce("fake-valid-nonce").
+            options().
+                verifyCard(true).
+                verificationAmount("1.02").
+                done();
+
+        Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(paymentMethodRequest);
+        assertTrue(paymentMethodResult.isSuccess());
     }
 
     @Test
@@ -964,19 +1009,32 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
-    public void allowsCustomVerificationAmount() {
+    public void updateAllowsCustomVerificationAmount() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         Customer customer = customerResult.getTarget();
-        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
             customerId(customer.getId()).
-            paymentMethodNonce("fake-valid-nonce").
+            cardholderName("Card Holder").
+            cvv("123").
+            number(SandboxValues.CreditCardNumber.VISA.number).
+            expirationDate("05/20");
+        Result<CreditCard> creditCardResult = gateway.creditCard().create(creditCardRequest);
+        assertTrue(creditCardResult.isSuccess());
+
+        CreditCard oldCreditCard = creditCardResult.getTarget();
+        PaymentMethodRequest updateCardRequest = new PaymentMethodRequest().
+            paymentMethodNonce(Nonce.ProcessorDeclinedMasterCard).
             options().
                 verifyCard(true).
-                verificationAmount("1.02").
+                verificationAmount("2.34").
                 done();
 
-        Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(paymentMethodRequest);
-        assertTrue(paymentMethodResult.isSuccess());
+        String token = oldCreditCard.getToken();
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().update(token, updateCardRequest);
+
+        assertFalse(result.isSuccess());
+        assertEquals(result.getCreditCardVerification().getStatus(), CreditCardVerification.Status.PROCESSOR_DECLINED);
+        assertNull(result.getCreditCardVerification().getGatewayRejectionReason());
     }
 
     @Test

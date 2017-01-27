@@ -1,3 +1,6 @@
+## 2.71.0
+* Stop sending account_description field from us bank accounts
+
 ## 2.70.0
 
 * Add functionality to list all merchant accounts for a merchant with `MerchantAccount.all`.

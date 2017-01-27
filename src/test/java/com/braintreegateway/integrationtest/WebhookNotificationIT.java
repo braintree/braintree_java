@@ -259,7 +259,6 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertEquals("123456789", usBankAccountDetails.getRoutingNumber());
         assertEquals("1234", usBankAccountDetails.getLast4());
         assertEquals("checking", usBankAccountDetails.getAccountType());
-        assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
     }
 
@@ -280,7 +279,6 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertEquals("123456789", usBankAccountDetails.getRoutingNumber());
         assertEquals("1234", usBankAccountDetails.getLast4());
         assertEquals("checking", usBankAccountDetails.getAccountType());
-        assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
     }
 

@@ -6,6 +6,7 @@ import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.NotFoundException;
 import org.junit.Test;
 
+import java.util.Calendar;
 import java.util.Random;
 import java.util.regex.Pattern;
 import java.math.BigDecimal;
@@ -33,9 +34,12 @@ public class UsBankAccountIT extends IntegrationTest {
         assertEquals("021000021", usBankAccount.getRoutingNumber());
         assertEquals("1234", usBankAccount.getLast4());
         assertEquals("checking", usBankAccount.getAccountType());
-        assertEquals("PayPal Checking - 1234", usBankAccount.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccount.getBankName()));
+        AchMandate achMandate = usBankAccount.getAchMandate();
+        assertEquals("cl mandate text", achMandate.getText());
+        assertNotNull(achMandate.getAcceptedAt());
+        assertTrue(usBankAccount.isDefault());
     }
 
     @Test
@@ -79,8 +83,10 @@ public class UsBankAccountIT extends IntegrationTest {
         assertEquals("021000021", usBankAccountDetails.getRoutingNumber());
         assertEquals("1234", usBankAccountDetails.getLast4());
         assertEquals("checking", usBankAccountDetails.getAccountType());
-        assertEquals("PayPal Checking - 1234", usBankAccountDetails.getAccountDescription());
         assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
+        AchMandate achMandate = usBankAccountDetails.getAchMandate();
+        assertEquals("cl mandate text", achMandate.getText());
+        assertNotNull(achMandate.getAcceptedAt());
     }
 }
