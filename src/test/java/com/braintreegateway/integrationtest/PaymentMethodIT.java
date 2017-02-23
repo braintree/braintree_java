@@ -48,7 +48,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
 
-        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        String nonce = TestHelper.generateOrderPaymentPayPalNonce(gateway);
         PaymentMethodRequest request = new PaymentMethodRequest().
             customerId(customer.getId()).
             paymentMethodNonce(nonce).

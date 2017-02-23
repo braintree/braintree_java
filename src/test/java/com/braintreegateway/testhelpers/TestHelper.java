@@ -244,6 +244,15 @@ public abstract class TestHelper {
       return nonce;
     }
 
+    public static String generateOrderPaymentPayPalNonce(BraintreeGateway gateway) {
+        QueryString payload = new QueryString();
+        payload.append("paypal_account[intent]", "order");
+        payload.append("paypal_account[payment_token]", "fake_payment_token");
+        payload.append("paypal_account[payer_id]", "fake_payer_id");
+
+        return generatePayPalNonce(gateway, payload);
+    }
+
     public static String generateNonceForCreditCard(BraintreeGateway gateway, CreditCardRequest creditCardRequest, String customerId, boolean validate) {
       ClientTokenRequest clientTokenRequest = new ClientTokenRequest().
         customerId(customerId);
