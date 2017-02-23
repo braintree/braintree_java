@@ -5,6 +5,7 @@ import com.braintreegateway.util.NodeWrapper;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.Comparator;
 import java.util.Collections;
 
@@ -185,6 +186,8 @@ public class CreditCard implements PaymentMethod {
     private String token;
     private Calendar updatedAt;
     private CreditCardVerification verification;
+    private String origin;
+    private Map<String, String> originAttributes;
 
     public CreditCard(NodeWrapper node) {
         token = node.findString("token");
@@ -221,6 +224,9 @@ public class CreditCard implements PaymentMethod {
         for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
             subscriptions.add(new Subscription(subscriptionResponse));
         }
+
+        origin = node.findString("wallet-metadata/origin");
+        originAttributes = node.findMap("wallet-metadata/attributes/*");
 
         final List<NodeWrapper> verificationNodes = node.findAll("verifications/verification");
         verification = findNewestVerification(verificationNodes);
@@ -409,5 +415,13 @@ public class CreditCard implements PaymentMethod {
 
     public CreditCardVerification getVerification() {
         return verification;
+    }
+
+    public String getOrigin(){
+        return origin;
+    }
+
+    public Map<String, String> getOriginAttributes(){
+        return originAttributes;
     }
 }

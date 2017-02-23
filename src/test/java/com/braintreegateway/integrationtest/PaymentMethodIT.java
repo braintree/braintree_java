@@ -215,6 +215,24 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
+    public void createVisaCheckoutCardFromNonce() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        PaymentMethodRequest request = new PaymentMethodRequest()
+            .customerId(customer.getId())
+            .paymentMethodNonce(Nonce.VisaCheckoutVisa)
+            .options()
+            .done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+
+        CreditCard visaCheckoutCard = (CreditCard) result.getTarget();
+
+        assertEquals("visa_checkout", visaCheckoutCard.getOrigin());
+        assertEquals("abc123", visaCheckoutCard.getOriginAttributes().get("call_id"));
+    }
+
+    @Test
     public void createAmexExpressCheckoutCardFromNonce() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
