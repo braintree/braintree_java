@@ -80,6 +80,15 @@ public abstract class NodeWrapper {
         return !(getElementName().equals("api-error-response"));
     }
 
+    public Map<String, Object> findObjectMap(String expression) {
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        for (NodeWrapper mapNode : findAll(expression)) {
+            map.put(StringUtils.underscore(mapNode.getElementName()), mapNode.findString("."));
+        }
+        return map;
+    }
+
     public Map<String, String> findMap(String expression) {
         Map<String, String> map = new HashMap<String, String>();
 
