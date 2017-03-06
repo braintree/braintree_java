@@ -45,11 +45,6 @@ public class Nonce {
     public static final String LuhnInvalid = "fake-luhn-invalid-nonce";
     public static final String PayPalFuturePaymentRefreshToken = "fake-paypal-future-refresh-token-nonce";
     public static final String SEPA = "fake-sepa-bank-account-nonce";
-    public static final String MasterpassAmEx = "fake-masterpass-amex-nonce";
-    public static final String MasterpassDiscover = "fake-masterpass-discover-nonce";
-    public static final String MasterpassMaestro = "fake-masterpass-maestro-nonce";
-    public static final String MasterpassMasterCard = "fake-masterpass-mastercard-nonce";
-    public static final String MasterpassVisa = "fake-masterpass-visa-nonce";
     public static final String GatewayRejectedFraud = "fake-gateway-rejected-fraud-nonce";
     public static final String VisaCheckoutVisa = "fake-visa-checkout-visa-nonce";
     public static final String VisaCheckoutAmEx = "fake-visa-checkout-amex-nonce";

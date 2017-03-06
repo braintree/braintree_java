@@ -186,8 +186,8 @@ public class CreditCard implements PaymentMethod {
     private String token;
     private Calendar updatedAt;
     private CreditCardVerification verification;
-    private String walletOrigin;
-    private Map<String, String> walletOriginAttributes;
+    private String origin;
+    private Map<String, String> originAttributes;
 
     public CreditCard(NodeWrapper node) {
         token = node.findString("token");
@@ -225,8 +225,8 @@ public class CreditCard implements PaymentMethod {
             subscriptions.add(new Subscription(subscriptionResponse));
         }
 
-        walletOrigin = node.findString("wallet-metadata/origin");
-        walletOriginAttributes = node.findMap("wallet-metadata/attributes/*");
+        origin = node.findString("wallet-metadata/origin");
+        originAttributes = node.findMap("wallet-metadata/attributes/*");
 
         final List<NodeWrapper> verificationNodes = node.findAll("verifications/verification");
         verification = findNewestVerification(verificationNodes);
@@ -417,11 +417,11 @@ public class CreditCard implements PaymentMethod {
         return verification;
     }
 
-    public String getWalletOrigin(){
-        return walletOrigin;
+    public String getOrigin(){
+        return origin;
     }
 
-    public Map<String, String> getWalletOriginAttributes(){
-        return walletOriginAttributes;
+    public Map<String, String> getOriginAttributes(){
+        return originAttributes;
     }
 }
