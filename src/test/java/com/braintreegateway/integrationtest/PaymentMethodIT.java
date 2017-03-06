@@ -228,25 +228,8 @@ public class PaymentMethodIT extends IntegrationTest {
 
         CreditCard visaCheckoutCard = (CreditCard) result.getTarget();
 
-        assertEquals(CreditCard.WalletOrigin.VISA_CHECKOUT.toString(), visaCheckoutCard.getWalletOrigin());
+        assertEquals("visa_checkout", visaCheckoutCard.getWalletOrigin());
         assertNotNull(visaCheckoutCard.getWalletOriginAttributes().get("call_id"));
-    }
-
-    @Test
-    public void createMasterpassCardFromNonce() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        PaymentMethodRequest request = new PaymentMethodRequest()
-            .customerId(customer.getId())
-            .paymentMethodNonce(Nonce.MasterpassDiscover)
-            .options()
-            .done();
-
-        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
-        assertTrue(result.isSuccess());
-
-        CreditCard visaCheckoutCard = (CreditCard) result.getTarget();
-
-        assertEquals(CreditCard.WalletOrigin.MASTERPASS.toString(), visaCheckoutCard.getWalletOrigin());
     }
 
     @Test

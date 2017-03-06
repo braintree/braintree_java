@@ -40,22 +40,6 @@ public class CreditCard implements PaymentMethod {
         }
     }
 
-    public enum WalletOrigin {
-        MASTERPASS("masterpass"),
-        VISA_CHECKOUT("visa_checkout");
-
-        private final String originType;
-
-        WalletOrigin(String originType) {
-            this.originType = originType;
-        }
-
-        @Override
-        public String toString() {
-            return originType;
-        }
-    }
-
     public enum CustomerLocation {
         INTERNATIONAL("international"),
         US("us");
