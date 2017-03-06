@@ -229,7 +229,7 @@ public class PaymentMethodIT extends IntegrationTest {
         CreditCard visaCheckoutCard = (CreditCard) result.getTarget();
 
         assertEquals("visa_checkout", visaCheckoutCard.getWalletOrigin());
-        assertNotNull(visaCheckoutCard.getWalletOriginAttributes().get("call_id"));
+        assertEquals("abc123", visaCheckoutCard.getWalletOriginAttributes().get("call_id"));
     }
 
     @Test
