@@ -481,8 +481,6 @@ public class PaymentMethodIT extends IntegrationTest {
 
         CreditCard creditCard = (CreditCard) paymentMethod;
         assertEquals("1111", creditCard.getLast4());
-        assertNull(creditCard.getWalletOrigin());
-        assertTrue(creditCard.getWalletOriginAttributes().isEmpty());
     }
 
     @Test
