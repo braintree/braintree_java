@@ -19,6 +19,15 @@ public class Nonce {
     public static final String AndroidPayAmEx = "fake-android-pay-amex-nonce";
     public static final String AmexExpressCheckout = "fake-amex-express-checkout-nonce";
     public static final String VenmoAccount = "fake-venmo-account-nonce";
+    public static final String MasterpassAmEx = "fake-masterpass-amex-nonce";
+    public static final String MasterpassDiscover = "fake-masterpass-discover-nonce";
+    public static final String MasterpassMaestro = "fake-masterpass-maestro-nonce";
+    public static final String MasterpassMasterCard = "fake-masterpass-mastercard-nonce";
+    public static final String MasterpassVisa = "fake-masterpass-visa-nonce";
+    public static final String VisaCheckoutAmEx = "fake-visa-checkout-amex-nonce";
+    public static final String VisaCheckoutDiscover = "fake-visa-checkout-discover-nonce";
+    public static final String VisaCheckoutMasterCard = "fake-visa-checkout-mastercard-nonce";
+    public static final String VisaCheckoutVisa = "fake-visa-checkout-visa-nonce";
     public static final String TransactableVisa = "fake-valid-visa-nonce";
     public static final String TransactableAmEx = "fake-valid-amex-nonce";
     public static final String TransactableMasterCard = "fake-valid-mastercard-nonce";

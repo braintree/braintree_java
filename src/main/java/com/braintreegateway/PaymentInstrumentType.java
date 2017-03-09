@@ -11,5 +11,7 @@ public final class PaymentInstrumentType {
     public static final String AMEX_EXPRESS_CHECKOUT_CARD = "amex_express_checkout_card";
     public static final String COINBASE_ACCOUNT = "coinbase_account";
     public static final String VENMO_ACCOUNT = "venmo_account";
+    public static final String VISA_CHECKOUT_CARD = "visa_checkout_card";
+    public static final String MASTERPASS_CARD = "masterpass_card";
     public static final String US_BANK_ACCOUNT = "us_bank_account";
 }

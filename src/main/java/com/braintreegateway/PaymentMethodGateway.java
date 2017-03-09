@@ -80,6 +80,10 @@ public class PaymentMethodGateway {
             return new Result<UsBankAccount>(response, UsBankAccount.class);
         } else if (response.getElementName() == "venmo-account") {
             return new Result<VenmoAccount>(response, VenmoAccount.class);
+        } else if (response.getElementName() == "visa-checkout-card") {
+            return new Result<VisaCheckoutCard>(response, VisaCheckoutCard.class);
+        } else if (response.getElementName() == "masterpass-card") {
+            return new Result<MasterpassCard>(response, MasterpassCard.class);
         } else {
             return new Result<UnknownPaymentMethod>(response, UnknownPaymentMethod.class);
         }
