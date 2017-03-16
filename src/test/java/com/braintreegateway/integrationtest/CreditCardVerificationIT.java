@@ -7,6 +7,7 @@ import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -91,6 +92,8 @@ public class CreditCardVerificationIT extends IntegrationTest {
         builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         builder.append("<api-error-response>");
         builder.append("  <verification>");
+        builder.append("    <amount>1.00</amount>");
+        builder.append("    <currency-iso-code>USD</currency-iso-code>");
         builder.append("    <avs-error-response-code nil=\"true\"></avs-error-response-code>");
         builder.append("    <avs-postal-code-response-code>I</avs-postal-code-response-code>");
         builder.append("    <status>processor_declined</status>");
@@ -116,6 +119,8 @@ public class CreditCardVerificationIT extends IntegrationTest {
 
         NodeWrapper verificationNode = (NodeWrapperFactory.instance.create(builder.toString())).findFirst("verification");
         CreditCardVerification verification = new CreditCardVerification(verificationNode);
+        assertEquals(new BigDecimal("1.00"), verification.getAmount());
+        assertEquals("USD", verification.getCurrencyIsoCode());
         assertEquals(null, verification.getAvsErrorResponseCode());
         assertEquals("I", verification.getAvsPostalCodeResponseCode());
         assertEquals(CreditCardVerification.Status.PROCESSOR_DECLINED, verification.getStatus());

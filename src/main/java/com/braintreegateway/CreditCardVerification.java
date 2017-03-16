@@ -4,6 +4,7 @@ import com.braintreegateway.Transaction.GatewayRejectionReason;
 import com.braintreegateway.util.EnumUtils;
 import com.braintreegateway.util.NodeWrapper;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 
 public class CreditCardVerification {
@@ -12,9 +13,11 @@ public class CreditCardVerification {
         FAILED, GATEWAY_REJECTED, PROCESSOR_DECLINED, UNRECOGNIZED, VERIFIED
     }
 
+    private BigDecimal amount;
     private String avsErrorResponseCode;
     private String avsPostalCodeResponseCode;
     private String avsStreetAddressResponseCode;
+    private String currencyIsoCode;
     private String cvvResponseCode;
     private GatewayRejectionReason gatewayRejectionReason;
     private String processorResponseCode;
@@ -28,9 +31,11 @@ public class CreditCardVerification {
     private RiskData riskData;
 
     public CreditCardVerification(NodeWrapper node) {
+        this.amount = node.findBigDecimal("amount");
         this.avsErrorResponseCode = node.findString("avs-error-response-code");
         this.avsPostalCodeResponseCode = node.findString("avs-postal-code-response-code");
         this.avsStreetAddressResponseCode = node.findString("avs-street-address-response-code");
+        this.currencyIsoCode = node.findString("currency-iso-code");
         this.cvvResponseCode = node.findString("cvv-response-code");
         this.gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"), GatewayRejectionReason.UNRECOGNIZED);
         this.processorResponseCode = node.findString("processor-response-code");
@@ -57,6 +62,10 @@ public class CreditCardVerification {
         this.createdAt = node.findDateTime("created-at");
     }
 
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
     public String getAvsErrorResponseCode() {
         return avsErrorResponseCode;
     }
@@ -79,6 +88,10 @@ public class CreditCardVerification {
 
     public CreditCard getCreditCard() {
         return creditCard;
+    }
+
+    public String getCurrencyIsoCode() {
+        return currencyIsoCode;
     }
 
     public String getCvvResponseCode() {
