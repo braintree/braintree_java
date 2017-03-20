@@ -1948,6 +1948,41 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithSkipAvsOptionSet() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2019").
+                done().
+                options().
+                skipAvs(true).
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        assertNull(result.getTarget().getAvsErrorResponseCode());
+        assertEquals("B", result.getTarget().getAvsStreetAddressResponseCode());
+    }
+
+    @Test
+    public void saleWithSkipCvvOptionSet() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2019").
+                done().
+                options().
+                skipCvv(true).
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        assertEquals("B", result.getTarget().getCvvResponseCode());
+    }
+
+    @Test
     public void createTransactionFromTransparentRedirectWithAddress() {
         TransactionRequest request = new TransactionRequest();
 
