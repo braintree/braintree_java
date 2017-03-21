@@ -3727,7 +3727,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             id().is(transaction.getId()).
             paypalPaymentId().startsWith("PAY").
             paypalPayerEmail().is("payer@example.com").
-            paypalAuthorizationId().startsWith("SALE");
+            paypalAuthorizationId().startsWith("AUTH");
 
         assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
     }
