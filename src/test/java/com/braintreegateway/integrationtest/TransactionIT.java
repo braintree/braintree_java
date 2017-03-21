@@ -1098,6 +1098,49 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithIdealPaymentId() {
+        TransactionRequest request = new TransactionRequest()
+            .merchantAccountId("ideal_merchant_account")
+            .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
+            .paymentMethodNonce(TestHelper.generateValidIdealPaymentId(gateway))
+            .orderId("ABC123")
+            .options()
+                .submitForSettlement(true)
+                .done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+        assertEquals(Transaction.Status.SETTLED, transaction.getStatus());
+
+        IdealPaymentDetails idealPaymentDetails = transaction.getIdealPaymentDetails();
+        assertTrue(Pattern.matches("^idealpayment_\\w{6,}$", idealPaymentDetails.getIdealPaymentId()));
+        assertTrue(Pattern.matches("^\\d{16,}$", idealPaymentDetails.getIdealTransactionId()));
+        assertTrue(idealPaymentDetails.getImageUrl().startsWith("https://"));
+        assertNotNull(idealPaymentDetails.getMaskedIban());
+        assertNotNull(idealPaymentDetails.getBic());
+    }
+
+    @Test
+    public void saleWithInvalidIdealPaymentId() {
+        BigDecimal amount = new BigDecimal("3.00");
+
+        TransactionRequest request = new TransactionRequest()
+            .merchantAccountId("ideal_merchant_account")
+            .amount(amount)
+            .paymentMethodNonce(TestHelper.generateValidIdealPaymentId(gateway, amount))
+            .options()
+                .submitForSettlement(true)
+                .done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_IDEAL_PAYMENT_NOT_COMPLETE,
+                result.getErrors().forObject("transaction").onField("paymentMethodNonce").get(0).getCode());
+    }
+
+    @Test
     public void saleWithAmexRewards() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID).

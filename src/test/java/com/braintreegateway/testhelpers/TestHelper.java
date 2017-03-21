@@ -19,6 +19,7 @@ import org.json.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -514,6 +515,67 @@ public abstract class TestHelper {
     public static String generateInvalidUsBankAccountNonce() {
         String valid_characters = "bcdfghjkmnpqrstvwxyz23456789";
         String token = "tokenusbankacct";
+        for(int i=0; i < 4; i++) {
+            token += '_';
+            for(int j=0; j<6; j++) {
+                Integer pick = new Random().nextInt(valid_characters.length());
+                token += valid_characters.charAt(pick);
+            }
+        }
+        return token + "_xxx";
+    }
+
+    public static String generateValidIdealPaymentId(BraintreeGateway gateway, BigDecimal amount) {
+      String encodedClientToken = gateway.clientToken().generate();
+      String clientToken = TestHelper.decodeClientToken(encodedClientToken);
+      String payload = new StringBuilder()
+          .append("{\n")
+            .append("\"issuer\": \"RABON2LU\",\n")
+            .append("\"order_id\": \"ABC123\",\n")
+            .append("\"currency\": \"EUR\",\n")
+            .append("\"redirect_url\": \"https://braintree-api.com\",\n")
+            .append("\"amount\": \"")
+               .append(amount.toString())
+               .append("\"")
+          .append("}")
+        .toString();
+
+        String idealPaymentId = "";
+        try {
+            JSONObject json = new JSONObject(clientToken);
+            URL url = new URL(json.getJSONObject("braintree_api").getString("url") + "/ideal-payments");
+            String token = json.getJSONObject("braintree_api").getString("access_token");
+            SSLContext sc = SSLContext.getInstance("TLSv1.1");
+            sc.init(null, null, null);
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(sc.getSocketFactory());
+            connection.setRequestMethod("POST");
+            connection.addRequestProperty("Content-Type", "application/json");
+            connection.addRequestProperty("Braintree-Version", "2015-11-01");
+            connection.addRequestProperty("Authorization", "Bearer " + token);
+            connection.setDoOutput(true);
+            connection.getOutputStream().write(payload.getBytes("UTF-8"));
+            connection.getOutputStream().close();
+
+            InputStream responseStream = connection.getInputStream();
+
+            String body = StringUtils.inputStreamToString(responseStream);
+            responseStream.close();
+            JSONObject responseJson = new JSONObject(body);
+            idealPaymentId = responseJson.getJSONObject("data").getString("id");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return idealPaymentId;
+    }
+
+    public static String generateValidIdealPaymentId(BraintreeGateway gateway) {
+        return generateValidIdealPaymentId(gateway, SandboxValues.TransactionAmount.AUTHORIZE.amount);
+    }
+
+    public static String generateInvalidIdealPaymentId() {
+        String valid_characters = "bcdfghjkmnpqrstvwxyz23456789";
+        String token = "idealpayment";
         for(int i=0; i < 4; i++) {
             token += '_';
             for(int j=0; j<6; j++) {

@@ -146,6 +146,7 @@ public class Transaction {
     private AmexExpressCheckoutDetails amexExpressCheckoutDetails;
     private VenmoAccountDetails venmoAccountDetails;
     private UsBankAccountDetails usBankAccountDetails;
+    private IdealPaymentDetails idealPaymentDetails;
     private String planId;
     private String processorAuthorizationCode;
     private String processorResponseCode;
@@ -224,6 +225,10 @@ public class Transaction {
         NodeWrapper usBankAccountNode = node.findFirst("us-bank-account");
         if (usBankAccountNode != null) {
             usBankAccountDetails = new UsBankAccountDetails(usBankAccountNode);
+        }
+        NodeWrapper idealPaymentNode = node.findFirst("ideal-payment");
+        if (idealPaymentNode != null) {
+            idealPaymentDetails = new IdealPaymentDetails(idealPaymentNode);
         }
         planId = node.findString("plan-id");
         processorAuthorizationCode = node.findString("processor-authorization-code");
@@ -408,6 +413,10 @@ public class Transaction {
 
     public UsBankAccountDetails getUsBankAccountDetails() {
         return usBankAccountDetails;
+    }
+
+    public IdealPaymentDetails getIdealPaymentDetails() {
+        return idealPaymentDetails;
     }
 
     public String getPlanId() {
