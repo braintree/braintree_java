@@ -18,9 +18,9 @@ public class PaymentMethodNonceGateway {
         return parseResponse(response);
     }
 
-    public PaymentMethodNonce find(String paymentMethodNonce) {
+    public Result<PaymentMethodNonce> find(String paymentMethodNonce) {
         NodeWrapper response = http.get(configuration.getMerchantPath() + "/payment_method_nonces/" + paymentMethodNonce);
-        return new PaymentMethodNonce(response);
+        return parseResponse(response);
     }
 
     public Result<PaymentMethodNonce> parseResponse(NodeWrapper response) {
