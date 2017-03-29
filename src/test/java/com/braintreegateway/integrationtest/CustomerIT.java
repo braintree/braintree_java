@@ -465,8 +465,8 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
-    public void createWithOneTimePayPalAccountNonceAndPayeeEmail() {
-        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+    public void createWithOrderPaymentPayPalAccountNonceAndPayeeEmail() {
+        String nonce = TestHelper.generateOrderPaymentPayPalNonce(gateway);
         CustomerRequest request = new CustomerRequest().
             paymentMethodNonce(nonce).
             options().
@@ -476,8 +476,8 @@ public class CustomerIT extends IntegrationTest {
                 done();
 
         Result<Customer> result = gateway.customer().create(request);
-        assertFalse(result.isSuccess());
-        assertEquals(1, result.getErrors().getAllDeepValidationErrors().size());
+        assertTrue(result.isSuccess());
+        assertEquals(1, result.getTarget().getPayPalAccounts().size());
     }
 
     @Test
