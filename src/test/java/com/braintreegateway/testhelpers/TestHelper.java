@@ -535,19 +535,43 @@ public abstract class TestHelper {
     }
 
     public static String generateValidIdealPaymentId(BraintreeGateway gateway, BigDecimal amount) {
-      String encodedClientToken = gateway.clientToken().generate();
-      String clientToken = TestHelper.decodeClientToken(encodedClientToken);
-      String payload = new StringBuilder()
-          .append("{\n")
+        String encodedClientToken = gateway.clientToken().generate( new ClientTokenRequest()
+                .merchantAccountId("ideal_merchant_account"));
+        String clientToken = TestHelper.decodeClientToken(encodedClientToken);
+
+        String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
+        Configuration configuration = gateway.getConfiguration();
+        String configurationUrl = new StringBuilder()
+            .append(configuration.getBaseURL())
+            .append(configuration.getMerchantPath())
+            .append("/client_api/v1/configuration")
+            .append("?")
+            .append(new QueryString()
+                    .append("authorizationFingerprint", authorizationFingerprint)
+                    .append("configVersion", "3")
+                    .toString())
+            .toString();
+
+        String routeId = "";
+        try {
+            String responseBody = HttpHelper.get(configurationUrl);
+            routeId = extractParamFromJson("routeId", responseBody);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        String payload = new StringBuilder()
+            .append("{\n")
             .append("\"issuer\": \"RABON2LU\",\n")
             .append("\"order_id\": \"ABC123\",\n")
             .append("\"currency\": \"EUR\",\n")
             .append("\"redirect_url\": \"https://braintree-api.com\",\n")
+            .append("\"route_id\": \"" + routeId + "\",\n")
             .append("\"amount\": \"")
-               .append(amount.toString())
-               .append("\"")
-          .append("}")
-        .toString();
+            .append(amount.toString())
+            .append("\"")
+            .append("}")
+            .toString();
 
         String idealPaymentId = "";
         try {
