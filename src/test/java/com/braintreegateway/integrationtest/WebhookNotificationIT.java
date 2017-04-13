@@ -368,6 +368,36 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test
+    public void buildsSampleNotificationForConnectedMerchantStatusTransitionedWebhook()
+    {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting()
+            .sampleNotification(WebhookNotification.Kind.CONNECTED_MERCHANT_STATUS_TRANSITIONED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification()
+            .parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.CONNECTED_MERCHANT_STATUS_TRANSITIONED, notification.getKind());
+        assertEquals("my_id", notification.getConnectedMerchantStatusTransitioned().getMerchantPublicId());
+        assertEquals("new_status", notification.getConnectedMerchantStatusTransitioned().getStatus());
+        assertEquals("oauth_application_client_id", notification.getConnectedMerchantStatusTransitioned().getOAuthApplicationClientId());
+    }
+
+    @Test
+    public void buildsSampleNotificationForConnectedMerchantPayPalStatusChangedWebhook()
+    {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting()
+            .sampleNotification(WebhookNotification.Kind.CONNECTED_MERCHANT_PAYPAL_STATUS_CHANGED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification()
+            .parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.CONNECTED_MERCHANT_PAYPAL_STATUS_CHANGED, notification.getKind());
+        assertEquals("my_id", notification.getConnectedMerchantPayPalStatusChanged().getMerchantPublicId());
+        assertEquals("link", notification.getConnectedMerchantPayPalStatusChanged().getAction());
+        assertEquals("oauth_application_client_id", notification.getConnectedMerchantPayPalStatusChanged().getOAuthApplicationClientId());
+    }
+
+    @Test
     public void buildsSampleNotificationForCheck()
     {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting()

@@ -11,6 +11,8 @@ public class WebhookNotification {
         PARTNER_MERCHANT_DISCONNECTED("partner_merchant_disconnected"),
         PARTNER_MERCHANT_CONNECTED("partner_merchant_connected"),
         PARTNER_MERCHANT_DECLINED("partner_merchant_declined"),
+        CONNECTED_MERCHANT_STATUS_TRANSITIONED("connected_merchant_status_transitioned"),
+        CONNECTED_MERCHANT_PAYPAL_STATUS_CHANGED("connected_merchant_paypal_status_changed"),
         SUB_MERCHANT_ACCOUNT_APPROVED("sub_merchant_account_approved"),
         SUB_MERCHANT_ACCOUNT_DECLINED("sub_merchant_account_declined"),
         SUBSCRIPTION_CANCELED("subscription_canceled"),
@@ -53,6 +55,8 @@ public class WebhookNotification {
     private Calendar timestamp;
     private PartnerMerchant partnerMerchant;
     private AccountUpdaterDailyReport accountUpdaterDailyReport;
+    private ConnectedMerchantStatusTransitioned connectedMerchantStatusTransitioned;
+    private ConnectedMerchantPayPalStatusChanged connectedMerchantPayPalStatusChanged;
 
     public WebhookNotification(NodeWrapper node) {
         this.kind = EnumUtils.findByName(Kind.class, node.findString("kind"), Kind.UNRECOGNIZED);
@@ -86,6 +90,14 @@ public class WebhookNotification {
 
         if (wrapperNode.findFirst("partner-merchant") != null) {
             this.partnerMerchant = new PartnerMerchant(wrapperNode.findFirst("partner-merchant"));
+        }
+
+        if (wrapperNode.findFirst("connected-merchant-status-transitioned") != null) {
+            this.connectedMerchantStatusTransitioned = new ConnectedMerchantStatusTransitioned(wrapperNode.findFirst("connected-merchant-status-transitioned"));
+        }
+
+        if (wrapperNode.findFirst("connected-merchant-paypal-status-changed") != null) {
+            this.connectedMerchantPayPalStatusChanged = new ConnectedMerchantPayPalStatusChanged(wrapperNode.findFirst("connected-merchant-paypal-status-changed"));
         }
 
         if (wrapperNode.findFirst("account-updater-daily-report") != null) {
@@ -131,6 +143,14 @@ public class WebhookNotification {
 
     public PartnerMerchant getPartnerMerchant() {
         return this.partnerMerchant;
+    }
+
+    public ConnectedMerchantStatusTransitioned getConnectedMerchantStatusTransitioned() {
+        return this.connectedMerchantStatusTransitioned;
+    }
+
+    public ConnectedMerchantPayPalStatusChanged getConnectedMerchantPayPalStatusChanged() {
+        return this.connectedMerchantPayPalStatusChanged;
     }
 
     public AccountUpdaterDailyReport getAccountUpdaterDailyReport() {
