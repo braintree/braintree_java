@@ -8,6 +8,7 @@ import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -475,6 +476,7 @@ public class CustomerIT extends IntegrationTest {
                     orderId("merchant-order-id").
                     customField("custom merchant field").
                     description("merchant description").
+                    amount(new BigDecimal("1.23")).
                     done().
                 done();
 

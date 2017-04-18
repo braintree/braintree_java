@@ -1,5 +1,6 @@
 package com.braintreegateway.integrationtest;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ public class PaymentMethodIT extends IntegrationTest {
                     orderId("merchant-order-id").
                     customField("custom merchant field").
                     description("merchant description").
+                    amount(new BigDecimal("1.23")).
                     done().
                 done();
 

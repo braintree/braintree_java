@@ -1,5 +1,6 @@
 package com.braintreegateway;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ public class CustomerOptionsPayPalRequest extends Request {
     private String customField;
     private String description;
     private String orderId;
+    private BigDecimal amount;
 
     public CustomerOptionsPayPalRequest(CustomerOptionsRequest parent) {
         this.parent = parent;
@@ -38,6 +40,11 @@ public class CustomerOptionsPayPalRequest extends Request {
         return this;
     }
 
+    public CustomerOptionsPayPalRequest amount(BigDecimal amount) {
+        this.amount = amount;
+        return this;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("paypal").toXML();
@@ -58,6 +65,7 @@ public class CustomerOptionsPayPalRequest extends Request {
             addElement("payeeEmail", payeeEmail).
             addElement("description", description).
             addElement("customField", customField).
-            addElement("orderId", orderId);
+            addElement("orderId", orderId).
+            addElement("amount", amount);
     }
 }
