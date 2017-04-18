@@ -6,6 +6,9 @@ import java.util.Map;
 public class PaymentMethodOptionsPayPalRequest extends Request {
     private PaymentMethodOptionsRequest parent;
     private String payeeEmail;
+    private String customField;
+    private String description;
+    private String orderId;
 
     public PaymentMethodOptionsPayPalRequest(PaymentMethodOptionsRequest parent) {
         this.parent = parent;
@@ -17,6 +20,19 @@ public class PaymentMethodOptionsPayPalRequest extends Request {
 
     public PaymentMethodOptionsPayPalRequest payeeEmail(String payeeEmail) {
         this.payeeEmail = payeeEmail;
+        return this;
+    }
+
+    public PaymentMethodOptionsPayPalRequest description(String description) {
+        this.description = description;
+        return this;
+    }
+    public PaymentMethodOptionsPayPalRequest customField(String customField) {
+        this.customField = customField;
+        return this;
+    }
+    public PaymentMethodOptionsPayPalRequest orderId(String orderId) {
+        this.orderId = orderId;
         return this;
     }
 
@@ -37,6 +53,9 @@ public class PaymentMethodOptionsPayPalRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
-            addElement("payeeEmail", payeeEmail);
+            addElement("payeeEmail", payeeEmail).
+            addElement("description", description).
+            addElement("customField", customField).
+            addElement("orderId", orderId);
     }
 }

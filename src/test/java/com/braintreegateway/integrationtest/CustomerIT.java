@@ -465,13 +465,16 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
-    public void createWithOrderPaymentPayPalAccountNonceAndPayeeEmail() {
+    public void createWithOrderPaymentPayPalAccountNonceAndPayPalOptions() {
         String nonce = TestHelper.generateOrderPaymentPayPalNonce(gateway);
         CustomerRequest request = new CustomerRequest().
             paymentMethodNonce(nonce).
             options().
                 paypal().
                     payeeEmail("payee@example.com").
+                    orderId("merchant-order-id").
+                    customField("custom merchant field").
+                    description("merchant description").
                     done().
                 done();
 
