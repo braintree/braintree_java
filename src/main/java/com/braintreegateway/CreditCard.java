@@ -21,6 +21,7 @@ public class CreditCard implements PaymentMethod {
         DISCOVER("Discover"),
         JCB("JCB"),
         LASER("Laser"),
+        UK_MAESTRO("UK Maestro"),
         MAESTRO("Maestro"),
         MASTER_CARD("MasterCard"),
         SOLO("Solo"),
