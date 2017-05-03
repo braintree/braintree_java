@@ -8,6 +8,7 @@ import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -465,13 +466,17 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
-    public void createWithOrderPaymentPayPalAccountNonceAndPayeeEmail() {
+    public void createWithOrderPaymentPayPalAccountNonceAndPayPalOptions() {
         String nonce = TestHelper.generateOrderPaymentPayPalNonce(gateway);
         CustomerRequest request = new CustomerRequest().
             paymentMethodNonce(nonce).
             options().
                 paypal().
                     payeeEmail("payee@example.com").
+                    orderId("merchant-order-id").
+                    customField("custom merchant field").
+                    description("merchant description").
+                    amount(new BigDecimal("1.23")).
                     done().
                 done();
 

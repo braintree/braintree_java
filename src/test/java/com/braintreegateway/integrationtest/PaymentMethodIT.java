@@ -1,5 +1,6 @@
 package com.braintreegateway.integrationtest;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
-    public void createPayPalAccountFromNonceWithPayeeEmail() {
+    public void createPayPalAccountFromNonceWithPayPalOptions() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
         Customer customer = customerResult.getTarget();
@@ -55,6 +56,10 @@ public class PaymentMethodIT extends IntegrationTest {
             options().
                 paypal().
                     payeeEmail("payee@example.com").
+                    orderId("merchant-order-id").
+                    customField("custom merchant field").
+                    description("merchant description").
+                    amount(new BigDecimal("1.23")).
                     done().
                 done();
 
