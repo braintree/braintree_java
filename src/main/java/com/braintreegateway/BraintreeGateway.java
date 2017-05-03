@@ -173,6 +173,10 @@ public class BraintreeGateway {
         return new UsBankAccountGateway(this, http, configuration);
     }
 
+    public IdealPaymentGateway idealPayment() {
+        return new IdealPaymentGateway(this, http, configuration);
+    }
+
     /**
      * Returns an {@link PlanGateway} for interacting with {@link Plan} objects.
      *

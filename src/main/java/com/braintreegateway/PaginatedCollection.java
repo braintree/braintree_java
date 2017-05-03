@@ -32,7 +32,7 @@ public class PaginatedCollection<T> implements Iterable<T> {
         }
 
         public boolean hasNext() {
-            if (currentPage == 0 || this.index % this.pageSize == 0) {
+            if (currentPage == 0 || this.index % this.pageSize == 0 && this.index < this.totalSize) {
                 this.currentPage++;
                 PaginatedResult<E> results = paginatedCollection.pager.getPage(this.currentPage);
                 this.totalSize = results.getTotalItems();

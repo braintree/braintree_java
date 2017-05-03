@@ -1,5 +1,6 @@
 package com.braintreegateway;
 
+import com.braintreegateway.CreditCard;
 import com.braintreegateway.util.NodeWrapper;
 
 import java.util.ArrayList;
@@ -8,158 +9,11 @@ import java.util.List;
 import java.util.Comparator;
 import java.util.Collections;
 
-public class CreditCard implements PaymentMethod {
-    public static final String VALUE_YES = "Yes";
-    public static final String VALUE_NO = "No";
-    public static final String VALUE_UNKNOWN = "Unknown";
-
-    public enum CardType {
-        AMEX("American Express"),
-        CARTE_BLANCHE("Carte Blanche"),
-        CHINA_UNION_PAY("China UnionPay"),
-        DINERS_CLUB_INTERNATIONAL("Diners Club"),
-        DISCOVER("Discover"),
-        JCB("JCB"),
-        LASER("Laser"),
-        UK_MAESTRO("UK Maestro"),
-        MAESTRO("Maestro"),
-        MASTER_CARD("MasterCard"),
-        SOLO("Solo"),
-        SWITCH("Switch"),
-        VISA("Visa");
-
-        private final String name;
-
-        CardType(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
-
-    public enum CustomerLocation {
-        INTERNATIONAL("international"),
-        US("us");
-
-        private final String name;
-
-        CustomerLocation(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
-
-    public enum Commercial {
-        YES(VALUE_YES),
-        NO(VALUE_NO),
-        UNKNOWN(VALUE_UNKNOWN);
-
-        private final String value;
-
-        Commercial(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return value;
-        }
-    }
-
-    public enum Debit {
-        YES(VALUE_YES),
-        NO(VALUE_NO),
-        UNKNOWN(VALUE_UNKNOWN);
-
-        private final String value;
-
-        Debit(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return value;
-        }
-    }
-
-    public enum DurbinRegulated {
-        YES(VALUE_YES),
-        NO(VALUE_NO),
-        UNKNOWN(VALUE_UNKNOWN);
-
-        private final String value;
-
-        DurbinRegulated(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return value;
-        }
-    }
-
-    public enum Healthcare {
-        YES(VALUE_YES),
-        NO(VALUE_NO),
-        UNKNOWN(VALUE_UNKNOWN);
-
-        private final String value;
-
-        Healthcare(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return value;
-        }
-    }
-
-    public enum Payroll {
-        YES(VALUE_YES),
-        NO(VALUE_NO),
-        UNKNOWN(VALUE_UNKNOWN);
-
-        private final String value;
-
-        Payroll(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return value;
-        }
-    }
-
-    public enum Prepaid {
-        YES(VALUE_YES),
-        NO(VALUE_NO),
-        UNKNOWN(VALUE_UNKNOWN);
-
-        private final String value;
-
-        Prepaid(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return value;
-        }
-    }
+public class VisaCheckoutCard implements PaymentMethod {
 
     private Address billingAddress;
     private String bin;
+    private String callId;
     private String cardholderName;
     private String cardType;
     private Calendar createdAt;
@@ -187,11 +41,12 @@ public class CreditCard implements PaymentMethod {
     private Calendar updatedAt;
     private CreditCardVerification verification;
 
-    public CreditCard(NodeWrapper node) {
+    public VisaCheckoutCard(NodeWrapper node) {
         token = node.findString("token");
         createdAt = node.findDateTime("created-at");
         updatedAt = node.findDateTime("updated-at");
         bin = node.findString("bin");
+        callId = node.findString("call-id");
         cardType = node.findString("card-type");
         cardholderName = node.findString("cardholder-name");
         customerId = node.findString("customer-id");
@@ -200,7 +55,6 @@ public class CreditCard implements PaymentMethod {
         expirationYear = node.findString("expiration-year");
         imageUrl = node.findString("image-url");
         isDefault = node.findBoolean("default");
-        isVenmoSdk = node.findBoolean("venmo-sdk");
         isExpired = node.findBoolean("expired");
         last4 = node.findString("last-4");
         commercial = node.findString("commercial");
@@ -251,6 +105,10 @@ public class CreditCard implements PaymentMethod {
         return bin;
     }
 
+    public String getCallId() {
+        return callId;
+    }
+
     public String getCardholderName() {
         return cardholderName;
     }
@@ -295,63 +153,63 @@ public class CreditCard implements PaymentMethod {
         return getBin() + "******" + getLast4();
     }
 
-    public Commercial getCommercial() {
-      if(commercial.equals(Commercial.YES.toString())) {
-        return Commercial.YES;
-      } else if (commercial.equals(Commercial.NO.toString())) {
-        return Commercial.NO;
+    public CreditCard.Commercial getCommercial() {
+      if(commercial.equals(CreditCard.Commercial.YES.toString())) {
+        return CreditCard.Commercial.YES;
+      } else if (commercial.equals(CreditCard.Commercial.NO.toString())) {
+        return CreditCard.Commercial.NO;
       } else {
-        return Commercial.UNKNOWN;
+        return CreditCard.Commercial.UNKNOWN;
       }
     }
 
-    public Debit getDebit() {
-      if(debit.equals(Debit.YES.toString())) {
-        return Debit.YES;
-      } else if (debit.equals(Debit.NO.toString())) {
-        return Debit.NO;
+    public CreditCard.Debit getDebit() {
+      if(debit.equals(CreditCard.Debit.YES.toString())) {
+        return CreditCard.Debit.YES;
+      } else if (debit.equals(CreditCard.Debit.NO.toString())) {
+        return CreditCard.Debit.NO;
       } else {
-        return Debit.UNKNOWN;
+        return CreditCard.Debit.UNKNOWN;
       }
     }
 
-    public DurbinRegulated getDurbinRegulated() {
-      if(durbinRegulated.equals(DurbinRegulated.YES.toString())) {
-        return DurbinRegulated.YES;
-      } else if (durbinRegulated.equals(DurbinRegulated.NO.toString())) {
-        return DurbinRegulated.NO;
+    public CreditCard.DurbinRegulated getDurbinRegulated() {
+      if(durbinRegulated.equals(CreditCard.DurbinRegulated.YES.toString())) {
+        return CreditCard.DurbinRegulated.YES;
+      } else if (durbinRegulated.equals(CreditCard.DurbinRegulated.NO.toString())) {
+        return CreditCard.DurbinRegulated.NO;
       } else {
-        return DurbinRegulated.UNKNOWN;
+        return CreditCard.DurbinRegulated.UNKNOWN;
       }
     }
 
-    public Healthcare getHealthcare() {
-      if(healthcare.equals(Healthcare.YES.toString())) {
-        return Healthcare.YES;
-      } else if (healthcare.equals(Healthcare.NO.toString())) {
-        return Healthcare.NO;
+    public CreditCard.Healthcare getHealthcare() {
+      if(healthcare.equals(CreditCard.Healthcare.YES.toString())) {
+        return CreditCard.Healthcare.YES;
+      } else if (healthcare.equals(CreditCard.Healthcare.NO.toString())) {
+        return CreditCard.Healthcare.NO;
       } else {
-        return Healthcare.UNKNOWN;
+        return CreditCard.Healthcare.UNKNOWN;
       }
     }
 
-    public Payroll getPayroll() {
-      if(payroll.equals(Payroll.YES.toString())) {
-        return Payroll.YES;
-      } else if (payroll.equals(Payroll.NO.toString())) {
-        return Payroll.NO;
+    public CreditCard.Payroll getPayroll() {
+      if(payroll.equals(CreditCard.Payroll.YES.toString())) {
+        return CreditCard.Payroll.YES;
+      } else if (payroll.equals(CreditCard.Payroll.NO.toString())) {
+        return CreditCard.Payroll.NO;
       } else {
-        return Payroll.UNKNOWN;
+        return CreditCard.Payroll.UNKNOWN;
       }
     }
 
-    public Prepaid getPrepaid() {
-      if(prepaid.equals(Prepaid.YES.toString())) {
-        return Prepaid.YES;
-      } else if (prepaid.equals(Prepaid.NO.toString())) {
-        return Prepaid.NO;
+    public CreditCard.Prepaid getPrepaid() {
+      if(prepaid.equals(CreditCard.Prepaid.YES.toString())) {
+        return CreditCard.Prepaid.YES;
+      } else if (prepaid.equals(CreditCard.Prepaid.NO.toString())) {
+        return CreditCard.Prepaid.NO;
       } else {
-        return Prepaid.UNKNOWN;
+        return CreditCard.Prepaid.UNKNOWN;
       }
     }
 

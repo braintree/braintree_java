@@ -966,8 +966,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_PASS_THRU_CAVV_IS_REQUIRED,
                 result.getErrors().forObject("transaction").forObject("threeDSecurePassThru").onField("cavv").get(0).getCode());
-        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_PASS_THRU_XID_IS_REQUIRED,
-                result.getErrors().forObject("transaction").forObject("threeDSecurePassThru").onField("xid").get(0).getCode());
     }
 
     @Test
@@ -1097,6 +1095,49 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(ValidationErrorCode.TRANSACTION_PAYMENT_METHOD_NONCE_UNKNOWN,
                 result.getErrors().forObject("transaction").onField("paymentMethodNonce").get(0).getCode());
 
+    }
+
+    @Test
+    public void saleWithIdealPaymentId() {
+        TransactionRequest request = new TransactionRequest()
+            .merchantAccountId("ideal_merchant_account")
+            .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
+            .paymentMethodNonce(TestHelper.generateValidIdealPaymentId(gateway))
+            .orderId("ABC123")
+            .options()
+                .submitForSettlement(true)
+                .done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+        assertEquals(Transaction.Status.SETTLED, transaction.getStatus());
+
+        IdealPaymentDetails idealPaymentDetails = transaction.getIdealPaymentDetails();
+        assertTrue(Pattern.matches("^idealpayment_\\w{6,}$", idealPaymentDetails.getIdealPaymentId()));
+        assertTrue(Pattern.matches("^\\d{16,}$", idealPaymentDetails.getIdealTransactionId()));
+        assertTrue(idealPaymentDetails.getImageUrl().startsWith("https://"));
+        assertNotNull(idealPaymentDetails.getMaskedIban());
+        assertNotNull(idealPaymentDetails.getBic());
+    }
+
+    @Test
+    public void saleWithInvalidIdealPaymentId() {
+        BigDecimal amount = new BigDecimal("3.00");
+
+        TransactionRequest request = new TransactionRequest()
+            .merchantAccountId("ideal_merchant_account")
+            .amount(amount)
+            .paymentMethodNonce(TestHelper.generateValidIdealPaymentId(gateway, amount))
+            .options()
+                .submitForSettlement(true)
+                .done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_IDEAL_PAYMENT_NOT_COMPLETE,
+                result.getErrors().forObject("transaction").onField("paymentMethodNonce").get(0).getCode());
     }
 
     @Test
@@ -1904,6 +1945,41 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
         assertNull(result.getTarget().getRiskData().getId());
+    }
+
+    @Test
+    public void saleWithSkipAvsOptionSet() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2019").
+                done().
+                options().
+                skipAvs(true).
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        assertNull(result.getTarget().getAvsErrorResponseCode());
+        assertEquals("B", result.getTarget().getAvsStreetAddressResponseCode());
+    }
+
+    @Test
+    public void saleWithSkipCvvOptionSet() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2019").
+                done().
+                options().
+                skipCvv(true).
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        assertEquals("B", result.getTarget().getCvvResponseCode());
     }
 
     @Test
@@ -3686,7 +3762,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             id().is(transaction.getId()).
             paypalPaymentId().startsWith("PAY").
             paypalPayerEmail().is("payer@example.com").
-            paypalAuthorizationId().startsWith("SALE");
+            paypalAuthorizationId().startsWith("AUTH");
 
         assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
     }

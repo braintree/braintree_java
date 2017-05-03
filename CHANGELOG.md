@@ -1,8 +1,18 @@
+## 2.72.0
+
+* Add `skipAvs` and `skipCvv` options to `TransactionOptionsRequest`
+* `CreditCardVerification` now contains `amount` and `currencyIsoCode`
+* Add iDEAL support
+* Add Masterpass support
+* Add Visa Checkout support
+* Add support for additional PayPal options when vaulting a PayPal Order
+* Stop sending `account_description` field from us bank accounts
+* Add `ConnectedMerchantStatusTransitioned` and `ConnectedMerchantPayPalStatusChanged` Auth webhooks
+
 ## 2.71.0
 * Stop sending account_description field from us bank accounts
 
 ## 2.70.0
-
 * Add functionality to list all merchant accounts for a merchant with `MerchantAccount.all`.
 * Update UsBank tests to use legal routing numbers.
 * Add option `skip_advanced_fraud_check` for transaction flows.

@@ -37,4 +37,3 @@ public final class PartnerMerchant {
         return clientSideEncryptionKey;
     }
 }
-

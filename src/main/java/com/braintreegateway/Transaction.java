@@ -146,6 +146,9 @@ public class Transaction {
     private AmexExpressCheckoutDetails amexExpressCheckoutDetails;
     private VenmoAccountDetails venmoAccountDetails;
     private UsBankAccountDetails usBankAccountDetails;
+    private IdealPaymentDetails idealPaymentDetails;
+    private VisaCheckoutCardDetails visaCheckoutCardDetails;
+    private MasterpassCardDetails masterpassCardDetails;
     private String planId;
     private String processorAuthorizationCode;
     private String processorResponseCode;
@@ -224,6 +227,18 @@ public class Transaction {
         NodeWrapper usBankAccountNode = node.findFirst("us-bank-account");
         if (usBankAccountNode != null) {
             usBankAccountDetails = new UsBankAccountDetails(usBankAccountNode);
+        }
+        NodeWrapper idealPaymentNode = node.findFirst("ideal-payment");
+        if (idealPaymentNode != null) {
+            idealPaymentDetails = new IdealPaymentDetails(idealPaymentNode);
+        }
+        NodeWrapper visaCheckoutCardNode = node.findFirst("visa-checkout-card");
+        if (visaCheckoutCardNode != null) {
+            visaCheckoutCardDetails = new VisaCheckoutCardDetails(visaCheckoutCardNode);
+        }
+        NodeWrapper masterpassCardNode = node.findFirst("masterpass-card");
+        if (masterpassCardNode != null) {
+            masterpassCardDetails = new MasterpassCardDetails(masterpassCardNode);
         }
         planId = node.findString("plan-id");
         processorAuthorizationCode = node.findString("processor-authorization-code");
@@ -408,6 +423,18 @@ public class Transaction {
 
     public UsBankAccountDetails getUsBankAccountDetails() {
         return usBankAccountDetails;
+    }
+
+    public IdealPaymentDetails getIdealPaymentDetails() {
+        return idealPaymentDetails;
+    }
+
+    public VisaCheckoutCardDetails getVisaCheckoutCardDetails() {
+        return visaCheckoutCardDetails;
+    }
+
+    public MasterpassCardDetails getMasterpassCardDetails() {
+        return masterpassCardDetails;
     }
 
     public String getPlanId() {
