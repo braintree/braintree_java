@@ -48,10 +48,10 @@ public class PaymentMethodNonceIT extends IntegrationTest {
 
         String nonce = TestHelper.generateThreeDSecureNonce(gateway, creditCardRequest);
 
-        PaymentMethodNonce foundNonce = gateway.paymentMethodNonce().find(nonce);
+        Result<PaymentMethodNonce> foundNonce = gateway.paymentMethodNonce().find(nonce);
 
-        assertEquals(nonce, foundNonce.getNonce());
-        assertTrue(foundNonce.getThreeDSecureInfo().isLiabilityShifted());
+        assertEquals(nonce, foundNonce.getTarget().getNonce());
+        assertTrue(foundNonce.getTarget().getThreeDSecureInfo().isLiabilityShifted());
     }
 
     @Test
@@ -60,9 +60,9 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         Customer customer = customerResult.getTarget();
         String nonce = TestHelper.generateUnlockedNonce(gateway, null, SandboxValues.CreditCardNumber.VISA.number);
 
-        PaymentMethodNonce foundNonce = gateway.paymentMethodNonce().find(nonce);
+        Result<PaymentMethodNonce> foundNonce = gateway.paymentMethodNonce().find(nonce);
 
-        assertNull(foundNonce.getThreeDSecureInfo());
+        assertNull(foundNonce.getTarget().getThreeDSecureInfo());
     }
     @Test
     public void findRaisesIfNotFound() {
