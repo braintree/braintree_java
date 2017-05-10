@@ -34,19 +34,7 @@ public abstract class NodeWrapper {
     }
 
     public Calendar findDate(String expression) {
-        try {
-            String dateString = findString(expression);
-            if (dateString == null) {
-                return null;
-            }
-            SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-            dateFormat.setTimeZone(TimeZone.getTimeZone(UTC_DESCRIPTOR));
-            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(UTC_DESCRIPTOR));
-            calendar.setTime(dateFormat.parse(dateString));
-            return calendar;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return findDateTime(expression);
     }
 
     public Calendar findDateTime(String expression) {
