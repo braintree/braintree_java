@@ -14,4 +14,5 @@ public final class PaymentInstrumentType {
     public static final String VISA_CHECKOUT_CARD = "visa_checkout_card";
     public static final String MASTERPASS_CARD = "masterpass_card";
     public static final String US_BANK_ACCOUNT = "us_bank_account";
+    public static final String IDEAL_PAYMENT = "ideal_payment";
 }

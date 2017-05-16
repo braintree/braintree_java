@@ -1,3 +1,7 @@
+## Unreleased
+
+* Add `IDEAL_PAYMENT` to `PaymentInstrumentType`
+
 ## 2.72.0
 
 * Add `skipAvs` and `skipCvv` options to `TransactionOptionsRequest`
