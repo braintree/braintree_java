@@ -6,12 +6,18 @@ public class PaymentMethodNonce {
     private String publicId;
     private Boolean isLocked;
     private Boolean isConsumed;
+    private PaymentMethodNonceDetails details;
     private ThreeDSecureInfo threeDSecureInfo;
 
     public PaymentMethodNonce(NodeWrapper node) {
         publicId = node.findString("nonce");
         isLocked = node.findBoolean("locked");
         isConsumed = node.findBoolean("consumed");
+
+        NodeWrapper detailsNode = node.findFirst("details");
+        if (detailsNode != null && !detailsNode.isBlank()) {
+            details = new PaymentMethodNonceDetails(detailsNode);
+        }
 
         NodeWrapper threeDSecureInfoNode = node.findFirst("three-d-secure-info");
         if (threeDSecureInfoNode != null && !threeDSecureInfoNode.isBlank()) {
@@ -33,6 +39,10 @@ public class PaymentMethodNonce {
 
     public Boolean isConsumed() {
         return isConsumed;
+    }
+
+    public PaymentMethodNonceDetails getDetails() {
+        return details;
     }
 
     public ThreeDSecureInfo getThreeDSecureInfo() {
