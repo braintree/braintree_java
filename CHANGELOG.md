@@ -1,3 +1,7 @@
+## Unreleased
+
+* Add additional properties to PaymentMethodNonce
+
 ## 2.72.0
 
 * Add `skipAvs` and `skipCvv` options to `TransactionOptionsRequest`
