@@ -1,6 +1,6 @@
-## Unreleased
+## 2.72.1
 
-* Add additional properties to PaymentMethodNonce
+* Add additional properties to `PaymentMethodNonce`
 
 ## 2.72.0
 
