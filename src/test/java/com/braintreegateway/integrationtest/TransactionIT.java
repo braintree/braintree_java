@@ -4013,15 +4013,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void fieldsWithUnrecognizedValuesAreCategorizedAsSuch() {
-      Transaction transaction = gateway.transaction().find("unrecognized_transaction_id");
-
-      assertEquals(Transaction.GatewayRejectionReason.UNRECOGNIZED, transaction.getGatewayRejectionReason());
-      assertEquals(Transaction.EscrowStatus.UNRECOGNIZED, transaction.getEscrowStatus());
-      assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
-    }
-
-    @Test
     public void snapshotPlanIdAddOnsAndDiscountsFromSubscription() {
         CustomerRequest customerRequest = new CustomerRequest().
             creditCard().
