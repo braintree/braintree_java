@@ -1,36 +1,36 @@
 package com.braintreegateway.integrationtest;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.StreamHandler;
+
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Configuration;
 import com.braintreegateway.CreditCard;
 import com.braintreegateway.CreditCardRequest;
 import com.braintreegateway.Customer;
 import com.braintreegateway.CustomerRequest;
+import com.braintreegateway.DocumentUpload;
+import com.braintreegateway.DocumentUploadRequest;
 import com.braintreegateway.Environment;
-import com.braintreegateway.exceptions.DownForMaintenanceException;
-import com.braintreegateway.exceptions.AuthenticationException;
-import com.braintreegateway.exceptions.UnexpectedException;
-import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 import com.braintreegateway.Result;
-import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.exceptions.AuthenticationException;
+import com.braintreegateway.exceptions.DownForMaintenanceException;
+import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.util.StringUtils;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import java.util.logging.StreamHandler;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-import java.util.logging.Handler;
-import java.io.OutputStream;
-import java.io.IOException;
-import java.io.FileInputStream;
-import java.io.File;
-import java.io.ByteArrayOutputStream;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @SuppressWarnings("deprecation")
 public class HttpTestIT extends IntegrationTest {
@@ -68,6 +68,17 @@ public class HttpTestIT extends IntegrationTest {
         Configuration configuration = gateway.getConfiguration();
         NodeWrapper node = new Http(configuration).post(configuration.getMerchantPath() + "/customers", request);
         assertEquals("Dan", node.findString("first-name"));
+    }
+
+    @Test
+    public void smokeTestPostMultipart() {
+        URL fileToUpload = getClass().getClassLoader().getResource("fixtures/bt_logo.png");
+        DocumentUploadRequest request = new DocumentUploadRequest(DocumentUpload.Kind.IDENTITY_DOCUMENT,
+                                                                        new File(fileToUpload.getFile()));
+
+        Configuration configuration = gateway.getConfiguration();
+        NodeWrapper node = new Http(configuration).postMultipart(configuration.getMerchantPath() + "/document_uploads", request.getRequest(), request.getFile());
+        assertEquals("image/png", node.findString("content-type"));
     }
 
     @Test

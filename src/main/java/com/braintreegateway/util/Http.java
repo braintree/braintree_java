@@ -1,12 +1,17 @@
 package com.braintreegateway.util;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.security.KeyStore;
 import java.security.Principal;
@@ -18,6 +23,7 @@ import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -44,7 +50,17 @@ import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 
+import org.json.JSONObject;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
+
 public class Http {
+    public static final String LINE_FEED = "\r\n";
     private volatile SSLSocketFactory sslSocketFactory;
 
     enum RequestMethod {
@@ -66,35 +82,41 @@ public class Http {
     }
 
     public NodeWrapper post(String url) {
-        return httpRequest(RequestMethod.POST, url, null);
+        return httpRequest(RequestMethod.POST, url, null, null);
     }
 
     public NodeWrapper post(String url, Request request) {
-        return httpRequest(RequestMethod.POST, url, request.toXML());
+        return httpRequest(RequestMethod.POST, url, request.toXML(), null);
     }
 
     public NodeWrapper post(String url, String request) {
-        return httpRequest(RequestMethod.POST, url, request);
+        return httpRequest(RequestMethod.POST, url, request, null);
+    }
+
+    public NodeWrapper postMultipart(String url, String request, File file) {
+        return httpRequest(RequestMethod.POST, url, request, file);
     }
 
     public NodeWrapper put(String url) {
-        return httpRequest(RequestMethod.PUT, url, null);
+        return httpRequest(RequestMethod.PUT, url, null, null);
     }
 
     public NodeWrapper put(String url, Request request) {
-        return httpRequest(RequestMethod.PUT, url, request.toXML());
+        return httpRequest(RequestMethod.PUT, url, request.toXML(), null);
     }
 
     private NodeWrapper httpRequest(RequestMethod requestMethod, String url) {
-        return httpRequest(requestMethod, url, null);
+        return httpRequest(requestMethod, url, null, null);
     }
 
-    private NodeWrapper httpRequest(RequestMethod requestMethod, String url, String postBody) {
+    private NodeWrapper httpRequest(RequestMethod requestMethod, String url, String postBody, File file) {
         HttpURLConnection connection = null;
         NodeWrapper nodeWrapper = null;
+        String boundary = "boundary" + System.currentTimeMillis();
+        String contentType = file == null ? "application/xml" : "multipart/form-data; boundary=" + boundary;
 
         try {
-            connection = buildConnection(requestMethod, url);
+            connection = buildConnection(requestMethod, url, contentType);
 
             Logger logger = configuration.getLogger();
             if (postBody != null) {
@@ -109,7 +131,20 @@ public class Http {
                 OutputStream outputStream = null;
                 try {
                     outputStream = connection.getOutputStream();
-                    outputStream.write(postBody.getBytes("UTF-8"));
+                    PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, "UTF-8"), true);
+
+                    if (file == null) {
+                        outputStream.write(postBody.getBytes("UTF-8"));
+                    } else {
+                        JSONObject obj = new JSONObject(postBody);
+                        Iterator<?> keys = obj.keys();
+                        while (keys.hasNext()) {
+                            String key = (String) keys.next();
+                            addFormField(key, (String) obj.get(key), writer, boundary);
+                        }
+                        addFilePart("file", file, writer, outputStream, boundary);
+                        finish(writer, boundary);
+                    }
                 } finally {
                     if (outputStream != null) {
                         outputStream.close();
@@ -156,6 +191,43 @@ public class Http {
         }
 
         return nodeWrapper;
+    }
+
+    private void addFormField(String key, String value, PrintWriter writer, String boundary) {
+        writer.append("--" + boundary).append(LINE_FEED);
+        writer.append("Content-Disposition: form-data; name=\"" + key + "\"").append(LINE_FEED);
+        writer.append(LINE_FEED);
+        writer.append(value).append(LINE_FEED);
+        writer.flush();
+    }
+
+    private void addFilePart(String fieldName, File uploadFile, PrintWriter writer, OutputStream outputStream, String boundary)
+      throws IOException {
+        String filename = uploadFile.getName();
+
+        writer.append("--" + boundary).append(LINE_FEED);
+        writer.append("Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + filename + "\"").append(LINE_FEED);
+        writer.append("Content-Type: " + URLConnection.guessContentTypeFromName(filename)).append(LINE_FEED);
+        writer.append(LINE_FEED);
+        writer.flush();
+
+        FileInputStream inputStream = new FileInputStream(uploadFile);
+        byte[] buffer = new byte[4096];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+        outputStream.flush();
+        inputStream.close();
+
+        writer.append(LINE_FEED);
+        writer.flush();
+    }
+
+    private void finish(PrintWriter writer, String boundary) {
+        writer.append("--" + boundary + "--").append(LINE_FEED);
+        writer.append(LINE_FEED).flush();
+        writer.close();
     }
 
     private String formatSanitizeBodyForLog(String body) {
@@ -241,7 +313,7 @@ public class Http {
         return sslSocketFactory;
     }
 
-    private HttpURLConnection buildConnection(RequestMethod requestMethod, String urlString) throws java.io.IOException {
+    private HttpURLConnection buildConnection(RequestMethod requestMethod, String urlString, String contentType) throws java.io.IOException {
         URL url = new URL(configuration.getBaseURL() + urlString);
         HttpURLConnection connection;
         if (configuration.usesProxy()) {
@@ -255,7 +327,8 @@ public class Http {
         connection.addRequestProperty("X-ApiVersion", Configuration.apiVersion());
         connection.addRequestProperty("Authorization", authorizationHeader());
         connection.addRequestProperty("Accept-Encoding", "gzip");
-        connection.addRequestProperty("Content-Type", "application/xml");
+        connection.setRequestProperty("Content-Type", contentType);
+
         connection.setDoOutput(true);
         connection.setReadTimeout(configuration.getTimeout());
         return connection;

@@ -258,4 +258,8 @@ public class BraintreeGateway {
     public TestingGateway testing() {
         return new TestingGateway(http, configuration);
     }
+
+    public DocumentUploadGateway documentUpload() {
+        return new DocumentUploadGateway(http, configuration);
+    }
 }
