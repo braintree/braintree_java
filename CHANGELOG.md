@@ -1,5 +1,6 @@
-## unreleased
+## Unreleased
 
+* Add `IDEAL_PAYMENT` to `PaymentInstrumentType`
 * Add document upload API
 
 ## 2.72.1

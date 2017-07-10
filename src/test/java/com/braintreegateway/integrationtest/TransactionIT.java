@@ -1112,6 +1112,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
 
         Transaction transaction = result.getTarget();
+        assertEquals(PaymentInstrumentType.IDEAL_PAYMENT, transaction.getPaymentInstrumentType());
         assertEquals(Transaction.Status.SETTLED, transaction.getStatus());
 
         IdealPaymentDetails idealPaymentDetails = transaction.getIdealPaymentDetails();
