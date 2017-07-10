@@ -1,6 +1,11 @@
 ## Unreleased
 
 * Add `IDEAL_PAYMENT` to `PaymentInstrumentType`
+* Add document upload API
+
+## 2.72.1
+
+* Add additional properties to `PaymentMethodNonce`
 
 ## 2.72.0
 

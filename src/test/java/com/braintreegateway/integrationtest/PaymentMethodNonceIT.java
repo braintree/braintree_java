@@ -40,6 +40,19 @@ public class PaymentMethodNonceIT extends IntegrationTest {
     }
 
     @Test
+    public void findCreditCardNonceReturnsValidValues() {
+        String nonceString = "fake-valid-nonce";
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
+        assertNotNull(nonce);
+        assertEquals(nonceString, nonce.getNonce());
+        assertEquals(false, nonce.isConsumed());
+        assertEquals(false, nonce.isDefault());
+        assertNotNull(nonce.getDetails());
+        assertEquals("81", nonce.getDetails().getLastTwo());
+        assertEquals("Visa", nonce.getDetails().getCardType());
+    }
+
+    @Test
     public void findReturnsPaymentMethodNonce() {
         CreditCardRequest creditCardRequest = new CreditCardRequest().
             number(SandboxValues.CreditCardNumber.VISA.number).
