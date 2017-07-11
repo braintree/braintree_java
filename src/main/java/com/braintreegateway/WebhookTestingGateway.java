@@ -58,6 +58,8 @@ public class WebhookTestingGateway {
             case CONNECTED_MERCHANT_PAYPAL_STATUS_CHANGED: return connectedMerchantPayPalStatusChangedXml(id);
             case SUBSCRIPTION_CHARGED_SUCCESSFULLY: return subscriptionChargedSuccessfullyXml(id);
             case ACCOUNT_UPDATER_DAILY_REPORT: return accountUpdaterDailyReportXml(id);
+            case IDEAL_PAYMENT_COMPLETE: return idealPaymentCompleteXml(id);
+            case IDEAL_PAYMENT_FAILED: return idealPaymentFailedXml(id);
             default: return subscriptionXml(id);
         }
     }
@@ -342,6 +344,52 @@ public class WebhookTestingGateway {
         return node("account-updater-daily-report",
                 node("report-url", "link-to-csv-report"),
                 node("report-date", TYPE_DATE, "2016-01-14")
+        );
+    }
+
+    private String idealPaymentCompleteXml(String id) {
+        return node("ideal-payment",
+                node("id", id),
+                node("status", "COMPLETE"),
+                node("issuer", "ABCISSUER"),
+                node("order-id", "ORDERABC"),
+                node("currency", "EUR"),
+                node("amount", "10.00"),
+                node("created-at", "2016-11-29T23:27:34.547Z"),
+                node("approval-url", "https://example.com"),
+                node("ideal-transaction-id", "1234567890"),
+                node("iban-bank-account",
+                    node("created-at", "2016-11-29T23:27:36.386Z"),
+                    node("description", "DESCRIPTION ABC"),
+                    node("bic", "XXXXNLXX"),
+                    node("iban-country", "11"),
+                    node("iban-account-number-last-4", "0000"),
+                    node("masked-iban", "NL************0000"),
+                    node("account-holder-name", "Account Holder")
+                )
+        );
+    }
+
+    private String idealPaymentFailedXml(String id) {
+        return node("ideal-payment",
+                node("id", id),
+                node("status", "FAILED"),
+                node("issuer", "ABCISSUER"),
+                node("order-id", "ORDERABC"),
+                node("currency", "EUR"),
+                node("amount", "10.00"),
+                node("created-at", "2016-11-29T23:27:34.547Z"),
+                node("approval-url", "https://example.com"),
+                node("ideal-transaction-id", "1234567890"),
+                node("iban-bank-account",
+                    node("created-at", "2016-11-29T23:27:36.386Z"),
+                    node("description", "DESCRIPTION ABC"),
+                    node("bic", "XXXXNLXX"),
+                    node("iban-country", "11"),
+                    node("iban-account-number-last-4", "0000"),
+                    node("masked-iban", "NL************0000"),
+                    node("account-holder-name", "Account Holder")
+                )
         );
     }
 
