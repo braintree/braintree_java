@@ -179,6 +179,7 @@ public class Transaction {
     private CoinbaseDetails coinbaseDetails;
     private String authorizedTransactionId;
     private List<String> partialSettlementTransactionIds;
+    private List<AuthorizationAdjustment> authorizationAdjustments;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -306,6 +307,11 @@ public class Transaction {
         partialSettlementTransactionIds = new ArrayList<String>();
         for (NodeWrapper partialSettlementTransactionIdNode : node.findAll("partial-settlement-transaction-ids/*")) {
             partialSettlementTransactionIds.add(partialSettlementTransactionIdNode.findString("."));
+        }
+
+        authorizationAdjustments = new ArrayList<AuthorizationAdjustment>();
+        for (NodeWrapper authorizationAdjustmentNode : node.findAll("authorization-adjustments/authorization-adjustment")) {
+            authorizationAdjustments.add(new AuthorizationAdjustment(authorizationAdjustmentNode));
         }
     }
 
@@ -583,5 +589,9 @@ public class Transaction {
 
     public List<String> getPartialSettlementTransactionIds() {
         return partialSettlementTransactionIds;
+    }
+
+    public List<AuthorizationAdjustment> getAuthorizationAdjustments() {
+        return authorizationAdjustments;
     }
 }

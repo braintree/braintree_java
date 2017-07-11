@@ -2,6 +2,7 @@
 
 * Add `IDEAL_PAYMENT` to `PaymentInstrumentType`
 * Add document upload API
+* Add AuthorizationAdjustment class and `authorizationAdjustments` to Transaction
 
 ## 2.72.1
 

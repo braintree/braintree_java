@@ -29,6 +29,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     public static final String DISBURSEMENT_TRANSACTION_ID = "deposittransaction";
     public static final String DISPUTED_TRANSACTION_ID = "disputedtransaction";
     public static final String TWO_DISPUTE_TRANSACTION_ID = "2disputetransaction";
+    public static final String AUTH_ADJUSTMENT_TRANSACTION_ID = "authadjustmenttransaction";
 
     @SuppressWarnings("deprecation")
     @Test
@@ -2209,6 +2210,17 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Dispute.Kind.CHARGEBACK, dispute.getKind());
         assertEquals(openedCalendar, dispute.getOpenedDate());
         assertEquals(wonCalendar, dispute.getWonDate());
+    }
+
+    @Test
+    public void findWithAuthAdjustments() throws Exception {
+        Transaction foundTransaction = gateway.transaction().find(AUTH_ADJUSTMENT_TRANSACTION_ID);
+        List<AuthorizationAdjustment> authorizationAdjustments = foundTransaction.getAuthorizationAdjustments();
+        AuthorizationAdjustment authorizationAdjustment = authorizationAdjustments.get(0);
+
+        assertEquals(new BigDecimal("-20.00"), authorizationAdjustment.getAmount());
+        assertEquals(true, authorizationAdjustment.isSuccess());
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), authorizationAdjustment.getTimestamp().get(Calendar.YEAR));
     }
 
     @Test
