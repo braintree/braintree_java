@@ -412,12 +412,6 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertEquals("10.00", idealPayment.getAmount().toString());
         assertEquals("https://example.com", idealPayment.getApprovalUrl());
         assertEquals("1234567890", idealPayment.getIdealTransactionId());
-        assertEquals("DESCRIPTION ABC", idealPayment.getIbanBankAccount().getDescription());
-        assertEquals("XXXXNLXX", idealPayment.getIbanBankAccount().getBic());
-        assertEquals("11", idealPayment.getIbanBankAccount().getIbanCountry());
-        assertEquals("0000", idealPayment.getIbanBankAccount().getIbanAccountNumberLast4());
-        assertEquals("NL************0000", idealPayment.getIbanBankAccount().getMaskedIban());
-        assertEquals("Account Holder", idealPayment.getIbanBankAccount().getAccountHolderName());
     }
 
     @Test
@@ -435,11 +429,6 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertEquals("10.00", idealPayment.getAmount().toString());
         assertEquals("https://example.com", idealPayment.getApprovalUrl());
         assertEquals("1234567890", idealPayment.getIdealTransactionId());
-        assertEquals("DESCRIPTION ABC", idealPayment.getIbanBankAccount().getDescription());
-        assertEquals("XXXXNLXX", idealPayment.getIbanBankAccount().getBic());
-        assertEquals("11", idealPayment.getIbanBankAccount().getIbanCountry());
-        assertEquals("0000", idealPayment.getIbanBankAccount().getIbanAccountNumberLast4());
-        assertEquals("NL************0000", idealPayment.getIbanBankAccount().getMaskedIban());
     }
 
     @Test

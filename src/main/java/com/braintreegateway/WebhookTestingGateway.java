@@ -357,16 +357,7 @@ public class WebhookTestingGateway {
                 node("amount", "10.00"),
                 node("created-at", "2016-11-29T23:27:34.547Z"),
                 node("approval-url", "https://example.com"),
-                node("ideal-transaction-id", "1234567890"),
-                node("iban-bank-account",
-                    node("created-at", "2016-11-29T23:27:36.386Z"),
-                    node("description", "DESCRIPTION ABC"),
-                    node("bic", "XXXXNLXX"),
-                    node("iban-country", "11"),
-                    node("iban-account-number-last-4", "0000"),
-                    node("masked-iban", "NL************0000"),
-                    node("account-holder-name", "Account Holder")
-                )
+                node("ideal-transaction-id", "1234567890")
         );
     }
 
@@ -380,16 +371,7 @@ public class WebhookTestingGateway {
                 node("amount", "10.00"),
                 node("created-at", "2016-11-29T23:27:34.547Z"),
                 node("approval-url", "https://example.com"),
-                node("ideal-transaction-id", "1234567890"),
-                node("iban-bank-account",
-                    node("created-at", "2016-11-29T23:27:36.386Z"),
-                    node("description", "DESCRIPTION ABC"),
-                    node("bic", "XXXXNLXX"),
-                    node("iban-country", "11"),
-                    node("iban-account-number-last-4", "0000"),
-                    node("masked-iban", "NL************0000"),
-                    node("account-holder-name", "Account Holder")
-                )
+                node("ideal-transaction-id", "1234567890")
         );
     }
 
