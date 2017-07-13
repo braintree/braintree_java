@@ -248,6 +248,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     public void saleReturnsRiskData() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
+            deviceSessionId("abc123").
             creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2009").
@@ -259,6 +260,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertNotNull(transaction.getRiskData());
         assertNotNull(transaction.getRiskData().getDecision());
+        assertNull(transaction.getRiskData().getDeviceDataCaptured());
+        assertNull(transaction.getRiskData().getId());
     }
 
     @Test

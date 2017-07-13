@@ -16,6 +16,7 @@
 * Add `find` method for the Dispute API
 * Add `removeEvidence` method for the Dispute API
 * Add `search` method for the Dispute API
+* Add `deviceDataCaptured` field to `RiskData`
 
 ## 2.72.1
 
