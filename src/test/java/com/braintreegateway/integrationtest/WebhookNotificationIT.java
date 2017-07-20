@@ -398,6 +398,40 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test
+    public void createsSampleNotificationForIdealPaymentComplete() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.IDEAL_PAYMENT_COMPLETE, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.IDEAL_PAYMENT_COMPLETE, notification.getKind());
+
+        IdealPayment idealPayment = notification.getIdealPayment();
+        assertEquals("my_id", idealPayment.getId());
+        assertEquals("COMPLETE", idealPayment.getStatus());
+        assertEquals("ORDERABC", idealPayment.getOrderId());
+        assertEquals("10.00", idealPayment.getAmount().toString());
+        assertEquals("https://example.com", idealPayment.getApprovalUrl());
+        assertEquals("1234567890", idealPayment.getIdealTransactionId());
+    }
+
+    @Test
+    public void createsSampleNotificationForIdealPaymentFailed() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.IDEAL_PAYMENT_FAILED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.IDEAL_PAYMENT_FAILED, notification.getKind());
+
+        IdealPayment idealPayment = notification.getIdealPayment();
+        assertEquals("my_id", idealPayment.getId());
+        assertEquals("FAILED", idealPayment.getStatus());
+        assertEquals("ORDERABC", idealPayment.getOrderId());
+        assertEquals("10.00", idealPayment.getAmount().toString());
+        assertEquals("https://example.com", idealPayment.getApprovalUrl());
+        assertEquals("1234567890", idealPayment.getIdealTransactionId());
+    }
+
+    @Test
     public void buildsSampleNotificationForCheck()
     {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting()

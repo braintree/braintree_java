@@ -31,6 +31,8 @@ public class WebhookNotification {
         DISPUTE_LOST("dispute_lost"),
         DISPUTE_WON("dispute_won"),
         ACCOUNT_UPDATER_DAILY_REPORT("account_updater_daily_report"),
+        IDEAL_PAYMENT_COMPLETE("ideal_payment_complete"),
+        IDEAL_PAYMENT_FAILED("ideal_payment_failed"),
         UNRECOGNIZED("unrecognized");
 
         private final String name;
@@ -57,6 +59,7 @@ public class WebhookNotification {
     private AccountUpdaterDailyReport accountUpdaterDailyReport;
     private ConnectedMerchantStatusTransitioned connectedMerchantStatusTransitioned;
     private ConnectedMerchantPayPalStatusChanged connectedMerchantPayPalStatusChanged;
+    private IdealPayment idealPayment;
 
     public WebhookNotification(NodeWrapper node) {
         this.kind = EnumUtils.findByName(Kind.class, node.findString("kind"), Kind.UNRECOGNIZED);
@@ -102,6 +105,10 @@ public class WebhookNotification {
 
         if (wrapperNode.findFirst("account-updater-daily-report") != null) {
             this.accountUpdaterDailyReport = new AccountUpdaterDailyReport(wrapperNode.findFirst("account-updater-daily-report"));
+        }
+
+        if (wrapperNode.findFirst("ideal-payment") != null) {
+            this.idealPayment = new IdealPayment(wrapperNode.findFirst("ideal-payment"));
         }
 
         if (!wrapperNode.isSuccess()) {
@@ -155,5 +162,9 @@ public class WebhookNotification {
 
     public AccountUpdaterDailyReport getAccountUpdaterDailyReport() {
         return this.accountUpdaterDailyReport;
+    }
+
+    public IdealPayment getIdealPayment() {
+        return this.idealPayment;
     }
 }
