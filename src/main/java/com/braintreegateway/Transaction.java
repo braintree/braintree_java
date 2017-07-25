@@ -180,6 +180,7 @@ public class Transaction {
     private String authorizedTransactionId;
     private List<String> partialSettlementTransactionIds;
     private List<AuthorizationAdjustment> authorizationAdjustments;
+    private FacilitatorDetails facilitatorDetails;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -312,6 +313,11 @@ public class Transaction {
         authorizationAdjustments = new ArrayList<AuthorizationAdjustment>();
         for (NodeWrapper authorizationAdjustmentNode : node.findAll("authorization-adjustments/authorization-adjustment")) {
             authorizationAdjustments.add(new AuthorizationAdjustment(authorizationAdjustmentNode));
+        }
+
+        NodeWrapper facilitatorDetailsNode = node.findFirst("facilitator-details");
+        if (facilitatorDetailsNode != null) {
+            facilitatorDetails = new FacilitatorDetails(facilitatorDetailsNode);
         }
     }
 
@@ -593,5 +599,9 @@ public class Transaction {
 
     public List<AuthorizationAdjustment> getAuthorizationAdjustments() {
         return authorizationAdjustments;
+    }
+
+    public FacilitatorDetails getFacilitatorDetails() {
+        return facilitatorDetails;
     }
 }
