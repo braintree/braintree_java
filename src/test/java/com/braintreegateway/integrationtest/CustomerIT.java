@@ -665,7 +665,7 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
-    public void createWithCoinbaseAccount() {
+    public void createWithCoinbaseAccount_noLongerSupported() {
         CustomerRequest request = new CustomerRequest().
             paymentMethodNonce(Nonce.Coinbase);
         Result<Customer> customerResult = gateway.customer().create(request);

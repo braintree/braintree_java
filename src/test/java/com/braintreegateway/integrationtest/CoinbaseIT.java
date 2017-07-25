@@ -16,7 +16,7 @@ import static org.hamcrest.CoreMatchers.*;
 public class CoinbaseIT extends IntegrationTest{
 
     @Test
-    public void canCreateTransaction_noLongerSupported() {
+    public void createTransaction_noLongerSupported() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             paymentMethodNonce(Nonce.Coinbase);
@@ -28,7 +28,7 @@ public class CoinbaseIT extends IntegrationTest{
     }
 
     @Test
-    public void canVaultOnTransactionCreate_noLongerSupported() {
+    public void vaultOnTransactionCreate_noLongerSupported() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             paymentMethodNonce(Nonce.Coinbase).
@@ -44,7 +44,7 @@ public class CoinbaseIT extends IntegrationTest{
     }
 
     @Test
-    public void canVault_noLongerSupported() {
+    public void vault_noLongerSupported() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         String customerId = customerResult.getTarget().getId();
 
@@ -55,7 +55,7 @@ public class CoinbaseIT extends IntegrationTest{
     }
 
     @Test
-    public void onCustomer_noLongerSupported() {
+    public void customerCreationWithCoinbaseNonce_noLongerSupported() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest().paymentMethodNonce(Nonce.Coinbase));
         assertFalse(customerResult.isSuccess());
         assertEquals(ValidationErrorCode.PAYMENT_METHOD_NO_LONGER_SUPPORTED,
@@ -63,7 +63,7 @@ public class CoinbaseIT extends IntegrationTest{
     }
 
     @Test
-    public void updateUpdatesCoinbaseAccount_noLongerSupported() {
+    public void updateCoinbaseAccount_noLongerSupported() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         String customerId = customerResult.getTarget().getId();
 
