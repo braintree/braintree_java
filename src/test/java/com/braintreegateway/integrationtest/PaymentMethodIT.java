@@ -678,7 +678,7 @@ public class PaymentMethodIT extends IntegrationTest {
         Customer customer = customerResult.getTarget();
 
         String[] nonces = {
-            Nonce.AndroidPay, Nonce.ApplePayVisa, Nonce.Coinbase,
+            Nonce.AndroidPay, Nonce.ApplePayVisa,
             Nonce.Transactable, Nonce.PayPalFuturePayment
         };
 

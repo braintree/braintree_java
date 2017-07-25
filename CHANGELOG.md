@@ -4,6 +4,7 @@
 * Add `IDEAL_PAYMENT` to `PaymentInstrumentType`
 * Add document upload API
 * Add AuthorizationAdjustment class and `authorizationAdjustments` to Transaction
+* Coinbase is no longer a supported payment method. `PAYMENT_METHOD_NO_LONGER_SUPPORTED` will be returned for Coinbase operations.
 
 ## 2.72.1
 
