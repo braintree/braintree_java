@@ -4990,7 +4990,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void paymentMethodGrantIncludesFacilitatedDetails() {
+    public void paymentMethodGrantIncludesFacilitatedInformation() {
         BraintreeGateway partnerGateway = new BraintreeGateway(
                 Environment.DEVELOPMENT,
                 "integration_merchant_public_id",
@@ -5029,6 +5029,9 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Transaction transaction = transactionResult.getTarget();
 
+        assertEquals(transaction.getFacilitatedDetails().getMerchantId(), "integration_merchant_id");
+        assertEquals(transaction.getFacilitatedDetails().getMerchantName(), "14ladders");
+        assertEquals(transaction.getFacilitatedDetails().getPaymentMethodNonce(), grantResult.getTarget().getNonce());
         assertEquals(transaction.getFacilitatorDetails().getOauthApplicationClientId(), "client_id$development$integration_client_id");
         assertEquals(transaction.getFacilitatorDetails().getOauthApplicationName(), "PseudoShop");
         assertEquals(transaction.getFacilitatorDetails().getSourcePaymentMethodToken(), creditCard.getToken());
