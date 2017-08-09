@@ -8,7 +8,7 @@ import java.util.List;
 import com.braintreegateway.util.EnumUtils;
 import com.braintreegateway.util.NodeWrapper;
 
-public final class Dispute {
+public class Dispute {
     public enum Status {
         OPEN,
         LOST,

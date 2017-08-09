@@ -149,6 +149,16 @@ public class BraintreeGateway {
         return new DiscountGateway(http, configuration);
     }
 
+    /**
+     * Returns a {@link DisputeGateway} for interacting with {@link Dispute}
+     * objects.
+     *
+     * @return an {@link DisputeGateway}.
+     */
+    public DisputeGateway dispute() {
+        return new DisputeGateway(http, configuration);
+    }
+
     public Configuration getConfiguration() {
         return configuration;
     }

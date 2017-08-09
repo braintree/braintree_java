@@ -2,6 +2,7 @@ package com.braintreegateway;
 
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
+import com.braintreegateway.util.NodeWrapper;
 
 /**
  * Provides methods to interact with {@link Dispute} objects.
@@ -31,10 +32,21 @@ public class DisputeGateway {
      *
      * @return a {@link Result}.
      *
-     * @throws NotFoundError if a Dispute with the given ID cannot be found.
+     * @throws NotFoundException if a Dispute with the given ID cannot be found.
      */
-    public void accept(String id) {
-        if (id == null || id.trim().equals("")) {
+    public Result<Dispute> accept(String id) {
+        try {
+            if (id == null || id.trim().equals("")) {
+                throw new NotFoundException();
+            }
+
+            NodeWrapper response = http.put(configuration.getMerchantPath() + "/disputes/" + id + "/accept");
+            if (response.getElementName().equals("api-error-response")) {
+                return new Result<Dispute>(response, Dispute.class);
+            }
+
+            return new Result<Dispute>();
+        } catch (NotFoundException e) {
             throw new NotFoundException("dispute with id \"" + id + "\" not found");
         }
     }
@@ -47,7 +59,7 @@ public class DisputeGateway {
      *
      * @return a {@link Result}.
      *
-     * @throws NotFoundError if the Dispute ID or Document ID cannot be found.
+     * @throws NotFoundException if the Dispute ID or Document ID cannot be found.
      */
     public void addFileEvidence(String disputeId, String documentUploadId) {
         if (disputeId == null || disputeId.trim().equals("")) {
@@ -68,7 +80,7 @@ public class DisputeGateway {
      *
      * @return a {@link Result}.
      *
-     * @throws NotFoundError if a Dispute with the given ID cannot be found.
+     * @throws NotFoundException if a Dispute with the given ID cannot be found.
      * @throws IllegalArgumentException if the content is empty.
      */
     public void addTextEvidence(String id, String content) {
@@ -88,7 +100,7 @@ public class DisputeGateway {
      *
      * @return a {@link Result}.
      *
-     * @throws NotFoundError if a Dispute with the given ID cannot be found.
+     * @throws NotFoundException if a Dispute with the given ID cannot be found.
      */
     public void finalize(String id) {
         if (id == null || id.trim().equals("")) {
@@ -103,10 +115,16 @@ public class DisputeGateway {
      *
      * @return a {@link Dispute}.
      *
-     * @throws NotFoundError if a Dispute with the given ID cannot be found.
+     * @throws NotFoundException if a Dispute with the given ID cannot be found.
      */
-    public void find(String id) {
-        if (id == null || id.trim().equals("")) {
+    public Dispute find(String id) {
+        try {
+            if (id == null || id.trim().equals("")) {
+                throw new NotFoundException();
+            }
+
+            return new Dispute(http.get(configuration.getMerchantPath() + "/disputes/" + id));
+        } catch (NotFoundException e) {
             throw new NotFoundException("dispute with id \"" + id + "\" not found");
         }
     }
@@ -119,7 +137,7 @@ public class DisputeGateway {
      *
      * @return a {@link Result}.
      *
-     * @throws NotFoundError if the Dispute ID or evidence ID cannot be found.
+     * @throws NotFoundException if the Dispute ID or evidence ID cannot be found.
      */
     public void removeEvidence(String disputeId, String evidenceId) {
         if (disputeId == null || disputeId.trim().equals("") || evidenceId == null || evidenceId.trim().equals("")) {
