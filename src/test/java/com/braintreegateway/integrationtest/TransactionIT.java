@@ -4988,4 +4988,52 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(transactionResult.isSuccess());
         assertEquals(transactionResult.getTarget().getBillingAddress().getPostalCode(), "94107");
     }
+
+    @Test
+    public void paymentMethodGrantIncludesFacilitatedInformation() {
+        BraintreeGateway partnerGateway = new BraintreeGateway(
+                Environment.DEVELOPMENT,
+                "integration_merchant_public_id",
+                "oauth_app_partner_user_public_key",
+                "oauth_app_partner_user_private_key"
+        );
+        Customer customer = partnerGateway.customer().create(new CustomerRequest().
+                creditCard().
+                number("5105105105105100").
+                expirationDate("04/22").
+                done()
+        ).getTarget();
+        CreditCard creditCard = customer.getCreditCards().get(0);
+
+        BraintreeGateway oauthGateway = new BraintreeGateway(
+                "client_id$development$integration_client_id",
+                "client_secret$development$integration_client_secret"
+        );
+        String code = TestHelper.createOAuthGrant(oauthGateway, "integration_merchant_id", "grant_payment_method");
+
+        OAuthCredentialsRequest oauthRequest = new OAuthCredentialsRequest().
+             code(code).
+             scope("grant_payment_method");
+
+        Result<OAuthCredentials> accessTokenResult = oauthGateway.oauth().createTokenFromCode(oauthRequest);
+        BraintreeGateway grantGateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
+        PaymentMethodGrantRequest grantRequest = new PaymentMethodGrantRequest().allowVaulting(false);
+        Result<PaymentMethodNonce> grantResult = grantGateway.paymentMethod().grant(creditCard.getToken(), grantRequest);
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(grantResult.getTarget().getNonce());
+
+        Result<Transaction> transactionResult = gateway.transaction().sale(request);
+        assertTrue(transactionResult.isSuccess());
+
+        Transaction transaction = transactionResult.getTarget();
+
+        assertEquals(transaction.getFacilitatedDetails().getMerchantId(), "integration_merchant_id");
+        assertEquals(transaction.getFacilitatedDetails().getMerchantName(), "14ladders");
+        assertEquals(transaction.getFacilitatedDetails().getPaymentMethodNonce(), grantResult.getTarget().getNonce());
+        assertEquals(transaction.getFacilitatorDetails().getOauthApplicationClientId(), "client_id$development$integration_client_id");
+        assertEquals(transaction.getFacilitatorDetails().getOauthApplicationName(), "PseudoShop");
+        assertEquals(transaction.getFacilitatorDetails().getSourcePaymentMethodToken(), creditCard.getToken());
+    }
 }
