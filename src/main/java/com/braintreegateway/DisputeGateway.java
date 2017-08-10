@@ -83,13 +83,26 @@ public class DisputeGateway {
      * @throws NotFoundException if a Dispute with the given ID cannot be found.
      * @throws IllegalArgumentException if the content is empty.
      */
-    public void addTextEvidence(String id, String content) {
-        if (id == null || id.trim().equals("")) {
-            throw new NotFoundException("dispute with id \"" + id + "\" not found");
-        }
+    public Result<DisputeEvidence> addTextEvidence(String id, String content) {
+        try {
+            if (id == null || id.trim().equals("")) {
+                throw new NotFoundException();
+            }
 
-        if (content == null || content.trim().equals("")) {
-            throw new IllegalArgumentException("content cannot be empty");
+            if (content == null || content.trim().equals("")) {
+                throw new IllegalArgumentException("content cannot be empty");
+            }
+
+            String request = "<comments>" + content + "</comments>"; // @TODO Use a request builder
+            NodeWrapper response = http.post(configuration.getMerchantPath() + "/disputes/" + id + "/evidence", request);
+
+            if (response.getElementName().equals("api-error-response")) {
+                return new Result<DisputeEvidence>(response, DisputeEvidence.class);
+            }
+
+            return new Result<DisputeEvidence>(response, DisputeEvidence.class);
+        } catch (NotFoundException e) {
+            throw new NotFoundException("dispute with id \"" + id + "\" not found");
         }
     }
 

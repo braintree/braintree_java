@@ -4,6 +4,7 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Dispute;
+import com.braintreegateway.DisputeEvidence;
 import com.braintreegateway.Result;
 import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
@@ -11,6 +12,7 @@ import com.braintreegateway.ValidationError;
 import com.braintreegateway.ValidationErrorCode;
 
 import java.math.BigDecimal;
+import java.util.regex.Pattern;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +21,8 @@ import static com.braintreegateway.SandboxValues.Dispute.CHARGEBACK;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -70,6 +74,67 @@ public class DisputeIT extends IntegrationTest {
         } catch (NotFoundException exception) {
             assertEquals("dispute with id \"invalid-id\" not found", exception.getMessage());
         }
+    }
+
+    @Test
+    public void addTextEvidenceAddsTextEvidence() {
+        Dispute dispute = createSampleDispute();
+
+        Result<DisputeEvidence> result = gateway.dispute()
+            .addTextEvidence(dispute.getId(), "text evidence");
+        DisputeEvidence evidence = result.getTarget();
+
+        assertTrue(result.isSuccess());
+        assertEquals(evidence.getComment(), "text evidence");
+        assertNotNull(evidence.getCreatedAt());
+        assertTrue(Pattern.matches("^\\w{16,}$", evidence.getId()));
+        assertNull(evidence.getSentToProcessorAt());
+        assertNull(evidence.getUrl());
+    }
+
+	@Test
+    public void addTextEvidenceThrowsNotFoundExceptionWhenDisputeNotFound() {
+        try {
+            gateway.dispute().addTextEvidence("invalid-id", "evidence!");
+            fail("DisputeGateway#addTextEvidence allowed an invalid id");
+        } catch (NotFoundException exception) {
+            assertEquals("dispute with id \"invalid-id\" not found", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void addTextEvidenceWhenDisputeNotOpenErrors() {
+        Dispute dispute = createSampleDispute();
+
+        gateway.dispute().accept(dispute.getId());
+        Result<DisputeEvidence> result = gateway.dispute().addTextEvidence(dispute.getId(), "text evidence");
+
+        assertFalse(result.isSuccess());
+
+        ValidationError error = result.getErrors()
+            .forObject("dispute")
+            .getAllValidationErrors()
+            .get(0);
+
+        assertEquals(ValidationErrorCode.DISPUTE_CAN_ONLY_ADD_EVIDENCE_TO_OPEN_DISPUTE, error.getCode());
+        assertEquals("Evidence can only be attached to disputes that are in an Open state", error.getMessage());
+    }
+
+    @Test
+    public void addTextEvidenceShowsNewRecordInFind() {
+        Dispute dispute = createSampleDispute();
+
+        DisputeEvidence evidence = gateway.dispute()
+            .addTextEvidence(dispute.getId(), "text evidence")
+            .getTarget();
+
+        DisputeEvidence refreshedEvidence = gateway.dispute()
+            .find(dispute.getId())
+            .getEvidence()
+            .get(0);
+
+        assertEquals(evidence.getId(), refreshedEvidence.getId());
+        assertEquals(evidence.getComment(), refreshedEvidence.getComment());
     }
 
 	@Test
