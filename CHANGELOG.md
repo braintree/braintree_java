@@ -10,6 +10,7 @@
 * Add `submitForSettlement` to `SubscriptionGateway.retryCharge`
 * Add `options` -> `paypal` -> `description` for creating and updating subscriptions
 * Add `Dispute#accept`
+* Add `Dispute#finalize`
 * Add `Dispute#find`
 
 ## 2.72.1

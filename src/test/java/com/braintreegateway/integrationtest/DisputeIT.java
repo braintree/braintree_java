@@ -72,6 +72,47 @@ public class DisputeIT extends IntegrationTest {
         }
     }
 
+	@Test
+    public void finalizeChangesDisputeStatusToDisputed() {
+        Dispute dispute = createSampleDispute();
+
+        Result result = gateway.dispute()
+            .finalize(dispute.getId());
+
+        assertTrue(result.isSuccess());
+
+        Dispute updatedDispute = gateway.dispute()
+            .find(dispute.getId());
+
+        assertEquals(Dispute.Status.DISPUTED, updatedDispute.getStatus());
+    }
+
+    @Test
+    public void finalizeWhenDisputeNotOpenErrors() {
+        Result<Dispute> result = gateway.dispute()
+            .finalize("wells_dispute");
+
+        assertFalse(result.isSuccess());
+
+        ValidationError error = result.getErrors()
+            .forObject("dispute")
+            .getAllValidationErrors()
+            .get(0);
+
+        assertEquals(ValidationErrorCode.DISPUTE_CAN_ONLY_FINALIZE_OPEN_DISPUTE, error.getCode());
+        assertEquals("Disputes can only be finalized when they are in an Open state", error.getMessage());
+    }
+
+    @Test
+    public void finalizeWhenDisputeNotFoundErrors() {
+        try {
+            gateway.dispute().finalize("invalid-id");
+            fail("DisputeGateway#finalize allowed an invalid id");
+        } catch (NotFoundException exception) {
+            assertEquals("dispute with id \"invalid-id\" not found", exception.getMessage());
+        }
+    }
+
     @Test
     public void findReturnsDisputeWithGivenId() {
         Dispute dispute = gateway.dispute().find("open_dispute");

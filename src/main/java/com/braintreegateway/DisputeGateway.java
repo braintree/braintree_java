@@ -102,8 +102,20 @@ public class DisputeGateway {
      *
      * @throws NotFoundException if a Dispute with the given ID cannot be found.
      */
-    public void finalize(String id) {
-        if (id == null || id.trim().equals("")) {
+    public Result<Dispute> finalize(String id) {
+        try {
+            if (id == null || id.trim().equals("")) {
+                throw new NotFoundException();
+            }
+
+            NodeWrapper response = http.put(configuration.getMerchantPath() + "/disputes/" + id + "/finalize");
+
+            if (response.getElementName().equals("api-error-response")) {
+                return new Result<Dispute>(response, Dispute.class);
+            }
+
+            return new Result<Dispute>();
+        } catch (NotFoundException e) {
             throw new NotFoundException("dispute with id \"" + id + "\" not found");
         }
     }
