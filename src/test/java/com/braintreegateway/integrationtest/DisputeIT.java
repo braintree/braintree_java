@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.braintreegateway.SandboxValues.Dispute.CHARGEBACK;
@@ -197,6 +198,54 @@ public class DisputeIT extends IntegrationTest {
         } catch (NotFoundException exception) {
             assertEquals("dispute with id \"invalid-id\" not found", exception.getMessage());
         }
+    }
+
+	@Test
+    public void removeEvidenceRemovesEvidenceFromTheDispute() {
+        String disputeId = createSampleDispute().getId();
+        String evidenceId = gateway.dispute()
+            .addTextEvidence(disputeId, "text evidence")
+            .getTarget()
+            .getId();
+
+        Result<Dispute> result = gateway.dispute()
+            .removeEvidence(disputeId, evidenceId);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void removeEvidenceWhenDisputeOrEvidenceNotFoundThrowsNotFoundException() {
+        try {
+            gateway.dispute().removeEvidence("invalid-dispute-id", "invalid-evidence-id");
+            fail("DisputeGateway#removeEvidence allowed an invalid id and/or invalid evidence id");
+        } catch (NotFoundException exception) {
+            assertEquals("evidence with id \"invalid-evidence-id\" for dispute with id \"invalid-dispute-id\" not found", exception.getMessage());
+        }
+    }
+
+    @Ignore("http.delete() does not return a result so we can't access errors from DELETE requests")
+    @Test
+    public void removeEvidenceErrorsWhenDisputeNotOpen() {
+        String disputeId = createSampleDispute().getId();
+        String evidenceId = gateway.dispute()
+            .addTextEvidence(disputeId, "text evidence")
+            .getTarget()
+            .getId();
+
+        gateway.dispute().accept(disputeId);
+
+        Result<Dispute> result = gateway.dispute()
+            .removeEvidence(disputeId, evidenceId);
+
+        ValidationError error = result.getErrors()
+            .forObject("dispute")
+            .getAllValidationErrors()
+            .get(0);
+
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.DISPUTE_CAN_ONLY_REMOVE_EVIDENCE_FROM_OPEN_DISPUTE, error.getCode());
+        assertEquals("Evidence can only be removed from disputes that are in an Open state", error.getMessage());
     }
 
     public Dispute createSampleDispute() {

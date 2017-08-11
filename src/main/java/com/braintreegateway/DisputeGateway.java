@@ -164,9 +164,17 @@ public class DisputeGateway {
      *
      * @throws NotFoundException if the Dispute ID or evidence ID cannot be found.
      */
-    public void removeEvidence(String disputeId, String evidenceId) {
-        if (disputeId == null || disputeId.trim().equals("") || evidenceId == null || evidenceId.trim().equals("")) {
+    public Result<Dispute> removeEvidence(String disputeId, String evidenceId) {
+        try {
+            if (disputeId == null || disputeId.trim().equals("") || evidenceId == null || evidenceId.trim().equals("")) {
+                throw new NotFoundException();
+            }
+
+            http.delete(configuration.getMerchantPath() + "/disputes/" + disputeId + "/evidence/" + evidenceId);
+
+            return new Result<Dispute>();
+        } catch (NotFoundException e) {
             throw new NotFoundException("evidence with id \"" + evidenceId + "\" for dispute with id \"" + disputeId + "\" not found");
-		}
+        }
     }
 }

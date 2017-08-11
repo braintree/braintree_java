@@ -13,6 +13,7 @@
 * Add `Dispute#addTextEvidence`
 * Add `Dispute#finalize`
 * Add `Dispute#find`
+* Add `Dispute#removeEvidence`
 
 ## 2.72.1
 
