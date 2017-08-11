@@ -15,6 +15,7 @@
 * Add `Dispute#finalize`
 * Add `Dispute#find`
 * Add `Dispute#removeEvidence`
+* Add `Dispute#search`
 
 ## 2.72.1
 

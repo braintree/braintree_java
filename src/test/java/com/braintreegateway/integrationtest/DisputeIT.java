@@ -5,8 +5,10 @@ import com.braintreegateway.util.Http;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Dispute;
 import com.braintreegateway.DisputeEvidence;
+import com.braintreegateway.DisputeSearchRequest;
 import com.braintreegateway.DocumentUpload;
 import com.braintreegateway.DocumentUploadRequest;
+import com.braintreegateway.PaginatedCollection;
 import com.braintreegateway.Result;
 import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
@@ -17,6 +19,9 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -165,7 +170,7 @@ public class DisputeIT extends IntegrationTest {
         assertNull(evidence.getUrl());
     }
 
-	@Test
+    @Test
     public void addTextEvidenceThrowsNotFoundExceptionWhenDisputeNotFound() {
         try {
             gateway.dispute().addTextEvidence("invalid-id", "evidence!");
@@ -318,6 +323,75 @@ public class DisputeIT extends IntegrationTest {
         assertFalse(result.isSuccess());
         assertEquals(ValidationErrorCode.DISPUTE_CAN_ONLY_REMOVE_EVIDENCE_FROM_OPEN_DISPUTE, error.getCode());
         assertEquals("Evidence can only be removed from disputes that are in an Open state", error.getMessage());
+    }
+
+    @Test
+    public void searchWithEmptyResult() {
+        List<Dispute> disputes = new ArrayList<Dispute>();
+        DisputeSearchRequest request = new DisputeSearchRequest()
+            .id().is("non_existent_dispute");
+
+        PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
+            .search(request);
+
+        for(Dispute dispute : disputeCollection) {
+            disputes.add(dispute);
+        }
+
+        assertEquals(0, disputes.size());
+	}
+
+	@Test
+	public void searchByIdReturnsSingleDispute() {
+        List<Dispute> disputes = new ArrayList<Dispute>();
+        DisputeSearchRequest request = new DisputeSearchRequest()
+            .id().is("open_dispute");
+
+        PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
+            .search(request);
+
+        for(Dispute dispute : disputeCollection) {
+            disputes.add(dispute);
+        }
+
+        assertEquals(1, disputes.size());
+	}
+
+	@Test
+	public void searchWithMultipleReasonsReturnsMultipleDisputes() {
+        List<Dispute> disputes = new ArrayList<Dispute>();
+        DisputeSearchRequest request = new DisputeSearchRequest()
+            .reason()
+            .in(Dispute.Reason.PRODUCT_UNSATISFACTORY, Dispute.Reason.RETRIEVAL);
+
+        PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
+            .search(request);
+
+        for(Dispute dispute : disputeCollection) {
+            disputes.add(dispute);
+        }
+
+        assertEquals(2, disputes.size());
+	}
+
+	@Test
+    public void searchDateRangeReturnsDispute() {
+        List<Dispute> disputes = new ArrayList<Dispute>();
+        DisputeSearchRequest request = new DisputeSearchRequest()
+            .receivedDate()
+            .between("03/03/2014", "03/05/2014");
+
+        PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
+            .search(request);
+
+        for(Dispute dispute : disputeCollection) {
+            disputes.add(dispute);
+        }
+
+        assertEquals(1, disputes.size());
+        assertEquals(disputes.get(0).getReceivedDate().get(Calendar.YEAR), 2014);
+        assertEquals(disputes.get(0).getReceivedDate().get(Calendar.MONTH)+1, 3);
+        assertEquals(disputes.get(0).getReceivedDate().get(Calendar.DAY_OF_MONTH), 4);
     }
 
     public Dispute createSampleDispute() {

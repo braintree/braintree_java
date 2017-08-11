@@ -4,6 +4,9 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Provides methods to interact with {@link Dispute} objects.
  * This class does not need to be instantiated directly. Instead, use
@@ -184,5 +187,20 @@ public class DisputeGateway {
         } catch (NotFoundException e) {
             throw new NotFoundException("evidence with id \"" + evidenceId + "\" for dispute with id \"" + disputeId + "\" not found");
         }
+    }
+
+    public PaginatedCollection<Dispute> search(DisputeSearchRequest query) {
+        return new PaginatedCollection<Dispute>(new DisputePager(this, query));
+    }
+
+    PaginatedResult<Dispute> fetchDisputes(DisputeSearchRequest query, int page) {
+        final NodeWrapper response = http.post(configuration.getMerchantPath() + "/disputes/advanced_search?page=" + page, query);
+
+        List<Dispute> disputes = new ArrayList<Dispute>();
+        for (NodeWrapper node : response.findAll("dispute")) {
+            disputes.add(new Dispute(node));
+        }
+
+        return new PaginatedResult<Dispute>(response.findInteger("total-items"), response.findInteger("page-size"), disputes);
     }
 }
