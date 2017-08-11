@@ -11,6 +11,7 @@
 * Add `options` -> `paypal` -> `description` for creating and updating subscriptions
 * Add `Dispute#accept`
 * Add `Dispute#addTextEvidence`
+* Add `Dispute#addFileEvidence`
 * Add `Dispute#finalize`
 * Add `Dispute#find`
 * Add `Dispute#removeEvidence`

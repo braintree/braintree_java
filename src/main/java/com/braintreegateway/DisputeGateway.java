@@ -61,7 +61,7 @@ public class DisputeGateway {
      *
      * @throws NotFoundException if the Dispute ID or Document ID cannot be found.
      */
-    public void addFileEvidence(String disputeId, String documentUploadId) {
+    public Result<DisputeEvidence> addFileEvidence(String disputeId, String documentUploadId) {
         if (disputeId == null || disputeId.trim().equals("")) {
             throw new NotFoundException("dispute with id \"" + disputeId + "\" not found");
 		}
@@ -70,6 +70,14 @@ public class DisputeGateway {
             throw new NotFoundException("document with id \"" + documentUploadId + "\" not found");
 		}
 
+        String request = "<document_upload_id>" + documentUploadId + "</document_upload_id>"; // @TODO Use a request builder
+
+        try {
+            NodeWrapper response = http.post(configuration.getMerchantPath() + "/disputes/" + disputeId + "/evidence", request);
+            return new Result<DisputeEvidence>(response, DisputeEvidence.class);
+        } catch (NotFoundException e) {
+            throw new NotFoundException("dispute with id \"" + disputeId + "\" not found");
+        }
     }
 
     /**

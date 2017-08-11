@@ -5,13 +5,17 @@ import com.braintreegateway.util.Http;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Dispute;
 import com.braintreegateway.DisputeEvidence;
+import com.braintreegateway.DocumentUpload;
+import com.braintreegateway.DocumentUploadRequest;
 import com.braintreegateway.Result;
 import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.ValidationError;
 import com.braintreegateway.ValidationErrorCode;
 
+import java.io.File;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.regex.Pattern;
 
 import org.junit.Before;
@@ -75,6 +79,74 @@ public class DisputeIT extends IntegrationTest {
         } catch (NotFoundException exception) {
             assertEquals("dispute with id \"invalid-id\" not found", exception.getMessage());
         }
+    }
+
+    @Test
+    public void addFileEvidenceAddsEvidence() {
+        String disputeId = createSampleDispute().getId();
+        String documentId = createSampleDocument().getId();
+
+        Result<DisputeEvidence> result = gateway.dispute().addFileEvidence(disputeId, documentId);
+        String evidenceId = result.getTarget().getId();
+
+        assertTrue(result.isSuccess());
+
+        String updatedEvidenceId = gateway.dispute()
+            .find(disputeId)
+            .getEvidence()
+            .get(0)
+            .getId();
+
+        assertEquals(evidenceId, updatedEvidenceId);
+    }
+
+    @Test
+    public void addFileEvidenceThrowsNotFoundExceptionWhenDisputeOrDocumentIdIsNotFound() {
+        try {
+            gateway.dispute().addFileEvidence("invalid-dispute-id", "invalid-document-id");
+            fail("DisputeGateway#addFileEvidence allowed an invalid id");
+        } catch (NotFoundException exception) {
+            assertEquals("dispute with id \"invalid-dispute-id\" not found", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void addFileEvidenceWhenDisputeNotOpenErrors() {
+        String disputeId = createSampleDispute().getId();
+        String documentId = createSampleDocument().getId();
+
+        gateway.dispute()
+            .accept(disputeId);
+
+        Result<DisputeEvidence> result = gateway.dispute()
+            .addFileEvidence(disputeId, documentId);
+
+        ValidationError error = result.getErrors()
+            .forObject("dispute")
+            .getAllValidationErrors()
+            .get(0);
+
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.DISPUTE_CAN_ONLY_ADD_EVIDENCE_TO_OPEN_DISPUTE, error.getCode());
+        assertEquals("Evidence can only be attached to disputes that are in an Open state", error.getMessage());
+    }
+
+    @Test
+    public void addFileEvidenceWhenIncorrectDocumentKindErrors() {
+        String disputeId = createSampleDispute().getId();
+        String documentId = createSampleDocument(DocumentUpload.Kind.IDENTITY_DOCUMENT).getId();
+
+        Result<DisputeEvidence> result = gateway.dispute()
+            .addFileEvidence(disputeId, documentId);
+
+        ValidationError error = result.getErrors()
+            .forObject("dispute")
+            .getAllValidationErrors()
+            .get(0);
+
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.DISPUTE_CAN_ONLY_ADD_EVIDENCE_DOCUMENT_TO_DISPUTE, error.getCode());
+        assertEquals("A document with kind other than Braintree::DocumentUpload::Kind::EvidenceDocument cannot be added to the dispute", error.getMessage());
     }
 
     @Test
@@ -267,5 +339,22 @@ public class DisputeIT extends IntegrationTest {
         return result.getTarget()
             .getDisputes()
             .get(0);
+    }
+
+    public DocumentUpload createSampleDocument() {
+        return createSampleDocument(DocumentUpload.Kind.EVIDENCE_DOCUMENT);
+    }
+
+    public DocumentUpload createSampleDocument(DocumentUpload.Kind kind) {
+        URL fileToUpload = getClass().getClassLoader().getResource("fixtures/bt_logo.png");
+        DocumentUploadRequest uploadRequest = new DocumentUploadRequest(
+                kind,
+                new File(fileToUpload.getFile())
+        );
+
+        Result<DocumentUpload> uploadResult = gateway.documentUpload().create(uploadRequest);
+        DocumentUpload documentUpload = uploadResult.getTarget();
+
+        return documentUpload;
     }
 }
