@@ -8,6 +8,7 @@
 * Add facilitated transaction details to Transaction if present
 * Add `bin` to `ApplePayCard`
 * Add `submitForSettlement` to `SubscriptionGateway.retryCharge`
+* Add `options` -> `paypal` -> `description` for creating and updating subscriptions
 
 ## 2.72.1
 
