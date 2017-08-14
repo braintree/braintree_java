@@ -181,7 +181,11 @@ public class DisputeGateway {
                 throw new NotFoundException();
             }
 
-            http.delete(configuration.getMerchantPath() + "/disputes/" + disputeId + "/evidence/" + evidenceId);
+            NodeWrapper response = http.delete(configuration.getMerchantPath() + "/disputes/" + disputeId + "/evidence/" + evidenceId);
+
+            if (response != null && response.getElementName().equals("api-error-response")) {
+                return new Result<Dispute>(response, Dispute.class);
+            }
 
             return new Result<Dispute>();
         } catch (NotFoundException e) {

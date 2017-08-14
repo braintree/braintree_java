@@ -301,7 +301,6 @@ public class DisputeIT extends IntegrationTest {
         }
     }
 
-    @Ignore("http.delete() does not return a result so we can't access errors from DELETE requests")
     @Test
     public void removeEvidenceErrorsWhenDisputeNotOpen() {
         String disputeId = createSampleDispute().getId();

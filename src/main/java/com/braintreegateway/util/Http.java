@@ -73,8 +73,8 @@ public class Http {
         this.configuration = configuration;
     }
 
-    public void delete(String url) {
-        httpRequest(RequestMethod.DELETE, url);
+    public NodeWrapper delete(String url) {
+        return httpRequest(RequestMethod.DELETE, url);
     }
 
     public NodeWrapper get(String url) {
@@ -153,9 +153,6 @@ public class Http {
             }
 
             throwExceptionIfErrorStatusCode(connection.getResponseCode(), null);
-            if (requestMethod.equals(RequestMethod.DELETE)) {
-                return null;
-            }
 
             InputStream responseStream = null;
             try {
@@ -172,6 +169,10 @@ public class Http {
 
                 if (xml != null) {
                     logger.log(Level.FINE, formatSanitizeBodyForLog(xml));
+                }
+
+                if (xml == null || xml.trim().equals("")) {
+                    return null;
                 }
 
                 nodeWrapper = NodeWrapperFactory.instance.create(xml);
