@@ -1,7 +1,6 @@
 package com.braintreegateway;
 
 import com.braintreegateway.Dispute.Status;
-import com.braintreegateway.util.EnumUtils;
 import com.braintreegateway.util.NodeWrapper;
 
 import java.util.Calendar;

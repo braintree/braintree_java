@@ -1,7 +1,5 @@
 package com.braintreegateway;
 
-import java.util.List;
-
 public class DisputePager implements SimplePager<Dispute> {
     private DisputeGateway gateway;
     private DisputeSearchRequest query;

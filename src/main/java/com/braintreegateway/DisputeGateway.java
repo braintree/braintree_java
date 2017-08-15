@@ -67,11 +67,11 @@ public class DisputeGateway {
     public Result<DisputeEvidence> addFileEvidence(String disputeId, String documentUploadId) {
         if (disputeId == null || disputeId.trim().equals("")) {
             throw new NotFoundException("dispute with id \"" + disputeId + "\" not found");
-		}
+        }
 
         if (documentUploadId == null || documentUploadId.trim().equals("")) {
             throw new NotFoundException("document with id \"" + documentUploadId + "\" not found");
-		}
+        }
 
         String request = "<document_upload_id>" + documentUploadId + "</document_upload_id>"; // @TODO Use a request builder
 
@@ -106,10 +106,6 @@ public class DisputeGateway {
 
             String request = "<comments>" + content + "</comments>"; // @TODO Use a request builder
             NodeWrapper response = http.post(configuration.getMerchantPath() + "/disputes/" + id + "/evidence", request);
-
-            if (response.getElementName().equals("api-error-response")) {
-                return new Result<DisputeEvidence>(response, DisputeEvidence.class);
-            }
 
             return new Result<DisputeEvidence>(response, DisputeEvidence.class);
         } catch (NotFoundException e) {
@@ -168,7 +164,7 @@ public class DisputeGateway {
     /**
      * Remove Evidence from a @{link Dispute}, given an ID and a @{link DisputeEvidence} ID.
      *
-     * @param disputeId the dispute id to add text evidence to.
+     * @param disputeId the dispute id to remove evidence from.
      * @param evidenceId the evidence id to remove.
      *
      * @return a {@link Result}.
@@ -193,6 +189,13 @@ public class DisputeGateway {
         }
     }
 
+    /**
+     * Finds all {@link Dispute}s that match the query.
+     *
+     * @param query the query for what disputes to find.
+     *
+     * @return a {@link PaginatedCollection} of {@link Dispute}.
+     */
     public PaginatedCollection<Dispute> search(DisputeSearchRequest query) {
         return new PaginatedCollection<Dispute>(new DisputePager(this, query));
     }

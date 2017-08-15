@@ -73,7 +73,6 @@ public class Dispute {
         openedDate = node.findDate("date-opened");
         updatedAt = node.findDateTime("updated-at");
         wonDate = node.findDate("date-won");
-
         caseNumber = node.findString("case-number");
         currencyIsoCode = node.findString("currency-iso-code");
         forwardedComments = node.findString("forwarded-comments");
@@ -82,7 +81,6 @@ public class Dispute {
         reasonCode = node.findString("reason-code");
         reasonDescription = node.findString("reason-description");
         referenceNumber = node.findString("reference-number");
-
         reason = EnumUtils.findByName(Reason.class, node.findString("reason"), Reason.GENERAL);
         status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);
         kind = EnumUtils.findByName(Kind.class, node.findString("kind"), Kind.UNRECOGNIZED);
@@ -197,7 +195,7 @@ public class Dispute {
     }
 
     /**
-     * Please use Transaction.getTransaction() instead
+     * Please use {@link Transaction#getTransaction} instead
      */
     @Deprecated
     public TransactionDetails getTransactionDetails() {
