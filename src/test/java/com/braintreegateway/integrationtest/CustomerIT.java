@@ -612,6 +612,7 @@ public class CustomerIT extends IntegrationTest {
         assertEquals(1, foundCustomer.getApplePayCards().size());
         ApplePayCard card = foundCustomer.getApplePayCards().get(0);
         assertNotNull(card);
+        assertNotNull(card.getBin());
         assertNotNull(card.getExpirationMonth());
         assertEquals(1, foundCustomer.getPaymentMethods().size());
     }

@@ -6,6 +6,7 @@
 * Add AuthorizationAdjustment class and `authorizationAdjustments` to Transaction
 * Coinbase is no longer a supported payment method. `PAYMENT_METHOD_NO_LONGER_SUPPORTED` will be returned for Coinbase operations.
 * Add facilitated transaction details to Transaction if present
+* Add `bin` to `ApplePayCard`
 
 ## 2.72.1
 

@@ -9,6 +9,7 @@ public class ApplePayCard implements PaymentMethod {
     private String imageUrl;
     private String token;
     private boolean isDefault;
+    private String bin;
     private String cardType;
     private String paymentInstrumentName;
     private String sourceDescription;
@@ -25,6 +26,7 @@ public class ApplePayCard implements PaymentMethod {
         this.token = node.findString("token");
         this.imageUrl = node.findString("image-url");
         this.isDefault = node.findBoolean("default");
+        this.bin = node.findString("bin");
         this.cardType = node.findString("card-type");
         this.paymentInstrumentName = node.findString("payment-instrument-name");
         this.sourceDescription = node.findString("source-description");
@@ -52,6 +54,10 @@ public class ApplePayCard implements PaymentMethod {
 
     public boolean isDefault() {
         return isDefault;
+    }
+
+    public String getBin() {
+        return bin;
     }
 
     public String getCardType() {

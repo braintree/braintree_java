@@ -96,6 +96,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(paymentMethod.getImageUrl());
 
         ApplePayCard applePayCard = (ApplePayCard) paymentMethod;
+        assertNotNull(applePayCard.getBin());
         assertNotNull(applePayCard.getCardType());
         assertNotNull(applePayCard.getPaymentInstrumentName());
         assertNotNull(applePayCard.getCreatedAt());
