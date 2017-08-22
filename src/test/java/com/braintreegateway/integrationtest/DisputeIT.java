@@ -137,24 +137,6 @@ public class DisputeIT extends IntegrationTest {
     }
 
     @Test
-    public void addFileEvidenceWhenIncorrectDocumentKindErrors() {
-        String disputeId = createSampleDispute().getId();
-        String documentId = createSampleDocument(DocumentUpload.Kind.IDENTITY_DOCUMENT).getId();
-
-        Result<DisputeEvidence> result = gateway.dispute()
-            .addFileEvidence(disputeId, documentId);
-
-        ValidationError error = result.getErrors()
-            .forObject("dispute")
-            .getAllValidationErrors()
-            .get(0);
-
-        assertFalse(result.isSuccess());
-        assertEquals(ValidationErrorCode.DISPUTE_CAN_ONLY_ADD_EVIDENCE_DOCUMENT_TO_DISPUTE, error.getCode());
-        assertEquals("A document with kind other than Braintree::DocumentUpload::Kind::EvidenceDocument cannot be added to the dispute", error.getMessage());
-    }
-
-    @Test
     public void addTextEvidenceAddsTextEvidence() {
         Dispute dispute = createSampleDispute();
 

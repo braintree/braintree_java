@@ -19,7 +19,7 @@ public class DocumentUploadIT extends IntegrationTest {
   @Test
   public void createReturnsSuccessfulWithValidRequest() {
     URL fileToUpload = getClass().getClassLoader().getResource("fixtures/bt_logo.png");
-    DocumentUploadRequest uploadRequest = new DocumentUploadRequest(DocumentUpload.Kind.IDENTITY_DOCUMENT,
+    DocumentUploadRequest uploadRequest = new DocumentUploadRequest(DocumentUpload.Kind.EVIDENCE_DOCUMENT,
                                                                     new File(fileToUpload.getFile()));
 
     Result<DocumentUpload> uploadResult = gateway.documentUpload().create(uploadRequest);
@@ -27,7 +27,7 @@ public class DocumentUploadIT extends IntegrationTest {
 
     assertTrue(uploadResult.isSuccess());
     assertTrue(documentUpload.getId().matches(UUID_REGEX));
-    assertEquals(DocumentUpload.Kind.IDENTITY_DOCUMENT, documentUpload.getKind());
+    assertEquals(DocumentUpload.Kind.EVIDENCE_DOCUMENT, documentUpload.getKind());
     assertEquals("image/png", documentUpload.getContentType());
     assertEquals("bt_logo.png", documentUpload.getName());
     assertEquals(2443, documentUpload.getSize());
