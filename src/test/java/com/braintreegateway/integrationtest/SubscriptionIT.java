@@ -1775,6 +1775,50 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
     }
 
     @Test
+    public void retryChargeWithSubmitForSettlement() {
+        SubscriptionRequest request = new SubscriptionRequest().
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId());
+
+        Subscription subscription = gateway.subscription().create(request).getTarget();
+
+        makePastDue(subscription, 1);
+
+        Result<Transaction> result = gateway.subscription().retryCharge(subscription.getId(), true);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+        assertEquals(subscription.getPrice(), transaction.getAmount());
+        assertNotNull(transaction.getProcessorAuthorizationCode());
+        assertEquals(Transaction.Type.SALE, transaction.getType());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
+    }
+
+    @Test
+    public void retryChargeWithSubmitForSettlementAndAmount() {
+        SubscriptionRequest request = new SubscriptionRequest().
+                paymentMethodToken(creditCard.getToken()).
+                planId(PlanFixture.PLAN_WITHOUT_TRIAL.getId());
+
+        Subscription subscription = gateway.subscription().create(request).getTarget();
+
+        makePastDue(subscription, 1);
+
+        Result<Transaction> result = gateway.subscription().retryCharge(subscription.getId(), TransactionAmount.AUTHORIZE.amount, true);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+        assertEquals(TransactionAmount.AUTHORIZE.amount, transaction.getAmount());
+        assertNotNull(transaction.getProcessorAuthorizationCode());
+        assertEquals(Transaction.Type.SALE, transaction.getType());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
+    }
+
+    @Test
     public void retryChargeWithAmount() {
         SubscriptionRequest request = new SubscriptionRequest().
                 paymentMethodToken(creditCard.getToken()).

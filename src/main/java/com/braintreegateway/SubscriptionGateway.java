@@ -114,5 +114,20 @@ public class SubscriptionGateway {
         return retryCharge(new SubscriptionTransactionRequest().
           subscriptionId(subscriptionId).
           amount(amount));
-     }
+    }
+
+    public Result<Transaction> retryCharge(String subscriptionId, Boolean submitForSettlement) {
+        return retryCharge(new SubscriptionTransactionRequest().
+          subscriptionId(subscriptionId)
+          .options()
+            .submitForSettlement(submitForSettlement).done());
+    }
+
+    public Result<Transaction> retryCharge(String subscriptionId, BigDecimal amount, Boolean submitForSettlement) {
+        return retryCharge(new SubscriptionTransactionRequest().
+          subscriptionId(subscriptionId).
+          amount(amount).
+          options().
+            submitForSettlement(submitForSettlement).done());
+    }
 }

@@ -8,6 +8,7 @@ public class SubscriptionTransactionRequest extends Request {
 
     private BigDecimal amount;
     private String subscriptionId;
+    private SubscriptionTransactionOptionsRequest subscriptionTransactionOptionsRequest;
 
     public SubscriptionTransactionRequest amount(BigDecimal amount) {
         this.amount = amount;
@@ -18,7 +19,12 @@ public class SubscriptionTransactionRequest extends Request {
         this.subscriptionId = subscriptionId;
         return this;
     }
-    
+
+    public SubscriptionTransactionOptionsRequest options() {
+        subscriptionTransactionOptionsRequest = new SubscriptionTransactionOptionsRequest(this);
+        return subscriptionTransactionOptionsRequest;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("transaction").toXML();
@@ -28,6 +34,7 @@ public class SubscriptionTransactionRequest extends Request {
         return new RequestBuilder(root).
             addElement("amount", amount).
             addElement("subscriptionId", subscriptionId).
+            addElement("options", subscriptionTransactionOptionsRequest).
             addElement("type", Type.SALE.toString().toLowerCase());
     }
 }
