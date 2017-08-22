@@ -1,5 +1,6 @@
 package com.braintreegateway;
 
+import com.braintreegateway.RequestBuilder;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
@@ -73,7 +74,7 @@ public class DisputeGateway {
             throw new NotFoundException("document with id \"" + documentUploadId + "\" not found");
         }
 
-        String request = "<document_upload_id>" + documentUploadId + "</document_upload_id>"; // @TODO Use a request builder
+        String request = RequestBuilder.buildXMLElement("document_upload_id", documentUploadId);
 
         try {
             NodeWrapper response = http.post(configuration.getMerchantPath() + "/disputes/" + disputeId + "/evidence", request);
@@ -104,7 +105,7 @@ public class DisputeGateway {
                 throw new IllegalArgumentException("content cannot be empty");
             }
 
-            String request = "<comments>" + content + "</comments>"; // @TODO Use a request builder
+            String request = RequestBuilder.buildXMLElement("comments", content);
             NodeWrapper response = http.post(configuration.getMerchantPath() + "/disputes/" + id + "/evidence", request);
 
             return new Result<DisputeEvidence>(response, DisputeEvidence.class);
