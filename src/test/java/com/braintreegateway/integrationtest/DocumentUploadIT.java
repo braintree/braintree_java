@@ -73,7 +73,7 @@ public class DocumentUploadIT extends IntegrationTest {
   @Test
   public void createReturnsErrorWhenFileIsOver4Mb() {
     try {
-      PrintWriter writer = new PrintWriter("./src/test/resources/fixtures/large_file.pdf");
+      PrintWriter writer = new PrintWriter("large_file.png");
       for (int i = 0; i <= 1048577; i++) {
         writer.print("aaaa");
       }
@@ -82,9 +82,8 @@ public class DocumentUploadIT extends IntegrationTest {
       fail("Cannot open large_file.png to write");
     }
 
-    URL fileToUpload = getClass().getClassLoader().getResource("fixtures/large_file.pdf");
     DocumentUploadRequest uploadRequest = new DocumentUploadRequest(DocumentUpload.Kind.EVIDENCE_DOCUMENT,
-        new File(fileToUpload.getFile()));
+        new File("large_file.png"));
 
     Result<DocumentUpload> uploadResult = gateway.documentUpload().create(uploadRequest);
     ValidationError error = uploadResult.getErrors()
