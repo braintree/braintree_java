@@ -5,7 +5,7 @@ import com.braintreegateway.util.NodeWrapper;
 public class DocumentUpload {
 
   public enum Kind {
-    IDENTITY_DOCUMENT("identity_document");
+    EVIDENCE_DOCUMENT("evidence_document");
 
     private final String kind;
 

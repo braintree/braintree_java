@@ -8,6 +8,14 @@ public class DocumentUploadRequest extends Request {
   private File file;
 
   public DocumentUploadRequest(DocumentUpload.Kind kind, File file) {
+    if (kind == null) {
+      throw new IllegalArgumentException("DocumentUpload.Kind must not be null");
+    }
+
+    if (file == null) {
+      throw new IllegalArgumentException("File must not be null");
+    }
+
     this.kind = kind;
     this.file = file;
   }

@@ -29,6 +29,10 @@ public class SandboxValues {
         }
     }
 
+    public class Dispute {
+        public static final String CHARGEBACK = "4023898493988028";
+    }
+
     public enum PaymentMethodNonce {
         APPLE_PAY_VISA("fake-apple-pay-visa-nonce"),
         APPLE_PAY_AMEX("fake-apple-pay-amex-nonce"),

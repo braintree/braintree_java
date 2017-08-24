@@ -9,6 +9,13 @@
 * Add `bin` to `ApplePayCard`
 * Add `submitForSettlement` to `SubscriptionGateway.retryCharge`
 * Add `options` -> `paypal` -> `description` for creating and updating subscriptions
+* Add `accept` method for the Dispute API
+* Add `addTextEvidence` method for the Dispute API
+* Add `addFileEvidence` method for the Dispute API
+* Add `finalize` method for the Dispute API
+* Add `find` method for the Dispute API
+* Add `removeEvidence` method for the Dispute API
+* Add `search` method for the Dispute API
 
 ## 2.72.1
 

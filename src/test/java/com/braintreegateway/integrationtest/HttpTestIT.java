@@ -73,7 +73,7 @@ public class HttpTestIT extends IntegrationTest {
     @Test
     public void smokeTestPostMultipart() {
         URL fileToUpload = getClass().getClassLoader().getResource("fixtures/bt_logo.png");
-        DocumentUploadRequest request = new DocumentUploadRequest(DocumentUpload.Kind.IDENTITY_DOCUMENT,
+        DocumentUploadRequest request = new DocumentUploadRequest(DocumentUpload.Kind.EVIDENCE_DOCUMENT,
                                                                         new File(fileToUpload.getFile()));
 
         Configuration configuration = gateway.getConfiguration();
