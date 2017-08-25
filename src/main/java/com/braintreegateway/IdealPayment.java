@@ -25,7 +25,10 @@ public class IdealPayment {
         this.orderId = node.findString("order-id");
         this.issuer = node.findString("issuer");
         this.approvalUrl = node.findString("approval-url");
-        this.ibanBankAccount = new IbanBankAccount(node.findFirst("iban-bank-account"));
+        NodeWrapper ibanBankAccountNode = node.findFirst("iban-bank-account");
+        if (ibanBankAccountNode != null) {
+            this.ibanBankAccount = new IbanBankAccount(ibanBankAccountNode);
+        }
     }
 
     public String getId() {

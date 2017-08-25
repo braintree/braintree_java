@@ -16,27 +16,19 @@ import static org.hamcrest.CoreMatchers.*;
 public class CoinbaseIT extends IntegrationTest{
 
     @Test
-    public void canCreateTransaction() {
+    public void createTransaction_noLongerSupported() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             paymentMethodNonce(Nonce.Coinbase);
 
         Result<Transaction> authResult = gateway.transaction().sale(request);
-        assertTrue(authResult.isSuccess());
-
-        CoinbaseDetails details = authResult.getTarget().getCoinbaseDetails();
-        assertNotNull(details);
-        assertNull(details.getToken());
-        assertNotNull(details.getUserId());
-        assertThat(details.getUserId(), not(equalTo("")));
-        assertNotNull(details.getUserName());
-        assertThat(details.getUserName(), not(equalTo("")));
-        assertNotNull(details.getUserEmail());
-        assertThat(details.getUserEmail(), not(equalTo("")));
+        assertFalse(authResult.isSuccess());
+        assertEquals(ValidationErrorCode.PAYMENT_METHOD_NO_LONGER_SUPPORTED,
+                authResult.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 
     @Test
-    public void canVaultOnTransactionCreate() {
+    public void vaultOnTransactionCreate_noLongerSupported() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             paymentMethodNonce(Nonce.Coinbase).
@@ -46,95 +38,40 @@ public class CoinbaseIT extends IntegrationTest{
                 done();
 
         Result<Transaction> authResult = gateway.transaction().sale(request);
-        assertTrue(authResult.isSuccess());
-
-        Transaction transaction = authResult.getTarget();
-        assertNotNull(transaction);
-        CoinbaseDetails details = transaction.getCoinbaseDetails();
-        assertNotNull(details);
-        String token = details.getToken();
-        assertNotNull(token);
-
-        PaymentMethod account = gateway.paymentMethod().find(token);
-        assertTrue(account instanceof CoinbaseAccount);
-        assertNotNull(account);
+        assertFalse(authResult.isSuccess());
+        assertEquals(ValidationErrorCode.PAYMENT_METHOD_NO_LONGER_SUPPORTED,
+                authResult.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 
     @Test
-    public void canVault() {
+    public void vault_noLongerSupported() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         String customerId = customerResult.getTarget().getId();
 
         Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(new PaymentMethodRequest().customerId(customerId).paymentMethodNonce(Nonce.Coinbase));
-        assertTrue(paymentMethodResult.isSuccess());
-
-        CoinbaseAccount account = (CoinbaseAccount) paymentMethodResult.getTarget();
-        assertNotNull(account);
-        assertNotNull(account.getToken());
-        assertNotNull(account.getUserId());
-        assertThat(account.getUserId(), not(equalTo("")));
-        assertNotNull(account.getUserName());
-        assertThat(account.getUserName(), not(equalTo("")));
-        assertNotNull(account.getUserEmail());
-        assertThat(account.getUserEmail(), not(equalTo("")));
+        assertFalse(paymentMethodResult.isSuccess());
+        assertEquals(ValidationErrorCode.PAYMENT_METHOD_NO_LONGER_SUPPORTED,
+                paymentMethodResult.getErrors().forObject("coinbaseAccount").onField("base").get(0).getCode());
     }
 
-    @Rule public ExpectedException exception = ExpectedException.none();
-
     @Test
-    public void onCustomer() {
+    public void customerCreationWithCoinbaseNonce_noLongerSupported() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest().paymentMethodNonce(Nonce.Coinbase));
-        assertTrue(customerResult.isSuccess());
-        Customer customer = customerResult.getTarget();
-
-        List<CoinbaseAccount> accounts = gateway.customer().find(customer.getId()).getCoinbaseAccounts();
-        assertEquals(1, accounts.size());
-
-        CoinbaseAccount account = accounts.get(0);
-        assertNotNull(account);
-        assertNotNull(account.getToken());
-        assertNotNull(account.getUserId());
-        assertThat(account.getUserId(), not(equalTo("")));
-        assertNotNull(account.getUserName());
-        assertThat(account.getUserName(), not(equalTo("")));
-        assertNotNull(account.getUserEmail());
-        assertThat(account.getUserEmail(), not(equalTo("")));
-
-        String token = account.getToken();
-
-        gateway.paymentMethod().delete(token);
-
-        exception.expect(NotFoundException.class);
-        gateway.paymentMethod().find(token);
+        assertFalse(customerResult.isSuccess());
+        assertEquals(ValidationErrorCode.PAYMENT_METHOD_NO_LONGER_SUPPORTED,
+                customerResult.getErrors().forObject("coinbaseAccount").onField("base").get(0).getCode());
     }
 
     @Test
-    public void updateUpdatesCoinbaseAccount() {
+    public void updateCoinbaseAccount_noLongerSupported() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         String customerId = customerResult.getTarget().getId();
 
-        PaymentMethodRequest venmoRequest = new PaymentMethodRequest().customerId(customerId).paymentMethodNonce(Nonce.VenmoAccount);
-        Result<? extends PaymentMethod> venmoResult = gateway.paymentMethod().create(venmoRequest);
-        VenmoAccount venmoAccount = (VenmoAccount) venmoResult.getTarget();
-        assertTrue(venmoAccount.isDefault());
-
         PaymentMethodRequest request = new PaymentMethodRequest().customerId(customerId).paymentMethodNonce(Nonce.Coinbase);
         Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(request);
-
-        assertTrue(paymentMethodResult.isSuccess());
-        String token = paymentMethodResult.getTarget().getToken();
-
-        PaymentMethodRequest updatePaymentMethodRequest = new PaymentMethodRequest().
-            options().
-                makeDefault(true).
-                done();
-
-        Result<? extends PaymentMethod> result = gateway.paymentMethod().update(token, updatePaymentMethodRequest);
-
-        assertTrue(result.isSuccess());
-        assertTrue(result.getTarget() instanceof CoinbaseAccount);
-        CoinbaseAccount coinbaseAccount = (CoinbaseAccount) result.getTarget();
-        assertTrue(coinbaseAccount.isDefault());
+        assertFalse(paymentMethodResult.isSuccess());
+        assertEquals(ValidationErrorCode.PAYMENT_METHOD_NO_LONGER_SUPPORTED,
+                paymentMethodResult.getErrors().forObject("coinbaseAccount").onField("base").get(0).getCode());
     }
 
 }

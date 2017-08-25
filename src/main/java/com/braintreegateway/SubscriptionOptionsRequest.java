@@ -7,6 +7,7 @@ public class SubscriptionOptionsRequest extends Request {
     private Boolean replaceAllAddOnsAndDiscounts;
     private Boolean revertSubscriptionOnProrationFailure;
     private Boolean startImmediately;
+    private SubscriptionOptionsPayPalRequest paypal;
 
     public SubscriptionOptionsRequest(SubscriptionRequest parent) {
         this.parent = parent;
@@ -32,13 +33,18 @@ public class SubscriptionOptionsRequest extends Request {
     }
 
     public SubscriptionOptionsRequest revertSubscriptionOnProrationFailure(Boolean revertSubscriptionOnProrationFailure) {
-      this.revertSubscriptionOnProrationFailure = revertSubscriptionOnProrationFailure;
-      return this;
+        this.revertSubscriptionOnProrationFailure = revertSubscriptionOnProrationFailure;
+        return this;
     }
 
     public SubscriptionOptionsRequest startImmediately(Boolean startImmediately) {
         this.startImmediately = startImmediately;
         return this;
+    }
+
+    public SubscriptionOptionsPayPalRequest paypal() {
+        this.paypal = new SubscriptionOptionsPayPalRequest(this);
+        return this.paypal;
     }
 
     @Override
@@ -52,6 +58,7 @@ public class SubscriptionOptionsRequest extends Request {
             addElement("prorateCharges", prorateCharges).
             addElement("replaceAllAddOnsAndDiscounts", replaceAllAddOnsAndDiscounts).
             addElement("revertSubscriptionOnProrationFailure", revertSubscriptionOnProrationFailure).
-            addElement("startImmediately", startImmediately);
+            addElement("startImmediately", startImmediately).
+            addElement("paypal", paypal);
     }
 }

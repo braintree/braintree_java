@@ -37,4 +37,9 @@ public class ValidationError {
     public String getMessage() {
         return message;
     }
+
+    public boolean equals(Object e) {
+        ValidationError ve = (ValidationError)e;
+        return attribute.equals(ve.attribute) && code.equals(ve.code) && message.equals(ve.message);
+    }
 }

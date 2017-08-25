@@ -96,6 +96,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(paymentMethod.getImageUrl());
 
         ApplePayCard applePayCard = (ApplePayCard) paymentMethod;
+        assertNotNull(applePayCard.getBin());
         assertNotNull(applePayCard.getCardType());
         assertNotNull(applePayCard.getPaymentInstrumentName());
         assertNotNull(applePayCard.getCreatedAt());
@@ -678,7 +679,7 @@ public class PaymentMethodIT extends IntegrationTest {
         Customer customer = customerResult.getTarget();
 
         String[] nonces = {
-            Nonce.AndroidPay, Nonce.ApplePayVisa, Nonce.Coinbase,
+            Nonce.AndroidPay, Nonce.ApplePayVisa,
             Nonce.Transactable, Nonce.PayPalFuturePayment
         };
 

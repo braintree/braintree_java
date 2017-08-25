@@ -612,6 +612,7 @@ public class CustomerIT extends IntegrationTest {
         assertEquals(1, foundCustomer.getApplePayCards().size());
         ApplePayCard card = foundCustomer.getApplePayCards().get(0);
         assertNotNull(card);
+        assertNotNull(card.getBin());
         assertNotNull(card.getExpirationMonth());
         assertEquals(1, foundCustomer.getPaymentMethods().size());
     }
@@ -665,20 +666,13 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
-    public void createWithCoinbaseAccount() {
+    public void createWithCoinbaseAccount_noLongerSupported() {
         CustomerRequest request = new CustomerRequest().
             paymentMethodNonce(Nonce.Coinbase);
-        Customer customer = gateway.customer().create(request).getTarget();
-
-        Customer foundCustomer = gateway.customer().find(customer.getId());
-        assertEquals(customer.getId(), foundCustomer.getId());
-        assertNotNull(foundCustomer.getCoinbaseAccounts());
-        assertEquals(1, foundCustomer.getCoinbaseAccounts().size());
-        CoinbaseAccount account = foundCustomer.getCoinbaseAccounts().get(0);
-        assertNotNull(account);
-        assertNotNull(account.getUserId());
-        assertNotNull(account.getToken());
-        assertEquals(1, foundCustomer.getPaymentMethods().size());
+        Result<Customer> customerResult = gateway.customer().create(request);
+        assertFalse(customerResult.isSuccess());
+        assertEquals(ValidationErrorCode.PAYMENT_METHOD_NO_LONGER_SUPPORTED,
+                customerResult.getErrors().forObject("coinbaseAccount").onField("base").get(0).getCode());
     }
 
     @Test

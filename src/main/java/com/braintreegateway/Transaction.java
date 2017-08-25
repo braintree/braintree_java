@@ -179,6 +179,9 @@ public class Transaction {
     private CoinbaseDetails coinbaseDetails;
     private String authorizedTransactionId;
     private List<String> partialSettlementTransactionIds;
+    private List<AuthorizationAdjustment> authorizationAdjustments;
+    private FacilitatedDetails facilitatedDetails;
+    private FacilitatorDetails facilitatorDetails;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -306,6 +309,21 @@ public class Transaction {
         partialSettlementTransactionIds = new ArrayList<String>();
         for (NodeWrapper partialSettlementTransactionIdNode : node.findAll("partial-settlement-transaction-ids/*")) {
             partialSettlementTransactionIds.add(partialSettlementTransactionIdNode.findString("."));
+        }
+
+        authorizationAdjustments = new ArrayList<AuthorizationAdjustment>();
+        for (NodeWrapper authorizationAdjustmentNode : node.findAll("authorization-adjustments/authorization-adjustment")) {
+            authorizationAdjustments.add(new AuthorizationAdjustment(authorizationAdjustmentNode));
+        }
+
+        NodeWrapper facilitatedDetailsNode = node.findFirst("facilitated-details");
+        if (facilitatedDetailsNode != null) {
+            facilitatedDetails = new FacilitatedDetails(facilitatedDetailsNode);
+        }
+
+        NodeWrapper facilitatorDetailsNode = node.findFirst("facilitator-details");
+        if (facilitatorDetailsNode != null) {
+            facilitatorDetails = new FacilitatorDetails(facilitatorDetailsNode);
         }
     }
 
@@ -583,5 +601,17 @@ public class Transaction {
 
     public List<String> getPartialSettlementTransactionIds() {
         return partialSettlementTransactionIds;
+    }
+
+    public List<AuthorizationAdjustment> getAuthorizationAdjustments() {
+        return authorizationAdjustments;
+    }
+
+    public FacilitatedDetails getFacilitatedDetails() {
+        return facilitatedDetails;
+    }
+
+    public FacilitatorDetails getFacilitatorDetails() {
+        return facilitatorDetails;
     }
 }

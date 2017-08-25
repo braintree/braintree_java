@@ -1,3 +1,22 @@
+## 2.73.0
+
+* Add iDEAL webhook support
+* Add `IDEAL_PAYMENT` to `PaymentInstrumentType`
+* Add document upload API
+* Add AuthorizationAdjustment class and `authorizationAdjustments` to Transaction
+* Coinbase is no longer a supported payment method. `PAYMENT_METHOD_NO_LONGER_SUPPORTED` will be returned for Coinbase operations
+* Add facilitated transaction details to Transaction if present
+* Add `bin` to `ApplePayCard`
+* Add `submitForSettlement` to `SubscriptionGateway.retryCharge`
+* Add `options` -> `paypal` -> `description` for creating and updating subscriptions
+* Add `accept` method for the Dispute API
+* Add `addTextEvidence` method for the Dispute API
+* Add `addFileEvidence` method for the Dispute API
+* Add `finalize` method for the Dispute API
+* Add `find` method for the Dispute API
+* Add `removeEvidence` method for the Dispute API
+* Add `search` method for the Dispute API
+
 ## 2.72.1
 
 * Add additional properties to `PaymentMethodNonce`
