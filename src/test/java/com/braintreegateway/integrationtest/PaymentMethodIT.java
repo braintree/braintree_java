@@ -78,6 +78,51 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
+    public void createPayPalAccountWithPayPalRefreshToken() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paypalRefreshToken("PAYPAL_REFRESH_TOKEN");
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+        assertNotNull(paymentMethod.getToken());
+
+        PayPalAccount paypalAccount = (PayPalAccount) paymentMethod;
+        assertNotNull(paypalAccount.getCustomerId());
+        assertNotNull(paypalAccount.getBillingAgreementId());
+    }
+
+    @Test
+    public void createPayPalAccountWithPayPalRefreshTokenWithoutUpgrade() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paypalRefreshToken("PAYPAL_REFRESH_TOKEN").
+            paypalVaultWithoutUpgrade(true);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+        assertNotNull(paymentMethod.getToken());
+
+        PayPalAccount paypalAccount = (PayPalAccount) paymentMethod;
+        assertNotNull(paypalAccount.getCustomerId());
+        assertNull(paypalAccount.getBillingAgreementId());
+    }
+
+    @Test
     public void createApplePayCardFromNonce() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());

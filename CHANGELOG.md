@@ -1,3 +1,6 @@
+## Unreleased
+* Add support for upgrading a PayPal future payment reresh token to a billing agreement
+
 ## 2.73.0
 
 * Add iDEAL webhook support
