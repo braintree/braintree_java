@@ -1,5 +1,6 @@
 ## Unreleased
 * Add support for upgrading a PayPal future payment reresh token to a billing agreement
+* Fix spec to expect PayPal transaction to settle immediately after successful capture
 
 ## 2.73.0
 
