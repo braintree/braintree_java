@@ -4597,7 +4597,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> submitForSettlementResult = gateway.transaction().submitForSettlement(saleResult.getTarget().getId());
         assertTrue(submitForSettlementResult.isSuccess());
-        assertEquals(Transaction.Status.SETTLED, submitForSettlementResult.getTarget().getStatus());
+        assertEquals(Transaction.Status.SETTLING, submitForSettlementResult.getTarget().getStatus());
     }
 
     @Test
@@ -4631,6 +4631,27 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
         assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal(2)), result.getTarget().getAmount());
+    }
+
+    @Test
+    public void paypalTransactionReturnsSettlementResponseCode() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(Nonce.PayPalFuturePayment).
+            options().
+                submitForSettlement(true).
+                done();
+
+        Result<Transaction> authResult = gateway.transaction().sale(request);
+        assertTrue(authResult.isSuccess());
+
+        TestingGateway testingGateway = gateway.testing();
+        testingGateway.settlementDecline(authResult.getTarget().getId());
+
+        Transaction transaction = gateway.transaction().find(authResult.getTarget().getId());
+        assertEquals(Transaction.Status.SETTLEMENT_DECLINED, transaction.getStatus());
+        assertEquals("4001", transaction.getProcessorSettlementResponseCode());
+        assertEquals("Settlement Declined", transaction.getProcessorSettlementResponseText());
     }
 
     @Test
