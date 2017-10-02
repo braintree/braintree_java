@@ -1034,7 +1034,8 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
 
     @Test
     public void verifyValidCreditCardWithVerificationWithRiskData() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        BraintreeGateway advancedFraudMerchantGateway = new BraintreeGateway(Environment.DEVELOPMENT, "advanced_fraud_integration_merchant_id", "advanced_fraud_integration_public_key", "advanced_fraud_integration_private_key");
+        Customer customer = advancedFraudMerchantGateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
             customerId(customer.getId()).
             cardholderName("John Doe").
@@ -1046,7 +1047,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
                 verifyCard(true).
                 done();
 
-        Result<CreditCard> result = gateway.creditCard().create(request);
+        Result<CreditCard> result = advancedFraudMerchantGateway.creditCard().create(request);
         assertTrue(result.isSuccess());
 
         CreditCard card = result.getTarget();
@@ -1058,9 +1059,9 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         RiskData riskData = verification.getRiskData();
         assertNotNull(riskData);
 
-        assertNotNull(riskData.getDecision());
-        assertNull(riskData.getDeviceDataCaptured());
-        assertNull(riskData.getId());
+        assertEquals("Approve", riskData.getDecision());
+        assertFalse(riskData.getDeviceDataCaptured());
+        assertNotNull(riskData.getId());
     }
 
     @Test

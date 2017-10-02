@@ -246,6 +246,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleReturnsRiskData() {
+        BraintreeGateway advancedFraudMerchantGateway = new BraintreeGateway(Environment.DEVELOPMENT, "advanced_fraud_integration_merchant_id", "advanced_fraud_integration_public_key", "advanced_fraud_integration_private_key");
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             deviceSessionId("abc123").
@@ -254,14 +255,14 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 expirationDate("05/2009").
                 done();
 
-        Result<Transaction> result = gateway.transaction().sale(request);
+        Result<Transaction> result = advancedFraudMerchantGateway.transaction().sale(request);
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
         assertNotNull(transaction.getRiskData());
-        assertNotNull(transaction.getRiskData().getDecision());
-        assertNull(transaction.getRiskData().getDeviceDataCaptured());
-        assertNull(transaction.getRiskData().getId());
+        assertEquals("Approve", transaction.getRiskData().getDecision());
+        assertFalse(transaction.getRiskData().getDeviceDataCaptured());
+        assertNotNull(transaction.getRiskData().getId());
     }
 
     @Test
@@ -1342,6 +1343,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleWithFraudCardIsDeclined() {
+        BraintreeGateway advancedFraudMerchantGateway = new BraintreeGateway(Environment.DEVELOPMENT, "advanced_fraud_integration_merchant_id", "advanced_fraud_integration_public_key", "advanced_fraud_integration_private_key");
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
@@ -1349,7 +1351,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 expirationDate("05/2016").
                 done();
 
-        Result<Transaction> result = gateway.transaction().sale(request);
+        Result<Transaction> result = advancedFraudMerchantGateway.transaction().sale(request);
         assertFalse(result.isSuccess());
         Transaction transaction = result.getTransaction();
 
@@ -1374,6 +1376,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleWithRiskDataParam() {
+        BraintreeGateway advancedFraudMerchantGateway = new BraintreeGateway(Environment.DEVELOPMENT, "advanced_fraud_integration_merchant_id", "advanced_fraud_integration_public_key", "advanced_fraud_integration_private_key");
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
@@ -1385,7 +1388,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 customerIP("192.168.0.1").
                 done();
 
-        Result<Transaction> result = gateway.transaction().sale(request);
+        Result<Transaction> result = advancedFraudMerchantGateway.transaction().sale(request);
         assertTrue(result.isSuccess());
     }
 
@@ -1937,6 +1940,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleWithAdvancedFraudCheckingSkipped() {
+        BraintreeGateway advancedFraudMerchantGateway = new BraintreeGateway(Environment.DEVELOPMENT, "advanced_fraud_integration_merchant_id", "advanced_fraud_integration_public_key", "advanced_fraud_integration_private_key");
         TransactionRequest request = new TransactionRequest().
                 amount(TransactionAmount.AUTHORIZE.amount).
                 creditCard().
@@ -1947,7 +1951,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 skipAdvancedFraudChecking(true).
                 done();
 
-        Result<Transaction> result = gateway.transaction().sale(request);
+        Result<Transaction> result = advancedFraudMerchantGateway.transaction().sale(request);
         assertTrue(result.isSuccess());
         assertNull(result.getTarget().getRiskData().getId());
     }
