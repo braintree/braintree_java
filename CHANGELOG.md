@@ -1,6 +1,7 @@
 ## Unreleased
 * Add support for upgrading a PayPal future payment reresh token to a billing agreement
 * Add loginOnly parameter to OAuth connect URL
+* Add support for Granted Payment Instrument Update webhook
 
 ## 2.73.0
 

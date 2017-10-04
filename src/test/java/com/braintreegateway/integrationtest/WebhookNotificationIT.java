@@ -462,4 +462,23 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertEquals(Calendar.JANUARY, notification.getAccountUpdaterDailyReport().getReportDate().get(Calendar.MONTH));
         assertEquals(14, notification.getAccountUpdaterDailyReport().getReportDate().get(Calendar.DAY_OF_MONTH));
     }
+
+    @Test
+    public void createsSampleNotificationForGrantedPaymentInstrumentUpdate() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.GRANTED_PAYMENT_INSTRUMENT_UPDATE, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.GRANTED_PAYMENT_INSTRUMENT_UPDATE, notification.getKind());
+
+        GrantedPaymentInstrumentUpdate update = notification.getGrantedPaymentInstrumentUpdate();
+
+        assertEquals("vczo7jqrpwrsi2px", update.getGrantOwnerMerchantId());
+        assertEquals("cf0i8wgarszuy6hc", update.getGrantRecipientMerchantId());
+        assertEquals("ee257d98-de40-47e8-96b3-a6954ea7a9a4", update.getPaymentMethodNonce());
+        assertEquals("abc123z", update.getToken());
+        assertEquals("expiration-month", update.getUpdatedFields().get(0));
+        assertEquals("expiration-year", update.getUpdatedFields().get(1));
+        assertEquals(2, update.getUpdatedFields().size());
+    }
 }
