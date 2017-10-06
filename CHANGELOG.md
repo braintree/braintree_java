@@ -1,5 +1,6 @@
 ## Unreleased
 * Add support for upgrading a PayPal future payment reresh token to a billing agreement
+* Add loginOnly parameter to OAuth connect URL
 
 ## 2.73.0
 

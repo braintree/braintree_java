@@ -102,6 +102,7 @@ public class OAuthIT extends IntegrationTest {
             scope("read_write").
             state("baz_state").
             landingPage("login").
+            loginOnly(true).
             user().
                 country("USA").
                 email("foo@example.com").
@@ -153,6 +154,7 @@ public class OAuthIT extends IntegrationTest {
             assertEquals("read_write", query.get("scope"));
             assertEquals("baz_state", query.get("state"));
             assertEquals("login", query.get("landing_page"));
+            assertEquals("true", query.get("login_only"));
 
             assertEquals("USA", query.get("user[country]"));
 
