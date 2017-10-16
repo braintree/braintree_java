@@ -486,6 +486,35 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void createWithOneTimePayPalAccountNonceAndShipping() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(nonce).
+            options().
+                paypal().
+                    shipping().
+                        firstName("Andrew").
+                        lastName("Mason").
+                        company("Braintree Shipping").
+                        streetAddress("456 W Main St").
+                        extendedAddress("Apt 2F").
+                        locality("Bartlett").
+                        region("MA").
+                        postalCode("60103").
+                        countryName("Mexico").
+                        countryCodeAlpha2("MX").
+                        countryCodeAlpha3("MEX").
+                        countryCodeNumeric("484").
+                        done().
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getErrors().getAllDeepValidationErrors().size());
+    }
+
+    @Test
     public void createWithUsBankAccountNonce() {
         String nonce = TestHelper.generateValidUsBankAccountNonce(gateway);
         CustomerRequest request = new CustomerRequest().
