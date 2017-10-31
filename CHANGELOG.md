@@ -3,6 +3,7 @@
 * Add loginOnly parameter to OAuth connect URL
 * Add support for Granted Payment Instrument Update webhook
 * Fix spec to expect PayPal transaction to settle immediately after successful capture
+* Add `options` -> `paypal` -> `shipping` for creating & updating customers as well as creating payment methods
 
 ## 2.73.0
 
