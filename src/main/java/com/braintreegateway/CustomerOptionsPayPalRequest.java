@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class CustomerOptionsPayPalRequest extends Request {
     private CustomerOptionsRequest parent;
+    private CustomerOptionsPayPalShippingRequest shipping;
     private String payeeEmail;
     private String customField;
     private String description;
@@ -18,6 +19,11 @@ public class CustomerOptionsPayPalRequest extends Request {
 
     public CustomerOptionsRequest done() {
         return parent;
+    }
+
+    public CustomerOptionsPayPalShippingRequest shipping() {
+        this.shipping = new CustomerOptionsPayPalShippingRequest(this);
+        return shipping;
     }
 
     public CustomerOptionsPayPalRequest payeeEmail(String payeeEmail) {
@@ -66,6 +72,7 @@ public class CustomerOptionsPayPalRequest extends Request {
             addElement("description", description).
             addElement("customField", customField).
             addElement("orderId", orderId).
-            addElement("amount", amount);
+            addElement("amount", amount).
+            addElement("shipping", shipping);
     }
 }
