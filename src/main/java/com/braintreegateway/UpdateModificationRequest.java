@@ -6,9 +6,18 @@ public class UpdateModificationRequest extends ModificationRequest {
 
     private String existingId;
 
+    public UpdateModificationRequest(ModificationsRequest parent) {
+        super(parent);
+    }
+
     public UpdateModificationRequest(ModificationsRequest parent, String existingId) {
         super(parent);
         this.existingId = existingId;
+    }
+
+    public UpdateModificationRequest existingId(String existingId) {
+        this.existingId = existingId;
+        return this;
     }
 
     @Override
