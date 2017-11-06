@@ -2,6 +2,7 @@
 * Add support for upgrading a PayPal future payment reresh token to a billing agreement
 * Add loginOnly parameter to OAuth connect URL
 * Add support for Granted Payment Instrument Update webhook
+* Add ability to create a transaction from a shared nonce
 * Fix spec to expect PayPal transaction to settle immediately after successful capture
 * Add `options` -> `paypal` -> `shipping` for creating & updating customers as well as creating payment methods
 

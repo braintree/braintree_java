@@ -45,6 +45,7 @@ public class TransactionRequest extends Request {
     private Boolean threeDSecureTransaction;
 
     private String sharedPaymentMethodToken;
+    private String sharedPaymentMethodNonce;
     private String sharedCustomerId;
     private String sharedShippingAddressId;
     private String sharedBillingAddressId;
@@ -217,6 +218,11 @@ public class TransactionRequest extends Request {
         return this;
     }
 
+    public TransactionRequest sharedPaymentMethodNonce(String sharedPaymentMethodNonce) {
+        this.sharedPaymentMethodNonce = sharedPaymentMethodNonce;
+        return this;
+    }
+
     public TransactionRequest sharedCustomerId(String sharedCustomerId) {
         this.sharedCustomerId = sharedCustomerId;
         return this;
@@ -287,6 +293,7 @@ public class TransactionRequest extends Request {
             addElement("fraudMerchantId", fraudMerchantId).
             addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode).
             addElement("sharedPaymentMethodToken", sharedPaymentMethodToken).
+            addElement("sharedPaymentMethodNonce", sharedPaymentMethodNonce).
             addElement("sharedCustomerId", sharedCustomerId).
             addElement("sharedShippingAddressId", sharedShippingAddressId).
             addElement("sharedBillingAddressId", sharedBillingAddressId).
