@@ -6,6 +6,7 @@
 * Fix spec to expect PayPal transaction to settle immediately after successful capture
 * Add `options` -> `paypal` -> `shipping` for creating & updating customers as well as creating payment methods
 * Add `imageUrl` to `ApplePayDetails`
+* Deprecate `OAuthGateway::computeSignature`
 
 ## 2.73.0
 
