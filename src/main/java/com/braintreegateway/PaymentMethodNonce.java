@@ -10,6 +10,7 @@ public class PaymentMethodNonce {
     private PaymentMethodNonceDetails details;
     private ThreeDSecureInfo threeDSecureInfo;
     private String type;
+    private BinData binData;
 
     public PaymentMethodNonce(NodeWrapper node) {
         isDefault = node.findBoolean("default");
@@ -26,6 +27,11 @@ public class PaymentMethodNonce {
         NodeWrapper threeDSecureInfoNode = node.findFirst("three-d-secure-info");
         if (threeDSecureInfoNode != null && !threeDSecureInfoNode.isBlank()) {
             threeDSecureInfo = new ThreeDSecureInfo(threeDSecureInfoNode);
+        }
+
+        NodeWrapper binDataNode = node.findFirst("bin-data");
+        if (binDataNode != null && !binDataNode.isBlank()) {
+            binData = new BinData(binDataNode);
         }
     }
 
@@ -59,5 +65,9 @@ public class PaymentMethodNonce {
 
     public String getType() {
         return type;
+    }
+
+    public BinData getBinData() {
+        return binData;
     }
 }
