@@ -1,6 +1,7 @@
 package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Dispute;
@@ -18,6 +19,7 @@ import com.braintreegateway.ValidationErrorCode;
 import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -356,11 +358,13 @@ public class DisputeIT extends IntegrationTest {
 	}
 
 	@Test
-    public void searchDateRangeReturnsDispute() {
+    public void searchDateRangeReturnsDispute() throws ParseException{
         List<Dispute> disputes = new ArrayList<Dispute>();
+        Calendar before = CalendarTestUtils.date("2014-03-03");
+        Calendar after = CalendarTestUtils.date("2014-03-05");
         DisputeSearchRequest request = new DisputeSearchRequest()
             .receivedDate()
-            .between("03/03/2014", "03/05/2014");
+            .between(before, after);
 
         PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
             .search(request);

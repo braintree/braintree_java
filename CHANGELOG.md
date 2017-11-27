@@ -8,6 +8,7 @@
 * Add `imageUrl` to `ApplePayDetails`
 * Deprecate `OAuthGateway::computeSignature`
 * Fix spec to expect PayPal transactions to move to settling rather than settled
+* Fix `receivedDate`/`replyByDate` by returning `DateRangeNode` in `DisputeSearchRequest`
 
 ## 2.73.0
 

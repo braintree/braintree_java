@@ -34,16 +34,16 @@ public class DisputeSearchRequest extends SearchRequest {
         return new MultipleValueNode<DisputeSearchRequest, String>("reason_code", this);
     }
 
-    public RangeNode<DisputeSearchRequest> receivedDate() {
-        return new RangeNode<DisputeSearchRequest>("received_date", this);
+    public DateRangeNode<DisputeSearchRequest> receivedDate() {
+        return new DateRangeNode<DisputeSearchRequest>("received_date", this);
     }
 
     public TextNode<DisputeSearchRequest> referenceNumber() {
         return new TextNode<DisputeSearchRequest>("reference_number", this);
     }
 
-    public RangeNode<DisputeSearchRequest> replyByDate() {
-        return new RangeNode<DisputeSearchRequest>("reply_by_date", this);
+    public DateRangeNode<DisputeSearchRequest> replyByDate() {
+        return new DateRangeNode<DisputeSearchRequest>("reply_by_date", this);
     }
 
     public MultipleValueNode<DisputeSearchRequest, Dispute.Status> status() {
