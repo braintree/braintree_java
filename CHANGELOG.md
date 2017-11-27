@@ -1,5 +1,6 @@
-## Unreleased
-* Add support for upgrading a PayPal future payment reresh token to a billing agreement
+## 2.74.0
+
+* Add support for upgrading a PayPal future payment refresh token to a billing agreement
 * Add loginOnly parameter to OAuth connect URL
 * Add support for Granted Payment Instrument Update webhook
 * Add ability to create a transaction from a shared nonce
@@ -8,7 +9,10 @@
 * Add `imageUrl` to `ApplePayDetails`
 * Deprecate `OAuthGateway::computeSignature`
 * Fix spec to expect PayPal transactions to move to settling rather than settled
-* Fix `receivedDate`/`replyByDate` by returning `DateRangeNode` in `DisputeSearchRequest`
+* Add `deviceDataCaptured` field to `RiskData`
+* Add `binData` to `PaymentMethodNonce`
+* Throw error if `signature` or `payload` in webhook is null
+* Fix `receivedDate`/`replyByDate` by returning `DateRangeNode` in `DisputeSearchRequest` (Note: this is a breaking change for limited relese disputes API)
 
 ## 2.73.0
 
@@ -28,7 +32,6 @@
 * Add `find` method for the Dispute API
 * Add `removeEvidence` method for the Dispute API
 * Add `search` method for the Dispute API
-* Add `deviceDataCaptured` field to `RiskData`
 
 ## 2.72.1
 
