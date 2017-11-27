@@ -150,6 +150,16 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test(expected = InvalidSignatureException.class)
+    public void invalidSignatureRaisesExceptionWhenSignatureIsNull() {
+        this.gateway.webhookNotification().parse(null, "payload");
+    }
+
+    @Test(expected = InvalidSignatureException.class)
+    public void invalidSignatureRaisesExceptionWhenPayloadIsNull() {
+        this.gateway.webhookNotification().parse("signature", null);
+    }
+
+    @Test(expected = InvalidSignatureException.class)
     public void invalidSignatureRaisesException() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
 
