@@ -11,6 +11,7 @@ public class ApplePayDetails {
     private String expirationYear;
     private String last4;
     private String token;
+    private String imageUrl;
 
     public ApplePayDetails(NodeWrapper node) {
         cardType = node.findString("card-type");
@@ -21,6 +22,7 @@ public class ApplePayDetails {
         expirationYear = node.findString("expiration-year");
         last4 = node.findString("last-4");
         token = node.findString("token");
+        imageUrl = node.findString("image-url");
     }
 
     public String getToken() {
@@ -53,5 +55,9 @@ public class ApplePayDetails {
 
     public String getLast4() {
         return last4;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 }

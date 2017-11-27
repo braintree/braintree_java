@@ -1051,6 +1051,99 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
     }
 
     @Test
+    public void updateAddOnsAndDiscountsUsingExistingIdForUpdate() {
+        Plan plan = PlanFixture.ADD_ON_DISCOUNT_PLAN;
+        SubscriptionRequest createRequest = new SubscriptionRequest().
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId());
+        Subscription subscription = gateway.subscription().create(createRequest).getTarget();
+
+        SubscriptionRequest request = new SubscriptionRequest().
+                addOns().
+                update().
+                existingId("increase_10").
+                amount(new BigDecimal("30.00")).
+                quantity(9).
+                done().
+                remove("increase_20").
+                add().
+                inheritedFromId("increase_30").
+                amount(new BigDecimal("31.00")).
+                quantity(7).
+                done().
+                done().
+                discounts().
+                update().
+                existingId("discount_7").
+                amount(new BigDecimal("15.00")).
+                done().
+                remove("discount_11").
+                add().
+                inheritedFromId("discount_15").
+                amount(new BigDecimal("23.00")).
+                done().
+                done();
+
+        Result<Subscription> result = gateway.subscription().update(subscription.getId(), request);
+        assertTrue(result.isSuccess());
+        Subscription updatedSubscription = result.getTarget();
+
+        List<AddOn> addOns = updatedSubscription.getAddOns();
+        Collections.sort(addOns, new TestHelper.CompareModificationsById());
+
+        assertEquals(2, addOns.size());
+
+        assertEquals(new BigDecimal("30.00"), addOns.get(0).getAmount());
+        assertEquals(new Integer(9), addOns.get(0).getQuantity());
+
+        assertEquals(new BigDecimal("31.00"), addOns.get(1).getAmount());
+        assertEquals(new Integer(7), addOns.get(1).getQuantity());
+
+        List<Discount> discounts = updatedSubscription.getDiscounts();
+        Collections.sort(discounts, new TestHelper.CompareModificationsById());
+
+        assertEquals(2, discounts.size());
+
+        assertEquals("discount_15", discounts.get(0).getId());
+        assertEquals(new BigDecimal("23.00"), discounts.get(0).getAmount());
+        assertEquals(new Integer(1), discounts.get(0).getQuantity());
+
+        assertEquals("discount_7", discounts.get(1).getId());
+        assertEquals(new BigDecimal("15.00"), discounts.get(1).getAmount());
+        assertEquals(new Integer(1), discounts.get(1).getQuantity());
+    }
+
+    @Test
+    public void updateAddOnsAndDiscountsValidationErrorWithoutExistingId() {
+        Plan plan = PlanFixture.ADD_ON_DISCOUNT_PLAN;
+        SubscriptionRequest createRequest = new SubscriptionRequest().
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId());
+        Subscription subscription = gateway.subscription().create(createRequest).getTarget();
+
+        SubscriptionRequest request = new SubscriptionRequest().
+                addOns().
+                update().
+                amount(new BigDecimal("30.00")).
+                quantity(9).
+                done().
+                done().
+                discounts().
+                update().
+                amount(new BigDecimal("15.00")).
+                done().
+                done();
+
+        Result<Subscription> result = gateway.subscription().update(subscription.getId(), request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.SUBSCRIPTION_MODIFICATION_EXISTING_ID_IS_REQUIRED,
+                result.getErrors().forObject("subscription").forObject("discounts").forObject("update").forIndex(0).onField("existingId").get(0).getCode());
+        assertEquals(ValidationErrorCode.SUBSCRIPTION_MODIFICATION_EXISTING_ID_IS_REQUIRED,
+                result.getErrors().forObject("subscription").forObject("addOns").forObject("update").forIndex(0).onField("existingId").get(0).getCode());
+    }
+
+    @Test
     public void updateWithPaymentMethodNonce() {
         Plan originalPlan = PlanFixture.PLAN_WITHOUT_TRIAL;
         SubscriptionRequest createRequest = new SubscriptionRequest().

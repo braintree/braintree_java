@@ -19,9 +19,9 @@ import java.util.*;
  * </pre>
  * 
  * For more detailed information on {@link ValidationErrors}, see <a
- * href="http://www.braintreepayments.com/gateway/validation-errors"
+ * href="https://developers.braintreepayments.com/reference/general/validation-errors/overview/java"
  * target
- * ="_blank">http://www.braintreepayments.com/gateway/validation-errors
+ * ="_blank">https://developers.braintreepayments.com/reference/general/validation-errors/overview/java
  * </a>
  */
 public class ValidationErrors {

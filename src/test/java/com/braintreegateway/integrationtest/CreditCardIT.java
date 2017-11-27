@@ -1041,6 +1041,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
             cvv("123").
             number("4111111111111111").
             expirationDate("05/12").
+            deviceSessionId("abc123").
             options().
                 verifyCard(true).
                 done();
@@ -1058,6 +1059,8 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertNotNull(riskData);
 
         assertNotNull(riskData.getDecision());
+        assertNull(riskData.getDeviceDataCaptured());
+        assertNull(riskData.getId());
     }
 
     @Test

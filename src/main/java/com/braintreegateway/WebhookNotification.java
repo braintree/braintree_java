@@ -33,6 +33,7 @@ public class WebhookNotification {
         ACCOUNT_UPDATER_DAILY_REPORT("account_updater_daily_report"),
         IDEAL_PAYMENT_COMPLETE("ideal_payment_complete"),
         IDEAL_PAYMENT_FAILED("ideal_payment_failed"),
+        GRANTED_PAYMENT_INSTRUMENT_UPDATE("granted_payment_instrument_update"),
         UNRECOGNIZED("unrecognized");
 
         private final String name;
@@ -60,6 +61,7 @@ public class WebhookNotification {
     private ConnectedMerchantStatusTransitioned connectedMerchantStatusTransitioned;
     private ConnectedMerchantPayPalStatusChanged connectedMerchantPayPalStatusChanged;
     private IdealPayment idealPayment;
+    private GrantedPaymentInstrumentUpdate grantedPaymentInstrumentUpdate;
 
     public WebhookNotification(NodeWrapper node) {
         this.kind = EnumUtils.findByName(Kind.class, node.findString("kind"), Kind.UNRECOGNIZED);
@@ -109,6 +111,10 @@ public class WebhookNotification {
 
         if (wrapperNode.findFirst("ideal-payment") != null) {
             this.idealPayment = new IdealPayment(wrapperNode.findFirst("ideal-payment"));
+        }
+
+        if (wrapperNode.findFirst("granted-payment-instrument-update") != null) {
+            this.grantedPaymentInstrumentUpdate = new GrantedPaymentInstrumentUpdate(wrapperNode.findFirst("granted-payment-instrument-update"));
         }
 
         if (!wrapperNode.isSuccess()) {
@@ -166,5 +172,9 @@ public class WebhookNotification {
 
     public IdealPayment getIdealPayment() {
         return this.idealPayment;
+    }
+
+    public GrantedPaymentInstrumentUpdate getGrantedPaymentInstrumentUpdate() {
+        return this.grantedPaymentInstrumentUpdate;
     }
 }

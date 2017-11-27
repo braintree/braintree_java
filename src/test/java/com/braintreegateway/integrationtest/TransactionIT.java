@@ -248,6 +248,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     public void saleReturnsRiskData() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
+            deviceSessionId("abc123").
             creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2009").
@@ -259,6 +260,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertNotNull(transaction.getRiskData());
         assertNotNull(transaction.getRiskData().getDecision());
+        assertNull(transaction.getRiskData().getDeviceDataCaptured());
+        assertNull(transaction.getRiskData().getId());
     }
 
     @Test
@@ -672,6 +675,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(transaction.getApplePayDetails().getExpirationYear());
         assertNotNull(transaction.getApplePayDetails().getCardholderName());
         assertNotNull(transaction.getApplePayDetails().getLast4());
+        assertNotNull(transaction.getApplePayDetails().getImageUrl());
     }
 
     @Test
@@ -4631,27 +4635,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void paypalTransactionReturnsSettlementResponseCode() {
-        TransactionRequest request = new TransactionRequest().
-            amount(TransactionAmount.AUTHORIZE.amount).
-            paymentMethodNonce(Nonce.PayPalFuturePayment).
-            options().
-                submitForSettlement(true).
-                done();
-
-        Result<Transaction> authResult = gateway.transaction().sale(request);
-        assertTrue(authResult.isSuccess());
-
-        TestingGateway testingGateway = gateway.testing();
-        testingGateway.settlementDecline(authResult.getTarget().getId());
-
-        Transaction transaction = gateway.transaction().find(authResult.getTarget().getId());
-        assertEquals(Transaction.Status.SETTLEMENT_DECLINED, transaction.getStatus());
-        assertEquals("4001", transaction.getProcessorSettlementResponseCode());
-        assertEquals("Settlement Declined", transaction.getProcessorSettlementResponseText());
-    }
-
-    @Test
     public void returnsAllRequiredPaypalFields() {
         Transaction transaction = gateway.transaction().find("settledtransaction");
         assertNotNull(transaction.getPayPalDetails().getDebugId());
@@ -4908,7 +4891,57 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void sharedPaymentMethods() {
+    public void sharedPaymentMethodNonce() {
+        BraintreeGateway sharerGateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_public_id", "oauth_app_partner_user_public_key", "oauth_app_partner_user_private_key");
+        Customer customer = sharerGateway.customer().create(new CustomerRequest().
+                creditCard().
+                number("5105105105105100").
+                expirationDate("05/19").
+                billingAddress().
+                    postalCode("94107").
+                    done().
+                done()
+        ).getTarget();
+        CreditCard card = customer.getCreditCards().get(0);
+        Address billingAddress = card.getBillingAddress();
+        Address shippingAddress = sharerGateway.address().create(customer.getId(),
+                new AddressRequest().postalCode("94107")).getTarget();
+
+        BraintreeGateway oauthGateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+        String code = TestHelper.createOAuthGrant(oauthGateway, "integration_merchant_id", "shared_vault_transactions");
+
+        OAuthCredentialsRequest oauthRequest = new OAuthCredentialsRequest().
+             code(code).
+             scope("shared_vault_transactions");
+
+        Result<OAuthCredentials> accessTokenResult = oauthGateway.oauth().createTokenFromCode(oauthRequest);
+
+        BraintreeGateway gateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
+
+        String sharedNonce = sharerGateway.paymentMethodNonce().create(card.getToken()).getTarget().getNonce();
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            sharedPaymentMethodNonce(sharedNonce).
+            sharedCustomerId(customer.getId()).
+            sharedShippingAddressId(shippingAddress.getId()).
+            sharedBillingAddressId(billingAddress.getId());
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+
+        assertEquals(transaction.getFacilitatedDetails().getMerchantId(), "integration_merchant_id");
+        assertEquals(transaction.getFacilitatedDetails().getMerchantName(), "14ladders");
+        assertEquals(transaction.getFacilitatedDetails().getPaymentMethodNonce(), null);
+        assertEquals(transaction.getFacilitatorDetails().getOauthApplicationClientId(), "client_id$development$integration_client_id");
+        assertEquals(transaction.getFacilitatorDetails().getOauthApplicationName(), "PseudoShop");
+    }
+
+
+    @Test
+    public void sharedPaymentMethodToken() {
         BraintreeGateway sharerGateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_public_id", "oauth_app_partner_user_public_key", "oauth_app_partner_user_private_key");
         Customer customer = sharerGateway.customer().create(new CustomerRequest().
                 creditCard().

@@ -1,3 +1,19 @@
+## 2.74.0
+
+* Add support for upgrading a PayPal future payment refresh token to a billing agreement
+* Add loginOnly parameter to OAuth connect URL
+* Add support for Granted Payment Instrument Update webhook
+* Add ability to create a transaction from a shared nonce
+* Fix spec to expect PayPal transaction to settle immediately after successful capture
+* Add `options` -> `paypal` -> `shipping` for creating & updating customers as well as creating payment methods
+* Add `imageUrl` to `ApplePayDetails`
+* Deprecate `OAuthGateway::computeSignature`
+* Fix spec to expect PayPal transactions to move to settling rather than settled
+* Add `deviceDataCaptured` field to `RiskData`
+* Add `binData` to `PaymentMethodNonce`
+* Throw error if `signature` or `payload` in webhook is null
+* Fix `receivedDate`/`replyByDate` by returning `DateRangeNode` in `DisputeSearchRequest` (Note: this is a breaking change for limited relese disputes API)
+
 ## 2.73.0
 
 * Add iDEAL webhook support

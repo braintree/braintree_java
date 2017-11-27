@@ -17,6 +17,8 @@ public class PaymentMethodRequest extends Request {
     private String expirationYear;
     private String number;
     private String paymentMethodToken;
+    private String paypalRefreshToken;
+    private Boolean paypalVaultWithoutUpgrade;
     private String venmoSdkPaymentMethodCode;
 
     public PaymentMethodRequest() {
@@ -64,6 +66,16 @@ public class PaymentMethodRequest extends Request {
 
     public PaymentMethodRequest number(String number) {
         this.number = number;
+        return this;
+    }
+
+    public PaymentMethodRequest paypalRefreshToken(String paypalRefreshToken) {
+        this.paypalRefreshToken = paypalRefreshToken;
+        return this;
+    }
+
+    public PaymentMethodRequest paypalVaultWithoutUpgrade(Boolean paypalVaultWithoutUpgrade) {
+        this.paypalVaultWithoutUpgrade = paypalVaultWithoutUpgrade;
         return this;
     }
 
@@ -139,6 +151,8 @@ public class PaymentMethodRequest extends Request {
             addElement("expirationMonth", expirationMonth).
             addElement("expirationYear", expirationYear).
             addElement("paymentMethodNonce", paymentMethodNonce).
+            addElement("paypalRefreshToken", paypalRefreshToken).
+            addElement("paypalVaultWithoutUpgrade", paypalVaultWithoutUpgrade).
             addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode);
 
         return builder;

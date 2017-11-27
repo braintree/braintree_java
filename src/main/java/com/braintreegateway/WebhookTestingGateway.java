@@ -60,6 +60,7 @@ public class WebhookTestingGateway {
             case ACCOUNT_UPDATER_DAILY_REPORT: return accountUpdaterDailyReportXml(id);
             case IDEAL_PAYMENT_COMPLETE: return idealPaymentCompleteXml(id);
             case IDEAL_PAYMENT_FAILED: return idealPaymentFailedXml(id);
+            case GRANTED_PAYMENT_INSTRUMENT_UPDATE: return grantedPaymentInstrumentUpdateXml();
             default: return subscriptionXml(id);
         }
     }
@@ -373,6 +374,23 @@ public class WebhookTestingGateway {
                 node("approval-url", "https://example.com"),
                 node("ideal-transaction-id", "1234567890")
         );
+    }
+
+    private String grantedPaymentInstrumentUpdateXml() {
+        return node("granted-payment-instrument-update",
+                node("grant-owner-merchant-id", "vczo7jqrpwrsi2px"),
+                node("grant-recipient-merchant-id", "cf0i8wgarszuy6hc"),
+                node("payment-method-nonce",
+                    node("nonce", "ee257d98-de40-47e8-96b3-a6954ea7a9a4"),
+                    node("consumed", TYPE_BOOLEAN, "false"),
+                    node("locked", TYPE_BOOLEAN, "false")
+                    ),
+                node("token", "abc123z"),
+                node("updated-fields", TYPE_ARRAY,
+                    node("item", "expiration-month"),
+                    node("item", "expiration-year")
+                    )
+                );
     }
 
     private String checkXml() {

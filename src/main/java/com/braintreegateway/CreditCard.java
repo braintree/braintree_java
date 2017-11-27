@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Comparator;
 import java.util.Collections;
 
+import static com.braintreegateway.util.EnumUtils.findByToString;
+
 public class CreditCard implements PaymentMethod {
     public static final String VALUE_YES = "Yes";
     public static final String VALUE_NO = "No";
@@ -296,67 +298,31 @@ public class CreditCard implements PaymentMethod {
     }
 
     public Commercial getCommercial() {
-      if(commercial.equals(Commercial.YES.toString())) {
-        return Commercial.YES;
-      } else if (commercial.equals(Commercial.NO.toString())) {
-        return Commercial.NO;
-      } else {
-        return Commercial.UNKNOWN;
-      }
+        return findByToString(Commercial.values(), commercial, Commercial.UNKNOWN);
     }
 
     public Debit getDebit() {
-      if(debit.equals(Debit.YES.toString())) {
-        return Debit.YES;
-      } else if (debit.equals(Debit.NO.toString())) {
-        return Debit.NO;
-      } else {
-        return Debit.UNKNOWN;
-      }
+        return findByToString(Debit.values(), debit, Debit.UNKNOWN);
     }
 
     public DurbinRegulated getDurbinRegulated() {
-      if(durbinRegulated.equals(DurbinRegulated.YES.toString())) {
-        return DurbinRegulated.YES;
-      } else if (durbinRegulated.equals(DurbinRegulated.NO.toString())) {
-        return DurbinRegulated.NO;
-      } else {
-        return DurbinRegulated.UNKNOWN;
-      }
+        return findByToString(DurbinRegulated.values(), durbinRegulated, DurbinRegulated.UNKNOWN);
     }
 
     public Healthcare getHealthcare() {
-      if(healthcare.equals(Healthcare.YES.toString())) {
-        return Healthcare.YES;
-      } else if (healthcare.equals(Healthcare.NO.toString())) {
-        return Healthcare.NO;
-      } else {
-        return Healthcare.UNKNOWN;
-      }
+        return findByToString(Healthcare.values(), healthcare, Healthcare.UNKNOWN);
     }
 
     public Payroll getPayroll() {
-      if(payroll.equals(Payroll.YES.toString())) {
-        return Payroll.YES;
-      } else if (payroll.equals(Payroll.NO.toString())) {
-        return Payroll.NO;
-      } else {
-        return Payroll.UNKNOWN;
-      }
+        return findByToString(Payroll.values(), payroll, Payroll.UNKNOWN);
     }
 
     public Prepaid getPrepaid() {
-      if(prepaid.equals(Prepaid.YES.toString())) {
-        return Prepaid.YES;
-      } else if (prepaid.equals(Prepaid.NO.toString())) {
-        return Prepaid.NO;
-      } else {
-        return Prepaid.UNKNOWN;
-      }
+        return findByToString(Prepaid.values(), prepaid, Prepaid.UNKNOWN);
     }
 
     public String getProductId() {
-        if(productId.equals("")) {
+        if ("".equals(productId)) {
             return "Unknown";
         } else {
             return productId;
@@ -364,7 +330,7 @@ public class CreditCard implements PaymentMethod {
     }
 
     public String getCountryOfIssuance() {
-        if(countryOfIssuance.equals("")) {
+        if ("".equals(countryOfIssuance)) {
             return "Unknown";
         } else {
             return countryOfIssuance;
@@ -372,7 +338,7 @@ public class CreditCard implements PaymentMethod {
     }
 
     public String getIssuingBank() {
-        if(issuingBank.equals("")) {
+        if ("".equals(issuingBank)) {
             return "Unknown";
         } else {
             return issuingBank;
