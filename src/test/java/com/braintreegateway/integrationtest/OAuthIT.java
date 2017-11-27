@@ -188,11 +188,6 @@ public class OAuthIT extends IntegrationTest {
             assertEquals("USD", query.get("business[currency]"));
             assertEquals("http://example.com", query.get("business[website]"));
             assertEquals("1988-10", query.get("business[established_on]"));
-
-            assertEquals(64, query.get("signature").length());
-            assertTrue(query.get("signature").matches("^[a-f0-9]+$"));
-            assertEquals("SHA256", query.get("algorithm"));
-
         } catch (java.io.UnsupportedEncodingException e) {
             fail("unsupported encoding");
         } catch (java.net.MalformedURLException e) {
@@ -244,6 +239,7 @@ public class OAuthIT extends IntegrationTest {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void computeSignatureReturnsCorrectSignature() {
         String url = "http://localhost:3000/oauth/connect?business%5Bname%5D=We+Like+Spaces&client_id=client_id%24development%24integration_client_id";
