@@ -56,7 +56,7 @@ public class ClientTokenIT extends IntegrationTest {
         }
 
         Configuration configuration = gateway.getConfiguration();
-        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/nonces.json?";
+        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods?";
         url += "authorizationFingerprint=" + encodedFingerprint;
         url += "&sharedCustomerIdentifierType=testing&sharedCustomerIdentifier=test-identifier";
 
@@ -116,7 +116,7 @@ public class ClientTokenIT extends IntegrationTest {
         }
 
         Configuration configuration = gateway.getConfiguration();
-        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/nonces.json?";
+        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods?";
         url += "authorizationFingerprint=" + encodedFingerprint;
         url += "&sharedCustomerIdentifierType=testing&sharedCustomerIdentifier=test-identifier";
 
@@ -146,7 +146,7 @@ public class ClientTokenIT extends IntegrationTest {
         String authorizationFingerprint = _getFingerprint(clientToken);
 
         Configuration configuration = gateway.getConfiguration();
-        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/nonces.json";
+        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods/credit_cards";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("shared_customer_identifier_type", "testing").
@@ -185,7 +185,7 @@ public class ClientTokenIT extends IntegrationTest {
         String authorizationFingerprint = _getFingerprint(clientToken);
 
         Configuration configuration = gateway.getConfiguration();
-        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/nonces.json";
+        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods/credit_cards";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("shared_customer_identifier_type", "testing").
@@ -221,7 +221,7 @@ public class ClientTokenIT extends IntegrationTest {
         String authorizationFingerprint = _getFingerprint(clientToken);
 
         Configuration configuration = gateway.getConfiguration();
-        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/nonces.json";
+        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods/credit_cards";
         QueryString payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("shared_customer_identifier_type", "testing").
@@ -240,7 +240,7 @@ public class ClientTokenIT extends IntegrationTest {
 
         authorizationFingerprint = _getFingerprint(clientToken);
 
-        url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/nonces.json";
+        url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods/credit_cards";
         payload = new QueryString();
         payload.append("authorization_fingerprint", authorizationFingerprint).
             append("shared_customer_identifier_type", "testing").
