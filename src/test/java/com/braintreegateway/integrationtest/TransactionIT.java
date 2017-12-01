@@ -1909,6 +1909,129 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithLevel3SummaryData() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            shippingAmount(new BigDecimal("1.00")).
+            discountAmount(new BigDecimal("2.00")).
+            shipsFromPostalCode("12345");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(new BigDecimal("1.00"), transaction.getShippingAmount());
+        assertEquals(new BigDecimal("2.00"), transaction.getDiscountAmount());
+        assertEquals("12345", transaction.getShipsFromPostalCode());
+    }
+
+    @Test
+    public void saleWithLevel3SummaryDataValidationErrorDiscountAmountCannotBeNegative() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            discountAmount(new BigDecimal("-2.00"));
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_DISCOUNT_AMOUNT_CANNOT_BE_NEGATIVE,
+            result.getErrors().forObject("transaction").onField("discountAmount").get(0).getCode());
+    }
+
+    @Test
+    public void saleWithLevel3SummaryDataValidationErrorDiscountAmountIsTooLarge() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            discountAmount(new BigDecimal("2147483648"));
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_DISCOUNT_AMOUNT_IS_TOO_LARGE,
+            result.getErrors().forObject("transaction").onField("discountAmount").get(0).getCode());
+    }
+
+    @Test
+    public void saleWithLevel3SummaryDataValidationErrorShippingAmountCannotBeNegative() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            shippingAmount(new BigDecimal("-2.00"));
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_SHIPPING_AMOUNT_CANNOT_BE_NEGATIVE,
+            result.getErrors().forObject("transaction").onField("shippingAmount").get(0).getCode());
+    }
+
+    @Test
+    public void saleWithLevel3SummaryDataValidationErrorShippingAmountIsTooLarge() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            shippingAmount(new BigDecimal("2147483648"));
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_SHIPPING_AMOUNT_IS_TOO_LARGE,
+            result.getErrors().forObject("transaction").onField("shippingAmount").get(0).getCode());
+    }
+
+    @Test
+    public void saleWithLevel3SummaryDataValidationErrorShipsFromPostalCodeIsTooLong() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            shipsFromPostalCode("1234567890");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_SHIPS_FROM_POSTAL_CODE_IS_TOO_LONG,
+            result.getErrors().forObject("transaction").onField("shipsFromPostalCode").get(0).getCode());
+    }
+
+    @Test
+    public void saleWithLevel3SummaryDataValidationErrorShipsFromPostalCodeInvalidCharacters() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            shipsFromPostalCode("1$345");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_SHIPS_FROM_POSTAL_CODE_INVALID_CHARACTERS,
+            result.getErrors().forObject("transaction").onField("shipsFromPostalCode").get(0).getCode());
+    }
+
+    @Test
     public void saleWithVenmoSdkPaymentMethodCode() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).

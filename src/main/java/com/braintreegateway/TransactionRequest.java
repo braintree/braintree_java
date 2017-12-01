@@ -38,6 +38,9 @@ public class TransactionRequest extends Request {
     private TransactionThreeDSecurePassThruRequest threeDSecurePassThruRequest;
     private BigDecimal taxAmount;
     private Boolean taxExempt;
+    private BigDecimal shippingAmount;
+    private BigDecimal discountAmount;
+    private String shipsFromPostalCode;
     private Type type;
     private String venmoSdkPaymentMethodCode;
     private String paymentMethodNonce;
@@ -202,6 +205,21 @@ public class TransactionRequest extends Request {
         return this;
     }
 
+    public TransactionRequest shippingAmount(BigDecimal shippingAmount) {
+        this.shippingAmount = shippingAmount;
+        return this;
+    }
+
+    public TransactionRequest discountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
+        return this;
+    }
+
+    public TransactionRequest shipsFromPostalCode(String shipsFromPostalCode) {
+        this.shipsFromPostalCode = shipsFromPostalCode;
+        return this;
+    }
+
     public TransactionRequest venmoSdkPaymentMethodCode(String venmoSdkPaymentMethodCode) {
       this.venmoSdkPaymentMethodCode = venmoSdkPaymentMethodCode;
       return this;
@@ -287,6 +305,9 @@ public class TransactionRequest extends Request {
             addElement("purchaseOrderNumber", purchaseOrderNumber).
             addElement("taxAmount", taxAmount).
             addElement("taxExempt", taxExempt).
+            addElement("shippingAmount", shippingAmount).
+            addElement("discountAmount", discountAmount).
+            addElement("shipsFromPostalCode", shipsFromPostalCode).
             addElement("shippingAddressId", shippingAddressId).
             addElement("billingAddressId", billingAddressId).
             addElement("creditCard", creditCardRequest).
