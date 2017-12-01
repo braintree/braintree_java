@@ -614,4 +614,9 @@ public class Transaction {
     public FacilitatorDetails getFacilitatorDetails() {
         return facilitatorDetails;
     }
+
+    public List<TransactionLineItem> getLineItems(BraintreeGateway gateway) {
+        return gateway.transactionLineItem().findAll(id);
+    }
+
 }

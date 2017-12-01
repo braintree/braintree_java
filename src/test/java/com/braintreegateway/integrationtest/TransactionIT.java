@@ -1989,6 +1989,24 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithLineItemsZero() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("45.15")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+
+        List<TransactionLineItem> lineItems = transaction.getLineItems(gateway);
+        assertEquals(0, lineItems.size());
+    }
+
+    @Test
     public void saleWithLineItemsSingle() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("45.15")).
@@ -2010,6 +2028,22 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+
+        List<TransactionLineItem> lineItems = transaction.getLineItems(gateway);
+        assertEquals(1, lineItems.size());
+
+        TransactionLineItem lineItem = lineItems.get(0);
+        assertEquals(new BigDecimal("1.0232"), lineItem.getQuantity());
+        assertEquals("Description #1", lineItem.getDescription());
+        assertEquals(TransactionLineItem.Kind.DEBIT, lineItem.getKind());
+        assertEquals(new BigDecimal("45.1232"), lineItem.getUnitAmount());
+        assertEquals("gallon", lineItem.getUnitOfMeasure());
+        assertEquals(new BigDecimal("1.02"), lineItem.getDiscountAmount());
+        assertEquals(new BigDecimal("45.15"), lineItem.getTotalAmount());
+        assertEquals("23434", lineItem.getProductCode());
+        assertEquals("9SAASSD8724", lineItem.getCommodityCode());
     }
 
     @Test
@@ -2042,6 +2076,51 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+
+        List<TransactionLineItem> lineItems = transaction.getLineItems(gateway);
+        assertEquals(2, lineItems.size());
+
+        TransactionLineItem lineItem1 = null;
+        for (TransactionLineItem lineItem : lineItems) {
+            if (lineItem.getDescription().equals("Description #1")) {
+                lineItem1 = lineItem;
+                break;
+            }
+        }
+        if (lineItem1 == null) {
+            fail("TransactionLineItem with description \"Description #1\" not returned.");
+        }
+        assertEquals(new BigDecimal("1.0232"), lineItem1.getQuantity());
+        assertEquals("Description #1", lineItem1.getDescription());
+        assertEquals(TransactionLineItem.Kind.DEBIT, lineItem1.getKind());
+        assertEquals(new BigDecimal("45.1232"), lineItem1.getUnitAmount());
+        assertEquals("gallon", lineItem1.getUnitOfMeasure());
+        assertEquals(new BigDecimal("1.02"), lineItem1.getDiscountAmount());
+        assertEquals(new BigDecimal("45.15"), lineItem1.getTotalAmount());
+        assertEquals("23434", lineItem1.getProductCode());
+        assertEquals("9SAASSD8724", lineItem1.getCommodityCode());
+
+        TransactionLineItem lineItem2 = null;
+        for (TransactionLineItem lineItem : lineItems) {
+            if (lineItem.getDescription().equals("Description #2")) {
+                lineItem2 = lineItem;
+                break;
+            }
+        }
+        if (lineItem2 == null) {
+            fail("TransactionLineItem with description \"Description #2\" not returned.");
+        }
+        assertEquals(new BigDecimal("2.02"), lineItem2.getQuantity());
+        assertEquals("Description #2", lineItem2.getDescription());
+        assertEquals(TransactionLineItem.Kind.CREDIT, lineItem2.getKind());
+        assertEquals(new BigDecimal("5"), lineItem2.getUnitAmount());
+        assertEquals("gallon", lineItem2.getUnitOfMeasure());
+        assertEquals(new BigDecimal("45.15"), lineItem2.getTotalAmount());
+        assertEquals(null, lineItem2.getDiscountAmount());
+        assertEquals(null, lineItem2.getProductCode());
+        assertEquals(null, lineItem2.getCommodityCode());
     }
 
     @Test
