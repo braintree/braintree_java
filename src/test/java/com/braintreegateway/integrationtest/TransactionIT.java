@@ -1989,6 +1989,132 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithLineItemsSingle() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("45.15")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.0232")).
+                description("Description #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void saleWithLineItemsMultiple() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("35.05")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.0232")).
+                description("Description #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                done().
+            lineItem().
+                quantity(new BigDecimal("2.02")).
+                description("Description #2").
+                kind(TransactionLineItem.Kind.CREDIT).
+                unitAmount(new BigDecimal("5")).
+                unitOfMeasure("gallon").
+                totalAmount(new BigDecimal("45.15")).
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void saleWithLineItemsValidationErrors() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("35.05")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            lineItem().
+                quantity(new BigDecimal("2.02")).
+                description("Description #2").
+                kind(TransactionLineItem.Kind.CREDIT).
+                unitAmount(new BigDecimal("5")).
+                unitOfMeasure("gallon").
+                totalAmount(new BigDecimal("10.1")).
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.02322")).
+                description("Description #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.01232")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_UNIT_AMOUNT_FORMAT_IS_INVALID,
+            result.getErrors().forObject("transaction").forObject("line_items").forObject("index_1").onField("unit_amount").get(0).getCode()
+        );
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_QUANTITY_FORMAT_IS_INVALID,
+            result.getErrors().forObject("transaction").forObject("line_items").forObject("index_1").onField("quantity").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void saleWithLineItemsValidationErrorTooManyLineItems() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("35.05")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        for (int i = 0; i < 250; i++) {
+            request.
+                lineItem().
+                    quantity(new BigDecimal("2.02")).
+                    description("Line item #" + i).
+                    kind(TransactionLineItem.Kind.CREDIT).
+                    unitAmount(new BigDecimal("5")).
+                    unitOfMeasure("gallon").
+                    totalAmount(new BigDecimal("10.1"));
+        }
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_TOO_MANY_LINE_ITEMS,
+            result.getErrors().forObject("transaction").onField("line_items").get(0).getCode()
+        );
+    }
+
+    @Test
     public void createTransactionFromTransparentRedirectWithAddress() {
         TransactionRequest request = new TransactionRequest();
 

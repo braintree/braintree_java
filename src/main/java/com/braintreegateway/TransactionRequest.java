@@ -3,7 +3,9 @@ package com.braintreegateway;
 import com.braintreegateway.Transaction.Type;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,9 +54,12 @@ public class TransactionRequest extends Request {
 
     private RiskDataTransactionRequest riskDataTransactionRequest;
 
+    private List<TransactionLineItemRequest> transactionLineItemRequests;
+
     public TransactionRequest() {
         this.customFields = new HashMap<String, String>();
         this.threeDSecureTransaction = false;
+        this.transactionLineItemRequests = new ArrayList<TransactionLineItemRequest>();
     }
 
     public TransactionRequest amount(BigDecimal amount) {
@@ -243,6 +248,12 @@ public class TransactionRequest extends Request {
         return riskDataTransactionRequest;
     }
 
+    public TransactionLineItemRequest lineItem() {
+        TransactionLineItemRequest transactionLineItemRequest = new TransactionLineItemRequest(this);
+        transactionLineItemRequests.add(transactionLineItemRequest);
+        return transactionLineItemRequest;
+    }
+
     @Override
     public String toQueryString() {
         return toQueryString("transaction");
@@ -310,6 +321,10 @@ public class TransactionRequest extends Request {
         if (threeDSecureTransaction) {
             String token = threeDSecureToken != null ? threeDSecureToken : "";
             builder.addElement("threeDSecureToken", token);
+        }
+
+        if (!transactionLineItemRequests.isEmpty()) {
+            builder.addElement("lineItems", transactionLineItemRequests);
         }
 
         return builder;
