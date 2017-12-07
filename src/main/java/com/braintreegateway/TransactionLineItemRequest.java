@@ -6,14 +6,17 @@ public class TransactionLineItemRequest extends Request {
 
     private TransactionRequest parent;
     private BigDecimal quantity;
+    private String name;
     private String description;
     private TransactionLineItem.Kind kind;
     private BigDecimal unitAmount;
+    private BigDecimal unitTaxAmount;
     private BigDecimal totalAmount;
     private BigDecimal discountAmount;
     private String unitOfMeasure;
     private String productCode;
     private String commodityCode;
+    private String url;
 
     public TransactionLineItemRequest(TransactionRequest parent) {
         this.parent = parent;
@@ -21,6 +24,11 @@ public class TransactionLineItemRequest extends Request {
 
     public TransactionLineItemRequest quantity(BigDecimal quantity) {
         this.quantity = quantity;
+        return this;
+    }
+
+    public TransactionLineItemRequest name(String name) {
+        this.name = name;
         return this;
     }
 
@@ -36,6 +44,11 @@ public class TransactionLineItemRequest extends Request {
 
     public TransactionLineItemRequest unitAmount(BigDecimal unitAmount) {
         this.unitAmount = unitAmount;
+        return this;
+    }
+
+    public TransactionLineItemRequest unitTaxAmount(BigDecimal unitTaxAmount) {
+        this.unitTaxAmount = unitTaxAmount;
         return this;
     }
 
@@ -64,6 +77,11 @@ public class TransactionLineItemRequest extends Request {
         return this;
     }
 
+    public TransactionLineItemRequest url(String url) {
+        this.url = url;
+        return this;
+    }
+
     public TransactionRequest done() {
         return parent;
     }
@@ -86,13 +104,16 @@ public class TransactionLineItemRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
             addElement("quantity", quantity).
+            addElement("name", name).
             addElement("description", description).
             addElement("kind", kind).
             addElement("unitAmount", unitAmount).
+            addElement("unitTaxAmount", unitTaxAmount).
             addElement("totalAmount", totalAmount).
             addElement("discountAmount", discountAmount).
             addElement("unitOfMeasure", unitOfMeasure).
             addElement("productCode", productCode).
-            addElement("commodityCode", commodityCode);
+            addElement("commodityCode", commodityCode).
+            addElement("url", url);
     }
 }

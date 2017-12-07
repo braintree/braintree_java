@@ -1,3 +1,7 @@
+## Unreleased
+
+* Add support for line_items
+
 ## 2.74.0
 
 * Add support for upgrading a PayPal future payment refresh token to a billing agreement

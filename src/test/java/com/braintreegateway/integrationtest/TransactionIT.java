@@ -2139,7 +2139,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 totalAmount(new BigDecimal("45.15")).
@@ -2155,7 +2155,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         TransactionLineItem lineItem = lineItems.get(0);
         assertEquals(new BigDecimal("1.0232"), lineItem.getQuantity());
-        assertEquals("Description #1", lineItem.getDescription());
+        assertEquals("Name #1", lineItem.getName());
         assertEquals(TransactionLineItem.Kind.DEBIT, lineItem.getKind());
         assertEquals(new BigDecimal("45.1232"), lineItem.getUnitAmount());
         assertEquals(new BigDecimal("45.15"), lineItem.getTotalAmount());
@@ -2171,14 +2171,17 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
+                name("Name #1").
                 description("Description #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
+                unitTaxAmount(new BigDecimal("1.23")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
+                url("https://example.com/products/23434").
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
@@ -2191,14 +2194,17 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         TransactionLineItem lineItem = lineItems.get(0);
         assertEquals(new BigDecimal("1.0232"), lineItem.getQuantity());
+        assertEquals("Name #1", lineItem.getName());
         assertEquals("Description #1", lineItem.getDescription());
         assertEquals(TransactionLineItem.Kind.DEBIT, lineItem.getKind());
         assertEquals(new BigDecimal("45.1232"), lineItem.getUnitAmount());
+        assertEquals(new BigDecimal("1.23"), lineItem.getUnitTaxAmount());
         assertEquals("gallon", lineItem.getUnitOfMeasure());
         assertEquals(new BigDecimal("1.02"), lineItem.getDiscountAmount());
         assertEquals(new BigDecimal("45.15"), lineItem.getTotalAmount());
         assertEquals("23434", lineItem.getProductCode());
         assertEquals("9SAASSD8724", lineItem.getCommodityCode());
+        assertEquals("https://example.com/products/23434", lineItem.getUrl());
     }
 
     @Test
@@ -2211,6 +2217,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
+                name("Name #1").
                 description("Description #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
@@ -2222,6 +2229,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("2.02")).
+                name("Name #2").
                 description("Description #2").
                 kind(TransactionLineItem.Kind.CREDIT).
                 unitAmount(new BigDecimal("5")).
@@ -2239,15 +2247,16 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         TransactionLineItem lineItem1 = null;
         for (TransactionLineItem lineItem : lineItems) {
-            if (lineItem.getDescription().equals("Description #1")) {
+            if (lineItem.getName().equals("Name #1")) {
                 lineItem1 = lineItem;
                 break;
             }
         }
         if (lineItem1 == null) {
-            fail("TransactionLineItem with description \"Description #1\" not returned.");
+            fail("TransactionLineItem with name \"Name #1\" not returned.");
         }
         assertEquals(new BigDecimal("1.0232"), lineItem1.getQuantity());
+        assertEquals("Name #1", lineItem1.getName());
         assertEquals("Description #1", lineItem1.getDescription());
         assertEquals(TransactionLineItem.Kind.DEBIT, lineItem1.getKind());
         assertEquals(new BigDecimal("45.1232"), lineItem1.getUnitAmount());
@@ -2259,15 +2268,16 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         TransactionLineItem lineItem2 = null;
         for (TransactionLineItem lineItem : lineItems) {
-            if (lineItem.getDescription().equals("Description #2")) {
+            if (lineItem.getName().equals("Name #2")) {
                 lineItem2 = lineItem;
                 break;
             }
         }
         if (lineItem2 == null) {
-            fail("TransactionLineItem with description \"Description #2\" not returned.");
+            fail("TransactionLineItem with name \"Name #2\" not returned.");
         }
         assertEquals(new BigDecimal("2.02"), lineItem2.getQuantity());
+        assertEquals("Name #2", lineItem2.getName());
         assertEquals("Description #2", lineItem2.getDescription());
         assertEquals(TransactionLineItem.Kind.CREDIT, lineItem2.getKind());
         assertEquals(new BigDecimal("5"), lineItem2.getUnitAmount());
@@ -2288,7 +2298,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2299,7 +2309,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #2").
+                name("Name #2").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2319,45 +2329,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleWithLineItemsValidationErrorDescriptionIsRequired() {
-        TransactionRequest request = new TransactionRequest().
-            amount(new BigDecimal("35.05")).
-            creditCard().
-                number(CreditCardNumber.VISA.number).
-                expirationDate("05/2009").
-                done().
-            lineItem().
-                quantity(new BigDecimal("1.0232")).
-                description("Description #1").
-                kind(TransactionLineItem.Kind.DEBIT).
-                unitAmount(new BigDecimal("45.1232")).
-                unitOfMeasure("gallon").
-                discountAmount(new BigDecimal("1.02")).
-                totalAmount(new BigDecimal("45.15")).
-                productCode("23434").
-                commodityCode("9SAASSD8724").
-                done().
-            lineItem().
-                quantity(new BigDecimal("1.0232")).
-                kind(TransactionLineItem.Kind.DEBIT).
-                unitAmount(new BigDecimal("45.1232")).
-                unitOfMeasure("gallon").
-                discountAmount(new BigDecimal("1.02")).
-                totalAmount(new BigDecimal("45.15")).
-                productCode("23434").
-                commodityCode("9SAASSD8724").
-                done();
-
-        Result<Transaction> result = gateway.transaction().sale(request);
-        assertFalse(result.isSuccess());
-
-        assertEquals(
-            ValidationErrorCode.TRANSACTION_LINE_ITEM_DESCRIPTION_IS_REQUIRED,
-            result.getErrors().forObject("transaction").forObject("line_items").forObject("index_1").onField("description").get(0).getCode()
-        );
-    }
-
-    @Test
     public void saleWithLineItemsValidationErrorDescriptionIsTooLong() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("35.05")).
@@ -2367,7 +2338,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2378,6 +2349,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
+                name("Name #2").
                 description("123456789012345678901234567890123456").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
@@ -2407,7 +2379,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2418,7 +2390,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #2").
+                name("Name #2").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2447,7 +2419,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2458,7 +2430,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #2").
+                name("Name #2").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2487,7 +2459,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2498,7 +2470,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #2").
+                name("Name #2").
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
@@ -2517,7 +2489,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleWithLineItemsValidationErrorProductCodeIsTooLong() {
+    public void saleWithLineItemsValidationErrorNameIsRequired() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("35.05")).
             creditCard().
@@ -2526,7 +2498,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2537,7 +2509,86 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #2").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_NAME_IS_REQUIRED,
+            result.getErrors().forObject("transaction").forObject("line_items").forObject("index_1").onField("name").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void saleWithLineItemsValidationErrorNameIsTooLong() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("35.05")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.0232")).
+                name("Name #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.0232")).
+                name("123456789012345678901234567890123456").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_NAME_IS_TOO_LONG,
+            result.getErrors().forObject("transaction").forObject("line_items").forObject("index_1").onField("name").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void saleWithLineItemsValidationErrorProductCodeIsTooLong() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("35.05")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.0232")).
+                name("Name #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.0232")).
+                name("Name #2").
                 kind(TransactionLineItem.Kind.CREDIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2566,7 +2617,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2576,7 +2627,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 commodityCode("9SAASSD8724").
                 done().
             lineItem().
-                description("Description #2").
+                name("Name #2").
                 kind(TransactionLineItem.Kind.CREDIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2605,7 +2656,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2616,7 +2667,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("2147483648")).
-                description("Description #2").
+                name("Name #2").
                 kind(TransactionLineItem.Kind.CREDIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2645,7 +2696,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2656,7 +2707,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #2").
+                name("Name #2").
                 kind(TransactionLineItem.Kind.CREDIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2684,7 +2735,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2695,7 +2746,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #2").
+                name("Name #2").
                 kind(TransactionLineItem.Kind.CREDIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2724,7 +2775,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2735,7 +2786,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #2").
+                name("Name #2").
                 kind(TransactionLineItem.Kind.CREDIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2764,7 +2815,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2775,7 +2826,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #2").
+                name("Name #2").
                 kind(TransactionLineItem.Kind.CREDIT).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
@@ -2803,7 +2854,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2814,7 +2865,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #2").
+                name("Name #2").
                 kind(TransactionLineItem.Kind.CREDIT).
                 unitAmount(new BigDecimal("2147483648")).
                 unitOfMeasure("gallon").
@@ -2843,7 +2894,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2854,7 +2905,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #2").
+                name("Name #2").
                 kind(TransactionLineItem.Kind.CREDIT).
                 unitAmount(new BigDecimal("-2")).
                 unitOfMeasure("gallon").
@@ -2883,7 +2934,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #1").
+                name("Name #1").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
@@ -2894,7 +2945,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             lineItem().
                 quantity(new BigDecimal("1.0232")).
-                description("Description #2").
+                name("Name #2").
                 kind(TransactionLineItem.Kind.CREDIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("1234567890123").
@@ -2914,6 +2965,130 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithLineItemsValidationErrorUnitTaxAmountFormatIsInvalid() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("35.05")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.2322")).
+                name("Name #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.2322")).
+                name("Name #2").
+                kind(TransactionLineItem.Kind.CREDIT).
+                unitAmount(new BigDecimal("45.0122")).
+                unitTaxAmount(new BigDecimal("2.012")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_UNIT_TAX_AMOUNT_FORMAT_IS_INVALID,
+            result.getErrors().forObject("transaction").forObject("line_items").forObject("index_1").onField("unitTaxAmount").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void saleWithLineItemsValidationErrorUnitTaxAmountIsTooLarge() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("35.05")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.2322")).
+                name("Name #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitTaxAmount(new BigDecimal("1.23")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.2322")).
+                name("Name #2").
+                kind(TransactionLineItem.Kind.CREDIT).
+                unitAmount(new BigDecimal("45.0122")).
+                unitTaxAmount(new BigDecimal("2147483648")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_UNIT_TAX_AMOUNT_IS_TOO_LARGE,
+            result.getErrors().forObject("transaction").forObject("line_items").forObject("index_1").onField("unitTaxAmount").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void saleWithLineItemsValidationErrorUnitTaxAmountMustBeGreaterThanZero() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("35.05")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.2322")).
+                name("Name #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.2322")).
+                name("Name #2").
+                kind(TransactionLineItem.Kind.CREDIT).
+                unitAmount(new BigDecimal("45.0122")).
+                unitTaxAmount(new BigDecimal("-1.23")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_UNIT_TAX_AMOUNT_MUST_BE_GREATER_THAN_ZERO,
+            result.getErrors().forObject("transaction").forObject("line_items").forObject("index_1").onField("unitTaxAmount").get(0).getCode()
+        );
+    }
+
+    @Test
     public void saleWithLineItemsValidationErrorTooManyLineItems() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("35.05")).
@@ -2926,7 +3101,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             request.
                 lineItem().
                     quantity(new BigDecimal("2.02")).
-                    description("Line item #" + i).
+                    name("Line item #" + i).
                     kind(TransactionLineItem.Kind.CREDIT).
                     unitAmount(new BigDecimal("5")).
                     unitOfMeasure("gallon").
