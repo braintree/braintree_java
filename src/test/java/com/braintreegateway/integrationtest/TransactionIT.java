@@ -2350,7 +2350,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             lineItem().
                 quantity(new BigDecimal("1.0232")).
                 name("Name #2").
-                description("123456789012345678901234567890123456").
+                description("This is a line item description which is far too long. Like, way too long to be practical. We don't like how long this line item description is.").
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
