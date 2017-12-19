@@ -3,12 +3,11 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
+import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.test.CreditCardNumbers;
 import com.braintreegateway.test.Nonce;
-import com.braintreegateway.test.TestingGateway;
 import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
@@ -671,6 +670,33 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(transaction.getApplePayDetails().getCardType());
         assertNotNull(transaction.getApplePayDetails().getPaymentInstrumentName());
         assertNotNull(transaction.getApplePayDetails().getSourceDescription());
+        assertNotNull(transaction.getApplePayDetails().getExpirationMonth());
+        assertNotNull(transaction.getApplePayDetails().getExpirationYear());
+        assertNotNull(transaction.getApplePayDetails().getCardholderName());
+        assertNotNull(transaction.getApplePayDetails().getLast4());
+        assertNotNull(transaction.getApplePayDetails().getImageUrl());
+    }
+
+    @Test
+    public void saleWithApplePayCardParams() {
+        TransactionRequest request = new TransactionRequest()
+                .amount(TransactionAmount.AUTHORIZE.amount)
+                .applePayCardRequest()
+                .number("370293001292109")
+                .cardholderName("JANE SMITH")
+                .cryptogram("AAAAAAAA/COBt84dnIEcwAA3gAAGhgEDoLABAAhAgAABAAAALnNCLw")
+                .expirationMonth("10")
+                .expirationYear("14")
+                .eciIndicator("07")
+                .done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(PaymentInstrumentType.APPLE_PAY_CARD, transaction.getPaymentInstrumentType());
+        assertNotNull(transaction.getApplePayDetails());
+        assertNotNull(transaction.getApplePayDetails().getCardType());
         assertNotNull(transaction.getApplePayDetails().getExpirationMonth());
         assertNotNull(transaction.getApplePayDetails().getExpirationYear());
         assertNotNull(transaction.getApplePayDetails().getCardholderName());

@@ -31,6 +31,7 @@ public class TransactionRequest extends Request {
     private String source;
     private String shippingAddressId;
     private String billingAddressId;
+    private TransactionApplePayCardRequest applePayCardRequest;
     private TransactionDescriptorRequest descriptorRequest;
     private TransactionIndustryRequest industryRequest;
     private TransactionAddressRequest shippingAddressRequest;
@@ -272,6 +273,12 @@ public class TransactionRequest extends Request {
         return transactionLineItemRequest;
     }
 
+    public TransactionApplePayCardRequest applePayCardRequest() {
+        TransactionApplePayCardRequest applePayCardRequest = new TransactionApplePayCardRequest(this);
+        this.applePayCardRequest = applePayCardRequest;
+        return applePayCardRequest;
+    }
+
     @Override
     public String toQueryString() {
         return toQueryString("transaction");
@@ -311,6 +318,7 @@ public class TransactionRequest extends Request {
             addElement("shippingAddressId", shippingAddressId).
             addElement("billingAddressId", billingAddressId).
             addElement("creditCard", creditCardRequest).
+            addElement("applePayCard", applePayCardRequest).
             addElement("paypalAccount", paypalRequest).
             addElement("customer", customerRequest).
             addElement("descriptor", descriptorRequest).
