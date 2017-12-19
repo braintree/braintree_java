@@ -1,6 +1,6 @@
 ## Unreleased
-
 * Add support for line_items
+* Add support for raw Apple Pay processing
 
 ## 2.74.0
 
