@@ -102,4 +102,11 @@ public class ConfigurationTest {
         configuration.setTimeout(30000);
         assertEquals(configuration.getTimeout(), 30000);
     }
+
+    @Test
+    public void testSettingConnectTimeout() {
+        Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", "integration_public_key", "integration_private_key");
+        configuration.setConnectTimeout(30000);
+        assertEquals(configuration.getConnectTimeout(), 30000);
+    }
 }

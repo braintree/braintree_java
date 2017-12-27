@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 public class Configuration {
     private Environment environment;
     private int timeout;
+    private int connectTimeout;
     private Proxy proxy;
     private String accessToken;
     private String clientId;
@@ -141,5 +142,13 @@ public class Configuration {
 
     public void setTimeout(Integer timeout) {
         this.timeout = timeout;
+    }
+
+    public int getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    public void setConnectTimeout(Integer timeout) {
+        this.connectTimeout = timeout;
     }
 }

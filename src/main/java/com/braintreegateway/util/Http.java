@@ -316,6 +316,7 @@ public class Http {
 
     private HttpURLConnection buildConnection(RequestMethod requestMethod, String urlString, String contentType) throws java.io.IOException {
         URL url = new URL(configuration.getBaseURL() + urlString);
+        int connectTimeout = configuration.getConnectTimeout();
         HttpURLConnection connection;
         if (configuration.usesProxy()) {
             connection = (HttpURLConnection) url.openConnection(configuration.getProxy());
@@ -332,6 +333,11 @@ public class Http {
 
         connection.setDoOutput(true);
         connection.setReadTimeout(configuration.getTimeout());
+
+        if (connectTimeout != 0) {
+            connection.setConnectTimeout(connectTimeout);
+        }
+
         return connection;
     }
 
