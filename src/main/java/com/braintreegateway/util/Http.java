@@ -334,7 +334,7 @@ public class Http {
         connection.setDoOutput(true);
         connection.setReadTimeout(configuration.getTimeout());
 
-        if (connectTimeout != 0) {
+        if (connectTimeout > 0) {
             connection.setConnectTimeout(connectTimeout);
         }
 
