@@ -1,6 +1,7 @@
 ## Unreleased
 * Add support for line_items
 * Add support for raw Apple Pay processing
+* Add support for setting connect timeout (#56)
 
 ## 2.74.0
 
