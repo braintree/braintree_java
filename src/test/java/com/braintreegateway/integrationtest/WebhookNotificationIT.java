@@ -149,6 +149,24 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertNotNull(notification.getDispute().getWonDate());
     }
 
+    @Test
+    public void createsSampleNotificationWithSourceMerchantId() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id", "my_source_merchant_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals("my_source_merchant_id", notification.getSourceMerchantId());
+    }
+
+    @Test
+    public void createsSampleNotificationWithoutSourceMerchantIdIfUnspecified() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertNull(notification.getSourceMerchantId());
+    }
+
     @Test(expected = InvalidSignatureException.class)
     public void invalidSignatureRaisesExceptionWhenSignatureIsNull() {
         this.gateway.webhookNotification().parse(null, "payload");

@@ -62,10 +62,13 @@ public class WebhookNotification {
     private ConnectedMerchantPayPalStatusChanged connectedMerchantPayPalStatusChanged;
     private IdealPayment idealPayment;
     private GrantedPaymentInstrumentUpdate grantedPaymentInstrumentUpdate;
+    private String sourceMerchantId;
 
     public WebhookNotification(NodeWrapper node) {
         this.kind = EnumUtils.findByName(Kind.class, node.findString("kind"), Kind.UNRECOGNIZED);
         this.timestamp = node.findDateTime("timestamp");
+
+        this.sourceMerchantId = node.findString("source-merchant-id");
 
         NodeWrapper wrapperNode = node.findFirst("subject");
 
@@ -128,6 +131,10 @@ public class WebhookNotification {
 
     public Kind getKind() {
         return this.kind;
+    }
+
+    public String getSourceMerchantId() {
+        return this.sourceMerchantId;
     }
 
     public MerchantAccount getMerchantAccount() {

@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Update https certificate bundle
+* Add `getSourceMerchantId()` to `WebhookNotification`s
 
 ## 2.74.1
 * Add support for line_items
