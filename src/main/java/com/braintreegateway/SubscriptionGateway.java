@@ -19,7 +19,7 @@ import java.util.List;
  * gateway.subscription().create(...)
  * </pre>
  *
- * For more detailed information on {@link Subscription Subscriptions}, see <a href="http://www.braintreepayments.com/gateway/subscription-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/subscription-api</a>
+ * For more detailed information on {@link Subscription Subscriptions}, see <a href="https://developers.braintreepayments.com/reference/response/subscription/java" target="_blank">https://developers.braintreepayments.com/reference/response/subscription/java</a>
  */
 public class SubscriptionGateway {
 

@@ -21,14 +21,13 @@ import java.util.TimeZone;
  * </pre>
  *
  * For more detailed information on {@link CreditCard CreditCards}, see <a
- * href="http://www.braintreepayments.com/gateway/credit-card-api"
+ * href="https://developers.braintreepayments.com/reference/response/credit-card/java"
  * target
- * ="_blank">http://www.braintreepayments.com/gateway/credit-card-api
+ * ="_blank">https://developers.braintreepayments.com/reference/response/credit-card/java
  * </a><br />
  * For more detailed information on credit card verifications, see <a href=
- * "http://www.braintreepayments.com/gateway/credit-card-verification-api"
- * target="_blank">http://www.braintreepayments.com/gateway/credit-card-
- * verification-api</a>
+ * "https://developers.braintreepayments.com/reference/response/credit-card-verification/java"
+ * target="_blank">https://developers.braintreepayments.com/reference/response/credit-card-verification/java</a>
  */
 public class CreditCardGateway {
     private Configuration configuration;
