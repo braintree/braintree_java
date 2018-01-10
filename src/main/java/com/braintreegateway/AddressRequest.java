@@ -1,6 +1,5 @@
 package com.braintreegateway;
 
-
 /**
  * Provides a fluent interface to build up requests around {@link Address Addresses}.
  */

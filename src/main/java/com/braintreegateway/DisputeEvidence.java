@@ -12,6 +12,8 @@ public final class DisputeEvidence {
     private final String comment;
     private final String id;
     private final String url;
+    private final String tag;
+    private final String sequenceNumber;
 
     public DisputeEvidence(NodeWrapper node) {
         createdAt = node.findDateTime("created-at");
@@ -19,6 +21,8 @@ public final class DisputeEvidence {
         comment = node.findString("comment");
         id = node.findString("id");
         url = node.findString("url");
+        tag = node.findString("category");
+        sequenceNumber = node.findString("sequence-number");
     }
 
     public Calendar getCreatedAt() {
@@ -39,5 +43,13 @@ public final class DisputeEvidence {
 
     public String getUrl() {
         return url;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public String getSequenceNumber() {
+        return sequenceNumber;
     }
 }

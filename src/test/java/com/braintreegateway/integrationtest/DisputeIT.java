@@ -11,6 +11,7 @@ import com.braintreegateway.DocumentUpload;
 import com.braintreegateway.DocumentUploadRequest;
 import com.braintreegateway.PaginatedCollection;
 import com.braintreegateway.Result;
+import com.braintreegateway.TextEvidenceRequest;
 import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.ValidationError;
@@ -152,6 +153,8 @@ public class DisputeIT extends IntegrationTest {
         assertTrue(Pattern.matches("^\\w{16,}$", evidence.getId()));
         assertNull(evidence.getSentToProcessorAt());
         assertNull(evidence.getUrl());
+        assertNull(evidence.getTag());
+        assertNull(evidence.getSequenceNumber());
     }
 
     @Test
@@ -160,8 +163,97 @@ public class DisputeIT extends IntegrationTest {
             gateway.dispute().addTextEvidence("invalid-id", "evidence!");
             fail("DisputeGateway#addTextEvidence allowed an invalid id");
         } catch (NotFoundException exception) {
-            assertEquals("dispute with id \"invalid-id\" not found", exception.getMessage());
+            assertEquals("Dispute with ID \"invalid-id\" not found", exception.getMessage());
         }
+    }
+
+    @Test
+    public void addTextEvidenceWorksForProofOfFulfillment() {
+        Dispute dispute = createSampleDispute();
+
+        TextEvidenceRequest textEvidenceRequest = new TextEvidenceRequest().
+            content("PROOF_OF_FULFILLMENT").
+            tag("EVIDENCE_TYPE");
+        Result<DisputeEvidence> disputeEvidenceResult = gateway.dispute().addTextEvidence(dispute.getId(), textEvidenceRequest);
+
+        textEvidenceRequest = new TextEvidenceRequest().
+            content("UPS").
+            tag("CARRIER_NAME").
+            sequenceNumber("0");
+        Result<DisputeEvidence> carrierEvidenceZeroResult = gateway.dispute().addTextEvidence(dispute.getId(), textEvidenceRequest);
+
+        textEvidenceRequest = new TextEvidenceRequest().
+            content("3").
+            tag("TRACKING_NUMBER").
+            sequenceNumber("0");
+        Result<DisputeEvidence> trackingEvidenceZeroResult = gateway.dispute().addTextEvidence(dispute.getId(), textEvidenceRequest);
+
+        textEvidenceRequest = new TextEvidenceRequest().
+            content("FEDEX").
+            tag("CARRIER_NAME").
+            sequenceNumber("1");
+        Result<DisputeEvidence> carrierEvidenceOneResult = gateway.dispute().addTextEvidence(dispute.getId(), textEvidenceRequest);
+
+        textEvidenceRequest = new TextEvidenceRequest().
+            content("94").
+            tag("TRACKING_NUMBER").
+            sequenceNumber("1");
+        Result<DisputeEvidence> trackingEvidenceOneResult = gateway.dispute().addTextEvidence(dispute.getId(), textEvidenceRequest);
+
+        assertTrue(disputeEvidenceResult.isSuccess());
+        DisputeEvidence disputeEvidence = disputeEvidenceResult.getTarget();
+        assertEquals("PROOF_OF_FULFILLMENT", disputeEvidence.getComment());
+        assertEquals("EVIDENCE_TYPE", disputeEvidence.getTag());
+
+        assertTrue(carrierEvidenceZeroResult.isSuccess());
+        DisputeEvidence carrierEvidenceZero = carrierEvidenceZeroResult.getTarget();
+        assertEquals("UPS", carrierEvidenceZero.getComment());
+        assertEquals("CARRIER_NAME", carrierEvidenceZero.getTag());
+        assertEquals("0", carrierEvidenceZero.getSequenceNumber());
+
+        assertTrue(trackingEvidenceZeroResult.isSuccess());
+        DisputeEvidence trackingEvidenceZero = trackingEvidenceZeroResult.getTarget();
+        assertEquals("3", trackingEvidenceZero.getComment());
+        assertEquals("TRACKING_NUMBER", trackingEvidenceZero.getTag());
+        assertEquals("0", trackingEvidenceZero.getSequenceNumber());
+
+        assertTrue(carrierEvidenceOneResult.isSuccess());
+        DisputeEvidence carrierEvidenceOne = carrierEvidenceOneResult.getTarget();
+        assertEquals("FEDEX", carrierEvidenceOne.getComment());
+        assertEquals("CARRIER_NAME", carrierEvidenceOne.getTag());
+        assertEquals("1", carrierEvidenceOne.getSequenceNumber());
+
+        assertTrue(trackingEvidenceOneResult.isSuccess());
+        DisputeEvidence trackingEvidenceOne = trackingEvidenceOneResult.getTarget();
+        assertEquals("94", trackingEvidenceOne.getComment());
+        assertEquals("TRACKING_NUMBER", trackingEvidenceOne.getTag());
+        assertEquals("1", trackingEvidenceOne.getSequenceNumber());
+    }
+
+    @Test
+    public void addTextEvidenceWorksForProofOfRefund() {
+        Dispute dispute = createSampleDispute();
+
+        TextEvidenceRequest textEvidenceRequest = new TextEvidenceRequest().
+            content("PROOF_OF_REFUND").
+            tag("EVIDENCE_TYPE");
+        Result<DisputeEvidence> disputeEvidenceResult = gateway.dispute().addTextEvidence(dispute.getId(), textEvidenceRequest);
+
+        textEvidenceRequest = new TextEvidenceRequest().
+            content("1023").
+            tag("REFUND_ID");
+        Result<DisputeEvidence> refundEvidenceResult = gateway.dispute().addTextEvidence(dispute.getId(), textEvidenceRequest);
+
+        assertTrue(disputeEvidenceResult.isSuccess());
+        DisputeEvidence disputeEvidence = disputeEvidenceResult.getTarget();
+        assertEquals("PROOF_OF_REFUND", disputeEvidence.getComment());
+        assertEquals("EVIDENCE_TYPE", disputeEvidence.getTag());
+
+        assertTrue(refundEvidenceResult.isSuccess());
+        DisputeEvidence refundEvidence = refundEvidenceResult.getTarget();
+        assertEquals("1023", refundEvidence.getComment());
+        assertEquals("REFUND_ID", refundEvidence.getTag());
+        assertNull(refundEvidence.getSequenceNumber());
     }
 
     @Test

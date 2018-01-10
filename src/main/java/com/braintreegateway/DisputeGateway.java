@@ -88,7 +88,25 @@ public class DisputeGateway {
      * Add Text Evidence to a @{link Dispute}, given an ID and content.
      *
      * @param id the dispute id to add text evidence to.
-     * @param content the text content to add to the dispute.
+     * @param textEvidenceRequest the text evidence request for the dispute.
+     *
+     * @return a {@link Result}.
+     *
+     * @throws NotFoundException if a Dispute with the given ID cannot be found.
+     * @throws IllegalArgumentException if the content is empty.
+     */
+    public Result<DisputeEvidence> addTextEvidence(String id, TextEvidenceRequest textEvidenceRequest) {
+        if (textEvidenceRequest == null)
+            throw new IllegalArgumentException("TextEvidenceRequest cannot be null");
+
+        return addTextEvidenceRequest(id, textEvidenceRequest);
+    }
+
+    /**
+     * Add Text Evidence to a @{link Dispute}, given an ID and content.
+     *
+     * @param id the dispute id to add text evidence to.
+     * @param content the content of the text evidence for the dispute.
      *
      * @return a {@link Result}.
      *
@@ -96,21 +114,23 @@ public class DisputeGateway {
      * @throws IllegalArgumentException if the content is empty.
      */
     public Result<DisputeEvidence> addTextEvidence(String id, String content) {
+        TextEvidenceRequest textEvidenceRequest = new TextEvidenceRequest().content(content);
+        return addTextEvidenceRequest(id, textEvidenceRequest);
+    }
+
+    private Result<DisputeEvidence> addTextEvidenceRequest(String id, TextEvidenceRequest textEvidenceRequest) {
+        String content = textEvidenceRequest.getContent();
+        if (id == null || id.trim().equals("")) {
+            throw new NotFoundException("Dispute ID is required");
+        } else if (content == null || content.trim().equals("")) {
+            throw new IllegalArgumentException("Content cannot be empty");
+        }
+
         try {
-            if (id == null || id.trim().equals("")) {
-                throw new NotFoundException();
-            }
-
-            if (content == null || content.trim().equals("")) {
-                throw new IllegalArgumentException("content cannot be empty");
-            }
-
-            String request = RequestBuilder.buildXMLElement("comments", content);
-            NodeWrapper response = http.post(configuration.getMerchantPath() + "/disputes/" + id + "/evidence", request);
-
+            NodeWrapper response = http.post(configuration.getMerchantPath() + "/disputes/" + id + "/evidence", textEvidenceRequest);
             return new Result<DisputeEvidence>(response, DisputeEvidence.class);
         } catch (NotFoundException e) {
-            throw new NotFoundException("dispute with id \"" + id + "\" not found");
+            throw new NotFoundException("Dispute with ID \"" + id + "\" not found");
         }
     }
 
