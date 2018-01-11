@@ -1,4 +1,4 @@
-## Unreleased
+## 2.74.1
 * Add support for line_items
 * Add support for tagged evidence in DisputeGateway#addTextEvidence (Beta release)
 * Add support for raw Apple Pay processing
