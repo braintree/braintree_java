@@ -220,6 +220,16 @@ public class BraintreeGateway {
         return new TransactionGateway(http, configuration);
     }
 
+    /**
+     * Returns an {@link TransactionLineItemGateway} for interacting with
+     * {@link TransactionLineItem} objects.
+     *
+     * @return an {@link TransactionLineItemGateway}.
+     */
+    public TransactionLineItemGateway transactionLineItem() {
+        return new TransactionLineItemGateway(http, configuration);
+    }
+
     public TransparentRedirectGateway transparentRedirect() {
         return new TransparentRedirectGateway(http, configuration);
     }

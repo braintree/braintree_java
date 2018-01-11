@@ -170,6 +170,9 @@ public class Transaction {
     private Subscription subscription;
     private BigDecimal taxAmount;
     private Boolean taxExempt;
+    private BigDecimal shippingAmount;
+    private BigDecimal discountAmount;
+    private String shipsFromPostalCode;
     private Type type;
     private Calendar updatedAt;
     private BigDecimal serviceFeeAmount;
@@ -274,6 +277,9 @@ public class Transaction {
         subscriptionId = node.findString("subscription-id");
         taxAmount = node.findBigDecimal("tax-amount");
         taxExempt = node.findBoolean("tax-exempt");
+        shippingAmount = node.findBigDecimal("shipping-amount");
+        discountAmount = node.findBigDecimal("discount-amount");
+        shipsFromPostalCode = node.findString("ships-from-postal-code");
         type = EnumUtils.findByName(Type.class, node.findString("type"), Type.UNRECOGNIZED);
         updatedAt = node.findDateTime("updated-at");
 
@@ -547,6 +553,18 @@ public class Transaction {
         return taxAmount;
     }
 
+    public BigDecimal getShippingAmount() {
+        return shippingAmount;
+    }
+
+    public BigDecimal getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public String getShipsFromPostalCode() {
+        return shipsFromPostalCode;
+    }
+
     public Type getType() {
         return type;
     }
@@ -614,4 +632,9 @@ public class Transaction {
     public FacilitatorDetails getFacilitatorDetails() {
         return facilitatorDetails;
     }
+
+    public List<TransactionLineItem> getLineItems(BraintreeGateway gateway) {
+        return gateway.transactionLineItem().findAll(id);
+    }
+
 }

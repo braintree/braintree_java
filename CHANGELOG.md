@@ -1,3 +1,9 @@
+## 2.74.1
+* Add support for line_items
+* Add support for tagged evidence in DisputeGateway#addTextEvidence (Beta release)
+* Add support for raw Apple Pay processing
+* Add support for setting connect timeout (#56)
+
 ## 2.74.0
 
 * Add support for upgrading a PayPal future payment refresh token to a billing agreement

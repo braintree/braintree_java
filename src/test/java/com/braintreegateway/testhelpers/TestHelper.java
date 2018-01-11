@@ -181,7 +181,7 @@ public abstract class TestHelper {
 
       String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
       Configuration configuration = gateway.getConfiguration();
-      String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/nonces.json";
+      String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods/credit_cards";
       QueryString payload = new QueryString();
       payload.append("authorization_fingerprint", authorizationFingerprint).
         append("shared_customer_identifier_type", "testing").
