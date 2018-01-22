@@ -1,8 +1,9 @@
 package com.braintreegateway;
 
 /**
- * Provides a fluent interface to build up requests for payment method forwarding
+ * This class is deprecated. Please consider the the Grant API instead
  */
+@Deprecated
 public class PaymentMethodForwardRequest extends Request {
     private String token;
     private String receivingMerchantId;
