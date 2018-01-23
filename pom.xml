@@ -21,6 +21,10 @@
         <name>MIT license</name>
         <url>http://www.opensource.org/licenses/mit-license.php</url>
       </license>
+      <license>
+        <name>Apache License 2.0</name>
+        <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      </license>
     </licenses>
 
     <scm>
@@ -76,9 +80,9 @@
           <version>4.2.0</version>
         </dependency>
         <dependency>
-          <groupId>org.json</groupId>
-          <artifactId>json</artifactId>
-          <version>20160810</version>
+          <groupId>com.fasterxml.jackson.jr</groupId>
+          <artifactId>jackson-jr-objects</artifactId>
+          <version>2.9.0</version>
         </dependency>
     </dependencies>
 

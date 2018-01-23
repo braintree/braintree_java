@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Update https certificate bundle
+* Swap out `org.json` package for `jackson-jr` to fix licensing issues (#58,#59)
 
 ## 2.74.1
 * Add support for line_items
