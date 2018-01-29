@@ -124,6 +124,7 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertNotNull(notification.getDispute().getOpenedDate());
     }
 
+    @Test
     public void createsSampleDisputeWonNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_WON, "my_id");
 
@@ -136,6 +137,7 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertNotNull(notification.getDispute().getOpenedDate());
     }
 
+    @Test
     public void createsSampleDisputeLostNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_LOST, "my_id");
 
@@ -146,7 +148,7 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertEquals(Dispute.Status.LOST, notification.getDispute().getStatus());
         assertEquals(Dispute.Kind.CHARGEBACK, notification.getDispute().getKind());
         assertNotNull(notification.getDispute().getOpenedDate());
-        assertNotNull(notification.getDispute().getWonDate());
+        assertNull(notification.getDispute().getWonDate());
     }
 
     @Test
