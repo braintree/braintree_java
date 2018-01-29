@@ -1,6 +1,7 @@
 ## Unreleased
-
 * Update https certificate bundle
+* Add `getSourceMerchantId()` to `WebhookNotification`s
+* Add support for taxAmount field on transaction lineItems
 * Swap out `org.json` package for `jackson-jr` to fix licensing issues (#58,#59)
 
 ## 2.74.1

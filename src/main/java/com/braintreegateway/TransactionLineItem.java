@@ -36,6 +36,7 @@ public class TransactionLineItem {
     private String productCode;
     private String commodityCode;
     private String url;
+    private BigDecimal taxAmount;
 
     public TransactionLineItem(NodeWrapper node) {
         quantity = node.findBigDecimal("quantity");
@@ -50,6 +51,7 @@ public class TransactionLineItem {
         productCode = node.findString("product-code");
         commodityCode = node.findString("commodity-code");
         url = node.findString("url");
+        taxAmount = node.findBigDecimal("tax-amount");
     }
 
     public BigDecimal getQuantity() {
@@ -100,4 +102,7 @@ public class TransactionLineItem {
             return url;
     }
 
+    public BigDecimal getTaxAmount() {
+            return taxAmount;
+    }
 }

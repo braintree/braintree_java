@@ -2204,6 +2204,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitTaxAmount(new BigDecimal("1.23")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2231,6 +2232,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("23434", lineItem.getProductCode());
         assertEquals("9SAASSD8724", lineItem.getCommodityCode());
         assertEquals("https://example.com/products/23434", lineItem.getUrl());
+        assertEquals(new BigDecimal("4.55"), lineItem.getTaxAmount());
     }
 
     @Test
@@ -2249,6 +2251,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2260,6 +2263,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 kind(TransactionLineItem.Kind.CREDIT).
                 unitAmount(new BigDecimal("5")).
                 unitOfMeasure("gallon").
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 done();
 
@@ -2291,6 +2295,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(new BigDecimal("45.15"), lineItem1.getTotalAmount());
         assertEquals("23434", lineItem1.getProductCode());
         assertEquals("9SAASSD8724", lineItem1.getCommodityCode());
+        assertEquals(new BigDecimal("4.55"), lineItem1.getTaxAmount());
 
         TransactionLineItem lineItem2 = null;
         for (TransactionLineItem lineItem : lineItems) {
@@ -2312,6 +2317,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(null, lineItem2.getDiscountAmount());
         assertEquals(null, lineItem2.getProductCode());
         assertEquals(null, lineItem2.getCommodityCode());
+        assertEquals(new BigDecimal("4.55"), lineItem2.getTaxAmount());
     }
 
     @Test
@@ -2329,6 +2335,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2340,6 +2347,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("0123456789123").
@@ -2369,6 +2377,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2381,6 +2390,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2410,6 +2420,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2421,6 +2432,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("2147483648")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2450,6 +2462,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2461,6 +2474,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("0")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2472,6 +2486,66 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(
             ValidationErrorCode.TRANSACTION_LINE_ITEM_DISCOUNT_AMOUNT_MUST_BE_GREATER_THAN_ZERO,
             result.getErrors().forObject("transaction").forObject("line_items").forObject("index_1").onField("discountAmount").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void saleWithLineItemsValidationErrorTaxAmountIsTooLarge() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("35.05")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.0232")).
+                name("Name #2").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("2147483648")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_TAX_AMOUNT_IS_TOO_LARGE,
+            result.getErrors().forObject("transaction").forObject("line_items").forObject("index_0").onField("taxAmount").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void saleWithLineItemsValidationErrorTaxAmountMustBeGreaterThanZero() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("35.05")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.0232")).
+                name("Name #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("0")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_TAX_AMOUNT_MUST_BE_GREATER_THAN_ZERO,
+            result.getErrors().forObject("transaction").forObject("line_items").forObject("index_0").onField("taxAmount").get(0).getCode()
         );
     }
 
@@ -2490,6 +2564,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2500,6 +2575,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2529,6 +2605,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2539,6 +2616,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2568,6 +2646,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2579,6 +2658,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2608,6 +2688,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2619,6 +2700,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("123456789012345678901234567890123456").
                 commodityCode("9SAASSD8724").
@@ -2648,6 +2730,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2658,6 +2741,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2687,6 +2771,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2698,6 +2783,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2727,6 +2813,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2738,6 +2825,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
                 done();
@@ -2766,6 +2854,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2777,6 +2866,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("2147483648")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2806,6 +2896,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2817,6 +2908,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("-2")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2846,6 +2938,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2856,6 +2949,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 kind(TransactionLineItem.Kind.CREDIT).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2885,6 +2979,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2896,6 +2991,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("2147483648")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2925,6 +3021,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2936,6 +3033,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("-2")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2965,6 +3063,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2976,6 +3075,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("1234567890123").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -3005,6 +3105,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -3017,6 +3118,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitTaxAmount(new BigDecimal("2.012")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -3047,6 +3149,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitTaxAmount(new BigDecimal("1.23")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -3059,6 +3162,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitTaxAmount(new BigDecimal("2147483648")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -3088,6 +3192,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -3100,6 +3205,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitTaxAmount(new BigDecimal("-1.23")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").

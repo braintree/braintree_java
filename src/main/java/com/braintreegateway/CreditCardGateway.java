@@ -108,29 +108,11 @@ public class CreditCardGateway {
     }
 
     /**
-     * Returns a PaymentMethodNonce which can be used by another merchant
-     *
-     * @param token
-     *            the token representing the CreditCard to forward
-     * @param receiving_merchant_id
-     *            the public ID of the merchant to forward to
-     * @return a {@link Result} containing a PaymentMethodNonce or raises a
-     *         {@link com.braintreegateway.exceptions.NotFoundException}.
+     * Please use the Grant API instead.
      */
-    public Result<PaymentMethodNonce> forward(PaymentMethodForwardRequest forwardRequest) {
-        String receivingMerchantId = forwardRequest.getReceivingMerchantId();
-        String token = forwardRequest.getToken();
-        if (token == null || token.trim().equals(""))
-            throw new NotFoundException("Token is required");
-        if(receivingMerchantId == null || receivingMerchantId.trim().equals(""))
-            throw new NotFoundException("Receiving merchant ID is required");
-
-        try {
-          NodeWrapper node = http.post(configuration.getMerchantPath() + "/payment_methods/forward", forwardRequest);
-          return new Result<PaymentMethodNonce>(node, PaymentMethodNonce.class);
-        } catch (NotFoundException e) {
-          throw new NotFoundException("Receiving merchant or payment method not found");
-        }
+    @Deprecated
+    public Result<PaymentMethodNonce> forward(PaymentMethodForwardRequest forwardRequest) throws NotFoundException {
+        throw new NotFoundException("This method of forwarding payment methods is no longer supported. Please consider the Grant API for similar functionality.");
     }
 
     /**
