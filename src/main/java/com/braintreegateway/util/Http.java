@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -50,7 +51,8 @@ import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManager;
@@ -136,11 +138,12 @@ public class Http {
                     if (file == null) {
                         outputStream.write(postBody.getBytes("UTF-8"));
                     } else {
-                        JSONObject obj = new JSONObject(postBody);
-                        Iterator<?> keys = obj.keys();
-                        while (keys.hasNext()) {
-                            String key = (String) keys.next();
-                            addFormField(key, (String) obj.get(key), writer, boundary);
+                        ObjectMapper mapper = new ObjectMapper();
+                        JsonNode jsonNode = mapper.readTree(postBody);
+                        Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
+                        while (fields.hasNext()) {
+                            Map.Entry<String, JsonNode> entry = fields.next();
+                            addFormField(entry.getKey(), entry.getValue().asText(), writer, boundary);
                         }
                         addFilePart("file", file, writer, outputStream, boundary);
                         finish(writer, boundary);
