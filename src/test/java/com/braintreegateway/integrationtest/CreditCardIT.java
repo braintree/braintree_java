@@ -864,8 +864,8 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         }
     }
 
-    @Test
-    public void forward() {
+    @Test(expected=NotFoundException.class)
+    public void forwardRaisesException() {
         BraintreeGateway forwardGateway = new BraintreeGateway(
             Environment.DEVELOPMENT,
             "forward_payment_method_merchant_id",
@@ -889,15 +889,9 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
             .receivingMerchantId("integration_merchant_id");
         Result<PaymentMethodNonce> forwardResult = forwardGateway.creditCard()
             .forward(forwardRequest);
-
-        assertTrue(forwardResult.isSuccess());
-        PaymentMethodNonce nonce = forwardResult.getTarget();
-        assertTrue(nonce.getPublicId().matches("\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}"));
-        assertFalse(nonce.isLocked());
-        assertFalse(nonce.isConsumed());
     }
 
-    @Test
+    @Test(expected=NotFoundException.class)
     public void forwardInvalidToken() {
         BraintreeGateway forwardGateway = new BraintreeGateway(
             Environment.DEVELOPMENT,
@@ -906,18 +900,14 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
             "forward_payment_method_private_key"
         );
 
-        try {
-            PaymentMethodForwardRequest forwardRequest = new PaymentMethodForwardRequest()
-                .token("invalid")
-                .receivingMerchantId("integration_merchant_id");
-            Result<PaymentMethodNonce> forwardResult = forwardGateway.creditCard()
-                .forward(forwardRequest);
-            fail();
-        } catch (NotFoundException e) {
-        }
+        PaymentMethodForwardRequest forwardRequest = new PaymentMethodForwardRequest()
+            .token("invalid")
+            .receivingMerchantId("integration_merchant_id");
+        Result<PaymentMethodNonce> forwardResult = forwardGateway.creditCard()
+            .forward(forwardRequest);
     }
 
-    @Test
+    @Test(expected=NotFoundException.class)
     public void forwardInvalidReceivingMerchantId() {
         BraintreeGateway forwardGateway = new BraintreeGateway(
             Environment.DEVELOPMENT,
@@ -937,15 +927,11 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertTrue(createResult.isSuccess());
         CreditCard card = createResult.getTarget();
 
-        try {
-            PaymentMethodForwardRequest forwardRequest = new PaymentMethodForwardRequest()
-                .token(card.getToken())
-                .receivingMerchantId("invalid_merchant_id");
-            Result<PaymentMethodNonce> forwardResult = forwardGateway.creditCard()
-                .forward(forwardRequest);
-            fail();
-        } catch (NotFoundException e) {
-        }
+        PaymentMethodForwardRequest forwardRequest = new PaymentMethodForwardRequest()
+            .token(card.getToken())
+            .receivingMerchantId("invalid_merchant_id");
+        Result<PaymentMethodNonce> forwardResult = forwardGateway.creditCard()
+            .forward(forwardRequest);
     }
 
     @Test

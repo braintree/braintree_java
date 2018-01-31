@@ -17,6 +17,7 @@ public class TransactionLineItemRequest extends Request {
     private String productCode;
     private String commodityCode;
     private String url;
+    private BigDecimal taxAmount;
 
     public TransactionLineItemRequest(TransactionRequest parent) {
         this.parent = parent;
@@ -82,6 +83,11 @@ public class TransactionLineItemRequest extends Request {
         return this;
     }
 
+    public TransactionLineItemRequest taxAmount(BigDecimal taxAmount) {
+        this.taxAmount = taxAmount;
+        return this;
+    }
+
     public TransactionRequest done() {
         return parent;
     }
@@ -111,6 +117,7 @@ public class TransactionLineItemRequest extends Request {
             addElement("unitTaxAmount", unitTaxAmount).
             addElement("totalAmount", totalAmount).
             addElement("discountAmount", discountAmount).
+            addElement("taxAmount", taxAmount).
             addElement("unitOfMeasure", unitOfMeasure).
             addElement("productCode", productCode).
             addElement("commodityCode", commodityCode).

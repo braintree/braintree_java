@@ -16,11 +16,19 @@ public class WebhookTestingGateway {
         this.configuration = configuration;
     }
 
-    private String buildPayload(WebhookNotification.Kind kind, String id) {
+    private String buildPayload(WebhookNotification.Kind kind, String id, String sourceMerchantId) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         String timestamp = dateFormat.format(new Date());
-        String payload = "<notification><timestamp type=\"datetime\">" + timestamp + "</timestamp><kind>" + kind + "</kind><subject>" + subjectXml(kind, id) + "</subject></notification>";
+
+        String payload = "<notification>";
+        payload += "<timestamp type=\"datetime\">" + timestamp + "</timestamp>";
+        payload += "<kind>" + kind + "</kind>";
+        if (sourceMerchantId != null) {
+            payload += "<source-merchant-id>" + sourceMerchantId + "</source-merchant-id>";
+        }
+        payload += "<subject>" + subjectXml(kind, id) + "</subject>";
+        payload += "</notification>";
 
         return Base64.encodeBase64String(payload.getBytes()).replace("\r", "");
     }
@@ -30,8 +38,12 @@ public class WebhookTestingGateway {
     }
 
     public HashMap<String, String> sampleNotification(WebhookNotification.Kind kind, String id) {
+        return sampleNotification(kind, id, null);
+    }
+
+    public HashMap<String, String> sampleNotification(WebhookNotification.Kind kind, String id, String sourceMerchantId) {
         HashMap<String, String> response = new HashMap<String, String>();
-        String payload = buildPayload(kind, id);
+        String payload = buildPayload(kind, id, sourceMerchantId);
         response.put("bt_payload", payload);
         response.put("bt_signature", publicKeySignaturePair(payload));
 

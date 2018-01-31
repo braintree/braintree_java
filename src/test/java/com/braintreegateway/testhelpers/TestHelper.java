@@ -15,7 +15,7 @@ import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 
 import org.junit.Ignore;
-import org.json.*;
+import com.fasterxml.jackson.jr.ob.JSON;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -495,9 +495,9 @@ public abstract class TestHelper {
 
         String nonce = "";
         try {
-            JSONObject json = new JSONObject(clientToken);
-            URL url = new URL(json.getJSONObject("braintree_api").getString("url") + "/tokens");
-            String token = json.getJSONObject("braintree_api").getString("access_token");
+            Map<String, Object> json = JSON.std.mapFrom(clientToken);
+            URL url = new URL(((Map) json.get("braintree_api")).get("url") + "/tokens");
+            String token = (String) ((Map) json.get("braintree_api")).get("access_token");
             SSLContext sc = SSLContext.getInstance("TLSv1.1");
             sc.init(null, null, null);
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
@@ -513,8 +513,8 @@ public abstract class TestHelper {
             InputStream responseStream = connection.getInputStream();
             String body = StringUtils.inputStreamToString(responseStream);
             responseStream.close();
-            JSONObject responseJson = new JSONObject(body);
-            nonce = responseJson.getJSONObject("data").getString("id");
+            Map<String, Object> responseJson  = JSON.std.mapFrom(body);
+            nonce = (String) ((Map) responseJson.get("data")).get("id");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -575,9 +575,9 @@ public abstract class TestHelper {
 
         String idealPaymentId = "";
         try {
-            JSONObject json = new JSONObject(clientToken);
-            URL url = new URL(json.getJSONObject("braintree_api").getString("url") + "/ideal-payments");
-            String token = json.getJSONObject("braintree_api").getString("access_token");
+            Map<String, Object> json = JSON.std.mapFrom(clientToken);
+            URL url = new URL(((Map) json.get("braintree_api")).get("url") + "/ideal-payments");
+            String token = (String) ((Map) json.get("braintree_api")).get("access_token");
             SSLContext sc = SSLContext.getInstance("TLSv1.1");
             sc.init(null, null, null);
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
@@ -594,8 +594,8 @@ public abstract class TestHelper {
 
             String body = StringUtils.inputStreamToString(responseStream);
             responseStream.close();
-            JSONObject responseJson = new JSONObject(body);
-            idealPaymentId = responseJson.getJSONObject("data").getString("id");
+            Map<String, Object> responseJson  = JSON.std.mapFrom(body);
+            idealPaymentId = (String) ((Map) responseJson.get("data")).get("id");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

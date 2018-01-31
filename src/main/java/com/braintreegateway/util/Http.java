@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
@@ -50,7 +51,7 @@ import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.jr.ob.JSON;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManager;
@@ -136,11 +137,11 @@ public class Http {
                     if (file == null) {
                         outputStream.write(postBody.getBytes("UTF-8"));
                     } else {
-                        JSONObject obj = new JSONObject(postBody);
-                        Iterator<?> keys = obj.keys();
-                        while (keys.hasNext()) {
-                            String key = (String) keys.next();
-                            addFormField(key, (String) obj.get(key), writer, boundary);
+                        Map<String, Object> map = JSON.std.mapFrom(postBody);
+                        Iterator<?> it = map.entrySet().iterator();
+                        while (it.hasNext()) {
+                            Map.Entry pair = (Map.Entry)it.next();
+                            addFormField((String) pair.getKey(), (String) pair.getValue(), writer, boundary);
                         }
                         addFilePart("file", file, writer, outputStream, boundary);
                         finish(writer, boundary);

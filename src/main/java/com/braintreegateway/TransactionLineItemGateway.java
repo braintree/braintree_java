@@ -14,10 +14,8 @@ import java.util.List;
  *
  * <pre>
  * BraintreeGateway gateway = new BraintreeGateway(...);
- * gateway.transactionLineItem().finalAll(...)
+ * gateway.transactionLineItem().findAll(...)
  * </pre>
- *
- * For more detailed information on {@link TransactionLineItem TransactionLineItems}, see <a href="http://www.braintreepayments.com/gateway/transaction-api" target="_blank">http://www.braintreepaymentsolutions.com/gateway/transaction-api</a>
  */
 public class TransactionLineItemGateway {
 

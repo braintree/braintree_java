@@ -45,7 +45,7 @@ import com.braintreegateway.org.apache.commons.codec.EncoderException;
  * character encodings which are compatible with the lower 127 ASCII chart (ISO-8859-1, Windows-1252, UTF-8, etc).
  * </p>
  * 
- * @see <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045</a>
+ * @see <a href="https://www.ietf.org/rfc/rfc2045.txt">RFC 2045</a>
  * @author Apache Software Foundation
  * @since 1.0
  * @version $Id: Base64.java 801706 2009-08-06 16:27:06Z niallp $
@@ -63,7 +63,7 @@ public class Base64 implements BinaryEncoder, BinaryDecoder {
      * equal signs.
      * </p>
      * 
-     * @see <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045 section 6.8</a>
+     * @see <a href="https://www.ietf.org/rfc/rfc2045.txt">RFC 2045 section 6.8</a>
      */
     static final int CHUNK_SIZE = 0;
 
@@ -74,7 +74,7 @@ public class Base64 implements BinaryEncoder, BinaryDecoder {
      * N.B. The next major release may break compatibility and make this field private.
      * </p>
      * 
-     * @see <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045 section 2.1</a>
+     * @see <a href="https://www.ietf.org/rfc/rfc2045.txt">RFC 2045 section 2.1</a>
      */
     static final byte[] CHUNK_SEPARATOR = {'\r', '\n'};
 

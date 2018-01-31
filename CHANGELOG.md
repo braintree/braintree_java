@@ -1,3 +1,9 @@
+## 2.75.0
+* Update https certificate bundle
+* Add `getSourceMerchantId()` to `WebhookNotification`s
+* Add support for taxAmount field on transaction lineItems
+* Swap out `org.json` package for `jackson-jr` to fix licensing issues (#58,#59)
+
 ## 2.74.1
 * Add support for line_items
 * Add support for tagged evidence in DisputeGateway#addTextEvidence (Beta release)
@@ -440,7 +446,7 @@
 ## 2.4.0
 
 * Added unified message to result objects
-* Added ability to specify country using countryName, countryCodeAlpha2, countryCodeAlpha3, or countryCodeNumeric (see [ISO_3166-1](http://en.wikipedia.org/wiki/ISO_3166-1))
+* Added ability to specify country using countryName, countryCodeAlpha2, countryCodeAlpha3, or countryCodeNumeric (see [ISO_3166-1](https://en.wikipedia.org/wiki/ISO_3166-1))
 * Added gatewayRejectionReason to Transaction and Verification
 * When creating a Subscription, return failed transaction on the Result if the initial transaction is not successful
 

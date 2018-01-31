@@ -23,10 +23,10 @@ import com.braintreegateway.org.apache.commons.codec.CharEncoding;
 
 /**
  * Converts String to and from bytes using the encodings required by the Java specification. These encodings are specified in <a
- * href="http://java.sun.com/j2se/1.4.2/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
+ * href="https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
  * 
  * @see CharEncoding
- * @see <a href="http://java.sun.com/j2se/1.4.2/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
+ * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
  * @author <a href="mailto:ggregory@seagullsw.com">Gary Gregory</a>
  * @version $Id: StringUtils.java 801391 2009-08-05 19:55:54Z ggregory $
  * @since 1.4
@@ -42,7 +42,7 @@ public class StringUtils {
      * @return encoded bytes
      * @throws IllegalStateException
      *             Thrown when the charset is missing, which should be never according the the Java specification.
-     * @see <a href="http://java.sun.com/j2se/1.4.2/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
+     * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
      * @see #getBytesUnchecked(String, String)
      */
     public static byte[] getBytesIso8859_1(String string) {
@@ -58,7 +58,7 @@ public class StringUtils {
      * @return encoded bytes
      * @throws IllegalStateException
      *             Thrown when the charset is missing, which should be never according the the Java specification.
-     * @see <a href="http://java.sun.com/j2se/1.4.2/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
+     * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
      * @see #getBytesUnchecked(String, String)
      */
     public static byte[] getBytesUsAscii(String string) {
@@ -74,7 +74,7 @@ public class StringUtils {
      * @return encoded bytes
      * @throws IllegalStateException
      *             Thrown when the charset is missing, which should be never according the the Java specification.
-     * @see <a href="http://java.sun.com/j2se/1.4.2/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
+     * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
      * @see #getBytesUnchecked(String, String)
      */
     public static byte[] getBytesUtf16(String string) {
@@ -90,7 +90,7 @@ public class StringUtils {
      * @return encoded bytes
      * @throws IllegalStateException
      *             Thrown when the charset is missing, which should be never according the the Java specification.
-     * @see <a href="http://java.sun.com/j2se/1.4.2/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
+     * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
      * @see #getBytesUnchecked(String, String)
      */
     public static byte[] getBytesUtf16Be(String string) {
@@ -106,7 +106,7 @@ public class StringUtils {
      * @return encoded bytes
      * @throws IllegalStateException
      *             Thrown when the charset is missing, which should be never according the the Java specification.
-     * @see <a href="http://java.sun.com/j2se/1.4.2/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
+     * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
      * @see #getBytesUnchecked(String, String)
      */
     public static byte[] getBytesUtf16Le(String string) {
@@ -122,7 +122,7 @@ public class StringUtils {
      * @return encoded bytes
      * @throws IllegalStateException
      *             Thrown when the charset is missing, which should be never according the the Java specification.
-     * @see <a href="http://java.sun.com/j2se/1.4.2/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
+     * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
      * @see #getBytesUnchecked(String, String)
      */
     public static byte[] getBytesUtf8(String string) {
