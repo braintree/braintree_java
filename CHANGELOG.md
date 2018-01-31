@@ -1,4 +1,4 @@
-## Unreleased
+## 2.75.0
 * Update https certificate bundle
 * Add `getSourceMerchantId()` to `WebhookNotification`s
 * Add support for taxAmount field on transaction lineItems
