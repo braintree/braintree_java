@@ -2188,6 +2188,44 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithLineItemsSingleZeroAmountFields() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("35.05")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            lineItem().
+                quantity(new BigDecimal("1.0232")).
+                name("Name #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                totalAmount(new BigDecimal("45.15")).
+                discountAmount(new BigDecimal("0")).
+                taxAmount(new BigDecimal("0")).
+                unitTaxAmount(new BigDecimal("0")).
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+
+        List<TransactionLineItem> lineItems = transaction.getLineItems(gateway);
+        assertEquals(1, lineItems.size());
+
+        TransactionLineItem lineItem = lineItems.get(0);
+        assertEquals(new BigDecimal("1.0232"), lineItem.getQuantity());
+        assertEquals("Name #1", lineItem.getName());
+        assertEquals(TransactionLineItem.Kind.DEBIT, lineItem.getKind());
+        assertEquals(new BigDecimal("45.1232"), lineItem.getUnitAmount());
+        assertEquals(new BigDecimal("45.15"), lineItem.getTotalAmount());
+        assertEquals(new BigDecimal("0.00"), lineItem.getDiscountAmount());
+        assertEquals(new BigDecimal("0.00"), lineItem.getTaxAmount());
+        assertEquals(new BigDecimal("0.00"), lineItem.getUnitTaxAmount());
+    }
+
+    @Test
     public void saleWithLineItemsSingle() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("45.15")).
@@ -2448,7 +2486,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleWithLineItemsValidationErrorDiscountAmountMustBeGreaterThanZero() {
+    public void saleWithLineItemsValidationErrorDiscountAmountCannotBeNegative() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("35.05")).
             creditCard().
@@ -2473,7 +2511,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 kind(TransactionLineItem.Kind.DEBIT).
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
-                discountAmount(new BigDecimal("0")).
+                discountAmount(new BigDecimal("-2")).
                 taxAmount(new BigDecimal("4.55")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
@@ -2484,7 +2522,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertFalse(result.isSuccess());
 
         assertEquals(
-            ValidationErrorCode.TRANSACTION_LINE_ITEM_DISCOUNT_AMOUNT_MUST_BE_GREATER_THAN_ZERO,
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_DISCOUNT_AMOUNT_CANNOT_BE_NEGATIVE,
             result.getErrors().forObject("transaction").forObject("line_items").forObject("index_1").onField("discountAmount").get(0).getCode()
         );
     }
@@ -2520,7 +2558,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleWithLineItemsValidationErrorTaxAmountMustBeGreaterThanZero() {
+    public void saleWithLineItemsValidationErrorTaxAmountCannotBeNegative() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("35.05")).
             creditCard().
@@ -2534,7 +2572,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 unitAmount(new BigDecimal("45.1232")).
                 unitOfMeasure("gallon").
                 discountAmount(new BigDecimal("1.02")).
-                taxAmount(new BigDecimal("0")).
+                taxAmount(new BigDecimal("-2")).
                 totalAmount(new BigDecimal("45.15")).
                 productCode("23434").
                 commodityCode("9SAASSD8724").
@@ -2544,7 +2582,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertFalse(result.isSuccess());
 
         assertEquals(
-            ValidationErrorCode.TRANSACTION_LINE_ITEM_TAX_AMOUNT_MUST_BE_GREATER_THAN_ZERO,
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_TAX_AMOUNT_CANNOT_BE_NEGATIVE,
             result.getErrors().forObject("transaction").forObject("line_items").forObject("index_0").onField("taxAmount").get(0).getCode()
         );
     }
@@ -3178,7 +3216,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleWithLineItemsValidationErrorUnitTaxAmountMustBeGreaterThanZero() {
+    public void saleWithLineItemsValidationErrorUnitTaxAmountCannotBeNegative() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("35.05")).
             creditCard().
@@ -3215,7 +3253,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertFalse(result.isSuccess());
 
         assertEquals(
-            ValidationErrorCode.TRANSACTION_LINE_ITEM_UNIT_TAX_AMOUNT_MUST_BE_GREATER_THAN_ZERO,
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_UNIT_TAX_AMOUNT_CANNOT_BE_NEGATIVE,
             result.getErrors().forObject("transaction").forObject("line_items").forObject("index_1").onField("unitTaxAmount").get(0).getCode()
         );
     }
