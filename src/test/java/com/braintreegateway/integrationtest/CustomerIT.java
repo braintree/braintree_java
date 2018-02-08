@@ -620,6 +620,108 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void findCustomerWithAllFilterableAssociationsFilteredOut() {
+        CustomerRequest request = new CustomerRequest().
+            customField("store_me", "custom value").
+            creditCard().
+                cardholderName("Fred Jones").
+                number("5105105105105100").
+                cvv("123").
+                expirationDate("05/12").
+                billingAddress().
+                    firstName("Fred").
+                    lastName("Jones").
+                    streetAddress("1 E Main St").
+                    locality("Chicago").
+                    region("Illinois").
+                    postalCode("60622").
+                    countryName("United States of America").
+                    done().
+                done().
+            lastName("Jones");
+
+        Customer customer = gateway.customer().create(request).getTarget();
+        CreditCard card = customer.getCreditCards().get(0);
+
+        String id = "subscription-id-" + new Random().nextInt();
+        SubscriptionRequest subscriptionRequest = new SubscriptionRequest().
+            id(id).
+            planId("integration_trialless_plan").
+            paymentMethodToken(card.getToken()).
+            price(new BigDecimal("1.00"));
+        Subscription subscription = gateway.subscription().create(subscriptionRequest).getTarget();
+
+        Customer foundCustomer = gateway.customer().find(customer.getId(), "customernoassociations");
+        assertEquals(0, foundCustomer.getCreditCards().size());
+        assertEquals(0, foundCustomer.getPaymentMethods().size());
+        assertEquals(0, foundCustomer.getAddresses().size());
+        assertEquals(0, foundCustomer.getCustomFields().size());
+    }
+
+    @Test
+    public void findCustomerWithNestedFilterableAssociationsFilteredOut() {
+        CustomerRequest request = new CustomerRequest().
+            customField("store_me", "custom value").
+            creditCard().
+                cardholderName("Fred Jones").
+                number("5105105105105100").
+                cvv("123").
+                expirationDate("05/12").
+                billingAddress().
+                    firstName("Fred").
+                    lastName("Jones").
+                    streetAddress("1 E Main St").
+                    locality("Chicago").
+                    region("Illinois").
+                    postalCode("60622").
+                    countryName("United States of America").
+                    done().
+                done().
+            lastName("Jones");
+
+        Customer customer = gateway.customer().create(request).getTarget();
+        CreditCard card = customer.getCreditCards().get(0);
+
+        String id = "subscription-id-" + new Random().nextInt();
+        SubscriptionRequest subscriptionRequest = new SubscriptionRequest().
+            id(id).
+            planId("integration_trialless_plan").
+            paymentMethodToken(card.getToken()).
+            price(new BigDecimal("1.00"));
+        Subscription subscription = gateway.subscription().create(subscriptionRequest).getTarget();
+
+        Customer foundCustomer = gateway.customer().find(customer.getId(), "customertoplevelassociations");
+        assertEquals(1, foundCustomer.getCreditCards().size());
+        assertEquals(0, foundCustomer.getCreditCards().get(0).getSubscriptions().size());
+        assertEquals(1, foundCustomer.getPaymentMethods().size());
+        assertEquals(0, foundCustomer.getPaymentMethods().get(0).getSubscriptions().size());
+        assertEquals(1, foundCustomer.getAddresses().size());
+        assertEquals(1, foundCustomer.getCustomFields().size());
+    }
+
+    @Test
+    public void findWithEmptyAssociatedFilterId() {
+        CustomerRequest request = new CustomerRequest().
+            customField("store_me", "custom value").
+            firstName("Jonas").
+            lastName("Jones");
+
+        Customer customer = gateway.customer().create(request).getTarget();
+
+        try {
+            gateway.customer().find(customer.getId(), "");
+            fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+        }
+
+        try {
+            gateway.customer().find(customer.getId(), null);
+            fail("Should throw NotFoundException");
+        } catch (NotFoundException e) {
+        }
+    }
+
+    @Test
     public void findWithEmptyIds() {
         try {
             gateway.customer().find(" ");
