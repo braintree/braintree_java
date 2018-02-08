@@ -823,6 +823,24 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithVenmoAccountNonceAndProfileId() {
+        String venmoAccountNonce = Nonce.VenmoAccount;
+
+        TransactionRequest request = new TransactionRequest()
+            .merchantAccountId(FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID)
+            .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
+            .paymentMethodNonce(venmoAccountNonce)
+            .options()
+                .venmo()
+                    .profileId("integration_venmo_merchant_public_id")
+                    .done()
+                .done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
     public void saleWithThreeDSecureOptionRequired() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).

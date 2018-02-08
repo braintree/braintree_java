@@ -8,7 +8,7 @@
 * Add `getSourceMerchantId()` to `WebhookNotification`s
 * Add support for taxAmount field on transaction lineItems
 * Swap out `org.json` package for `jackson-jr` to fix licensing issues (#58,#59)
-
+* Add support for `profile_id` in Transaction#create options for VenmoAccounts
 
 ## 2.74.1
 * Add support for line_items
