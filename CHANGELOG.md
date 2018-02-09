@@ -1,8 +1,14 @@
+## 2.76.0
+* Deprecated `TRANSACTION_LINE_ITEM_DISCOUNT_AMOUNT_MUST_BE_GREATER_THAN_ZERO` error in favor of `TRANSACTION_LINE_ITEM_DISCOUNT_AMOUNT_CANNOT_BE_NEGATIVE`
+* Deprecated `TRANSACTION_LINE_ITEM_UNIT_TAX_AMOUNT_MUST_BE_GREATER_THAN_ZERO` error in favor of `TRANSACTION_LINE_ITEM_UNIT_TAX_AMOUNT_CANNOT_BE_NEGATIVE`
+* Deprecated `TRANSACTION_LINE_ITEM_TAX_AMOUNT_MUST_BE_GREATER_THAN_ZERO` error in favor of `TRANSACTION_LINE_ITEM_TAX_AMOUNT_CANNOT_BE_NEGATIVE`
+
 ## 2.75.0
 * Update https certificate bundle
 * Add `getSourceMerchantId()` to `WebhookNotification`s
 * Add support for taxAmount field on transaction lineItems
 * Swap out `org.json` package for `jackson-jr` to fix licensing issues (#58,#59)
+
 
 ## 2.74.1
 * Add support for line_items
