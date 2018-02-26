@@ -282,45 +282,6 @@ public abstract class TestHelper {
       return nonce;
     }
 
-    public static String generateEuropeBankAccountNonce(BraintreeGateway gateway, Customer customer) {
-        SEPAClientTokenRequest request = new SEPAClientTokenRequest();
-        request.customerId(customer.getId());
-        request.mandateType(EuropeBankAccount.MandateType.BUSINESS);
-        request.mandateAcceptanceLocation("Rostock, Germany");
-
-        String encodedClientToken = gateway.clientToken().generate(request);
-        String clientToken = TestHelper.decodeClientToken(encodedClientToken);
-
-        String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
-        Configuration configuration = gateway.getConfiguration();
-        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/sepa_mandates";
-        QueryString payload = new QueryString();
-        payload.append("authorization_fingerprint", authorizationFingerprint)
-              .append("sepa_mandate[locale]", "de-DE")
-              .append("sepa_mandate[bic]", "DEUTDEFF")
-              .append("sepa_mandate[iban]", "DE89370400440532013000")
-              .append("sepa_mandate[accountHolderName]", "Bob Holder")
-              .append("sepa_mandate[billingAddress][streetAddress]", "123 Currywurst Way")
-              .append("sepa_mandate[billingAddress][extendedAddress]", "Lager Suite")
-              .append("sepa_mandate[billingAddress][firstName]", "Wilhelm")
-              .append("sepa_mandate[billingAddress][lastName]", "Dix")
-              .append("sepa_mandate[billingAddress][locality]", "Frankfurt")
-              .append("sepa_mandate[billingAddress][postalCode]", "60001")
-              .append("sepa_mandate[billingAddress][countryCodeAlpha2]", "DE")
-              .append("sepa_mandate[billingAddress][region]", "Hesse");
-
-        String responseBody;
-        String nonce = "";
-        try {
-            responseBody = HttpHelper.post(url, payload.toString());
-            nonce = extractParamFromJson("nonce", responseBody);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        return nonce;
-    }
-
     public static String getNonceForPayPalAccount(BraintreeGateway gateway, String consentCode) {
         return getNonceForPayPalAccount(gateway, consentCode, null);
     }
