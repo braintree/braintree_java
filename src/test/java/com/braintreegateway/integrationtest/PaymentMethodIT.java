@@ -496,25 +496,6 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
-    public void createEuropeBankAccountWithNonce() {
-        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
-        assertTrue(customerResult.isSuccess());
-        Customer customer = customerResult.getTarget();
-
-        String nonce = TestHelper.generateEuropeBankAccountNonce(gateway, customer);
-        PaymentMethodRequest request = new PaymentMethodRequest().
-                customerId(customer.getId()).
-                paymentMethodNonce(nonce);
-
-        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
-        assertTrue(result.isSuccess());
-        PaymentMethod paymentMethod = result.getTarget();
-        assertNotNull(paymentMethod.getImageUrl());
-        assertNotNull(paymentMethod.getCustomerId());
-        assertNotNull(paymentMethod.getSubscriptions());
-    }
-
-    @Test
     public void createCreditCardWithNonce() {
         String nonce = TestHelper.generateUnlockedNonce(gateway, null, SandboxValues.CreditCardNumber.VISA.number);
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
