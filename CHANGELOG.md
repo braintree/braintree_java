@@ -1,4 +1,5 @@
 ## Unreleased
+* Fix possible NullPointerException in UsBankAccount
 * Add support for `association_filter_id` in `Customer#find`
 
 ## 2.76.0
