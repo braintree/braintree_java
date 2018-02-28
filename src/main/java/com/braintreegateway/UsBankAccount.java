@@ -2,6 +2,7 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 import java.util.List;
+import java.util.ArrayList;
 
 public class UsBankAccount implements PaymentMethod {
     private String routingNumber;
@@ -24,6 +25,7 @@ public class UsBankAccount implements PaymentMethod {
         this.token = node.findString("token");
         this.imageUrl = node.findString("image-url");
         this.bankName = node.findString("bank-name");
+        this.subscriptions = new ArrayList<Subscription>();
         for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
             this.subscriptions.add(new Subscription(subscriptionResponse));
         }

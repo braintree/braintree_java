@@ -155,6 +155,7 @@ public class OAuthIT extends IntegrationTest {
             assertEquals("baz_state", query.get("state"));
             assertEquals("login", query.get("landing_page"));
             assertEquals("true", query.get("login_only"));
+            assertNull(query.get("signup_only"));
 
             assertEquals("USA", query.get("user[country]"));
 
@@ -232,6 +233,48 @@ public class OAuthIT extends IntegrationTest {
 
             assertNull(query.get("redirect_uri"));
             assertEquals("credit_card, paypal", query.get("payment_methods[]"));
+        } catch (java.io.UnsupportedEncodingException e) {
+            fail("unsupported encoding");
+        } catch (java.net.MalformedURLException e) {
+            fail("malformed url");
+        }
+    }
+
+    @Test
+    public void connectUrlCanIncludeSignupOnly() {
+        OAuthConnectUrlRequest request = new OAuthConnectUrlRequest()
+            .signupOnly(true);
+
+        String urlString = gateway.oauth().connectUrl(request);
+
+        try {
+            URL url = new URL(urlString);
+
+            Map<String, String> query = TestHelper.splitQuery(url);
+
+            assertEquals("true", query.get("signup_only"));
+        } catch (java.io.UnsupportedEncodingException e) {
+            fail("unsupported encoding");
+        } catch (java.net.MalformedURLException e) {
+            fail("malformed url");
+        }
+    }
+
+    @Test
+    public void connectUrlOnlyIncludesLoginOnlyIfBothLoginOnlyAndSignupOnlyAreSpecified() {
+        OAuthConnectUrlRequest request = new OAuthConnectUrlRequest()
+            .loginOnly(true)
+            .signupOnly(true);
+
+        String urlString = gateway.oauth().connectUrl(request);
+
+        try {
+            URL url = new URL(urlString);
+
+            Map<String, String> query = TestHelper.splitQuery(url);
+
+            assertEquals("true", query.get("login_only"));
+            assertNull(query.get("signup_only"));
         } catch (java.io.UnsupportedEncodingException e) {
             fail("unsupported encoding");
         } catch (java.net.MalformedURLException e) {

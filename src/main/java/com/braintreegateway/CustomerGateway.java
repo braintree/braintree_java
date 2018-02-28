@@ -100,6 +100,27 @@ public class CustomerGateway {
     }
 
     /**
+     * Finds a {@link Customer} by id.
+     *
+     * @param id
+     *            the id of the {@link Customer}.
+     * @param associationFilterId
+     *            the id of the association filter to use.
+     * @return the {@link Customer} or raises a
+     *         {@link com.braintreegateway.exceptions.NotFoundException}.
+     */
+    public Customer find(String id, String associationFilterId) {
+        if(id == null || id.trim().equals(""))
+            throw new NotFoundException();
+
+        if(associationFilterId == null || associationFilterId.isEmpty())
+            throw new NotFoundException();
+
+        String queryParams = "?association_filter_id=" + associationFilterId;
+        return new Customer(http.get(configuration.getMerchantPath() + "/customers/" + id + queryParams));
+    }
+
+    /**
      * Finds all Transactions that match the query and returns a {@link ResourceCollection}.
      * See: <a href="https://developers.braintreepayments.com/reference/request/transaction/search/java" target="_blank">https://developers.braintreepayments.com/reference/request/transaction/search/java</a>
      * @return a {@link ResourceCollection}.

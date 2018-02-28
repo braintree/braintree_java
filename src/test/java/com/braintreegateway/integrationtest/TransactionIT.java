@@ -823,6 +823,24 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithVenmoAccountNonceAndProfileId() {
+        String venmoAccountNonce = Nonce.VenmoAccount;
+
+        TransactionRequest request = new TransactionRequest()
+            .merchantAccountId(FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID)
+            .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
+            .paymentMethodNonce(venmoAccountNonce)
+            .options()
+                .venmo()
+                    .profileId("integration_venmo_merchant_public_id")
+                    .done()
+                .done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
     public void saleWithThreeDSecureOptionRequired() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
@@ -4075,36 +4093,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void searchOnPaymentInstrumentTypeIsEuropeBank() {
-        BraintreeGateway altpayGateway = new BraintreeGateway(
-            Environment.DEVELOPMENT,
-            "altpay_merchant",
-            "altpay_merchant_public_key",
-            "altpay_merchant_private_key"
-        );
-        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
-        assertTrue(customerResult.isSuccess());
-        Customer customer = customerResult.getTarget();
-
-        String nonce = TestHelper.generateEuropeBankAccountNonce(altpayGateway, customer);
-
-        TransactionRequest request = new TransactionRequest().
-            merchantAccountId("fake_sepa_ma").
-            amount(TransactionAmount.AUTHORIZE.amount).
-            paymentMethodNonce(nonce);
-
-        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
-
-        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-            id().is(transaction.getId()).
-            paymentInstrumentType().is("EuropeBankAccountDetail");
-
-        ResourceCollection<Transaction> collection = altpayGateway.transaction().search(searchRequest);
-
-        assertEquals(collection.getFirst().getPaymentInstrumentType(), PaymentInstrumentType.EUROPE_BANK_ACCOUNT);
-    }
-
-    @Test
     public void searchOnNullValue() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("1000")).
@@ -4265,34 +4253,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         collection = gateway.transaction().search(searchRequest);
 
         assertEquals(0, collection.getMaximumSize());
-    }
-
-    @Test
-    public void searchOnEuropeBankAccountIban() {
-        BraintreeGateway altpayGateway = new BraintreeGateway(
-            Environment.DEVELOPMENT,
-            "altpay_merchant",
-            "altpay_merchant_public_key",
-            "altpay_merchant_private_key"
-        );
-        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
-        assertTrue(customerResult.isSuccess());
-        Customer customer = customerResult.getTarget();
-
-        String nonce = TestHelper.generateEuropeBankAccountNonce(altpayGateway, customer);
-
-        TransactionRequest request = new TransactionRequest().
-            merchantAccountId("fake_sepa_ma").
-            amount(TransactionAmount.AUTHORIZE.amount).
-            paymentMethodNonce(nonce);
-
-        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
-
-        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-            id().is(transaction.getId()).
-            europeBankAccountIban().is("DE89370400440532013000");
-
-        assertEquals(1, altpayGateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
@@ -5948,131 +5908,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(transaction.getPayPalDetails().getRefundId());
         assertNotNull(transaction.getPayPalDetails().getTransactionFeeAmount());
         assertNotNull(transaction.getPayPalDetails().getTransactionFeeCurrencyIsoCode());
-    }
-
-    @Test
-    public void settleAltPayTransaction() {
-        BraintreeGateway altpayGateway = new BraintreeGateway(
-            Environment.DEVELOPMENT,
-            "altpay_merchant",
-            "altpay_merchant_public_key",
-            "altpay_merchant_private_key"
-        );
-        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
-        assertTrue(customerResult.isSuccess());
-        Customer customer = customerResult.getTarget();
-
-        String nonce = TestHelper.generateEuropeBankAccountNonce(altpayGateway, customer);
-
-        TransactionRequest request = new TransactionRequest().
-            merchantAccountId("fake_sepa_ma").
-            amount(TransactionAmount.AUTHORIZE.amount).
-            paymentMethodNonce(nonce).
-            options().
-            submitForSettlement(true).
-            done();
-
-        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
-        TestHelper.settle(altpayGateway, transaction.getId());
-
-        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-            id().is(transaction.getId());
-
-        ResourceCollection<Transaction> searchResult = altpayGateway.transaction().search(searchRequest);
-        assertEquals(1, searchResult.getMaximumSize());
-        assertEquals(Transaction.Status.SETTLED, searchResult.getFirst().getStatus());
-    }
-
-    @Test
-    public void settlementConfirmTransaction() {
-        BraintreeGateway altpayGateway = new BraintreeGateway(
-            Environment.DEVELOPMENT,
-            "altpay_merchant",
-            "altpay_merchant_public_key",
-            "altpay_merchant_private_key"
-        );
-        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
-        assertTrue(customerResult.isSuccess());
-        Customer customer = customerResult.getTarget();
-
-        String nonce = TestHelper.generateEuropeBankAccountNonce(altpayGateway, customer);
-
-        TransactionRequest request = new TransactionRequest().
-            merchantAccountId("fake_sepa_ma").
-            amount(TransactionAmount.AUTHORIZE.amount).
-            paymentMethodNonce(nonce).
-            options().
-            submitForSettlement(true).
-            done();
-
-        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
-        TestHelper.settlement_confirm(altpayGateway, transaction.getId());
-
-        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-            id().is(transaction.getId());
-
-        ResourceCollection<Transaction> searchResult = altpayGateway.transaction().search(searchRequest);
-        assertEquals(1, searchResult.getMaximumSize());
-        assertEquals(Transaction.Status.SETTLEMENT_CONFIRMED, searchResult.getFirst().getStatus());
-    }
-
-    @Test
-    public void settlementConfirmTransactionReturnsValidationError() {
-        BraintreeGateway altpayGateway = new BraintreeGateway(
-            Environment.DEVELOPMENT,
-            "altpay_merchant",
-            "altpay_merchant_public_key",
-            "altpay_merchant_private_key"
-        );
-        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
-        assertTrue(customerResult.isSuccess());
-        Customer customer = customerResult.getTarget();
-
-        String nonce = TestHelper.generateEuropeBankAccountNonce(altpayGateway, customer);
-
-        TransactionRequest request = new TransactionRequest().
-            merchantAccountId("fake_sepa_ma").
-            amount(TransactionAmount.AUTHORIZE.amount).
-            paymentMethodNonce(nonce);
-
-        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
-        Result<Transaction> result = TestHelper.settlement_decline(altpayGateway, transaction.getId());
-        assertFalse(result.isSuccess());
-        assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_SIMULATE_SETTLEMENT, result.getErrors().forObject("transaction").onField("base").get(0).getCode());
-    }
-
-
-    @Test
-    public void settlementDeclineTransaction() {
-        BraintreeGateway altpayGateway = new BraintreeGateway(
-            Environment.DEVELOPMENT,
-            "altpay_merchant",
-            "altpay_merchant_public_key",
-            "altpay_merchant_private_key"
-        );
-        Result<Customer> customerResult = altpayGateway.customer().create(new CustomerRequest());
-        assertTrue(customerResult.isSuccess());
-        Customer customer = customerResult.getTarget();
-
-        String nonce = TestHelper.generateEuropeBankAccountNonce(altpayGateway, customer);
-
-        TransactionRequest request = new TransactionRequest().
-            merchantAccountId("fake_sepa_ma").
-            amount(TransactionAmount.AUTHORIZE.amount).
-            paymentMethodNonce(nonce).
-            options().
-            submitForSettlement(true).
-            done();
-
-        Transaction transaction = altpayGateway.transaction().sale(request).getTarget();
-        TestHelper.settlement_decline(altpayGateway, transaction.getId());
-
-        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-            id().is(transaction.getId());
-
-        ResourceCollection<Transaction> searchResult = altpayGateway.transaction().search(searchRequest);
-        assertEquals(1, searchResult.getMaximumSize());
-        assertEquals(Transaction.Status.SETTLEMENT_DECLINED, searchResult.getFirst().getStatus());
     }
 
     @Test

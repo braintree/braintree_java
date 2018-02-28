@@ -1,3 +1,7 @@
+## 2.77.0
+* Fix possible NullPointerException in UsBankAccount
+* Add support for `association_filter_id` in `Customer#find`
+
 ## 2.76.0
 * Deprecated `TRANSACTION_LINE_ITEM_DISCOUNT_AMOUNT_MUST_BE_GREATER_THAN_ZERO` error in favor of `TRANSACTION_LINE_ITEM_DISCOUNT_AMOUNT_CANNOT_BE_NEGATIVE`
 * Deprecated `TRANSACTION_LINE_ITEM_UNIT_TAX_AMOUNT_MUST_BE_GREATER_THAN_ZERO` error in favor of `TRANSACTION_LINE_ITEM_UNIT_TAX_AMOUNT_CANNOT_BE_NEGATIVE`
@@ -8,7 +12,7 @@
 * Add `getSourceMerchantId()` to `WebhookNotification`s
 * Add support for taxAmount field on transaction lineItems
 * Swap out `org.json` package for `jackson-jr` to fix licensing issues (#58,#59)
-
+* Add support for `profile_id` in Transaction#create options for VenmoAccounts
 
 ## 2.74.1
 * Add support for line_items
