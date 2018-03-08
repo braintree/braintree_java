@@ -1,3 +1,6 @@
+## Unreleased
+* Add support for `OAUTH_ACCESS_REVOKED` in `WebhookNotification`s
+
 ## 2.77.0
 * Fix possible NullPointerException in UsBankAccount
 * Add support for `association_filter_id` in `Customer#find`

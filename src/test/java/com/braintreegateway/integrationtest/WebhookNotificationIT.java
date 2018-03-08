@@ -379,6 +379,22 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test
+    public void buildsSampleNotificationForOAuthAccessRevocation()
+    {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting()
+            .sampleNotification(WebhookNotification.Kind.OAUTH_ACCESS_REVOKED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification()
+            .parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.OAUTH_ACCESS_REVOKED, notification.getKind());
+        assertEquals("abc123", notification.getOAuthAccessRevocation().getMerchantId());
+        long now = new Date().getTime();
+        long age = now - notification.getTimestamp().getTime().getTime();
+        assertTrue(age < 5000);
+    }
+
+    @Test
     public void buildsSampleNotificationForPartnerMerchantDisconnectedWebhook()
     {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting()
