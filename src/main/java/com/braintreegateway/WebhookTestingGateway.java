@@ -66,6 +66,7 @@ public class WebhookTestingGateway {
             case PARTNER_MERCHANT_CONNECTED: return partnerMerchantConnectedXml(id);
             case PARTNER_MERCHANT_DISCONNECTED: return partnerMerchantDisconnectedXml(id);
             case PARTNER_MERCHANT_DECLINED: return partnerMerchantDeclinedXml(id);
+            case OAUTH_ACCESS_REVOKED: return oauthAccessRevokedXml(id);
             case CONNECTED_MERCHANT_STATUS_TRANSITIONED: return connectedMerchantStatusTransitionedXml(id);
             case CONNECTED_MERCHANT_PAYPAL_STATUS_CHANGED: return connectedMerchantPayPalStatusChangedXml(id);
             case SUBSCRIPTION_CHARGED_SUCCESSFULLY: return subscriptionChargedSuccessfullyXml(id);
@@ -334,6 +335,12 @@ public class WebhookTestingGateway {
     private String partnerMerchantDeclinedXml(String id) {
         return node("partner-merchant",
                 node("partner-merchant-id", "abc123")
+        );
+    }
+
+    private String oauthAccessRevokedXml(String id) {
+        return node("oauth-application-revocation",
+                node("merchant-id", "abc123")
         );
     }
 
