@@ -425,7 +425,7 @@ public class CustomerIT extends IntegrationTest {
 
         Result<Customer> result = gateway.customer().create(request);
         assertTrue(result.isSuccess());
-        assertTrue(result.getTarget().getCreditCards().get(0).isVenmoSdk());
+        assertFalse(result.getTarget().getCreditCards().get(0).isVenmoSdk());
     }
 
     @Test
