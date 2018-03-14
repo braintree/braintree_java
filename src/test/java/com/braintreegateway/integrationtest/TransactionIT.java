@@ -2100,7 +2100,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
-        assertTrue(result.getTarget().getCreditCard().isVenmoSdk());
+        assertFalse(result.getTarget().getCreditCard().isVenmoSdk());
     }
 
     @Test
