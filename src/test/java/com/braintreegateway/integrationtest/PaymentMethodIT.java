@@ -73,6 +73,7 @@ public class PaymentMethodIT extends IntegrationTest {
         PayPalAccount paypalAccount = (PayPalAccount) paymentMethod;
         assertNotNull(paypalAccount.getEmail());
         assertNotNull(paypalAccount.getImageUrl());
+        assertNotNull(paypalAccount.getPayerId());
         assertNotNull(paypalAccount.getCustomerId());
         assertNotNull(paypalAccount.getSubscriptions());
     }
@@ -137,6 +138,7 @@ public class PaymentMethodIT extends IntegrationTest {
         PayPalAccount paypalAccount = (PayPalAccount) paymentMethod;
         assertNotNull(paypalAccount.getEmail());
         assertNotNull(paypalAccount.getImageUrl());
+        assertNotNull(paypalAccount.getPayerId());
         assertNotNull(paypalAccount.getCustomerId());
         assertNotNull(paypalAccount.getSubscriptions());
     }

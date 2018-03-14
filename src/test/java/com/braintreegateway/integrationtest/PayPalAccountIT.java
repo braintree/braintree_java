@@ -57,6 +57,7 @@ public class PayPalAccountIT extends IntegrationTest {
         assertNotNull(found);
         assertEquals(found.getToken(), result.getTarget().getToken());
         assertNotNull(found.getImageUrl());
+        assertNotNull(found.getPayerId());
         assertNotNull(found.getCreatedAt());
         assertNotNull(found.getUpdatedAt());
         assertNotNull(found.isDefault());
