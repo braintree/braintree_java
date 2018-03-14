@@ -4,9 +4,12 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.BraintreeGateway;
+import com.braintreegateway.Customer;
+import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Dispute;
 import com.braintreegateway.DisputeEvidence;
 import com.braintreegateway.DisputeSearchRequest;
+import com.braintreegateway.DisputeStatusHistory;
 import com.braintreegateway.DocumentUpload;
 import com.braintreegateway.DocumentUploadRequest;
 import com.braintreegateway.PaginatedCollection;
@@ -433,6 +436,34 @@ public class DisputeIT extends IntegrationTest {
 	}
 
 	@Test
+	public void searchByCustomerIdReturnsSingleDispute() {
+        String customerId = gateway.customer().create(new CustomerRequest()).getTarget().getId();
+
+        TransactionRequest transactionRequest = new TransactionRequest()
+            .amount(new BigDecimal("10.00"))
+            .customerId(customerId)
+            .creditCard()
+                .number(CHARGEBACK)
+                .expirationDate("12/2020")
+            .done();
+
+        gateway.transaction().sale(transactionRequest);
+
+        List<Dispute> disputes = new ArrayList<Dispute>();
+        DisputeSearchRequest request = new DisputeSearchRequest()
+            .customerId().is(customerId);
+
+        PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
+            .search(request);
+
+        for(Dispute dispute : disputeCollection) {
+            disputes.add(dispute);
+        }
+
+        assertEquals(1, disputes.size());
+	}
+
+	@Test
 	public void searchWithMultipleReasonsReturnsMultipleDisputes() {
         List<Dispute> disputes = new ArrayList<Dispute>();
         DisputeSearchRequest request = new DisputeSearchRequest()
@@ -450,7 +481,7 @@ public class DisputeIT extends IntegrationTest {
 	}
 
 	@Test
-    public void searchDateRangeReturnsDispute() throws ParseException{
+    public void searchReceivedDateRangeReturnsDispute() throws ParseException{
         List<Dispute> disputes = new ArrayList<Dispute>();
         Calendar before = CalendarTestUtils.date("2014-03-03");
         Calendar after = CalendarTestUtils.date("2014-03-05");
@@ -469,6 +500,52 @@ public class DisputeIT extends IntegrationTest {
         assertEquals(disputes.get(0).getReceivedDate().get(Calendar.YEAR), 2014);
         assertEquals(disputes.get(0).getReceivedDate().get(Calendar.MONTH)+1, 3);
         assertEquals(disputes.get(0).getReceivedDate().get(Calendar.DAY_OF_MONTH), 4);
+    }
+
+	@Test
+    public void searchDisbursementDateRangeReturnsDispute() throws ParseException{
+        List<Dispute> disputes = new ArrayList<Dispute>();
+        Calendar before = CalendarTestUtils.date("2014-03-03");
+        Calendar after = CalendarTestUtils.date("2014-03-05");
+        DisputeSearchRequest request = new DisputeSearchRequest()
+            .disbursementDate()
+            .between(before, after);
+
+        PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
+            .search(request);
+
+        for(Dispute dispute : disputeCollection) {
+            disputes.add(dispute);
+        }
+
+        assertEquals(1, disputes.size());
+        DisputeStatusHistory history = disputes.get(0).getStatusHistory().get(0);
+        assertEquals(history.getDisbursementDate().get(Calendar.YEAR), 2014);
+        assertEquals(history.getDisbursementDate().get(Calendar.MONTH)+1, 3);
+        assertEquals(history.getDisbursementDate().get(Calendar.DAY_OF_MONTH), 5);
+    }
+
+	@Test
+    public void searchEffectiveDateRangeReturnsDispute() throws ParseException{
+        List<Dispute> disputes = new ArrayList<Dispute>();
+        Calendar before = CalendarTestUtils.date("2014-03-03");
+        Calendar after = CalendarTestUtils.date("2014-03-05");
+        DisputeSearchRequest request = new DisputeSearchRequest()
+            .effectiveDate()
+            .between(before, after);
+
+        PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
+            .search(request);
+
+        for(Dispute dispute : disputeCollection) {
+            disputes.add(dispute);
+        }
+
+        assertEquals(1, disputes.size());
+        DisputeStatusHistory history = disputes.get(0).getStatusHistory().get(0);
+        assertEquals(history.getEffectiveDate().get(Calendar.YEAR), 2014);
+        assertEquals(history.getEffectiveDate().get(Calendar.MONTH)+1, 3);
+        assertEquals(history.getEffectiveDate().get(Calendar.DAY_OF_MONTH), 4);
     }
 
     public Dispute createSampleDispute() {
