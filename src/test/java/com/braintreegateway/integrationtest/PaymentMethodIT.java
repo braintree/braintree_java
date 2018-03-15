@@ -366,6 +366,7 @@ public class PaymentMethodIT extends IntegrationTest {
             .customerId(customer.getId())
             .paymentMethodNonce(nonce)
             .options()
+                .verificationMerchantAccountId("us_bank_merchant_account")
             .done();
 
         Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
@@ -394,6 +395,7 @@ public class PaymentMethodIT extends IntegrationTest {
             .customerId(customer.getId())
             .paymentMethodNonce(nonce)
             .options()
+                .verificationMerchantAccountId("us_bank_merchant_account")
             .done();
 
         Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
