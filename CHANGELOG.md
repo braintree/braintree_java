@@ -1,6 +1,7 @@
 ## Unreleased
 * Add support for `OAUTH_ACCESS_REVOKED` in `WebhookNotification`s
 * Add support for dispute search by `customerId`, `disbursementDate`, and `effectiveDate`
+* Add support for `SubscriptionDetails` and deprecate `Subscription` in `Transaction`
 
 ## 2.77.0
 * Fix possible NullPointerException in UsBankAccount
