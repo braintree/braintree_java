@@ -25,7 +25,7 @@ public class BraintreeExample {
         );
 
         TransactionRequest request = new TransactionRequest()
-            .amount(new BigDecimal("1000.00")
+            .amount(new BigDecimal("1000.00"))
             .paymentMethodNonce(nonceFromTheClient)
             .options()
                 .submitForSettlement(true)
