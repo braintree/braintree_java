@@ -59,25 +59,37 @@ public class DisputeGateway {
      * Add File Evidence to a @{link Dispute}, given an ID and a @{link DocumentUpload} ID.
      *
      * @param disputeId the dispute id to add text evidence to.
-     * @param documentUploadId the dispute id to accept.
+     * @param documentId the document id of a previously uploaded document
      *
      * @return a {@link Result}.
      *
      * @throws NotFoundException if the Dispute ID or Document ID cannot be found.
      */
-    public Result<DisputeEvidence> addFileEvidence(String disputeId, String documentUploadId) {
+    public Result<DisputeEvidence> addFileEvidence(String disputeId, String documentId) {
+        return addFileEvidence(disputeId, new FileEvidenceRequest().documentId(documentId));
+    }
+
+    /**
+     * Add File Evidence to a @{link Dispute}, given an ID and a @{link FileEvidenceRequest} File evidence request.
+     *
+     * @param disputeId the dispute id to add text evidence to.
+     * @param fileEvidenceRequest the file evidence request for the dispute.
+     *
+     * @return a {@link Result}.
+     *
+     * @throws NotFoundException if the Dispute ID or Document ID cannot be found.
+     */
+    public Result<DisputeEvidence> addFileEvidence(String disputeId, FileEvidenceRequest fileEvidenceRequest) {
         if (disputeId == null || disputeId.trim().equals("")) {
             throw new NotFoundException("dispute with id \"" + disputeId + "\" not found");
         }
 
-        if (documentUploadId == null || documentUploadId.trim().equals("")) {
-            throw new NotFoundException("document with id \"" + documentUploadId + "\" not found");
+        if (fileEvidenceRequest.getDocumentId() == null || fileEvidenceRequest.getDocumentId().trim().equals("")) {
+            throw new NotFoundException("document with id \"" + fileEvidenceRequest.getDocumentId() + "\" not found");
         }
 
-        String request = RequestBuilder.buildXMLElement("document_upload_id", documentUploadId);
-
         try {
-            NodeWrapper response = http.post(configuration.getMerchantPath() + "/disputes/" + disputeId + "/evidence", request);
+            NodeWrapper response = http.post(configuration.getMerchantPath() + "/disputes/" + disputeId + "/evidence", fileEvidenceRequest);
             return new Result<DisputeEvidence>(response, DisputeEvidence.class);
         } catch (NotFoundException e) {
             throw new NotFoundException("dispute with id \"" + disputeId + "\" not found");
