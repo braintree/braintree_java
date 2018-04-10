@@ -24,7 +24,10 @@ public class UsBankAccountIT extends IntegrationTest {
 
         PaymentMethodRequest request = new PaymentMethodRequest().
             customerId(customer.getId()).
-            paymentMethodNonce(nonce);
+            paymentMethodNonce(nonce).
+            options().
+                verificationMerchantAccountId("us_bank_merchant_account").
+            done();
 
         Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
         assertTrue(result.isSuccess());
@@ -60,7 +63,10 @@ public class UsBankAccountIT extends IntegrationTest {
 
         PaymentMethodRequest request = new PaymentMethodRequest().
             customerId(customer.getId()).
-            paymentMethodNonce(nonce);
+            paymentMethodNonce(nonce).
+            options().
+                verificationMerchantAccountId("us_bank_merchant_account").
+            done();
 
         Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
         assertTrue(result.isSuccess());

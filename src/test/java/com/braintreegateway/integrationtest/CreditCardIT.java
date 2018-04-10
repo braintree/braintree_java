@@ -352,7 +352,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
         assertEquals("411111", card.getBin());
-        assertTrue(card.isVenmoSdk());
+        assertFalse(card.isVenmoSdk());
     }
 
     @Test
@@ -398,7 +398,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
         assertEquals("510510", card.getBin());
-        assertTrue(card.isVenmoSdk());
+        assertFalse(card.isVenmoSdk());
     }
 
     @Test

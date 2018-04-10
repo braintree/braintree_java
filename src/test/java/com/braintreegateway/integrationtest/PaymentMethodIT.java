@@ -73,6 +73,7 @@ public class PaymentMethodIT extends IntegrationTest {
         PayPalAccount paypalAccount = (PayPalAccount) paymentMethod;
         assertNotNull(paypalAccount.getEmail());
         assertNotNull(paypalAccount.getImageUrl());
+        assertNotNull(paypalAccount.getPayerId());
         assertNotNull(paypalAccount.getCustomerId());
         assertNotNull(paypalAccount.getSubscriptions());
     }
@@ -137,6 +138,7 @@ public class PaymentMethodIT extends IntegrationTest {
         PayPalAccount paypalAccount = (PayPalAccount) paymentMethod;
         assertNotNull(paypalAccount.getEmail());
         assertNotNull(paypalAccount.getImageUrl());
+        assertNotNull(paypalAccount.getPayerId());
         assertNotNull(paypalAccount.getCustomerId());
         assertNotNull(paypalAccount.getSubscriptions());
     }
@@ -366,6 +368,7 @@ public class PaymentMethodIT extends IntegrationTest {
             .customerId(customer.getId())
             .paymentMethodNonce(nonce)
             .options()
+                .verificationMerchantAccountId("us_bank_merchant_account")
             .done();
 
         Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
@@ -394,6 +397,7 @@ public class PaymentMethodIT extends IntegrationTest {
             .customerId(customer.getId())
             .paymentMethodNonce(nonce)
             .options()
+                .verificationMerchantAccountId("us_bank_merchant_account")
             .done();
 
         Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);

@@ -425,7 +425,7 @@ public class CustomerIT extends IntegrationTest {
 
         Result<Customer> result = gateway.customer().create(request);
         assertTrue(result.isSuccess());
-        assertTrue(result.getTarget().getCreditCards().get(0).isVenmoSdk());
+        assertFalse(result.getTarget().getCreditCards().get(0).isVenmoSdk());
     }
 
     @Test
@@ -518,7 +518,12 @@ public class CustomerIT extends IntegrationTest {
     public void createWithUsBankAccountNonce() {
         String nonce = TestHelper.generateValidUsBankAccountNonce(gateway);
         CustomerRequest request = new CustomerRequest().
-            paymentMethodNonce(nonce);
+            paymentMethodNonce(nonce).
+            creditCard().
+                options().
+                    verificationMerchantAccountId("us_bank_merchant_account").
+                    done().
+                done();
 
         Result<Customer> result = gateway.customer().create(request);
         assertTrue(result.isSuccess());
@@ -601,7 +606,12 @@ public class CustomerIT extends IntegrationTest {
     public void findUsBankAccountFromCustomer() {
         String nonce = TestHelper.generateValidUsBankAccountNonce(gateway);
         CustomerRequest request = new CustomerRequest().
-            paymentMethodNonce(nonce);
+            paymentMethodNonce(nonce).
+            creditCard().
+                options().
+                    verificationMerchantAccountId("us_bank_merchant_account").
+                    done().
+                done();
 
         Result<Customer> result = gateway.customer().create(request);
         assertTrue(result.isSuccess());

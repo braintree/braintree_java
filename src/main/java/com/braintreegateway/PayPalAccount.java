@@ -11,6 +11,7 @@ public class PayPalAccount implements PaymentMethod {
     private String billingAgreementId;
     private boolean isDefault;
     private String imageUrl;
+    private String payerId;
     private String customerId;
     private Calendar createdAt;
     private Calendar updatedAt;
@@ -22,6 +23,7 @@ public class PayPalAccount implements PaymentMethod {
         this.billingAgreementId = node.findString("billing-agreement-id");
         this.isDefault = node.findBoolean("default");
         this.imageUrl = node.findString("image-url");
+        this.payerId = node.findString("payer-id");
         this.customerId = node.findString("customer-id");
         this.createdAt = node.findDateTime("created-at");
         this.updatedAt = node.findDateTime("updated-at");
@@ -49,6 +51,10 @@ public class PayPalAccount implements PaymentMethod {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public String getPayerId() {
+        return payerId;
     }
 
     public String getCustomerId() {

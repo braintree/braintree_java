@@ -2100,7 +2100,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
-        assertTrue(result.getTarget().getCreditCard().isVenmoSdk());
+        assertFalse(result.getTarget().getCreditCard().isVenmoSdk());
     }
 
     @Test
@@ -4514,54 +4514,74 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void searchOnDisputeDate() throws ParseException {
-        Calendar disputeTime = CalendarTestUtils.dateTime("2014-03-01T00:00:00Z");
+    public void searchOnDisputeDate() throws ParseException, InterruptedException {
+        Calendar today = Calendar.getInstance();
 
-        Calendar threeDaysEarlier = ((Calendar) disputeTime.clone());
+        Calendar threeDaysEarlier = ((Calendar) today.clone());
         threeDaysEarlier.add(Calendar.DAY_OF_MONTH, -3);
 
-        Calendar oneDayEarlier = ((Calendar) disputeTime.clone());
+        Calendar oneDayEarlier = ((Calendar) today.clone());
         oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
 
-        Calendar oneDayLater = ((Calendar) disputeTime.clone());
+        Calendar oneDayLater = ((Calendar) today.clone());
         oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
-        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-                id().is(DISPUTED_TRANSACTION_ID).
-                disputeDate().between(oneDayEarlier, oneDayLater);
+        Transaction transaction = this.getDisputedTransaction();
 
-        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest()
+            .id().is(transaction.getId())
+            .disputeDate().between(oneDayEarlier, oneDayLater);
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(1, collection.getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
-                id().is(TWO_DISPUTE_TRANSACTION_ID).
+                id().is(transaction.getId()).
                 disputeDate().greaterThanOrEqualTo(oneDayEarlier);
 
         assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
-                id().is(DISPUTED_TRANSACTION_ID).
+                id().is(transaction.getId()).
                 disputeDate().lessThanOrEqualTo(oneDayLater);
 
         assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
 
         searchRequest = new TransactionSearchRequest().
-                id().is(DISPUTED_TRANSACTION_ID).
+                id().is(transaction.getId()).
                 disputeDate().between(threeDaysEarlier, oneDayEarlier);
 
         assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
-    public void searchOnDisputeDateUsingLocalTime() throws ParseException {
+    public void searchOnDisputeDateUsingLocalTime() throws ParseException, InterruptedException {
+        Transaction transaction = this.getDisputedTransaction();
 
-        Calendar oneDayEarlier = CalendarTestUtils.dateTime("2014-02-28T00:00:00Z", "CST");
-        Calendar oneDayLater = CalendarTestUtils.dateTime("2014-03-02T00:00:00Z", "CST");
+        Calendar oneDayEarlier = CalendarTestUtils.today("CST");
+        oneDayEarlier.add(Calendar.DATE, -1);
+
+        Calendar oneDayLater = CalendarTestUtils.today("CST");
+        oneDayLater.add(Calendar.DATE, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-                id().is(DISPUTED_TRANSACTION_ID).
+                id().is(transaction.getId()).
                 disputeDate().between(oneDayEarlier, oneDayLater);
 
-        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+        ResourceCollection<Transaction> collection = null;
+
+        for (int i=0; i<90; i++) {
+            Thread.sleep(1000);
+
+            collection = gateway.transaction().search(searchRequest);
+
+            if (collection.getMaximumSize() > 0) {
+                break;
+            }
+        }
+
+        assertEquals(1, collection.getMaximumSize());
     }
 
 

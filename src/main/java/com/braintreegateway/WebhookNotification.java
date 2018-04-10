@@ -11,6 +11,7 @@ public class WebhookNotification {
         PARTNER_MERCHANT_DISCONNECTED("partner_merchant_disconnected"),
         PARTNER_MERCHANT_CONNECTED("partner_merchant_connected"),
         PARTNER_MERCHANT_DECLINED("partner_merchant_declined"),
+        OAUTH_ACCESS_REVOKED("oauth_access_revoked"),
         CONNECTED_MERCHANT_STATUS_TRANSITIONED("connected_merchant_status_transitioned"),
         CONNECTED_MERCHANT_PAYPAL_STATUS_CHANGED("connected_merchant_paypal_status_changed"),
         SUB_MERCHANT_ACCOUNT_APPROVED("sub_merchant_account_approved"),
@@ -57,6 +58,7 @@ public class WebhookNotification {
     private Kind kind;
     private Calendar timestamp;
     private PartnerMerchant partnerMerchant;
+    private OAuthAccessRevocation oauthAccessRevocation;
     private AccountUpdaterDailyReport accountUpdaterDailyReport;
     private ConnectedMerchantStatusTransitioned connectedMerchantStatusTransitioned;
     private ConnectedMerchantPayPalStatusChanged connectedMerchantPayPalStatusChanged;
@@ -98,6 +100,10 @@ public class WebhookNotification {
 
         if (wrapperNode.findFirst("partner-merchant") != null) {
             this.partnerMerchant = new PartnerMerchant(wrapperNode.findFirst("partner-merchant"));
+        }
+
+        if (wrapperNode.findFirst("oauth-application-revocation") != null) {
+            this.oauthAccessRevocation = new OAuthAccessRevocation(wrapperNode.findFirst("oauth-application-revocation"));
         }
 
         if (wrapperNode.findFirst("connected-merchant-status-transitioned") != null) {
@@ -163,6 +169,10 @@ public class WebhookNotification {
 
     public PartnerMerchant getPartnerMerchant() {
         return this.partnerMerchant;
+    }
+
+    public OAuthAccessRevocation getOAuthAccessRevocation() {
+        return this.oauthAccessRevocation;
     }
 
     public ConnectedMerchantStatusTransitioned getConnectedMerchantStatusTransitioned() {

@@ -13,6 +13,14 @@ import java.util.TimeZone;
 public abstract class CalendarTestUtils {
     public static final String UTC = "UTC";
 
+    public static Calendar today() throws ParseException {
+        return today(UTC);
+    }
+
+    public static Calendar today(String timeZoneName) {
+        return Calendar.getInstance(TimeZone.getTimeZone(timeZoneName));
+    }
+
     public static Calendar date(String dateString) throws ParseException {
         return getCalendar(dateString, NodeWrapper.DATE_FORMAT, UTC);
     }

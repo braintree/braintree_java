@@ -4,18 +4,23 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.BraintreeGateway;
+import com.braintreegateway.Customer;
+import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.Dispute;
 import com.braintreegateway.DisputeEvidence;
 import com.braintreegateway.DisputeSearchRequest;
+import com.braintreegateway.DisputeStatusHistory;
 import com.braintreegateway.DocumentUpload;
 import com.braintreegateway.DocumentUploadRequest;
 import com.braintreegateway.PaginatedCollection;
 import com.braintreegateway.Result;
 import com.braintreegateway.TextEvidenceRequest;
+import com.braintreegateway.FileEvidenceRequest;
 import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.ValidationError;
 import com.braintreegateway.ValidationErrorCode;
+import com.braintreegateway.ValidationErrors;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -23,6 +28,8 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Calendar;
 import java.util.List;
 
@@ -106,6 +113,38 @@ public class DisputeIT extends IntegrationTest {
             .getId();
 
         assertEquals(evidenceId, updatedEvidenceId);
+    }
+
+    @Test
+    public void addFileEvidenceAddsEvidenceWithCategory() {
+        String disputeId = createSampleDispute().getId();
+        String documentId = createSampleDocument().getId();
+        FileEvidenceRequest request = new FileEvidenceRequest()
+            .category("GENERAL")
+            .documentId(documentId);
+
+        Result<DisputeEvidence> result = gateway.dispute().addFileEvidence(disputeId, request);
+        assertTrue(result.isSuccess());
+
+        DisputeEvidence evidence = result.getTarget();
+
+        assertEquals(evidence.getCategory(), "GENERAL");
+    }
+
+    @Test
+    public void addFileEvidenceWithBadCategoryFails() {
+        String disputeId = createSampleDispute().getId();
+        String documentId = createSampleDocument().getId();
+        FileEvidenceRequest request = new FileEvidenceRequest()
+            .category("NOT A REAL CATEGORY")
+            .documentId(documentId);
+
+        Result<DisputeEvidence> result = gateway.dispute().addFileEvidence(disputeId, request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+                ValidationErrorCode.DISPUTE_CAN_ONLY_CREATE_EVIDENCE_WITH_VALID_CATEGORY,
+                result.getErrors().forObject("dispute").onField("evidence").get(0).getCode()
+                );
     }
 
     @Test
@@ -257,6 +296,22 @@ public class DisputeIT extends IntegrationTest {
     }
 
     @Test
+    public void addTextEvidenceWorksWithCategoryOrTag() {
+        Dispute dispute = createSampleDispute();
+
+        TextEvidenceRequest textEvidenceRequest = new TextEvidenceRequest().
+            content("PROOF_OF_REFUND").
+            category("EVIDENCE_TYPE");
+        Result<DisputeEvidence> disputeEvidenceResult = gateway.dispute().addTextEvidence(dispute.getId(), textEvidenceRequest);
+
+        assertTrue(disputeEvidenceResult.isSuccess());
+        DisputeEvidence disputeEvidence = disputeEvidenceResult.getTarget();
+        assertEquals("PROOF_OF_REFUND", disputeEvidence.getComment());
+        assertEquals("EVIDENCE_TYPE", disputeEvidence.getCategory());
+        assertEquals("EVIDENCE_TYPE", disputeEvidence.getTag());
+    }
+
+    @Test
     public void addTextEvidenceWhenDisputeNotOpenErrors() {
         Dispute dispute = createSampleDispute();
 
@@ -272,6 +327,28 @@ public class DisputeIT extends IntegrationTest {
 
         assertEquals(ValidationErrorCode.DISPUTE_CAN_ONLY_ADD_EVIDENCE_TO_OPEN_DISPUTE, error.getCode());
         assertEquals("Evidence can only be attached to disputes that are in an Open state", error.getMessage());
+    }
+
+
+    @Test
+    public void addTextEvidenceWithUnsupportedCategoryFails() {
+        Dispute dispute = createSampleDispute();
+
+        gateway.dispute().accept(dispute.getId());
+
+        TextEvidenceRequest textEvidenceRequest = new TextEvidenceRequest()
+            .category("NOTACATEGORY")
+            .content("this was paid for by the customer");
+
+        Result<DisputeEvidence> result = gateway.dispute()
+            .addTextEvidence(dispute.getId(), textEvidenceRequest);
+
+        assertFalse(result.isSuccess());
+
+        assertEquals(
+                ValidationErrorCode.DISPUTE_CAN_ONLY_CREATE_EVIDENCE_WITH_VALID_CATEGORY,
+                result.getErrors().forObject("dispute").onField("evidence").get(0).getCode()
+                );
     }
 
     @Test
@@ -291,7 +368,7 @@ public class DisputeIT extends IntegrationTest {
         assertEquals(evidence.getComment(), refreshedEvidence.getComment());
     }
 
-	@Test
+    @Test
     public void finalizeChangesDisputeStatusToDisputed() {
         Dispute dispute = createSampleDispute();
 
@@ -320,6 +397,35 @@ public class DisputeIT extends IntegrationTest {
 
         assertEquals(ValidationErrorCode.DISPUTE_CAN_ONLY_FINALIZE_OPEN_DISPUTE, error.getCode());
         assertEquals("Disputes can only be finalized when they are in an Open state", error.getMessage());
+    }
+
+    @Test
+    public void finalizeWhenDisputeHasValidationErrors() {
+        Dispute dispute = createSampleDispute();
+        TextEvidenceRequest textEvidenceRequest = new TextEvidenceRequest().
+            content("content").
+            category("DEVICE_ID");
+
+        gateway.dispute().addTextEvidence(dispute.getId(), textEvidenceRequest);
+
+        Result<Dispute> result = gateway.dispute().finalize(dispute.getId());
+
+        assertFalse(result.isSuccess());
+
+        List<ValidationError> errors = result.getErrors()
+            .forObject("dispute")
+            .getAllValidationErrors();
+
+        Set<ValidationErrorCode> codes = new HashSet<ValidationErrorCode>();
+        for(ValidationError e : errors) {
+            codes.add(e.getCode());
+        }
+
+        Set<ValidationErrorCode> expectedCodes = new HashSet<ValidationErrorCode>();
+        expectedCodes.add(ValidationErrorCode.DISPUTE_DIGITAL_GOODS_MISSING_EVIDENCE);
+        expectedCodes.add(ValidationErrorCode.DISPUTE_DIGITAL_GOODS_MISSING_DOWNLOAD_DATE);
+
+        assertEquals(expectedCodes, codes);
     }
 
     @Test
@@ -353,7 +459,7 @@ public class DisputeIT extends IntegrationTest {
         }
     }
 
-	@Test
+    @Test
     public void removeEvidenceRemovesEvidenceFromTheDispute() {
         String disputeId = createSampleDispute().getId();
         String evidenceId = gateway.dispute()
@@ -414,13 +520,41 @@ public class DisputeIT extends IntegrationTest {
         }
 
         assertEquals(0, disputes.size());
-	}
+    }
 
-	@Test
-	public void searchByIdReturnsSingleDispute() {
+    @Test
+    public void searchByIdReturnsSingleDispute() {
         List<Dispute> disputes = new ArrayList<Dispute>();
         DisputeSearchRequest request = new DisputeSearchRequest()
             .id().is("open_dispute");
+
+        PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
+            .search(request);
+
+        for(Dispute dispute : disputeCollection) {
+            disputes.add(dispute);
+        }
+
+        assertEquals(1, disputes.size());
+	}
+
+	@Test
+	public void searchByCustomerIdReturnsSingleDispute() {
+        String customerId = gateway.customer().create(new CustomerRequest()).getTarget().getId();
+
+        TransactionRequest transactionRequest = new TransactionRequest()
+            .amount(new BigDecimal("10.00"))
+            .customerId(customerId)
+            .creditCard()
+                .number(CHARGEBACK)
+                .expirationDate("12/2020")
+            .done();
+
+        gateway.transaction().sale(transactionRequest);
+
+        List<Dispute> disputes = new ArrayList<Dispute>();
+        DisputeSearchRequest request = new DisputeSearchRequest()
+            .customerId().is(customerId);
 
         PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
             .search(request);
@@ -450,7 +584,7 @@ public class DisputeIT extends IntegrationTest {
 	}
 
 	@Test
-    public void searchDateRangeReturnsDispute() throws ParseException{
+    public void searchReceivedDateRangeReturnsDispute() throws ParseException{
         List<Dispute> disputes = new ArrayList<Dispute>();
         Calendar before = CalendarTestUtils.date("2014-03-03");
         Calendar after = CalendarTestUtils.date("2014-03-05");
@@ -469,6 +603,52 @@ public class DisputeIT extends IntegrationTest {
         assertEquals(disputes.get(0).getReceivedDate().get(Calendar.YEAR), 2014);
         assertEquals(disputes.get(0).getReceivedDate().get(Calendar.MONTH)+1, 3);
         assertEquals(disputes.get(0).getReceivedDate().get(Calendar.DAY_OF_MONTH), 4);
+    }
+
+	@Test
+    public void searchDisbursementDateRangeReturnsDispute() throws ParseException{
+        List<Dispute> disputes = new ArrayList<Dispute>();
+        Calendar before = CalendarTestUtils.date("2014-03-03");
+        Calendar after = CalendarTestUtils.date("2014-03-05");
+        DisputeSearchRequest request = new DisputeSearchRequest()
+            .disbursementDate()
+            .between(before, after);
+
+        PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
+            .search(request);
+
+        for(Dispute dispute : disputeCollection) {
+            disputes.add(dispute);
+        }
+
+        assertEquals(1, disputes.size());
+        DisputeStatusHistory history = disputes.get(0).getStatusHistory().get(0);
+        assertEquals(history.getDisbursementDate().get(Calendar.YEAR), 2014);
+        assertEquals(history.getDisbursementDate().get(Calendar.MONTH)+1, 3);
+        assertEquals(history.getDisbursementDate().get(Calendar.DAY_OF_MONTH), 5);
+    }
+
+	@Test
+    public void searchEffectiveDateRangeReturnsDispute() throws ParseException{
+        List<Dispute> disputes = new ArrayList<Dispute>();
+        Calendar before = CalendarTestUtils.date("2014-03-03");
+        Calendar after = CalendarTestUtils.date("2014-03-05");
+        DisputeSearchRequest request = new DisputeSearchRequest()
+            .effectiveDate()
+            .between(before, after);
+
+        PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
+            .search(request);
+
+        for(Dispute dispute : disputeCollection) {
+            disputes.add(dispute);
+        }
+
+        assertEquals(1, disputes.size());
+        DisputeStatusHistory history = disputes.get(0).getStatusHistory().get(0);
+        assertEquals(history.getEffectiveDate().get(Calendar.YEAR), 2014);
+        assertEquals(history.getEffectiveDate().get(Calendar.MONTH)+1, 3);
+        assertEquals(history.getEffectiveDate().get(Calendar.DAY_OF_MONTH), 4);
     }
 
     public Dispute createSampleDispute() {

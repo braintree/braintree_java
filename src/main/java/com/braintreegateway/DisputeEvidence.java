@@ -12,7 +12,7 @@ public final class DisputeEvidence {
     private final String comment;
     private final String id;
     private final String url;
-    private final String tag;
+    private final String category;
     private final String sequenceNumber;
 
     public DisputeEvidence(NodeWrapper node) {
@@ -21,7 +21,7 @@ public final class DisputeEvidence {
         comment = node.findString("comment");
         id = node.findString("id");
         url = node.findString("url");
-        tag = node.findString("category");
+        category = node.findString("category");
         sequenceNumber = node.findString("sequence-number");
     }
 
@@ -45,8 +45,16 @@ public final class DisputeEvidence {
         return url;
     }
 
+    /**
+     * Please use getCategory instead
+     */
+    @Deprecated
     public String getTag() {
-        return tag;
+        return category;
+    }
+
+    public String getCategory() {
+        return category;
     }
 
     public String getSequenceNumber() {

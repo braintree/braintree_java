@@ -18,6 +18,10 @@ public class DisputeSearchRequest extends SearchRequest {
         return new TextNode<DisputeSearchRequest>("id", this);
     }
 
+    public TextNode<DisputeSearchRequest> customerId() {
+        return new TextNode<DisputeSearchRequest>("customerId", this);
+    }
+
     public MultipleValueNode<DisputeSearchRequest, Dispute.Kind> kind() {
         return new MultipleValueNode<DisputeSearchRequest, Dispute.Kind>("kind", this);
     }
@@ -36,6 +40,14 @@ public class DisputeSearchRequest extends SearchRequest {
 
     public DateRangeNode<DisputeSearchRequest> receivedDate() {
         return new DateRangeNode<DisputeSearchRequest>("received_date", this);
+    }
+
+    public DateRangeNode<DisputeSearchRequest> disbursementDate() {
+        return new DateRangeNode<DisputeSearchRequest>("disbursement_date", this);
+    }
+
+    public DateRangeNode<DisputeSearchRequest> effectiveDate() {
+        return new DateRangeNode<DisputeSearchRequest>("effective_date", this);
     }
 
     public TextNode<DisputeSearchRequest> referenceNumber() {
