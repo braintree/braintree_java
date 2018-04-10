@@ -1,4 +1,6 @@
 ## Unreleased
+
+## 2.78.0
 * Add support for `OAUTH_ACCESS_REVOKED` in `WebhookNotification`s
 * Add support for dispute search by `customerId`, `disbursementDate`, and `effectiveDate`
 * Add `payerId` accessor in `PayPalAccount`
