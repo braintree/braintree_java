@@ -1,7 +1,11 @@
 ## Unreleased
+* Add support for `SubscriptionDetails` and deprecate `Subscription` in `Transaction`
+
+## 2.78.0
 * Add support for `OAUTH_ACCESS_REVOKED` in `WebhookNotification`s
 * Add support for dispute search by `customerId`, `disbursementDate`, and `effectiveDate`
-* Add support for `SubscriptionDetails` and deprecate `Subscription` in `Transaction`
+* Add `payerId` accessor in `PayPalAccount`
+* Add support for VCR compelling evidence dispute representment
 
 ## 2.77.0
 * Fix possible NullPointerException in UsBankAccount

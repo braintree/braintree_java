@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * SEPA create/update endpoint is removed, new sepa transaction is no longer supported 
+ */
+@Deprecated
 public class EuropeBankAccount implements PaymentMethod {
     private String token;
     private boolean isDefault;
@@ -15,6 +19,7 @@ public class EuropeBankAccount implements PaymentMethod {
     private String imageUrl;
     private String customerId;
 
+    @Deprecated
     public enum MandateType {
         BUSINESS("business"),
         CONSUMER("consumer");
@@ -30,6 +35,7 @@ public class EuropeBankAccount implements PaymentMethod {
         }
     }
 
+    @Deprecated
     public EuropeBankAccount(NodeWrapper node) {
         this.token = node.findString("token");
         this.isDefault = node.findBoolean("default");
