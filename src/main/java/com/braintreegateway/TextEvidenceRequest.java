@@ -6,7 +6,7 @@ package com.braintreegateway;
 public class TextEvidenceRequest extends Request {
 
     private String content;
-    private String tag;
+    private String category;
     private String sequenceNumber;
 
     public TextEvidenceRequest content(String content) {
@@ -18,8 +18,17 @@ public class TextEvidenceRequest extends Request {
         return content;
     }
 
+    /**
+     * Please use category instead
+     */
+    @Deprecated
     public TextEvidenceRequest tag(String tag) {
-        this.tag = tag;
+        this.category = tag;
+        return this;
+    }
+
+    public TextEvidenceRequest category(String category) {
+        this.category = category;
         return this;
     }
 
@@ -36,8 +45,7 @@ public class TextEvidenceRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
             addElement("comments", content).
-            addElement("category", tag).
+            addElement("category", category).
             addElement("sequenceNumber", sequenceNumber);
     }
-
 }
