@@ -3988,6 +3988,120 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void searchWithCreditCardNumberStartsWithEndsWith() {
+        String creditCardToken = String.valueOf(new Random().nextInt());
+
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            creditCard().
+                number("4111111111111111").
+                expirationDate("05/2012").
+                cardholderName("Tom Smith").
+                token(creditCardToken).
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+        transaction = gateway.transaction().find(transaction.getId());
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCardholderName().is("Tom Smith").
+            creditCardExpirationDate().is("05/2012").
+            creditCardNumber().startsWith("411111").
+            creditCardNumber().endsWith("1111");
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(1, collection.getMaximumSize());
+        assertEquals(transaction.getId(), collection.getFirst().getId());
+    }
+
+    @Test
+    public void searchWithCreditCardNumberStartsWithEndsWithReusingPartialNode() {
+        String creditCardToken = String.valueOf(new Random().nextInt());
+
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            creditCard().
+                number("4111111111111111").
+                expirationDate("05/2012").
+                cardholderName("Tom Smith").
+                token(creditCardToken).
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+        transaction = gateway.transaction().find(transaction.getId());
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCardholderName().is("Tom Smith").
+            creditCardExpirationDate().is("05/2012");
+
+        PartialMatchNode<TransactionSearchRequest> creditCardPartialNode = searchRequest.creditCardNumber();
+        creditCardPartialNode.startsWith("4111");
+        creditCardPartialNode.endsWith("1111");
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(1, collection.getMaximumSize());
+        assertEquals(transaction.getId(), collection.getFirst().getId());
+    }
+
+    @Test
+    public void searchWithCreditCardNumberStartsWithEndsWithPositiveAndNegativeCases() {
+        String creditCardToken = String.valueOf(new Random().nextInt());
+
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            creditCard().
+                number("4111111111111111").
+                expirationDate("05/2012").
+                cardholderName("Tom Smith").
+                token(creditCardToken).
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+        transaction = gateway.transaction().find(transaction.getId());
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCardholderName().is("Tom Smith").
+            creditCardExpirationDate().is("05/2012").
+            creditCardNumber().startsWith("4112").
+            creditCardNumber().endsWith("1111");
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(0, collection.getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCardholderName().is("Tom Smith").
+            creditCardExpirationDate().is("05/2012").
+            creditCardNumber().startsWith("4111").
+            creditCardNumber().endsWith("1112");
+
+        collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(0, collection.getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCardholderName().is("Tom Smith").
+            creditCardExpirationDate().is("05/2012").
+            creditCardNumber().startsWith("4111").
+            creditCardNumber().endsWith("1111");
+
+        collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(1, collection.getMaximumSize());
+        assertEquals(transaction.getId(), collection.getFirst().getId());
+    }
+
+    @Test
     public void searchOnTextNodeOperators() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("1000")).
