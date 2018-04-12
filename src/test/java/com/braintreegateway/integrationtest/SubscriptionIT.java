@@ -127,6 +127,21 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
     }
 
     @Test
+    public void createReturnsTransactionWithSubscriptionDetailsBillingPeriod() {
+        Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
+        SubscriptionRequest request = new SubscriptionRequest().
+                paymentMethodToken(creditCard.getToken()).
+                planId(plan.getId());
+
+        Result<Subscription> createResult = gateway.subscription().create(request);
+        assertTrue(createResult.isSuccess());
+        Subscription subscription = createResult.getTarget();
+        Transaction transaction = subscription.getTransactions().get(0);
+        assertEquals(subscription.getBillingPeriodStartDate(), transaction.getSubscriptionDetails().getBillingPeriodStartDate());
+        assertEquals(subscription.getBillingPeriodEndDate(), transaction.getSubscriptionDetails().getBillingPeriodEndDate());
+    }
+
+    @Test
     public void createSimpleSubscriptionWithTrial() {
         Plan plan = PlanFixture.PLAN_WITH_TRIAL;
         SubscriptionRequest request = new SubscriptionRequest().
