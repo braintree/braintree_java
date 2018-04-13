@@ -1,4 +1,7 @@
-## Unreleased
+## 2.79.0
+* Update `jackson-jr` to v2.9.5 to fix an incompatibility with Java 9
+* Fix issue where multiple search criteria was not allowed. [#62](https://github.com/braintree/braintree_java/issues/62).
+* Add support for `SubscriptionDetails` and deprecate `Subscription` in `Transaction`
 
 ## 2.78.0
 * Add support for `OAUTH_ACCESS_REVOKED` in `WebhookNotification`s

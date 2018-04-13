@@ -6,20 +6,23 @@ import java.util.List;
 import java.util.Map;
 
 public class SearchRequest extends Request {
-    private Map<String, SearchCriteria> criteria;
+    private Map<String, List<SearchCriteria>> criteria;
     private Map<String, List<SearchCriteria>> rangeCriteria;
     private Map<String, SearchCriteria> multiValueCriteria;
     private Map<String, String> keyValueCriteria;
     
     public SearchRequest() {
-        this.criteria = new HashMap<String, SearchCriteria>();
+        this.criteria = new HashMap<String, List<SearchCriteria>>();
         this.rangeCriteria = new HashMap<String, List<SearchCriteria>>();
         this.multiValueCriteria = new HashMap<String, SearchCriteria>();
         this.keyValueCriteria = new HashMap<String, String>();
     }
     
     public void addCriteria(String nodeName, SearchCriteria searchCriteria) {
-        criteria.put(nodeName, searchCriteria);
+        if (!criteria.containsKey(nodeName)) {
+            criteria.put(nodeName, new ArrayList<SearchCriteria>());
+        }
+        criteria.get(nodeName).add(searchCriteria);
     }
     
     public void addRangeCriteria(String nodeName, SearchCriteria searchCriteria) {
@@ -51,9 +54,13 @@ public class SearchRequest extends Request {
     public String toXML() {
         StringBuilder builder = new StringBuilder();
         builder.append("<search>");
-        
+
         for (String key : criteria.keySet()) {
-            builder.append(RequestBuilder.wrapInXMLTag(key, criteria.get(key).toXML()));
+            builder.append(String.format("<%s>", RequestBuilder.xmlEscape(key)));
+            for (SearchCriteria criterium : criteria.get(key)) {
+                builder.append(criterium.toXML());
+            }
+            builder.append(String.format("</%s>", RequestBuilder.xmlEscape(key)));
         }
         for (String key : rangeCriteria.keySet()) {
             builder.append(String.format("<%s>", RequestBuilder.xmlEscape(key)));
