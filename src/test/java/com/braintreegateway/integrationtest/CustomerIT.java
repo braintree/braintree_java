@@ -1,5 +1,7 @@
 package com.braintreegateway.integrationtest;
 
+import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
+
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.exceptions.NotFoundException;
@@ -521,7 +523,7 @@ public class CustomerIT extends IntegrationTest {
             paymentMethodNonce(nonce).
             creditCard().
                 options().
-                    verificationMerchantAccountId("us_bank_merchant_account").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.US_BANK_MERCHANT_ACCOUNT).
                     done().
                 done();
 
@@ -609,7 +611,7 @@ public class CustomerIT extends IntegrationTest {
             paymentMethodNonce(nonce).
             creditCard().
                 options().
-                    verificationMerchantAccountId("us_bank_merchant_account").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.US_BANK_MERCHANT_ACCOUNT).
                     done().
                 done();
 

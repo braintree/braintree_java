@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class Result<T> {
 
+    private UsBankAccountVerification usBankAccountVerification;
     private CreditCardVerification creditCardVerification;
     private Transaction transaction;
     private Subscription subscription;
@@ -37,6 +38,11 @@ public class Result<T> {
         } else {
             this.errors = new ValidationErrors(node);
 
+            NodeWrapper usBankAccountVerificationNode = node.findFirst("us-bank-account-verification");
+            if (usBankAccountVerificationNode != null) {
+                this.usBankAccountVerification = new UsBankAccountVerification(usBankAccountVerificationNode);
+            }
+
             NodeWrapper verificationNode = node.findFirst("verification");
             if (verificationNode != null) {
                 this.creditCardVerification = new CreditCardVerification(verificationNode);
@@ -53,6 +59,10 @@ public class Result<T> {
             this.parameters = node.findFirst("params").getFormParameters();
             this.message = node.findString("message");
         }
+    }
+
+    public UsBankAccountVerification getUsBankAccountVerification() {
+        return usBankAccountVerification;
     }
 
     public CreditCardVerification getCreditCardVerification() {
