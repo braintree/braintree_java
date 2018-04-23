@@ -5686,6 +5686,93 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void createPayPalTransactionWithPayeeId() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce).
+            paypalAccount().
+              payeeId("fake-payee-id").
+              done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getImageUrl());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
+        assertNull(saleResult.getTarget().getPayPalDetails().getToken());
+        assertEquals("fake-payee-id", saleResult.getTarget().getPayPalDetails().getPayeeId());
+        assertEquals(
+            PaymentInstrumentType.PAYPAL_ACCOUNT,
+            saleResult.getTarget().getPaymentInstrumentType()
+        );
+    }
+
+    @Test
+    public void createPayPalTransactionWithPayeeIdInOptionsParams() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce).
+            paypalAccount().
+              done().
+            options().
+              payeeId("fake-payee-id").
+              done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getImageUrl());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
+        assertNull(saleResult.getTarget().getPayPalDetails().getToken());
+        assertEquals("fake-payee-id", saleResult.getTarget().getPayPalDetails().getPayeeId());
+        assertEquals(
+            PaymentInstrumentType.PAYPAL_ACCOUNT,
+            saleResult.getTarget().getPaymentInstrumentType()
+        );
+    }
+
+    @Test
+    public void createPayPalTransactionWithPayeeIdInOptionsPayPalParams() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce).
+            paypalAccount().
+              done().
+            options().
+              paypal().
+                payeeId("fake-payee-id").
+                done().
+              done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getImageUrl());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
+        assertNull(saleResult.getTarget().getPayPalDetails().getToken());
+        assertEquals("fake-payee-id", saleResult.getTarget().getPayPalDetails().getPayeeId());
+        assertEquals(
+            PaymentInstrumentType.PAYPAL_ACCOUNT,
+            saleResult.getTarget().getPaymentInstrumentType()
+        );
+    }
+
+    @Test
     public void createPayPalTransactionWithPayeeEmail() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
         TransactionRequest request = new TransactionRequest().

@@ -9,6 +9,7 @@ public class PayPalDetails {
     private String token;
     private String imageUrl;
     private String debugId;
+    private String payeeId;
     private String payeeEmail;
     private String customField;
     private String payerId;
@@ -29,6 +30,7 @@ public class PayPalDetails {
         token = node.findString("token");
         imageUrl = node.findString("image-url");
         debugId = node.findString("debug-id");
+        payeeId = node.findString("payee-id");
         payeeEmail = node.findString("payee-email");
         customField = node.findString("custom-field");
         payerId = node.findString("payer-id");
@@ -65,6 +67,10 @@ public class PayPalDetails {
 
     public String getDebugId() {
         return debugId;
+    }
+
+    public String getPayeeId() {
+      return payeeId;
     }
 
     public String getPayeeEmail() {

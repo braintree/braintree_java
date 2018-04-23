@@ -1,3 +1,6 @@
+## Unreleased
+* Allow payee ID to be passed in options params for transaction create
+
 ## 2.80.0
 * Add support for US Bank Account verifications API
 

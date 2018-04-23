@@ -9,6 +9,7 @@ public class TransactionOptionsRequest extends Request {
     private Boolean storeShippingAddressInVault;
     private Boolean submitForSettlement;
     private String venmoSdkSession;
+    private String payeeId;
     private String payeeEmail;
     private Boolean skipAdvancedFraudChecking;
     private Boolean skipAvs;
@@ -58,6 +59,11 @@ public class TransactionOptionsRequest extends Request {
 
     public TransactionOptionsRequest venmoSdkSession(String venmoSdkSession) {
         this.venmoSdkSession = venmoSdkSession;
+        return this;
+    }
+
+    public TransactionOptionsRequest payeeId(String payeeId) {
+        this.payeeId = payeeId;
         return this;
     }
 
@@ -125,6 +131,7 @@ public class TransactionOptionsRequest extends Request {
             addElement("storeShippingAddressInVault", storeShippingAddressInVault).
             addElement("submitForSettlement", submitForSettlement).
             addElement("venmoSdkSession", venmoSdkSession).
+            addElement("payeeId", payeeId).
             addElement("payeeEmail", payeeEmail).
             addElement("skipAdvancedFraudChecking", skipAdvancedFraudChecking).
             addElement("skipAvs", skipAvs).
