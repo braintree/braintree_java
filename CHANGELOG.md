@@ -1,3 +1,6 @@
+## 2.80.0
+* Add support for US Bank Account verifications API
+
 ## 2.79.0
 * Update `jackson-jr` to v2.9.5 to fix an incompatibility with Java 9
 * Fix issue where multiple search criteria was not allowed. [#62](https://github.com/braintree/braintree_java/issues/62).
