@@ -358,58 +358,6 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
-    public void createUsBankAccountFromNonce() {
-        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
-        assertTrue(customerResult.isSuccess());
-        Customer customer = customerResult.getTarget();
-
-        String nonce = TestHelper.generateValidUsBankAccountNonce(gateway);
-        PaymentMethodRequest request = new PaymentMethodRequest()
-            .customerId(customer.getId())
-            .paymentMethodNonce(nonce)
-            .options()
-                .verificationMerchantAccountId("us_bank_merchant_account")
-            .done();
-
-        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
-
-        assertTrue(result.isSuccess());
-
-        PaymentMethod paymentMethod = result.getTarget();
-        assertNotNull(paymentMethod.getToken());
-
-        UsBankAccount usBankAccount = (UsBankAccount) paymentMethod;
-        assertEquals("021000021", usBankAccount.getRoutingNumber());
-        assertEquals("1234", usBankAccount.getLast4());
-        assertEquals("checking", usBankAccount.getAccountType());
-        assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
-        assertTrue(Pattern.compile(".*CHASE.*").matcher(usBankAccount.getBankName()).matches());
-    }
-
-    @Test
-    public void doesNotCreateUsBankAccountFromInvalidNonce() {
-        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
-        assertTrue(customerResult.isSuccess());
-        Customer customer = customerResult.getTarget();
-
-        String nonce = TestHelper.generateInvalidUsBankAccountNonce();
-        PaymentMethodRequest request = new PaymentMethodRequest()
-            .customerId(customer.getId())
-            .paymentMethodNonce(nonce)
-            .options()
-                .verificationMerchantAccountId("us_bank_merchant_account")
-            .done();
-
-        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
-
-        assertFalse(result.isSuccess());
-        assertEquals(
-                ValidationErrorCode.PAYMENT_METHOD_PAYMENT_METHOD_NONCE_UNKNOWN,
-                result.getErrors().forObject("payment_method").onField("payment_method_nonce").get(0).getCode()
-        );
-    }
-
-    @Test
     public void createAbstractPaymentMethod() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());

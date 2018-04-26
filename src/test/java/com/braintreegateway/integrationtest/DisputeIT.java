@@ -228,14 +228,8 @@ public class DisputeIT extends IntegrationTest {
         Result<DisputeEvidence> trackingEvidenceZeroResult = gateway.dispute().addTextEvidence(dispute.getId(), textEvidenceRequest);
 
         textEvidenceRequest = new TextEvidenceRequest().
-            content("FEDEX").
-            tag("CARRIER_NAME").
-            sequenceNumber("1");
-        Result<DisputeEvidence> carrierEvidenceOneResult = gateway.dispute().addTextEvidence(dispute.getId(), textEvidenceRequest);
-
-        textEvidenceRequest = new TextEvidenceRequest().
             content("94").
-            tag("TRACKING_NUMBER").
+            tag("TRACKING_URL").
             sequenceNumber("1");
         Result<DisputeEvidence> trackingEvidenceOneResult = gateway.dispute().addTextEvidence(dispute.getId(), textEvidenceRequest);
 
@@ -256,16 +250,10 @@ public class DisputeIT extends IntegrationTest {
         assertEquals("TRACKING_NUMBER", trackingEvidenceZero.getTag());
         assertEquals("0", trackingEvidenceZero.getSequenceNumber());
 
-        assertTrue(carrierEvidenceOneResult.isSuccess());
-        DisputeEvidence carrierEvidenceOne = carrierEvidenceOneResult.getTarget();
-        assertEquals("FEDEX", carrierEvidenceOne.getComment());
-        assertEquals("CARRIER_NAME", carrierEvidenceOne.getTag());
-        assertEquals("1", carrierEvidenceOne.getSequenceNumber());
-
         assertTrue(trackingEvidenceOneResult.isSuccess());
         DisputeEvidence trackingEvidenceOne = trackingEvidenceOneResult.getTarget();
         assertEquals("94", trackingEvidenceOne.getComment());
-        assertEquals("TRACKING_NUMBER", trackingEvidenceOne.getTag());
+        assertEquals("TRACKING_URL", trackingEvidenceOne.getTag());
         assertEquals("1", trackingEvidenceOne.getSequenceNumber());
     }
 

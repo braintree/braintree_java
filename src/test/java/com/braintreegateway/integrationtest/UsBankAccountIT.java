@@ -1,5 +1,7 @@
 package com.braintreegateway.integrationtest;
 
+import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
+
 import com.braintreegateway.test.Nonce;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
@@ -26,7 +28,7 @@ public class UsBankAccountIT extends IntegrationTest {
             customerId(customer.getId()).
             paymentMethodNonce(nonce).
             options().
-                verificationMerchantAccountId("us_bank_merchant_account").
+                verificationMerchantAccountId(MerchantAccountTestConstants.US_BANK_MERCHANT_ACCOUNT).
             done();
 
         Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
@@ -65,14 +67,14 @@ public class UsBankAccountIT extends IntegrationTest {
             customerId(customer.getId()).
             paymentMethodNonce(nonce).
             options().
-                verificationMerchantAccountId("us_bank_merchant_account").
+                verificationMerchantAccountId(MerchantAccountTestConstants.US_BANK_MERCHANT_ACCOUNT).
             done();
 
         Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
         assertTrue(result.isSuccess());
 
         TransactionRequest transactionRequest = new TransactionRequest()
-            .merchantAccountId("us_bank_merchant_account")
+            .merchantAccountId(MerchantAccountTestConstants.US_BANK_MERCHANT_ACCOUNT)
             .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount);
 
         Result<Transaction> transactionResult = gateway.usBankAccount().sale(result.getTarget().getToken(), transactionRequest);

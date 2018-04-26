@@ -9,6 +9,7 @@ public class PaymentMethodOptionsRequest extends Request {
     private String verificationAmount;
     private String venmoSdkSession;
     private PaymentMethodOptionsPayPalRequest paymentMethodOptionsPayPalRequest;
+    private UsBankAccountVerification.VerificationMethod usBankAccountVerificationMethod;
 
     public PaymentMethodOptionsRequest() {}
 
@@ -59,6 +60,12 @@ public class PaymentMethodOptionsRequest extends Request {
         return paymentMethodOptionsPayPalRequest;
     }
 
+    public PaymentMethodOptionsRequest usBankAccountVerificationMethod(UsBankAccountVerification.VerificationMethod verificationMethod) {
+        this.usBankAccountVerificationMethod = verificationMethod;
+        return this;
+    }
+
+
     @Override
     public String toXML() {
         return buildRequest("options").toXML();
@@ -77,6 +84,7 @@ public class PaymentMethodOptionsRequest extends Request {
 
         builder.addElement("venmoSdkSession", venmoSdkSession);
         builder.addElement("paypal", paymentMethodOptionsPayPalRequest);
+        builder.addElement("usBankAccountVerificationMethod", usBankAccountVerificationMethod);
         return builder;
     }
 }

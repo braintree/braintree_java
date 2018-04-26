@@ -16,6 +16,8 @@ public class UsBankAccount implements PaymentMethod {
     private String customerId;
     private Boolean isDefault;
     private AchMandate achMandate;
+    private List<UsBankAccountVerification> verifications;
+    private Boolean isVerified;
 
     public UsBankAccount(NodeWrapper node) {
         this.routingNumber= node.findString("routing-number");
@@ -31,7 +33,17 @@ public class UsBankAccount implements PaymentMethod {
         }
         this.customerId = node.findString("customer-id");
         this.isDefault = node.findBoolean("default");
-        this.achMandate = new AchMandate(node.findFirst("ach-mandate"));
+        NodeWrapper achMandateNode = node.findFirst("ach-mandate");
+        if (achMandateNode != null) {
+            this.achMandate = new AchMandate(achMandateNode);
+        }
+
+        this.verifications = new ArrayList<UsBankAccountVerification>();
+        for (NodeWrapper verification : node.findAll("verifications/us-bank-account-verification")) {
+            this.verifications.add(new UsBankAccountVerification(verification));
+        }
+
+        this.isVerified = node.findBoolean("verified");
     }
 
     public String getRoutingNumber() {
@@ -78,4 +90,11 @@ public class UsBankAccount implements PaymentMethod {
         return subscriptions;
     }
 
+    public List<UsBankAccountVerification> getVerifications() {
+        return verifications;
+    }
+
+    public Boolean isVerified() {
+        return isVerified;
+    }
 }

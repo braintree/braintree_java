@@ -191,7 +191,6 @@ public abstract class TestHelper {
         append("share", "true").
         append("credit_card[expiration_year]", "2099");
 
-
       String responseBody;
       String nonce = "";
       try {
@@ -433,6 +432,10 @@ public abstract class TestHelper {
     }
 
     public static String generateValidUsBankAccountNonce(BraintreeGateway gateway) {
+        return generateValidUsBankAccountNonce(gateway,"567891234");
+    }
+
+    public static String generateValidUsBankAccountNonce(BraintreeGateway gateway, String accountNumber) {
       String encodedClientToken = gateway.clientToken().generate();
       String clientToken = TestHelper.decodeClientToken(encodedClientToken);
       String payload = new StringBuilder()
@@ -445,9 +448,11 @@ public abstract class TestHelper {
                 .append("\"postal_code\": \"94112\"\n")
             .append("},\n")
             .append("\"account_type\": \"checking\",\n")
+            .append("\"ownership_type\": \"personal\",\n")
             .append("\"routing_number\": \"021000021\",\n")
-            .append("\"account_number\": \"567891234\",\n")
-            .append("\"account_holder_name\": \"Dan Schulman\",\n")
+            .append("\"account_number\": \"" + accountNumber + "\",\n")
+            .append("\"first_name\": \"Dan\",\n")
+            .append("\"last_name\": \"Schulman\",\n")
             .append("\"ach_mandate\": {\n")
                 .append("\"text\": \"cl mandate text\"\n")
             .append("}\n")
@@ -465,7 +470,58 @@ public abstract class TestHelper {
             connection.setSSLSocketFactory(sc.getSocketFactory());
             connection.setRequestMethod("POST");
             connection.addRequestProperty("Content-Type", "application/json");
-            connection.addRequestProperty("Braintree-Version", "2015-11-01");
+            connection.addRequestProperty("Braintree-Version", "2016-10-07");
+            connection.addRequestProperty("Authorization", "Bearer " + token);
+            connection.setDoOutput(true);
+            connection.getOutputStream().write(payload.getBytes("UTF-8"));
+            connection.getOutputStream().close();
+
+            InputStream responseStream = connection.getInputStream();
+            String body = StringUtils.inputStreamToString(responseStream);
+            responseStream.close();
+            Map<String, Object> responseJson  = JSON.std.mapFrom(body);
+            nonce = (String) ((Map) responseJson.get("data")).get("id");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return nonce;
+    }
+
+    public static String generatePlaidUsBankAccountNonce(BraintreeGateway gateway) {
+      String encodedClientToken = gateway.clientToken().generate();
+      String clientToken = TestHelper.decodeClientToken(encodedClientToken);
+      String payload = new StringBuilder()
+          .append("{\n")
+            .append("\"type\": \"plaid_public_token\",\n")
+            .append("\"public_token\": \"good\",\n")
+            .append("\"account_id\": \"plaid_account_id\",\n")
+            .append("\"billing_address\": {\n")
+                .append("\"street_address\": \"123 Ave\",\n")
+                .append("\"region\": \"CA\",\n")
+                .append("\"locality\": \"San Francisco\",\n")
+                .append("\"postal_code\": \"94112\"\n")
+            .append("},\n")
+            .append("\"ownership_type\": \"personal\",\n")
+            .append("\"first_name\": \"Dan\",\n")
+            .append("\"last_name\": \"Schulman\",\n")
+            .append("\"ach_mandate\": {\n")
+                .append("\"text\": \"cl mandate text\"\n")
+            .append("}\n")
+          .append("}")
+        .toString();
+
+        String nonce = "";
+        try {
+            Map<String, Object> json = JSON.std.mapFrom(clientToken);
+            URL url = new URL(((Map) json.get("braintree_api")).get("url") + "/tokens");
+            String token = (String) ((Map) json.get("braintree_api")).get("access_token");
+            SSLContext sc = SSLContext.getInstance("TLSv1.1");
+            sc.init(null, null, null);
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(sc.getSocketFactory());
+            connection.setRequestMethod("POST");
+            connection.addRequestProperty("Content-Type", "application/json");
+            connection.addRequestProperty("Braintree-Version", "2016-10-07");
             connection.addRequestProperty("Authorization", "Bearer " + token);
             connection.setDoOutput(true);
             connection.getOutputStream().write(payload.getBytes("UTF-8"));

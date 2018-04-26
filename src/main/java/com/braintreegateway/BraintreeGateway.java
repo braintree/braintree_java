@@ -129,6 +129,10 @@ public class BraintreeGateway {
         return new CreditCardVerificationGateway(http, configuration);
     }
 
+    public UsBankAccountVerificationGateway usBankAccountVerification() {
+        return new UsBankAccountVerificationGateway(http, configuration);
+    }
+
     /**
      * Returns an {@link CustomerGateway} for interacting with {@link Customer}
      * objects.
