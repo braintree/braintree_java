@@ -47,6 +47,8 @@ public final class DisputeEvidence {
 
     /**
      * Please use getCategory instead
+     * @deprecated see #getCategory()
+     * @return the category
      */
     @Deprecated
     public String getTag() {

@@ -30,7 +30,7 @@ public class TransactionLineItemGateway {
     /**
      * Finds all {@link TransactionLineItem} for a {@link Transaction} by id.
      * @param transactionId the id of the {@link Transaction}.
-     * @return the {@link List<TransactionLineItem>} or raises a {@link com.braintreegateway.exceptions.NotFoundException}.
+     * @return the List&lt;TransactionLineItem&gt; or raises a com.braintreegateway.exceptions.NotFoundException.
      */
     public List<TransactionLineItem> findAll(String transactionId) {
         if(transactionId == null || transactionId.trim().equals(""))

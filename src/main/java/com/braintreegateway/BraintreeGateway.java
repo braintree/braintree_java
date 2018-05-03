@@ -86,6 +86,7 @@ public class BraintreeGateway {
      *            the public key provided by Braintree.
      * @param privateKey
      *            the private key provided by Braintree.
+     * @return a BraintreeGateway specifically for Partner usage
      */
     public static BraintreeGateway forPartner(Environment environment, String partnerId, String publicKey, String privateKey) {
         return new BraintreeGateway(environment, partnerId, publicKey, privateKey);

@@ -24,6 +24,9 @@ public class RangeNode<T extends SearchRequest> extends SearchNode<T> {
 
     /**
      * Use greaterThanOrEqualTo instead.
+     * @deprecated see #greaterThanOrEqualTo(BigDecimal)
+     * @param min the min value
+     * @return the parent object
      */
     @Deprecated
     public T greaterThanOrEqual(BigDecimal min) {
@@ -32,6 +35,9 @@ public class RangeNode<T extends SearchRequest> extends SearchNode<T> {
 
     /**
      * Use greaterThanOrEqualTo instead.
+     * @deprecated see #greaterThanOrEqualTo(int)
+     * @param min the min value
+     * @return the parent object
      */
     @Deprecated
     public T greaterThanOrEqual(int min) {
@@ -40,6 +46,9 @@ public class RangeNode<T extends SearchRequest> extends SearchNode<T> {
 
     /**
      * Use greaterThanOrEqualTo instead.
+     * @deprecated see #greaterThanOrEqualTo(String)
+     * @param min the min value
+     * @return the parent object
      */
     @Deprecated
     public T greaterThanOrEqual(String min) {
@@ -61,6 +70,9 @@ public class RangeNode<T extends SearchRequest> extends SearchNode<T> {
 
     /**
      * Use lessThanOrEqualTo instead.
+     * @deprecated see #lessThanOrEqualTo(BigDecimal)
+     * @param max the max value
+     * @return the parent object
      */
     @Deprecated
     public T lessThanOrEqual(BigDecimal max) {
@@ -69,6 +81,9 @@ public class RangeNode<T extends SearchRequest> extends SearchNode<T> {
 
     /**
      * Use lessThanOrEqualTo instead.
+     * @deprecated see #lessThanOrEqualTo(int)
+     * @param max the max value
+     * @return the parent object
      */
     @Deprecated
     public T lessThanOrEqual(int max) {
@@ -77,6 +92,9 @@ public class RangeNode<T extends SearchRequest> extends SearchNode<T> {
 
     /**
      * Use lessThanOrEqualTo instead.
+     * @deprecated see #lessThanOrEqualTo(String)
+     * @param max the max value
+     * @return the parent object
      */
     @Deprecated
     public T lessThanOrEqual(String max) {

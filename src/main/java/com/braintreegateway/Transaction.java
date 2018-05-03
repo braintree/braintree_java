@@ -504,7 +504,8 @@ public class Transaction {
     }
 
     /**
-     * Please use Transaction.getRefundIds() instead
+     * @deprecated see #getRefundIds()
+     * @return the refund id
      */
     @Deprecated
     public String getRefundId() {
@@ -553,6 +554,7 @@ public class Transaction {
 
     /**
      * @deprecated see #getSubscriptionDetails()
+     * @return the subscription
      */
     @Deprecated
     public Subscription getSubscription() {

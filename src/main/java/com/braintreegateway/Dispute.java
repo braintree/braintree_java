@@ -195,7 +195,9 @@ public class Dispute {
     }
 
     /**
-     * Please use {@link Transaction#getTransaction} instead
+     * Please use {@link #getTransaction} instead
+     * @deprecated see #getTransaction()
+     * @return the transaction details
      */
     @Deprecated
     public TransactionDetails getTransactionDetails() {
