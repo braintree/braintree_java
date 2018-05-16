@@ -150,7 +150,7 @@ public class PaymentMethodNonceIT extends IntegrationTest {
     }
 
     @Test
-    public void findReturnsPaymentMethodNonce() {
+    public void findReturnsPaymentMethodNonceWith3DSDetails() {
         CreditCardRequest creditCardRequest = new CreditCardRequest().
             number(SandboxValues.CreditCardNumber.VISA.number).
             expirationMonth("12").
@@ -162,6 +162,11 @@ public class PaymentMethodNonceIT extends IntegrationTest {
 
         assertEquals(nonce, foundNonce.getNonce());
         assertTrue(foundNonce.getThreeDSecureInfo().isLiabilityShifted());
+        assertTrue(foundNonce.getThreeDSecureInfo().isLiabilityShiftPossible());
+        assertNotNull(foundNonce.getThreeDSecureInfo().getStatus());
+        assertNotNull(foundNonce.getThreeDSecureInfo().getCAVV());
+        assertNotNull(foundNonce.getThreeDSecureInfo().getXID());
+        assertNotNull(foundNonce.getThreeDSecureInfo().getECIFlag());
     }
 
     @Test
