@@ -17,6 +17,10 @@ public final class ConnectedMerchantStatusTransitioned {
         return merchantPublicId;
     }
 
+    public String getMerchantId() {
+        return merchantPublicId;
+    }
+
     public String getStatus() {
         return status;
     }

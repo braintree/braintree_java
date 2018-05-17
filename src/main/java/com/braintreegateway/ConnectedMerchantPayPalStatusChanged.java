@@ -17,6 +17,10 @@ public final class ConnectedMerchantPayPalStatusChanged {
         return merchantPublicId;
     }
 
+    public String getMerchantId() {
+        return merchantPublicId;
+    }
+
     public String getAction() {
         return action;
     }
