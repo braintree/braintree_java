@@ -6,6 +6,7 @@ import java.util.Map;
 public class TransactionOptionsPayPalRequest extends Request {
     private TransactionOptionsRequest parent;
     private String customField;
+    private String payeeId;
     private String payeeEmail;
     private String description;
     private Map<String, String> supplementaryData;
@@ -21,6 +22,11 @@ public class TransactionOptionsPayPalRequest extends Request {
 
     public TransactionOptionsPayPalRequest customField(String customField) {
         this.customField = customField;
+        return this;
+    }
+
+    public TransactionOptionsPayPalRequest payeeId(String payeeId) {
+        this.payeeId = payeeId;
         return this;
     }
 
@@ -58,6 +64,7 @@ public class TransactionOptionsPayPalRequest extends Request {
         RequestBuilder builder = new RequestBuilder(root).
             addElement("description", description).
             addElement("customField", customField).
+            addElement("payeeId", payeeId).
             addElement("payeeEmail", payeeEmail);
 
         if(!supplementaryData.isEmpty()) {

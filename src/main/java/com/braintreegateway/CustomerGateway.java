@@ -52,6 +52,9 @@ public class CustomerGateway {
 
     /**
      * Please use gateway.transparentRedirect().confirmCustomer() instead
+     * @deprecated see TransparentRedirectGateway#confirmCustomer(String)
+     * @param queryString the query string
+     * @return a customer
      */
     @Deprecated
     public Result<Customer> confirmTransparentRedirect(String queryString) {
@@ -123,6 +126,7 @@ public class CustomerGateway {
     /**
      * Finds all Transactions that match the query and returns a {@link ResourceCollection}.
      * See: <a href="https://developers.braintreepayments.com/reference/request/transaction/search/java" target="_blank">https://developers.braintreepayments.com/reference/request/transaction/search/java</a>
+     * @param query the request query to use for search
      * @return a {@link ResourceCollection}.
      */
     public ResourceCollection<Customer> search(CustomerSearchRequest query) {
@@ -132,6 +136,8 @@ public class CustomerGateway {
 
     /**
      * Please use gateway.transparentRedirect().url() instead
+     * @deprecated see TransparentRedirectGateway#url()
+     * @return the redirect URL for create
      */
     @Deprecated
     public String transparentRedirectURLForCreate() {
@@ -140,6 +146,8 @@ public class CustomerGateway {
 
     /**
      * Please use gateway.transparentRedirect().url() instead
+     * @deprecated see TransparentRedirectGateway#url()
+     * @return the redirect URL for update
      */
     @Deprecated
     public String transparentRedirectURLForUpdate() {

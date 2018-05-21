@@ -19,7 +19,10 @@ public class TextEvidenceRequest extends Request {
     }
 
     /**
-     * Please use category instead
+     * Please use category instead.
+     * @deprecated see #category(String)
+     * @param tag the tag to use
+     * @return this request
      */
     @Deprecated
     public TextEvidenceRequest tag(String tag) {

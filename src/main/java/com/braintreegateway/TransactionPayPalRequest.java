@@ -2,10 +2,16 @@ package com.braintreegateway;
 
 public class TransactionPayPalRequest extends Request {
     private TransactionRequest parent;
+    private String payeeId;
     private String payeeEmail;
 
     public TransactionPayPalRequest(TransactionRequest parent) {
         this.parent = parent;
+    }
+
+    public TransactionPayPalRequest payeeId(String payeeId) {
+        this.payeeId = payeeId;
+        return this;
     }
 
     public TransactionPayPalRequest payeeEmail(String payeeEmail) {
@@ -15,6 +21,10 @@ public class TransactionPayPalRequest extends Request {
 
     public TransactionRequest done() {
         return parent;
+    }
+
+    public String getPayeeId() {
+        return payeeId;
     }
 
     public String getPayeeEmail() {
@@ -37,6 +47,8 @@ public class TransactionPayPalRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).addElement("payeeEmail", payeeEmail);
+        return new RequestBuilder(root).
+            addElement("payeeId", payeeId).
+            addElement("payeeEmail", payeeEmail);
     }
 }

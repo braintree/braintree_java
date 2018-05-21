@@ -388,7 +388,8 @@ public class WebhookNotificationIT extends IntegrationTest {
             .parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
 
         assertEquals(WebhookNotification.Kind.OAUTH_ACCESS_REVOKED, notification.getKind());
-        assertEquals("abc123", notification.getOAuthAccessRevocation().getMerchantId());
+        assertEquals("my_id", notification.getOAuthAccessRevocation().getMerchantId());
+        assertEquals("oauth_application_client_id", notification.getOAuthAccessRevocation().getOauthApplicationClientId());
         long now = new Date().getTime();
         long age = now - notification.getTimestamp().getTime().getTime();
         assertTrue(age < 5000);
@@ -424,6 +425,7 @@ public class WebhookNotificationIT extends IntegrationTest {
 
         assertEquals(WebhookNotification.Kind.CONNECTED_MERCHANT_STATUS_TRANSITIONED, notification.getKind());
         assertEquals("my_id", notification.getConnectedMerchantStatusTransitioned().getMerchantPublicId());
+        assertEquals("my_id", notification.getConnectedMerchantStatusTransitioned().getMerchantId());
         assertEquals("new_status", notification.getConnectedMerchantStatusTransitioned().getStatus());
         assertEquals("oauth_application_client_id", notification.getConnectedMerchantStatusTransitioned().getOAuthApplicationClientId());
     }
@@ -439,6 +441,7 @@ public class WebhookNotificationIT extends IntegrationTest {
 
         assertEquals(WebhookNotification.Kind.CONNECTED_MERCHANT_PAYPAL_STATUS_CHANGED, notification.getKind());
         assertEquals("my_id", notification.getConnectedMerchantPayPalStatusChanged().getMerchantPublicId());
+        assertEquals("my_id", notification.getConnectedMerchantPayPalStatusChanged().getMerchantId());
         assertEquals("link", notification.getConnectedMerchantPayPalStatusChanged().getAction());
         assertEquals("oauth_application_client_id", notification.getConnectedMerchantPayPalStatusChanged().getOAuthApplicationClientId());
     }

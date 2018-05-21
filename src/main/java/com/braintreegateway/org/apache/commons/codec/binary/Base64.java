@@ -33,13 +33,13 @@ import com.braintreegateway.org.apache.commons.codec.EncoderException;
  * </p>
  * <p>
  * The class can be parameterized in the following manner with various constructors:
+ * </p>
  * <ul>
  * <li>URL-safe mode: Default off.</li>
  * <li>Line length: Default 76. Line length that aren't multiples of 4 will still essentially end up being multiples of
- * 4 in the encoded data.
+ * 4 in the encoded data.</li>
  * <li>Line separator: Default is CRLF ("\r\n")</li>
  * </ul>
- * </p>
  * <p>
  * Since this class operates directly on byte streams, and not character streams, it is hard-coded to only encode/decode
  * character encodings which are compatible with the lower 127 ASCII chart (ISO-8859-1, Windows-1252, UTF-8, etc).
@@ -259,7 +259,7 @@ public class Base64 implements BinaryEncoder, BinaryDecoder {
      * 
      * @param lineLength
      *            Each line of encoded data will be at most of the given length (rounded down to nearest multiple of 4).
-     *            If lineLength <= 0, then the output will not be divided into lines (chunks). Ignored when decoding.
+     *            If lineLength &lt;= 0, then the output will not be divided into lines (chunks). Ignored when decoding.
      * @since 1.4
      */
     public Base64(int lineLength) {
@@ -281,7 +281,7 @@ public class Base64 implements BinaryEncoder, BinaryDecoder {
      * 
      * @param lineLength
      *            Each line of encoded data will be at most of the given length (rounded down to nearest multiple of 4).
-     *            If lineLength <= 0, then the output will not be divided into lines (chunks). Ignored when decoding.
+     *            If lineLength &lt;= 0, then the output will not be divided into lines (chunks). Ignored when decoding.
      * @param lineSeparator
      *            Each line of encoded data will end with this sequence of bytes.
      * @throws IllegalArgumentException
@@ -307,7 +307,7 @@ public class Base64 implements BinaryEncoder, BinaryDecoder {
      * 
      * @param lineLength
      *            Each line of encoded data will be at most of the given length (rounded down to nearest multiple of 4).
-     *            If lineLength <= 0, then the output will not be divided into lines (chunks). Ignored when decoding.
+     *            If lineLength &lt;= 0, then the output will not be divided into lines (chunks). Ignored when decoding.
      * @param lineSeparator
      *            Each line of encoded data will end with this sequence of bytes.
      * @param urlSafe

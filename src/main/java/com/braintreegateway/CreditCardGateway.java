@@ -24,7 +24,7 @@ import java.util.TimeZone;
  * href="https://developers.braintreepayments.com/reference/response/credit-card/java"
  * target
  * ="_blank">https://developers.braintreepayments.com/reference/response/credit-card/java
- * </a><br />
+ * </a><br>
  * For more detailed information on credit card verifications, see <a href=
  * "https://developers.braintreepayments.com/reference/response/credit-card-verification/java"
  * target="_blank">https://developers.braintreepayments.com/reference/response/credit-card-verification/java</a>
@@ -40,6 +40,11 @@ public class CreditCardGateway {
 
     /**
      * Please use gateway.transparentRedirect().confirmCreditCard() instead
+     *
+     * @deprecated see TransparentRedirectGateway#confirmCreditCard(String)
+     * @param queryString
+     *            the query string
+     * @return the credit card
      */
     @Deprecated
     public Result<CreditCard> confirmTransparentRedirect(String queryString) {
@@ -108,6 +113,9 @@ public class CreditCardGateway {
 
     /**
      * Please use the Grant API instead.
+     * @deprecated use the Grant API instead
+     * @param forwardRequest the request
+     * @return the payment method nonce
      */
     @Deprecated
     public Result<PaymentMethodNonce> forward(PaymentMethodForwardRequest forwardRequest) throws NotFoundException {
@@ -116,6 +124,8 @@ public class CreditCardGateway {
 
     /**
      * Please use gateway.transparentRedirect().url() instead
+     * @deprecated see TransparentRedirectGateway#url()
+     * @return the redirect URL for create
      */
     @Deprecated
     public String transparentRedirectURLForCreate() {
@@ -124,6 +134,8 @@ public class CreditCardGateway {
 
     /**
      * Please use gateway.transparentRedirect().url() instead
+     * @deprecated see TransparentRedirectGateway#url()
+     * @return the redirect URL for update
      */
     @Deprecated
     public String transparentRedirectURLForUpdate() {
@@ -171,6 +183,8 @@ public class CreditCardGateway {
      * Returns a {@link ResourceCollection} of all credit cards expiring between
      * the given calendars.
      *
+     * @param start the start date
+     * @param end the end date
      * @return a {@link ResourceCollection}.
      */
     public ResourceCollection<CreditCard> expiringBetween(Calendar start, Calendar end) {

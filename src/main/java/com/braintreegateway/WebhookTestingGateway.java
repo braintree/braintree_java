@@ -340,7 +340,8 @@ public class WebhookTestingGateway {
 
     private String oauthAccessRevokedXml(String id) {
         return node("oauth-application-revocation",
-                node("merchant-id", "abc123")
+                node("merchant-id", id),
+                node("oauth-application-client-id", "oauth_application_client_id")
         );
     }
 
