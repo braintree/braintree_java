@@ -1,6 +1,7 @@
 ## 2.81.0
 * Allow payee ID to be passed in options params for transaction create
 * Add `getMerchantId` to `ConnectedMerchantStatusTransitioned` and `ConnectedMerchantPayPalStatusChanged`, and `getOauthApplicationClientId` to OAuthAccessRevocation webhooks
+* Fix webhook testing sample xml for dispute webhooks to include `amount-won` and `amount-disputed`
 
 ## 2.80.0
 * Add support for US Bank Account verifications API
