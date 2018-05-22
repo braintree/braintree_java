@@ -70,6 +70,7 @@ public class WebhookTestingGateway {
             case CONNECTED_MERCHANT_STATUS_TRANSITIONED: return connectedMerchantStatusTransitionedXml(id);
             case CONNECTED_MERCHANT_PAYPAL_STATUS_CHANGED: return connectedMerchantPayPalStatusChangedXml(id);
             case SUBSCRIPTION_CHARGED_SUCCESSFULLY: return subscriptionChargedSuccessfullyXml(id);
+            case SUBSCRIPTION_CHARGED_UNSUCCESSFULLY: return subscriptionChargedUnsuccessfullyXml(id);
             case ACCOUNT_UPDATER_DAILY_REPORT: return accountUpdaterDailyReportXml(id);
             case IDEAL_PAYMENT_COMPLETE: return idealPaymentCompleteXml(id);
             case IDEAL_PAYMENT_FAILED: return idealPaymentFailedXml(id);
@@ -137,6 +138,28 @@ public class WebhookTestingGateway {
                     node("transaction",
                         node("id", "1"),
                         node("status", "submitted_for_settlement"),
+                        node("amount", "49.99"),
+                        node("billing"),
+                        node("credit-card"),
+                        node("customer"),
+                        node("descriptor"),
+                        node("shipping"),
+                        node("disbursement-details", TYPE_ARRAY),
+                        node("subscription")
+                    )
+                ),
+                node("discounts", TYPE_ARRAY)
+        );
+    }
+
+    private String subscriptionChargedUnsuccessfullyXml(String id) {
+        return node("subscription",
+                node("id", id),
+                node("add_ons", TYPE_ARRAY),
+                node("transactions",
+                    node("transaction",
+                        node("id", "1"),
+                        node("status", "failed"),
                         node("amount", "49.99"),
                         node("billing"),
                         node("credit-card"),
