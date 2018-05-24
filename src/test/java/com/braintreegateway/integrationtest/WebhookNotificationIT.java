@@ -76,6 +76,21 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test
+    public void createsSampleSubscriptionChargedUnsuccessfullyNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_CHARGED_UNSUCCESSFULLY, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.SUBSCRIPTION_CHARGED_UNSUCCESSFULLY, notification.getKind());
+        assertEquals("my_id", notification.getSubscription().getId());
+        assertEquals(1, notification.getSubscription().getTransactions().size());
+
+        Transaction transaction = notification.getSubscription().getTransactions().get(0);
+        assertEquals(Transaction.Status.FAILED, transaction.getStatus());
+        assertEquals("49.99", transaction.getAmount().toString());
+    }
+
+    @Test
     public void createsSampleMerchantAccountApprovedNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_APPROVED, "my_id");
 
