@@ -3,6 +3,7 @@
 
 ## 2.81.0
 * Allow payee ID to be passed in options params for transaction create
+* Add `processor_response_code` and `processor_response_text` to authorization adjustments subfield in transaction response.
 * Add `getMerchantId` to `ConnectedMerchantStatusTransitioned` and `ConnectedMerchantPayPalStatusChanged`, and `getOauthApplicationClientId` to OAuthAccessRevocation webhooks
 * Fix webhook testing sample xml for dispute webhooks to include `amount-won` and `amount-disputed`
 

@@ -9,11 +9,15 @@ public class AuthorizationAdjustment {
     private BigDecimal amount;
     private Boolean success;
     private Calendar timestamp;
+    private String processorResponseCode;
+    private String processorResponseText;
 
     public AuthorizationAdjustment(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
         success = node.findBoolean("success");
         timestamp = node.findDateTime("timestamp");
+        processorResponseCode = node.findString("processor-response-code");
+        processorResponseText = node.findString("processor-response-text");
     }
 
     public BigDecimal getAmount() {
@@ -26,5 +30,13 @@ public class AuthorizationAdjustment {
 
     public Calendar getTimestamp() {
         return timestamp;
+    }
+
+    public String getProcessorResponseCode() {
+        return processorResponseCode;
+    }
+
+    public String getProcessorResponseText() {
+        return processorResponseText;
     }
 }

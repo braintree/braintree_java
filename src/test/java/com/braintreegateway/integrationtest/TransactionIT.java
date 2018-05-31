@@ -3480,6 +3480,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(new BigDecimal("-20.00"), authorizationAdjustment.getAmount());
         assertEquals(true, authorizationAdjustment.isSuccess());
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), authorizationAdjustment.getTimestamp().get(Calendar.YEAR));
+        assertEquals("1000", authorizationAdjustment.getProcessorResponseCode());
+        assertEquals("Approved", authorizationAdjustment.getProcessorResponseText());
     }
 
     @Test
