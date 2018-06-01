@@ -1,5 +1,6 @@
 ## unreleased
 * Add subscription charged unsuccessfully sample webhook to webhook testing gateway
+* Add `lastFour` to `PaymentMethodNonceDetails`
 
 ## 2.81.0
 * Allow payee ID to be passed in options params for transaction create
