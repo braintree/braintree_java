@@ -22,6 +22,11 @@ public class PaymentMethodNonceTest {
                 "  <description>ending in 22</description>" +
                 "  <consumed type=\"boolean\">false</consumed>" +
                 "  <three-d-secure-info nil=\"true\"/>" +
+                "  <details>" +
+                "    <last-two>22</last-two>" +
+                "    <last-four>2222</last-four>" +
+                "    <card-type>Visa</card-type>" +
+                "  </details>" +
                 "  <bin-data>" +
                 "    <healthcare>Yes</healthcare>" +
                 "    <debit>No</debit>" +
@@ -53,6 +58,10 @@ public class PaymentMethodNonceTest {
         assertEquals("Something", binData.getCountryOfIssuance());
         assertEquals("123", binData.getProductId());
         assertEquals(CreditCard.Prepaid.YES, binData.getPrepaid());
+        assertNotNull(paymentMethodNonce.getDetails());
+        assertEquals("22", paymentMethodNonce.getDetails().getLastTwo());
+        assertEquals("2222", paymentMethodNonce.getDetails().getLastFour());
+        assertEquals("Visa", paymentMethodNonce.getDetails().getCardType());
     }
 
     @Test
