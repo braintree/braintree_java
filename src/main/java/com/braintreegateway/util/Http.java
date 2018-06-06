@@ -14,8 +14,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.security.KeyStore;
-import java.security.Principal;
 import java.security.NoSuchAlgorithmException;
+import java.security.Principal;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
@@ -23,20 +23,14 @@ import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
-import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
 
 import com.braintreegateway.Configuration;
 import com.braintreegateway.Request;
@@ -50,7 +44,6 @@ import com.braintreegateway.exceptions.TooManyRequestsException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
-
 import com.fasterxml.jackson.jr.ob.JSON;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -64,7 +57,7 @@ public class Http {
     public static final String LINE_FEED = "\r\n";
     private volatile SSLSocketFactory sslSocketFactory;
 
-    enum RequestMethod {
+    public enum RequestMethod {
         DELETE, GET, POST, PUT;
     }
 
@@ -75,50 +68,51 @@ public class Http {
     }
 
     public NodeWrapper delete(String url) {
-        return httpRequest(RequestMethod.DELETE, url);
+        return xmlHttpRequest(RequestMethod.DELETE, url);
     }
 
     public NodeWrapper get(String url) {
-        return httpRequest(RequestMethod.GET, url);
+        return xmlHttpRequest(RequestMethod.GET, url);
     }
 
     public NodeWrapper post(String url) {
-        return httpRequest(RequestMethod.POST, url, null, null);
+        return xmlHttpRequest(RequestMethod.POST, url, null, null);
     }
 
     public NodeWrapper post(String url, Request request) {
-        return httpRequest(RequestMethod.POST, url, request.toXML(), null);
+        return xmlHttpRequest(RequestMethod.POST, url, request.toXML(), null);
     }
 
     public NodeWrapper post(String url, String request) {
-        return httpRequest(RequestMethod.POST, url, request, null);
+        return xmlHttpRequest(RequestMethod.POST, url, request, null);
     }
 
     public NodeWrapper postMultipart(String url, String request, File file) {
-        return httpRequest(RequestMethod.POST, url, request, file);
+        return xmlHttpRequest(RequestMethod.POST, url, request, file);
     }
 
     public NodeWrapper put(String url) {
-        return httpRequest(RequestMethod.PUT, url, null, null);
+        return xmlHttpRequest(RequestMethod.PUT, url, null, null);
     }
 
     public NodeWrapper put(String url, Request request) {
-        return httpRequest(RequestMethod.PUT, url, request.toXML(), null);
+        return xmlHttpRequest(RequestMethod.PUT, url, request.toXML(), null);
     }
 
-    private NodeWrapper httpRequest(RequestMethod requestMethod, String url) {
-        return httpRequest(requestMethod, url, null, null);
+    private NodeWrapper xmlHttpRequest(RequestMethod requestMethod, String url) {
+        return xmlHttpRequest(requestMethod, url, null, null);
     }
 
-    private NodeWrapper httpRequest(RequestMethod requestMethod, String url, String postBody, File file) {
-        HttpURLConnection connection = null;
-        NodeWrapper nodeWrapper = null;
-        String boundary = "boundary" + System.currentTimeMillis();
-        String contentType = file == null ? "application/xml" : "multipart/form-data; boundary=" + boundary;
+    protected String httpDo(RequestMethod requestMethod,
+                            String url,
+                            String postBody,
+                            File file,
+                            HttpURLConnection connection,
+                            Map<String, String> headers,
+                            String boundary) {
+        String response = null;
 
         try {
-            connection = buildConnection(requestMethod, url, contentType);
-
             Logger logger = configuration.getLogger();
             if (postBody != null) {
                 logger.log(Level.FINE, formatSanitizeBodyForLog(postBody));
@@ -140,7 +134,7 @@ public class Http {
                         Map<String, Object> map = JSON.std.mapFrom(postBody);
                         Iterator<?> it = map.entrySet().iterator();
                         while (it.hasNext()) {
-                            Map.Entry pair = (Map.Entry)it.next();
+                            Map.Entry pair = (Map.Entry) it.next();
                             addFormField((String) pair.getKey(), (String) pair.getValue(), writer, boundary);
                         }
                         addFilePart("file", file, writer, outputStream, boundary);
@@ -157,26 +151,29 @@ public class Http {
 
             InputStream responseStream = null;
             try {
-                responseStream = connection.getResponseCode() == 422 ? connection.getErrorStream() : connection.getInputStream();
+                responseStream =
+                    connection.getResponseCode() == 422 ? connection.getErrorStream() : connection.getInputStream();
 
                 if ("gzip".equalsIgnoreCase(connection.getContentEncoding())) {
                     responseStream = new GZIPInputStream(responseStream);
                 }
 
-                String xml = StringUtils.inputStreamToString(responseStream);
+                response = StringUtils.inputStreamToString(responseStream);
 
-                logger.log(Level.INFO, "[Braintree] [{0}]] {1} {2}", new Object[] { getCurrentTime(), requestMethod.toString(), url });
-                logger.log(Level.FINE, "[Braintree] [{0}] {1} {2} {3}", new Object[] { getCurrentTime(), requestMethod.toString(), url, connection.getResponseCode() });
+                logger.log(Level.INFO,
+                           "[Braintree] [{0}]] {1} {2}",
+                           new Object[]{getCurrentTime(), requestMethod.toString(), url});
+                logger.log(Level.FINE,
+                           "[Braintree] [{0}] {1} {2} {3}",
+                           new Object[]{getCurrentTime(), requestMethod.toString(), url, connection.getResponseCode()});
 
-                if (xml != null) {
-                    logger.log(Level.FINE, formatSanitizeBodyForLog(xml));
+                if (response != null) {
+                    logger.log(Level.FINE, formatSanitizeBodyForLog(response));
                 }
 
-                if (xml == null || xml.trim().equals("")) {
+                if (response == null || response.trim().equals("")) {
                     return null;
                 }
-
-                nodeWrapper = NodeWrapperFactory.instance.create(xml);
             } finally {
                 if (responseStream != null) {
                     responseStream.close();
@@ -187,12 +184,44 @@ public class Http {
         } catch (IOException e) {
             throw new UnexpectedException(e.getMessage(), e);
         } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
+            connection.disconnect();
         }
 
-        return nodeWrapper;
+        return response;
+    }
+
+    protected Map<String, String> constructHeaders(String acceptType, String contentType) {
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Accept", acceptType);
+        headers.put("User-Agent", "Braintree Java " + Configuration.VERSION);
+        headers.put("X-ApiVersion", Configuration.apiVersion());
+        headers.put("Authorization", authorizationHeader());
+        headers.put("Accept-Encoding", "gzip");
+        headers.put("Content-Type", contentType);
+
+        return headers;
+    }
+
+    private NodeWrapper xmlHttpRequest(RequestMethod requestMethod, String url, String postBody, File file) {
+        HttpURLConnection connection = null;
+        String boundary = "boundary" + System.currentTimeMillis();
+        String contentType = file == null ? "application/xml" : "multipart/form-data; boundary=" + boundary;
+
+        Map<String, String> headers = constructHeaders("application/xml", contentType);
+
+        try {
+            connection = buildConnection(requestMethod, configuration.getBaseURL() + url, headers);
+        } catch (IOException e) {
+            throw new UnexpectedException(e.getMessage(), e);
+        }
+
+        String response = httpDo(requestMethod, url, postBody, file, connection, headers, boundary);
+
+        if (response != null) {
+            return NodeWrapperFactory.instance.create(response);
+        }
+
+        return null;
     }
 
     private void addFormField(String key, String value, PrintWriter writer, String boundary) {
@@ -203,12 +232,17 @@ public class Http {
         writer.flush();
     }
 
-    private void addFilePart(String fieldName, File uploadFile, PrintWriter writer, OutputStream outputStream, String boundary)
-      throws IOException {
+    private void addFilePart(String fieldName,
+                             File uploadFile,
+                             PrintWriter writer,
+                             OutputStream outputStream,
+                             String boundary)
+        throws IOException {
         String filename = uploadFile.getName();
 
         writer.append("--" + boundary).append(LINE_FEED);
-        writer.append("Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + filename + "\"").append(LINE_FEED);
+        writer.append("Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + filename + "\"")
+            .append(LINE_FEED);
         writer.append("Content-Type: " + URLConnection.guessContentTypeFromName(filename)).append(LINE_FEED);
         writer.append(LINE_FEED);
         writer.flush();
@@ -232,7 +266,7 @@ public class Http {
         writer.close();
     }
 
-    private String formatSanitizeBodyForLog(String body) {
+    protected String formatSanitizeBodyForLog(String body) {
         if (body == null) {
             return body;
         }
@@ -254,11 +288,11 @@ public class Http {
         return body;
     }
 
-    private String getCurrentTime() {
+    protected String getCurrentTime() {
         return new SimpleDateFormat("d/MMM/yyyy HH:mm:ss Z").format(new Date());
     }
 
-    private SSLSocketFactory getSSLSocketFactory() {
+    protected SSLSocketFactory getSSLSocketFactory() {
         if (sslSocketFactory == null) {
             synchronized (this) {
                 if (sslSocketFactory == null) {
@@ -275,10 +309,10 @@ public class Http {
                                 Collection<? extends Certificate> coll = cf.generateCertificates(certStream);
                                 for (Certificate cert : coll) {
                                     if (cert instanceof X509Certificate) {
-                                      X509Certificate x509cert = (X509Certificate) cert;
-                                      Principal principal = x509cert.getSubjectDN();
-                                      String subject = principal.getName();
-                                      keyStore.setCertificateEntry(subject, cert);
+                                        X509Certificate x509cert = (X509Certificate) cert;
+                                        Principal principal = x509cert.getSubjectDN();
+                                        String subject = principal.getName();
+                                        keyStore.setCertificateEntry(subject, cert);
                                     }
                                 }
                             } finally {
@@ -290,7 +324,8 @@ public class Http {
 
                         KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
                         kmf.init(keyStore, null);
-                        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                        TrustManagerFactory tmf =
+                            TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                         tmf.init(keyStore);
 
                         SSLContext sslContext = null;
@@ -301,12 +336,16 @@ public class Http {
                         } catch (NoSuchAlgorithmException e) {
                             sslContext = SSLContext.getInstance("TLS");
                         }
-                        sslContext.init((KeyManager[]) kmf.getKeyManagers(), tmf.getTrustManagers(), SecureRandom.getInstance("SHA1PRNG"));
+                        sslContext.init((KeyManager[]) kmf.getKeyManagers(),
+                                        tmf.getTrustManagers(),
+                                        SecureRandom.getInstance("SHA1PRNG"));
 
                         sslSocketFactory = sslContext.getSocketFactory();
                     } catch (Exception e) {
                         Logger logger = configuration.getLogger();
-                        logger.log(Level.SEVERE, "SSL Verification failed. Error message: {0}", new Object[] { e.getMessage() });
+                        logger.log(Level.SEVERE,
+                                   "SSL Verification failed. Error message: {0}",
+                                   new Object[]{e.getMessage()});
                         throw new UnexpectedException(e.getMessage(), e);
                     }
                 }
@@ -315,8 +354,10 @@ public class Http {
         return sslSocketFactory;
     }
 
-    private HttpURLConnection buildConnection(RequestMethod requestMethod, String urlString, String contentType) throws java.io.IOException {
-        URL url = new URL(configuration.getBaseURL() + urlString);
+    protected HttpURLConnection buildConnection(RequestMethod requestMethod,
+                                                String urlString,
+                                                Map<String, String> headers) throws java.io.IOException {
+        URL url = new URL(urlString);
         int connectTimeout = configuration.getConnectTimeout();
         HttpURLConnection connection;
         if (configuration.usesProxy()) {
@@ -325,12 +366,9 @@ public class Http {
             connection = (HttpURLConnection) url.openConnection();
         }
         connection.setRequestMethod(requestMethod.toString());
-        connection.addRequestProperty("Accept", "application/xml");
-        connection.addRequestProperty("User-Agent", "Braintree Java " + Configuration.VERSION);
-        connection.addRequestProperty("X-ApiVersion", Configuration.apiVersion());
-        connection.addRequestProperty("Authorization", authorizationHeader());
-        connection.addRequestProperty("Accept-Encoding", "gzip");
-        connection.setRequestProperty("Content-Type", contentType);
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            connection.addRequestProperty(entry.getKey(), entry.getValue());
+        }
 
         connection.setDoOutput(true);
         connection.setReadTimeout(configuration.getTimeout());
@@ -355,22 +393,22 @@ public class Http {
 
         if (isErrorCode(statusCode)) {
             switch (statusCode) {
-            case 401:
-                throw new AuthenticationException();
-            case 403:
-                throw new AuthorizationException(decodedMessage);
-            case 404:
-                throw new NotFoundException();
-            case 426:
-                throw new UpgradeRequiredException();
-            case 429:
-                throw new TooManyRequestsException();
-            case 500:
-                throw new ServerException();
-            case 503:
-                throw new DownForMaintenanceException();
-            default:
-                throw new UnexpectedException("Unexpected HTTP_RESPONSE " + statusCode);
+                case 401:
+                    throw new AuthenticationException();
+                case 403:
+                    throw new AuthorizationException(decodedMessage);
+                case 404:
+                    throw new NotFoundException();
+                case 426:
+                    throw new UpgradeRequiredException();
+                case 429:
+                    throw new TooManyRequestsException();
+                case 500:
+                    throw new ServerException();
+                case 503:
+                    throw new DownForMaintenanceException();
+                default:
+                    throw new UnexpectedException("Unexpected HTTP_RESPONSE " + statusCode);
 
             }
         }

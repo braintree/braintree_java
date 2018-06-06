@@ -1,7 +1,7 @@
 package com.braintreegateway;
 
 import com.braintreegateway.test.TestingGateway;
-
+import com.braintreegateway.util.GraphQLClient;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.TrUtil;
 
@@ -39,6 +39,7 @@ import com.braintreegateway.util.TrUtil;
 public class BraintreeGateway {
 
     private Configuration configuration;
+    private GraphQLClient graphQLClient;
     private Http http;
 
     /**
@@ -57,21 +58,25 @@ public class BraintreeGateway {
     public BraintreeGateway(Environment environment, String merchantId, String publicKey, String privateKey) {
         this.configuration = new Configuration(environment, merchantId, publicKey, privateKey);
         this.http = new Http(configuration);
+        this.graphQLClient = new GraphQLClient(configuration);
     }
 
     public BraintreeGateway(String environment, String merchantId, String publicKey, String privateKey) {
         this.configuration = new Configuration(environment, merchantId, publicKey, privateKey);
         this.http = new Http(configuration);
+        this.graphQLClient = new GraphQLClient(configuration);
     }
 
     public BraintreeGateway(String clientId, String clientSecret) {
         this.configuration = new Configuration(clientId, clientSecret);
         this.http = new Http(configuration);
+        this.graphQLClient = new GraphQLClient(configuration);
     }
 
     public BraintreeGateway(String accessToken) {
         this.configuration = new Configuration(accessToken);
         this.http = new Http(configuration);
+        this.graphQLClient = new GraphQLClient(configuration);
     }
 
     /**
