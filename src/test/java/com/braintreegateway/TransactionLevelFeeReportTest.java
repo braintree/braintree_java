@@ -22,7 +22,7 @@ public class TransactionLevelFeeReportTest {
         assertEquals(9, report.getRows().size());
 
         TransactionLevelFeeReportRow firstRow = report.getRows().get(0);
-        assertEquals("ACME-anvils", firstRow.getMerchantAccount());
+        assertEquals("ACME-anvils", firstRow.getMerchantAccountId());
         assertEquals("lskdjfkb", firstRow.getTransactionId());
         assertEquals("", firstRow.getOriginalTransactionId());
         assertEquals("sale", firstRow.getTransactionType());
@@ -68,7 +68,7 @@ public class TransactionLevelFeeReportTest {
         assertEquals(9, report.getRows().size());
 
         TransactionLevelFeeReportRow firstRow = report.getRows().get(0);
-        assertEquals("ACME-anvils", firstRow.getMerchantAccount());
+        assertEquals("ACME-anvils", firstRow.getMerchantAccountId());
         assertEquals("lsikdfsm", firstRow.getTransactionId());
         assertEquals("", firstRow.getOriginalTransactionId());
         assertEquals("sale", firstRow.getTransactionType());

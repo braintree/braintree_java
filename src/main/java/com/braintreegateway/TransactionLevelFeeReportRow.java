@@ -11,7 +11,7 @@ import org.apache.commons.csv.CSVRecord;
 
 public class TransactionLevelFeeReportRow {
     // Shared fields.
-    private String merchantAccount;
+    private String merchantAccountId;
     private String transactionId;
     private String originalTransactionId;
     private String transactionType;
@@ -55,7 +55,7 @@ public class TransactionLevelFeeReportRow {
 
     public TransactionLevelFeeReportRow(CSVRecord record) throws ParseException {
         Map<String, String> recordMap = record.toMap();
-        this.merchantAccount = recordMap.get("Merchant Account Token");
+        this.merchantAccountId = getFirstOf(recordMap, "Merchant Account ID", "Merchant Account Token");
         this.transactionId = recordMap.get("Transaction ID");
         this.originalTransactionId = recordMap.get("Original Transaction ID");
         this.transactionType = recordMap.get("Transaction Type");
@@ -96,8 +96,8 @@ public class TransactionLevelFeeReportRow {
         this.totalFeeAmount = maybeParseBigDecimal(recordMap.get("Total Fee Amount"));
     }
 
-    public String getMerchantAccount() {
-        return merchantAccount;
+    public String getMerchantAccountId() {
+        return merchantAccountId;
     }
 
     public String getTransactionId() {
@@ -257,5 +257,14 @@ public class TransactionLevelFeeReportRow {
             return null;
         }
         return new BigDecimal(numberString);
+    }
+
+    private String getFirstOf(Map<String, String> map, String... keys) {
+        for (String key : keys) {
+            if (map.containsKey(key)) {
+                return map.get(key);
+            }
+        }
+        return null;
     }
 }
