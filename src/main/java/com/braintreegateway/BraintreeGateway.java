@@ -292,4 +292,8 @@ public class BraintreeGateway {
     public DocumentUploadGateway documentUpload() {
         return new DocumentUploadGateway(http, configuration);
     }
+
+    public ReportGateway report() {
+        return new ReportGateway(http, graphQLClient, configuration);
+    }
 }

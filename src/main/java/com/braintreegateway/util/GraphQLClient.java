@@ -2,11 +2,15 @@ package com.braintreegateway.util;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import com.braintreegateway.Configuration;
 import com.braintreegateway.Request;
+import com.braintreegateway.ValidationError;
+import com.braintreegateway.ValidationErrorCode;
+import com.braintreegateway.ValidationErrors;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.fasterxml.jackson.jr.ob.JSON;
 
@@ -62,5 +66,34 @@ public class GraphQLClient extends Http {
         }
 
         return json;
+    }
+
+    public static ValidationErrors getErrors(Map<String, Object> response) {
+        List<Map<String, Object>> errors = (List<Map<String, Object>>) response.get("errors");
+        if (errors == null) {
+            return null;
+        }
+
+        ValidationErrors validationErrors = new ValidationErrors();
+        for (Map<String, Object> error : errors) {
+            String message = (String) error.get("message");
+            validationErrors.addError(new ValidationError("", getValidationErrorCode(error), message));
+        }
+
+        return validationErrors;
+    }
+
+    private static ValidationErrorCode getValidationErrorCode(Map<String, Object> error) {
+        Map<String, Object> extensions = (Map<String, Object>) error.get("extensions");
+        if (extensions == null) {
+            return null;
+        }
+
+        String code = (String) extensions.get("legacyCode");
+        if (code == null) {
+            return null;
+        }
+
+        return ValidationErrorCode.findByCode(code);
     }
 }
