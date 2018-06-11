@@ -91,7 +91,6 @@ public class TransactionLevelFeeReportTest {
         assertEquals(new BigDecimal("0"), firstRow.getDiscountCredit());
         assertEquals(new BigDecimal("0.13"), firstRow.getPerTransactionFee());
         assertEquals(new BigDecimal("0.00"), firstRow.getPerTransactionFeeCredit());
-        assertEquals(new BigDecimal("0.57"), firstRow.getBraintreeTotalAmount());
         assertEquals(new BigDecimal("0.00"), firstRow.getMulticurrencyFeeAmount());
         assertEquals(new BigDecimal("0.00"), firstRow.getMulticurrencyFeeCredit());
         assertEquals(new BigDecimal("0.57"), firstRow.getTotalFeeAmount());
@@ -103,6 +102,7 @@ public class TransactionLevelFeeReportTest {
         assertNull(firstRow.getEstInterchangeFixed());
         assertNull(firstRow.getEstInterchangeFixedCredit());
         assertNull(firstRow.getEstInterchangeTotalAmount());
+        assertNull(firstRow.getBraintreeTotalAmount());
         assertNull(firstRow.getEstTotalFeeAmount());
     }
 
