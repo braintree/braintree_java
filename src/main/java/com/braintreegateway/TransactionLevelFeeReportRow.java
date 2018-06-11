@@ -34,7 +34,6 @@ public class TransactionLevelFeeReportRow {
     private BigDecimal discountCredit;
     private BigDecimal perTransactionFee;
     private BigDecimal perTransactionFeeCredit;
-    private BigDecimal braintreeTotalAmount;
 
     // IC+ fields.
     private String interchangeDescription;
@@ -45,6 +44,7 @@ public class TransactionLevelFeeReportRow {
     private BigDecimal estInterchangeFixedCredit;
     private BigDecimal estInterchangeTotalAmount;
     private BigDecimal estTotalFeeAmount;
+    private BigDecimal braintreeTotalAmount;
 
     // Flat-fee fields.
     private BigDecimal originalSaleAmount;
@@ -78,7 +78,7 @@ public class TransactionLevelFeeReportRow {
         this.discountCredit = new BigDecimal(recordMap.get("Discount Credit"));
         this.perTransactionFee = new BigDecimal(recordMap.get("Per Transaction Fee"));
         this.perTransactionFeeCredit = new BigDecimal(recordMap.get("Per Transaction Fee Credit"));
-        this.braintreeTotalAmount = new BigDecimal(recordMap.get("Braintree Total Amount"));
+        this.braintreeTotalAmount = maybeParseBigDecimal(recordMap.get("Braintree Total Amount"));
 
         this.interchangeDescription = recordMap.get("Interchange Description");
         this.interchangeCurrency = recordMap.get("Interchange Currency");
