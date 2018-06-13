@@ -12,10 +12,29 @@ import com.braintreegateway.ValidationError;
 import com.braintreegateway.ValidationErrorCode;
 import com.braintreegateway.ValidationErrors;
 import com.braintreegateway.exceptions.UnexpectedException;
+import com.braintreegateway.exceptions.AuthenticationException;
+import com.braintreegateway.exceptions.AuthorizationException;
+import com.braintreegateway.exceptions.DownForMaintenanceException;
+import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.exceptions.ServerException;
+import com.braintreegateway.exceptions.TimeoutException;
+import com.braintreegateway.exceptions.TooManyRequestsException;
+import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.fasterxml.jackson.jr.ob.JSON;
 
 public class GraphQLClient extends Http {
     private Configuration configuration;
+    public enum ErrorClass {
+        AUTHENTICATION,
+        AUTHORIZATION,
+        INTERNAL,
+        UNSUPPORTED_CLIENT,
+        NOT_FOUND,
+        RESOURCE_LIMIT,
+        SERVICE_AVAILABILITY,
+        UNKNOWN,
+        VALIDATION;
+    }
 
     public GraphQLClient(Configuration configuration) {
         super(configuration);
@@ -47,7 +66,8 @@ public class GraphQLClient extends Http {
             throw new UnexpectedException(e.getMessage(), e);
         }
 
-        //TODO: error handling - check for 404-type errors
+        throwExceptionIfGraphQLErrorResponse(jsonMap);
+
         return jsonMap;
     }
 
@@ -66,6 +86,43 @@ public class GraphQLClient extends Http {
         }
 
         return json;
+    }
+
+    public static void throwExceptionIfGraphQLErrorResponse(Map<String, Object> response) {
+        List<Map<String, Object>> errors = (List<Map<String, Object>>) response.get("errors");
+        if (errors == null) {
+            return;
+        }
+
+        for (Map<String, Object> error : errors) {
+            String message = (String) error.get("message");
+            Map<String, Object> extensions = (Map) error.get("extensions");
+            if (extensions != null) {
+                String errorClass = (String) extensions.get("errorClass");
+                if (errorClass != null) {
+                    switch (ErrorClass.valueOf(errorClass)) {
+                        case AUTHENTICATION:
+                            throw new AuthenticationException();
+                        case AUTHORIZATION:
+                            throw new AuthorizationException(message);
+                        case NOT_FOUND:
+                            throw new NotFoundException();
+                        case UNSUPPORTED_CLIENT:
+                            throw new UpgradeRequiredException();
+                        case RESOURCE_LIMIT:
+                            throw new TooManyRequestsException();
+                        case INTERNAL:
+                            throw new ServerException();
+                        case SERVICE_AVAILABILITY:
+                            throw new DownForMaintenanceException();
+                        case UNKNOWN:
+                            throw new UnexpectedException("Unexpected Response: " + message);
+                    }
+                }
+            }
+        }
+
+        return;
     }
 
     public static ValidationErrors getErrors(Map<String, Object> response) {
