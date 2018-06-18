@@ -35,6 +35,10 @@ public class GraphQLClient extends Http {
         UNKNOWN,
         VALIDATION;
     }
+    private static final String ERROR_OBJECT_KEY = "errors";
+    private static final String ERROR_MESSAGE_KEY = "message";
+    private static final String ERROR_EXTENSIONS_KEY = "extensions";
+    private static final String ERROR_CLASS_KEY= "errorClass";
 
     public GraphQLClient(Configuration configuration) {
         super(configuration);
@@ -88,37 +92,36 @@ public class GraphQLClient extends Http {
         return json;
     }
 
-    public static void throwExceptionIfGraphQLErrorResponse(Map<String, Object> response) {
-        List<Map<String, Object>> errors = (List<Map<String, Object>>) response.get("errors");
+    private void throwExceptionIfGraphQLErrorResponse(Map<String, Object> response) {
+        List<Map<String, Object>> errors = (List<Map<String, Object>>) response.get(ERROR_OBJECT_KEY);
         if (errors == null) {
             return;
         }
 
         for (Map<String, Object> error : errors) {
-            String message = (String) error.get("message");
-            Map<String, Object> extensions = (Map) error.get("extensions");
-            if (extensions != null) {
-                String errorClass = (String) extensions.get("errorClass");
-                if (errorClass != null) {
-                    switch (ErrorClass.valueOf(errorClass)) {
-                        case AUTHENTICATION:
-                            throw new AuthenticationException();
-                        case AUTHORIZATION:
-                            throw new AuthorizationException(message);
-                        case NOT_FOUND:
-                            throw new NotFoundException();
-                        case UNSUPPORTED_CLIENT:
-                            throw new UpgradeRequiredException();
-                        case RESOURCE_LIMIT:
-                            throw new TooManyRequestsException();
-                        case INTERNAL:
-                            throw new ServerException();
-                        case SERVICE_AVAILABILITY:
-                            throw new DownForMaintenanceException();
-                        case UNKNOWN:
-                            throw new UnexpectedException("Unexpected Response: " + message);
-                    }
-                }
+            String message = (String) error.get(ERROR_MESSAGE_KEY);
+            Map<String, Object> extensions = (Map) error.get(ERROR_EXTENSIONS_KEY);
+            String errorClass = null;
+            if (extensions == null || (errorClass = (String) extensions.get(ERROR_CLASS_KEY)) == null) {
+                continue;
+            }
+            switch (ErrorClass.valueOf(errorClass)) {
+                case AUTHENTICATION:
+                    throw new AuthenticationException();
+                case AUTHORIZATION:
+                    throw new AuthorizationException(message);
+                case NOT_FOUND:
+                    throw new NotFoundException();
+                case UNSUPPORTED_CLIENT:
+                    throw new UpgradeRequiredException();
+                case RESOURCE_LIMIT:
+                    throw new TooManyRequestsException("Request rate or complexity limit exceeded");
+                case INTERNAL:
+                    throw new ServerException();
+                case SERVICE_AVAILABILITY:
+                    throw new DownForMaintenanceException();
+                case UNKNOWN:
+                    throw new UnexpectedException("Unexpected Response: " + message);
             }
         }
 
@@ -126,14 +129,14 @@ public class GraphQLClient extends Http {
     }
 
     public static ValidationErrors getErrors(Map<String, Object> response) {
-        List<Map<String, Object>> errors = (List<Map<String, Object>>) response.get("errors");
+        List<Map<String, Object>> errors = (List<Map<String, Object>>) response.get(ERROR_OBJECT_KEY);
         if (errors == null) {
             return null;
         }
 
         ValidationErrors validationErrors = new ValidationErrors();
         for (Map<String, Object> error : errors) {
-            String message = (String) error.get("message");
+            String message = (String) error.get(ERROR_MESSAGE_KEY);
             validationErrors.addError(new ValidationError("", getValidationErrorCode(error), message));
         }
 
