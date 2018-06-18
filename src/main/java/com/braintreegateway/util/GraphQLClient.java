@@ -38,7 +38,7 @@ public class GraphQLClient extends Http {
     private static final String ERROR_OBJECT_KEY = "errors";
     private static final String ERROR_MESSAGE_KEY = "message";
     private static final String ERROR_EXTENSIONS_KEY = "extensions";
-    private static final String ERROR_CLASS_KEY= "errorClass";
+    private static final String ERROR_CLASS_KEY = "errorClass";
 
     public GraphQLClient(Configuration configuration) {
         super(configuration);
