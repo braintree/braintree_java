@@ -12,10 +12,33 @@ import com.braintreegateway.ValidationError;
 import com.braintreegateway.ValidationErrorCode;
 import com.braintreegateway.ValidationErrors;
 import com.braintreegateway.exceptions.UnexpectedException;
+import com.braintreegateway.exceptions.AuthenticationException;
+import com.braintreegateway.exceptions.AuthorizationException;
+import com.braintreegateway.exceptions.DownForMaintenanceException;
+import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.exceptions.ServerException;
+import com.braintreegateway.exceptions.TimeoutException;
+import com.braintreegateway.exceptions.TooManyRequestsException;
+import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.fasterxml.jackson.jr.ob.JSON;
 
 public class GraphQLClient extends Http {
     private Configuration configuration;
+    public enum ErrorClass {
+        AUTHENTICATION,
+        AUTHORIZATION,
+        INTERNAL,
+        UNSUPPORTED_CLIENT,
+        NOT_FOUND,
+        RESOURCE_LIMIT,
+        SERVICE_AVAILABILITY,
+        UNKNOWN,
+        VALIDATION;
+    }
+    private static final String ERROR_OBJECT_KEY = "errors";
+    private static final String ERROR_MESSAGE_KEY = "message";
+    private static final String ERROR_EXTENSIONS_KEY = "extensions";
+    private static final String ERROR_CLASS_KEY = "errorClass";
 
     public GraphQLClient(Configuration configuration) {
         super(configuration);
@@ -47,7 +70,8 @@ public class GraphQLClient extends Http {
             throw new UnexpectedException(e.getMessage(), e);
         }
 
-        //TODO: error handling - check for 404-type errors
+        throwExceptionIfGraphQLErrorResponse(jsonMap);
+
         return jsonMap;
     }
 
@@ -68,15 +92,51 @@ public class GraphQLClient extends Http {
         return json;
     }
 
+    private void throwExceptionIfGraphQLErrorResponse(Map<String, Object> response) {
+        List<Map<String, Object>> errors = (List<Map<String, Object>>) response.get(ERROR_OBJECT_KEY);
+        if (errors == null) {
+            return;
+        }
+
+        for (Map<String, Object> error : errors) {
+            String message = (String) error.get(ERROR_MESSAGE_KEY);
+            Map<String, Object> extensions = (Map) error.get(ERROR_EXTENSIONS_KEY);
+            String errorClass = null;
+            if (extensions == null || (errorClass = (String) extensions.get(ERROR_CLASS_KEY)) == null) {
+                continue;
+            }
+            switch (ErrorClass.valueOf(errorClass)) {
+                case AUTHENTICATION:
+                    throw new AuthenticationException();
+                case AUTHORIZATION:
+                    throw new AuthorizationException(message);
+                case NOT_FOUND:
+                    throw new NotFoundException();
+                case UNSUPPORTED_CLIENT:
+                    throw new UpgradeRequiredException();
+                case RESOURCE_LIMIT:
+                    throw new TooManyRequestsException("Request rate or complexity limit exceeded");
+                case INTERNAL:
+                    throw new ServerException();
+                case SERVICE_AVAILABILITY:
+                    throw new DownForMaintenanceException();
+                case UNKNOWN:
+                    throw new UnexpectedException("Unexpected Response: " + message);
+            }
+        }
+
+        return;
+    }
+
     public static ValidationErrors getErrors(Map<String, Object> response) {
-        List<Map<String, Object>> errors = (List<Map<String, Object>>) response.get("errors");
+        List<Map<String, Object>> errors = (List<Map<String, Object>>) response.get(ERROR_OBJECT_KEY);
         if (errors == null) {
             return null;
         }
 
         ValidationErrors validationErrors = new ValidationErrors();
         for (Map<String, Object> error : errors) {
-            String message = (String) error.get("message");
+            String message = (String) error.get(ERROR_MESSAGE_KEY);
             validationErrors.addError(new ValidationError("", getValidationErrorCode(error), message));
         }
 

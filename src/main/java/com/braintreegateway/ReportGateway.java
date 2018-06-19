@@ -46,6 +46,7 @@ public class ReportGateway {
      */
     public Result<TransactionLevelFeeReport> transactionLevelFees(TransactionLevelFeeReportRequest request)
         throws IOException, ParseException {
+        String url = null;
 
         Map<String, Object> response = graphQLClient.query(TRANSACTION_LEVEL_FEES_QUERY, request);
         ValidationErrors errors = GraphQLClient.getErrors(response);
@@ -53,11 +54,16 @@ public class ReportGateway {
             return new Result<TransactionLevelFeeReport>(errors);
         }
 
-        Map<String, Object> data = (Map) response.get("data");
-        Map<String, Object> report = (Map) data.get("report");
-        Map<String, Object> transactionLevelFees = (Map) report.get("transactionLevelFees");
+        try {
+            Map<String, Object> data = (Map) response.get("data");
+            Map<String, Object> report = (Map) data.get("report");
+            Map<String, Object> transactionLevelFees = (Map) report.get("transactionLevelFees");
 
-        String url = (String) transactionLevelFees.get("url");
+            url = (String) transactionLevelFees.get("url");
+        } catch (NullPointerException e) {
+            url = null;
+        }
+
         return new Result<TransactionLevelFeeReport>(new TransactionLevelFeeReport(url));
     }
 }
