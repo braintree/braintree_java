@@ -47,6 +47,15 @@ public class IntegrationTest {
         );
     }
 
+    public void createAdvancedFraudMerchantGateway() {
+        this.gateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "advanced_fraud_integration_merchant_id",
+            "advanced_fraud_integration_public_key",
+            "advanced_fraud_integration_private_key"
+        );
+    }
+
     protected Transaction createDisputedTransaction() throws InterruptedException {
         TransactionRequest request = new TransactionRequest()
             .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)

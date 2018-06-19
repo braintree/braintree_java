@@ -1020,6 +1020,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
 
     @Test
     public void verifyValidCreditCardWithVerificationWithRiskData() {
+        createAdvancedFraudMerchantGateway();
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
             customerId(customer.getId()).
@@ -1045,8 +1046,8 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertNotNull(riskData);
 
         assertNotNull(riskData.getDecision());
-        assertNull(riskData.getDeviceDataCaptured());
-        assertNull(riskData.getId());
+        assertNotNull(riskData.getDeviceDataCaptured());
+        assertNotNull(riskData.getId());
     }
 
     @Test
