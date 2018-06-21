@@ -1,26 +1,27 @@
 ENV['TEST_JDK_VERSION'] ||= "1.5"
+mvn = "MAVEN_OPTS='-Dhttps.protocols=TLSv1.2' mvn"
 
 task :default => :jar
 
 task :clean do
-  sh "mvn clean"
+  sh "#{mvn} clean"
   sh "rm *jar || true"
   sh "rm -rf doc"
 end
 
 task :compile do
-  sh "mvn compile"
+  sh "#{mvn} compile"
 end
 
 namespace :test do
   desc "run unit tests"
   task :unit do
-    sh "mvn verify -DskipITs"
+    sh "#{mvn} verify -DskipITs"
   end
 
   desc "run unit and integration tests"
   task :all do
-    sh "mvn verify"
+    sh "#{mvn} verify"
   end
 end
 
@@ -28,7 +29,7 @@ task :test => "test:all"
 
 desc "compile, test, build a jar"
 task :jar do
-  sh "mvn verify package"
+  sh "#{mvn} verify package"
   sh "cp target/braintree-java-*.jar ./"
 end
 
@@ -38,9 +39,9 @@ desc "run a single unit or integration test class"
 task :single_test do
   test_class = ENV['testclass']
   if test_class.include? ".integrationtest."
-    sh "mvn verify -Dit.test=#{test_class}"
+    sh "#{mvn} verify -Dit.test=#{test_class}"
   else
-    sh "mvn test -Dtest=#{test_class}"
+    sh "#{mvn} test -Dtest=#{test_class}"
   end
 end
 
