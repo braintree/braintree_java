@@ -1,5 +1,5 @@
 ENV['TEST_JDK_VERSION'] ||= "1.5"
-mvn = "MAVEN_OPTS=\"-Dhttps.protocols=TLSv1.2\" mvn"
+mvn = "MAVEN_OPTS='-Dhttps.protocols=TLSv1.2' mvn"
 
 task :default => :jar
 
