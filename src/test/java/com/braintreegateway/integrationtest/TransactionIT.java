@@ -245,6 +245,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleReturnsRiskData() {
+        createAdvancedFraudMerchantGateway();
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             deviceSessionId("abc123").
@@ -259,8 +260,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertNotNull(transaction.getRiskData());
         assertNotNull(transaction.getRiskData().getDecision());
-        assertNull(transaction.getRiskData().getDeviceDataCaptured());
-        assertNull(transaction.getRiskData().getId());
+        assertNotNull(transaction.getRiskData().getDeviceDataCaptured());
+        assertNotNull(transaction.getRiskData().getId());
     }
 
     @Test
@@ -2043,6 +2044,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleWithAdvancedFraudCheckingSkipped() {
+        createAdvancedFraudMerchantGateway();
         TransactionRequest request = new TransactionRequest().
                 amount(TransactionAmount.AUTHORIZE.amount).
                 creditCard().
@@ -2055,7 +2057,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
-        assertNull(result.getTarget().getRiskData().getId());
+        assertNull(result.getTarget().getRiskData());
     }
 
     @Test
@@ -3480,6 +3482,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(new BigDecimal("-20.00"), authorizationAdjustment.getAmount());
         assertEquals(true, authorizationAdjustment.isSuccess());
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), authorizationAdjustment.getTimestamp().get(Calendar.YEAR));
+        assertEquals("1000", authorizationAdjustment.getProcessorResponseCode());
+        assertEquals("Approved", authorizationAdjustment.getProcessorResponseText());
     }
 
     @Test

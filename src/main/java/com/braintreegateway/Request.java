@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+import java.util.Map;
+
 /**
  * Abstract class for fluent interface request builders.
  */
@@ -13,6 +15,10 @@ public abstract class Request {
     }
 
     public String toQueryString() {
+        throw new UnsupportedOperationException();
+    }
+
+    public Map<String, Object> toGraphQLVariables() {
         throw new UnsupportedOperationException();
     }
 

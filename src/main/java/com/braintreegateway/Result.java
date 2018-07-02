@@ -32,6 +32,14 @@ public class Result<T> {
     public Result() {
     }
 
+    public Result(ValidationErrors errors) {
+        this.errors = errors;
+    }
+
+    public Result(T target) {
+        this.target = target;
+    }
+
     public Result(NodeWrapper node, Class<T> klass) {
         if (node.isSuccess()) {
             this.target = newInstanceFromNode(klass, node);

@@ -1,6 +1,13 @@
+## 2.82.0
+* Add subscription charged unsuccessfully sample webhook to webhook testing gateway
+* Add initial support for GraphQL API's
+* Add Transaction-Level Fee Report API
+
 ## 2.81.0
 * Allow payee ID to be passed in options params for transaction create
+* Add `processor_response_code` and `processor_response_text` to authorization adjustments subfield in transaction response.
 * Add `getMerchantId` to `ConnectedMerchantStatusTransitioned` and `ConnectedMerchantPayPalStatusChanged`, and `getOauthApplicationClientId` to OAuthAccessRevocation webhooks
+* Fix webhook testing sample xml for dispute webhooks to include `amount-won` and `amount-disputed`
 
 ## 2.80.0
 * Add support for US Bank Account verifications API
