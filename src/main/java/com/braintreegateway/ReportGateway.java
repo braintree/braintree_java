@@ -43,6 +43,8 @@ public class ReportGateway {
      *
      * @param request the request.
      * @return a {@link Result}
+     * @throws IOException when data is malforned
+     * @throws ParseException when parsing fails
      */
     public Result<TransactionLevelFeeReport> transactionLevelFees(TransactionLevelFeeReportRequest request)
         throws IOException, ParseException {
