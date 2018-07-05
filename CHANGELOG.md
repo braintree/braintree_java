@@ -1,4 +1,4 @@
-## 2.82.2
+## 2.83.0
 * Add subscription charged unsuccessfully sample webhook to webhook testing gateway
 * Add initial support for GraphQL API's
 * Add Transaction-Level Fee Report API
