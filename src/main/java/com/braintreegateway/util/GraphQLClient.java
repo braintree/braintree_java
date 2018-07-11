@@ -11,14 +11,13 @@ import com.braintreegateway.Request;
 import com.braintreegateway.ValidationError;
 import com.braintreegateway.ValidationErrorCode;
 import com.braintreegateway.ValidationErrors;
-import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.AuthorizationException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.ServerException;
-import com.braintreegateway.exceptions.TimeoutException;
 import com.braintreegateway.exceptions.TooManyRequestsException;
+import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.fasterxml.jackson.jr.ob.JSON;
 
@@ -111,7 +110,7 @@ public class GraphQLClient extends Http {
                 case AUTHORIZATION:
                     throw new AuthorizationException(message);
                 case NOT_FOUND:
-                    throw new NotFoundException();
+                    throw new NotFoundException(message);
                 case UNSUPPORTED_CLIENT:
                     throw new UpgradeRequiredException();
                 case RESOURCE_LIMIT:
