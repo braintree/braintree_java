@@ -24,7 +24,7 @@ public class TransactionLevelFeeReportIT extends IntegrationTest {
     private Http http;
 
     @Rule
-    ExpectedException expectedException = ExpectedException.none();
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Before
     public void createHttp() {
