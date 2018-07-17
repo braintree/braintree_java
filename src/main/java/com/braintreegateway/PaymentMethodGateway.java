@@ -84,6 +84,8 @@ public class PaymentMethodGateway {
             return new Result<VisaCheckoutCard>(response, VisaCheckoutCard.class);
         } else if (response.getElementName() == "masterpass-card") {
             return new Result<MasterpassCard>(response, MasterpassCard.class);
+        } else if (response.getElementName() == "samsung-pay-card") {
+            return new Result<SamsungPayCard>(response, SamsungPayCard.class);
         } else {
             return new Result<UnknownPaymentMethod>(response, UnknownPaymentMethod.class);
         }
