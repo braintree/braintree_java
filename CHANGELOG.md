@@ -1,3 +1,6 @@
+## 2.83.1
+* Restore Javadoc
+
 ## 2.83.0
 * Add subscription charged unsuccessfully sample webhook to webhook testing gateway
 * Add initial support for GraphQL API's
