@@ -1,7 +1,11 @@
+## 2.83.1
+* Restore Javadoc
+
 ## 2.83.0
 * Add subscription charged unsuccessfully sample webhook to webhook testing gateway
 * Add initial support for GraphQL API's
 * Add Transaction-Level Fee Report API
+* Add support for Samsung Pay
 
 ## 2.81.0
 * Allow payee ID to be passed in options params for transaction create

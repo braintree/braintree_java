@@ -162,6 +162,7 @@ public class Transaction {
     private String refundedTransactionId;
     private String refundId;
     private List<String> refundIds;
+    private SamsungPayCardDetails samsungPayCardDetails;
     private String settlementBatchId;
     private Address shippingAddress;
     private Status status;
@@ -246,6 +247,10 @@ public class Transaction {
         NodeWrapper masterpassCardNode = node.findFirst("masterpass-card");
         if (masterpassCardNode != null) {
             masterpassCardDetails = new MasterpassCardDetails(masterpassCardNode);
+        }
+        NodeWrapper samsungPayCardNode = node.findFirst("samsung-pay-card");
+        if (samsungPayCardNode != null) {
+            samsungPayCardDetails = new SamsungPayCardDetails(samsungPayCardNode);
         }
         planId = node.findString("plan-id");
         processorAuthorizationCode = node.findString("processor-authorization-code");
@@ -461,6 +466,10 @@ public class Transaction {
 
     public MasterpassCardDetails getMasterpassCardDetails() {
         return masterpassCardDetails;
+    }
+
+    public SamsungPayCardDetails getSamsungPayCardDetails() {
+        return samsungPayCardDetails;
     }
 
     public String getPlanId() {
