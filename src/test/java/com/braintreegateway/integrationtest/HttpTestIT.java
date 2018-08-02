@@ -35,26 +35,6 @@ import static org.junit.Assert.fail;
 @SuppressWarnings("deprecation")
 public class HttpTestIT extends IntegrationTest {
 
-    private static OutputStream logCapturingStream;
-    private static StreamHandler customLogHandler;
-
-    public void attachLogCapturer()
-    {
-        Configuration configuration = this.gateway.getConfiguration();
-        Logger logger = configuration.getLogger();
-        logCapturingStream = new ByteArrayOutputStream();
-        Handler[] handlers = logger.getParent().getHandlers();
-        customLogHandler = new StreamHandler(logCapturingStream, handlers[0].getFormatter());
-        customLogHandler.setLevel(Level.FINE);
-        logger.addHandler(customLogHandler);
-    }
-
-    public String getTestCapturedLog()
-    {
-      customLogHandler.flush();
-      return logCapturingStream.toString();
-    }
-
     @Test
     public void smokeTestGet() {
         Configuration configuration = gateway.getConfiguration();
