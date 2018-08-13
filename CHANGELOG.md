@@ -1,4 +1,5 @@
 ## unreleased
+* Add `lastFour` to `PaymentMethodNonceDetails`
 * Remove final specification from `MerchantAccountGateway` (#64)
 
 ## 2.83.1
