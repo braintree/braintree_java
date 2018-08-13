@@ -1,4 +1,5 @@
 ## unreleased
+* Add `lastFour` to `PaymentMethodNonceDetails`
 * Pass response message to http error (#66)
 
 ## 2.83.1
