@@ -7,7 +7,7 @@ import com.braintreegateway.exceptions.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class MerchantAccountGateway {
+public class MerchantAccountGateway {
 
     public static final String CREATE_URL = "/merchant_accounts/create_via_api";
     public static final String CREATE_FOR_CURRENCY_URL = "/merchant_accounts/create_for_currency";
