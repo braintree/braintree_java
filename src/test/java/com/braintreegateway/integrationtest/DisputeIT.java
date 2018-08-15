@@ -68,6 +68,13 @@ public class DisputeIT extends IntegrationTest {
             .find(dispute.getId());
 
         assertEquals(Dispute.Status.ACCEPTED, updatedDispute.getStatus());
+
+        Dispute disputeFromTransaction = gateway.transaction()
+            .find(dispute.getTransaction().getId())
+            .getDisputes()
+            .get(0);
+
+        assertEquals(Dispute.Status.ACCEPTED, disputeFromTransaction.getStatus());
     }
 
     @Test
