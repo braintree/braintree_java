@@ -10,7 +10,8 @@ public class SandboxValues {
         VISA("4111111111111111"),
         MASTER_CARD("5555555555554444"),
         FRAUD("4000111111111511"),
-        AMEX("378282246310005");
+        AMEX("378282246310005"),
+        ELO("5066991111111118");
         public String number;
 
         private CreditCardNumber(String number) {

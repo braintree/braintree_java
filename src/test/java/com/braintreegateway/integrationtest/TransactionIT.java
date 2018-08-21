@@ -212,6 +212,37 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithEloCard() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId(ADYEN_MERCHANT_ACCOUNT_ID).
+            creditCard().
+                number(CreditCardNumber.ELO.number).
+                expirationDate("10/2020").
+                cvv("737").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
+        assertEquals("USD", transaction.getCurrencyIsoCode());
+        assertNotNull(transaction.getProcessorAuthorizationCode());
+        assertEquals(Transaction.Type.SALE, transaction.getType());
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
+
+        CreditCard creditCard = transaction.getCreditCard();
+        assertEquals("506699", creditCard.getBin());
+        assertEquals("1118", creditCard.getLast4());
+        assertEquals("10", creditCard.getExpirationMonth());
+        assertEquals("2020", creditCard.getExpirationYear());
+        assertEquals("10/2020", creditCard.getExpirationDate());
+    }
+
+    @Test
     public void saleWithAccessToken() {
         BraintreeGateway oauthGateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
 
@@ -4309,6 +4340,28 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         collection = gateway.transaction().search(searchRequest);
 
         assertEquals(0, collection.getMaximumSize());
+    }
+
+    @Test
+    public void searchOnCreditCardTypeElo() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId(ADYEN_MERCHANT_ACCOUNT_ID).
+            creditCard().
+                number(CreditCardNumber.ELO.number).
+                expirationDate("10/2020").
+                cvv("737").
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            creditCardCardType().is(CreditCard.CardType.ELO);
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(1, collection.getMaximumSize());
     }
 
     @Test
