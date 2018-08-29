@@ -2,6 +2,7 @@
 * Add `lastFour` to `PaymentMethodNonceDetails`
 * Remove final specification from `MerchantAccountGateway` (#64)
 * Fix dispute results in transactions not showing the correct status sometimes
+* Pass response message to http error (#66)
 
 ## 2.83.1
 * Restore Javadoc

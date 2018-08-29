@@ -147,7 +147,7 @@ public class Http {
                 }
             }
 
-            throwExceptionIfErrorStatusCode(connection.getResponseCode(), null);
+            throwExceptionIfErrorStatusCode(connection.getResponseCode(), connection.getResponseMessage());
 
             InputStream responseStream = null;
             try {
