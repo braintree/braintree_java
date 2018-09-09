@@ -105,6 +105,8 @@ public class GraphQLClient extends Http {
                 continue;
             }
             switch (ErrorClass.valueOf(errorClass)) {
+                case VALIDATION:
+                    continue;
                 case AUTHENTICATION:
                     throw new AuthenticationException();
                 case AUTHORIZATION:
