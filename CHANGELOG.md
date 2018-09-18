@@ -3,6 +3,8 @@
 * Remove final specification from `MerchantAccountGateway` (#64)
 * Fix dispute results in transactions not showing the correct status sometimes
 * Pass response message to http error (#66)
+* Add `getNetworkTransactionId` as new field on subfield transaction response.
+* Add support for `ExternalVaultRequest` for TransactionRequest
 
 ## 2.83.1
 * Restore Javadoc

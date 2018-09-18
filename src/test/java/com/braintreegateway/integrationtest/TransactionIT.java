@@ -3277,6 +3277,188 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleVisaReceivesNetworkTransactionIdentifier() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Transaction transaction = result.getTarget();
+        assertTrue(transaction.getNetworkTransactionId().length() > 0);
+    }
+
+    @Test
+    public void saleNonVisaDoesNotReceiveNetworkTransactionIdentifier() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Transaction transaction = result.getTarget();
+        assertNull(transaction.getNetworkTransactionId());
+    }
+
+    @Test
+    public void saleWithExternalVaultStatusVisa() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                vaulted().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertTrue(transaction.getNetworkTransactionId().length() > 0);
+    }
+
+    @Test
+    public void saleWithExternalVaultStatusNonVisa() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                vaulted().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertNull(transaction.getNetworkTransactionId());
+    }
+
+    @Test
+    public void saleWithExternalVaultPreviousNetworkTransactionId() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                vaulted().
+                previousNetworkTransactionId("123456789012345").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertTrue(transaction.getNetworkTransactionId().length() > 0);
+    }
+
+    @Test
+    public void saleWithExternalVaultStatusVaultedWithoutPreviousNetworkTransactionId() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                vaulted().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertTrue(transaction.getNetworkTransactionId().length() > 0);
+    }
+
+    @Test
+    public void saleWithExternalVaultValidationErrorInvalidPaymentInstrumentWithExternalVault() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            paymentMethodToken("cc_token").
+            externalVault().
+                vaulted().
+                previousNetworkTransactionId("123456789012345").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_PAYMENT_INSTRUMENT_WITH_EXTERNAL_VAULT_IS_INVALID,
+            result.getErrors().forObject("transaction").onField("external_vault").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void saleWithExternalVaultValidationErrorInvalidStatusWithPreviousNetworkTransactionId() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                willVault().
+                previousNetworkTransactionId("123456789012345").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_EXTERNAL_VAULT_STATUS_WITH_PREVIOUS_NETWORK_TRANSACTION_ID_IS_INVALID,
+            result.getErrors().forObject("transaction").forObject("external_vault").onField("status").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void saleWithExternalVaultValidationErrorInvalidPreviousNetworkTransactionId() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                vaulted().
+                previousNetworkTransactionId("not_valid").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_EXTERNAL_VAULT_PREVIOUS_NETWORK_TRANSACTION_ID_IS_INVALID,
+            result.getErrors().forObject("transaction").forObject("external_vault").onField("previousNetworkTransactionId").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void saleWithExternalVaultValidationErrorInvalidCardType() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                vaulted().
+                previousNetworkTransactionId("123456789012345").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_EXTERNAL_VAULT_CARD_TYPE_IS_INVALID,
+            result.getErrors().forObject("transaction").forObject("external_vault").onField("previousNetworkTransactionId").get(0).getCode()
+        );
+    }
+
+    @Test
     public void createTransactionFromTransparentRedirectWithAddress() {
         TransactionRequest request = new TransactionRequest();
 

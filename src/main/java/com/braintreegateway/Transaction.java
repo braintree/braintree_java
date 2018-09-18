@@ -187,6 +187,7 @@ public class Transaction {
     private List<AuthorizationAdjustment> authorizationAdjustments;
     private FacilitatedDetails facilitatedDetails;
     private FacilitatorDetails facilitatorDetails;
+    private String networkTransactionId;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -338,6 +339,8 @@ public class Transaction {
         if (facilitatorDetailsNode != null) {
             facilitatorDetails = new FacilitatorDetails(facilitatorDetailsNode);
         }
+
+        networkTransactionId = node.findString("network-transaction-id");
     }
 
     public List<AddOn> getAddOns() {
@@ -658,4 +661,7 @@ public class Transaction {
         return gateway.transactionLineItem().findAll(id);
     }
 
+    public String getNetworkTransactionId() {
+        return networkTransactionId;
+    }
 }
