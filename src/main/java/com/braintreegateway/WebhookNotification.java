@@ -35,6 +35,7 @@ public class WebhookNotification {
         IDEAL_PAYMENT_COMPLETE("ideal_payment_complete"),
         IDEAL_PAYMENT_FAILED("ideal_payment_failed"),
         GRANTED_PAYMENT_INSTRUMENT_UPDATE("granted_payment_instrument_update"),
+        LOCAL_PAYMENT_COMPLETED("local_payment_completed"),
         UNRECOGNIZED("unrecognized");
 
         private final String name;
@@ -64,6 +65,7 @@ public class WebhookNotification {
     private ConnectedMerchantPayPalStatusChanged connectedMerchantPayPalStatusChanged;
     private IdealPayment idealPayment;
     private GrantedPaymentInstrumentUpdate grantedPaymentInstrumentUpdate;
+    private LocalPaymentCompleted localPaymentCompleted;
     private String sourceMerchantId;
 
     public WebhookNotification(NodeWrapper node) {
@@ -124,6 +126,10 @@ public class WebhookNotification {
 
         if (wrapperNode.findFirst("granted-payment-instrument-update") != null) {
             this.grantedPaymentInstrumentUpdate = new GrantedPaymentInstrumentUpdate(wrapperNode.findFirst("granted-payment-instrument-update"));
+        }
+
+        if (wrapperNode.findFirst("local-payment") != null) {
+            this.localPaymentCompleted = new LocalPaymentCompleted(wrapperNode.findFirst("local-payment"));
         }
 
         if (!wrapperNode.isSuccess()) {
@@ -193,5 +199,9 @@ public class WebhookNotification {
 
     public GrantedPaymentInstrumentUpdate getGrantedPaymentInstrumentUpdate() {
         return this.grantedPaymentInstrumentUpdate;
+    }
+
+    public LocalPaymentCompleted getLocalPaymentCompleted() {
+        return this.localPaymentCompleted;
     }
 }

@@ -545,4 +545,18 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertEquals("expiration-year", update.getUpdatedFields().get(1));
         assertEquals(2, update.getUpdatedFields().size());
     }
+
+    @Test
+    public void createsLocalPaymentCompleted() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.LOCAL_PAYMENT_COMPLETED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.LOCAL_PAYMENT_COMPLETED, notification.getKind());
+
+        LocalPaymentCompleted payment = notification.getLocalPaymentCompleted();
+
+        assertEquals("a-payment-id", payment.getPaymentId());
+        assertEquals("a-payer-id", payment.getPayerId());
+    }
 }

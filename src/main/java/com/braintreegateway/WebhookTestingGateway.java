@@ -75,6 +75,7 @@ public class WebhookTestingGateway {
             case IDEAL_PAYMENT_COMPLETE: return idealPaymentCompleteXml(id);
             case IDEAL_PAYMENT_FAILED: return idealPaymentFailedXml(id);
             case GRANTED_PAYMENT_INSTRUMENT_UPDATE: return grantedPaymentInstrumentUpdateXml();
+            case LOCAL_PAYMENT_COMPLETED: return localPaymentCompletedXml();
             default: return subscriptionXml(id);
         }
     }
@@ -439,6 +440,13 @@ public class WebhookTestingGateway {
                     node("item", "expiration-month"),
                     node("item", "expiration-year")
                     )
+                );
+    }
+
+    private String localPaymentCompletedXml() {
+        return node("local-payment",
+                node("payment-id", "a-payment-id"),
+                node("payer-id", "a-payer-id")
                 );
     }
 

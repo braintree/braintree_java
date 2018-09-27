@@ -5,6 +5,7 @@
 * Pass response message to http error (#66)
 * Add `getNetworkTransactionId` as new field on subfield transaction response.
 * Add support for `ExternalVaultRequest` for TransactionRequest
+* Add support for `LocalPaymentCompleted` webhook notifications.
 
 ## 2.83.1
 * Restore Javadoc
