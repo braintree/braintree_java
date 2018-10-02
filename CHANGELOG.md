@@ -6,6 +6,7 @@
 * Add `getNetworkTransactionId` as new field on subfield transaction response.
 * Add support for `ExternalVaultRequest` for TransactionRequest
 * Add support for `LocalPaymentCompleted` webhook notifications.
+* Close FileInputStream in `addFilePart` if an exception occurs when reading.
 
 ## 2.83.1
 * Restore Javadoc
