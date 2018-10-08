@@ -181,6 +181,7 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertNotNull(foundNonce.getThreeDSecureInfo().getCAVV());
         assertNotNull(foundNonce.getThreeDSecureInfo().getXID());
         assertNotNull(foundNonce.getThreeDSecureInfo().getECIFlag());
+        assertNotNull(foundNonce.getThreeDSecureInfo().getThreeDSecureVersion());
     }
 
     @Test
