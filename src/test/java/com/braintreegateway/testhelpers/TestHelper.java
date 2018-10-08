@@ -464,7 +464,7 @@ public abstract class TestHelper {
             Map<String, Object> json = JSON.std.mapFrom(clientToken);
             URL url = new URL(((Map) json.get("braintree_api")).get("url") + "/tokens");
             String token = (String) ((Map) json.get("braintree_api")).get("access_token");
-            SSLContext sc = SSLContext.getInstance("TLSv1.1");
+            SSLContext sc = SSLContext.getInstance("TLSv1.2");
             sc.init(null, null, null);
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             connection.setSSLSocketFactory(sc.getSocketFactory());
@@ -515,7 +515,7 @@ public abstract class TestHelper {
             Map<String, Object> json = JSON.std.mapFrom(clientToken);
             URL url = new URL(((Map) json.get("braintree_api")).get("url") + "/tokens");
             String token = (String) ((Map) json.get("braintree_api")).get("access_token");
-            SSLContext sc = SSLContext.getInstance("TLSv1.1");
+            SSLContext sc = SSLContext.getInstance("TLSv1.2");
             sc.init(null, null, null);
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             connection.setSSLSocketFactory(sc.getSocketFactory());
@@ -595,7 +595,7 @@ public abstract class TestHelper {
             Map<String, Object> json = JSON.std.mapFrom(clientToken);
             URL url = new URL(((Map) json.get("braintree_api")).get("url") + "/ideal-payments");
             String token = (String) ((Map) json.get("braintree_api")).get("access_token");
-            SSLContext sc = SSLContext.getInstance("TLSv1.1");
+            SSLContext sc = SSLContext.getInstance("TLSv1.2");
             sc.init(null, null, null);
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             connection.setSSLSocketFactory(sc.getSocketFactory());
