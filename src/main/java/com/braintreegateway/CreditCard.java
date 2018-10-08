@@ -21,6 +21,7 @@ public class CreditCard implements PaymentMethod {
         CHINA_UNION_PAY("China UnionPay"),
         DINERS_CLUB_INTERNATIONAL("Diners Club"),
         DISCOVER("Discover"),
+        ELO("Elo"),
         JCB("JCB"),
         LASER("Laser"),
         UK_MAESTRO("UK Maestro"),

@@ -60,6 +60,8 @@ public class TransactionRequest extends Request {
 
     private List<TransactionLineItemRequest> transactionLineItemRequests;
 
+    private ExternalVaultRequest externalVaultRequest;
+
     public TransactionRequest() {
         this.customFields = new HashMap<String, String>();
         this.threeDSecureTransaction = false;
@@ -279,6 +281,12 @@ public class TransactionRequest extends Request {
         return applePayCardRequest;
     }
 
+    public ExternalVaultRequest externalVault() {
+        ExternalVaultRequest externalVaultRequest = new ExternalVaultRequest(this);
+        this.externalVaultRequest = externalVaultRequest;
+        return externalVaultRequest;
+    }
+
     @Override
     public String toQueryString() {
         return toQueryString("transaction");
@@ -338,7 +346,8 @@ public class TransactionRequest extends Request {
             addElement("sharedShippingAddressId", sharedShippingAddressId).
             addElement("sharedBillingAddressId", sharedBillingAddressId).
             addElement("serviceFeeAmount", serviceFeeAmount).
-            addElement("riskData", riskDataTransactionRequest);
+            addElement("riskData", riskDataTransactionRequest).
+            addElement("externalVault", externalVaultRequest);
 
         if (!customFields.isEmpty()) {
             builder.addElement("customFields", customFields);

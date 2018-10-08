@@ -38,7 +38,7 @@ public class TrUtilTest {
 
     @Test
     public void apiVersionIsCorrectInTrData() {
-        TestHelper.assertIncludes("api_version=4", new TrUtil(configuration).buildTrData(new TransactionRequest(), "http://google.com"));
+        TestHelper.assertIncludes("api_version=5", new TrUtil(configuration).buildTrData(new TransactionRequest(), "http://google.com"));
     }
 
     @Test

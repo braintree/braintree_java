@@ -1,3 +1,13 @@
+## 2.84.0
+* Add `lastFour` to `PaymentMethodNonceDetails`
+* Remove final specification from `MerchantAccountGateway` (#64)
+* Fix dispute results in transactions not showing the correct status sometimes
+* Pass response message to http error (#66)
+* Add `getNetworkTransactionId` as new field on subfield transaction response.
+* Add support for `ExternalVaultRequest` for TransactionRequest
+* Add support for `LocalPaymentCompleted` webhook notifications.
+* Close FileInputStream in `addFilePart` if an exception occurs when reading.
+
 ## 2.83.1
 * Restore Javadoc
 

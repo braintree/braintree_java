@@ -7,7 +7,7 @@ import java.util.Arrays;
  */
 public class Environment {
     /** For Braintree internal development. */
-    public static final Environment DEVELOPMENT = new Environment(developmentBaseURL() + ":" + developmentPort(), "http://auth.venmo.dev:9292", new String[]{"ssl/atmosphere.server.crt"}, "development", developmentGraphQLURL());
+    public static final Environment DEVELOPMENT = new Environment(developmentBaseURL() + ":" + developmentPort(), "http://auth.venmo.dev:9292", new String[]{}, "development", developmentGraphQLURL());
     public static final Environment QA = new Environment("https://gateway.qa.braintreepayments.com:443", "https://auth.qa.venmo.com", new String[]{"ssl/api_braintreegateway_com.ca.crt", "ssl/payments_braintreeapi_com.ca.crt"}, "qa", "https://payments-qa.dev.braintree-api.com/graphql");
 
     /** For production. */
@@ -53,7 +53,7 @@ public class Environment {
         if (System.getenv().get("GRAPHQL_URL") != null) {
             return System.getenv().get("GRAPHQL_URL");
         } else {
-            return "https://atmosphere.bt.local:8080/graphql";
+            return "http://graphql.bt.local:8080/graphql";
         }
     }
 
