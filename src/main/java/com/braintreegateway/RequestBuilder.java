@@ -73,7 +73,7 @@ public class RequestBuilder {
             }
             return wrapInXMLTag(name, xml.toString(), "array");
         } else {
-            return String.format("<%s>%s</%s>", xmlEscape(name), element == null ? "" : xmlEscape(element.toString()), xmlEscape(name));
+            return String.format("<%s>%s</%s>", xmlEscape(name), xmlEscape(element.toString()), xmlEscape(name));
         }
     }
 
