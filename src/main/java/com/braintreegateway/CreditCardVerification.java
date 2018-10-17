@@ -22,6 +22,7 @@ public class CreditCardVerification {
     private GatewayRejectionReason gatewayRejectionReason;
     private String processorResponseCode;
     private String processorResponseText;
+    private ProcessorResponseType processorResponseType;
     private String merchantAccountId;
     private Status status;
     private String id;
@@ -40,6 +41,7 @@ public class CreditCardVerification {
         this.gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"), GatewayRejectionReason.UNRECOGNIZED);
         this.processorResponseCode = node.findString("processor-response-code");
         this.processorResponseText = node.findString("processor-response-text");
+        this.processorResponseType = EnumUtils.findByName(ProcessorResponseType.class, node.findString("processor-response-type"), ProcessorResponseType.UNRECOGNIZED);
         this.merchantAccountId = node.findString("merchant-account-id");
         this.status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);
         this.id = node.findString("id");
@@ -117,6 +119,10 @@ public class CreditCardVerification {
 
     public String getProcessorResponseText() {
         return processorResponseText;
+    }
+
+    public ProcessorResponseType getProcessorResponseType() {
+        return processorResponseType;
     }
 
     public String getMerchantAccountId() {

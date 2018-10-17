@@ -7,6 +7,7 @@
 * Add support for `ExternalVaultRequest` for TransactionRequest
 * Add support for `LocalPaymentCompleted` webhook notifications.
 * Close FileInputStream in `addFilePart` if an exception occurs when reading.
+* Add `ProcessorResponseType` to `Transaction`, `AuthorizationAdjustment`, and `CreditCardVerification`.
 
 ## 2.83.1
 * Restore Javadoc
