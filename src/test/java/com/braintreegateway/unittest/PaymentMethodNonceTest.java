@@ -131,8 +131,8 @@ public class PaymentMethodNonceTest {
         PaymentMethodNonce paymentMethodNonce = new PaymentMethodNonce(nodeWrapper);
 
         assertNotNull(paymentMethodNonce);
-        assertEquals("CreditCard", paymentMethodNonce.getType());
-        assertEquals("fake-valid-nonce", paymentMethodNonce.getNonce());
+        assertEquals("VenmoAccount", paymentMethodNonce.getType());
+        assertEquals("fake-venmo-account-nonce", paymentMethodNonce.getNonce());
         assertEquals(false, paymentMethodNonce.isConsumed());
         assertNotNull(paymentMethodNonce.getDetails());
         assertEquals("22", paymentMethodNonce.getDetails().getLastTwo());
