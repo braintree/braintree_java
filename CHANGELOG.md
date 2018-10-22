@@ -1,3 +1,6 @@
+## unreleased
+* Add venmo account details to payment method nonce model
+
 ## 2.84.0
 * Add `lastFour` to `PaymentMethodNonceDetails`
 * Remove final specification from `MerchantAccountGateway` (#64)

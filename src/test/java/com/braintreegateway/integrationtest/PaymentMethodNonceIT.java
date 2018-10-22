@@ -59,6 +59,20 @@ public class PaymentMethodNonceIT extends IntegrationTest {
     }
 
     @Test
+    public void findVenmoAccountNonceReturnsValidValues() {
+        String nonceString = "fake-venmo-account-nonce";
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
+        assertNotNull(nonce);
+        assertEquals(nonceString, nonce.getNonce());
+        assertEquals(false, nonce.isConsumed());
+        assertEquals(false, nonce.isDefault());
+        assertNotNull(nonce.getDetails());
+        assertEquals("99", nonce.getDetails().getLastTwo());
+        assertEquals("venmojoe", nonce.getDetails().getUsername());
+        assertEquals("Venmo-Joe-1", nonce.getDetails().getVenmoUserId());
+    }
+
+    @Test
     public void findCreditCardNonceReturnsValidBinDataPrepaidValue() {
         String nonceString = "fake-valid-prepaid-nonce";
         PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
