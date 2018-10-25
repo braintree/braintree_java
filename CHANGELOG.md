@@ -1,4 +1,4 @@
-## unreleased
+## 2.84.1
 * Add venmo account details to payment method nonce model
 
 ## 2.84.0
