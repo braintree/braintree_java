@@ -5,6 +5,7 @@
 
 ## 2.86.0
 * Add `authorizationExpiresAt` to `Transaction`
+* Add `travel_flight` support to industry-specific data
 
 ## 2.85.0
 * Add venmo account details to payment method nonce model
