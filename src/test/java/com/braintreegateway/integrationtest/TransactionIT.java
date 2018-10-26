@@ -29,6 +29,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     public static final String DISPUTED_TRANSACTION_ID = "disputedtransaction";
     public static final String TWO_DISPUTE_TRANSACTION_ID = "2disputetransaction";
     public static final String AUTH_ADJUSTMENT_TRANSACTION_ID = "authadjustmenttransaction";
+    public static final String AUTH_ADJUSTMENT_SOFT_DECLINED_TRANSACTION_ID = "authadjustmenttransactionsoftdeclined";
+    public static final String AUTH_ADJUSTMENT_HARD_DECLINED_TRANSACTION_ID = "authadjustmenttransactionharddeclined";
 
     @SuppressWarnings("deprecation")
     @Test
@@ -200,6 +202,9 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(transaction.getProcessorAuthorizationCode());
         assertEquals(Transaction.Type.SALE, transaction.getType());
         assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        assertEquals("1000", transaction.getProcessorResponseCode());
+        assertEquals("Approved", transaction.getProcessorResponseText());
+        assertEquals(ProcessorResponseType.APPROVED, transaction.getProcessorResponseType());
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
 
@@ -1300,7 +1305,38 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.PROCESSOR_DECLINED, transaction.getStatus());
         assertEquals("2000", transaction.getProcessorResponseCode());
         assertNotNull(transaction.getProcessorResponseText());
+        assertEquals("Do Not Honor", transaction.getProcessorResponseText());
+        assertEquals(ProcessorResponseType.SOFT_DECLINED, transaction.getProcessorResponseType());
         assertEquals("2000 : Do Not Honor", transaction.getAdditionalProcessorResponse());
+
+        CreditCard creditCard = transaction.getCreditCard();
+        assertEquals("411111", creditCard.getBin());
+        assertEquals("1111", creditCard.getLast4());
+        assertEquals("05", creditCard.getExpirationMonth());
+        assertEquals("2009", creditCard.getExpirationYear());
+        assertEquals("05/2009", creditCard.getExpirationDate());
+    }
+
+    @Test
+    public void saleHardDeclined() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.HARD_DECLINE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        assertEquals(new BigDecimal("2015.00"), transaction.getAmount());
+        assertEquals(Transaction.Status.PROCESSOR_DECLINED, transaction.getStatus());
+        assertEquals("2015", transaction.getProcessorResponseCode());
+        assertNotNull(transaction.getProcessorResponseText());
+        assertEquals("Transaction Not Allowed", transaction.getProcessorResponseText());
+        assertEquals(ProcessorResponseType.HARD_DECLINED, transaction.getProcessorResponseType());
+        assertEquals("2015 : Transaction Not Allowed", transaction.getAdditionalProcessorResponse());
 
         CreditCard creditCard = transaction.getCreditCard();
         assertEquals("411111", creditCard.getBin());
@@ -3687,7 +3723,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void findWithAuthAdjustments() throws Exception {
+    public void findWithAuthAdjustmentApproved() throws Exception {
         Transaction foundTransaction = gateway.transaction().find(AUTH_ADJUSTMENT_TRANSACTION_ID);
         List<AuthorizationAdjustment> authorizationAdjustments = foundTransaction.getAuthorizationAdjustments();
         AuthorizationAdjustment authorizationAdjustment = authorizationAdjustments.get(0);
@@ -3697,6 +3733,35 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), authorizationAdjustment.getTimestamp().get(Calendar.YEAR));
         assertEquals("1000", authorizationAdjustment.getProcessorResponseCode());
         assertEquals("Approved", authorizationAdjustment.getProcessorResponseText());
+        assertEquals(ProcessorResponseType.APPROVED, authorizationAdjustment.getProcessorResponseType());
+    }
+
+    @Test
+    public void findWithAuthAdjustmentSoftDeclined() throws Exception {
+        Transaction foundTransaction = gateway.transaction().find(AUTH_ADJUSTMENT_SOFT_DECLINED_TRANSACTION_ID);
+        List<AuthorizationAdjustment> authorizationAdjustments = foundTransaction.getAuthorizationAdjustments();
+        AuthorizationAdjustment authorizationAdjustment = authorizationAdjustments.get(0);
+
+        assertEquals(new BigDecimal("-20.00"), authorizationAdjustment.getAmount());
+        assertEquals(false, authorizationAdjustment.isSuccess());
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), authorizationAdjustment.getTimestamp().get(Calendar.YEAR));
+        assertEquals("3000", authorizationAdjustment.getProcessorResponseCode());
+        assertEquals("Processor Network Unavailable - Try Again", authorizationAdjustment.getProcessorResponseText());
+        assertEquals(ProcessorResponseType.SOFT_DECLINED, authorizationAdjustment.getProcessorResponseType());
+    }
+
+    @Test
+    public void findWithAuthAdjustmentHardDeclined() throws Exception {
+        Transaction foundTransaction = gateway.transaction().find(AUTH_ADJUSTMENT_HARD_DECLINED_TRANSACTION_ID);
+        List<AuthorizationAdjustment> authorizationAdjustments = foundTransaction.getAuthorizationAdjustments();
+        AuthorizationAdjustment authorizationAdjustment = authorizationAdjustments.get(0);
+
+        assertEquals(new BigDecimal("-20.00"), authorizationAdjustment.getAmount());
+        assertEquals(false, authorizationAdjustment.isSuccess());
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), authorizationAdjustment.getTimestamp().get(Calendar.YEAR));
+        assertEquals("2015", authorizationAdjustment.getProcessorResponseCode());
+        assertEquals("Transaction Not Allowed", authorizationAdjustment.getProcessorResponseText());
+        assertEquals(ProcessorResponseType.HARD_DECLINED, authorizationAdjustment.getProcessorResponseType());
     }
 
     @Test

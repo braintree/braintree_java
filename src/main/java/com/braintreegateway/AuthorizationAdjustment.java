@@ -1,5 +1,6 @@
 package com.braintreegateway;
 
+import com.braintreegateway.util.EnumUtils;
 import com.braintreegateway.util.NodeWrapper;
 
 import java.math.BigDecimal;
@@ -11,6 +12,7 @@ public class AuthorizationAdjustment {
     private Calendar timestamp;
     private String processorResponseCode;
     private String processorResponseText;
+    private ProcessorResponseType processorResponseType;
 
     public AuthorizationAdjustment(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -18,6 +20,7 @@ public class AuthorizationAdjustment {
         timestamp = node.findDateTime("timestamp");
         processorResponseCode = node.findString("processor-response-code");
         processorResponseText = node.findString("processor-response-text");
+        processorResponseType = EnumUtils.findByName(ProcessorResponseType.class, node.findString("processor-response-type"), ProcessorResponseType.UNRECOGNIZED);
     }
 
     public BigDecimal getAmount() {
@@ -38,5 +41,9 @@ public class AuthorizationAdjustment {
 
     public String getProcessorResponseText() {
         return processorResponseText;
+    }
+
+    public ProcessorResponseType getProcessorResponseType() {
+        return processorResponseType;
     }
 }

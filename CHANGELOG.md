@@ -1,3 +1,6 @@
+## 2.84.1
+* Add venmo account details to payment method nonce model
+
 ## 2.84.0
 * Add `lastFour` to `PaymentMethodNonceDetails`
 * Remove final specification from `MerchantAccountGateway` (#64)
@@ -7,6 +10,7 @@
 * Add support for `ExternalVaultRequest` for TransactionRequest
 * Add support for `LocalPaymentCompleted` webhook notifications.
 * Close FileInputStream in `addFilePart` if an exception occurs when reading.
+* Add `ProcessorResponseType` to `Transaction`, `AuthorizationAdjustment`, and `CreditCardVerification`.
 
 ## 2.83.1
 * Restore Javadoc

@@ -3,6 +3,7 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
+import com.braintreegateway.SandboxValues.FailsVerification;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.Test;
@@ -47,6 +48,44 @@ public class CreditCardVerificationIT extends IntegrationTest {
         assertTrue(result.isSuccess());
         CreditCardVerification verification = result.getTarget();
         assertEquals(verification.getBillingAddress().getPostalCode(), "60606");
+        assertEquals("1000", verification.getProcessorResponseCode());
+        assertEquals("Approved", verification.getProcessorResponseText());
+        assertEquals(ProcessorResponseType.APPROVED, verification.getProcessorResponseType());
+    }
+
+    @Test
+    public void createVerificationDeclined() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(FailsVerification.MASTER_CARD.number).
+                expirationDate("05/2009").
+                cvv("123").
+                billingAddress().
+                    company("Braintree").
+                    countryCodeAlpha2("US").
+                    countryCodeAlpha3("USA").
+                    countryCodeNumeric("840").
+                    countryName("United States of America").
+                    extendedAddress("Unit B").
+                    firstName("John").
+                    lastName("Smith").
+                    locality("San Francisco").
+                    postalCode("60606").
+                    region("CA").
+                    streetAddress("123 Townsend St").
+                    done().
+                done().
+            options().
+                amount("5.00").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertFalse(result.isSuccess());
+        CreditCardVerification verification = result.getCreditCardVerification();
+        assertEquals(verification.getBillingAddress().getPostalCode(), "60606");
+        assertEquals("2000", verification.getProcessorResponseCode());
+        assertEquals("Do Not Honor", verification.getProcessorResponseText());
+        assertEquals(ProcessorResponseType.SOFT_DECLINED, verification.getProcessorResponseType());
     }
 
     @Test
