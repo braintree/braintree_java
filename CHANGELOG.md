@@ -1,5 +1,6 @@
-## 2.84.1
+## 2.85.0
 * Add venmo account details to payment method nonce model
+* Add `ProcessorResponseType` to `Transaction`, `AuthorizationAdjustment`, and `CreditCardVerification`.
 
 ## 2.84.0
 * Add `lastFour` to `PaymentMethodNonceDetails`
