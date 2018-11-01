@@ -205,6 +205,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("1000", transaction.getProcessorResponseCode());
         assertEquals("Approved", transaction.getProcessorResponseText());
         assertEquals(ProcessorResponseType.APPROVED, transaction.getProcessorResponseType());
+        assertNotNull(transaction.getAuthorizationExpiresAt());
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
 
@@ -236,6 +237,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(transaction.getProcessorAuthorizationCode());
         assertEquals(Transaction.Type.SALE, transaction.getType());
         assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        assertNotNull(transaction.getAuthorizationExpiresAt());
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
 
