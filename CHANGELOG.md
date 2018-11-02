@@ -1,4 +1,4 @@
-## unreleased
+## 2.86.0
 * Add `authorizationExpiresAt` to `Transaction`
 
 ## 2.85.0
