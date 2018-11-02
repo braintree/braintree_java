@@ -1,3 +1,6 @@
+## 2.86.0
+* Add `authorizationExpiresAt` to `Transaction`
+
 ## 2.85.0
 * Add venmo account details to payment method nonce model
 * Add `ProcessorResponseType` to `Transaction`, `AuthorizationAdjustment`, and `CreditCardVerification`.

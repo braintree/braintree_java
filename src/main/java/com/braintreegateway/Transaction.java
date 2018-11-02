@@ -189,6 +189,7 @@ public class Transaction {
     private FacilitatedDetails facilitatedDetails;
     private FacilitatorDetails facilitatorDetails;
     private String networkTransactionId;
+    private Calendar authorizationExpiresAt;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -343,6 +344,8 @@ public class Transaction {
         }
 
         networkTransactionId = node.findString("network-transaction-id");
+
+        authorizationExpiresAt = node.findDateTime("authorization-expires-at");
     }
 
     public List<AddOn> getAddOns() {
@@ -669,5 +672,9 @@ public class Transaction {
 
     public String getNetworkTransactionId() {
         return networkTransactionId;
+    }
+
+    public Calendar getAuthorizationExpiresAt() {
+        return authorizationExpiresAt;
     }
 }

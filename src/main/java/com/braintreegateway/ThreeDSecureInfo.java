@@ -11,6 +11,7 @@ public class ThreeDSecureInfo {
     private String cavv;
     private String eciFlag;
     private String xid;
+    private String threeDSecureVersion;
 
     public ThreeDSecureInfo(NodeWrapper node) {
         liabilityShifted = node.findBoolean("liability-shifted");
@@ -20,6 +21,7 @@ public class ThreeDSecureInfo {
         cavv = node.findString("cavv");
         eciFlag = node.findString("eci-flag");
         xid = node.findString("xid");
+        threeDSecureVersion = node.findString("three-d-secure-version");
     }
 
     public String getStatus() {
@@ -48,5 +50,9 @@ public class ThreeDSecureInfo {
 
     public String getXID() {
         return xid;
+    }
+
+    public String getThreeDSecureVersion() {
+        return threeDSecureVersion;
     }
 }
