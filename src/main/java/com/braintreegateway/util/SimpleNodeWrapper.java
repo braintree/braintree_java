@@ -117,6 +117,17 @@ public class SimpleNodeWrapper extends NodeWrapper {
     }
 
     @Override
+    public List<NodeWrapper> getChildren() {
+        List<NodeWrapper> nodes = new LinkedList<NodeWrapper>();
+        for (Object o: content) {
+            if (o instanceof NodeWrapper) {
+                nodes.add((NodeWrapper) o);
+            }
+        }
+        return nodes;
+    }
+
+    @Override
     public String getElementName() {
         return name;
     }

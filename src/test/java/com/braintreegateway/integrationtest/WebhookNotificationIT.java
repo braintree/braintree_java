@@ -547,6 +547,122 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test
+    public void createsSampleNotificationForGrantedCreditCardRevoked() {
+        String webhookXmlResponse = "<notification>"
+            + "<source-merchant-id>12345</source-merchant-id>"
+            + "<timestamp type='datetime'>2018-10-10T22:46:41Z</timestamp>"
+            + "<kind>granted_payment_instrument_revoked</kind>"
+            + "<subject>"
+            + "<credit-card>"
+            + "<bin>555555</bin>"
+            + "<card-type>MasterCard</card-type>"
+            + "<cardholder-name>Amber Ankunding</cardholder-name>"
+            + "<commercial>Unknown</commercial>"
+            + "<country-of-issuance>Unknown</country-of-issuance>"
+            + "<created-at type='datetime'>2018-10-10T22:46:41Z</created-at>"
+            + "<customer-id>credit_card_customer_id</customer-id>"
+            + "<customer-location>US</customer-location>"
+            + "<debit>Unknown</debit>"
+            + "<default type='boolean'>true</default>"
+            + "<durbin-regulated>Unknown</durbin-regulated>"
+            + "<expiration-month>06</expiration-month>"
+            + "<expiration-year>2020</expiration-year>"
+            + "<expired type='boolean'>false</expired>"
+            + "<global-id>cGF5bWVudG1ldGhvZF8zcHQ2d2hz</global-id>"
+            + "<healthcare>Unknown</healthcare>"
+            + "<image-url>https://assets.braintreegateway.com/payment_method_logo/mastercard.png?environment=test</image-url>"
+            + "<issuing-bank>Unknown</issuing-bank>"
+            + "<last-4>4444</last-4>"
+            + "<payroll>Unknown</payroll>"
+            + "<prepaid>Unknown</prepaid>"
+            + "<product-id>Unknown</product-id>"
+            + "<subscriptions type='array'/>"
+            + "<token>credit_card_token</token>"
+            + "<unique-number-identifier>08199d188e37460163207f714faf074a</unique-number-identifier>"
+            + "<updated-at type='datetime'>2018-10-10T22:46:41Z</updated-at>"
+            + "<venmo-sdk type='boolean'>false</venmo-sdk>"
+            + "<verifications type='array'/>"
+            + "</credit-card>"
+            + "</subject>"
+            + "</notification>";
+        NodeWrapper webhookResponseNode = NodeWrapperFactory.instance.create(webhookXmlResponse);
+        WebhookNotification notification = new WebhookNotification(webhookResponseNode);
+        assertEquals(WebhookNotification.Kind.GRANTED_PAYMENT_INSTRUMENT_REVOKED, notification.getKind());
+
+        RevokedPaymentMethodMetadata metadata = notification.getRevokedPaymentMethodMetadata();
+
+        assertEquals("credit_card_token", metadata.getToken());
+        assertEquals("credit_card_customer_id", metadata.getCustomerId());
+        assertTrue(metadata.getRevokedPaymentMethod() instanceof CreditCard);
+    }
+
+    @Test
+    public void createsSampleNotificationForGrantedPayPalAccountRevoked() {
+        String webhookXmlResponse = "<notification>"
+            + "<source-merchant-id>12345</source-merchant-id>"
+            + "<timestamp type='datetime'>2018-10-10T22:46:41Z</timestamp>"
+            + "<kind>granted_payment_instrument_revoked</kind>"
+            + "<subject>"
+            + "<paypal-account>"
+            + "<billing-agreement-id>billing_agreement_id</billing-agreement-id>"
+            + "<created-at type='dateTime'>2018-10-11T21:10:33Z</created-at>"
+            + "<customer-id>paypal_customer_id</customer-id>"
+            + "<default type='boolean'>true</default>"
+            + "<email>johndoe@example.com</email>"
+            + "<global-id>cGF5bWVudG1ldGhvZF9wYXlwYWxfdG9rZW4</global-id>"
+            + "<image-url>https://jsdk.bt.local:9000/payment_method_logo/paypal.png?environment=test</image-url>"
+            + "<subscriptions type='array'></subscriptions>"
+            + "<token>paypal_token</token>"
+            + "<updated-at type='dateTime'>2018-10-11T21:10:33Z</updated-at>"
+            + "<payer-id>a6a8e1a4</payer-id>"
+            + "</paypal-account>"
+            + "</subject>"
+            + "</notification>";
+        NodeWrapper webhookResponseNode = NodeWrapperFactory.instance.create(webhookXmlResponse);
+        WebhookNotification notification = new WebhookNotification(webhookResponseNode);
+        assertEquals(WebhookNotification.Kind.GRANTED_PAYMENT_INSTRUMENT_REVOKED, notification.getKind());
+
+        RevokedPaymentMethodMetadata metadata = notification.getRevokedPaymentMethodMetadata();
+
+        assertEquals("paypal_token", metadata.getToken());
+        assertEquals("paypal_customer_id", metadata.getCustomerId());
+        assertTrue(metadata.getRevokedPaymentMethod() instanceof PayPalAccount);
+    }
+
+    @Test
+    public void createsSampleNotificationForGrantedVenmoAccountRevoked() {
+        String webhookXmlResponse = "<notification>"
+            + "<source-merchant-id>12345</source-merchant-id>"
+            + "<timestamp type='datetime'>2018-10-10T22:46:41Z</timestamp>"
+            + "<kind>granted_payment_instrument_revoked</kind>"
+            + "<subject>"
+            + "<venmo-account>"
+            + "<created-at type='dateTime'>2018-10-11T21:28:37Z</created-at>"
+            + "<updated-at type='dateTime'>2018-10-11T21:28:37Z</updated-at>"
+            + "<default type='boolean'>true</default>"
+            + "<image-url>https://jsdk.bt.local:9000/payment_method_logo/venmo.png?environment=test</image-url>"
+            + "<token>venmo_token</token>"
+            + "<source-description>Venmo Account: venmojoe</source-description>"
+            + "<username>venmojoe</username>"
+            + "<venmo-user-id>456</venmo-user-id>"
+            + "<subscriptions type='array'/>"
+            + "<customer-id>venmo_customer_id</customer-id>"
+            + "<global-id>cGF5bWVudG1ldGhvZF92ZW5tb2FjY291bnQ</global-id>"
+            + "</venmo-account>"
+            + "</subject>"
+            + "</notification>";
+        NodeWrapper webhookResponseNode = NodeWrapperFactory.instance.create(webhookXmlResponse);
+        WebhookNotification notification = new WebhookNotification(webhookResponseNode);
+        assertEquals(WebhookNotification.Kind.GRANTED_PAYMENT_INSTRUMENT_REVOKED, notification.getKind());
+
+        RevokedPaymentMethodMetadata metadata = notification.getRevokedPaymentMethodMetadata();
+
+        assertEquals("venmo_token", metadata.getToken());
+        assertEquals("venmo_customer_id", metadata.getCustomerId());
+        assertTrue(metadata.getRevokedPaymentMethod() instanceof VenmoAccount);
+    }
+
+    @Test
     public void createsLocalPaymentCompleted() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.LOCAL_PAYMENT_COMPLETED, "my_id");
 
