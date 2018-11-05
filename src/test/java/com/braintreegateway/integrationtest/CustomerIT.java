@@ -1535,6 +1535,34 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void updateWithOrderPaymentPayPalAccountNonceAndPayPalOptions() {
+        CustomerRequest request = new CustomerRequest().
+            creditCard().
+                number("4111111111111111").
+                expirationDate("12/12").
+                done();
+
+        Customer customer = gateway.customer().create(request).getTarget();
+        assertEquals(customer.getDefaultPaymentMethod().getToken(), customer.getCreditCards().get(0).getToken());
+
+        String nonce = TestHelper.generateOrderPaymentPayPalNonce(gateway);
+        CustomerRequest updateRequest = new CustomerRequest().
+            paymentMethodNonce(nonce).
+            options().
+                paypal().
+                    payeeEmail("payee@example.com").
+                    orderId("merchant-order-id").
+                    customField("custom merchant field").
+                    description("merchant description").
+                    amount(new BigDecimal("1.23")).
+                    done().
+                done();
+
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+        assertFalse(updateResult.isSuccess());
+    }
+
+    @Test
     public void delete() {
         CustomerRequest request = new CustomerRequest().
             firstName("Mark").
