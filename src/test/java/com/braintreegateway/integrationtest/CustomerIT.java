@@ -757,6 +757,7 @@ public class CustomerIT extends IntegrationTest {
         assertNotNull(card);
         assertNotNull(card.getBin());
         assertNotNull(card.getExpirationMonth());
+        assertNotNull(card.getCardholderName());
         assertEquals(1, foundCustomer.getPaymentMethods().size());
     }
 

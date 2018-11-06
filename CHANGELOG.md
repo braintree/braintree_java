@@ -1,5 +1,6 @@
 ## unreleased
 * Add `GrantedPaymentMethodRevoked` webhook response objects
+* Add missing `getCardholderName` method to ApplePayCard class
 
 ## 2.86.0
 * Add `authorizationExpiresAt` to `Transaction`
