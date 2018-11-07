@@ -73,6 +73,34 @@ public class PaymentMethodNonceIT extends IntegrationTest {
     }
 
     @Test
+    public void findApplePayCardNonceReturnsValidValues() {
+        String nonceString = "fake-apple-pay-visa-nonce";
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
+        assertNotNull(nonce);
+        assertEquals(nonceString, nonce.getNonce());
+        assertEquals(false, nonce.isConsumed());
+        assertEquals(false, nonce.isDefault());
+        assertNotNull(nonce.getDetails());
+        assertEquals("Visa", nonce.getDetails().getCardType());
+        assertEquals("Visa Apple Pay Cardholder", nonce.getDetails().getCardholderName());
+        assertEquals("Visa 8886", nonce.getDetails().getPaymentInstrumentName());
+        assertEquals("81", nonce.getDetails().getDpanLastTwo());
+    }
+
+    @Test
+    public void findPayPalAccountNonceReturnsValidValues() {
+        String nonceString = "fake-paypal-billing-agreement-nonce";
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
+        assertNotNull(nonce);
+        assertEquals(nonceString, nonce.getNonce());
+        assertEquals(false, nonce.isConsumed());
+        assertEquals(false, nonce.isDefault());
+        assertNotNull(nonce.getDetails());
+        assertEquals("jane.doe@paypal.com", nonce.getDetails().getEmail());
+        assertNotNull(nonce.getDetails().getCorrelationId());
+    }
+
+    @Test
     public void findCreditCardNonceReturnsValidBinDataPrepaidValue() {
         String nonceString = "fake-valid-prepaid-nonce";
         PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
