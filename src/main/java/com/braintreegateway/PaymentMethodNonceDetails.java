@@ -5,7 +5,6 @@ import com.braintreegateway.util.NodeWrapper;
 public class PaymentMethodNonceDetails {
     private String cardType;
     private String cardholderName;
-    private String correlationId;
     private String dpanLastTwo;
     private String email;
     private String lastFour;
@@ -17,7 +16,6 @@ public class PaymentMethodNonceDetails {
     public PaymentMethodNonceDetails(NodeWrapper node) {
         cardType = node.findString("card-type");
         cardholderName = node.findString("cardholder-name");
-        correlationId = node.findString("correlation-id");
         dpanLastTwo = node.findString("dpan-last-two");
         email = node.findString("email");
         lastFour = node.findString("last-four");
@@ -33,10 +31,6 @@ public class PaymentMethodNonceDetails {
 
     public String getCardholderName() {
         return cardholderName;
-    }
-
-    public String getCorrelationId() {
-        return correlationId;
     }
 
     public String getDpanLastTwo() {

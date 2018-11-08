@@ -97,7 +97,6 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertEquals(false, nonce.isDefault());
         assertNotNull(nonce.getDetails());
         assertEquals("jane.doe@paypal.com", nonce.getDetails().getEmail());
-        assertNotNull(nonce.getDetails().getCorrelationId());
     }
 
     @Test

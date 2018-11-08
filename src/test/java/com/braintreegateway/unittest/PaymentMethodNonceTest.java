@@ -193,6 +193,5 @@ public class PaymentMethodNonceTest {
         assertEquals(false, paymentMethodNonce.isConsumed());
         assertNotNull(paymentMethodNonce.getDetails());
         assertEquals("jane.doe@paypal.com", paymentMethodNonce.getDetails().getEmail());
-        assertEquals("46676383-b632-4b80-8cfd-d7a35d960888", paymentMethodNonce.getDetails().getCorrelationId());
     }
 }
