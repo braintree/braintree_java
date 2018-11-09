@@ -1,4 +1,4 @@
-## unreleased
+## 2.87.0
 * Add `GrantedPaymentMethodRevoked` webhook response objects
 * Add missing `getCardholderName` method to ApplePayCard class
 * Add missing nonce detail params for non-credit card nonces
