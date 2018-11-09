@@ -11,6 +11,8 @@ public abstract class NodeWrapper {
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String UTC_DESCRIPTOR = "UTC";
 
+    public abstract List<NodeWrapper> getChildren();
+
     public abstract List<NodeWrapper> findAll(String expression);
 
     public List<String> findAllStrings(String expression) {

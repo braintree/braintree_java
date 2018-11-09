@@ -165,6 +165,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(applePayCard.getBin());
         assertNotNull(applePayCard.getCardType());
         assertNotNull(applePayCard.getPaymentInstrumentName());
+        assertNotNull(applePayCard.getCardholderName());
         assertNotNull(applePayCard.getCreatedAt());
         assertNotNull(applePayCard.getUpdatedAt());
         assertNotNull(applePayCard.getExpirationMonth());

@@ -139,4 +139,59 @@ public class PaymentMethodNonceTest {
         assertEquals("venmojoe", paymentMethodNonce.getDetails().getUsername());
         assertEquals("Venmo-Joe-1", paymentMethodNonce.getDetails().getVenmoUserId());
     }
+
+    @Test
+    public void parsesNodeCorrectlyWithApplePayNonce() {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<payment-method-nonce>" +
+                "  <type>ApplePayCard</type>" +
+                "  <nonce>fake-apple-pay-visa-nonce</nonce>" +
+                "  <description></description>" +
+                "  <consumed type=\"boolean\">false</consumed>" +
+                "  <details>" +
+                "    <card-type>Visa</card-type>" +
+                "    <cardholder-name>Visa Apple Pay Cardholder</cardholder-name>" +
+                "    <payment-instrument-name>Visa 8886</payment-instrument-name>" +
+                "    <dpan-last-two>81</dpan-last-two>" +
+                "  </details>" +
+                "</payment-method-nonce>";
+
+        NodeWrapper nodeWrapper = NodeWrapperFactory.instance.create(xml);
+        PaymentMethodNonce paymentMethodNonce = new PaymentMethodNonce(nodeWrapper);
+
+        assertNotNull(paymentMethodNonce);
+        assertEquals("ApplePayCard", paymentMethodNonce.getType());
+        assertEquals("fake-apple-pay-visa-nonce", paymentMethodNonce.getNonce());
+        assertEquals(false, paymentMethodNonce.isConsumed());
+        assertNotNull(paymentMethodNonce.getDetails());
+        assertEquals("Visa", paymentMethodNonce.getDetails().getCardType());
+        assertEquals("Visa Apple Pay Cardholder", paymentMethodNonce.getDetails().getCardholderName());
+        assertEquals("Visa 8886", paymentMethodNonce.getDetails().getPaymentInstrumentName());
+        assertEquals("81", paymentMethodNonce.getDetails().getDpanLastTwo());
+    }
+
+    @Test
+    public void parsesNodeCorrectlyWithPayPalNonce() {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<payment-method-nonce>" +
+                "  <type>PayPalAccount</type>" +
+                "  <nonce>fake-paypal-billing-agreement-nonce</nonce>" +
+                "  <description></description>" +
+                "  <consumed type=\"boolean\">false</consumed>" +
+                "  <details>" +
+                "    <email>jane.doe@paypal.com</email>" +
+                "    <correlation-id>46676383-b632-4b80-8cfd-d7a35d960888</correlation-id>" +
+                "  </details>" +
+                "</payment-method-nonce>";
+
+        NodeWrapper nodeWrapper = NodeWrapperFactory.instance.create(xml);
+        PaymentMethodNonce paymentMethodNonce = new PaymentMethodNonce(nodeWrapper);
+
+        assertNotNull(paymentMethodNonce);
+        assertEquals("PayPalAccount", paymentMethodNonce.getType());
+        assertEquals("fake-paypal-billing-agreement-nonce", paymentMethodNonce.getNonce());
+        assertEquals(false, paymentMethodNonce.isConsumed());
+        assertNotNull(paymentMethodNonce.getDetails());
+        assertEquals("jane.doe@paypal.com", paymentMethodNonce.getDetails().getEmail());
+    }
 }

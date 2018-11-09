@@ -18,6 +18,7 @@ public class ApplePayCard implements PaymentMethod {
     private String expirationYear;
     private boolean expired;
     private String customerId;
+    private String cardholderName;
     private Calendar createdAt;
     private Calendar updatedAt;
     private List<Subscription> subscriptions;
@@ -35,6 +36,7 @@ public class ApplePayCard implements PaymentMethod {
         this.expirationYear = node.findString("expiration-year");
         this.expired = node.findBoolean("expired");
         this.customerId = node.findString("customer-id");
+        this.cardholderName = node.findString("cardholder-name");
         this.createdAt = node.findDateTime("created-at");
         this.updatedAt = node.findDateTime("updated-at");
         this.subscriptions = new ArrayList<Subscription>();
@@ -102,5 +104,9 @@ public class ApplePayCard implements PaymentMethod {
 
     public String getCustomerId() {
         return customerId;
+    }
+
+    public String getCardholderName() {
+        return cardholderName;
     }
 }

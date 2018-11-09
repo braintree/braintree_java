@@ -1573,10 +1573,17 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleWithMultipleValidationErrorsOnSameField() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+            customerId(customer.getId()).
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12");
+        CreditCard creditCard = gateway.creditCard().create(creditCardRequest).getTarget();
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
-            paymentMethodToken("foo").
-            customerId("5").
+            paymentMethodToken(creditCard.getToken()).
+            shipsFromPostalCode("1234$$567890").
             creditCard().
                 number(CreditCardNumber.VISA.number).
                 cvv("321").
@@ -1585,17 +1592,17 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertFalse(result.isSuccess());
-        List<ValidationError> errros = result.getErrors().forObject("transaction").onField("base");
+        List<ValidationError> errors = result.getErrors().forObject("transaction").onField("shipsFromPostalCode");
 
         assertNull(result.getTransaction());
         assertNull(result.getCreditCardVerification());
-        assertEquals(2, errros.size());
+        assertEquals(2, errors.size());
 
         List<ValidationErrorCode> validationErrorCodes = new ArrayList<ValidationErrorCode>();
-        validationErrorCodes.add(errros.get(0).getCode());
-        validationErrorCodes.add(errros.get(1).getCode());
-        assertTrue(validationErrorCodes.contains(ValidationErrorCode.TRANSACTION_PAYMENT_METHOD_CONFLICT_WITH_VENMO_SDK));
-        assertTrue(validationErrorCodes.contains(ValidationErrorCode.TRANSACTION_PAYMENT_METHOD_DOES_NOT_BELONG_TO_CUSTOMER));
+        validationErrorCodes.add(errors.get(0).getCode());
+        validationErrorCodes.add(errors.get(1).getCode());
+        assertTrue(validationErrorCodes.contains(ValidationErrorCode.TRANSACTION_SHIPS_FROM_POSTAL_CODE_INVALID_CHARACTERS));
+        assertTrue(validationErrorCodes.contains(ValidationErrorCode.TRANSACTION_SHIPS_FROM_POSTAL_CODE_IS_TOO_LONG));
     }
 
     @Test
@@ -3417,9 +3424,16 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleWithExternalVaultValidationErrorInvalidPaymentInstrumentWithExternalVault() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+            customerId(customer.getId()).
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12");
+        CreditCard creditCard = gateway.creditCard().create(creditCardRequest).getTarget();
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
-            paymentMethodToken("cc_token").
+            paymentMethodToken(creditCard.getToken()).
             externalVault().
                 vaulted().
                 previousNetworkTransactionId("123456789012345").
