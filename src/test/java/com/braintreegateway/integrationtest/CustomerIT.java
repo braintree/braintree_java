@@ -1559,7 +1559,7 @@ public class CustomerIT extends IntegrationTest {
                 done();
 
         Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
-        assertFalse(updateResult.isSuccess());
+        assertTrue(updateResult.isSuccess());
     }
 
     @Test
