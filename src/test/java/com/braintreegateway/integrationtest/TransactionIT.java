@@ -1913,6 +1913,118 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithTravelFlightIndustryData() {
+        Calendar issuedDate = Calendar.getInstance();
+        issuedDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
+        issuedDate.add(Calendar.MONTH, 1);
+        issuedDate.add(Calendar.DAY_OF_MONTH, 1);
+
+        Calendar legDate1 = Calendar.getInstance();
+        legDate1.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
+        legDate1.add(Calendar.MONTH, 1);
+        legDate1.add(Calendar.DAY_OF_MONTH, 2);
+
+        Calendar legDate2 = Calendar.getInstance();
+        legDate2.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
+        legDate2.add(Calendar.MONTH, 1);
+        legDate2.add(Calendar.DAY_OF_MONTH, 3);
+
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                paymentMethodNonce(Nonce.PayPalOneTimePayment).
+                options().
+                    submitForSettlement(true).
+                    done().
+                industry().
+                    industryType(Transaction.IndustryType.TRAVEL_FLIGHT).
+                    data().
+                        passengerFirstName("John").
+                        passengerLastName("Doe").
+                        passengerMiddleInitial("M").
+                        passengerTitle("Mr.").
+                        issuedDate(issuedDate).
+                        travelAgencyName("Expedia").
+                        travelAgencyCode("12345678").
+                        ticketNumber("ticket-number").
+                        issuingCarrierCode("AA").
+                        customerCode("customer-code").
+                        fareAmount(new BigDecimal("70.00")).
+                        feeAmount(new BigDecimal("10.00")).
+                        taxAmount(new BigDecimal("20.00")).
+                        restrictedTicket(false).
+                        leg().
+                            conjunctionTicket("CJ0001").
+                            exchangeTicket("ET0001").
+                            couponNumber("1").
+                            serviceClass("Y").
+                            carrierCode("AA").
+                            fareBasisCode("W").
+                            flightNumber("AA100").
+                            departureDate(legDate1).
+                            departureAirportCode("MDW").
+                            departureTime("08:00").
+                            arrivalAirportCode("ATX").
+                            arrivalTime("10:00").
+                            stopoverPermitted(false).
+                            fareAmount(new BigDecimal("35.00")).
+                            feeAmount(new BigDecimal("5.00")).
+                            taxAmount(new BigDecimal("10.00")).
+                            endorsementOrRestrictions("NOT REFUNDABLE").
+                            done().
+                        leg().
+                            conjunctionTicket("CJ0002").
+                            exchangeTicket("ET0002").
+                            couponNumber("1").
+                            serviceClass("Y").
+                            carrierCode("AA").
+                            fareBasisCode("W").
+                            flightNumber("AA200").
+                            departureDate(legDate2).
+                            departureAirportCode("ATX").
+                            departureTime("12:00").
+                            arrivalAirportCode("MDW").
+                            arrivalTime("14:00").
+                            stopoverPermitted(false).
+                            fareAmount(new BigDecimal("35.00")).
+                            feeAmount(new BigDecimal("5.00")).
+                            taxAmount(new BigDecimal("10.00")).
+                            endorsementOrRestrictions("NOT REFUNDABLE").
+                            done().
+                        done().
+                    done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void saleWithTravelFlightIndustryDataValidation() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                paymentMethodNonce(Nonce.PayPalOneTimePayment).
+                options().
+                    submitForSettlement(true).
+                    done().
+                industry().
+                    industryType(Transaction.IndustryType.TRAVEL_FLIGHT).
+                    data().
+                        fareAmount(new BigDecimal("-1.23")).
+                        leg().
+                            fareAmount(new BigDecimal("-1.23")).
+                            done().
+                        done().
+                    done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.INDUSTRY_DATA_TRAVEL_FLIGHT_FARE_AMOUNT_CANNOT_BE_NEGATIVE,
+                result.getErrors().forObject("transaction").forObject("industry").onField("fareAmount").get(0).getCode());
+        assertEquals(ValidationErrorCode.INDUSTRY_DATA_LEG_TRAVEL_FLIGHT_FARE_AMOUNT_CANNOT_BE_NEGATIVE,
+                result.getErrors().forObject("transaction").forObject("industry").forObject("legs").forObject("index_0").onField("fareAmount").get(0).getCode());
+    }
+
+    @Test
     public void saleWithLevel2() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
