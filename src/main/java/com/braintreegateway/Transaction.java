@@ -87,7 +87,8 @@ public class Transaction {
 
     public enum IndustryType {
         LODGING("lodging"),
-        TRAVEL_CRUISE("travel_cruise");
+        TRAVEL_CRUISE("travel_cruise"),
+        TRAVEL_FLIGHT("travel_flight");
 
         private final String name;
 
