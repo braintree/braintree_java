@@ -1,3 +1,6 @@
+## Unreleased
+* Add `travel_flight` support to industry-specific data
+
 ## 2.87.0
 * Add `GrantedPaymentMethodRevoked` webhook response objects
 * Add missing `getCardholderName` method to ApplePayCard class
@@ -5,7 +8,6 @@
 
 ## 2.86.0
 * Add `authorizationExpiresAt` to `Transaction`
-* Add `travel_flight` support to industry-specific data
 
 ## 2.85.0
 * Add venmo account details to payment method nonce model
