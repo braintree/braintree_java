@@ -1,4 +1,4 @@
-## Unreleased
+## 2.88.0
 * Add `travel_flight` support to industry-specific data
 
 ## 2.87.0
