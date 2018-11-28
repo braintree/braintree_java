@@ -6118,6 +6118,30 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void createPayPalTransactionWithLocalPaymentContent() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            options().
+                submitForSettlement(true).
+                done().
+            paypalAccount().
+              payerId("fake-payer-id").
+              paymentId("fake-payment-id").
+              done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertEquals("fake-payer-id", saleResult.getTarget().getPayPalDetails().getPayerId());
+        assertEquals("fake-payment-id", saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertEquals(
+            PaymentInstrumentType.PAYPAL_ACCOUNT,
+            saleResult.getTarget().getPaymentInstrumentType()
+        );
+    }
+
+    @Test
     public void createPayPalTransactionWithPayeeId() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
         TransactionRequest request = new TransactionRequest().

@@ -1,4 +1,5 @@
-## unrelease
+## unreleased
+* Allow PayPal payment ID and payer ID to be passed during transaction create
 * Fix bug where SDK expects `granted_payment_instrument_revoked` instead of `granted_payment_method_revoked`
 
 ## 2.88.0
