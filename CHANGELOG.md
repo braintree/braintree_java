@@ -1,3 +1,6 @@
+## unreleased
+* Allow PayPal payment ID and payer ID to be passed during transaction create
+
 ## 2.88.0
 * Add `travel_flight` support to industry-specific data
 
