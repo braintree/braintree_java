@@ -35,7 +35,7 @@ public class WebhookNotification {
         IDEAL_PAYMENT_COMPLETE("ideal_payment_complete"),
         IDEAL_PAYMENT_FAILED("ideal_payment_failed"),
         GRANTED_PAYMENT_INSTRUMENT_UPDATE("granted_payment_instrument_update"),
-        GRANTED_PAYMENT_INSTRUMENT_REVOKED("granted_payment_instrument_revoked"),
+        GRANTED_PAYMENT_METHOD_REVOKED("granted_payment_method_revoked"),
         LOCAL_PAYMENT_COMPLETED("local_payment_completed"),
         UNRECOGNIZED("unrecognized");
 
@@ -130,7 +130,7 @@ public class WebhookNotification {
             this.grantedPaymentInstrumentUpdate = new GrantedPaymentInstrumentUpdate(wrapperNode.findFirst("granted-payment-instrument-update"));
         }
 
-        if (kind == WebhookNotification.Kind.GRANTED_PAYMENT_INSTRUMENT_REVOKED) {
+        if (kind == WebhookNotification.Kind.GRANTED_PAYMENT_METHOD_REVOKED) {
             this.revokedPaymentMethodMetadata = new RevokedPaymentMethodMetadata(wrapperNode);
         }
 
