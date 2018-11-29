@@ -551,7 +551,7 @@ public class WebhookNotificationIT extends IntegrationTest {
         String webhookXmlResponse = "<notification>"
             + "<source-merchant-id>12345</source-merchant-id>"
             + "<timestamp type='datetime'>2018-10-10T22:46:41Z</timestamp>"
-            + "<kind>granted_payment_instrument_revoked</kind>"
+            + "<kind>granted_payment_method_revoked</kind>"
             + "<subject>"
             + "<credit-card>"
             + "<bin>555555</bin>"
@@ -587,7 +587,7 @@ public class WebhookNotificationIT extends IntegrationTest {
             + "</notification>";
         NodeWrapper webhookResponseNode = NodeWrapperFactory.instance.create(webhookXmlResponse);
         WebhookNotification notification = new WebhookNotification(webhookResponseNode);
-        assertEquals(WebhookNotification.Kind.GRANTED_PAYMENT_INSTRUMENT_REVOKED, notification.getKind());
+        assertEquals(WebhookNotification.Kind.GRANTED_PAYMENT_METHOD_REVOKED, notification.getKind());
 
         RevokedPaymentMethodMetadata metadata = notification.getRevokedPaymentMethodMetadata();
 
@@ -601,7 +601,7 @@ public class WebhookNotificationIT extends IntegrationTest {
         String webhookXmlResponse = "<notification>"
             + "<source-merchant-id>12345</source-merchant-id>"
             + "<timestamp type='datetime'>2018-10-10T22:46:41Z</timestamp>"
-            + "<kind>granted_payment_instrument_revoked</kind>"
+            + "<kind>granted_payment_method_revoked</kind>"
             + "<subject>"
             + "<paypal-account>"
             + "<billing-agreement-id>billing_agreement_id</billing-agreement-id>"
@@ -620,7 +620,7 @@ public class WebhookNotificationIT extends IntegrationTest {
             + "</notification>";
         NodeWrapper webhookResponseNode = NodeWrapperFactory.instance.create(webhookXmlResponse);
         WebhookNotification notification = new WebhookNotification(webhookResponseNode);
-        assertEquals(WebhookNotification.Kind.GRANTED_PAYMENT_INSTRUMENT_REVOKED, notification.getKind());
+        assertEquals(WebhookNotification.Kind.GRANTED_PAYMENT_METHOD_REVOKED, notification.getKind());
 
         RevokedPaymentMethodMetadata metadata = notification.getRevokedPaymentMethodMetadata();
 
@@ -634,7 +634,7 @@ public class WebhookNotificationIT extends IntegrationTest {
         String webhookXmlResponse = "<notification>"
             + "<source-merchant-id>12345</source-merchant-id>"
             + "<timestamp type='datetime'>2018-10-10T22:46:41Z</timestamp>"
-            + "<kind>granted_payment_instrument_revoked</kind>"
+            + "<kind>granted_payment_method_revoked</kind>"
             + "<subject>"
             + "<venmo-account>"
             + "<created-at type='dateTime'>2018-10-11T21:28:37Z</created-at>"
@@ -653,7 +653,7 @@ public class WebhookNotificationIT extends IntegrationTest {
             + "</notification>";
         NodeWrapper webhookResponseNode = NodeWrapperFactory.instance.create(webhookXmlResponse);
         WebhookNotification notification = new WebhookNotification(webhookResponseNode);
-        assertEquals(WebhookNotification.Kind.GRANTED_PAYMENT_INSTRUMENT_REVOKED, notification.getKind());
+        assertEquals(WebhookNotification.Kind.GRANTED_PAYMENT_METHOD_REVOKED, notification.getKind());
 
         RevokedPaymentMethodMetadata metadata = notification.getRevokedPaymentMethodMetadata();
 
