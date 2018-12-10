@@ -54,6 +54,7 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertEquals(false, nonce.isConsumed());
         assertEquals(false, nonce.isDefault());
         assertNotNull(nonce.getDetails());
+        assertEquals("401288", nonce.getDetails().getBin());
         assertEquals("81", nonce.getDetails().getLastTwo());
         assertEquals("Visa", nonce.getDetails().getCardType());
     }

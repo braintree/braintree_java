@@ -1,3 +1,6 @@
+## unreleased
+* Add `bin` field to `PaymentMethodNonceDetails`
+
 ## 2.90.0
 * Add `fraudServiceProvider` field to `riskData`
 
