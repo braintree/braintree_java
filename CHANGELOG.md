@@ -1,3 +1,6 @@
+## 2.90.0
+* Add `fraudServiceProvider` field to `riskData`
+
 ## 2.89.0
 * Allow PayPal payment ID and payer ID to be passed during transaction create
 * Fix bug where SDK expects `granted_payment_instrument_revoked` instead of `granted_payment_method_revoked`

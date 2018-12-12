@@ -296,10 +296,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
 
-        assertNotNull(transaction.getRiskData());
-        assertNotNull(transaction.getRiskData().getDecision());
-        assertNotNull(transaction.getRiskData().getDeviceDataCaptured());
-        assertNotNull(transaction.getRiskData().getId());
+        RiskData riskData = transaction.getRiskData();
+        assertEquals("Approve", riskData.getDecision());
+        assertFalse(riskData.getDeviceDataCaptured());
+        assertNotNull(riskData.getId());
+        assertNotNull(riskData.getFraudServiceProvider());
     }
 
     @Test
