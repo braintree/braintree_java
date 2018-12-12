@@ -1,4 +1,4 @@
-unreleased
+## 2.90.0
 * Add `fraudServiceProvider` field to `riskData`
 
 ## 2.89.0

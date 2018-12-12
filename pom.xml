@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.braintreepayments.gateway</groupId>
     <artifactId>braintree-java</artifactId>
-    <version>2.89.1-SNAPSHOT</version>
+    <version>2.90.0-SNAPSHOT</version>
     <description>Java Client Library for Braintree Payments Gateway</description>
     <packaging>bundle</packaging>
     <name>Braintree Gateway Java Client Library</name>
@@ -37,7 +37,7 @@
       <developerConnection>
         ${scmConnection}
       </developerConnection>
-      <tag>2.89.0</tag>
+      <tag>2.90.0</tag>
     </scm>
 
     <distributionManagement>
