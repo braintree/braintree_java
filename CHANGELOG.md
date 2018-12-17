@@ -11,6 +11,7 @@
 * Add `productId` field to `ApplePayDetails`
 * Add `bin` field to `ApplePayDetails`
 * Add `globalId` field to `ApplePayDetails`
+* Add Error indicating pdf uploads too long for dispute evidence.
 
 ## 2.90.0
 * Add `fraudServiceProvider` field to `riskData`
