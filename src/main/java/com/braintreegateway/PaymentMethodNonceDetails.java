@@ -7,6 +7,7 @@ public class PaymentMethodNonceDetails {
     private String cardholderName;
     private String dpanLastTwo;
     private String email;
+    private String bin;
     private String lastFour;
     private String lastTwo;
     private String paymentInstrumentName;
@@ -18,6 +19,7 @@ public class PaymentMethodNonceDetails {
         cardholderName = node.findString("cardholder-name");
         dpanLastTwo = node.findString("dpan-last-two");
         email = node.findString("email");
+        bin = node.findString("bin");
         lastFour = node.findString("last-four");
         lastTwo = node.findString("last-two");
         paymentInstrumentName = node.findString("payment-instrument-name");
@@ -39,6 +41,10 @@ public class PaymentMethodNonceDetails {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getBin() {
+        return bin;
     }
 
     public String getLastTwo() {

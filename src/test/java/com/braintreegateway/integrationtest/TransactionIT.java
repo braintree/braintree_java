@@ -715,6 +715,14 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(transaction.getApplePayDetails().getCardholderName());
         assertNotNull(transaction.getApplePayDetails().getLast4());
         assertNotNull(transaction.getApplePayDetails().getImageUrl());
+        assertNotNull(transaction.getApplePayDetails().getBin());
+        assertNotNull(transaction.getApplePayDetails().getPrepaid());
+        assertNotNull(transaction.getApplePayDetails().getHealthcare());
+        assertNotNull(transaction.getApplePayDetails().getDebit());
+        assertNotNull(transaction.getApplePayDetails().getDurbinRegulated());
+        assertNotNull(transaction.getApplePayDetails().getCommercial());
+        assertNotNull(transaction.getApplePayDetails().getPayroll());
+        assertNotNull(transaction.getApplePayDetails().getProductId());
     }
 
     @Test

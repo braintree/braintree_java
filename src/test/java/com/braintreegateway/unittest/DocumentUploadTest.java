@@ -64,6 +64,22 @@ public class DocumentUploadTest {
     assertTrue("received validation error for file that is too large", validationErrorList.contains(expectedValidationError));
   }
 
+  @Test
+  public void documentUploadCanMapFileIsTooLongResponse() {
+    NodeWrapper nodeWrapper = NodeWrapperFactory.instance.create(FILE_IS_TOO_LONG_RESPONSE);
+
+    Result<DocumentUpload> documentUploadResult = new Result<DocumentUpload>(nodeWrapper, DocumentUpload.class);
+
+    assertFalse(documentUploadResult.isSuccess());
+    List<ValidationError> validationErrorList = documentUploadResult.getErrors().getAllDeepValidationErrors();
+    ValidationError expectedValidationError = new ValidationError(
+      "file",
+      ValidationErrorCode.DOCUMENT_UPLOAD_FILE_IS_TOO_LONG,
+      "PDF page length is limited to 50 pages"
+    );
+    assertTrue("received validation error for file that is too long", validationErrorList.contains(expectedValidationError));
+  }
+
   private String FILE_TYPE_IS_INVALID_RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                                                  + "<api-error-response>\n"
                                                  + "  <errors>\n"
@@ -137,5 +153,30 @@ public class DocumentUploadTest {
                                               + "    <merchant-id>integration_merchant_id</merchant-id>\n"
                                               + "  </params>\n"
                                               + "  <message>File size is limited to 4 MB.</message>\n"
+                                              + "</api-error-response>";
+
+  private String FILE_IS_TOO_LONG_RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                              + "<api-error-response>\n"
+                                              + "  <errors>\n"
+                                              + "    <errors type=\"array\"/>\n"
+                                              + "    <document-upload>\n"
+                                              + "      <errors type=\"array\">\n"
+                                              + "        <error>\n"
+                                              + "          <code>84905</code>\n"
+                                              + "          <attribute type=\"symbol\">file</attribute>\n"
+                                              + "          <message>PDF page length is limited to 50 pages</message>\n"
+                                              + "        </error>\n"
+                                              + "      </errors>\n"
+                                              + "    </document-upload>\n"
+                                              + "  </errors>\n"
+                                              + "  <params>\n"
+                                              + "    <document-upload>\n"
+                                              + "      <kind>identity_document</kind>\n"
+                                              + "    </document-upload>\n"
+                                              + "    <controller>document_uploads</controller>\n"
+                                              + "    <action>create</action>\n"
+                                              + "    <merchant-id>integration_merchant_id</merchant-id>\n"
+                                              + "  </params>\n"
+                                              + "  <message>PDF page length is limited to 50 pages</message>\n"
                                               + "</api-error-response>";
 }

@@ -1,3 +1,18 @@
+## 2.91.0
+* Add `bin` field to `PaymentMethodNonceDetails`
+* Add `prepaid` field to `ApplePayDetails`
+* Add `healthcare` field to `ApplePayDetails`
+* Add `debit` field to `ApplePayDetails`
+* Add `durbinRegulated` field to `ApplePayDetails`
+* Add `commercial` field to `ApplePayDetails`
+* Add `payroll` field to `ApplePayDetails`
+* Add `issuingBank` field to `ApplePayDetails`
+* Add `countryOfIssuance` field to `ApplePayDetails`
+* Add `productId` field to `ApplePayDetails`
+* Add `bin` field to `ApplePayDetails`
+* Add `globalId` field to `ApplePayDetails`
+* Add Error indicating pdf uploads too long for dispute evidence.
+
 ## 2.90.0
 * Add `fraudServiceProvider` field to `riskData`
 
