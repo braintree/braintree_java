@@ -1,4 +1,4 @@
-## unreleased
+## 2.91.0
 * Add `bin` field to `PaymentMethodNonceDetails`
 * Add `prepaid` field to `ApplePayDetails`
 * Add `healthcare` field to `ApplePayDetails`
