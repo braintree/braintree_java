@@ -34,7 +34,11 @@ public class WebhookNotification {
         ACCOUNT_UPDATER_DAILY_REPORT("account_updater_daily_report"),
         IDEAL_PAYMENT_COMPLETE("ideal_payment_complete"),
         IDEAL_PAYMENT_FAILED("ideal_payment_failed"),
+        // NEXT_MAJOR_VERSION remove GRANTED_PAYMENT_INSTRUMENT_UPDATE. Kind is not sent by Braintree Gateway.
+        // Kind will either be GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD or RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD.
         GRANTED_PAYMENT_INSTRUMENT_UPDATE("granted_payment_instrument_update"),
+        GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD("grantor_updated_granted_payment_method"),
+        RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD("recipient_updated_granted_payment_method"),
         GRANTED_PAYMENT_METHOD_REVOKED("granted_payment_method_revoked"),
         LOCAL_PAYMENT_COMPLETED("local_payment_completed"),
         UNRECOGNIZED("unrecognized");

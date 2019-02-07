@@ -1,3 +1,6 @@
+## unreleased
+* Deprecate `GRANTED_PAYMENT_INSTRUMENT_UPDATE` and add `GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD` and `RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD`
+
 ## 2.91.0
 * Add `bin` field to `PaymentMethodNonceDetails`
 * Add `prepaid` field to `ApplePayDetails`
