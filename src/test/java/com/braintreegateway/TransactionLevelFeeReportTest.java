@@ -29,8 +29,8 @@ public class TransactionLevelFeeReportTest {
         assertEquals("USD", firstRow.getPresentmentCurrency());
         assertEquals("USD", firstRow.getSettlementCurrency());
         assertEquals(new BigDecimal("9.27"), firstRow.getSettlementAmount());
-        assertEquals(parseDate("2018-03-14"), firstRow.getSettlementDate());
-        assertEquals(parseDate("2018-03-15"), firstRow.getDisbursementDate());
+        assertEquals(TransactionLevelFeeReportRow.parseDate("2018-03-14"), firstRow.getSettlementDate());
+        assertEquals(TransactionLevelFeeReportRow.parseDate("2018-03-15"), firstRow.getDisbursementDate());
         assertEquals("credit_card", firstRow.getPaymentInstrument());
         assertEquals("MasterCard", firstRow.getCardBrand());
         assertEquals("Debit", firstRow.getCardType());
@@ -75,8 +75,8 @@ public class TransactionLevelFeeReportTest {
         assertEquals("USD", firstRow.getPresentmentCurrency());
         assertEquals("USD", firstRow.getSettlementCurrency());
         assertEquals(new BigDecimal("24.18"), firstRow.getSettlementAmount());
-        assertEquals(parseDate("2018-03-03"), firstRow.getSettlementDate());
-        assertEquals(parseDate("2018-03-06"), firstRow.getDisbursementDate());
+        assertEquals(TransactionLevelFeeReportRow.parseDate("2018-03-03"), firstRow.getSettlementDate());
+        assertEquals(TransactionLevelFeeReportRow.parseDate("2018-03-06"), firstRow.getDisbursementDate());
         assertEquals("credit_card", firstRow.getPaymentInstrument());
         assertEquals("Visa", firstRow.getCardBrand());
         assertEquals("Debit", firstRow.getCardType());
@@ -107,16 +107,27 @@ public class TransactionLevelFeeReportTest {
     }
 
     @Test
+    public void dateDoesntChangeWithTimezone() throws IOException, ParseException {
+      TimeZone originalTimeZone = TimeZone.getDefault();
+      try {
+        TimeZone.setDefault(TimeZone.getTimeZone("America/Chicago"));
+        String url =
+          "file://" + new File("src/test/resources/fixtures/transaction_level_fee_report.csv").getAbsolutePath();
+        TransactionLevelFeeReport report = new TransactionLevelFeeReport(url);
+
+        TransactionLevelFeeReportRow firstRow = report.getRows().get(0);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        assertEquals("2018-03-03", dateFormat.format(firstRow.getSettlementDate().getTime()));
+        assertEquals("2018-03-06", dateFormat.format(firstRow.getDisbursementDate().getTime()));
+      }
+      finally {
+        TimeZone.setDefault(originalTimeZone);
+      }
+    }
+
+    @Test
     public void itHandlesEmptyURLs() throws ParseException, IOException {
         TransactionLevelFeeReport report = new TransactionLevelFeeReport("");
         assertEquals(0, report.getRows().size());
-    }
-
-    private Calendar parseDate(String dateString) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        calendar.setTime(dateFormat.parse(dateString));
-        return calendar;
     }
 }
