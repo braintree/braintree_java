@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 import org.junit.Test;
@@ -110,15 +111,16 @@ public class TransactionLevelFeeReportTest {
     public void dateDoesntChangeWithTimezone() throws IOException, ParseException {
       TimeZone originalTimeZone = TimeZone.getDefault();
       try {
-        TimeZone.setDefault(TimeZone.getTimeZone("America/Chicago"));
         String url =
           "file://" + new File("src/test/resources/fixtures/transaction_level_fee_report.csv").getAbsolutePath();
-        TransactionLevelFeeReport report = new TransactionLevelFeeReport(url);
 
-        TransactionLevelFeeReportRow firstRow = report.getRows().get(0);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        assertEquals("2018-03-03", dateFormat.format(firstRow.getSettlementDate().getTime()));
-        assertEquals("2018-03-06", dateFormat.format(firstRow.getDisbursementDate().getTime()));
+        for (String timezoneId : TimeZone.getAvailableIDs()) {
+          TimeZone.setDefault(TimeZone.getTimeZone(timezoneId));
+          Date time = new TransactionLevelFeeReport(url).getRows().get(0).getDisbursementDate().getTime();
+          assertEquals("Wrong year in timezone " + timezoneId, 118, time.getYear());
+          assertEquals("Wrong month in timezone " + timezoneId, 2, time.getMonth());
+          assertEquals("Wrong date in timezone " + timezoneId, 6, time.getDate());
+        }
       }
       finally {
         TimeZone.setDefault(originalTimeZone);
