@@ -1114,6 +1114,109 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithThreeDSecureAdyenPassThru() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(ADYEN_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("10/2020").
+                cvv("737").
+                done().
+            threeDSecurePassThru().
+                eciFlag("02").
+                cavv("some_cavv").
+                xid("some_xid").
+                authenticationResponse("Y").
+                directoryResponse("Y").
+                cavvAlgorithm("2").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+    }
+
+    @Test
+    public void saleWithThreeDSecureAdyenPassThruMissingAuthenticationResponse() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(ADYEN_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("10/2020").
+                cvv("737").
+                done().
+            threeDSecurePassThru().
+                eciFlag("02").
+                cavv("some_cavv").
+                xid("some_xid").
+                authenticationResponse("").
+                directoryResponse("Y").
+                cavvAlgorithm("2").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_PASS_THRU_AUTHENTICATION_RESPONSE_IS_INVALID,
+                result.getErrors().forObject("transaction").forObject("threeDSecurePassThru").onField("authenticationResponse").get(0).getCode());
+    }
+
+    @Test
+    public void saleWithThreeDSecureAdyenPassThruMissingDirectoryResponse() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(ADYEN_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("10/2020").
+                cvv("737").
+                done().
+            threeDSecurePassThru().
+                eciFlag("02").
+                cavv("some_cavv").
+                xid("some_xid").
+                authenticationResponse("Y").
+                directoryResponse("").
+                cavvAlgorithm("2").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_PASS_THRU_DIRECTORY_RESPONSE_IS_INVALID,
+                result.getErrors().forObject("transaction").forObject("threeDSecurePassThru").onField("directoryResponse").get(0).getCode());
+    }
+
+    public void saleWithThreeDSecureAdyenPassThruMissingCavvAlgorithm() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(ADYEN_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("10/2020").
+                cvv("737").
+                done().
+            threeDSecurePassThru().
+                eciFlag("02").
+                cavv("some_cavv").
+                xid("some_xid").
+                authenticationResponse("Y").
+                directoryResponse("Y").
+                cavvAlgorithm("").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_PASS_THRU_CAVV_ALGORITHM_IS_INVALID,
+                result.getErrors().forObject("transaction").forObject("threeDSecurePassThru").onField("cavvAlgorithm").get(0).getCode());
+    }
+
+    @Test
     public void saleErrorWithThreeDSecurePassThruWhenMerchantAccountDoesNotSupportCardType() {
         TransactionRequest request = new TransactionRequest().
             merchantAccountId("heartland_ma").
