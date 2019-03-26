@@ -1,6 +1,7 @@
 ## unreleased
 * Deprecate `GRANTED_PAYMENT_INSTRUMENT_UPDATE` and add `GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD` and `RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD`
 * Fix bug where dates in the Transaction-Level Fee Report could be parsed incorrectly due to timezone differences
+* Add External Vault and Risk Data to `CreditCardVerificationRequest`
 * Add `prepaid` field to `AndroidPayDetails`
 * Add `healthcare` field to `AndroidPayDetails`
 * Add `debit` field to `AndroidPayDetails`
