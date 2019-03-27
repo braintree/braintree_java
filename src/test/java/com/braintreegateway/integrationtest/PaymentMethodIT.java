@@ -5,13 +5,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.regex.Pattern;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.Nonce;
-import com.braintreegateway.util.NodeWrapper;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -519,6 +517,113 @@ public class PaymentMethodIT extends IntegrationTest {
 
         Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(paymentMethodRequest);
         assertTrue(paymentMethodResult.isSuccess());
+    }
+
+    @Test
+    public void createVerifyAccountTypeCredit() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest request = new CreditCardRequest().
+            number(CreditCardNumber.HIPER.number).
+            expirationMonth("12").
+            expirationYear("2020");
+
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, request, customer.getId(), false);
+
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce).
+            options().
+                verifyCard(true).
+                verificationMerchantAccountId("hiper_brl").
+                verificationAccountType("credit").
+                done();
+
+        Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(paymentMethodRequest);
+        assertTrue(paymentMethodResult.isSuccess());
+        CreditCard creditCard = (CreditCard)paymentMethodResult.getTarget();
+        assertEquals("credit", creditCard.getVerification().getCreditCard().getAccountType());
+    }
+
+    @Test
+    public void createVerifyAccountTypeDebit() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest request = new CreditCardRequest().
+            number(CreditCardNumber.HIPER.number).
+            expirationMonth("12").
+            expirationYear("2020");
+
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, request, customer.getId(), false);
+
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce).
+            options().
+                verifyCard(true).
+                verificationMerchantAccountId("hiper_brl").
+                verificationAccountType("debit").
+                done();
+
+        Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(paymentMethodRequest);
+        assertTrue(paymentMethodResult.isSuccess());
+        CreditCard creditCard = (CreditCard)paymentMethodResult.getTarget();
+        assertEquals("debit", creditCard.getVerification().getCreditCard().getAccountType());
+    }
+
+    @Test
+    public void createVerifyWithErrorAccountTypeIsInvalid() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest request = new CreditCardRequest().
+            number(CreditCardNumber.HIPER.number).
+            expirationMonth("12").
+            expirationYear("2020");
+
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, request, customer.getId(), false);
+
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce).
+            options().
+                verifyCard(true).
+                verificationMerchantAccountId("hiper_brl").
+                verificationAccountType("ach").
+                done();
+
+        Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(paymentMethodRequest);
+        assertFalse(paymentMethodResult.isSuccess());
+        assertEquals(ValidationErrorCode.CREDIT_CARD_OPTIONS_VERIFICATION_ACCOUNT_TYPE_IS_INVALID,
+                paymentMethodResult.getErrors().forObject("credit-card").forObject("options").onField("verification-account-type").get(0).getCode());
+    }
+
+    @Test
+    public void createVerifyWithErrorAccountTypeNotSupported() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest request = new CreditCardRequest().
+            number(CreditCardNumber.VISA.number).
+            expirationMonth("12").
+            expirationYear("2020");
+
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, request, customer.getId(), false);
+
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce).
+            options().
+                verifyCard(true).
+                verificationAccountType("credit").
+                done();
+
+        Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(paymentMethodRequest);
+        assertFalse(paymentMethodResult.isSuccess());
+        assertEquals(ValidationErrorCode.CREDIT_CARD_OPTIONS_VERIFICATION_ACCOUNT_TYPE_NOT_SUPPORTED,
+                paymentMethodResult.getErrors().forObject("credit-card").forObject("options").onField("verification-account-type").get(0).getCode());
     }
 
     @Test

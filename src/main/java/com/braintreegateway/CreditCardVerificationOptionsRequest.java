@@ -3,6 +3,7 @@ package com.braintreegateway;
 public class CreditCardVerificationOptionsRequest extends Request {
     private CreditCardVerificationRequest parent;
     private String merchantAccountId;
+    private String accountType;
     private String amount;
 
     public CreditCardVerificationOptionsRequest(CreditCardVerificationRequest parent) {
@@ -19,6 +20,11 @@ public class CreditCardVerificationOptionsRequest extends Request {
         return this;
     }
 
+    public CreditCardVerificationOptionsRequest accountType(String accountType) {
+        this.accountType = accountType;
+        return this;
+    }
+
     public CreditCardVerificationRequest done() {
         return parent;
     }
@@ -31,6 +37,7 @@ public class CreditCardVerificationOptionsRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root).
             addElement("merchantAccountId", merchantAccountId).
+            addElement("accountType", accountType).
             addElement("amount", amount);
         return builder;
     }

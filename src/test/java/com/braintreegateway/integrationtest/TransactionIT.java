@@ -99,6 +99,113 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void createWithAccountTypeCredit() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId("hiper_brl").
+            creditCard().
+                number(CreditCardNumber.HIPER.number).
+                expirationDate("05/2009").
+                done().
+            options().
+                creditCard().
+                    accountType("credit").
+                    done().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertEquals("credit", transaction.getCreditCard().getAccountType());
+    }
+
+    @Test
+    public void createWithAccountTypeDebit() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId("hiper_brl").
+            creditCard().
+                number(CreditCardNumber.HIPER.number).
+                expirationDate("05/2009").
+                done().
+            options().
+                submitForSettlement(true).
+                creditCard().
+                    accountType("debit").
+                    done().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertEquals("debit", transaction.getCreditCard().getAccountType());
+    }
+
+    @Test
+    public void createWithErrorAccountTypeInvalid() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId("hiper_brl").
+            creditCard().
+                number(CreditCardNumber.HIPER.number).
+                expirationDate("05/2009").
+                done().
+            options().
+                submitForSettlement(true).
+                creditCard().
+                    accountType("ach").
+                    done().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_OPTIONS_CREDIT_CARD_ACCOUNT_TYPE_IS_INVALID,
+                result.getErrors().forObject("transaction").forObject("options").forObject("creditCard").onField("accountType").get(0).getCode());
+    }
+
+    @Test
+    public void createWithErrorAccountTypeNotSupported() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            options().
+                submitForSettlement(true).
+                creditCard().
+                    accountType("credit").
+                    done().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_OPTIONS_CREDIT_CARD_ACCOUNT_TYPE_NOT_SUPPORTED,
+                result.getErrors().forObject("transaction").forObject("options").forObject("creditCard").onField("accountType").get(0).getCode());
+    }
+
+    @Test
+    public void createWithErrorAccountTypeDebitDoesNotSupportAuths() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId("hiper_brl").
+            creditCard().
+                number(CreditCardNumber.HIPER.number).
+                expirationDate("05/2009").
+                done().
+            options().
+                creditCard().
+                    accountType("debit").
+                    done().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_OPTIONS_CREDIT_CARD_ACCOUNT_TYPE_DEBIT_DOES_NOT_SUPPORT_AUTHS,
+                result.getErrors().forObject("transaction").forObject("options").forObject("creditCard").onField("accountType").get(0).getCode());
+    }
+
+    @Test
     public void cloneTransaction() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
