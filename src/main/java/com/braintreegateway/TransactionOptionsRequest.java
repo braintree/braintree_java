@@ -15,6 +15,7 @@ public class TransactionOptionsRequest extends Request {
     private Boolean skipAvs;
     private Boolean skipCvv;
     private TransactionOptionsPayPalRequest transactionOptionsPayPalRequest;
+    private TransactionOptionsAdyenRequest transactionOptionsAdyenRequest;
     private TransactionOptionsAmexRewardsRequest transactionOptionsAmexRewardsRequest;
     private TransactionOptionsThreeDSecureRequest transactionOptionsThreeDSecureRequest;
     private TransactionOptionsVenmoRequest transactionOptionsVenmoRequest;
@@ -92,6 +93,11 @@ public class TransactionOptionsRequest extends Request {
         return transactionOptionsPayPalRequest;
     }
 
+    public TransactionOptionsAdyenRequest adyen() {
+        transactionOptionsAdyenRequest = new TransactionOptionsAdyenRequest(this);
+        return transactionOptionsAdyenRequest;
+    }
+
     public TransactionOptionsAmexRewardsRequest amexRewards() {
         transactionOptionsAmexRewardsRequest = new TransactionOptionsAmexRewardsRequest(this);
         return transactionOptionsAmexRewardsRequest;
@@ -138,6 +144,7 @@ public class TransactionOptionsRequest extends Request {
             addElement("skipCvv", skipCvv).
             addElement("threeDSecure", transactionOptionsThreeDSecureRequest).
             addElement("venmo", transactionOptionsVenmoRequest).
+            addElement("adyen", transactionOptionsAdyenRequest).
             addElement("paypal", transactionOptionsPayPalRequest).
             addElement("payWithAmexRewards", transactionOptionsAmexRewardsRequest);
     }

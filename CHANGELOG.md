@@ -1,3 +1,18 @@
+## 2.92.0
+* Deprecate `GRANTED_PAYMENT_INSTRUMENT_UPDATE` and add `GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD` and `RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD`
+* Fix bug where dates in the Transaction-Level Fee Report could be parsed incorrectly due to timezone differences
+* Add External Vault and Risk Data to `CreditCardVerificationRequest`
+* Add `prepaid` field to `AndroidPayDetails`
+* Add `healthcare` field to `AndroidPayDetails`
+* Add `debit` field to `AndroidPayDetails`
+* Add `durbinRegulated` field to `AndroidPayDetails`
+* Add `commercial` field to `AndroidPayDetails`
+* Add `payroll` field to `AndroidPayDetails`
+* Add `issuingBank` field to `AndroidPayDetails`
+* Add `countryOfIssuance` field to `AndroidPayDetails`
+* Add `productId` field to `AndroidPayDetails`
+* Add `globalId` field to `AndroidPayDetails`
+
 ## 2.91.0
 * Add `bin` field to `PaymentMethodNonceDetails`
 * Add `prepaid` field to `ApplePayDetails`

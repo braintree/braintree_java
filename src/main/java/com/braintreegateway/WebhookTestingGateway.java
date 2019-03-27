@@ -74,7 +74,10 @@ public class WebhookTestingGateway {
             case ACCOUNT_UPDATER_DAILY_REPORT: return accountUpdaterDailyReportXml(id);
             case IDEAL_PAYMENT_COMPLETE: return idealPaymentCompleteXml(id);
             case IDEAL_PAYMENT_FAILED: return idealPaymentFailedXml(id);
+            // NEXT_MAJOR_VERSION remove GRANTED_PAYMENT_INSTRUMENT_UPDATE
             case GRANTED_PAYMENT_INSTRUMENT_UPDATE: return grantedPaymentInstrumentUpdateXml();
+            case GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD: return grantedPaymentInstrumentUpdateXml();
+            case RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD: return grantedPaymentInstrumentUpdateXml();
             case LOCAL_PAYMENT_COMPLETED: return localPaymentCompletedXml();
             default: return subscriptionXml(id);
         }

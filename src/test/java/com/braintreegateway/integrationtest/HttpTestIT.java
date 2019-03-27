@@ -22,6 +22,7 @@ import com.braintreegateway.Result;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.exceptions.UnexpectedException;
+import com.braintreegateway.exceptions.ServerException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
@@ -153,6 +154,8 @@ public class HttpTestIT extends IntegrationTest {
         } catch (AuthenticationException ex) {
             // success
         } catch (DownForMaintenanceException ex) {
+            // QA is down
+        } catch (ServerException ex) {
             // QA is down
         } catch (Exception ex) {
             fail(ex.getMessage());

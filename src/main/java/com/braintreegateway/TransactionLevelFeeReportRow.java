@@ -244,10 +244,10 @@ public class TransactionLevelFeeReportRow {
         return totalFeeAmount;
     }
 
-    private Calendar parseDate(String dateString) throws ParseException {
+    static Calendar parseDate(String dateString) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        dateFormat.setTimeZone(TimeZone.getDefault());
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         calendar.setTime(dateFormat.parse(dateString));
         return calendar;
     }

@@ -16,6 +16,16 @@ public class AndroidPayDetails {
     private String googleTransactionId;
     private String bin;
     private String imageUrl;
+    private String prepaid;
+    private String healthcare;
+    private String debit;
+    private String durbinRegulated;
+    private String commercial;
+    private String payroll;
+    private String issuingBank;
+    private String countryOfIssuance;
+    private String productId;
+    private String globalId;
 
     public AndroidPayDetails(NodeWrapper node) {
         this.sourceCardType = node.findString("source-card-type");
@@ -31,6 +41,16 @@ public class AndroidPayDetails {
         this.googleTransactionId = node.findString("google-transaction-id");
         this.bin = node.findString("bin");
         this.imageUrl = node.findString("image-url");
+        this.prepaid = node.findString("prepaid");
+        this.healthcare = node.findString("healthcare");
+        this.debit = node.findString("debit");
+        this.durbinRegulated = node.findString("durbin-regulated");
+        this.commercial = node.findString("commercial");
+        this.payroll = node.findString("payroll");
+        this.issuingBank = node.findString("issuing-bank");
+        this.countryOfIssuance = node.findString("country-of-issuance");
+        this.productId = node.findString("product-id");
+        this.globalId = node.findString("global-id");
     }
 
     public String getCardType() {
@@ -83,5 +103,45 @@ public class AndroidPayDetails {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+    
+    public String getPrepaid() {
+        return prepaid;
+    }
+
+    public String getHealthcare() {
+        return healthcare;
+    }
+
+    public String getDebit() {
+        return debit;
+    }
+
+    public String getDurbinRegulated() {
+        return durbinRegulated;
+    }
+
+    public String getCommercial() {
+        return commercial;
+    }
+
+    public String getPayroll() {
+        return payroll;
+    }
+
+    public String getIssuingBank() {
+        return issuingBank;
+    }
+
+    public String getCountryOfIssuance() {
+        return countryOfIssuance;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public String getGlobalId() {
+        return globalId;
     }
 }

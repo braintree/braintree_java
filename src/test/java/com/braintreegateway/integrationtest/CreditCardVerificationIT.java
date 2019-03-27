@@ -126,6 +126,47 @@ public class CreditCardVerificationIT extends IntegrationTest {
     }
 
     @Test
+    public void createVerificationWithExternalVaultAndRiskData() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                cvv("123").
+                billingAddress().
+                    company("Braintree").
+                    countryCodeAlpha2("US").
+                    countryCodeAlpha3("USA").
+                    countryCodeNumeric("840").
+                    countryName("United States of America").
+                    extendedAddress("Unit B").
+                    firstName("John").
+                    lastName("Smith").
+                    locality("San Francisco").
+                    postalCode("60606").
+                    region("CA").
+                    streetAddress("123 Townsend St").
+                    done().
+                done().
+            options().
+                amount("5.00").
+                done().
+            externalVault().
+                previousNetworkTransactionId("previousTransactionId").
+                willVault().
+                done().
+            riskData().
+                customerBrowser("customer-browser-user-agent").
+                customerIP("127.0.0.1").
+                done();
+
+
+        TestHelper.assertIncludes("previousTransactionId", request.toXML());
+        TestHelper.assertIncludes("will_vault", request.toXML());
+        TestHelper.assertIncludes("customer-browser-user-agent", request.toXML());
+        TestHelper.assertIncludes("127.0.0.1", request.toXML());
+    }
+
+    @Test
     public void constructFromResponse() {
         StringBuilder builder = new StringBuilder();
         builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");

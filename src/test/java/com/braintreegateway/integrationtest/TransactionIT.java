@@ -782,6 +782,13 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(androidPayDetails.getLast4());
         assertNotNull(androidPayDetails.getExpirationMonth());
         assertNotNull(androidPayDetails.getExpirationYear());
+        assertNotNull(androidPayDetails.getPrepaid());
+        assertNotNull(androidPayDetails.getHealthcare());
+        assertNotNull(androidPayDetails.getDebit());
+        assertNotNull(androidPayDetails.getDurbinRegulated());
+        assertNotNull(androidPayDetails.getCommercial());
+        assertNotNull(androidPayDetails.getPayroll());
+        assertNotNull(androidPayDetails.getProductId());
     }
 
     @Test
