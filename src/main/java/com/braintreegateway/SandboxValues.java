@@ -11,7 +11,9 @@ public class SandboxValues {
         MASTER_CARD("5555555555554444"),
         FRAUD("4000111111111511"),
         AMEX("378282246310005"),
-        ELO("5066991111111118");
+        ELO("5066991111111118"),
+        HIPER("6370950000000005"),
+        HIPERCARD("6062820524845321");
         public String number;
 
         private CreditCardNumber(String number) {

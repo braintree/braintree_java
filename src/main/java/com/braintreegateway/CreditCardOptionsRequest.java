@@ -3,6 +3,7 @@ package com.braintreegateway;
 public class CreditCardOptionsRequest extends Request {
     private CreditCardRequest parent;
     private String verificationMerchantAccountId;
+    private String verificationAccountType;
     private Boolean failOnDuplicatePaymentMethod;
     private Boolean verifyCard;
     private String verificationAmount;
@@ -20,6 +21,11 @@ public class CreditCardOptionsRequest extends Request {
 
     public CreditCardOptionsRequest verificationMerchantAccountId(String verificationMerchantAccountId) {
         this.verificationMerchantAccountId = verificationMerchantAccountId;
+        return this;
+    }
+
+    public CreditCardOptionsRequest verificationAccountType(String verificationAccountType) {
+        this.verificationAccountType = verificationAccountType;
         return this;
     }
 
@@ -75,6 +81,7 @@ public class CreditCardOptionsRequest extends Request {
         builder.addElement("verifyCard", verifyCard);
         builder.addElement("verificationAmount", verificationAmount);
         builder.addElement("verificationMerchantAccountId", verificationMerchantAccountId);
+        builder.addElement("verificationAccountType", verificationAccountType);
         if (makeDefault != null && makeDefault.booleanValue()) {
             builder.addElement("makeDefault", makeDefault);
         }

@@ -8,6 +8,7 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.Nonce;
 import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.SandboxValues.CreditCardNumber;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -835,6 +836,56 @@ public class CustomerIT extends IntegrationTest {
         assertNotNull(account);
         assertEquals(account.getUsername(), "venmojoe");
         assertEquals(account.getVenmoUserId(), "Venmo-Joe-1");
+    }
+
+    @Test
+    public void createWithAccountTypeCredit() {
+        CustomerRequest request = new CustomerRequest();
+        request.firstName("Fred").
+            creditCard().
+                cardholderName("Fred Jones").
+                number(CreditCardNumber.HIPER.number).
+                cvv("123").
+                expirationDate("05/12").
+                options().
+                    verifyCard(true).
+                    verificationMerchantAccountId("hiper_brl").
+                    verificationAccountType("credit").
+                    done().
+                done().
+            lastName("Jones");
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        CreditCard creditCard = customer.getCreditCards().get(0);
+        assertEquals("credit", creditCard.getVerification().getCreditCard().getAccountType());
+    }
+
+    @Test
+    public void createWithAccountTypeDebit() {
+        CustomerRequest request = new CustomerRequest();
+        request.firstName("Fred").
+            creditCard().
+                cardholderName("Fred Jones").
+                number(CreditCardNumber.HIPER.number).
+                cvv("123").
+                expirationDate("05/12").
+                options().
+                    verifyCard(true).
+                    verificationMerchantAccountId("hiper_brl").
+                    verificationAccountType("debit").
+                    done().
+                done().
+            lastName("Jones");
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        CreditCard creditCard = customer.getCreditCards().get(0);
+        assertEquals("debit", creditCard.getVerification().getCreditCard().getAccountType());
     }
 
     @Test

@@ -12,6 +12,7 @@
 * Add `countryOfIssuance` field to `AndroidPayDetails`
 * Add `productId` field to `AndroidPayDetails`
 * Add `globalId` field to `AndroidPayDetails`
+* Add `accountType` to `Transaction`, `CreditCard`, `PaymentMethod`, and `CreditCardVerification`
 
 ## 2.91.0
 * Add `bin` field to `PaymentMethodNonceDetails`

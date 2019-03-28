@@ -385,4 +385,97 @@ public class CreditCardVerificationIT extends IntegrationTest {
         assertEquals("Unknown", verification.getCreditCard().getIssuingBank());
         assertEquals("Unknown", verification.getCreditCard().getProductId());
     }
+
+    @Test
+    public void createVerificationWithAccountTypeCredit() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(CreditCardNumber.HIPER.number).
+                expirationDate("05/2009").
+                cvv("123").
+                done().
+            options().
+                amount("5.00").
+                merchantAccountId("hiper_brl").
+                accountType("credit").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+        CreditCardVerification verification = result.getTarget();
+        assertEquals("1000", verification.getProcessorResponseCode());
+        assertEquals("Approved", verification.getProcessorResponseText());
+        assertEquals("credit", verification.getCreditCard().getAccountType());
+    }
+
+    @Test
+    public void createVerificationWithAccountTypeDebit() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(CreditCardNumber.HIPER.number).
+                expirationDate("05/2009").
+                cvv("123").
+                done().
+            options().
+                amount("5.00").
+                merchantAccountId("hiper_brl").
+                accountType("debit").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+        CreditCardVerification verification = result.getTarget();
+        assertEquals("1000", verification.getProcessorResponseCode());
+        assertEquals("Approved", verification.getProcessorResponseText());
+        assertEquals("debit", verification.getCreditCard().getAccountType());
+    }
+
+    @Test
+    public void createVerificationWithErrorAccountTypeIsInvalid() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(CreditCardNumber.HIPER.number).
+                expirationDate("05/2009").
+                cvv("123").
+                done().
+            options().
+                amount("5.00").
+                merchantAccountId("hiper_brl").
+                accountType("ach").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.VERIFICATION_OPTIONS_ACCOUNT_TYPE_IS_INVALID,
+                result.getErrors().
+                    forObject("verification").
+                    forObject("options").
+                    onField("account-type").
+                    get(0).
+                    getCode());
+    }
+
+    @Test
+    public void createVerificationWithErrorAccountTypeNotSupported() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                cvv("123").
+                done().
+            options().
+                amount("5.00").
+                accountType("credit").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.VERIFICATION_OPTIONS_ACCOUNT_TYPE_NOT_SUPPORTED,
+                result.getErrors().
+                    forObject("verification").
+                    forObject("options").
+                    onField("account-type").
+                    get(0).
+                    getCode());
+    }
 }
