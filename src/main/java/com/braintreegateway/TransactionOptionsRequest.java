@@ -19,6 +19,7 @@ public class TransactionOptionsRequest extends Request {
     private TransactionOptionsAmexRewardsRequest transactionOptionsAmexRewardsRequest;
     private TransactionOptionsThreeDSecureRequest transactionOptionsThreeDSecureRequest;
     private TransactionOptionsVenmoRequest transactionOptionsVenmoRequest;
+    private TransactionOptionsCreditCardRequest transactionOptionsCreditCardRequest;
 
     public TransactionOptionsRequest(TransactionRequest parent) {
         this.parent = parent;
@@ -113,6 +114,11 @@ public class TransactionOptionsRequest extends Request {
         return transactionOptionsVenmoRequest;
     }
 
+    public TransactionOptionsCreditCardRequest creditCard() {
+        transactionOptionsCreditCardRequest = new TransactionOptionsCreditCardRequest(this);
+        return transactionOptionsCreditCardRequest;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("options").toXML();
@@ -146,6 +152,7 @@ public class TransactionOptionsRequest extends Request {
             addElement("venmo", transactionOptionsVenmoRequest).
             addElement("adyen", transactionOptionsAdyenRequest).
             addElement("paypal", transactionOptionsPayPalRequest).
-            addElement("payWithAmexRewards", transactionOptionsAmexRewardsRequest);
+            addElement("payWithAmexRewards", transactionOptionsAmexRewardsRequest).
+            addElement("creditCard", transactionOptionsCreditCardRequest);
     }
 }

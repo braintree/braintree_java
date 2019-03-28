@@ -189,12 +189,14 @@ public class CreditCard implements PaymentMethod {
     private String token;
     private Calendar updatedAt;
     private CreditCardVerification verification;
+    private String accountType;
 
     public CreditCard(NodeWrapper node) {
         token = node.findString("token");
         createdAt = node.findDateTime("created-at");
         updatedAt = node.findDateTime("updated-at");
         bin = node.findString("bin");
+        accountType = node.findString("account-type");
         cardType = node.findString("card-type");
         cardholderName = node.findString("cardholder-name");
         customerId = node.findString("customer-id");
@@ -376,5 +378,9 @@ public class CreditCard implements PaymentMethod {
 
     public CreditCardVerification getVerification() {
         return verification;
+    }
+
+    public String getAccountType() {
+        return accountType;
     }
 }

@@ -8,8 +8,7 @@ import com.braintreegateway.test.CreditCardNumbers;
 import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
-import com.braintreegateway.testhelpers.HttpHelper;
-import com.braintreegateway.util.QueryString;
+import com.braintreegateway.SandboxValues.CreditCardNumber;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -747,6 +746,60 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
     }
 
     @Test
+    public void updateWithAccountTypeCredit() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12").
+            billingAddress().
+                firstName("John").
+                done();
+
+        CreditCard creditCard = gateway.creditCard().create(request).getTarget();
+
+        CreditCardRequest updateRequest = new CreditCardRequest().
+            number(CreditCardNumber.HIPER.number).
+            expirationDate("01/20").
+            options().
+                verifyCard(true).
+                verificationMerchantAccountId("hiper_brl").
+                verificationAccountType("credit").
+                done();
+
+        CreditCard updatedCreditCard = gateway.creditCard().update(creditCard.getToken(), updateRequest).getTarget();
+
+        assertEquals("credit", updatedCreditCard.getVerification().getCreditCard().getAccountType());
+    }
+
+    @Test
+    public void updateWithAccountTypeDebit() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("5105105105105100").
+            expirationDate("05/12").
+            billingAddress().
+                firstName("John").
+                done();
+
+        CreditCard creditCard = gateway.creditCard().create(request).getTarget();
+
+        CreditCardRequest updateRequest = new CreditCardRequest().
+            number(CreditCardNumber.HIPER.number).
+            expirationDate("01/20").
+            options().
+                verifyCard(true).
+                verificationMerchantAccountId("hiper_brl").
+                verificationAccountType("debit").
+                done();
+
+        CreditCard updatedCreditCard = gateway.creditCard().update(creditCard.getToken(), updateRequest).getTarget();
+
+        assertEquals("debit", updatedCreditCard.getVerification().getCreditCard().getAccountType());
+    }
+
+    @Test
     public void find() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
@@ -1128,6 +1181,87 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         CreditCardVerification verification = result.getCreditCardVerification();
 
         assertEquals(Transaction.GatewayRejectionReason.CVV, verification.getGatewayRejectionReason());
+    }
+
+    @Test
+    public void verifyCreditCardAccountTypeCredit() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number(CreditCardNumber.HIPER.number).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                verificationMerchantAccountId("hiper_brl").
+                verificationAccountType("credit").
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+        assertEquals("credit", result.getTarget().getVerification().getCreditCard().getAccountType());
+    }
+
+    @Test
+    public void verifyCreditCardAccountTypeDebit() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number(CreditCardNumber.HIPER.number).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                verificationMerchantAccountId("hiper_brl").
+                verificationAccountType("debit").
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+        assertEquals("debit", result.getTarget().getVerification().getCreditCard().getAccountType());
+    }
+
+    @Test
+    public void verifyCreditCardWithErrorAccountTypeIsInvalid() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number(CreditCardNumber.HIPER.number).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                verificationMerchantAccountId("hiper_brl").
+                verificationAccountType("ach").
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.CREDIT_CARD_OPTIONS_VERIFICATION_ACCOUNT_TYPE_IS_INVALID,
+                result.getErrors().forObject("credit-card").forObject("options").onField("verification-account-type").get(0).getCode());
+    }
+
+    @Test
+    public void verifyCreditCardWithErrorAccountTypeNotSupported() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                verificationAccountType("credit").
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.CREDIT_CARD_OPTIONS_VERIFICATION_ACCOUNT_TYPE_NOT_SUPPORTED,
+                result.getErrors().forObject("credit-card").forObject("options").onField("verification-account-type").get(0).getCode());
     }
 
     @Test
