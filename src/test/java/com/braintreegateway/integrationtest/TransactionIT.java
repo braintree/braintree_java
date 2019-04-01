@@ -1116,7 +1116,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     @Test
     public void saleErrorWithThreeDSecurePassThruWhenMerchantAccountDoesNotSupportCardType() {
         TransactionRequest request = new TransactionRequest().
-            merchantAccountId("adyen_ma").
+            merchantAccountId("heartland_ma").
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
                 number(CreditCardNumber.VISA.number).
