@@ -6749,6 +6749,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(transaction.getPayPalDetails().getRefundId());
         assertNotNull(transaction.getPayPalDetails().getTransactionFeeAmount());
         assertNotNull(transaction.getPayPalDetails().getTransactionFeeCurrencyIsoCode());
+        assertNotNull(transaction.getPayPalDetails().getRefundFromTransactionFeeAmount());
+        assertNotNull(transaction.getPayPalDetails().getRefundFromTransactionFeeCurrencyIsoCode());
     }
 
     @Test

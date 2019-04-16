@@ -1,5 +1,7 @@
 ## 2.93.0
 * Add `accountType` to `Transaction`, `CreditCard`, `PaymentMethod`, and `CreditCardVerification`
+* Add `refundFromTransactionFeeAmount` field to `PayPalDetails`
+* Add `refundFromTransactionFeeCurrencyIsoCode` field to `PayPalDetails`
 
 ## 2.92.0
 * Deprecate `GRANTED_PAYMENT_INSTRUMENT_UPDATE` and add `GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD` and `RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD`
