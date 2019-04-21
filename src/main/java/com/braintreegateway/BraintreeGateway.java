@@ -193,6 +193,10 @@ public class BraintreeGateway {
         return new UsBankAccountGateway(this, http, configuration);
     }
 
+    // NEXT_MAJOR_VERSION Remove this class as legacy Ideal has been removed/disabled in the Braintree Gateway
+    /**
+     * @deprecated If you're looking to accept iDEAL as a payment method contact us at accounts@braintreepayments.com for a solution.
+     */
     public IdealPaymentGateway idealPayment() {
         return new IdealPaymentGateway(this, http, configuration);
     }

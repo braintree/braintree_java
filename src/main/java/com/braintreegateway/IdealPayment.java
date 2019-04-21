@@ -3,6 +3,10 @@ package com.braintreegateway;
 import com.braintreegateway.util.NodeWrapper;
 import java.math.BigDecimal;
 
+// NEXT_MAJOR_VERSION Remove this class as legacy Ideal has been removed/disabled in the Braintree Gateway
+/**
+ * @deprecated If you're looking to accept iDEAL as a payment method contact us at accounts@braintreepayments.com for a solution.
+ */
 public class IdealPayment {
     private String id;
     private String idealTransactionId;

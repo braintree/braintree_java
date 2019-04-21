@@ -147,6 +147,8 @@ public class Transaction {
     private AmexExpressCheckoutDetails amexExpressCheckoutDetails;
     private VenmoAccountDetails venmoAccountDetails;
     private UsBankAccountDetails usBankAccountDetails;
+    // NEXT_MAJOR_VERSION Remove this class as legacy Ideal has been removed/disabled in the Braintree Gateway
+    // DEPRECATED If you're looking to accept iDEAL as a payment method contact accounts@braintreepayments.com for a solution.
     private IdealPaymentDetails idealPaymentDetails;
     private VisaCheckoutCardDetails visaCheckoutCardDetails;
     private MasterpassCardDetails masterpassCardDetails;
@@ -240,6 +242,8 @@ public class Transaction {
         if (usBankAccountNode != null) {
             usBankAccountDetails = new UsBankAccountDetails(usBankAccountNode);
         }
+        // NEXT_MAJOR_VERSION Remove this class as legacy Ideal has been removed/disabled in the Braintree Gateway
+        // DEPRECATED If you're looking to accept iDEAL as a payment method contact accounts@braintreepayments.com for a solution.
         NodeWrapper idealPaymentNode = node.findFirst("ideal-payment");
         if (idealPaymentNode != null) {
             idealPaymentDetails = new IdealPaymentDetails(idealPaymentNode);
@@ -465,6 +469,10 @@ public class Transaction {
         return usBankAccountDetails;
     }
 
+    // NEXT_MAJOR_VERSION Remove this class as legacy Ideal has been removed/disabled in the Braintree Gateway
+    /**
+     * @deprecated If you're looking to accept iDEAL as a payment method [contact us](accounts@braintreepayments.com) for a solution.
+     */
     public IdealPaymentDetails getIdealPaymentDetails() {
         return idealPaymentDetails;
     }
