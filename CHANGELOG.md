@@ -1,3 +1,7 @@
+## Unreleased
+* Add `revokedAt` field to `PayPalAccount`
+* Add support for `PAYMENT_METHOD_REVOKED_BY_CUSTOMER` webhook
+
 ## 2.94.0
 * Add `refundFromTransactionFeeAmount` field to `PayPalDetails`
 * Add `refundFromTransactionFeeCurrencyIsoCode` field to `PayPalDetails`
