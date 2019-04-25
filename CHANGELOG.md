@@ -1,7 +1,10 @@
-## 2.93.0
-* Add `accountType` to `Transaction`, `CreditCard`, `PaymentMethod`, and `CreditCardVerification`
+## Unreleased
 * Add `refundFromTransactionFeeAmount` field to `PayPalDetails`
 * Add `refundFromTransactionFeeCurrencyIsoCode` field to `PayPalDetails`
+* Add `token_issuance` gateway reject status to support Venmo transactions
+
+## 2.93.0
+* Add `accountType` to `Transaction`, `CreditCard`, `PaymentMethod`, and `CreditCardVerification`
 
 ## 2.92.0
 * Deprecate `GRANTED_PAYMENT_INSTRUMENT_UPDATE` and add `GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD` and `RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD`

@@ -49,6 +49,7 @@ public class Transaction {
         DUPLICATE("duplicate"),
         FRAUD("fraud"),
         THREE_D_SECURE("three_d_secure"),
+        TOKEN_ISSUANCE("token_issuance"),
         UNRECOGNIZED("unrecognized");
 
         private final String name;

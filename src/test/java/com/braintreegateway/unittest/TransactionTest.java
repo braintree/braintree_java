@@ -36,4 +36,31 @@ public class TransactionTest {
 		assertEquals(Transaction.EscrowStatus.UNRECOGNIZED, transaction.getEscrowStatus());
 		assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
 	}
+
+	@Test
+	public void recognizesTokenIssuanceGatewayRejectReason() {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<transaction>\n" +
+				"  <id>unrecognized_transaction_id</id>\n" +
+				"  <status></status>\n" +
+				"  <type>sale</type>\n" +
+				"  <customer></customer>\n" +
+				"  <billing></billing>\n" +
+				"  <shipping></shipping>\n" +
+				"  <custom-fields/>\n" +
+				"  <gateway-rejection-reason>token_issuance</gateway-rejection-reason>\n" +
+				"  <credit-card></credit-card>\n" +
+				"  <status-history type=\"array\"></status-history>\n" +
+				"  <subscription></subscription>\n" +
+				"  <descriptor></descriptor>\n" +
+				"  <escrow-status></escrow-status>\n" +
+				"  <disbursement-details></disbursement-details>\n" +
+				"  <payment-instrument-type>credit_card</payment-instrument-type>\n" +
+				"</transaction>\n";
+
+		SimpleNodeWrapper creditCardNode = SimpleNodeWrapper.parse(xml);
+		Transaction transaction = new Transaction(creditCardNode);
+
+		assertEquals(Transaction.GatewayRejectionReason.TOKEN_ISSUANCE, transaction.getGatewayRejectionReason());
+	}
 }
