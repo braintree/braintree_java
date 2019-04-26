@@ -1,4 +1,4 @@
-## Unreleased
+## 2.94.0
 * Add `refundFromTransactionFeeAmount` field to `PayPalDetails`
 * Add `refundFromTransactionFeeCurrencyIsoCode` field to `PayPalDetails`
 * Add `token_issuance` gateway reject status to support Venmo transactions
