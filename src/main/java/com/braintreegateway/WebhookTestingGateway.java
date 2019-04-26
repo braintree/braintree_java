@@ -72,7 +72,11 @@ public class WebhookTestingGateway {
             case SUBSCRIPTION_CHARGED_SUCCESSFULLY: return subscriptionChargedSuccessfullyXml(id);
             case SUBSCRIPTION_CHARGED_UNSUCCESSFULLY: return subscriptionChargedUnsuccessfullyXml(id);
             case ACCOUNT_UPDATER_DAILY_REPORT: return accountUpdaterDailyReportXml(id);
+            // NEXT_MAJOR_VERSION Remove this class as legacy Ideal has been removed/disabled in the Braintree Gateway
+            // DEPRECATED If you're looking to accept iDEAL as a payment method contact accounts@braintreepayments.com for a solution.
             case IDEAL_PAYMENT_COMPLETE: return idealPaymentCompleteXml(id);
+            // NEXT_MAJOR_VERSION Remove this class as legacy Ideal has been removed/disabled in the Braintree Gateway
+            // DEPRECATED If you're looking to accept iDEAL as a payment method contact accounts@braintreepayments.com for a solution.
             case IDEAL_PAYMENT_FAILED: return idealPaymentFailedXml(id);
             // NEXT_MAJOR_VERSION remove GRANTED_PAYMENT_INSTRUMENT_UPDATE
             case GRANTED_PAYMENT_INSTRUMENT_UPDATE: return grantedPaymentInstrumentUpdateXml();

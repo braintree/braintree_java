@@ -55,6 +55,7 @@ public class Nonce {
   public static final String PayPalFuturePaymentRefreshToken = "fake-paypal-future-refresh-token-nonce";
   public static final String SEPA = "fake-sepa-bank-account-nonce";
   public static final String GatewayRejectedFraud = "fake-gateway-rejected-fraud-nonce";
+  public static final String GatewayRejectedTokenIssuance = "fake-token-issuance-error-venmo-account-nonce";
   public static final String SamsungPayAmEx = "tokensam_fake_american_express";
   public static final String SamsungPayDiscover = "tokensam_fake_discover";
   public static final String SamsungPayMasterCard = "tokensam_fake_mastercard";
