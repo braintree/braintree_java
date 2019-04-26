@@ -2,6 +2,10 @@
 * Add `refundFromTransactionFeeAmount` field to `PayPalDetails`
 * Add `refundFromTransactionFeeCurrencyIsoCode` field to `PayPalDetails`
 * Add `token_issuance` gateway reject status to support Venmo transactions
+* Add `threeDSecureVersion` to `ThreeDSecurePassthruRequest`
+
+## 2.93.0
+* Add `accountType` to `Transaction`, `CreditCard`, `PaymentMethod`, and `CreditCardVerification`
 
 ## 2.93.0
 * Add `accountType` to `Transaction`, `CreditCard`, `PaymentMethod`, and `CreditCardVerification`

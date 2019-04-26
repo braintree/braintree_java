@@ -1126,6 +1126,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             threeDSecurePassThru().
                 eciFlag("02").
                 cavv("some_cavv").
+                threeDSecureVersion("1.2.3").
                 xid("some_xid").
                 authenticationResponse("Y").
                 directoryResponse("Y").

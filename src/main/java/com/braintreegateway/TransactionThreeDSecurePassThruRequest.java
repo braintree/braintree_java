@@ -4,6 +4,7 @@ public class TransactionThreeDSecurePassThruRequest extends Request {
     private TransactionRequest parent;
     private String eciFlag;
     private String cavv;
+    private String threeDSecureVersion;
     private String xid;
     private String authenticationResponse;
     private String directoryResponse;
@@ -20,6 +21,11 @@ public class TransactionThreeDSecurePassThruRequest extends Request {
 
     public TransactionThreeDSecurePassThruRequest cavv(String cavv) {
         this.cavv = cavv;
+        return this;
+    }
+
+    public TransactionThreeDSecurePassThruRequest threeDSecureVersion(String threeDSecureVersion) {
+        this.threeDSecureVersion = threeDSecureVersion;
         return this;
     }
 
@@ -66,6 +72,7 @@ public class TransactionThreeDSecurePassThruRequest extends Request {
         return new RequestBuilder(root).
             addElement("eciFlag", eciFlag).
             addElement("cavv", cavv).
+            addElement("threeDSecureVersion", threeDSecureVersion).
             addElement("xid", xid).
             addElement("authenticationResponse", authenticationResponse).
             addElement("directoryResponse", directoryResponse).
