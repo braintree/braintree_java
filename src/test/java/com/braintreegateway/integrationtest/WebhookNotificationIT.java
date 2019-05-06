@@ -675,5 +675,7 @@ public class WebhookNotificationIT extends IntegrationTest {
 
         assertEquals("a-payment-id", payment.getPaymentId());
         assertEquals("a-payer-id", payment.getPayerId());
+        assertEquals("ee257d98-de40-47e8-96b3-a6954ea7a9a4", payment.getPaymentMethodNonce());
+        assertNotNull(payment.getTransaction());
     }
 }

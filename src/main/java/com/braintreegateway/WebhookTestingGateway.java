@@ -474,7 +474,14 @@ public class WebhookTestingGateway {
     private String localPaymentCompletedXml() {
         return node("local-payment",
                 node("payment-id", "a-payment-id"),
-                node("payer-id", "a-payer-id")
+                node("payer-id", "a-payer-id"),
+                node("payment-method-nonce", "ee257d98-de40-47e8-96b3-a6954ea7a9a4"),
+                node("transaction",
+                     node("id", "1"),
+                     node("status", "authorizing"),
+                     node("amount", "10.00"),
+                     node("order-id", "order1234")
+                    )
                 );
     }
 

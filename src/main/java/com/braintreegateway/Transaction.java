@@ -200,21 +200,36 @@ public class Transaction {
         avsErrorResponseCode = node.findString("avs-error-response-code");
         avsPostalCodeResponseCode = node.findString("avs-postal-code-response-code");
         avsStreetAddressResponseCode = node.findString("avs-street-address-response-code");
-        billingAddress = new Address(node.findFirst("billing"));
         channel = node.findString("channel");
         createdAt = node.findDateTime("created-at");
-        creditCard = new CreditCard(node.findFirst("credit-card"));
         currencyIsoCode = node.findString("currency-iso-code");
         customFields = node.findMap("custom-fields/*");
-        customer = new Customer(node.findFirst("customer"));
         cvvResponseCode = node.findString("cvv-response-code");
-        disbursementDetails = new DisbursementDetails(node.findFirst("disbursement-details"));
-        descriptor = new Descriptor(node.findFirst("descriptor"));
         escrowStatus = EnumUtils.findByName(EscrowStatus.class, node.findString("escrow-status"), EscrowStatus.UNRECOGNIZED);
         gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"), GatewayRejectionReason.UNRECOGNIZED);
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
         orderId = node.findString("order-id");
+        NodeWrapper billingAddressNode = node.findFirst("billing");
+        if (billingAddressNode != null) {
+            billingAddress = new Address(billingAddressNode);
+        }
+        NodeWrapper creditCardNode = node.findFirst("credit-card");
+        if (creditCardNode != null) {
+            creditCard = new CreditCard(creditCardNode);
+        }
+        NodeWrapper customerNode = node.findFirst("customer");
+        if (customerNode != null) {
+            customer = new Customer(customerNode);
+        }
+        NodeWrapper disbursementDetailsNode = node.findFirst("disbursement-details");
+        if (disbursementDetailsNode != null) {
+            disbursementDetails = new DisbursementDetails(disbursementDetailsNode);
+        }
+        NodeWrapper descriptorNode = node.findFirst("descriptor");
+        if (descriptorNode != null) {
+            descriptor = new Descriptor(descriptorNode);
+        }
         NodeWrapper paypalNode = node.findFirst("paypal");
         if (paypalNode != null) {
             paypalDetails = new PayPalDetails(paypalNode);
@@ -287,10 +302,19 @@ public class Transaction {
 
         serviceFeeAmount = node.findBigDecimal("service-fee-amount");
         settlementBatchId = node.findString("settlement-batch-id");
-        shippingAddress = new Address(node.findFirst("shipping"));
+
+        NodeWrapper shippingAddressNode = node.findFirst("shipping");
+        if (shippingAddressNode != null) {
+            shippingAddress = new Address(shippingAddressNode);
+        }
+
         status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);
-        subscriptionDetails = new SubscriptionDetails(node.findFirst("subscription"));
-        subscription = new Subscription(node.findFirst("subscription"));
+
+        NodeWrapper subscriptionNode = node.findFirst("subscription");
+        if (subscriptionNode != null) {
+            subscriptionDetails = new SubscriptionDetails(subscriptionNode);
+            subscription = new Subscription(subscriptionNode);
+        }
         subscriptionId = node.findString("subscription-id");
         taxAmount = node.findBigDecimal("tax-amount");
         taxExempt = node.findBoolean("tax-exempt");
