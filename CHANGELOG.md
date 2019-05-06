@@ -3,6 +3,7 @@
 * Add support for `PAYMENT_METHOD_REVOKED_BY_CUSTOMER` webhook
 * Add `payment_method_nonce` field to `LocalPaymentCompleted` webhook
 * Add `transaction` field to `LocalPaymentCompleted` webhook
+* Add `LocalPaymentDetails` to transactions
 
 ## 2.94.0
 * Add `refundFromTransactionFeeAmount` field to `PayPalDetails`

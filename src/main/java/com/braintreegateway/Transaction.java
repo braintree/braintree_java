@@ -153,6 +153,7 @@ public class Transaction {
     private IdealPaymentDetails idealPaymentDetails;
     private VisaCheckoutCardDetails visaCheckoutCardDetails;
     private MasterpassCardDetails masterpassCardDetails;
+    private LocalPaymentDetails localPaymentDetails;
     private String planId;
     private String processorAuthorizationCode;
     private String processorResponseCode;
@@ -263,6 +264,10 @@ public class Transaction {
         NodeWrapper idealPaymentNode = node.findFirst("ideal-payment");
         if (idealPaymentNode != null) {
             idealPaymentDetails = new IdealPaymentDetails(idealPaymentNode);
+        }
+        NodeWrapper localPaymentNode = node.findFirst("local-payment");
+        if (localPaymentNode != null) {
+            localPaymentDetails = new LocalPaymentDetails(localPaymentNode);
         }
         NodeWrapper visaCheckoutCardNode = node.findFirst("visa-checkout-card");
         if (visaCheckoutCardNode != null) {
@@ -500,6 +505,10 @@ public class Transaction {
      */
     public IdealPaymentDetails getIdealPaymentDetails() {
         return idealPaymentDetails;
+    }
+
+    public LocalPaymentDetails getLocalPaymentDetails() {
+        return localPaymentDetails;
     }
 
     public VisaCheckoutCardDetails getVisaCheckoutCardDetails() {

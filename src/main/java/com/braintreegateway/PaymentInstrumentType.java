@@ -16,4 +16,5 @@ public final class PaymentInstrumentType {
     public static final String US_BANK_ACCOUNT = "us_bank_account";
     public static final String IDEAL_PAYMENT = "ideal_payment";
     public static final String SAMSUNG_PAY_CARD = "samsung_pay_card";
+    public static final String LOCAL_PAYMENT = "local_payment";
 }
