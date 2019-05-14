@@ -4738,6 +4738,25 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void searchOnsPaymentInstrumentTypeIsLocalPayment() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            options().
+                submitForSettlement(true).
+                done().
+            paymentMethodNonce(Nonce.LocalPayment);
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            paymentInstrumentType().is("LocalPaymentDetail");
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        assertEquals(collection.getFirst().getPaymentInstrumentType(), PaymentInstrumentType.LOCAL_PAYMENT);
+    }
+
+    @Test
     public void searchOnsPaymentInstrumentTypeIsApplePay() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("1000")).
@@ -6312,6 +6331,29 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertEquals(
             PaymentInstrumentType.PAYPAL_ACCOUNT,
+            saleResult.getTarget().getPaymentInstrumentType()
+        );
+    }
+
+    @Test
+    public void createLocalPaymentTransaction() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            options().
+                submitForSettlement(true).
+                done().
+            paymentMethodNonce(Nonce.LocalPayment);
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getLocalPaymentDetails());
+        assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getPayerId());
+        assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getFundingSource());
+
+        assertEquals(
+            PaymentInstrumentType.LOCAL_PAYMENT,
             saleResult.getTarget().getPaymentInstrumentType()
         );
     }

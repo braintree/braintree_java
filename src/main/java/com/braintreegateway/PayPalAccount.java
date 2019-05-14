@@ -16,6 +16,7 @@ public class PayPalAccount implements PaymentMethod {
     private Calendar createdAt;
     private Calendar updatedAt;
     private List<Subscription> subscriptions;
+    private Calendar revokedAt;
 
     public PayPalAccount(NodeWrapper node) {
         this.email = node.findString("email");
@@ -31,6 +32,7 @@ public class PayPalAccount implements PaymentMethod {
         for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
             this.subscriptions.add(new Subscription(subscriptionResponse));
         }
+        this.revokedAt = node.findDateTime("revoked-at");
     }
 
     public String getEmail() {
@@ -71,5 +73,9 @@ public class PayPalAccount implements PaymentMethod {
 
     public List<Subscription> getSubscriptions() {
         return subscriptions;
+    }
+
+    public Calendar getRevokedAt() {
+        return revokedAt;
     }
 }

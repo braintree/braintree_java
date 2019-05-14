@@ -648,6 +648,22 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test
+    public void createsSampleNotificationForPaymentMethodRevokedByCustomer() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.PAYMENT_METHOD_REVOKED_BY_CUSTOMER, "my_payment_method_token");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.PAYMENT_METHOD_REVOKED_BY_CUSTOMER, notification.getKind());
+
+        RevokedPaymentMethodMetadata metadata = notification.getRevokedPaymentMethodMetadata();
+
+        assertEquals("my_payment_method_token", metadata.getToken());
+        assertTrue(metadata.getRevokedPaymentMethod() instanceof PayPalAccount);
+        PayPalAccount paypalAccount = (PayPalAccount) metadata.getRevokedPaymentMethod();
+        assertNotNull(paypalAccount.getRevokedAt());
+    }
+
+    @Test
     public void createsLocalPaymentCompleted() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.LOCAL_PAYMENT_COMPLETED, "my_id");
 
@@ -659,5 +675,7 @@ public class WebhookNotificationIT extends IntegrationTest {
 
         assertEquals("a-payment-id", payment.getPaymentId());
         assertEquals("a-payer-id", payment.getPayerId());
+        assertEquals("ee257d98-de40-47e8-96b3-a6954ea7a9a4", payment.getPaymentMethodNonce());
+        assertNotNull(payment.getTransaction());
     }
 }

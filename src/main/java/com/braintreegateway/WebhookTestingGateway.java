@@ -82,12 +82,14 @@ public class WebhookTestingGateway {
             case GRANTED_PAYMENT_INSTRUMENT_UPDATE: return grantedPaymentInstrumentUpdateXml();
             case GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD: return grantedPaymentInstrumentUpdateXml();
             case RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD: return grantedPaymentInstrumentUpdateXml();
+            case PAYMENT_METHOD_REVOKED_BY_CUSTOMER: return paymentMethodRevokedByCustomerXml(id);
             case LOCAL_PAYMENT_COMPLETED: return localPaymentCompletedXml();
             default: return subscriptionXml(id);
         }
     }
 
     private String[][] TYPE_DATE = {{"type", "date"}};
+    private String[][] TYPE_DATE_TIME = {{"type", "datetime"}};
     private String[][] TYPE_ARRAY = {{"type", "array"}};
     private String[][] TYPE_SYMBOL = {{"type", "symbol"}};
     private String[][] TYPE_BOOLEAN = {{"type", "boolean"}};
@@ -450,10 +452,36 @@ public class WebhookTestingGateway {
                 );
     }
 
+    private String paymentMethodRevokedByCustomerXml(String id) {
+        return node("paypal-account",
+                node("billing-agreement-id", "a-billing-agreement-id"),
+                node("created-at", TYPE_DATE_TIME, "2019-01-01T12:00:00Z"),
+                node("customer-id", "a-customer-id"),
+                node("default", TYPE_BOOLEAN, "true"),
+                node("email", "name@email.com"),
+                node("global-id", "cGF5bWVudG1ldGhvZF9jaDZieXNz"),
+                node("image-url", "https://assets.braintreegateway.com/payment_method_logo/paypal.png?environment=test"),
+                node("token", id),
+                node("updated-at", TYPE_DATE_TIME, "2019-01-02T12:00:00Z"),
+                node("is-channel-initiated", NIL_TRUE, ""),
+                node("payer-id", "a-payer-id"),
+                node("payer-info", NIL_TRUE, ""),
+                node("limited-use-order-id", NIL_TRUE, ""),
+                node("revoked-at", TYPE_DATE_TIME, "2019-01-02T12:00:00Z")
+        );
+    }
+
     private String localPaymentCompletedXml() {
         return node("local-payment",
                 node("payment-id", "a-payment-id"),
-                node("payer-id", "a-payer-id")
+                node("payer-id", "a-payer-id"),
+                node("payment-method-nonce", "ee257d98-de40-47e8-96b3-a6954ea7a9a4"),
+                node("transaction",
+                     node("id", "1"),
+                     node("status", "authorizing"),
+                     node("amount", "10.00"),
+                     node("order-id", "order1234")
+                    )
                 );
     }
 
