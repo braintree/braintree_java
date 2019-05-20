@@ -1,5 +1,6 @@
 package com.braintreegateway;
 
+import java.util.Map;
 import com.braintreegateway.util.NodeWrapper;
 
 public class PaymentMethodNonce {
@@ -32,6 +33,29 @@ public class PaymentMethodNonce {
         NodeWrapper binDataNode = node.findFirst("bin-data");
         if (binDataNode != null && !binDataNode.isBlank()) {
             binData = new BinData(binDataNode);
+        }
+    }
+
+    public PaymentMethodNonce(Map<String, Object> map) {
+        isDefault = (Boolean) map.get("default");
+        publicId = (String) map.get("nonce");
+        isLocked = (Boolean) map.get("locked");
+        isConsumed = (Boolean) map.get("consumed");
+        type = (String) map.get("type");
+
+        Map<String, String> detailsMap = (Map) map.get("details");
+        if (detailsMap != null) {
+            details = new PaymentMethodNonceDetails(detailsMap);
+        }
+
+        Map<String, Object> threeDSecureInfoMap = (Map) map.get("threeDSecureInfo");
+        if (threeDSecureInfoMap != null) {
+            threeDSecureInfo = new ThreeDSecureInfo(threeDSecureInfoMap);
+        }
+
+        Map<String, String> binDataMap = (Map) map.get("binData");
+        if (binDataMap != null) {
+            binData = new BinData(binDataMap);
         }
     }
 

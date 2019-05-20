@@ -225,6 +225,15 @@ public class BraintreeGateway {
     }
 
     /**
+     * Returns an {@link ThreeDSecureGateway} for interacting with 3D Secure.
+     *
+     * @return an {@link ThreeDSecureGateway}.
+     */
+    public ThreeDSecureGateway threeDSecure() {
+        return new ThreeDSecureGateway(configuration);
+    }
+
+    /**
      * Returns an {@link TransactionGateway} for interacting with
      * {@link Transaction} objects.
      *
