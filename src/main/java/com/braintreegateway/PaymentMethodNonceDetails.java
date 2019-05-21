@@ -1,5 +1,6 @@
 package com.braintreegateway;
 
+import java.util.Map;
 import com.braintreegateway.util.NodeWrapper;
 
 public class PaymentMethodNonceDetails {
@@ -25,6 +26,19 @@ public class PaymentMethodNonceDetails {
         paymentInstrumentName = node.findString("payment-instrument-name");
         username = node.findString("username");
         venmoUserId = node.findString("venmo-user-id");
+    }
+
+    public PaymentMethodNonceDetails(Map<String, String> map) {
+        cardType = map.get("card-type");
+        cardholderName = map.get("cardholder-name");
+        dpanLastTwo = map.get("dpan-last-two");
+        email = map.get("email");
+        bin = map.get("bin");
+        lastFour = map.get("last-four");
+        lastTwo = map.get("last-two");
+        paymentInstrumentName = map.get("payment-instrument-name");
+        username = map.get("username");
+        venmoUserId = map.get("venmo-user-id");
     }
 
     public String getCardType() {

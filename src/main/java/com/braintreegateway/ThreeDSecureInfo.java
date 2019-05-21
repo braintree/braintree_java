@@ -1,5 +1,6 @@
 package com.braintreegateway;
 
+import java.util.Map;
 import com.braintreegateway.util.NodeWrapper;
 
 public class ThreeDSecureInfo {
@@ -22,6 +23,17 @@ public class ThreeDSecureInfo {
         eciFlag = node.findString("eci-flag");
         xid = node.findString("xid");
         threeDSecureVersion = node.findString("three-d-secure-version");
+    }
+
+    public ThreeDSecureInfo(Map<String, Object> map) {
+        liabilityShifted = (Boolean) map.get("liabilityShifted");
+        liabilityShiftPossible = (Boolean) map.get("liabilityShiftPossible");
+        enrolled = (String) map.get("enrolled");
+        status = (String) map.get("status");
+        cavv = (String) map.get("cavv");
+        eciFlag = (String) map.get("eciFlag");
+        xid = (String) map.get("xid");
+        threeDSecureVersion = (String) map.get("threeDSecureVersion");
     }
 
     public String getStatus() {

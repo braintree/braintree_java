@@ -252,6 +252,18 @@ public abstract class TestHelper {
         return generatePayPalNonce(gateway, payload);
     }
 
+    public static String generateAuthorizationFingerprint (BraintreeGateway gateway, String customerId) {
+      ClientTokenRequest clientTokenRequest = new ClientTokenRequest().
+        customerId(customerId);
+
+      String encodedClientToken = gateway.clientToken().generate(clientTokenRequest);
+      String clientToken = TestHelper.decodeClientToken(encodedClientToken);
+
+      String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
+
+      return authorizationFingerprint;
+    }
+
     public static String generateNonceForCreditCard(BraintreeGateway gateway, CreditCardRequest creditCardRequest, String customerId, boolean validate) {
       ClientTokenRequest clientTokenRequest = new ClientTokenRequest().
         customerId(customerId);

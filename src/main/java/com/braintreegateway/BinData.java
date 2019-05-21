@@ -1,5 +1,6 @@
 package com.braintreegateway;
 
+import java.util.Map;
 import com.braintreegateway.CreditCard.*;
 import com.braintreegateway.util.NodeWrapper;
 
@@ -26,6 +27,18 @@ public class BinData {
         payroll = node.findString("payroll");
         prepaid = node.findString("prepaid");
         productId = node.findString("product-id");
+    }
+
+    public BinData(Map<String, String> map) {
+        commercial = map.get("commercial");
+        countryOfIssuance = map.get("countryOfIssuance");
+        debit = map.get("debit");
+        durbinRegulated = map.get("durbinRegulated");
+        healthcare = map.get("healthcare");
+        issuingBank = map.get("issuingBank");
+        payroll = map.get("payroll");
+        prepaid = map.get("prepaid");
+        productId = map.get("productId");
     }
 
     public Commercial getCommercial() {
