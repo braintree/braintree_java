@@ -1,3 +1,6 @@
+## Unreleased
+* Return `AuthenticationInsight` when requested on `PaymentMethodNonce.create`
+
 ## 2.96.0
 * Add `ThreeDSecureLookup`
 

@@ -2,7 +2,6 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.exceptions.NotFoundException;
 
 public class PaymentMethodNonceGateway {
     private Http http;
@@ -16,6 +15,11 @@ public class PaymentMethodNonceGateway {
     public Result<PaymentMethodNonce> create(String paymentMethodToken) {
         NodeWrapper response = http.post(configuration.getMerchantPath() + "/payment_methods/" + paymentMethodToken + "/nonces");
         return parseResponse(response);
+    }
+
+    public Result<PaymentMethodNonce> create(PaymentMethodNonceRequest request) {
+      NodeWrapper response = http.post(configuration.getMerchantPath() + "/payment_methods/" + request.getPaymentMethodToken() + "/nonces", request);
+      return parseResponse(response);
     }
 
     public PaymentMethodNonce find(String paymentMethodNonce) {
