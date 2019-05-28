@@ -1,3 +1,6 @@
+## Unreleased
+* Fix serialization of `ThreeDSecureLookupAdditionalInformation`
+
 ## 2.96.0
 * Add `ThreeDSecureLookup`
 
