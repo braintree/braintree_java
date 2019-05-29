@@ -85,7 +85,6 @@ public class ThreeDSecureLookupRequestTest {
 
         try {
             String outputJSON = request.toJSON();
-            assertTrue(outputJSON.matches("^.+\"authorizationFingerprint\":\"auth-fingerprint\".+$"));
             assertTrue(outputJSON.matches("^.+\"billingGivenName\":\"First\".+$"));
             assertTrue(outputJSON.matches("^.+\"billingSurname\":\"Last\".+$"));
             assertTrue(outputJSON.matches("^.+\"email\":\"first.last@example.com\".+$"));
