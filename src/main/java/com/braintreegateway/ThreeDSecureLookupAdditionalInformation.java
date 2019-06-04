@@ -2,10 +2,6 @@ package com.braintreegateway;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.io.IOException;
-
-import com.braintreegateway.exceptions.UnexpectedException;
-import com.fasterxml.jackson.jr.ob.JSON;
 
 public class ThreeDSecureLookupAdditionalInformation {
     private ThreeDSecureLookupAddress billingAddress;
@@ -25,7 +21,7 @@ public class ThreeDSecureLookupAdditionalInformation {
         return this;
     }
 
-    public String toJSON() {
+    public Map<String, Object> toMap() {
         Map<String, Object> jsonMap = new HashMap<String, Object>();
 
         jsonMap.put("email", email);
@@ -41,10 +37,6 @@ public class ThreeDSecureLookupAdditionalInformation {
 
         while (jsonMap.values().remove(null));
 
-        try {
-            return JSON.std.asString(jsonMap);
-        } catch (IOException e) {
-            throw new UnexpectedException(e.getMessage(), e);
-        }
+        return jsonMap;
     }
 }
