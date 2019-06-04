@@ -8,6 +8,7 @@ import com.braintreegateway.CreditCard.Healthcare;
 import com.braintreegateway.CreditCard.Payroll;
 import com.braintreegateway.CreditCard.Prepaid;
 import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.exceptions.NotFoundException;
 import org.junit.Test;
 
@@ -34,6 +35,34 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         PaymentMethodNonce newNonce = result.getTarget();
         assertNotNull(newNonce);
         assertNotNull(newNonce.getNonce());
+    }
+
+    @Test
+    public void createReturnsAuthenticationInsightWhenRequested() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateUnlockedNonce(gateway, null, SandboxValues.CreditCardNumber.VISA.number);
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> paymentMethodResult = gateway.paymentMethod().create(request);
+        PaymentMethod paymentMethod = paymentMethodResult.getTarget();
+
+        PaymentMethodNonceRequest createRequest = new PaymentMethodNonceRequest().
+            paymentMethodToken(paymentMethod.getToken()).
+            merchantAccountId(MerchantAccountTestConstants.DEFAULT_MERCHANT_ACCOUNT_ID).
+            authenticationInsight(new Boolean(true));
+
+        Result<PaymentMethodNonce> result = gateway.paymentMethodNonce().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        PaymentMethodNonce newNonce = result.getTarget();
+        assertNotNull(newNonce);
+        assertNotNull(newNonce.getNonce());
+        assertNotNull(newNonce.getAuthenticationInsight());
+        assertNotNull(newNonce.getAuthenticationInsight().getRegulationEnvironment());
     }
 
     @Test
@@ -221,6 +250,15 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         PaymentMethodNonce foundNonce = gateway.paymentMethodNonce().find(nonce);
 
         assertNull(foundNonce.getThreeDSecureInfo());
+    }
+
+    @Test
+    public void findReturnsNullAuthenticationInsight() {
+        String nonceString = "fake-valid-nonce";
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
+        assertNotNull(nonce);
+        assertEquals(nonceString, nonce.getNonce());
+        assertNull(nonce.getAuthenticationInsight());
     }
 
     @Test

@@ -75,6 +75,7 @@ public class PaymentMethodNonceTest {
                 "  <description>ending in 22</description>" +
                 "  <consumed type=\"boolean\">false</consumed>" +
                 "  <three-d-secure-info nil=\"true\"/>" +
+                "  <authentication-insight nil=\"true\"/>" +
                 "</payment-method-nonce>";
 
         NodeWrapper nodeWrapper = NodeWrapperFactory.instance.create(xml);
@@ -87,6 +88,7 @@ public class PaymentMethodNonceTest {
         assertNull(paymentMethodNonce.getThreeDSecureInfo());
         assertNull(paymentMethodNonce.getDetails());
         assertNull(paymentMethodNonce.getBinData());
+        assertNull(paymentMethodNonce.getAuthenticationInsight());
     }
 
     @Test
@@ -100,6 +102,7 @@ public class PaymentMethodNonceTest {
                 "  <three-d-secure-info nil=\"true\"/>" +
                 "  <details nil=\"true\"/>" +
                 "  <bin-data nil=\"true\"/>" +
+                "  <authentication-insight nil=\"true\"/>" +
                 "</payment-method-nonce>";
 
         NodeWrapper nodeWrapper = NodeWrapperFactory.instance.create(xml);
@@ -112,6 +115,7 @@ public class PaymentMethodNonceTest {
         assertNull(paymentMethodNonce.getThreeDSecureInfo());
         assertNull(paymentMethodNonce.getDetails());
         assertNull(paymentMethodNonce.getBinData());
+        assertNull(paymentMethodNonce.getAuthenticationInsight());
     }
 
     @Test
