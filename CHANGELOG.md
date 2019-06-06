@@ -7,6 +7,7 @@
 * Add `fireSafe` field to `TransactionIndustryDataRequest`
 * Add `propertyPhone` field to `TransactionIndustryDataRequest`
 * Add `additionalChargeRequests` field to `TransactionIndustryDataRequest`
+* Add `payerInfo` to `PaymentMethodNonceDetails` class
 
 ## 2.96.0
 * Add `ThreeDSecureLookup`

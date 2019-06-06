@@ -49,7 +49,7 @@ public class PaymentMethodNonce {
         isConsumed = (Boolean) map.get("consumed");
         type = (String) map.get("type");
 
-        Map<String, String> detailsMap = (Map) map.get("details");
+        Map<String, Object> detailsMap = (Map) map.get("details");
         if (detailsMap != null) {
             details = new PaymentMethodNonceDetails(detailsMap);
         }
