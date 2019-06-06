@@ -2030,7 +2030,12 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                         folioNumber("aaa").
                         checkInDate("2014-07-07").
                         checkOutDate("2014-08-08").
-                        roomRate("2.00").
+                        roomRate(new BigDecimal("200.00")).
+                        roomTax(new BigDecimal("30.00")).
+                        noShow(false).
+                        advancedDeposit(false).
+                        fireSafe(true).
+                        propertyPhone("1112223333").
                         done().
                     done();
 
@@ -2060,6 +2065,67 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertEquals(ValidationErrorCode.INDUSTRY_DATA_LODGING_CHECK_OUT_DATE_MUST_FOLLOW_CHECK_IN_DATE,
                 result.getErrors().forObject("transaction").forObject("industry").onField("checkOutDate").get(0).getCode());
+    }
+
+    @Test
+    public void saleWithLodgingIndustryDataWithAdditionalCharges() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
+                    number(CreditCardNumber.VISA.number).
+                    expirationDate("05/2009").
+                    done().
+                industry().
+                    industryType(Transaction.IndustryType.LODGING).
+                    data().
+                        folioNumber("aaa").
+                        checkInDate("2014-07-07").
+                        checkOutDate("2014-08-08").
+                        additionalCharge().
+                          kind(TransactionIndustryDataAdditionalChargeRequest.Kind.GIFT_SHOP).
+                          amount(new BigDecimal("25.00")).
+                          done().
+                        additionalCharge().
+                          kind(TransactionIndustryDataAdditionalChargeRequest.Kind.MINI_BAR).
+                          amount(new BigDecimal("40.00")).
+                          done().
+                        done().
+                    done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void saleWithLodgingIndustryDataWithAdditionalChargesValidation() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
+                    number(CreditCardNumber.VISA.number).
+                    expirationDate("05/2009").
+                    done().
+                industry().
+                    industryType(Transaction.IndustryType.LODGING).
+                    data().
+                        folioNumber("aaa").
+                        checkInDate("2014-07-07").
+                        checkOutDate("2014-08-08").
+                        additionalCharge().
+                          kind(TransactionIndustryDataAdditionalChargeRequest.Kind.OTHER).
+                          amount(new BigDecimal("0.00")).
+                          done().
+                        additionalCharge().
+                          kind(TransactionIndustryDataAdditionalChargeRequest.Kind.MINI_BAR).
+                          amount(new BigDecimal("40.00")).
+                          done().
+                        done().
+                    done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.INDUSTRY_DATA_ADDITIONAL_CHARGE_AMOUNT_MUST_BE_GREATER_THAN_ZERO,
+                result.getErrors().forObject("transaction").forObject("industry").forObject("additionalCharges").forObject("index_0").onField("amount").get(0).getCode());
     }
 
     @Test
