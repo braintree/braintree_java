@@ -1,4 +1,4 @@
-## Unreleased
+## 2.97.0
 * Fix serialization of `ThreeDSecureLookupAdditionalInformation`
 * Return `AuthenticationInsight` when requested on `PaymentMethodNonce.create`
 * Add `roomTax` field to `TransactionIndustryDataRequest`
