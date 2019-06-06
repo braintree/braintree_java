@@ -1,3 +1,6 @@
+## Unreleased
+* Avoid throwing an exception when Refunded Amount is empty in the Transaction-Level Fee Report
+
 ## 2.97.0
 * Fix serialization of `ThreeDSecureLookupAdditionalInformation`
 * Return `AuthenticationInsight` when requested on `PaymentMethodNonce.create`
