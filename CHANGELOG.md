@@ -8,6 +8,7 @@
 * Add `propertyPhone` field to `TransactionIndustryDataRequest`
 * Add `additionalChargeRequests` field to `TransactionIndustryDataRequest`
 * Add `payerInfo` to `PaymentMethodNonceDetails` class
+* Add `PostalCodeIsRequiredForCardBrandAndProcessor` to validation errors
 
 ## 2.96.0
 * Add `ThreeDSecureLookup`
