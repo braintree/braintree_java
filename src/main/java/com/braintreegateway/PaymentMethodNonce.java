@@ -12,6 +12,7 @@ public class PaymentMethodNonce {
     private ThreeDSecureInfo threeDSecureInfo;
     private String type;
     private BinData binData;
+    private AuthenticationInsight authenticationInsight;
 
     public PaymentMethodNonce(NodeWrapper node) {
         isDefault = node.findBoolean("default");
@@ -34,6 +35,11 @@ public class PaymentMethodNonce {
         if (binDataNode != null && !binDataNode.isBlank()) {
             binData = new BinData(binDataNode);
         }
+
+        NodeWrapper authenticationInsightNode = node.findFirst("authentication-insight");
+        if (authenticationInsightNode != null && !authenticationInsightNode.isBlank()) {
+            authenticationInsight = new AuthenticationInsight(authenticationInsightNode);
+        }
     }
 
     public PaymentMethodNonce(Map<String, Object> map) {
@@ -43,7 +49,7 @@ public class PaymentMethodNonce {
         isConsumed = (Boolean) map.get("consumed");
         type = (String) map.get("type");
 
-        Map<String, String> detailsMap = (Map) map.get("details");
+        Map<String, Object> detailsMap = (Map) map.get("details");
         if (detailsMap != null) {
             details = new PaymentMethodNonceDetails(detailsMap);
         }
@@ -56,6 +62,11 @@ public class PaymentMethodNonce {
         Map<String, String> binDataMap = (Map) map.get("binData");
         if (binDataMap != null) {
             binData = new BinData(binDataMap);
+        }
+
+        Map<String, Object> authenticationInsightMap = (Map) map.get("authenticationInsight");
+        if (authenticationInsightMap != null) {
+            authenticationInsight = new AuthenticationInsight(authenticationInsightMap);
         }
     }
 
@@ -93,5 +104,9 @@ public class PaymentMethodNonce {
 
     public BinData getBinData() {
         return binData;
+    }
+
+    public AuthenticationInsight getAuthenticationInsight() {
+        return authenticationInsight;
     }
 }

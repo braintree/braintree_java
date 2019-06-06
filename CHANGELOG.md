@@ -1,3 +1,15 @@
+## 2.97.0
+* Fix serialization of `ThreeDSecureLookupAdditionalInformation`
+* Return `AuthenticationInsight` when requested on `PaymentMethodNonce.create`
+* Add `roomTax` field to `TransactionIndustryDataRequest`
+* Add `noShow` field to `TransactionIndustryDataRequest`
+* Add `advancedDeposit` field to `TransactionIndustryDataRequest`
+* Add `fireSafe` field to `TransactionIndustryDataRequest`
+* Add `propertyPhone` field to `TransactionIndustryDataRequest`
+* Add `additionalChargeRequests` field to `TransactionIndustryDataRequest`
+* Add `payerInfo` to `PaymentMethodNonceDetails` class
+* Add `PostalCodeIsRequiredForCardBrandAndProcessor` to validation errors
+
 ## 2.96.0
 * Add `ThreeDSecureLookup`
 

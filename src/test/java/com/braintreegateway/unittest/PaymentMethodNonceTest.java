@@ -75,6 +75,7 @@ public class PaymentMethodNonceTest {
                 "  <description>ending in 22</description>" +
                 "  <consumed type=\"boolean\">false</consumed>" +
                 "  <three-d-secure-info nil=\"true\"/>" +
+                "  <authentication-insight nil=\"true\"/>" +
                 "</payment-method-nonce>";
 
         NodeWrapper nodeWrapper = NodeWrapperFactory.instance.create(xml);
@@ -87,6 +88,7 @@ public class PaymentMethodNonceTest {
         assertNull(paymentMethodNonce.getThreeDSecureInfo());
         assertNull(paymentMethodNonce.getDetails());
         assertNull(paymentMethodNonce.getBinData());
+        assertNull(paymentMethodNonce.getAuthenticationInsight());
     }
 
     @Test
@@ -100,6 +102,7 @@ public class PaymentMethodNonceTest {
                 "  <three-d-secure-info nil=\"true\"/>" +
                 "  <details nil=\"true\"/>" +
                 "  <bin-data nil=\"true\"/>" +
+                "  <authentication-insight nil=\"true\"/>" +
                 "</payment-method-nonce>";
 
         NodeWrapper nodeWrapper = NodeWrapperFactory.instance.create(xml);
@@ -112,6 +115,7 @@ public class PaymentMethodNonceTest {
         assertNull(paymentMethodNonce.getThreeDSecureInfo());
         assertNull(paymentMethodNonce.getDetails());
         assertNull(paymentMethodNonce.getBinData());
+        assertNull(paymentMethodNonce.getAuthenticationInsight());
     }
 
     @Test
@@ -183,6 +187,13 @@ public class PaymentMethodNonceTest {
                 "  <details>" +
                 "    <email>jane.doe@paypal.com</email>" +
                 "    <correlation-id>46676383-b632-4b80-8cfd-d7a35d960888</correlation-id>" +
+                "    <payer-info>" +
+                "      <email>jane2.doe@paypal.com</email>" +
+                "      <first-name>first</first-name>" +
+                "      <last-name>last</last-name>" +
+                "      <payer-id>pay-123</payer-id>" +
+                "      <country-code>US</country-code>" +
+                "    </payer-info>" +
                 "  </details>" +
                 "</payment-method-nonce>";
 
@@ -195,5 +206,11 @@ public class PaymentMethodNonceTest {
         assertEquals(false, paymentMethodNonce.isConsumed());
         assertNotNull(paymentMethodNonce.getDetails());
         assertEquals("jane.doe@paypal.com", paymentMethodNonce.getDetails().getEmail());
+
+        assertEquals("jane2.doe@paypal.com", paymentMethodNonce.getDetails().getPayerInfo().getEmail());
+        assertEquals("first", paymentMethodNonce.getDetails().getPayerInfo().getFirstName());
+        assertEquals("last", paymentMethodNonce.getDetails().getPayerInfo().getLastName());
+        assertEquals("pay-123", paymentMethodNonce.getDetails().getPayerInfo().getPayerId());
+        assertEquals("US", paymentMethodNonce.getDetails().getPayerInfo().getCountryCode());
     }
 }

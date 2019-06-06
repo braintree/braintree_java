@@ -17,6 +17,7 @@ public class TransactionIndustryDataRequest extends Request {
     private String lodgingCheckOutDate;
     private String lodgingName;
     private String roomRate;
+    private BigDecimal roomTax;
     private String passengerFirstName;
     private String passengerLastName;
     private String passengerMiddleInitial;
@@ -31,11 +32,17 @@ public class TransactionIndustryDataRequest extends Request {
     private BigDecimal feeAmount;
     private BigDecimal taxAmount;
     private Boolean restrictedTicket;
+    private Boolean noShow;
+    private Boolean advancedDeposit;
+    private Boolean fireSafe;
+    private String propertyPhone;
     private List<TransactionIndustryDataLegRequest> legRequests;
+    private List<TransactionIndustryDataAdditionalChargeRequest> additionalChargeRequests;
 
     public TransactionIndustryDataRequest(IndustryRequest parent) {
         this.parent = (TransactionIndustryRequest) parent;
         this.legRequests = new ArrayList<TransactionIndustryDataLegRequest>();
+        this.additionalChargeRequests = new ArrayList<TransactionIndustryDataAdditionalChargeRequest>();
     }
 
     public TransactionIndustryDataRequest folioNumber(String folioNumber) {
@@ -80,6 +87,16 @@ public class TransactionIndustryDataRequest extends Request {
 
     public TransactionIndustryDataRequest roomRate(String roomRate){
         this.roomRate = roomRate;
+        return this;
+    }
+
+    public TransactionIndustryDataRequest roomRate(BigDecimal roomRate){
+        this.roomRate = roomRate.toString();
+        return this;
+    }
+
+    public TransactionIndustryDataRequest roomTax(BigDecimal roomTax){
+        this.roomTax = roomTax;
         return this;
     }
 
@@ -153,10 +170,36 @@ public class TransactionIndustryDataRequest extends Request {
         return this;
     }
 
+    public TransactionIndustryDataRequest noShow(Boolean noShow) {
+        this.noShow = noShow;
+        return this;
+    }
+
+    public TransactionIndustryDataRequest advancedDeposit(Boolean advancedDeposit) {
+        this.advancedDeposit = advancedDeposit;
+        return this;
+    }
+
+    public TransactionIndustryDataRequest fireSafe(Boolean fireSafe) {
+        this.fireSafe = fireSafe;
+        return this;
+    }
+
+    public TransactionIndustryDataRequest propertyPhone(String propertyPhone) {
+        this.propertyPhone = propertyPhone;
+        return this;
+    }
+
     public TransactionIndustryDataLegRequest leg() {
         TransactionIndustryDataLegRequest legRequest = new TransactionIndustryDataLegRequest(this);
         legRequests.add(legRequest);
         return legRequest;
+    }
+
+    public TransactionIndustryDataAdditionalChargeRequest additionalCharge() {
+        TransactionIndustryDataAdditionalChargeRequest additionalChargeRequest = new TransactionIndustryDataAdditionalChargeRequest(this);
+        additionalChargeRequests.add(additionalChargeRequest);
+        return additionalChargeRequest;
     }
 
     @Override
@@ -180,6 +223,7 @@ public class TransactionIndustryDataRequest extends Request {
                 addElement("lodgingCheckOutDate", lodgingCheckOutDate).
                 addElement("lodgingName", lodgingName).
                 addElement("roomRate", roomRate).
+                addElement("roomTax", roomTax).
                 addElement("passengerFirstName", passengerFirstName).
                 addElement("passengerLastName", passengerLastName).
                 addElement("passengerMiddleInitial", passengerMiddleInitial).
@@ -193,10 +237,18 @@ public class TransactionIndustryDataRequest extends Request {
                 addElement("fareAmount", fareAmount).
                 addElement("feeAmount", feeAmount).
                 addElement("taxAmount", taxAmount).
-                addElement("restrictedTicket", restrictedTicket);
+                addElement("restrictedTicket", restrictedTicket).
+                addElement("noShow", noShow).
+                addElement("advancedDeposit", advancedDeposit).
+                addElement("fireSafe", fireSafe).
+                addElement("propertyPhone", propertyPhone);
 
         if (!legRequests.isEmpty()) {
             builder.addElement("legs", legRequests);
+        }
+
+        if (!additionalChargeRequests.isEmpty()) {
+            builder.addElement("additionalCharges", additionalChargeRequests);
         }
 
         return builder;

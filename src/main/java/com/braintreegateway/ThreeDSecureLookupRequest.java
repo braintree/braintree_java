@@ -84,14 +84,14 @@ public class ThreeDSecureLookupRequest extends Request {
     }
 
     public String toJSON() {
-        Object additionalInfo;
+        Map<String, Object> additionalInfo;
         Map<String, Object> jsonMap = new HashMap<>();
         Map<String, Object> metaMap = new HashMap<>();
 
         if (this.additionalInformation != null) {
-            additionalInfo = this.additionalInformation;
+            additionalInfo = this.additionalInformation.toMap();
         } else {
-            additionalInfo = new Object();
+            additionalInfo = new HashMap<>();
         }
 
         try {
