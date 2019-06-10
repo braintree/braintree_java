@@ -2029,9 +2029,9 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                     data().
                         folioNumber("aaa").
                         checkInDate("2014-07-07").
-                        checkOutDate("2014-08-08").
+                        checkOutDate("2014-07-11").
                         roomRate(new BigDecimal("200.00")).
-                        roomTax(new BigDecimal("30.00")).
+                        roomTax(new BigDecimal("50.00")).
                         noShow(false).
                         advancedDeposit(false).
                         fireSafe(true).
@@ -2080,14 +2080,16 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                     data().
                         folioNumber("aaa").
                         checkInDate("2014-07-07").
-                        checkOutDate("2014-08-08").
+                        checkOutDate("2014-07-11").
+                        roomRate(new BigDecimal("170.00")).
+                        roomTax(new BigDecimal("30.00")).
                         additionalCharge().
                           kind(TransactionIndustryDataAdditionalChargeRequest.Kind.GIFT_SHOP).
-                          amount(new BigDecimal("25.00")).
+                          amount(new BigDecimal("50.00")).
                           done().
                         additionalCharge().
                           kind(TransactionIndustryDataAdditionalChargeRequest.Kind.MINI_BAR).
-                          amount(new BigDecimal("40.00")).
+                          amount(new BigDecimal("150.00")).
                           done().
                         done().
                     done();
