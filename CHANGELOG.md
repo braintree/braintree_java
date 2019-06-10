@@ -7,6 +7,7 @@
 * Add `transactionFeeCurrencyIsoCode` field to `LocalPaymentDetail`
 * Add `refundFromTransactionFeeAmount` field to `LocalPaymentDetail`
 * Add `refundFromTransactionFeeCurrencyIsoCode` field to `LocalPaymentDetail`
+* Add `xid`, `cavv`, `eciFlag`, `dsTransactionId`, and `threeDSecureVersion` to `ThreeDSecureInfo`
 
 ## 2.97.0
 * Fix serialization of `ThreeDSecureLookupAdditionalInformation`

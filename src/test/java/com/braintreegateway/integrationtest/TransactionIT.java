@@ -4185,6 +4185,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(info.isLiabilityShifted());
         assertTrue(info.isLiabilityShiftPossible());
         assertEquals("authenticate_successful", info.getStatus());
+        assertEquals("07", info.getECIFlag());
+        assertEquals("somebase64value", info.getCAVV());
+        assertEquals("xidvalue", info.getXID());
+        assertEquals("1.0.2", info.getThreeDSecureVersion());
+        assertEquals("dstxnid", info.getDsTransactionId());
     }
 
     @Test

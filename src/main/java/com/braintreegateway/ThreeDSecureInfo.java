@@ -13,6 +13,7 @@ public class ThreeDSecureInfo {
     private String eciFlag;
     private String xid;
     private String threeDSecureVersion;
+    private String dsTransactionId;
 
     public ThreeDSecureInfo(NodeWrapper node) {
         liabilityShifted = node.findBoolean("liability-shifted");
@@ -23,6 +24,7 @@ public class ThreeDSecureInfo {
         eciFlag = node.findString("eci-flag");
         xid = node.findString("xid");
         threeDSecureVersion = node.findString("three-d-secure-version");
+        dsTransactionId = node.findString("ds-transaction-id");
     }
 
     public ThreeDSecureInfo(Map<String, Object> map) {
@@ -34,6 +36,7 @@ public class ThreeDSecureInfo {
         eciFlag = (String) map.get("eciFlag");
         xid = (String) map.get("xid");
         threeDSecureVersion = (String) map.get("threeDSecureVersion");
+        dsTransactionId = (String) map.get("dsTransactionId");
     }
 
     public String getStatus() {
@@ -66,5 +69,9 @@ public class ThreeDSecureInfo {
 
     public String getThreeDSecureVersion() {
         return threeDSecureVersion;
+    }
+
+    public String getDsTransactionId() {
+        return dsTransactionId;
     }
 }
