@@ -6419,6 +6419,10 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getPayerId());
         assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getPaymentId());
         assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getFundingSource());
+        assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getCaptureId());
+        assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getDebugId());
+        assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getTransactionFeeAmount());
+        assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getTransactionFeeCurrencyIsoCode());
 
         assertEquals(
             PaymentInstrumentType.LOCAL_PAYMENT,
