@@ -9,6 +9,7 @@ public class TransactionThreeDSecurePassThruRequest extends Request {
     private String authenticationResponse;
     private String directoryResponse;
     private String cavvAlgorithm;
+    private String dsTransactionId;
 
     public TransactionThreeDSecurePassThruRequest(TransactionRequest parent) {
         this.parent = parent;
@@ -49,6 +50,11 @@ public class TransactionThreeDSecurePassThruRequest extends Request {
         return this;
     }
 
+    public TransactionThreeDSecurePassThruRequest dsTransactionId(String dsTransactionId) {
+        this.dsTransactionId = dsTransactionId;
+        return this;
+    }
+
     public TransactionRequest done() {
         return parent;
     }
@@ -76,6 +82,7 @@ public class TransactionThreeDSecurePassThruRequest extends Request {
             addElement("xid", xid).
             addElement("authenticationResponse", authenticationResponse).
             addElement("directoryResponse", directoryResponse).
-            addElement("cavvAlgorithm", cavvAlgorithm);
+            addElement("cavvAlgorithm", cavvAlgorithm).
+            addElement("dsTransactionId", dsTransactionId);
     }
 }
