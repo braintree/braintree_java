@@ -19,7 +19,7 @@ public class Nonce {
   public static final String AndroidPayAmEx = "fake-android-pay-amex-nonce";
   public static final String AmexExpressCheckout = "fake-amex-express-checkout-nonce";
   public static final String VenmoAccount = "fake-venmo-account-nonce";
-  public static final String LocalPayment = "fake-local-payment-nonce";
+  public static final String LocalPayment = "fake-local-payment-method-nonce";
   public static final String MasterpassAmEx = "fake-masterpass-amex-nonce";
   public static final String MasterpassDiscover = "fake-masterpass-discover-nonce";
   public static final String MasterpassMaestro = "fake-masterpass-maestro-nonce";
