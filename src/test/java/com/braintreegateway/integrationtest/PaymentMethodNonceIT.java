@@ -235,10 +235,10 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertTrue(foundNonce.getThreeDSecureInfo().isLiabilityShifted());
         assertTrue(foundNonce.getThreeDSecureInfo().isLiabilityShiftPossible());
         assertNotNull(foundNonce.getThreeDSecureInfo().getStatus());
-        assertEquals("test_cavv", foundNonce.getThreeDSecureInfo().getCAVV());
-        assertEquals("test_xid", foundNonce.getThreeDSecureInfo().getXID());
-        assertEquals("test_eci", foundNonce.getThreeDSecureInfo().getECIFlag());
-        assertEquals("1.0.2", foundNonce.getThreeDSecureInfo().getThreeDSecureVersion());
+        assertNotNull(foundNonce.getThreeDSecureInfo().getCAVV());
+        assertNotNull(foundNonce.getThreeDSecureInfo().getXID());
+        assertNotNull(foundNonce.getThreeDSecureInfo().getECIFlag());
+        assertNotNull(foundNonce.getThreeDSecureInfo().getThreeDSecureVersion());
     }
 
     @Test
