@@ -10,6 +10,7 @@ public class ThreeDSecureLookupAddress {
     private String region;
     private String streetAddress;
     private String surname;
+    private String line3;
 
     public ThreeDSecureLookupAddress() {}
 
@@ -58,6 +59,10 @@ public class ThreeDSecureLookupAddress {
         return this;
     }
 
+    public ThreeDSecureLookupAddress line3(String line3) {
+        this.line3= line3;
+        return this;
+    }
 
     public String getCountryCodeAlpha2() {
         return countryCodeAlpha2;
@@ -94,4 +99,6 @@ public class ThreeDSecureLookupAddress {
     public String getSurname() {
         return surname;
     }
+
+    public String getLine3() { return line3; }
 }

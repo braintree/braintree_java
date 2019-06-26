@@ -42,16 +42,13 @@ public class ThreeDSecureIT extends IntegrationTest {
             postalCode("94112").
             region("CA");
 
-        ThreeDSecureLookupAdditionalInformation additionalInfo = new ThreeDSecureLookupAdditionalInformation().
-            email("first.last@example.com").
-            billingAddress(billingAddress);
-
         String clientData = getClientDataString(nonce, authorizationFingerprint);
 
         ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
         request.amount("199.00");
         request.clientData(clientData);
-        request.additionalInformation(additionalInfo);
+        request.email("first.last@example.com");
+        request.billingAddress(billingAddress);
 
         ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request);
 
@@ -81,15 +78,12 @@ public class ThreeDSecureIT extends IntegrationTest {
         String nonce = TestHelper.generateNonceForCreditCard(gateway, cardRequest, customer.getId(), false);
         String authorizationFingerprint = TestHelper.generateAuthorizationFingerprint(gateway, customer.getId());
 
-        ThreeDSecureLookupAdditionalInformation additionalInfo = new ThreeDSecureLookupAdditionalInformation().
-            email("first.last@example.com");
-
         String clientData = getClientDataString(nonce, authorizationFingerprint);
 
         ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
         request.amount("199.00");
         request.clientData(clientData);
-        request.additionalInformation(additionalInfo);
+        request.email("first.last@example.com");
 
         ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request);
 
@@ -163,16 +157,13 @@ public class ThreeDSecureIT extends IntegrationTest {
             postalCode("94112").
             region("CA");
 
-        ThreeDSecureLookupAdditionalInformation additionalInfo = new ThreeDSecureLookupAdditionalInformation().
-            email("first.last@example.com").
-            billingAddress(billingAddress);
-
         String clientData = getClientDataString(nonce, "bad-auth-fingerprint");
 
         ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
         request.amount("199.00");
         request.clientData(clientData);
-        request.additionalInformation(additionalInfo);
+        request.email("first.last@example.com");
+        request.billingAddress(billingAddress);
 
         try {
             ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request);
