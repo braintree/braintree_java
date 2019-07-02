@@ -1,4 +1,4 @@
-## Unreleased
+## 2.98.0
 * Avoid throwing an exception when Refunded Amount is empty in the Transaction-Level Fee Report
 * Add `captureId` field to `LocalPaymentDetail`
 * Add `refundId` field to `LocalPaymentDetail`
