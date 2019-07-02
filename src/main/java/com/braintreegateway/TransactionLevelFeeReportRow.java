@@ -69,7 +69,7 @@ public class TransactionLevelFeeReportRow {
         this.cardType = recordMap.get("Card Type");
         this.first6OfCreditCard = recordMap.get("First 6 of CC");
         this.issuingBank = recordMap.get("Issuing Bank");
-        this.refundedAmount = new BigDecimal(recordMap.get("Refunded Amount"));
+        this.refundedAmount = maybeParseBigDecimal(recordMap.get("Refunded Amount"));
         this.exchangeRate = new BigDecimal(recordMap.get("Exchange Rate"));
         this.orderId = recordMap.get("Order ID");
         this.acquirerReferenceNumber = recordMap.get("Acquirer Reference Number");

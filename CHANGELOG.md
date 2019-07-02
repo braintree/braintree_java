@@ -1,3 +1,14 @@
+## 2.98.0
+* Avoid throwing an exception when Refunded Amount is empty in the Transaction-Level Fee Report
+* Add `captureId` field to `LocalPaymentDetail`
+* Add `refundId` field to `LocalPaymentDetail`
+* Add `debugId` field to `LocalPaymentDetail`
+* Add `transactionFeeAmount` field to `LocalPaymentDetail`
+* Add `transactionFeeCurrencyIsoCode` field to `LocalPaymentDetail`
+* Add `refundFromTransactionFeeAmount` field to `LocalPaymentDetail`
+* Add `refundFromTransactionFeeCurrencyIsoCode` field to `LocalPaymentDetail`
+* Add `dsTransactionId` to `ThreeDSecurePassthruRequest`
+
 ## 2.97.0
 * Fix serialization of `ThreeDSecureLookupAdditionalInformation`
 * Return `AuthenticationInsight` when requested on `PaymentMethodNonce.create`

@@ -1104,7 +1104,37 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 eciFlag("02").
                 cavv("some_cavv").
                 xid("some_xid").
+                authenticationResponse("Y").
+                directoryResponse("Y").
+                cavvAlgorithm("2").
+                threeDSecureVersion("1.0.2").
                 done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+    }
+
+    @Test
+    public void saleWithThreeDSecurePassThruVersion2() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2009").
+            done().
+            threeDSecurePassThru().
+            eciFlag("02").
+            cavv("some_cavv").
+            authenticationResponse("Y").
+            directoryResponse("Y").
+            cavvAlgorithm("2").
+            threeDSecureVersion("2.0.1").
+            dsTransactionId("some_ds_transaction_id").
+            done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
@@ -1131,6 +1161,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 authenticationResponse("Y").
                 directoryResponse("Y").
                 cavvAlgorithm("2").
+                threeDSecureVersion("1.0.2").
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
@@ -2029,9 +2060,9 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                     data().
                         folioNumber("aaa").
                         checkInDate("2014-07-07").
-                        checkOutDate("2014-08-08").
+                        checkOutDate("2014-07-11").
                         roomRate(new BigDecimal("200.00")).
-                        roomTax(new BigDecimal("30.00")).
+                        roomTax(new BigDecimal("50.00")).
                         noShow(false).
                         advancedDeposit(false).
                         fireSafe(true).
@@ -2080,14 +2111,16 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                     data().
                         folioNumber("aaa").
                         checkInDate("2014-07-07").
-                        checkOutDate("2014-08-08").
+                        checkOutDate("2014-07-11").
+                        roomRate(new BigDecimal("170.00")).
+                        roomTax(new BigDecimal("30.00")).
                         additionalCharge().
                           kind(TransactionIndustryDataAdditionalChargeRequest.Kind.GIFT_SHOP).
-                          amount(new BigDecimal("25.00")).
+                          amount(new BigDecimal("50.00")).
                           done().
                         additionalCharge().
                           kind(TransactionIndustryDataAdditionalChargeRequest.Kind.MINI_BAR).
-                          amount(new BigDecimal("40.00")).
+                          amount(new BigDecimal("150.00")).
                           done().
                         done().
                     done();
@@ -6417,6 +6450,10 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getPayerId());
         assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getPaymentId());
         assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getFundingSource());
+        assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getCaptureId());
+        assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getDebugId());
+        assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getTransactionFeeAmount());
+        assertNotNull(saleResult.getTarget().getLocalPaymentDetails().getTransactionFeeCurrencyIsoCode());
 
         assertEquals(
             PaymentInstrumentType.LOCAL_PAYMENT,
