@@ -1,3 +1,7 @@
+## 2.99.0
+
+* Add Venmo error codes to `ValidationErrorCode`
+
 ## 2.98.0
 * Avoid throwing an exception when Refunded Amount is empty in the Transaction-Level Fee Report
 * Add `captureId` field to `LocalPaymentDetail`
