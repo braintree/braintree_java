@@ -154,6 +154,7 @@ public class Transaction {
     private VisaCheckoutCardDetails visaCheckoutCardDetails;
     private MasterpassCardDetails masterpassCardDetails;
     private LocalPaymentDetails localPaymentDetails;
+    private CustomActionsPaymentMethodDetails customActionsPaymentMethodDetails;
     private String planId;
     private String processorAuthorizationCode;
     private String processorResponseCode;
@@ -280,6 +281,10 @@ public class Transaction {
         NodeWrapper samsungPayCardNode = node.findFirst("samsung-pay-card");
         if (samsungPayCardNode != null) {
             samsungPayCardDetails = new SamsungPayCardDetails(samsungPayCardNode);
+        }
+        NodeWrapper customActionsPaymentMethodNode = node.findFirst("custom-actions-payment-method");
+        if (customActionsPaymentMethodNode != null) {
+            customActionsPaymentMethodDetails = new CustomActionsPaymentMethodDetails(customActionsPaymentMethodNode);
         }
         planId = node.findString("plan-id");
         processorAuthorizationCode = node.findString("processor-authorization-code");
@@ -521,6 +526,10 @@ public class Transaction {
 
     public SamsungPayCardDetails getSamsungPayCardDetails() {
         return samsungPayCardDetails;
+    }
+
+    public CustomActionsPaymentMethodDetails getCustomActionsPaymentMethodDetails() {
+        return customActionsPaymentMethodDetails;
     }
 
     public String getPlanId() {

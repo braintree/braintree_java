@@ -28,6 +28,7 @@ public class Customer {
     private List<MasterpassCard> masterpassCards;
     private List<UsBankAccount> usBankAccounts;
     private List<SamsungPayCard> samsungPayCards;
+    private List<CustomActionsPaymentMethod> customActionsPaymentMethods;
     private List<Address> addresses;
 
     public Customer(NodeWrapper node) {
@@ -85,6 +86,10 @@ public class Customer {
         samsungPayCards = new ArrayList<SamsungPayCard>();
         for (NodeWrapper samsungPayCardResponse : node.findAll("samsung-pay-cards/samsung-pay-card")) {
             samsungPayCards.add(new SamsungPayCard(samsungPayCardResponse));
+        }
+        customActionsPaymentMethods = new ArrayList<CustomActionsPaymentMethod>();
+        for (NodeWrapper customActionsPaymentMethodResponse : node.findAll("custom-actions-payment-methods/custom-actions-payment-method")) {
+            customActionsPaymentMethods.add(new CustomActionsPaymentMethod(customActionsPaymentMethodResponse));
         }
         addresses = new ArrayList<Address>();
         for (NodeWrapper addressResponse : node.findAll("addresses/address")) {
@@ -184,6 +189,10 @@ public class Customer {
         return Collections.unmodifiableList(samsungPayCards);
     }
 
+    public List<CustomActionsPaymentMethod> getCustomActionsPaymentMethods() {
+        return Collections.unmodifiableList(customActionsPaymentMethods);
+    }
+
     public List<? extends PaymentMethod> getPaymentMethods() {
         List<PaymentMethod> paymentMethods = new ArrayList<PaymentMethod>();
         paymentMethods.addAll(getCreditCards());
@@ -196,6 +205,7 @@ public class Customer {
         paymentMethods.addAll(getMasterpassCards());
         paymentMethods.addAll(getCoinbaseAccounts());
         paymentMethods.addAll(getSamsungPayCards());
+        paymentMethods.addAll(getCustomActionsPaymentMethods());
         return Collections.unmodifiableList(paymentMethods);
     }
 

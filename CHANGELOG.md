@@ -1,5 +1,7 @@
-## 2.99.0
+## unreleased
+* Add `CustomActionsPaymentMethod` support
 
+## 2.99.0
 * Add Venmo error codes to `ValidationErrorCode`
 
 ## 2.98.0
@@ -672,4 +674,3 @@
 ## 1.0.0
 
 * Initial release
-
