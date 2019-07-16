@@ -14,6 +14,7 @@ import com.braintreegateway.VenmoAccount;
 import com.braintreegateway.VisaCheckoutCard;
 import com.braintreegateway.MasterpassCard;
 import com.braintreegateway.SamsungPayCard;
+import com.braintreegateway.CustomActionsPaymentMethod;
 import com.braintreegateway.UnknownPaymentMethod;
 import com.braintreegateway.exceptions.UnexpectedException;
 
@@ -44,6 +45,8 @@ public class PaymentMethodParser {
             return new Result<MasterpassCard>(node, MasterpassCard.class);
         } else if (node.getElementName() == "samsung-pay-card") {
             return new Result<SamsungPayCard>(node, SamsungPayCard.class);
+        } else if (node.getElementName() == "custom-actions-payment-method") {
+            return new Result<CustomActionsPaymentMethod>(node, CustomActionsPaymentMethod.class);
         } else {
             return new Result<UnknownPaymentMethod>(node, UnknownPaymentMethod.class);
         }
