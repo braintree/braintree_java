@@ -1,4 +1,4 @@
-## unreleased
+## 2.100.0
 * Add `CustomActionsPaymentMethod` support
 
 ## 2.99.0
