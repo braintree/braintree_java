@@ -1,3 +1,6 @@
+## 2.101.0
+* Add more Venmo error codes to `ValidationErrorCode`
+
 ## 2.100.0
 * Add `CustomActionsPaymentMethod` support
 
