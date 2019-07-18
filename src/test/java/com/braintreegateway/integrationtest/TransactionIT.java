@@ -7164,4 +7164,37 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(transaction.getFacilitatorDetails().getOauthApplicationName(), "PseudoShop");
         assertEquals(transaction.getFacilitatorDetails().getSourcePaymentMethodToken(), creditCard.getToken());
     }
+
+    @Test
+    public void payPalHereDetailsParseAttributesForAuthCapture() {
+        Transaction transaction = gateway.transaction().find("paypal_here_auth_capture_id");
+        assertEquals(PaymentInstrumentType.PAYPAL_HERE, transaction.getPaymentInstrumentType());
+
+        assertNotNull(transaction.getPayPalHereDetails());
+        assertNotNull(transaction.getPayPalHereDetails().getAuthorizationId());
+        assertNotNull(transaction.getPayPalHereDetails().getCaptureId());
+        assertNotNull(transaction.getPayPalHereDetails().getInvoiceId());
+        assertNotNull(transaction.getPayPalHereDetails().getLast4());
+        assertNotNull(transaction.getPayPalHereDetails().getPaymentType());
+        assertNotNull(transaction.getPayPalHereDetails().getTransactionFeeAmount());
+        assertNotNull(transaction.getPayPalHereDetails().getTransactionFeeCurrencyIsoCode());
+        assertNotNull(transaction.getPayPalHereDetails().getTransactionInitiationDate());
+        assertNotNull(transaction.getPayPalHereDetails().getTransactionUpdatedDate());
+    }
+
+    @Test
+    public void payPalHereDetailsParseAttributesForSale() {
+        Transaction transaction = gateway.transaction().find("paypal_here_sale_id");
+
+        assertNotNull(transaction.getPayPalHereDetails());
+        assertNotNull(transaction.getPayPalHereDetails().getPaymentId());
+    }
+
+    @Test
+    public void payPalHereDetailsParseAttributesForRefund() {
+        Transaction transaction = gateway.transaction().find("paypal_here_refund_id");
+
+        assertNotNull(transaction.getPayPalHereDetails());
+        assertNotNull(transaction.getPayPalHereDetails().getRefundId());
+    }
 }

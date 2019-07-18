@@ -143,6 +143,7 @@ public class Transaction {
     private String merchantAccountId;
     private String orderId;
     private PayPalDetails paypalDetails;
+    private PayPalHereDetails paypalHereDetails;
     private ApplePayDetails applePayDetails;
     private AndroidPayDetails androidPayDetails;
     private AmexExpressCheckoutDetails amexExpressCheckoutDetails;
@@ -235,6 +236,10 @@ public class Transaction {
         NodeWrapper paypalNode = node.findFirst("paypal");
         if (paypalNode != null) {
             paypalDetails = new PayPalDetails(paypalNode);
+        }
+        NodeWrapper paypalHereNode = node.findFirst("paypal-here");
+        if (paypalHereNode != null) {
+            paypalHereDetails = new PayPalHereDetails(paypalHereNode);
         }
         NodeWrapper applePayNode = node.findFirst("apple-pay");
         if (applePayNode != null) {
@@ -478,6 +483,10 @@ public class Transaction {
 
     public PayPalDetails getPayPalDetails() {
         return paypalDetails;
+    }
+
+    public PayPalHereDetails getPayPalHereDetails() {
+        return paypalHereDetails;
     }
 
     public ApplePayDetails getApplePayDetails() {

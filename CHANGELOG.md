@@ -17,6 +17,7 @@
 * Add `refundFromTransactionFeeAmount` field to `LocalPaymentDetail`
 * Add `refundFromTransactionFeeCurrencyIsoCode` field to `LocalPaymentDetail`
 * Add `dsTransactionId` to `ThreeDSecurePassthruRequest`
+* Add `PayPalHereDetails` to `Transaction`
 
 ## 2.97.0
 * Fix serialization of `ThreeDSecureLookupAdditionalInformation`
