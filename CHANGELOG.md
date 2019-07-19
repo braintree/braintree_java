@@ -19,6 +19,7 @@
 * Add `transactionFeeCurrencyIsoCode` field to `LocalPaymentDetail`
 * Add `refundFromTransactionFeeAmount` field to `LocalPaymentDetail`
 * Add `refundFromTransactionFeeCurrencyIsoCode` field to `LocalPaymentDetail`
+* Add `xid`, `cavv`, `eciFlag`, `dsTransactionId`, and `threeDSecureVersion` to `ThreeDSecureInfo`
 * Add `dsTransactionId` to `ThreeDSecurePassthruRequest`
 * Add `PayPalHereDetails` to `Transaction`
 
