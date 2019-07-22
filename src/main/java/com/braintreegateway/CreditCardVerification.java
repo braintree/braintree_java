@@ -32,6 +32,7 @@ public class CreditCardVerification {
     private Address billingAddress;
     private Calendar createdAt;
     private RiskData riskData;
+    private ThreeDSecureInfo threeDSecureInfo;
 
     public CreditCardVerification(NodeWrapper node) {
         this.amount = node.findBigDecimal("amount");
@@ -54,6 +55,12 @@ public class CreditCardVerification {
         if (riskDataNode != null) {
             this.riskData = new RiskData(riskDataNode);
         }
+
+        NodeWrapper threeDSecureInfoNode = node.findFirst("three-d-secure-info");
+        if (threeDSecureInfoNode != null && !threeDSecureInfoNode.isBlank()) {
+            threeDSecureInfo = new ThreeDSecureInfo(threeDSecureInfoNode);
+        }
+
 
         NodeWrapper creditCardNode = node.findFirst("credit-card");
         if(creditCardNode != null) {
@@ -111,6 +118,10 @@ public class CreditCardVerification {
     public RiskData getRiskData(){
         return riskData;
 
+    }
+
+    public ThreeDSecureInfo getThreeDSecureInfo() {
+        return threeDSecureInfo;
     }
 
     public GatewayRejectionReason getGatewayRejectionReason() {

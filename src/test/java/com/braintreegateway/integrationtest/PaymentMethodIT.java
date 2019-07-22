@@ -15,6 +15,37 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PaymentMethodIT extends IntegrationTest {
+    @Test
+    public void createWithThreeDSecureNonce() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(Nonce.ThreeDSecureVisaFullAuthentication).
+            options().
+                verifyCard(true).
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+
+        CreditCard creditCard = (CreditCard)result.getTarget();
+        ThreeDSecureInfo threeDSecureInfo = creditCard.getVerification().getThreeDSecureInfo();
+
+        assertEquals("authenticate_successful", threeDSecureInfo.getStatus());
+        assertEquals("Y", threeDSecureInfo.getEnrolled());
+        assertEquals(true, threeDSecureInfo.isLiabilityShifted());
+        assertEquals(true, threeDSecureInfo.isLiabilityShiftPossible());
+        assertEquals("cavv_value", threeDSecureInfo.getCAVV());
+        assertEquals("05", threeDSecureInfo.getECIFlag());
+        assertEquals("xid_value", threeDSecureInfo.getXID());
+        assertEquals("1.0.2", threeDSecureInfo.getThreeDSecureVersion());
+        assertEquals((String)null, threeDSecureInfo.getDsTransactionId());
+    }
 
     @Test
     public void createPayPalAccountWithNonce() {

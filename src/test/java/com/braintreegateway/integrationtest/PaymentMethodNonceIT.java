@@ -239,6 +239,7 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertEquals("test_xid", foundNonce.getThreeDSecureInfo().getXID());
         assertEquals("test_eci", foundNonce.getThreeDSecureInfo().getECIFlag());
         assertEquals("1.0.2", foundNonce.getThreeDSecureInfo().getThreeDSecureVersion());
+        assertEquals((String)null, foundNonce.getThreeDSecureInfo().getDsTransactionId());
     }
 
     @Test
