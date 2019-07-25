@@ -325,6 +325,28 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleNetworkResponseCode() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
+        assertEquals("USD", transaction.getCurrencyIsoCode());
+        assertNotNull(transaction.getProcessorAuthorizationCode());
+        assertEquals(Transaction.Type.SALE, transaction.getType());
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        assertEquals("XX", transaction.getNetworkResponseCode());
+        assertEquals("sample network response text", transaction.getNetworkResponseText());
+    }
+
+    @Test
     public void saleWithEloCard() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).

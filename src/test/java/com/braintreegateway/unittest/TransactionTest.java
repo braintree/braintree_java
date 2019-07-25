@@ -29,8 +29,8 @@ public class TransactionTest {
 				"  <payment-instrument-type>credit_card</payment-instrument-type>\n" +
 				"</transaction>\n";
 
-		SimpleNodeWrapper creditCardNode = SimpleNodeWrapper.parse(xml);
-		Transaction transaction = new Transaction(creditCardNode);
+		SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+		Transaction transaction = new Transaction(transactionNode);
 
 		assertEquals(Transaction.GatewayRejectionReason.UNRECOGNIZED, transaction.getGatewayRejectionReason());
 		assertEquals(Transaction.EscrowStatus.UNRECOGNIZED, transaction.getEscrowStatus());
@@ -58,9 +58,38 @@ public class TransactionTest {
 				"  <payment-instrument-type>credit_card</payment-instrument-type>\n" +
 				"</transaction>\n";
 
-		SimpleNodeWrapper creditCardNode = SimpleNodeWrapper.parse(xml);
-		Transaction transaction = new Transaction(creditCardNode);
+		SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+		Transaction transaction = new Transaction(transactionNode);
 
 		assertEquals(Transaction.GatewayRejectionReason.TOKEN_ISSUANCE, transaction.getGatewayRejectionReason());
+	}
+
+	@Test
+	public void parsesNetworkResponseCodeAndText() {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<transaction>\n" +
+				"  <id>recognized_transaction_id</id>\n" +
+				"  <status></status>\n" +
+				"  <type>sale</type>\n" +
+				"  <customer></customer>\n" +
+				"  <billing></billing>\n" +
+				"  <shipping></shipping>\n" +
+				"  <custom-fields/>\n" +
+				"  <credit-card></credit-card>\n" +
+				"  <status-history type=\"array\"></status-history>\n" +
+				"  <subscription></subscription>\n" +
+				"  <descriptor></descriptor>\n" +
+				"  <escrow-status></escrow-status>\n" +
+				"  <disbursement-details></disbursement-details>\n" +
+				"  <payment-instrument-type>credit_card</payment-instrument-type>\n" +
+				"  <network-response-code>11</network-response-code>\n" +
+				"  <network-response-text>Approved</network-response-text>\n" +
+				"</transaction>\n";
+
+		SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+		Transaction transaction = new Transaction(transactionNode);
+
+		assertEquals("11", transaction.getNetworkResponseCode());
+		assertEquals("Approved", transaction.getNetworkResponseText());
 	}
 }

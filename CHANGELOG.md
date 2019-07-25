@@ -1,3 +1,6 @@
+## Unreleased
+* Add `networkResponseCode` and `networkResponseText` fields to `Transaction` and `CreditCardVerification`
+
 ## 2.101.0
 * Add more Venmo error codes to `ValidationErrorCode`
 
