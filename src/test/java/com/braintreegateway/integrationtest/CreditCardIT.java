@@ -2,6 +2,7 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.ForgedQueryStringException;
+import com.braintreegateway.test.Nonce;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.CreditCardDefaults;
 import com.braintreegateway.test.CreditCardNumbers;
@@ -364,6 +365,35 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         Result<CreditCard> result = gateway.creditCard().create(request);
         assertTrue(result.isSuccess());
     }
+
+    @Test
+    public void createWithThreeDSecureNonce() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(Nonce.ThreeDSecureVisaFullAuthentication).
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+
+        CreditCard creditCard = (CreditCard)result.getTarget();
+
+        ThreeDSecureInfo threeDSecureInfo = creditCard.getVerification().getThreeDSecureInfo();
+
+        assertEquals("authenticate_successful", threeDSecureInfo.getStatus());
+        assertEquals("Y", threeDSecureInfo.getEnrolled());
+        assertEquals(true, threeDSecureInfo.isLiabilityShifted());
+        assertEquals(true, threeDSecureInfo.isLiabilityShiftPossible());
+        assertEquals("cavv_value", threeDSecureInfo.getCAVV());
+        assertEquals("05", threeDSecureInfo.getECIFlag());
+        assertEquals("xid_value", threeDSecureInfo.getXID());
+        assertEquals("1.0.2", threeDSecureInfo.getThreeDSecureVersion());
+        assertEquals((String)null, threeDSecureInfo.getDsTransactionId());
+    }
+
 
     @Test
     public void createWithInvalidVenmoSdkPaymentMethodCode() {

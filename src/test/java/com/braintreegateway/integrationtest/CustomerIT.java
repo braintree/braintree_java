@@ -445,6 +445,34 @@ public class CustomerIT extends IntegrationTest {
         assertEquals(1, result.getTarget().getCreditCards().size());
     }
 
+    @Test
+    public void createWithThreeDSecureNonce() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Fred").
+            creditCard().
+              paymentMethodNonce(Nonce.ThreeDSecureVisaFullAuthentication).
+              options().
+                  verifyCard(true).
+                  done().
+              done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        CreditCard creditCard = customer.getCreditCards().get(0);
+        ThreeDSecureInfo threeDSecureInfo = creditCard.getVerification().getThreeDSecureInfo();
+
+        assertEquals("authenticate_successful", threeDSecureInfo.getStatus());
+        assertEquals("Y", threeDSecureInfo.getEnrolled());
+        assertEquals(true, threeDSecureInfo.isLiabilityShifted());
+        assertEquals(true, threeDSecureInfo.isLiabilityShiftPossible());
+        assertEquals("cavv_value", threeDSecureInfo.getCAVV());
+        assertEquals("05", threeDSecureInfo.getECIFlag());
+        assertEquals("xid_value", threeDSecureInfo.getXID());
+        assertEquals("1.0.2", threeDSecureInfo.getThreeDSecureVersion());
+        assertEquals((String)null, threeDSecureInfo.getDsTransactionId());
+    }
 
     @Test
     public void createWithFuturePaymentPayPalAccountNonce() {

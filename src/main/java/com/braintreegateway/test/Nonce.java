@@ -29,6 +29,7 @@ public class Nonce {
   public static final String VisaCheckoutDiscover = "fake-visa-checkout-discover-nonce";
   public static final String VisaCheckoutMasterCard = "fake-visa-checkout-mastercard-nonce";
   public static final String VisaCheckoutVisa = "fake-visa-checkout-visa-nonce";
+  public static final String ThreeDSecureVisaFullAuthentication = "fake-three-d-secure-visa-full-authentication-nonce";
   public static final String TransactableVisa = "fake-valid-visa-nonce";
   public static final String TransactableAmEx = "fake-valid-amex-nonce";
   public static final String TransactableMasterCard = "fake-valid-mastercard-nonce";

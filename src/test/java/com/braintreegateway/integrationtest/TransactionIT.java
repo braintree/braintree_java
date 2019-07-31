@@ -325,6 +325,28 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleNetworkResponseCode() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
+        assertEquals("USD", transaction.getCurrencyIsoCode());
+        assertNotNull(transaction.getProcessorAuthorizationCode());
+        assertEquals(Transaction.Type.SALE, transaction.getType());
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        assertEquals("XX", transaction.getNetworkResponseCode());
+        assertEquals("sample network response text", transaction.getNetworkResponseText());
+    }
+
+    @Test
     public void saleWithEloCard() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -4216,6 +4238,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(info.isLiabilityShifted());
         assertTrue(info.isLiabilityShiftPossible());
         assertEquals("authenticate_successful", info.getStatus());
+        assertEquals("07", info.getECIFlag());
+        assertEquals("somebase64value", info.getCAVV());
+        assertEquals("xidvalue", info.getXID());
+        assertEquals("1.0.2", info.getThreeDSecureVersion());
+        assertEquals("dstxnid", info.getDsTransactionId());
     }
 
     @Test
@@ -7163,5 +7190,38 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(transaction.getFacilitatorDetails().getOauthApplicationClientId(), "client_id$development$integration_client_id");
         assertEquals(transaction.getFacilitatorDetails().getOauthApplicationName(), "PseudoShop");
         assertEquals(transaction.getFacilitatorDetails().getSourcePaymentMethodToken(), creditCard.getToken());
+    }
+
+    @Test
+    public void payPalHereDetailsParseAttributesForAuthCapture() {
+        Transaction transaction = gateway.transaction().find("paypal_here_auth_capture_id");
+        assertEquals(PaymentInstrumentType.PAYPAL_HERE, transaction.getPaymentInstrumentType());
+
+        assertNotNull(transaction.getPayPalHereDetails());
+        assertNotNull(transaction.getPayPalHereDetails().getAuthorizationId());
+        assertNotNull(transaction.getPayPalHereDetails().getCaptureId());
+        assertNotNull(transaction.getPayPalHereDetails().getInvoiceId());
+        assertNotNull(transaction.getPayPalHereDetails().getLast4());
+        assertNotNull(transaction.getPayPalHereDetails().getPaymentType());
+        assertNotNull(transaction.getPayPalHereDetails().getTransactionFeeAmount());
+        assertNotNull(transaction.getPayPalHereDetails().getTransactionFeeCurrencyIsoCode());
+        assertNotNull(transaction.getPayPalHereDetails().getTransactionInitiationDate());
+        assertNotNull(transaction.getPayPalHereDetails().getTransactionUpdatedDate());
+    }
+
+    @Test
+    public void payPalHereDetailsParseAttributesForSale() {
+        Transaction transaction = gateway.transaction().find("paypal_here_sale_id");
+
+        assertNotNull(transaction.getPayPalHereDetails());
+        assertNotNull(transaction.getPayPalHereDetails().getPaymentId());
+    }
+
+    @Test
+    public void payPalHereDetailsParseAttributesForRefund() {
+        Transaction transaction = gateway.transaction().find("paypal_here_refund_id");
+
+        assertNotNull(transaction.getPayPalHereDetails());
+        assertNotNull(transaction.getPayPalHereDetails().getRefundId());
     }
 }

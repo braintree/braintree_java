@@ -23,6 +23,8 @@ public class CreditCardVerification {
     private String processorResponseCode;
     private String processorResponseText;
     private ProcessorResponseType processorResponseType;
+    private String networkResponseCode;
+    private String networkResponseText;
     private String merchantAccountId;
     private Status status;
     private String id;
@@ -30,6 +32,7 @@ public class CreditCardVerification {
     private Address billingAddress;
     private Calendar createdAt;
     private RiskData riskData;
+    private ThreeDSecureInfo threeDSecureInfo;
 
     public CreditCardVerification(NodeWrapper node) {
         this.amount = node.findBigDecimal("amount");
@@ -42,6 +45,8 @@ public class CreditCardVerification {
         this.processorResponseCode = node.findString("processor-response-code");
         this.processorResponseText = node.findString("processor-response-text");
         this.processorResponseType = EnumUtils.findByName(ProcessorResponseType.class, node.findString("processor-response-type"), ProcessorResponseType.UNRECOGNIZED);
+        this.networkResponseCode = node.findString("network-response-code");
+        this.networkResponseText = node.findString("network-response-text");
         this.merchantAccountId = node.findString("merchant-account-id");
         this.status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);
         this.id = node.findString("id");
@@ -50,6 +55,12 @@ public class CreditCardVerification {
         if (riskDataNode != null) {
             this.riskData = new RiskData(riskDataNode);
         }
+
+        NodeWrapper threeDSecureInfoNode = node.findFirst("three-d-secure-info");
+        if (threeDSecureInfoNode != null && !threeDSecureInfoNode.isBlank()) {
+            threeDSecureInfo = new ThreeDSecureInfo(threeDSecureInfoNode);
+        }
+
 
         NodeWrapper creditCardNode = node.findFirst("credit-card");
         if(creditCardNode != null) {
@@ -109,6 +120,10 @@ public class CreditCardVerification {
 
     }
 
+    public ThreeDSecureInfo getThreeDSecureInfo() {
+        return threeDSecureInfo;
+    }
+
     public GatewayRejectionReason getGatewayRejectionReason() {
         return gatewayRejectionReason;
     }
@@ -123,6 +138,14 @@ public class CreditCardVerification {
 
     public ProcessorResponseType getProcessorResponseType() {
         return processorResponseType;
+    }
+
+    public String getNetworkResponseCode() {
+        return networkResponseCode;
+    }
+
+    public String getNetworkResponseText() {
+        return networkResponseText;
     }
 
     public String getMerchantAccountId() {

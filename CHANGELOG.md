@@ -1,3 +1,10 @@
+## 2.102.0
+* Add `networkResponseCode` and `networkResponseText` fields to `Transaction` and `CreditCardVerification`
+* Add `graphQLClient` to the `BraintreeGateway` class
+* Add `threeDSecureInfo` to `CreditCardVerification`
+* Add `xid`, `cavv`, `eciFlag`, `dsTransactionId`, and `threeDSecureVersion` to `ThreeDSecureInfo`
+* Add `PayPalHereDetails` to `Transaction`
+
 ## 2.101.0
 * Add more Venmo error codes to `ValidationErrorCode`
 

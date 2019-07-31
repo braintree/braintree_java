@@ -21,7 +21,7 @@ public class GraphQLClientIT extends IntegrationTest {
     public void smokeTestQueryWithoutVariables() {
         Configuration configuration = gateway.getConfiguration();
 
-        Map<String, Object> result = new GraphQLClient(configuration).query(pingQuery, null);
+        Map<String, Object> result = new GraphQLClient(configuration).query(pingQuery);
         assertNotNull(result);
     }
 }

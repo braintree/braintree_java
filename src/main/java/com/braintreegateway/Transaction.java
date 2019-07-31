@@ -143,6 +143,7 @@ public class Transaction {
     private String merchantAccountId;
     private String orderId;
     private PayPalDetails paypalDetails;
+    private PayPalHereDetails paypalHereDetails;
     private ApplePayDetails applePayDetails;
     private AndroidPayDetails androidPayDetails;
     private AmexExpressCheckoutDetails amexExpressCheckoutDetails;
@@ -163,6 +164,8 @@ public class Transaction {
     private String processorSettlementResponseCode;
     private String processorSettlementResponseText;
     private String additionalProcessorResponse;
+    private String networkResponseCode;
+    private String networkResponseText;
     private String voiceReferralNumber;
     private String purchaseOrderNumber;
     private Boolean recurring;
@@ -236,6 +239,10 @@ public class Transaction {
         if (paypalNode != null) {
             paypalDetails = new PayPalDetails(paypalNode);
         }
+        NodeWrapper paypalHereNode = node.findFirst("paypal-here");
+        if (paypalHereNode != null) {
+            paypalHereDetails = new PayPalHereDetails(paypalHereNode);
+        }
         NodeWrapper applePayNode = node.findFirst("apple-pay");
         if (applePayNode != null) {
             applePayDetails = new ApplePayDetails(applePayNode);
@@ -294,6 +301,8 @@ public class Transaction {
         processorSettlementResponseCode = node.findString("processor-settlement-response-code");
         processorSettlementResponseText = node.findString("processor-settlement-response-text");
         additionalProcessorResponse = node.findString("additional-processor-response");
+        networkResponseCode = node.findString("network-response-code");
+        networkResponseText = node.findString("network-response-text");
         voiceReferralNumber = node.findString("voice-referral-number");
         purchaseOrderNumber = node.findString("purchase-order-number");
         recurring = node.findBoolean("recurring");
@@ -480,6 +489,10 @@ public class Transaction {
         return paypalDetails;
     }
 
+    public PayPalHereDetails getPayPalHereDetails() {
+        return paypalHereDetails;
+    }
+
     public ApplePayDetails getApplePayDetails() {
         return applePayDetails;
     }
@@ -562,6 +575,14 @@ public class Transaction {
 
     public String getAdditionalProcessorResponse() {
         return additionalProcessorResponse;
+    }
+
+    public String getNetworkResponseCode() {
+        return networkResponseCode;
+    }
+
+    public String getNetworkResponseText() {
+        return networkResponseText;
     }
 
     public String getVoiceReferralNumber() {
