@@ -39,8 +39,8 @@ import com.braintreegateway.util.TrUtil;
 public class BraintreeGateway {
 
     private Configuration configuration;
-    private GraphQLClient graphQLClient;
     private Http http;
+    public GraphQLClient graphQLClient;
 
     /**
      * Instantiates a BraintreeGateway. Use the values provided by Braintree.

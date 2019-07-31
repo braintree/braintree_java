@@ -3,6 +3,7 @@ package com.braintreegateway.util;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -44,10 +45,13 @@ public class GraphQLClient extends Http {
         this.configuration = configuration;
     }
 
-    public Map<String, Object> query(String definition, Request request) {
+    public Map<String, Object> query(String definition) {
+        return query(definition, new HashMap<String, Object>());
+    }
+
+    public Map<String, Object> query(String definition, Map<String, Object> variables) {
         HttpURLConnection connection = null;
         Map<String, Object> jsonMap = null;
-        Map<String, Object> variables = request != null ? request.toGraphQLVariables() : null;
 
         String requestString = formatGraphQLRequest(definition, variables);
         String contentType = "application/json";
@@ -72,6 +76,12 @@ public class GraphQLClient extends Http {
         throwExceptionIfGraphQLErrorResponse(jsonMap);
 
         return jsonMap;
+    }
+
+    public Map<String, Object> query(String definition, Request request) {
+        Map<String, Object> variables = request.toGraphQLVariables();
+
+        return query(definition, variables);
     }
 
     public static String formatGraphQLRequest(String definition, Map<String, Object> variables) {

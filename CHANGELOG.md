@@ -1,5 +1,6 @@
 ## Unreleased
 * Add `networkResponseCode` and `networkResponseText` fields to `Transaction` and `CreditCardVerification`
+* Add `graphQLClient` to the `BraintreeGateway` class
 
 ## 2.101.0
 * Add more Venmo error codes to `ValidationErrorCode`
