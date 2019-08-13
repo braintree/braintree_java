@@ -1,3 +1,6 @@
+## 2.103.0
+* Add `getUniqueNumberIdentifier` to `CustomActionsPaymentMethodDetails`
+
 ## 2.102.1
 * Fix issue where billing address was not applied correctly in `ThreeDSecureLookupRequest`
 
