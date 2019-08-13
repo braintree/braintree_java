@@ -1,4 +1,4 @@
-## unreleased
+## 2.102.1
 * Fix issue where billing address was not applied correctly in `ThreeDSecureLookupRequest`
 
 ## 2.102.0
