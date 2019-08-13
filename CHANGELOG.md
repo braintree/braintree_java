@@ -1,6 +1,8 @@
+## 2.103.0
+* Add `getUniqueNumberIdentifier` to `CustomActionsPaymentMethodDetails`
+
 ## 2.102.1
 * Fix issue where billing address was not applied correctly in `ThreeDSecureLookupRequest`
-* Add `getUniqueNumberIdentifier` to `CustomActionsPaymentMethodDetails`
 
 ## 2.102.0
 * Add `networkResponseCode` and `networkResponseText` fields to `Transaction` and `CreditCardVerification`
