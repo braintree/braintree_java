@@ -80,7 +80,24 @@ public class CustomActionsPaymentMethodIT extends IntegrationTest {
     assertEquals(customActionsPaymentMethodDetails.getFields().size(), 1);
     assertNotNull(customActionsPaymentMethodDetails.getFields().get(0).getName());
     assertNotNull(customActionsPaymentMethodDetails.getFields().get(0).getDisplayValue());
+    assertNull(customActionsPaymentMethodDetails.getUniqueNumberIdentifier());
     assertNull(customActionsPaymentMethodDetails.getToken());
     assertNull(customActionsPaymentMethodDetails.getGlobalId());
+  }
+
+  @Test
+  public void vaultedTransactionFindWithId_hasNonNullUniqueNumberIdentifier() {
+    TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+        orderId().is("VAULTED_CUSTOM_ACTION_TRANSACTION");
+
+    ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+
+    assertEquals(1, collection.getMaximumSize());
+
+    CustomActionsPaymentMethodDetails customActionsPaymentMethodDetails = collection.
+        getFirst().
+        getCustomActionsPaymentMethodDetails();
+
+    assertNotNull(customActionsPaymentMethodDetails.getUniqueNumberIdentifier());
   }
 }
