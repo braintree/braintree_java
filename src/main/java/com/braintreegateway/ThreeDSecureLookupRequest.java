@@ -126,23 +126,24 @@ public class ThreeDSecureLookupRequest extends Request {
             jsonMap.put("amount", getAmount());
             jsonMap.put("braintreeLibraryVersion", getBraintreeLibraryVersion());
             jsonMap.put("df_reference_id", getDfReferenceId());
-            jsonMap.put("additional_info", additionalInfo);
             jsonMap.put("clientMetadata", getClientMetadata());
             jsonMap.put("_meta", metaMap);
             jsonMap.put("challengeRequested", getChallengeRequested());
             jsonMap.put("exemptionRequested", getExemptionRequested());
 
             if (billingAddress != null) {
-                jsonMap.put("billingGivenName", billingAddress.getGivenName());
-                jsonMap.put("billingSurname", billingAddress.getSurname());
-                jsonMap.put("billingPhoneNumber", billingAddress.getPhoneNumber());
-                jsonMap.put("billingCity", billingAddress.getLocality());
-                jsonMap.put("billingCountryCode", billingAddress.getCountryCodeAlpha2());
-                jsonMap.put("billingLine1", billingAddress.getStreetAddress());
-                jsonMap.put("billingLine2", billingAddress.getExtendedAddress());
-                jsonMap.put("billingPostalCode", billingAddress.getPostalCode());
-                jsonMap.put("billingState", billingAddress.getRegion());
+                additionalInfo.put("billingGivenName", billingAddress.getGivenName());
+                additionalInfo.put("billingSurname", billingAddress.getSurname());
+                additionalInfo.put("billingPhoneNumber", billingAddress.getPhoneNumber());
+                additionalInfo.put("billingCity", billingAddress.getLocality());
+                additionalInfo.put("billingCountryCode", billingAddress.getCountryCodeAlpha2());
+                additionalInfo.put("billingLine1", billingAddress.getStreetAddress());
+                additionalInfo.put("billingLine2", billingAddress.getExtendedAddress());
+                additionalInfo.put("billingPostalCode", billingAddress.getPostalCode());
+                additionalInfo.put("billingState", billingAddress.getRegion());
             }
+
+            jsonMap.put("additional_info", additionalInfo);
 
             return JSON.std.asString(jsonMap);
         } catch (IOException e) {

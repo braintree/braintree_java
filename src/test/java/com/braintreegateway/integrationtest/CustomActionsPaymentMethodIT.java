@@ -12,6 +12,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class CustomActionsPaymentMethodIT extends IntegrationTest {
 
@@ -20,12 +21,12 @@ public class CustomActionsPaymentMethodIT extends IntegrationTest {
     Customer customer = gateway.customer().find("CUSTOM_ACTION_CUSTOMER");
 
     List<CustomActionsPaymentMethod> customActionsPaymentMethods = customer.getCustomActionsPaymentMethods();
-    assertEquals(customActionsPaymentMethods.size(), 1);
+    assertTrue(customActionsPaymentMethods.size() > 0);
 
     CustomActionsPaymentMethod customActionsPaymentMethod = customActionsPaymentMethods.get(0);
 
     assertEquals(customActionsPaymentMethod.getActionName(), "bank_account");
-    assertEquals(customActionsPaymentMethod.getFields().size(), 1);
+    assertTrue(customActionsPaymentMethod.getFields().size() > 0);
     assertNotNull(customActionsPaymentMethod.getFields().get(0).getName());
     assertNotNull(customActionsPaymentMethod.getFields().get(0).getDisplayValue());
     assertNotNull(customActionsPaymentMethod.getCreatedAt());
@@ -44,11 +45,11 @@ public class CustomActionsPaymentMethodIT extends IntegrationTest {
     Customer customer = gateway.customer().find("CUSTOM_ACTION_CUSTOMER");
 
     List<CustomActionsPaymentMethod> customActionsPaymentMethods = customer.getCustomActionsPaymentMethods();
-    assertEquals(customActionsPaymentMethods.size(), 1);
+    assertTrue(customActionsPaymentMethods.size() > 0);
 
     CustomActionsPaymentMethod customActionsPaymentMethod = (CustomActionsPaymentMethod) gateway.paymentMethod().find(customActionsPaymentMethods.get(0).getToken());
     assertEquals(customActionsPaymentMethod.getActionName(), "bank_account");
-    assertEquals(customActionsPaymentMethod.getFields().size(), 1);
+    assertTrue(customActionsPaymentMethod.getFields().size() > 0);
     assertNotNull(customActionsPaymentMethod.getFields().get(0).getName());
     assertNotNull(customActionsPaymentMethod.getFields().get(0).getDisplayValue());
     assertNotNull(customActionsPaymentMethod.getCreatedAt());
