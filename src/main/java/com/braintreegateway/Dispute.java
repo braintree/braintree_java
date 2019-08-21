@@ -52,6 +52,7 @@ public class Dispute {
     private final String currencyIsoCode;
     private final String id;
     private final String forwardedComments;
+    private final String processorComments;
     private final String merchantAccountId;
     private final String originalDisputeId;
     private final String reasonCode;
@@ -76,6 +77,7 @@ public class Dispute {
         caseNumber = node.findString("case-number");
         currencyIsoCode = node.findString("currency-iso-code");
         forwardedComments = node.findString("forwarded-comments");
+        processorComments = node.findString("processor-comments");
         merchantAccountId = node.findString("merchant-account-id");
         originalDisputeId = node.findString("original-dispute-id");
         reasonCode = node.findString("reason-code");
@@ -136,6 +138,10 @@ public class Dispute {
 
     public String getForwardedComments() {
         return forwardedComments;
+    }
+
+    public String getProcessorComments() {
+        return processorComments;
     }
 
     public String getId() {

@@ -26,6 +26,7 @@ public class DisputeTest {
         "<created-at type=\"datetime\">2017-06-16T20:44:41Z</created-at>\n " +
         "<currency-iso-code>USD</currency-iso-code>\n " +
         "<forwarded-comments>Forwarded comments</forwarded-comments>\n" +
+        "<processor-comments>Buyer (2019-08-20T10:18:40.000Z): TEST: NIE bangla</processor-comments>\n" +
         "<kind>chargeback</kind>\n " +
         "<merchant-account-id>abc123</merchant-account-id>\n " +
         "<reason>fraud</reason>\n " +
@@ -182,6 +183,7 @@ public class DisputeTest {
         assertEquals(dispute.getCreatedAt().get(Calendar.MINUTE), 44);
         assertEquals(dispute.getCreatedAt().get(Calendar.SECOND), 41);
         assertEquals(dispute.getForwardedComments(), "Forwarded comments");
+        assertEquals(dispute.getProcessorComments(), "Buyer (2019-08-20T10:18:40.000Z): TEST: NIE bangla");
         assertEquals(dispute.getMerchantAccountId(), "abc123");
         assertEquals(dispute.getOriginalDisputeId(), "original_dispute_id");
         assertEquals(dispute.getReasonCode(), "83");
