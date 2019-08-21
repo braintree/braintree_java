@@ -134,9 +134,15 @@ public class Dispute {
         return currencyIsoCode;
     }
 
+    /**
+     * Use getProcessorComments() instead
+     * @deprecated see #getProcessorComments()
+     */
+    @Deprecated
     public String getForwardedComments() {
         return processorComments;
     }
+    // NEXT_MAJOR_VERSION remove this method as it never returned anything anyway.
 
     public String getProcessorComments() {
         return processorComments;
