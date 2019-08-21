@@ -51,7 +51,6 @@ public class Dispute {
     private final String caseNumber;
     private final String currencyIsoCode;
     private final String id;
-    private final String forwardedComments;
     private final String processorComments;
     private final String merchantAccountId;
     private final String originalDisputeId;
