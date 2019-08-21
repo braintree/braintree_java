@@ -76,7 +76,6 @@ public class Dispute {
         wonDate = node.findDate("date-won");
         caseNumber = node.findString("case-number");
         currencyIsoCode = node.findString("currency-iso-code");
-        forwardedComments = node.findString("forwarded-comments");
         processorComments = node.findString("processor-comments");
         merchantAccountId = node.findString("merchant-account-id");
         originalDisputeId = node.findString("original-dispute-id");
@@ -137,7 +136,7 @@ public class Dispute {
     }
 
     public String getForwardedComments() {
-        return forwardedComments;
+        return processorComments;
     }
 
     public String getProcessorComments() {
