@@ -1,3 +1,6 @@
+## 2.104.0
+* Add `getProcessorComments` to `Dispute`
+
 ## 2.103.0
 * Add `getUniqueNumberIdentifier` to `CustomActionsPaymentMethodDetails`
 
