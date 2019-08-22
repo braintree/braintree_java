@@ -1,3 +1,6 @@
+## 2.103.1
+* Update `jackson-jr` to v2.9.9 to fix CVE-2018-11307
+
 ## 2.103.0
 * Add `getUniqueNumberIdentifier` to `CustomActionsPaymentMethodDetails`
 
