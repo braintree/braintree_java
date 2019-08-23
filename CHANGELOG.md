@@ -1,3 +1,7 @@
+## unreleased
+* Add `getProcessorComments` to `Dispute`
+* Deprecate `getForwardedComments` from `Dispute`
+
 ## 2.103.0
 * Add `getUniqueNumberIdentifier` to `CustomActionsPaymentMethodDetails`
 
