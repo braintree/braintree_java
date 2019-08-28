@@ -1,5 +1,6 @@
 ## unreleased
 * Add `getProcessorComments` to `Dispute`
+* Add `TRANSACTION_AMOUNT_NOT_SUPPORTED_BY_PROCESSOR` to validation errors
 * Deprecate `getForwardedComments` from `Dispute`
 * Deprecate `getRows` from `TransactionLevelFeeReport` in favor of `getCSVRecords`
 
@@ -8,7 +9,6 @@
 
 ## 2.102.1
 * Fix issue where billing address was not applied correctly in `ThreeDSecureLookupRequest`
-* Add `TRANSACTION_AMOUNT_NOT_SUPPORTED_BY_PROCESSOR` to validation errors
 
 ## 2.102.0
 * Add `networkResponseCode` and `networkResponseText` fields to `Transaction` and `CreditCardVerification`
