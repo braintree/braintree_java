@@ -142,6 +142,23 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleValidationErrorAmountNotSupportedByProcessor() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("0.20")).
+            merchantAccountId("hiper_brl").
+            creditCard().
+                number(CreditCardNumber.HIPER.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(ValidationErrorCode.TRANSACTION_AMOUNT_NOT_SUPPORTED_BY_PROCESSOR,
+            result.getErrors().forObject("transaction").onField("amount").get(0).getCode());
+    }
+
+    @Test
     public void createWithErrorAccountTypeInvalid() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).

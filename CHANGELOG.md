@@ -1,6 +1,12 @@
 ## unreleased
 * Update `jackson-jr` to v2.9.9 to fix CVE-2018-11307
 
+## 2.104.0
+* Add `getProcessorComments` to `Dispute`
+* Add `TRANSACTION_AMOUNT_NOT_SUPPORTED_BY_PROCESSOR` to validation errors
+* Deprecate `getForwardedComments` from `Dispute`
+* Deprecate `getRows` from `TransactionLevelFeeReport` in favor of `getCSVRecords`
+
 ## 2.103.0
 * Add `getUniqueNumberIdentifier` to `CustomActionsPaymentMethodDetails`
 

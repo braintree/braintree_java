@@ -51,7 +51,7 @@ public class Dispute {
     private final String caseNumber;
     private final String currencyIsoCode;
     private final String id;
-    private final String forwardedComments;
+    private final String processorComments;
     private final String merchantAccountId;
     private final String originalDisputeId;
     private final String reasonCode;
@@ -75,7 +75,7 @@ public class Dispute {
         wonDate = node.findDate("date-won");
         caseNumber = node.findString("case-number");
         currencyIsoCode = node.findString("currency-iso-code");
-        forwardedComments = node.findString("forwarded-comments");
+        processorComments = node.findString("processor-comments");
         merchantAccountId = node.findString("merchant-account-id");
         originalDisputeId = node.findString("original-dispute-id");
         reasonCode = node.findString("reason-code");
@@ -134,8 +134,18 @@ public class Dispute {
         return currencyIsoCode;
     }
 
+    /**
+     * Use getProcessorComments() instead
+     * @deprecated see #getProcessorComments()
+     */
+    @Deprecated
     public String getForwardedComments() {
-        return forwardedComments;
+        return processorComments;
+    }
+    // NEXT_MAJOR_VERSION remove this method as it never returned anything anyway.
+
+    public String getProcessorComments() {
+        return processorComments;
     }
 
     public String getId() {

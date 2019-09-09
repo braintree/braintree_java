@@ -9,6 +9,10 @@ import java.util.TimeZone;
 
 import org.apache.commons.csv.CSVRecord;
 
+/**
+ * @see TransactionLevelFeeReport#getCSVRecords()
+ */
+@Deprecated
 public class TransactionLevelFeeReportRow {
     // Shared fields.
     private String merchantAccountId;
