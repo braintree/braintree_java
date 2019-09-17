@@ -70,7 +70,7 @@ public class CustomActionsPaymentMethodIT extends IntegrationTest {
 
     ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-    assertEquals(1, collection.getMaximumSize());
+    assertTrue(collection.getMaximumSize() >= 1);
 
     CustomActionsPaymentMethodDetails customActionsPaymentMethodDetails = collection.
         getFirst().
@@ -92,7 +92,7 @@ public class CustomActionsPaymentMethodIT extends IntegrationTest {
 
     ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-    assertEquals(1, collection.getMaximumSize());
+    assertTrue(collection.getMaximumSize() >= 1);
 
     CustomActionsPaymentMethodDetails customActionsPaymentMethodDetails = collection.
         getFirst().
