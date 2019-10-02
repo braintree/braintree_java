@@ -1,4 +1,4 @@
-## Unreleased
+## 2.105.0
 * Add `merchantAccountId` setter to `ThreeDSecureLookupRequest`
 
 ## 2.104.0
