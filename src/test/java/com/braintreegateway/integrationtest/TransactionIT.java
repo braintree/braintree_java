@@ -3785,11 +3785,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleNonVisaDoesNotReceiveNetworkTransactionIdentifier() {
+    public void saleNonVisaMastercardDiscoverDoesNotReceiveNetworkTransactionIdentifier() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
             creditCard().
-                number(CreditCardNumber.MASTER_CARD.number).
+                number(CreditCardNumber.AMEX.number).
                 expirationDate("05/2009").
                 done();
 
@@ -3817,11 +3817,47 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleWithExternalVaultStatusNonVisa() {
+    public void saleWithExternalVaultStatusMastercard() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
             creditCard().
                 number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                vaulted().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertTrue(transaction.getNetworkTransactionId().length() > 0);
+    }
+
+    @Test
+    public void saleWithExternalVaultStatusDiscover() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number("6011111111111117").
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                vaulted().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertTrue(transaction.getNetworkTransactionId().length() > 0);
+    }
+
+    @Test
+    public void saleWithExternalVaultStatusNonVisaMastercardDiscover() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number(CreditCardNumber.AMEX.number).
                 expirationDate("05/2009").
                 done().
             externalVault().
@@ -3918,32 +3954,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleWithExternalVaultValidationErrorInvalidPreviousNetworkTransactionId() {
-        TransactionRequest request = new TransactionRequest().
-            amount(new BigDecimal("10.00")).
-            creditCard().
-                number(CreditCardNumber.VISA.number).
-                expirationDate("05/2009").
-                done().
-            externalVault().
-                vaulted().
-                previousNetworkTransactionId("not_valid").
-                done();
-
-        Result<Transaction> result = gateway.transaction().sale(request);
-        assertFalse(result.isSuccess());
-        assertEquals(
-            ValidationErrorCode.TRANSACTION_EXTERNAL_VAULT_PREVIOUS_NETWORK_TRANSACTION_ID_IS_INVALID,
-            result.getErrors().forObject("transaction").forObject("external_vault").onField("previousNetworkTransactionId").get(0).getCode()
-        );
-    }
-
-    @Test
     public void saleWithExternalVaultValidationErrorInvalidCardType() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
             creditCard().
-                number(CreditCardNumber.MASTER_CARD.number).
+                number(CreditCardNumber.AMEX.number).
                 expirationDate("05/2009").
                 done().
             externalVault().

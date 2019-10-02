@@ -19,6 +19,7 @@ public class ThreeDSecureLookupRequest extends Request {
     private Map clientMetadata;
     private Boolean challengeRequested;
     private Boolean exemptionRequested;
+    private String merchantAccountId;
 
     public ThreeDSecureLookupRequest() {}
 
@@ -69,6 +70,11 @@ public class ThreeDSecureLookupRequest extends Request {
         return this;
     }
 
+    public ThreeDSecureLookupRequest merchantAccountId(String merchantAccountId) {
+        this.merchantAccountId = merchantAccountId;
+        return this;
+    }
+
     private ThreeDSecureLookupAdditionalInformation getAdditionalInformation() {
         return additionalInformation;
     }
@@ -105,6 +111,8 @@ public class ThreeDSecureLookupRequest extends Request {
 
     private String getEmail() { return email; }
 
+    private String getMerchantAccountId() { return merchantAccountId; }
+
     public String toJSON() {
         Map<String, Object> additionalInfo;
         Map<String, Object> jsonMap = new HashMap<>();
@@ -130,6 +138,7 @@ public class ThreeDSecureLookupRequest extends Request {
             jsonMap.put("_meta", metaMap);
             jsonMap.put("challengeRequested", getChallengeRequested());
             jsonMap.put("exemptionRequested", getExemptionRequested());
+            jsonMap.put("merchantAccountId", getMerchantAccountId());
 
             if (billingAddress != null) {
                 additionalInfo.put("billingGivenName", billingAddress.getGivenName());
