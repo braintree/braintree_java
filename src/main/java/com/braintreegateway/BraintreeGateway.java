@@ -79,6 +79,13 @@ public class BraintreeGateway {
         this.graphQLClient = new GraphQLClient(configuration);
     }
 
+    public Http getHttp() {
+        return http;
+    }
+    public void setHttp(Http http) {
+        this.http = http;
+    }
+
     /**
      * Returns a BraintreeGateway specifically for Partner usage. Unless you are a partner, use the regular constructor instead.
      *
