@@ -1,3 +1,6 @@
+## Unreleased
+* Add `http` setter to `BraintreeGateway`
+
 ## 2.105.0
 * Add `merchantAccountId` setter to `ThreeDSecureLookupRequest`
 

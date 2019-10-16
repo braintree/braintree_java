@@ -79,9 +79,6 @@ public class BraintreeGateway {
         this.graphQLClient = new GraphQLClient(configuration);
     }
 
-    public Http getHttp() {
-        return http;
-    }
     public void setHttp(Http http) {
         this.http = http;
     }
