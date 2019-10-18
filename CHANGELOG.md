@@ -1,3 +1,6 @@
+## Unreleased
+* Add `PROCESSOR_DOES_NOT_SUPPORT_MOTO_FOR_CARD_TYPE` to validation errors
+
 ## 2.105.0
 * Add `merchantAccountId` setter to `ThreeDSecureLookupRequest`
 
