@@ -1,6 +1,9 @@
 ## unreleased
 * Update `jackson-jr` to v2.9.9 to fix CVE-2018-11307
 
+## 2.105.0
+* Add `merchantAccountId` setter to `ThreeDSecureLookupRequest`
+
 ## 2.104.0
 * Add `getProcessorComments` to `Dispute`
 * Add `TRANSACTION_AMOUNT_NOT_SUPPORTED_BY_PROCESSOR` to validation errors
