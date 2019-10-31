@@ -7,6 +7,7 @@ import com.braintreegateway.exceptions.BraintreeException;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import static org.junit.Assert.*;
 
@@ -54,10 +55,58 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         assertNotNull(paymentMethod.getThreeDSecureInfo());
         assertTrue(paymentMethod.getThreeDSecureInfo().isLiabilityShiftPossible());
         assertFalse(paymentMethod.getThreeDSecureInfo().isLiabilityShifted());
-        assertNotNull(paymentMethod.getThreeDSecureInfo().getThreeDSecureAuthenticationId());
         assertNotNull(lookup.getAcsUrl());
         assertNotNull(lookup.getThreeDSecureVersion());
         assertNotNull(lookup.getTransactionId());
+    }
+
+    @Test
+    @Ignore("Cardinal broke this test card.")
+    public void lookupThreeDSecure_versionTwoTestCard() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest cardRequest = new CreditCardRequest().
+            number("4000000000001000").
+            expirationMonth("01").
+            expirationYear("2022");
+
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, cardRequest, customer.getId(), false);
+        String authorizationFingerprint = TestHelper.generateAuthorizationFingerprint(gateway, customer.getId());
+
+        ThreeDSecureLookupAddress billingAddress = new ThreeDSecureLookupAddress().
+            givenName("First").
+            surname("Last").
+            phoneNumber("1234567890").
+            locality("Oakland").
+            countryCodeAlpha2("US").
+            streetAddress("123 Address").
+            extendedAddress("Unit 2").
+            postalCode("94112").
+            region("CA");
+
+        String clientData = getClientDataString(nonce, authorizationFingerprint);
+
+        ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
+        request.amount("199.00");
+        request.clientData(clientData);
+        request.email("first.last@example.com");
+        request.billingAddress(billingAddress);
+
+        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request);
+
+        PaymentMethodNonce paymentMethod = result.getPaymentMethod();
+        ThreeDSecureLookup lookup = result.getLookup();
+
+        assertNotNull(paymentMethod.getThreeDSecureInfo());
+        assertNotNull(lookup.getThreeDSecureVersion());
+        assertNull(paymentMethod.getThreeDSecureInfo().getAcsTransactionId());
+        assertNull(paymentMethod.getThreeDSecureInfo().getParesStatus());
+        assertNull(paymentMethod.getThreeDSecureInfo().getThreeDSecureServerTransactionId());
+        assertNull(paymentMethod.getThreeDSecureInfo().getThreeDSecureLookupInfo().getTransStatus());
+        assertNull(paymentMethod.getThreeDSecureInfo().getThreeDSecureLookupInfo().getTransStatusReason());
+        assertNull(paymentMethod.getThreeDSecureInfo().getThreeDSecureAuthenticateInfo().getTransStatus());
+        assertNull(paymentMethod.getThreeDSecureInfo().getThreeDSecureAuthenticateInfo().getTransStatusReason());
     }
 
     @Test

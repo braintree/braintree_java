@@ -2,6 +2,11 @@
 * Add `PROCESSOR_DOES_NOT_SUPPORT_MOTO_FOR_CARD_TYPE` to validation errors
 * Update `jackson-jr` to v2.9.9 to fix CVE-2018-11307 (#75 thanks @sehrope)
 * Add `threeDSecureAuthenticationId` to `ThreeDSecureInfo`
+* Add `acsTransactionId` to `ThreeDSecureInfo`
+* Add `paresStatus` to `ThreeDSecureInfo`
+* Add `threeDSecureServerTransactionId` to `ThreeDSecureInfo`
+* Add `threeDSecureLookupInfo` to `ThreeDSecureInfo`
+* Add `threeDSecureAuthenticateInfo` to `ThreeDSecureInfo`
 
 ## 2.105.0
 * Add `merchantAccountId` setter to `ThreeDSecureLookupRequest`
