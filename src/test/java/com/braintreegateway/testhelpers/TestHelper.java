@@ -134,7 +134,7 @@ public abstract class TestHelper {
         NodeWrapper response = new Http(gateway.getConfiguration()).post(url, request);
         assertTrue(response.isSuccess());
 
-        String token = response.findString("three-d-secure-token");
+        String token = response.findString("three-d-secure-authentication-id");
         assertNotNull(token);
         return token;
     }

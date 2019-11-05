@@ -54,6 +54,7 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         assertNotNull(paymentMethod.getThreeDSecureInfo());
         assertTrue(paymentMethod.getThreeDSecureInfo().isLiabilityShiftPossible());
         assertFalse(paymentMethod.getThreeDSecureInfo().isLiabilityShifted());
+        assertNotNull(paymentMethod.getThreeDSecureInfo().getThreeDSecureAuthenticationId());
         assertNotNull(lookup.getAcsUrl());
         assertNotNull(lookup.getThreeDSecureVersion());
         assertNotNull(lookup.getTransactionId());

@@ -14,6 +14,7 @@ public class ThreeDSecureInfo {
     private String xid;
     private String threeDSecureVersion;
     private String dsTransactionId;
+    private String threeDSecureAuthenticationId;
 
     public ThreeDSecureInfo(NodeWrapper node) {
         liabilityShifted = node.findBoolean("liability-shifted");
@@ -25,6 +26,7 @@ public class ThreeDSecureInfo {
         xid = node.findString("xid");
         threeDSecureVersion = node.findString("three-d-secure-version");
         dsTransactionId = node.findString("ds-transaction-id");
+        threeDSecureAuthenticationId = node.findString("three-d-secure-authentication-id");
     }
 
     public ThreeDSecureInfo(Map<String, Object> map) {
@@ -37,6 +39,7 @@ public class ThreeDSecureInfo {
         xid = (String) map.get("xid");
         threeDSecureVersion = (String) map.get("threeDSecureVersion");
         dsTransactionId = (String) map.get("dsTransactionId");
+        threeDSecureAuthenticationId = (String) map.get("threeDSecureAuthenticationId");
     }
 
     public String getStatus() {
@@ -73,5 +76,9 @@ public class ThreeDSecureInfo {
 
     public String getDsTransactionId() {
         return dsTransactionId;
+    }
+
+    public String getThreeDSecureAuthenticationId() {
+        return threeDSecureAuthenticationId;
     }
 }

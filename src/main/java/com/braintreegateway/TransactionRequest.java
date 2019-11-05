@@ -49,6 +49,7 @@ public class TransactionRequest extends Request {
 
     private String threeDSecureToken;
     private Boolean threeDSecureTransaction;
+    private String threeDSecureAuthenticationId;
 
     private String sharedPaymentMethodToken;
     private String sharedPaymentMethodNonce;
@@ -239,6 +240,12 @@ public class TransactionRequest extends Request {
       return this;
     }
 
+    public TransactionRequest threeDSecureAuthenticationId(String threeDSecureAuthenticationId) {
+      this.threeDSecureTransaction = true;
+      this.threeDSecureAuthenticationId = threeDSecureAuthenticationId;
+      return this;
+    }
+
     public TransactionRequest sharedPaymentMethodToken(String sharedPaymentMethodToken) {
         this.sharedPaymentMethodToken = sharedPaymentMethodToken;
         return this;
@@ -357,8 +364,12 @@ public class TransactionRequest extends Request {
         }
 
         if (threeDSecureTransaction) {
-            String token = threeDSecureToken != null ? threeDSecureToken : "";
-            builder.addElement("threeDSecureToken", token);
+            if (threeDSecureAuthenticationId != null) {
+                builder.addElement("threeDSecureAuthenticationId", threeDSecureAuthenticationId);
+            } else {
+                String token = threeDSecureToken != null ? threeDSecureToken : "";
+                builder.addElement("threeDSecureToken", token);
+            }
         }
 
         if (!transactionLineItemRequests.isEmpty()) {
