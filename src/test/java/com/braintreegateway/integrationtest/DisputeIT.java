@@ -575,7 +575,7 @@ public class DisputeIT extends IntegrationTest {
             disputes.add(dispute);
         }
 
-        assertEquals(2, disputes.size());
+        assertTrue(disputes.size() >= 2);
 	}
 
 	@Test

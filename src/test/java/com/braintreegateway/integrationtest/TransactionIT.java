@@ -1065,6 +1065,135 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithThreeDSecureAuthenticationId() {
+        String threeDSecureAuthenticationId = TestHelper.createTest3DS(gateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
+            number(CreditCardNumber.VISA.number).
+            expirationMonth("05").
+            expirationYear("2029")
+        );
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            threeDSecureAuthenticationId(threeDSecureAuthenticationId).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2029").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+    }
+
+    @Test
+    public void saleErrorWithBogusThreeDSecureAuthenticationId() {
+        String threeDSecureAuthenticationId = "foo";
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            threeDSecureAuthenticationId(threeDSecureAuthenticationId).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2029").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_AUTHENTICATION_ID_IS_INVALID,
+                result.getErrors().forObject("transaction").onField("threeDSecureAuthenticationId").get(0).getCode());
+    }
+
+    @Test
+    public void saleErrorPaymentMethodDoesNotMatchWithThreeDSecureAuthenticationId() {
+        String threeDSecureAuthenticationId = TestHelper.createTest3DS(gateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
+            number(CreditCardNumber.VISA.number).
+            expirationMonth("05").
+            expirationYear("2029")
+        );
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            threeDSecureAuthenticationId(threeDSecureAuthenticationId).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2029").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_TRANSACTION_PAYMENT_METHOD_DOESNT_MATCH_THREE_D_SECURE_AUTHENTICATION_PAYMENT_METHOD,
+                result.getErrors().forObject("transaction").onField("threeDSecureAuthenticationId").get(0).getCode());
+    }
+
+    @Test
+    public void saleErrorThreeDSecureNonceDoesNotMatchThreeDSecureAuthenticationId() {
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+            number(SandboxValues.CreditCardNumber.VISA.number).
+            expirationMonth("05").
+            expirationYear("2029");
+
+        String upgradedNonce = TestHelper.generateThreeDSecureNonce(gateway, creditCardRequest);
+        String threeDSecureAuthenticationId = TestHelper.createTest3DS(gateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
+            number(CreditCardNumber.VISA.number).
+            expirationMonth("05").
+            expirationYear("2029")
+        );
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            threeDSecureAuthenticationId(threeDSecureAuthenticationId).
+            paymentMethodNonce(upgradedNonce).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2029").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_AUTHENTICATION_ID_DOESNT_MATCH_NONCE_THREE_D_SECURE_AUTHENTICATION,
+                result.getErrors().forObject("transaction").onField("threeDSecureAuthenticationId").get(0).getCode());
+
+    }
+
+    @Test
+    public void saleErrorThreeDSecureAuthenticationIdWithThreeDSecurePassThru() {
+        String threeDSecureAuthenticationId = TestHelper.createTest3DS(gateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
+            number(CreditCardNumber.VISA.number).
+            expirationMonth("05").
+            expirationYear("2029")
+        );
+
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2029").
+                done().
+            threeDSecureAuthenticationId(threeDSecureAuthenticationId).
+            threeDSecurePassThru().
+                eciFlag("02").
+                cavv("some_cavv").
+                xid("some_xid").
+                authenticationResponse("Y").
+                directoryResponse("Y").
+                cavvAlgorithm("2").
+                threeDSecureVersion("1.0.2").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_THREE_D_SECURE_AUTHENTICATION_ID_WITH_THREE_D_SECURE_PASSTHRU_IS_INVALID,
+                     result.getErrors().forObject("transaction").onField("threeDSecureAuthenticationId").get(0).getCode());
+
+    }
+
+    @Test
     public void saleWithThreeDSecureToken() {
         String threeDSecureToken = TestHelper.createTest3DS(gateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
             number(CreditCardNumber.VISA.number).
