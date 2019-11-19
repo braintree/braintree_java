@@ -19,6 +19,7 @@ public class AndroidPayCard implements PaymentMethod {
     private String googleTransactionId;
     private String bin;
     private Boolean isDefault;
+    private Boolean isNetworkTokenized;
     private String imageUrl;
     private String customerId;
     private Calendar createdAt;
@@ -40,6 +41,7 @@ public class AndroidPayCard implements PaymentMethod {
         this.bin = node.findString("bin");
         this.isDefault = node.findBoolean("default");
         this.imageUrl = node.findString("image-url");
+        this.isNetworkTokenized = node.findBoolean("is-network-tokenized");
         this.customerId = node.findString("customer-id");
         this.createdAt = node.findDateTime("created-at");
         this.updatedAt = node.findDateTime("updated-at");
@@ -104,6 +106,10 @@ public class AndroidPayCard implements PaymentMethod {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public boolean isNetworkTokenized() {
+        return isNetworkTokenized;
     }
 
     public String getCustomerId() {

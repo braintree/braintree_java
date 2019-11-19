@@ -935,6 +935,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(androidPayDetails.getCommercial());
         assertNotNull(androidPayDetails.getPayroll());
         assertNotNull(androidPayDetails.getProductId());
+        assertFalse(androidPayDetails.isNetworkTokenized());
     }
 
     @Test
@@ -967,6 +968,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(androidPayDetails.getLast4());
         assertNotNull(androidPayDetails.getExpirationMonth());
         assertNotNull(androidPayDetails.getExpirationYear());
+        assertTrue(androidPayDetails.isNetworkTokenized());
     }
 
     @Test
