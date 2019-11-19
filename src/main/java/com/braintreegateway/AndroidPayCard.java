@@ -100,16 +100,8 @@ public class AndroidPayCard implements PaymentMethod {
         return bin;
     }
 
-    public boolean isDefault() {
-        return isDefault;
-    }
-
     public String getImageUrl() {
         return imageUrl;
-    }
-
-    public boolean isNetworkTokenized() {
-        return isNetworkTokenized;
     }
 
     public String getCustomerId() {
@@ -126,5 +118,13 @@ public class AndroidPayCard implements PaymentMethod {
 
     public List<Subscription> getSubscriptions() {
         return subscriptions;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public boolean isNetworkTokenized() {
+        return isNetworkTokenized;
     }
 }
