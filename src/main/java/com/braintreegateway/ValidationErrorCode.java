@@ -706,7 +706,7 @@ public enum ValidationErrorCode {
     @Deprecated
     UNKOWN_VALIDATION_ERROR("");
 
-    public String code;
+    public final String code;
 
     private ValidationErrorCode(String code) {
         this.code = code;
