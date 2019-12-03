@@ -706,6 +706,7 @@ public enum ValidationErrorCode {
     @Deprecated
     UNKOWN_VALIDATION_ERROR("");
 
+    // NEXT_MAJOR_VERSION this should be `final` to prevent end users from modifying it
     public String code;
 
     private ValidationErrorCode(String code) {
