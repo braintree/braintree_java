@@ -12,6 +12,7 @@ public class Customer {
     private String email;
     private String fax;
     private String firstName;
+    private String graphqlId;
     private String id;
     private String lastName;
     private String phone;
@@ -33,6 +34,7 @@ public class Customer {
 
     public Customer(NodeWrapper node) {
         id = node.findString("id");
+        graphqlId = node.findString("global-id");
         firstName = node.findString("first-name");
         lastName = node.findString("last-name");
         company = node.findString("company");
@@ -107,6 +109,10 @@ public class Customer {
 
     public String getId() {
         return id;
+    }
+
+    public String getGraphQLId() {
+        return graphqlId;
     }
 
     public String getCompany() {

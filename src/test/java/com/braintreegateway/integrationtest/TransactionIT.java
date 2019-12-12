@@ -323,6 +323,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
         assertEquals("USD", transaction.getCurrencyIsoCode());
+        assertNotNull(transaction.getGraphQLId());
         assertNotNull(transaction.getProcessorAuthorizationCode());
         assertEquals(Transaction.Type.SALE, transaction.getType());
         assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
@@ -4331,6 +4332,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Dispute.Kind.CHARGEBACK, dispute.getKind());
         assertEquals(openedCalendar, dispute.getOpenedDate());
         assertEquals(wonCalendar, dispute.getWonDate());
+        assertNotNull(dispute.getGraphQLId());
     }
 
     @Test

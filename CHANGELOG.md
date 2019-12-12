@@ -1,5 +1,6 @@
 ## unreleased
 * Add `isNetworkTokenized` field to `AndroidPayCard` and `AndroidPayDetails`
+* Add GraphQL ID to `CreditCardVerification`, `Customer`, `Dispute`, and `Transaction`
 
 ## 2.106.0
 * Add `PROCESSOR_DOES_NOT_SUPPORT_MOTO_FOR_CARD_TYPE` to validation errors

@@ -139,6 +139,7 @@ public class Transaction {
     private List<Discount> discounts;
     private EscrowStatus escrowStatus;
     private GatewayRejectionReason gatewayRejectionReason;
+    private String graphqlId;
     private String id;
     private String merchantAccountId;
     private String orderId;
@@ -212,6 +213,7 @@ public class Transaction {
         cvvResponseCode = node.findString("cvv-response-code");
         escrowStatus = EnumUtils.findByName(EscrowStatus.class, node.findString("escrow-status"), EscrowStatus.UNRECOGNIZED);
         gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"), GatewayRejectionReason.UNRECOGNIZED);
+        graphqlId = node.findString("global-id");
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
         orderId = node.findString("order-id");
@@ -475,6 +477,10 @@ public class Transaction {
 
     public String getId() {
         return id;
+    }
+
+    public String getGraphQLId() {
+        return graphqlId;
     }
 
     public String getMerchantAccountId() {
