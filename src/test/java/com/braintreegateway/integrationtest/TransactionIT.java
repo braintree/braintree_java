@@ -4528,6 +4528,28 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void submitForSettlementWithTransactionRequestWithLevel2Data() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionRequest submitForSettlementRequest = new TransactionRequest().
+            purchaseOrderNumber("123456").
+            taxAmount(new BigDecimal("12.34")).
+            taxExempt(false);
+
+        Result<Transaction> result = gateway.transaction().submitForSettlement(transaction.getId(), submitForSettlementRequest);
+
+        assertTrue(false);
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
+    }
+
+    @Test
     public void submitForSettlementWithDescriptors() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
