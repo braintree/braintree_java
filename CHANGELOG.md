@@ -1,4 +1,5 @@
 ## unreleased
+* Add `TRANSACTION_REFUND_AUTH_HARD_DECLINED` and `TRANSACTION_REFUND_AUTH_SOFT_DECLINED` validation errors
 * Add `isNetworkTokenized` field to `AndroidPayCard` and `AndroidPayDetails`
 * Add GraphQL ID to `CreditCardVerification`, `Customer`, `Dispute`, and `Transaction`
 

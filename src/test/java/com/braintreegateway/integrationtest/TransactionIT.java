@@ -6158,6 +6158,46 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void refundTransactionWithHardDecline() {
+        TransactionRequest request = new TransactionRequest().
+        amount(new BigDecimal(9000.00)).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done().
+        options().
+            submitForSettlement(true).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), new BigDecimal(2009.00));
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_REFUND_AUTH_HARD_DECLINED,
+                result.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
+
+    @Test
+    public void refundTransactionWithSoftDecline() {
+        TransactionRequest request = new TransactionRequest().
+        amount(new BigDecimal(9000.00)).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done().
+        options().
+            submitForSettlement(true).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), new BigDecimal(2046.00));
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_REFUND_AUTH_SOFT_DECLINED,
+                result.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
+
+    @Test
     public void refundTransactionWithPartialAmount() {
         TransactionRequest request = new TransactionRequest().
         amount(TransactionAmount.AUTHORIZE.amount).
