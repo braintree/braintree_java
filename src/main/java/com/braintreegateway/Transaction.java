@@ -173,6 +173,7 @@ public class Transaction {
     private String refundedTransactionId;
     private String refundId;
     private List<String> refundIds;
+    private String retrievalReferenceNumber;
     private SamsungPayCardDetails samsungPayCardDetails;
     private String settlementBatchId;
     private Address shippingAddress;
@@ -349,6 +350,8 @@ public class Transaction {
         for (NodeWrapper refundIdNode : node.findAll("refund-ids/item")) {
             refundIds.add(refundIdNode.findString("."));
         }
+
+        retrievalReferenceNumber = node.findString("retrieval-reference-number");
 
         statusHistory = new ArrayList<StatusEvent>();
         for (NodeWrapper statusNode : node.findAll("status-history/status-event")) {
@@ -614,6 +617,10 @@ public class Transaction {
 
     public List<String> getRefundIds() {
         return refundIds;
+    }
+
+    public String getRetrievalReferenceNumber() {
+        return retrievalReferenceNumber;
     }
 
     public RiskData getRiskData() {
