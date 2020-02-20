@@ -442,6 +442,7 @@ public class DisputeIT extends IntegrationTest {
         assertEquals("open_dispute", dispute.getId());
         assertEquals(Dispute.Status.OPEN, dispute.getStatus());
         assertEquals("open_disputed_transaction", dispute.getTransaction().getId());
+        assertNotNull(dispute.getGraphQLId());
     }
 
     @Test

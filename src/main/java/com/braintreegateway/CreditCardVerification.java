@@ -27,6 +27,7 @@ public class CreditCardVerification {
     private String networkResponseText;
     private String merchantAccountId;
     private Status status;
+    private String graphqlId;
     private String id;
     private CreditCard creditCard;
     private Address billingAddress;
@@ -49,6 +50,7 @@ public class CreditCardVerification {
         this.networkResponseText = node.findString("network-response-text");
         this.merchantAccountId = node.findString("merchant-account-id");
         this.status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);
+        this.graphqlId = node.findString("global-id");
         this.id = node.findString("id");
 
         NodeWrapper riskDataNode = node.findFirst("risk-data");
@@ -113,6 +115,10 @@ public class CreditCardVerification {
 
     public String getId() {
         return id;
+    }
+
+    public String getGraphQLId() {
+        return graphqlId;
     }
 
     public RiskData getRiskData(){

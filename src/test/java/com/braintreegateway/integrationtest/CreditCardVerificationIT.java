@@ -51,6 +51,7 @@ public class CreditCardVerificationIT extends IntegrationTest {
         assertEquals("1000", verification.getProcessorResponseCode());
         assertEquals("Approved", verification.getProcessorResponseText());
         assertEquals(ProcessorResponseType.APPROVED, verification.getProcessorResponseType());
+        assertNotNull(verification.getGraphQLId());
     }
 
     @Test

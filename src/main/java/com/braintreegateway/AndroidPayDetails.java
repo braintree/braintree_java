@@ -16,6 +16,7 @@ public class AndroidPayDetails {
     private String googleTransactionId;
     private String bin;
     private String imageUrl;
+    private Boolean isNetworkTokenized;
     private String prepaid;
     private String healthcare;
     private String debit;
@@ -41,6 +42,7 @@ public class AndroidPayDetails {
         this.googleTransactionId = node.findString("google-transaction-id");
         this.bin = node.findString("bin");
         this.imageUrl = node.findString("image-url");
+        this.isNetworkTokenized = node.findBoolean("is-network-tokenized");
         this.prepaid = node.findString("prepaid");
         this.healthcare = node.findString("healthcare");
         this.debit = node.findString("debit");
@@ -105,6 +107,10 @@ public class AndroidPayDetails {
         return imageUrl;
     }
     
+    public Boolean isNetworkTokenized() {
+        return isNetworkTokenized;
+    }
+
     public String getPrepaid() {
         return prepaid;
     }

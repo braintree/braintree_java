@@ -1,3 +1,9 @@
+## 2.107.0
+* Add `TRANSACTION_REFUND_AUTH_HARD_DECLINED` and `TRANSACTION_REFUND_AUTH_SOFT_DECLINED` validation errors
+* Add `isNetworkTokenized` field to `AndroidPayCard` and `AndroidPayDetails`
+* Add GraphQL ID to `CreditCardVerification`, `Customer`, `Dispute`, and `Transaction`
+* Add `retrievalReferenceNumber` field to `Transaction`
+
 ## 2.106.0
 * Add `PROCESSOR_DOES_NOT_SUPPORT_MOTO_FOR_CARD_TYPE` to validation errors
 * Update `jackson-jr` to v2.9.9 to fix CVE-2018-11307 (#75 thanks @sehrope)

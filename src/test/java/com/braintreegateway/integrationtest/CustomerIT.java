@@ -57,6 +57,7 @@ public class CustomerIT extends IntegrationTest {
         assertEquals("http://example.com", customer.getWebsite());
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), customer.getCreatedAt().get(Calendar.YEAR));
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), customer.getUpdatedAt().get(Calendar.YEAR));
+        assertNotNull(customer.getGraphQLId());
     }
 
     @Test

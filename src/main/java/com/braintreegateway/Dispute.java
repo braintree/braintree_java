@@ -50,6 +50,7 @@ public class Dispute {
     private final List<DisputeStatusHistory> statusHistory;
     private final String caseNumber;
     private final String currencyIsoCode;
+    private final String graphqlId;
     private final String id;
     private final String processorComments;
     private final String merchantAccountId;
@@ -87,6 +88,7 @@ public class Dispute {
         amount = node.findBigDecimal("amount");
         disputedAmount = node.findBigDecimal("amount-disputed");
         wonAmount = node.findBigDecimal("amount-won");
+        graphqlId = node.findString("global-id");
         id = node.findString("id");
         transaction = new DisputeTransaction(node.findFirst("transaction"));
         transactionDetails = new TransactionDetails(node.findFirst("transaction"));
@@ -150,6 +152,10 @@ public class Dispute {
 
     public String getId() {
         return id;
+    }
+
+    public String getGraphQLId() {
+        return graphqlId;
     }
 
     public String getMerchantAccountId() {

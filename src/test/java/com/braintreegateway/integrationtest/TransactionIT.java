@@ -323,6 +323,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
         assertEquals("USD", transaction.getCurrencyIsoCode());
+        assertNotNull(transaction.getGraphQLId());
         assertNotNull(transaction.getProcessorAuthorizationCode());
         assertEquals(Transaction.Type.SALE, transaction.getType());
         assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
@@ -935,6 +936,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(androidPayDetails.getCommercial());
         assertNotNull(androidPayDetails.getPayroll());
         assertNotNull(androidPayDetails.getProductId());
+        assertFalse(androidPayDetails.isNetworkTokenized());
     }
 
     @Test
@@ -967,6 +969,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(androidPayDetails.getLast4());
         assertNotNull(androidPayDetails.getExpirationMonth());
         assertNotNull(androidPayDetails.getExpirationYear());
+        assertTrue(androidPayDetails.isNetworkTokenized());
     }
 
     @Test
@@ -4329,6 +4332,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Dispute.Kind.CHARGEBACK, dispute.getKind());
         assertEquals(openedCalendar, dispute.getOpenedDate());
         assertEquals(wonCalendar, dispute.getWonDate());
+        assertNotNull(dispute.getGraphQLId());
     }
 
     @Test
@@ -4521,6 +4525,63 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
         assertEquals(new String("1234"), result.getTarget().getOrderId());
+    }
+
+    @Test
+    public void submitForSettlementWithTransactionRequestWithLevel2Data() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionRequest submitForSettlementRequest = new TransactionRequest().
+            purchaseOrderNumber("123456").
+            taxAmount(new BigDecimal("12.34")).
+            taxExempt(false);
+
+        Result<Transaction> result = gateway.transaction().submitForSettlement(transaction.getId(), submitForSettlementRequest);
+
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
+    }
+
+    @Test
+    public void submitForSettlementWithTransactionRequestWithLevel3Data() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionRequest submitForSettlementRequest = new TransactionRequest().
+            discountAmount(new BigDecimal("12.34")).
+            shippingAmount(new BigDecimal("12.34")).
+            shipsFromPostalCode("90210").
+            lineItem().
+                quantity(new BigDecimal("1.0232")).
+                name("Name #1").
+                description("Description #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitTaxAmount(new BigDecimal("1.23")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                url("https://example.com/products/23434").
+                done();
+
+        Result<Transaction> result = gateway.transaction().submitForSettlement(transaction.getId(), submitForSettlementRequest);
+
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
     }
 
     @Test
@@ -6130,6 +6191,46 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         assertEquals("12345678", result.getTarget().getOrderId());
         assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal("2")), result.getTarget().getAmount());
+    }
+
+    @Test
+    public void refundTransactionWithHardDecline() {
+        TransactionRequest request = new TransactionRequest().
+        amount(new BigDecimal(9000.00)).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done().
+        options().
+            submitForSettlement(true).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), new BigDecimal(2009.00));
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_REFUND_AUTH_HARD_DECLINED,
+                result.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
+
+    @Test
+    public void refundTransactionWithSoftDecline() {
+        TransactionRequest request = new TransactionRequest().
+        amount(new BigDecimal(9000.00)).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done().
+        options().
+            submitForSettlement(true).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), new BigDecimal(2046.00));
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_REFUND_AUTH_SOFT_DECLINED,
+                result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 
     @Test

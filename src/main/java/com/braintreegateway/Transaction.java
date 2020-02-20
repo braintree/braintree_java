@@ -139,6 +139,7 @@ public class Transaction {
     private List<Discount> discounts;
     private EscrowStatus escrowStatus;
     private GatewayRejectionReason gatewayRejectionReason;
+    private String graphqlId;
     private String id;
     private String merchantAccountId;
     private String orderId;
@@ -172,6 +173,7 @@ public class Transaction {
     private String refundedTransactionId;
     private String refundId;
     private List<String> refundIds;
+    private String retrievalReferenceNumber;
     private SamsungPayCardDetails samsungPayCardDetails;
     private String settlementBatchId;
     private Address shippingAddress;
@@ -212,6 +214,7 @@ public class Transaction {
         cvvResponseCode = node.findString("cvv-response-code");
         escrowStatus = EnumUtils.findByName(EscrowStatus.class, node.findString("escrow-status"), EscrowStatus.UNRECOGNIZED);
         gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"), GatewayRejectionReason.UNRECOGNIZED);
+        graphqlId = node.findString("global-id");
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
         orderId = node.findString("order-id");
@@ -348,6 +351,8 @@ public class Transaction {
             refundIds.add(refundIdNode.findString("."));
         }
 
+        retrievalReferenceNumber = node.findString("retrieval-reference-number");
+
         statusHistory = new ArrayList<StatusEvent>();
         for (NodeWrapper statusNode : node.findAll("status-history/status-event")) {
             statusHistory.add(new StatusEvent(statusNode));
@@ -475,6 +480,10 @@ public class Transaction {
 
     public String getId() {
         return id;
+    }
+
+    public String getGraphQLId() {
+        return graphqlId;
     }
 
     public String getMerchantAccountId() {
@@ -608,6 +617,10 @@ public class Transaction {
 
     public List<String> getRefundIds() {
         return refundIds;
+    }
+
+    public String getRetrievalReferenceNumber() {
+        return retrievalReferenceNumber;
     }
 
     public RiskData getRiskData() {
