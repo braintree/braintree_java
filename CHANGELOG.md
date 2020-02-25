@@ -1,3 +1,7 @@
+## unreleased
+* Add ThreeDSecure test payment method nonces
+* Add test `AuthenticationId`s
+
 ## 2.107.0
 * Add `TRANSACTION_REFUND_AUTH_HARD_DECLINED` and `TRANSACTION_REFUND_AUTH_SOFT_DECLINED` validation errors
 * Add `isNetworkTokenized` field to `AndroidPayCard` and `AndroidPayDetails`
