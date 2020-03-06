@@ -10,9 +10,11 @@ import com.braintreegateway.CreditCard.Prepaid;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.exceptions.NotFoundException;
+import java.math.BigDecimal;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 public class PaymentMethodNonceIT extends IntegrationTest {
 
@@ -63,6 +65,45 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertNotNull(newNonce.getNonce());
         assertNotNull(newNonce.getAuthenticationInsight());
         assertNotNull(newNonce.getAuthenticationInsight().getRegulationEnvironment());
+        assertNull(newNonce.getAuthenticationInsight().getScaIndicator());
+    }
+
+    @Test
+    public void createReturnsAuthenticationInsightWithScaRequirementWhenGivenAmount() {
+        PaymentMethodNonceRequest createRequest = new PaymentMethodNonceRequest().
+            paymentMethodToken("india_visa_credit").
+            merchantAccountId(MerchantAccountTestConstants.INDIA_THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            authenticationInsight(new Boolean(true)).
+            amount(new BigDecimal("2500"));
+
+        Result<PaymentMethodNonce> result = gateway.paymentMethodNonce().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        PaymentMethodNonce newNonce = result.getTarget();
+        assertNotNull(newNonce);
+        assertNotNull(newNonce.getNonce());
+        assertNotNull(newNonce.getAuthenticationInsight());
+        assertEquals("rbi", newNonce.getAuthenticationInsight().getRegulationEnvironment());
+        assertEquals("sca_required", newNonce.getAuthenticationInsight().getScaIndicator());
+    }
+
+    @Test
+    public void createReturnsAuthenticationInsightWithAnotherScaIndicator() {
+        PaymentMethodNonceRequest createRequest = new PaymentMethodNonceRequest().
+            paymentMethodToken("india_visa_credit").
+            merchantAccountId(MerchantAccountTestConstants.INDIA_THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            authenticationInsight(new Boolean(true));
+
+        Result<PaymentMethodNonce> result = gateway.paymentMethodNonce().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        PaymentMethodNonce newNonce = result.getTarget();
+        assertNotNull(newNonce);
+        assertNotNull(newNonce.getNonce());
+        assertNotNull(newNonce.getAuthenticationInsight());
+        assertEquals("rbi", newNonce.getAuthenticationInsight().getRegulationEnvironment());
+        assertThat("sca_required", not(newNonce.getAuthenticationInsight().getScaIndicator()));
+        assertNotNull(newNonce.getAuthenticationInsight().getScaIndicator());
     }
 
     @Test
