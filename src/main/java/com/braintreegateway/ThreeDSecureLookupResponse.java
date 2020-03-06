@@ -18,6 +18,12 @@ public class ThreeDSecureLookupResponse {
         } catch (IOException e) {
             throw new UnexpectedException(e.getMessage(), e);
         }
+
+        if (jsonResponse.get("error") != null) {
+          Map<String, Object> error = (Map) jsonResponse.get("error");
+          throw new UnexpectedException((String) error.get("message"));
+        }
+
         payloadString = lookupResponse;
         lookup = new ThreeDSecureLookup((Map) jsonResponse.get("lookup"));
         paymentMethod = new PaymentMethodNonce((Map) jsonResponse.get("paymentMethod"));

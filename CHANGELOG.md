@@ -1,4 +1,5 @@
 ## unreleased
+* Fix null pointer exception when 3DS lookup returns a `422`
 * Add ThreeDSecure test payment method nonces
 * Add test `AuthenticationId`s
 
