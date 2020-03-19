@@ -7,8 +7,8 @@ import java.util.Calendar;
 /**
  * An address can belong to:
  * <ul>
- * <li>a CreditCard as the billing address 
- * <li>a Customer as an address 
+ * <li>a CreditCard as the billing address
+ * <li>a Customer as an address
  * <li>a Transaction as a billing or shipping address
  * </ul>
  *
@@ -29,6 +29,7 @@ public class Address {
     private String locality;
     private String postalCode;
     private String region;
+    private String recipientName; // only for PayPal PayerInfo object
     private String streetAddress;
     private Calendar updatedAt;
 
@@ -49,21 +50,35 @@ public class Address {
         region = node.findString("region");
         streetAddress = node.findString("street-address");
         updatedAt = node.findDateTime("updated-at");
+
+        // PayPal PayerInfo aliases
+        recipientName = node.findString("recipient-name");
+        if (streetAddress == null) {
+            streetAddress = node.findString("line1");
+        }
+        if (locality == null) {
+            locality = node.findString("city");
+        }
+        if (region == null) {
+            region = node.findString("state");
+        }
+        if (countryCodeAlpha2 == null) {
+           countryCodeAlpha2 = node.findString("country-code");
+        }
     }
 
     public String getCompany() {
         return company;
     }
-    
 
     public String getCountryCodeAlpha2() {
         return countryCodeAlpha2;
     }
-    
+
     public String getCountryCodeAlpha3() {
         return countryCodeAlpha3;
     }
-    
+
     public String getCountryCodeNumeric() {
         return countryCodeNumeric;
     }
@@ -114,5 +129,14 @@ public class Address {
 
     public Calendar getUpdatedAt() {
         return updatedAt;
+    }
+
+    // Alias methods for PayPal PayerInfo addresses
+    public String getRecipientName() {
+        if (recipientName != null) {
+            return recipientName;
+        }
+
+        return getFirstName() + " " + getLastName();
     }
 }

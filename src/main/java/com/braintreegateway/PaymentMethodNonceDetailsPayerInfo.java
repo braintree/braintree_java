@@ -9,9 +9,8 @@ public class PaymentMethodNonceDetailsPayerInfo {
     private String lastName;
     private String payerId;
     private String countryCode;
-    // TODO coerce the address info to match the address object?
-    // private Address billingAddress;
-    // private Address shippingAddress;
+    private Address billingAddress;
+    private Address shippingAddress;
 
     public PaymentMethodNonceDetailsPayerInfo(NodeWrapper node) {
         email = node.findString("email");
@@ -19,6 +18,18 @@ public class PaymentMethodNonceDetailsPayerInfo {
         lastName = node.findString("last-name");
         payerId = node.findString("payer-id");
         countryCode = node.findString("country-code");
+
+        NodeWrapper billingAddressNode = node.findFirst("billing-address");
+
+        if (billingAddressNode != null && !billingAddressNode.isBlank()) {
+            billingAddress = new Address(billingAddressNode);
+        }
+
+        NodeWrapper shippingAddressNode = node.findFirst("shipping-address");
+
+        if (shippingAddressNode != null && !shippingAddressNode.isBlank()) {
+            shippingAddress = new Address(shippingAddressNode);
+        }
     }
 
     public PaymentMethodNonceDetailsPayerInfo(Map<String, String> map) {
@@ -47,5 +58,13 @@ public class PaymentMethodNonceDetailsPayerInfo {
 
     public String getCountryCode() {
         return countryCode;
+    }
+
+    public Address getBillingAddress() {
+        return billingAddress;
+    }
+
+    public Address getShippingAddress() {
+        return shippingAddress;
     }
 }
