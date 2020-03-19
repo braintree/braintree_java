@@ -476,6 +476,58 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void createWithThreeDSecurePassThru() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CustomerRequest request = new CustomerRequest().
+            firstName("Fred").
+            creditCard().
+                paymentMethodNonce(Nonce.Transactable).
+                threeDSecurePassThruRequest().
+                    eciFlag("05").
+                    cavv("some-cavv").
+                    xid("some-xid").
+                    threeDSecureVersion("2.2.0").
+                    dsTransactionId("some-ds-transaction-id").
+                    authenticationResponse("some-auth-response").
+                    directoryResponse("some-directory-response").
+                    cavvAlgorithm("algorithm").
+                    done().
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void createWithThreeDSecurePassThruWithoutEciFlag() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CustomerRequest request = new CustomerRequest().
+            firstName("Fred").
+            creditCard().
+            paymentMethodNonce(Nonce.Transactable).
+              threeDSecurePassThruRequest().
+                  cavv("some-cavv").
+                  xid("some-xid").
+                  threeDSecureVersion("2.2.0").
+                  done().
+              options().
+                  verifyCard(true).
+                  done().
+              done();
+
+        Result<Customer> result = gateway.customer().create(request);
+
+        assertFalse(result.isSuccess());
+        assertEquals(
+                ValidationErrorCode.VERIFICATION_THREE_D_SECURE_PASS_THRU_ECI_FLAG_IS_REQUIRED,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode());
+    }
+
+    @Test
     public void createWithFuturePaymentPayPalAccountNonce() {
         String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
         CustomerRequest request = new CustomerRequest().
@@ -1227,6 +1279,75 @@ public class CustomerIT extends IntegrationTest {
         assertEquals("KI", updatedAddress.getCountryCodeAlpha2());
         assertEquals("KIR", updatedAddress.getCountryCodeAlpha3());
         assertEquals("296", updatedAddress.getCountryCodeNumeric());
+    }
+
+    @Test
+    public void updateWithThreeDSecurePassThru() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Fred").
+            creditCard().
+                paymentMethodNonce(Nonce.Transactable).
+                done();
+
+        Customer customer = gateway.customer().create(createRequest).getTarget();
+        CustomerRequest updateRequest = new CustomerRequest().
+            firstName("Jane").
+            lastName("Doe").
+            creditCard().
+                paymentMethodNonce(Nonce.Transactable).
+                threeDSecurePassThruRequest().
+                    eciFlag("05").
+                    cavv("some-cavv").
+                    xid("some-xid").
+                    threeDSecureVersion("2.2.0").
+                    dsTransactionId("some-ds-transaction-id").
+                    authenticationResponse("some-auth-response").
+                    directoryResponse("some-directory-response").
+                    cavvAlgorithm("algorithm").
+                    done().
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Customer updatedCustomer = gateway.customer().update(customer.getId(), updateRequest).getTarget();
+        assertEquals("Jane", updatedCustomer.getFirstName());
+        assertEquals("Doe", updatedCustomer.getLastName());
+    }
+
+    @Test
+    public void updateWithThreeDSecurePassThruWithoutEciFlag() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Fred").
+            creditCard().
+                paymentMethodNonce(Nonce.Transactable).
+                done();
+
+        Customer customer = gateway.customer().create(createRequest).getTarget();
+        CustomerRequest updateRequest = new CustomerRequest().
+            firstName("Jane").
+            lastName("Doe").
+            creditCard().
+                paymentMethodNonce(Nonce.Transactable).
+                threeDSecurePassThruRequest().
+                    cavv("some-cavv").
+                    xid("some-xid").
+                    threeDSecureVersion("2.2.0").
+                    dsTransactionId("some-ds-transaction-id").
+                    authenticationResponse("some-auth-response").
+                    directoryResponse("some-directory-response").
+                    cavvAlgorithm("algorithm").
+                    done().
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().update(customer.getId(), updateRequest);
+        assertFalse(result.isSuccess());
+        assertEquals(
+                ValidationErrorCode.VERIFICATION_THREE_D_SECURE_PASS_THRU_ECI_FLAG_IS_REQUIRED,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode());
     }
 
     @Test

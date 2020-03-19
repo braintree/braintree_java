@@ -1186,6 +1186,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 xid("some_xid").
                 authenticationResponse("Y").
                 directoryResponse("Y").
+                dsTransactionId("some-ds-transaction-id").
                 cavvAlgorithm("2").
                 threeDSecureVersion("1.0.2").
                 done();
@@ -1295,18 +1296,19 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
-            number(CreditCardNumber.VISA.number).
-            expirationDate("05/2009").
-            done().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
             threeDSecurePassThru().
-            eciFlag("02").
-            cavv("some_cavv").
-            authenticationResponse("Y").
-            directoryResponse("Y").
-            cavvAlgorithm("2").
-            threeDSecureVersion("2.0.1").
-            dsTransactionId("some_ds_transaction_id").
-            done();
+                eciFlag("02").
+                cavv("some_cavv").
+                authenticationResponse("Y").
+                directoryResponse("Y").
+                cavvAlgorithm("2").
+                threeDSecureVersion("2.0.1").
+                dsTransactionId("some_ds_transaction_id").
+                xid("some-xid").
+                done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
