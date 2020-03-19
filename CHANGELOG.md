@@ -1,3 +1,6 @@
+## 2.107.1
+* Add `BillingAddress` in `PaymentMethodNonceDetailsPayerInfo.java`
+
 ## 2.107.0
 * Add `TRANSACTION_REFUND_AUTH_HARD_DECLINED` and `TRANSACTION_REFUND_AUTH_SOFT_DECLINED` validation errors
 * Add `isNetworkTokenized` field to `AndroidPayCard` and `AndroidPayDetails`
