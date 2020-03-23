@@ -40,7 +40,7 @@ public class ThreeDSecureInfo {
         if (threeDSecureLookupInfoNode != null && !threeDSecureLookupInfoNode.isBlank()) {
             threeDSecureLookupInfo = new ThreeDSecureLookupInfo(threeDSecureLookupInfoNode);
         }
-        NodeWrapper threeDSecureAuthenticateInfoNode = node.findFirst("lookup");
+        NodeWrapper threeDSecureAuthenticateInfoNode = node.findFirst("authenticate");
         if (threeDSecureAuthenticateInfoNode != null && !threeDSecureAuthenticateInfoNode.isBlank()) {
             threeDSecureAuthenticateInfo = new ThreeDSecureAuthenticateInfo(threeDSecureAuthenticateInfoNode);
         }
@@ -65,7 +65,7 @@ public class ThreeDSecureInfo {
         if (threeDSecureLookupInfoMap != null) {
             threeDSecureLookupInfo = new ThreeDSecureLookupInfo(threeDSecureLookupInfoMap);
         }
-        Map<String, Object> threeDSecureAuthenticateInfoMap = (Map) map.get("lookup");
+        Map<String, Object> threeDSecureAuthenticateInfoMap = (Map) map.get("authenticate");
         if (threeDSecureAuthenticateInfoMap != null) {
             threeDSecureAuthenticateInfo = new ThreeDSecureAuthenticateInfo(threeDSecureAuthenticateInfoMap);
         }
