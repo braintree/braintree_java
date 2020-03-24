@@ -167,6 +167,46 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test
+    public void createsSampleDisputeAcceptedNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_ACCEPTED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.DISPUTE_ACCEPTED, notification.getKind());
+        assertEquals("my_id", notification.getDispute().getId());
+        assertEquals(Dispute.Status.ACCEPTED, notification.getDispute().getStatus());
+        assertEquals(Dispute.Kind.CHARGEBACK, notification.getDispute().getKind());
+        assertNotNull(notification.getDispute().getOpenedDate());
+    }
+
+    @Test
+    public void createsSampleDisputeDisputedNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_DISPUTED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.DISPUTE_DISPUTED, notification.getKind());
+        assertEquals("my_id", notification.getDispute().getId());
+        assertEquals(Dispute.Status.DISPUTED, notification.getDispute().getStatus());
+        assertEquals(Dispute.Kind.CHARGEBACK, notification.getDispute().getKind());
+        assertNotNull(notification.getDispute().getOpenedDate());
+    }
+
+    @Test
+    public void createsSampleDisputeExpiredNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_EXPIRED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.DISPUTE_EXPIRED, notification.getKind());
+        assertEquals("my_id", notification.getDispute().getId());
+        assertEquals(Dispute.Status.EXPIRED, notification.getDispute().getStatus());
+        assertEquals(Dispute.Kind.CHARGEBACK, notification.getDispute().getKind());
+        assertNotNull(notification.getDispute().getOpenedDate());
+    }
+
+
+    @Test
     public void createsSampleNotificationWithSourceMerchantId() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id", "my_source_merchant_id");
 

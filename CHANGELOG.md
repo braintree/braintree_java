@@ -1,3 +1,10 @@
+## 2.108.0
+* Fix null pointer exception when 3DS lookup returns a `422`
+* Add ThreeDSecure test payment method nonces
+* Add test `AuthenticationId`s
+* Add `DISPUTE_ACCEPTED`, `DISPUTE_DISPUTED`, and `DISPUTE_EXPIRED` webhook constants
+* Fix parsing for 3DS response authenticate fields
+
 ## 2.107.0
 * Add `TRANSACTION_REFUND_AUTH_HARD_DECLINED` and `TRANSACTION_REFUND_AUTH_SOFT_DECLINED` validation errors
 * Add `isNetworkTokenized` field to `AndroidPayCard` and `AndroidPayDetails`
