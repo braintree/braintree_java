@@ -44,4 +44,8 @@ public class CreditCardVerificationSearchRequest extends SearchRequest {
     public TextNode<CreditCardVerificationSearchRequest> customerId() {
         return new TextNode<CreditCardVerificationSearchRequest>("customer_id", this);
     }
+
+    public TextNode<CreditCardVerificationSearchRequest> paymentMethodToken() {
+        return new TextNode<CreditCardVerificationSearchRequest>("payment_method_token", this);
+    }
 }
