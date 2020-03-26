@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -270,6 +271,36 @@ public class CreditCardVerificationIT extends IntegrationTest {
 
         assertEquals(1, collection.getMaximumSize());
         assertEquals(verification.getId(), collection.getFirst().getId());
+    }
+
+    @Test
+    public void searchOnPaymentMethodToken() {
+        String paymentMethodToken  = new Random().nextInt() + "token";
+        CustomerRequest request = new CustomerRequest().
+            email("mark.a@example.com").
+            creditCard().
+                token(paymentMethodToken).
+                number("4111111111111111").
+                expirationDate("11/12").
+                cardholderName("Tom Smith").
+                billingAddress().
+                    postalCode("44444").
+                    done().
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+
+        CreditCardVerificationSearchRequest searchRequest = new CreditCardVerificationSearchRequest().
+            paymentMethodToken().is(paymentMethodToken);
+
+        ResourceCollection<CreditCardVerification> collection = gateway.creditCardVerification().search(searchRequest);
+
+        assertEquals(collection.getMaximumSize(), 1);
+        assertEquals(paymentMethodToken, collection.getFirst().getCreditCard().getToken());
     }
 
     @Test
