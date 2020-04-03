@@ -65,6 +65,22 @@ public class DocumentUploadTest {
   }
 
   @Test
+  public void documentUploadCanMapFileIsEmptyResponse() {
+    NodeWrapper nodeWrapper = NodeWrapperFactory.instance.create(FILE_IS_EMPTY_RESPONSE);
+
+    Result<DocumentUpload> documentUploadResult = new Result<DocumentUpload>(nodeWrapper, DocumentUpload.class);
+
+    assertFalse(documentUploadResult.isSuccess());
+    List<ValidationError> validationErrorList = documentUploadResult.getErrors().getAllDeepValidationErrors();
+    ValidationError expectedValidationError = new ValidationError(
+      "file",
+      ValidationErrorCode.DOCUMENT_UPLOAD_FILE_IS_EMPTY,
+      "File cannot be empty."
+    );
+    assertTrue("received validation error for file that is empty", validationErrorList.contains(expectedValidationError));
+  }
+
+  @Test
   public void documentUploadCanMapFileIsTooLongResponse() {
     NodeWrapper nodeWrapper = NodeWrapperFactory.instance.create(FILE_IS_TOO_LONG_RESPONSE);
 
@@ -153,6 +169,31 @@ public class DocumentUploadTest {
                                               + "    <merchant-id>integration_merchant_id</merchant-id>\n"
                                               + "  </params>\n"
                                               + "  <message>File size is limited to 4 MB.</message>\n"
+                                              + "</api-error-response>";
+
+  private String FILE_IS_TOO_LARGE_RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                              + "<api-error-response>\n"
+                                              + "  <errors>\n"
+                                              + "    <errors type=\"array\"/>\n"
+                                              + "    <document-upload>\n"
+                                              + "      <errors type=\"array\">\n"
+                                              + "        <error>\n"
+                                              + "          <code>84906</code>\n"
+                                              + "          <attribute type=\"symbol\">file</attribute>\n"
+                                              + "          <message>File cannot be empty.</message>\n"
+                                              + "        </error>\n"
+                                              + "      </errors>\n"
+                                              + "    </document-upload>\n"
+                                              + "  </errors>\n"
+                                              + "  <params>\n"
+                                              + "    <document-upload>\n"
+                                              + "      <kind>identity_document</kind>\n"
+                                              + "    </document-upload>\n"
+                                              + "    <controller>document_uploads</controller>\n"
+                                              + "    <action>create</action>\n"
+                                              + "    <merchant-id>integration_merchant_id</merchant-id>\n"
+                                              + "  </params>\n"
+                                              + "  <message>File cannot be empty.</message>\n"
                                               + "</api-error-response>";
 
   private String FILE_IS_TOO_LONG_RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
