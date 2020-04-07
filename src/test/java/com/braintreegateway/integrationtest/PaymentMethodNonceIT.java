@@ -74,7 +74,11 @@ public class PaymentMethodNonceIT extends IntegrationTest {
             paymentMethodToken("india_visa_credit").
             merchantAccountId(MerchantAccountTestConstants.INDIA_THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
             authenticationInsight(new Boolean(true)).
-            amount(new BigDecimal("2500"));
+            authenticationInsightOptions().
+                amount(new BigDecimal("2500")).
+                recurringCustomerConsent(new Boolean(true)).
+                recurringMaxAmount(new BigDecimal("1000")).
+                done();
 
         Result<PaymentMethodNonce> result = gateway.paymentMethodNonce().create(createRequest);
         assertTrue(result.isSuccess());
