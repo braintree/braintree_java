@@ -171,7 +171,7 @@ public class DocumentUploadTest {
                                               + "  <message>File size is limited to 4 MB.</message>\n"
                                               + "</api-error-response>";
 
-  private String FILE_IS_TOO_LARGE_RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+  private String FILE_IS_EMPTY_RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                                               + "<api-error-response>\n"
                                               + "  <errors>\n"
                                               + "    <errors type=\"array\"/>\n"
