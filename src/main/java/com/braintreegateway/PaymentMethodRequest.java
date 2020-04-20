@@ -21,6 +21,7 @@ public class PaymentMethodRequest extends Request {
     // NEXT_MAJOR_VERSION remove this variable as it has been ignored in the gateway
     private Boolean paypalVaultWithoutUpgrade;
     private String venmoSdkPaymentMethodCode;
+    private PaymentMethodThreeDSecurePassThruRequest threeDSecurePassThruRequest;
 
     public PaymentMethodRequest() {
     }
@@ -130,6 +131,11 @@ public class PaymentMethodRequest extends Request {
         return this;
     }
 
+    public PaymentMethodThreeDSecurePassThruRequest threeDSecurePassThruRequest() {
+        this.threeDSecurePassThruRequest = new PaymentMethodThreeDSecurePassThruRequest(this);
+        return threeDSecurePassThruRequest;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("payment-method").toXML();
@@ -140,6 +146,7 @@ public class PaymentMethodRequest extends Request {
             addElement("customer-id", customerId).
             addElement("token", token).
             addElement("options", optionsRequest).
+            addElement("threeDSecurePassThru", threeDSecurePassThruRequest).
             addElement("payment-method-nonce", paymentMethodNonce).
             addElement("billingAddress", billingAddressRequest).
             addElement("billingAddressId", billingAddressId).

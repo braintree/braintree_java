@@ -22,6 +22,7 @@ public class CreditCardRequest extends Request {
     private String paymentMethodToken;
     private String paymentMethodNonce;
     private String venmoSdkPaymentMethodCode;
+    private CreditCardThreeDSecurePassThruRequest threeDSecurePassThruRequest;
 
     public CreditCardRequest() {
     }
@@ -125,6 +126,11 @@ public class CreditCardRequest extends Request {
         return optionsRequest;
     }
 
+    public CreditCardThreeDSecurePassThruRequest threeDSecurePassThruRequest() {
+        this.threeDSecurePassThruRequest = new CreditCardThreeDSecurePassThruRequest(this);
+        return threeDSecurePassThruRequest;
+    }
+
     public CreditCardRequest paymentMethodToken(String paymentMethodToken) {
         this.paymentMethodToken = paymentMethodToken;
         return this;
@@ -158,6 +164,7 @@ public class CreditCardRequest extends Request {
             addElement("billingAddressId", billingAddressId).
             addElement("deviceData", deviceData).
             addElement("options", optionsRequest).
+            addElement("threeDSecurePassThru", threeDSecurePassThruRequest).
             addElement("customerId", customerId).
             addElement("cardholderName", cardholderName).
             addElement("cvv", cvv).
