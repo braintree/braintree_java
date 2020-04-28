@@ -31,6 +31,9 @@ public class WebhookNotification {
         DISPUTE_OPENED("dispute_opened"),
         DISPUTE_LOST("dispute_lost"),
         DISPUTE_WON("dispute_won"),
+        DISPUTE_ACCEPTED("dispute_accepted"),
+        DISPUTE_DISPUTED("dispute_disputed"),
+        DISPUTE_EXPIRED("dispute_expired"),
         ACCOUNT_UPDATER_DAILY_REPORT("account_updater_daily_report"),
         // NEXT_MAJOR_VERSION Remove this class as legacy Ideal has been removed/disabled in the Braintree Gateway
         // DEPRECATED If you're looking to accept iDEAL as a payment method contact accounts@braintreepayments.com for a solution.

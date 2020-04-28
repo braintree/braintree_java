@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.BraintreeException;
+import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import org.junit.Test;
@@ -313,9 +314,49 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
             paymentMethodNonce(paymentMethod.getNonce());
         Result<Transaction> transactionResult = gateway.transaction().sale(transactionRequest);
         assertFalse(transactionResult.isSuccess());
-        System.out.println(transactionResult.getErrors().forObject("transaction"));
         assertEquals(ValidationErrorCode.TRANSACTION_MERCHANT_ACCOUNT_DOES_NOT_MATCH3_D_SECURE_MERCHANT_ACCOUNT,
             transactionResult.getErrors().forObject("transaction").onField("merchant_account_id").get(0).getCode());
+    }
+
+    @Test(expected = UnexpectedException.class)
+    public void lookupThreeDSecureTwice() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest cardRequest = new CreditCardRequest().
+            number("4111111111111111").
+            expirationMonth("12").
+            expirationYear("2020");
+
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, cardRequest, customer.getId(), false);
+        String authorizationFingerprint = TestHelper.generateAuthorizationFingerprint(gateway, customer.getId());
+
+        ThreeDSecureLookupAddress billingAddress = new ThreeDSecureLookupAddress().
+            givenName("First").
+            surname("Last").
+            phoneNumber("1234567890").
+            locality("Oakland").
+            countryCodeAlpha2("US").
+            streetAddress("123 Address").
+            extendedAddress("Unit 2").
+            postalCode("94112").
+            region("CA");
+
+        String clientData = getClientDataString(nonce, authorizationFingerprint);
+
+        ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
+        request.amount("199.00");
+        request.clientData(clientData);
+        request.email("first.last@example.com");
+        request.billingAddress(billingAddress);
+
+        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request);
+        PaymentMethodNonce paymentMethod = result.getPaymentMethod();
+
+        clientData = getClientDataString(paymentMethod.getNonce(), authorizationFingerprint);
+        request.clientData(clientData);
+        // Expect the following lookup to throw an exception
+        result = gateway.threeDSecure().lookup(request);
     }
 
     public String getClientDataString(String nonce, String authorizationFingerprint) {

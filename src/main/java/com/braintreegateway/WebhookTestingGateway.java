@@ -62,6 +62,9 @@ public class WebhookTestingGateway {
             case DISPUTE_OPENED: return disputeOpenedXml(id);
             case DISPUTE_LOST: return disputeLostXml(id);
             case DISPUTE_WON: return disputeWonXml(id);
+            case DISPUTE_ACCEPTED: return disputeAcceptedXml(id);
+            case DISPUTE_DISPUTED: return disputeDisputedXml(id);
+            case DISPUTE_EXPIRED: return disputeExpiredXml(id);
             case DISBURSEMENT_EXCEPTION: return disbursementExceptionXml(id);
             case PARTNER_MERCHANT_CONNECTED: return partnerMerchantConnectedXml(id);
             case PARTNER_MERCHANT_DISCONNECTED: return partnerMerchantDisconnectedXml(id);
@@ -303,6 +306,66 @@ public class WebhookTestingGateway {
                 node("kind", "chargeback"),
                 node("currency-iso-code", "USD"),
                 node("status", "won"),
+                node("reason", "fraud"),
+                node("transaction",
+                    node("id", id),
+                    node("amount", "250.00")
+                )
+        );
+    }
+
+    private String disputeAcceptedXml(String id) {
+        return node("dispute",
+                node("id", id),
+                node("amount", "250.00"),
+                node("amount-dispuated", "250.00"),
+                node("amount-won", "245.00"),
+                node("received-date", TYPE_DATE, "2014-03-21"),
+                node("reply-by-date", TYPE_DATE, "2014-03-21"),
+                node("date-opened", TYPE_DATE, "2014-03-21"),
+                node("kind", "chargeback"),
+                node("currency-iso-code", "USD"),
+                node("status", "accepted"),
+                node("reason", "fraud"),
+                node("transaction",
+                    node("id", id),
+                    node("amount", "250.00")
+                )
+        );
+    }
+
+    private String disputeDisputedXml(String id) {
+        return node("dispute",
+                node("id", id),
+                node("amount", "250.00"),
+                node("amount-dispuated", "250.00"),
+                node("amount-won", "245.00"),
+                node("received-date", TYPE_DATE, "2014-03-21"),
+                node("reply-by-date", TYPE_DATE, "2014-03-21"),
+                node("date-opened", TYPE_DATE, "2014-03-21"),
+                node("kind", "chargeback"),
+                node("currency-iso-code", "USD"),
+                node("status", "disputed"),
+                node("reason", "fraud"),
+                node("transaction",
+                    node("id", id),
+                    node("amount", "250.00")
+                )
+        );
+    }
+
+    private String disputeExpiredXml(String id) {
+        return node("dispute",
+                node("id", id),
+                node("amount", "250.00"),
+                node("amount-dispuated", "250.00"),
+                node("amount-won", "245.00"),
+                node("received-date", TYPE_DATE, "2014-03-21"),
+                node("reply-by-date", TYPE_DATE, "2014-03-21"),
+                node("date-opened", TYPE_DATE, "2014-03-21"),
+                node("kind", "chargeback"),
+                node("currency-iso-code", "USD"),
+                node("status", "expired"),
                 node("reason", "fraud"),
                 node("transaction",
                     node("id", id),
