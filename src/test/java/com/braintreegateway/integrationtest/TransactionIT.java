@@ -333,7 +333,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(transaction.getAuthorizationExpiresAt());
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
-        assertEquals("1234567", transaction.getRetrievalReferenceNumber());
+        assertNotNull(transaction.getRetrievalReferenceNumber());
 
         CreditCard creditCard = transaction.getCreditCard();
         assertEquals("411111", creditCard.getBin());
