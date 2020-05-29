@@ -175,6 +175,33 @@ public class PaymentMethodNonceIT extends IntegrationTest {
     }
 
     @Test
+    public void findPayPalAccountNonceWithValidPayerInfoValues() {
+        String nonceString = "fake-paypal-one-time-nonce";
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
+        assertNotNull(nonce);
+        assertEquals(nonceString, nonce.getNonce());
+        assertEquals(false, nonce.isConsumed());
+        assertEquals(false, nonce.isDefault());
+        assertNotNull(nonce.getDetails().getPayerInfo());
+
+        PaymentMethodNonceDetailsPayerInfo payerInfo = nonce.getDetails().getPayerInfo();
+        assertNotNull(payerInfo.getEmail());
+        assertNotNull(payerInfo.getPayerId());
+        assertNotNull(payerInfo.getBillingAddress().getRecipientName());
+        assertNotNull(payerInfo.getBillingAddress().getStreetAddress());
+        assertNotNull(payerInfo.getBillingAddress().getLocality());
+        assertNotNull(payerInfo.getBillingAddress().getRegion());
+        assertNotNull(payerInfo.getBillingAddress().getPostalCode());
+        assertNotNull(payerInfo.getBillingAddress().getCountryCodeAlpha2());
+        assertNotNull(payerInfo.getShippingAddress().getRecipientName());
+        assertNotNull(payerInfo.getShippingAddress().getStreetAddress());
+        assertNotNull(payerInfo.getShippingAddress().getLocality());
+        assertNotNull(payerInfo.getShippingAddress().getRegion());
+        assertNotNull(payerInfo.getShippingAddress().getPostalCode());
+        assertNotNull(payerInfo.getShippingAddress().getCountryCodeAlpha2());
+    }
+
+    @Test
     public void findCreditCardNonceReturnsValidBinDataPrepaidValue() {
         String nonceString = "fake-valid-prepaid-nonce";
         PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);

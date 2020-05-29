@@ -3,6 +3,8 @@
 * Add missing `paymentMethodToken` search to `CreditCardVerificationSearchRequest`
 * Add `recurringCustomerConsent` and `recurringMaxAmount` parameters to `authenticationInsightOptions` in `PaymentMethodNonce.create()`
 * Add `DOCUMENT_UPLOAD_FILE_IS_EMPTY` error code
+* Add `getBillingAddress` method to `PaymentMethodNonceDetailsPayerInfo` (#83 thanks @eliasjpr)
+* Add `getShippingAddress` method to `PaymentMethodNonceDetailsPayerInfo` (#83 thanks @eliasjpr)
 
 ## 2.108.0
 * Fix null pointer exception when 3DS lookup returns a `422`
