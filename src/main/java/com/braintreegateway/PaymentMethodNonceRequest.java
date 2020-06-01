@@ -1,12 +1,10 @@
 package com.braintreegateway;
 
-import java.math.BigDecimal;
-
 public class PaymentMethodNonceRequest extends Request {
     private String paymentMethodToken;
     private String merchantAccountId;
     private Boolean authenticationInsight;
-    private BigDecimal amount;
+    private AuthenticationInsightOptionsRequest authenticationInsightOptions;
 
     public PaymentMethodNonceRequest() {
     }
@@ -26,11 +24,6 @@ public class PaymentMethodNonceRequest extends Request {
         return this;
     }
 
-    public PaymentMethodNonceRequest amount(BigDecimal amount) {
-        this.amount = amount;
-        return this;
-    }
-
     public String getPaymentMethodToken() {
         return paymentMethodToken;
     }
@@ -43,8 +36,13 @@ public class PaymentMethodNonceRequest extends Request {
         return authenticationInsight;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
+    public AuthenticationInsightOptionsRequest getAuthenticationInsightOptions() {
+        return authenticationInsightOptions;
+    }
+
+    public AuthenticationInsightOptionsRequest authenticationInsightOptions() {
+        authenticationInsightOptions = new AuthenticationInsightOptionsRequest(this);
+        return authenticationInsightOptions;
     }
 
     @Override
@@ -55,8 +53,9 @@ public class PaymentMethodNonceRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root).
             addElement("merchant-account-id", merchantAccountId).
-            addElement("amount", amount).
-            addElement("authentication-insight", authenticationInsight.toString());
+            addElement("authentication-insight", authenticationInsight.toString()).
+            addElement("authentication-insight-options", authenticationInsightOptions);
+
 
         return builder;
     }

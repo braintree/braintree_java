@@ -394,6 +394,51 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertEquals((String)null, threeDSecureInfo.getDsTransactionId());
     }
 
+    @Test
+    public void createWithThreeDSecurePassThru() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("4111111111111111").
+            expirationDate("05/22").
+            threeDSecurePassThruRequest().
+                eciFlag("05").
+                cavv("some-cavv").
+                xid("some-xid").
+                threeDSecureVersion("2.2.0").
+                dsTransactionId("some-ds-transaction-id").
+                authenticationResponse("some-auth-response").
+                directoryResponse("some-directory-response").
+                cavvAlgorithm("algorithm").
+                done().
+            options().
+                verifyCard(true).
+                done();
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void createWithThreeDSecurePassThruWithoutEciFlag() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("4111111111111111").
+            expirationDate("05/20").
+            threeDSecurePassThruRequest().
+                cavv("some-cavv").
+                xid("some-xid").
+                threeDSecureVersion("2.2.0").
+                done().
+            options().
+                verifyCard(true).
+                done();
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+                ValidationErrorCode.VERIFICATION_THREE_D_SECURE_PASS_THRU_ECI_FLAG_IS_REQUIRED,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode());
+    }
 
     @Test
     public void createWithInvalidVenmoSdkPaymentMethodCode() {
@@ -515,6 +560,72 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         gateway.creditCard().update(card1.getToken(), new CreditCardRequest().options().makeDefault(true).done());
         assertTrue(gateway.creditCard().find(card1.getToken()).isDefault());
         assertFalse(gateway.creditCard().find(card2.getToken()).isDefault());
+    }
+
+    @Test
+    public void updateWithThreeDSecurePassThru() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("4111111111111111").
+            expirationDate("05/22");
+
+        CreditCard card = gateway.creditCard().create(request).getTarget();
+
+        CreditCardRequest updateRequest = new CreditCardRequest().
+            number("4111111111111111").
+            expirationDate("10/10").
+            threeDSecurePassThruRequest().
+                eciFlag("05").
+                cavv("some-cavv").
+                xid("some-xid").
+                threeDSecureVersion("2.2.0").
+                dsTransactionId("some-ds-transaction-id").
+                authenticationResponse("some-auth-response").
+                directoryResponse("some-directory-response").
+                cavvAlgorithm("algorithm").
+                done().
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> updated_result = gateway.creditCard().update(card.getToken(), updateRequest);
+
+        assertTrue(updated_result.isSuccess());
+    }
+
+    @Test
+    public void updateWithThreeDSecurePassThruWithoutEciFlag() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("4111111111111111").
+            expirationDate("05/22");
+
+        CreditCard card = gateway.creditCard().create(request).getTarget();
+
+        CreditCardRequest updateRequest = new CreditCardRequest().
+            number("4111111111111111").
+            expirationDate("10/10").
+            threeDSecurePassThruRequest().
+            cavv("some-cavv").
+            xid("some-xid").
+            threeDSecureVersion("2.2.0").
+            dsTransactionId("some-ds-transaction-id").
+            authenticationResponse("some-auth-response").
+            directoryResponse("some-directory-response").
+            cavvAlgorithm("algorithm").
+            done().
+            options().
+            verifyCard(true).
+            done();
+
+        Result<CreditCard> updated_result = gateway.creditCard().update(card.getToken(), updateRequest);
+
+        assertFalse(updated_result.isSuccess());
+        assertEquals(
+            ValidationErrorCode.VERIFICATION_THREE_D_SECURE_PASS_THRU_ECI_FLAG_IS_REQUIRED,
+            updated_result.getErrors().getAllDeepValidationErrors().get(0).getCode());
     }
 
     @SuppressWarnings("deprecation")
