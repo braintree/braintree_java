@@ -1,4 +1,4 @@
-## Unreleased
+## 2.109.0
 * Add `threeDSecurePassThru` to `CreditCard.create()`, `CreditCard.update()`, `Customer.create()`, `Customer.update()`, `PaymentMethod.create()` and `PaymentMethod.update()` 
 * Add missing `paymentMethodToken` search to `CreditCardVerificationSearchRequest`
 * Add `recurringCustomerConsent` and `recurringMaxAmount` parameters to `authenticationInsightOptions` in `PaymentMethodNonce.create()`
