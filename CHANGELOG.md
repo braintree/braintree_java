@@ -1,6 +1,7 @@
 ## 2.109.0
 * Add `threeDSecurePassThru` to `CreditCard.create()`, `CreditCard.update()`, `Customer.create()`, `Customer.update()`, `PaymentMethod.create()` and `PaymentMethod.update()` 
 * Add missing `paymentMethodToken` search to `CreditCardVerificationSearchRequest`
+* Add `recurringCustomerConsent` and `recurringMaxAmount` parameters to `authenticationInsightOptions` in `PaymentMethodNonce.create()`
 * Add `DOCUMENT_UPLOAD_FILE_IS_EMPTY` error code
 * Add `getBillingAddress` method to `PaymentMethodNonceDetailsPayerInfo` (#83 thanks @eliasjpr)
 * Add `getShippingAddress` method to `PaymentMethodNonceDetailsPayerInfo` (#83 thanks @eliasjpr)
