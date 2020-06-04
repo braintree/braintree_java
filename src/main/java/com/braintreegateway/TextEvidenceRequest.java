@@ -18,18 +18,6 @@ public class TextEvidenceRequest extends Request {
         return content;
     }
 
-    /**
-     * Please use category instead.
-     * @deprecated see #category(String)
-     * @param tag the tag to use
-     * @return this request
-     */
-    @Deprecated
-    public TextEvidenceRequest tag(String tag) {
-        this.category = tag;
-        return this;
-    }
-
     public TextEvidenceRequest category(String category) {
         this.category = category;
         return this;

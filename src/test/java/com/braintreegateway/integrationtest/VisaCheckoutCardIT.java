@@ -1,15 +1,10 @@
 package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
-import com.braintreegateway.exceptions.ForgedQueryStringException;
-import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.exceptions.DownForMaintenanceException;
 import com.braintreegateway.test.Nonce;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.util.*;
 
 import static org.junit.Assert.*;
 

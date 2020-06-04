@@ -63,12 +63,12 @@ public class PlanIT extends IntegrationTest {
             }
         }
 
-        assertEquals(new Integer(1), actualPlan.getBillingDayOfMonth());
-        assertEquals(new Integer(1), actualPlan.getBillingFrequency());
+        assertEquals(Integer.valueOf(1), actualPlan.getBillingDayOfMonth());
+        assertEquals(Integer.valueOf(1), actualPlan.getBillingFrequency());
         assertEquals("USD", actualPlan.getCurrencyIsoCode());
         assertEquals("java test description", actualPlan.getDescription());
         assertEquals("java test plan", actualPlan.getName());
-        assertEquals(new Integer(12), actualPlan.getNumberOfBillingCycles());
+        assertEquals(Integer.valueOf(12), actualPlan.getNumberOfBillingCycles());
         assertEquals(new BigDecimal("100.00"), actualPlan.getPrice());
         assertEquals(false, actualPlan.hasTrialPeriod());
 

@@ -12,19 +12,6 @@ import static org.junit.Assert.*;
 public class MerchantAccountIT extends IntegrationTest {
 
     @Test
-    public void deprecatedCreateSucceeds() {
-        Result<MerchantAccount> result = gateway.merchantAccount().create(deprecatedCreationRequest());
-
-        assertTrue("merchant account creation should succeed", result.isSuccess());
-
-        MerchantAccount ma = result.getTarget();
-        assertEquals("account status should be pending", MerchantAccount.Status.PENDING, ma.getStatus());
-        assertEquals("sandbox_master_merchant_account", ma.getMasterMerchantAccount().getId());
-        assertTrue(ma.isSubMerchant());
-        assertFalse(ma.getMasterMerchantAccount().isSubMerchant());
-    }
-
-    @Test
     public void createRequiresNoId() {
         Result<MerchantAccount> result = gateway.merchantAccount().create(creationRequest());
 
@@ -124,7 +111,7 @@ public class MerchantAccountIT extends IntegrationTest {
 
     @Test
     public void updateUpdatesAllFields() {
-        Result<MerchantAccount> result = gateway.merchantAccount().create(deprecatedCreationRequest());
+        Result<MerchantAccount> result = gateway.merchantAccount().create(updateRequest());
         assertTrue("merchant account creation should succeed", result.isSuccess());
         MerchantAccountRequest request = creationRequest().
             masterMerchantAccountId(null);
@@ -271,6 +258,7 @@ public class MerchantAccountIT extends IntegrationTest {
         assertEquals("USD", ma.getCurrencyIsoCode());
     }
 
+    // this is part of Marketplace and shouldn't be removed unless we're removing all Marketplace code
     private MerchantAccountRequest deprecatedCreationRequest() {
         return new MerchantAccountRequest().
             applicantDetails().
@@ -509,6 +497,45 @@ public class MerchantAccountIT extends IntegrationTest {
                 email("joe+funding@bloggs.com").
                 mobilePhone("3125551212").
                 descriptor("Job Leoggs OH").
+                done().
+            tosAccepted(true).
+            masterMerchantAccountId("sandbox_master_merchant_account");
+    }
+
+    private MerchantAccountRequest updateRequest() {
+        return new MerchantAccountRequest().
+            individual().
+                firstName("Toby").
+                lastName("Blerggs").
+                email("toby@leoggs.com").
+                phone("555-555-1213").
+                address().
+                    streetAddress("194 Update St.").
+                    postalCode("60612").
+                    locality("Avonburg").
+                    region("IL").
+                    done().
+                dateOfBirth("10/9/1986").
+                ssn("234-56-1235").
+                done().
+            business().
+                taxId("123456789").
+                dbaName("Calculon Inc").
+                legalName("Calculon Inc").
+                address().
+                    streetAddress("136 Credible St.").
+                    postalCode("60603").
+                    locality("Chicago").
+                    region("IL").
+                    done().
+                done().
+            funding().
+                destination(MerchantAccount.FundingDestination.EMAIL).
+                routingNumber("122100024").
+                accountNumber("98479798711").
+                email("toby+funding@bloggs.com").
+                mobilePhone("3125551213").
+                descriptor("Toby Blerggs IL").
                 done().
             tosAccepted(true).
             masterMerchantAccountId("sandbox_master_merchant_account");

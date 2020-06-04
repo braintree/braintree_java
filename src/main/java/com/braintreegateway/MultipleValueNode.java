@@ -12,6 +12,7 @@ public class MultipleValueNode<T extends SearchRequest, S> extends SearchNode<T>
         return assembleMultiValueCriteria(items);
     }
     
+    @SuppressWarnings("unchecked")
     public T in(S... items) {
         return in(Arrays.asList(items));
     }

@@ -1,7 +1,5 @@
 package com.braintreegateway;
 
-import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.util.NodeWrapperFactory;
 import com.braintreegateway.exceptions.NotFoundException;
 
 import org.junit.Test;
@@ -26,21 +24,6 @@ public class CreditCardGatewayTest {
     public void findHandlesNullPointer() {
         CreditCardGateway creditCardGateway = this.gateway.creditCard();
         creditCardGateway.find(null);
-    }
-
-    @Test(expected=NotFoundException.class)
-    public void forwardHandlesNullPointerForReceivingToken() {
-        PaymentMethodForwardRequest forwardRequest = new PaymentMethodForwardRequest();
-        Result<PaymentMethodNonce> forwardResult = gateway.creditCard()
-            .forward(forwardRequest);
-    }
-
-    @Test(expected=NotFoundException.class)
-    public void forwardHandlesNullPointerForReceivingMerchantID() {
-        PaymentMethodForwardRequest forwardRequest = new PaymentMethodForwardRequest()
-            .token("1234");
-        Result<PaymentMethodNonce> forwardResult = gateway.creditCard()
-            .forward(forwardRequest);
     }
 
     @Test(expected=NotFoundException.class)

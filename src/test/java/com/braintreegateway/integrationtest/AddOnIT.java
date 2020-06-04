@@ -1,8 +1,6 @@
 package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.AddOn;
-import com.braintreegateway.BraintreeGateway;
-import com.braintreegateway.Environment;
 import com.braintreegateway.util.Http;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +46,6 @@ public class AddOnIT extends IntegrationTest {
         assertEquals("add_on", actualAddOn.getKind());
         assertEquals("java test add-on name", actualAddOn.getName());
         assertEquals(false, actualAddOn.neverExpires());
-        assertEquals(new Integer("12"), actualAddOn.getNumberOfBillingCycles());
+        assertEquals(Integer.valueOf("12"), actualAddOn.getNumberOfBillingCycles());
     }
 }

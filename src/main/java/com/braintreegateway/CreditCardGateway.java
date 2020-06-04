@@ -39,21 +39,6 @@ public class CreditCardGateway {
     }
 
     /**
-     * Please use gateway.transparentRedirect().confirmCreditCard() instead
-     *
-     * @deprecated see TransparentRedirectGateway#confirmCreditCard(String)
-     * @param queryString
-     *            the query string
-     * @return the credit card
-     */
-    @Deprecated
-    public Result<CreditCard> confirmTransparentRedirect(String queryString) {
-        TransparentRedirectRequest trRequest = new TransparentRedirectRequest(configuration, queryString);
-        NodeWrapper node = http.post(configuration.getMerchantPath() + "/payment_methods/all/confirm_transparent_redirect_request", trRequest);
-        return new Result<CreditCard>(node, CreditCard.class);
-    }
-
-    /**
      * Creates an {@link CreditCard}.
      *
      * @param request
@@ -109,37 +94,6 @@ public class CreditCardGateway {
         } catch (NotFoundException e) {
           throw new NotFoundException("Payment method with nonce " + nonce + " locked, consumed or not found");
         }
-    }
-
-    /**
-     * Please use the Grant API instead.
-     * @deprecated use the Grant API instead
-     * @param forwardRequest the request
-     * @return the payment method nonce
-     */
-    @Deprecated
-    public Result<PaymentMethodNonce> forward(PaymentMethodForwardRequest forwardRequest) throws NotFoundException {
-        throw new NotFoundException("This method of forwarding payment methods is no longer supported. Please consider the Grant API for similar functionality.");
-    }
-
-    /**
-     * Please use gateway.transparentRedirect().url() instead
-     * @deprecated see TransparentRedirectGateway#url()
-     * @return the redirect URL for create
-     */
-    @Deprecated
-    public String transparentRedirectURLForCreate() {
-        return configuration.getBaseURL() + configuration.getMerchantPath() + "/payment_methods/all/create_via_transparent_redirect_request";
-    }
-
-    /**
-     * Please use gateway.transparentRedirect().url() instead
-     * @deprecated see TransparentRedirectGateway#url()
-     * @return the redirect URL for update
-     */
-    @Deprecated
-    public String transparentRedirectURLForUpdate() {
-        return configuration.getBaseURL() + configuration.getMerchantPath() + "/payment_methods/all/update_via_transparent_redirect_request";
     }
 
     /**

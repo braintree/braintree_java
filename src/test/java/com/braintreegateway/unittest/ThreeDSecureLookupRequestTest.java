@@ -5,7 +5,6 @@ import java.io.IOException;
 import com.braintreegateway.ThreeDSecureLookupRequest;
 import com.braintreegateway.ThreeDSecureLookupAddress;
 import com.braintreegateway.ThreeDSecureLookupAdditionalInformation;
-import com.braintreegateway.exceptions.BraintreeException;
 
 import java.util.Map;
 import com.fasterxml.jackson.jr.ob.JSON;

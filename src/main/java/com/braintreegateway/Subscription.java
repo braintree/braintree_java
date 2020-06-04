@@ -188,11 +188,6 @@ public class Subscription {
         return merchantAccountId;
     }
 
-    @Deprecated
-    public BigDecimal getNextBillAmount() {
-        return nextBillAmount;
-    }
-
     public Calendar getNextBillingDate() {
         return nextBillingDate;
     }

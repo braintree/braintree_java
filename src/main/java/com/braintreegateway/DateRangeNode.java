@@ -14,16 +14,6 @@ public class DateRangeNode<T extends SearchRequest> extends SearchNode<T> {
         return parent;
     }
 
-    @Deprecated
-    public T greaterThanOrEqual(Calendar min) {
-        return greaterThanOrEqualTo(min);
-    }
-
-    @Deprecated
-    public T lessThanOrEqual(Calendar max) {
-        return lessThanOrEqualTo(max);
-    }
-
     public T greaterThanOrEqualTo(Calendar min) {
         parent.addRangeCriteria(nodeName, new SearchCriteria("min", min));
         return parent;

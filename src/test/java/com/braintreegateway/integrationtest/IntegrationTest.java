@@ -1,12 +1,6 @@
 package com.braintreegateway.integrationtest;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.util.Calendar;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.StreamHandler;
 
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Configuration;
@@ -18,9 +12,7 @@ import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.TransactionSearchRequest;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;

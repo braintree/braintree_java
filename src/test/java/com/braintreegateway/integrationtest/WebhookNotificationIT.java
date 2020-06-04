@@ -1,16 +1,11 @@
 package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
-import com.braintreegateway.BraintreeGateway;
-import com.braintreegateway.Environment;
-import com.braintreegateway.MerchantAccount;
-import com.braintreegateway.WebhookNotification;
 import com.braintreegateway.exceptions.InvalidSignatureException;
 import com.braintreegateway.exceptions.InvalidChallengeException;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
-import com.braintreegateway.ValidationErrorCode;
 import org.junit.Test;
 
 import java.util.Calendar;

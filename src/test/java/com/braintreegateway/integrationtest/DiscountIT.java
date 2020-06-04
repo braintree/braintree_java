@@ -1,8 +1,6 @@
 package com.braintreegateway.integrationtest;
 
-import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Discount;
-import com.braintreegateway.Environment;
 import com.braintreegateway.util.Http;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +47,6 @@ public class DiscountIT extends IntegrationTest {
         assertEquals("discount", actualDiscount.getKind());
         assertEquals("java test discount name", actualDiscount.getName());
         assertEquals(false, actualDiscount.neverExpires());
-        assertEquals(new Integer("12"), actualDiscount.getNumberOfBillingCycles());
+        assertEquals(Integer.valueOf("12"), actualDiscount.getNumberOfBillingCycles());
     }
 }

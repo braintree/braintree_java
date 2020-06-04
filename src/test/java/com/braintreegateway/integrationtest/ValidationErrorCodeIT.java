@@ -14,6 +14,6 @@ public class ValidationErrorCodeIT {
 
     @Test
     public void findByCodeFallsBackWhenNotFound() {
-        assertEquals(ValidationErrorCode.UNKOWN_VALIDATION_ERROR, ValidationErrorCode.findByCode("-9999"));
+        assertEquals(ValidationErrorCode.UNKNOWN_VALIDATION_ERROR, ValidationErrorCode.findByCode("-9999"));
     }
 }

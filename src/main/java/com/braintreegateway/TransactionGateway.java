@@ -2,10 +2,9 @@ package com.braintreegateway;
 
 import com.braintreegateway.Transaction.Type;
 import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.exceptions.DownForMaintenanceException;
+import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.util.TrUtil;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -40,18 +39,6 @@ public class TransactionGateway {
     }
 
     /**
-     * Please use gateway.transparentRedirect().confirmTransaction() instead
-     * @param queryString the query string
-     * @return the transaction
-     */
-    @Deprecated
-    public Result<Transaction> confirmTransparentRedirect(String queryString) {
-        TransparentRedirectRequest trRequest = new TransparentRedirectRequest(configuration, queryString);
-        NodeWrapper node = http.post(configuration.getMerchantPath() + "/transactions/all/confirm_transparent_redirect_request", trRequest);
-        return new Result<Transaction>(node, Transaction.class);
-    }
-
-    /**
      * Creates a credit {@link Transaction}.
      * @param request the request.
      * @return a {@link Result}
@@ -59,16 +46,6 @@ public class TransactionGateway {
     public Result<Transaction> credit(TransactionRequest request) {
         NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions", request.type(Type.CREDIT));
         return new Result<Transaction>(response, Transaction.class);
-    }
-
-    /**
-     * Creates transparent redirect data for a credit.
-     * @param trData the request.
-     * @param redirectURL the redirect URL.
-     * @return a String representing the trData.
-     */
-    public String creditTrData(TransactionRequest trData, String redirectURL) {
-        return new TrUtil(configuration).buildTrData(trData.type(Type.CREDIT), redirectURL);
     }
 
     /**
@@ -114,27 +91,17 @@ public class TransactionGateway {
     }
 
     /**
-     * Creates transparent redirect data for a sale.
-     * @param trData the request.
-     * @param redirectURL the redirect URL.
-     * @return a String representing the trData.
-     */
-    public String saleTrData(TransactionRequest trData, String redirectURL) {
-        return new TrUtil(configuration).buildTrData(trData.type(Type.SALE), redirectURL);
-    }
-
-    /**
      * Finds all Transactions that match the query and returns a {@link ResourceCollection}.
      * See: <a href="https://developers.braintreepayments.com/reference/request/transaction/search/java" target="_blank">https://developers.braintreepayments.com/reference/request/transaction/search/java</a>
      * @param query the search query
-     * @return a {@link ResourceCollection} or raises a {@link DownForMaintenanceException}.
+     * @return a {@link ResourceCollection} or raises a {@link UnexpectedException}.
      */
     public ResourceCollection<Transaction> search(TransactionSearchRequest query) {
         NodeWrapper node = http.post(configuration.getMerchantPath() + "/transactions/advanced_search_ids", query);
         if (node.getElementName().equals("search-results")) {
           return new ResourceCollection<Transaction>(new TransactionPager(this, query), node);
         } else {
-          throw new DownForMaintenanceException();
+          throw new UnexpectedException("No search results found.");
         }
     }
 
@@ -150,7 +117,7 @@ public class TransactionGateway {
 
             return items;
         } else {
-          throw new DownForMaintenanceException();
+          throw new UnexpectedException("No credit card transaction results found.");
         }
     }
 
@@ -228,15 +195,6 @@ public class TransactionGateway {
     public Result<Transaction> updateDetails(String id, TransactionRequest request) {
         NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/update_details", request);
         return new Result<Transaction>(response, Transaction.class);
-    }
-
-    /**
-     * Please use gateway.transparentRedirect().url() instead
-     * @return redirect URL
-     */
-    @Deprecated
-    public String transparentRedirectURLForCreate() {
-        return configuration.getBaseURL() + configuration.getMerchantPath() + "/transactions/all/create_via_transparent_redirect_request";
     }
 
     /**

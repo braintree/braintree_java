@@ -1,7 +1,6 @@
 package com.braintreegateway.testhelpers;
 
 import com.braintreegateway.util.StringUtils;
-import com.braintreegateway.util.QueryString;
 import com.braintreegateway.Configuration;
 
 import java.io.InputStream;

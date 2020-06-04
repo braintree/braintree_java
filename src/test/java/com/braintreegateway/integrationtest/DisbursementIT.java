@@ -1,15 +1,11 @@
 package com.braintreegateway.integrationtest;
 
-import java.lang.reflect.Field;
-
 import com.braintreegateway.*;
 import com.braintreegateway.util.NodeWrapperFactory;
-import com.braintreegateway.testhelpers.CalendarTestUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import java.text.ParseException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;

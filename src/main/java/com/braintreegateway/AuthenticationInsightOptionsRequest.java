@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 public class AuthenticationInsightOptionsRequest extends Request {
     private PaymentMethodNonceRequest parent;
     private BigDecimal amount;
-    private Boolean recurringCustomerConsent;
-    private BigDecimal recurringMaxAmount;
 
     public AuthenticationInsightOptionsRequest(PaymentMethodNonceRequest parent) {
         this.parent = parent;
@@ -14,16 +12,6 @@ public class AuthenticationInsightOptionsRequest extends Request {
 
     public AuthenticationInsightOptionsRequest amount(BigDecimal amount) {
         this.amount = amount;
-        return this;
-    }
-
-    public AuthenticationInsightOptionsRequest recurringCustomerConsent(Boolean recurringCustomerConsent) {
-        this.recurringCustomerConsent = recurringCustomerConsent;
-        return this;
-    }
-
-    public AuthenticationInsightOptionsRequest recurringMaxAmount(BigDecimal recurringMaxAmount) {
-        this.recurringMaxAmount = recurringMaxAmount;
         return this;
     }
 
@@ -47,9 +35,6 @@ public class AuthenticationInsightOptionsRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("amount", amount).
-            addElement("recurringCustomerConsent", recurringCustomerConsent).
-            addElement("recurringMaxAmount", recurringMaxAmount);
+        return new RequestBuilder(root).addElement("amount", amount);
     }
 }

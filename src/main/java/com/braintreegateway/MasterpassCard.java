@@ -6,8 +6,6 @@ import com.braintreegateway.util.NodeWrapper;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Comparator;
-import java.util.Collections;
 
 public class MasterpassCard implements PaymentMethod {
 

@@ -2,14 +2,11 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 
-import com.braintreegateway.test.Nonce;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.NotFoundException;
 import org.junit.Test;
 
-import java.util.Calendar;
-import java.util.Random;
 import java.util.regex.Pattern;
 import java.math.BigDecimal;
 

@@ -1,8 +1,5 @@
 package com.braintreegateway;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class OAuthConnectUrlRequest extends Request {
 
     private String merchantId;

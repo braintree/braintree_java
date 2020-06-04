@@ -1,6 +1,5 @@
 package com.braintreegateway.integrationtest;
 
-import java.io.File;
 import java.net.URL;
 
 import com.braintreegateway.DocumentUpload;

@@ -30,7 +30,7 @@ public class Configuration {
     public static final String GRAPHQL_API_VERSION = "2018-05-21";
 
     public static String apiVersion() {
-        return "5";
+        return "6";
     }
 
     public Configuration(Environment environment, String merchantId, String publicKey, String privateKey) {

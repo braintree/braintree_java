@@ -2,13 +2,10 @@ package com.braintreegateway.testhelpers;
 
 import com.braintreegateway.*;
 import com.braintreegateway.Transaction.Status;
-import com.braintreegateway.exceptions.UnexpectedException;
-import com.braintreegateway.util.Sha1Hasher;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.QueryString;
 import com.braintreegateway.util.StringUtils;
-import com.braintreegateway.EuropeBankAccount.MandateType;
 
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 
@@ -17,25 +14,16 @@ import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 import org.junit.Ignore;
 import com.fasterxml.jackson.jr.ob.JSON;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.net.URLDecoder;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.HttpsURLConnection;
 import java.nio.charset.Charset;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.*;
 import java.io.UnsupportedEncodingException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 import static org.junit.Assert.*;
 
@@ -74,13 +62,6 @@ public abstract class TestHelper {
 
     public static void assertIncludes(String expected, String all) {
         assertTrue("Expected:\n" + all + "\nto include:\n" + expected, all.indexOf(expected) >= 0);
-    }
-
-    public static void assertValidTrData(Configuration configuration, String trData) {
-        String[] dataSections = trData.split("\\|");
-        String trHash = dataSections[0];
-        String trContent = dataSections[1];
-        assertEquals(trHash, new Sha1Hasher().hmacHash(configuration.getPrivateKey(), trContent));
     }
 
     public static boolean listIncludes(List<? extends Object> list, Object expectedItem) {
@@ -137,38 +118,6 @@ public abstract class TestHelper {
         String token = response.findString("three-d-secure-authentication-id");
         assertNotNull(token);
         return token;
-    }
-
-    public static String simulateFormPostForTR(BraintreeGateway gateway, Request trParams, Request request, String postUrl) {
-        String response = "";
-        try {
-            String trData = gateway.transparentRedirect().trData(trParams, "http://example.com");
-            StringBuilder postData = new StringBuilder("tr_data=")
-                    .append(URLEncoder.encode(trData, "UTF-8"))
-                    .append("&")
-                    .append(request.toQueryString());
-
-            URL url = new URL(postUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setInstanceFollowRedirects(false);
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-            connection.addRequestProperty("Accept", "application/xml");
-            connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.getOutputStream().write(postData.toString().getBytes("UTF-8"));
-            connection.getOutputStream().close();
-            if (connection.getResponseCode() == 422) {
-                connection.getErrorStream();
-            } else {
-                connection.getInputStream();
-            }
-
-            response = new URL(connection.getHeaderField("Location")).getQuery();
-        } catch (IOException e) {
-            throw new UnexpectedException(e.getMessage());
-        }
-
-        return response;
     }
 
     public static String generateUnlockedNonce(BraintreeGateway gateway, String customerId, String creditCardNumber) {
@@ -278,7 +227,7 @@ public abstract class TestHelper {
       payload.append("authorization_fingerprint", authorizationFingerprint).
         append("shared_customer_identifier_type", "testing").
         append("shared_customer_identifier", "fake_identifier").
-        append("credit_card[options][validate]", new Boolean(validate).toString());
+        append("credit_card[options][validate]", Boolean.valueOf(validate).toString());
 
       String responseBody;
       String nonce = "";

@@ -1,6 +1,5 @@
 package com.braintreegateway;
 
-import com.braintreegateway.Dispute.Status;
 import com.braintreegateway.util.NodeWrapper;
 
 import java.util.Calendar;
@@ -43,16 +42,6 @@ public final class DisputeEvidence {
 
     public String getUrl() {
         return url;
-    }
-
-    /**
-     * Please use getCategory instead
-     * @deprecated see #getCategory()
-     * @return the category
-     */
-    @Deprecated
-    public String getTag() {
-        return category;
     }
 
     public String getCategory() {

@@ -3,8 +3,7 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
-import com.braintreegateway.exceptions.DownForMaintenanceException;
-import com.braintreegateway.exceptions.ForgedQueryStringException;
+import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.CreditCardNumbers;
 import com.braintreegateway.test.Nonce;
@@ -19,7 +18,6 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
-import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -31,62 +29,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     public static final String AUTH_ADJUSTMENT_TRANSACTION_ID = "authadjustmenttransaction";
     public static final String AUTH_ADJUSTMENT_SOFT_DECLINED_TRANSACTION_ID = "authadjustmenttransactionsoftdeclined";
     public static final String AUTH_ADJUSTMENT_HARD_DECLINED_TRANSACTION_ID = "authadjustmenttransactionharddeclined";
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void transparentRedirectURLForCreate() {
-        Configuration configuration = gateway.getConfiguration();
-        assertEquals(configuration.getBaseURL() + configuration.getMerchantPath() + "/transactions/all/create_via_transparent_redirect_request",
-                gateway.transaction().transparentRedirectURLForCreate());
-    }
-
-    @Test
-    public void trData() {
-        String trData = gateway.trData(new TransactionRequest(), "http://example.com");
-        TestHelper.assertValidTrData(gateway.getConfiguration(), trData);
-    }
-
-    @Test
-    public void saleTrData() {
-        String trData = gateway.transaction().saleTrData(new TransactionRequest(), "http://example.com");
-        TestHelper.assertValidTrData(gateway.getConfiguration(), trData);
-        assertTrue(trData.contains("sale"));
-    }
-
-    @Test
-    public void creditTrData() {
-        String trData = gateway.transaction().creditTrData(new TransactionRequest(), "http://example.com");
-        TestHelper.assertValidTrData(gateway.getConfiguration(), trData);
-        assertTrue(trData.contains("credit"));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void createViaTransparentRedirect() {
-        TransactionRequest request = new TransactionRequest().
-            amount(TransactionAmount.AUTHORIZE.amount).
-            creditCard().
-                number(CreditCardNumber.VISA.number).
-                expirationDate("05/2009").
-                done().
-            options().
-                storeInVault(true).
-                done();
-
-        TransactionRequest trParams = new TransactionRequest().
-            type(Transaction.Type.SALE);
-
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transaction().transparentRedirectURLForCreate());
-        Result<Transaction> result = gateway.transaction().confirmTransparentRedirect(queryString);
-        assertTrue(result.isSuccess());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test(expected = ForgedQueryStringException.class)
-    public void createViaTransparentRedirectThrowsWhenQueryStringHasBeenTamperedWith() {
-        String queryString = TestHelper.simulateFormPostForTR(gateway, new TransactionRequest(), new TransactionRequest(), gateway.transaction().transparentRedirectURLForCreate());
-        gateway.transaction().confirmTransparentRedirect(queryString + "this make it invalid");
-    }
 
     @Test
     public void createWithPaymentMethodNonce() {
@@ -4110,69 +4052,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void createTransactionFromTransparentRedirectWithAddress() {
-        TransactionRequest request = new TransactionRequest();
-
-        TransactionRequest trParams = new TransactionRequest().
-            amount(TransactionAmount.AUTHORIZE.amount).
-            type(Transaction.Type.SALE).
-            creditCard().
-                number(CreditCardNumber.VISA.number).
-                expirationDate("05/2009").
-                done().
-            billingAddress().
-                countryName("United States of America").
-                countryCodeAlpha2("US").
-                countryCodeAlpha3("USA").
-                countryCodeNumeric("840").
-                done();
-
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
-        Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
-
-        assertTrue(result.isSuccess());
-        Transaction transaction = result.getTarget();
-
-        assertEquals("United States of America", transaction.getBillingAddress().getCountryName());
-        assertEquals("US", transaction.getBillingAddress().getCountryCodeAlpha2());
-        assertEquals("USA", transaction.getBillingAddress().getCountryCodeAlpha3());
-        assertEquals("840", transaction.getBillingAddress().getCountryCodeNumeric());
-    }
-
-    @Test
-    public void createTransactionFromTransparentRedirectWithAddressWithErrors() {
-        TransactionRequest request = new TransactionRequest();
-
-        TransactionRequest trParams = new TransactionRequest().
-        amount(TransactionAmount.AUTHORIZE.amount).
-            type(Transaction.Type.SALE).
-            creditCard().
-                number(CreditCardNumber.VISA.number).
-                expirationDate("05/2009").
-                done().
-            billingAddress().
-                countryName("Foo bar!").
-                countryCodeAlpha2("zz").
-                countryCodeAlpha3("zzz").
-                countryCodeNumeric("000").
-                done();
-
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
-        Result<Transaction> result = gateway.transparentRedirect().confirmTransaction(queryString);
-
-        assertFalse(result.isSuccess());
-
-        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_NAME_IS_NOT_ACCEPTED,
-                result.getErrors().forObject("transaction").forObject("billing").onField("countryName").get(0).getCode());
-        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED,
-                result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha2").get(0).getCode());
-        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA3_IS_NOT_ACCEPTED,
-                result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeAlpha3").get(0).getCode());
-        assertEquals(ValidationErrorCode.ADDRESS_COUNTRY_CODE_NUMERIC_IS_NOT_ACCEPTED,
-                result.getErrors().forObject("transaction").forObject("billing").onField("countryCodeNumeric").get(0).getCode());
-    }
-
-    @Test
     public void credit() {
         TransactionRequest request = new TransactionRequest().
             amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
@@ -4330,8 +4209,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Dispute.Reason.FRAUD, dispute.getReason());
         assertEquals(Dispute.Status.WON, dispute.getStatus());
         assertEquals(new BigDecimal("250.00"), dispute.getAmount());
-        assertEquals(new BigDecimal("1000.00"), dispute.getTransactionDetails().getAmount());
-        assertEquals(DISPUTED_TRANSACTION_ID, dispute.getTransactionDetails().getId());
+        assertEquals(new BigDecimal("1000.00"), dispute.getTransaction().getAmount());
+        assertEquals(DISPUTED_TRANSACTION_ID, dispute.getTransaction().getId());
         assertEquals(Dispute.Kind.CHARGEBACK, dispute.getKind());
         assertEquals(openedCalendar, dispute.getOpenedDate());
         assertEquals(wonCalendar, dispute.getWonDate());
@@ -4393,8 +4272,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Dispute.Reason.RETRIEVAL, dispute.getReason());
         assertEquals(Dispute.Status.OPEN, dispute.getStatus());
         assertEquals(new BigDecimal("1000.00"), dispute.getAmount());
-        assertEquals(new BigDecimal("1000.00"), dispute.getTransactionDetails().getAmount());
-        assertEquals("retrievaltransaction", dispute.getTransactionDetails().getId());
+        assertEquals(new BigDecimal("1000.00"), dispute.getTransaction().getAmount());
+        assertEquals("retrievaltransaction", dispute.getTransaction().getId());
     }
 
     @Test
@@ -6116,7 +5995,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
-    @Test(expected = DownForMaintenanceException.class)
+    @Test(expected = UnexpectedException.class)
     public void searchReturnsAndHandlesInvalidCriteria() {
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             amount().is(new BigDecimal("-500"));
@@ -6125,7 +6004,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    @SuppressWarnings("deprecation")
     public void refundTransaction() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -6147,7 +6025,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertEquals(Transaction.Type.CREDIT, refund.getType());
         assertEquals(originalTransaction.getAmount(), refund.getAmount());
-        assertEquals(refund.getId(), originalTransaction.getRefundId());
+        assertEquals(Arrays.asList(refund.getId()), originalTransaction.getRefundIds());
         assertEquals(originalTransaction.getId(), refund.getRefundedTransactionId());
     }
 
@@ -6212,8 +6090,15 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().refund(transaction.getId(), new BigDecimal(2009.00));
         assertFalse(result.isSuccess());
-        assertEquals(ValidationErrorCode.TRANSACTION_REFUND_AUTH_HARD_DECLINED,
-                result.getErrors().forObject("transaction").onField("base").get(0).getCode());
+
+        Transaction refund = result.getTransaction();
+        assertEquals(Transaction.Type.CREDIT, refund.getType());
+        assertEquals(Transaction.Status.PROCESSOR_DECLINED, refund.getStatus());
+        assertEquals("2009", refund.getProcessorResponseCode());
+        assertNotNull(refund.getProcessorResponseText());
+        assertEquals("No Such Issuer", refund.getProcessorResponseText());
+        assertEquals(ProcessorResponseType.HARD_DECLINED, refund.getProcessorResponseType());
+        assertEquals("2009 : No Such Issuer", refund.getAdditionalProcessorResponse());
     }
 
     @Test
@@ -6232,8 +6117,15 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().refund(transaction.getId(), new BigDecimal(2046.00));
         assertFalse(result.isSuccess());
-        assertEquals(ValidationErrorCode.TRANSACTION_REFUND_AUTH_SOFT_DECLINED,
-                result.getErrors().forObject("transaction").onField("base").get(0).getCode());
+
+        Transaction refund = result.getTransaction();
+        assertEquals(Transaction.Type.CREDIT, refund.getType());
+        assertEquals(Transaction.Status.PROCESSOR_DECLINED, refund.getStatus());
+        assertEquals("2046", refund.getProcessorResponseCode());
+        assertNotNull(refund.getProcessorResponseText());
+        assertEquals("Declined", refund.getProcessorResponseText());
+        assertEquals(ProcessorResponseType.SOFT_DECLINED, refund.getProcessorResponseType());
+        assertEquals("2046 : Declined", refund.getAdditionalProcessorResponse());
     }
 
     @Test
@@ -6447,14 +6339,14 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertEquals("increase_10", addOns.get(0).getId());
         assertEquals(new BigDecimal("11.00"), addOns.get(0).getAmount());
-        assertEquals(new Integer(5), addOns.get(0).getNumberOfBillingCycles());
-        assertEquals(new Integer(2), addOns.get(0).getQuantity());
+        assertEquals(Integer.valueOf(5), addOns.get(0).getNumberOfBillingCycles());
+        assertEquals(Integer.valueOf(2), addOns.get(0).getQuantity());
         assertFalse(addOns.get(0).neverExpires());
 
         assertEquals("increase_20", addOns.get(1).getId());
         assertEquals(new BigDecimal("21.00"), addOns.get(1).getAmount());
-        assertEquals(new Integer(6), addOns.get(1).getNumberOfBillingCycles());
-        assertEquals(new Integer(3), addOns.get(1).getQuantity());
+        assertEquals(Integer.valueOf(6), addOns.get(1).getNumberOfBillingCycles());
+        assertEquals(Integer.valueOf(3), addOns.get(1).getQuantity());
         assertFalse(addOns.get(1).neverExpires());
 
         List<Discount> discounts = transaction.getDiscounts();
@@ -6463,7 +6355,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("discount_7", discounts.get(0).getId());
         assertEquals(new BigDecimal("7.50"), discounts.get(0).getAmount());
         assertNull(discounts.get(0).getNumberOfBillingCycles());
-        assertEquals(new Integer(2), discounts.get(0).getQuantity());
+        assertEquals(Integer.valueOf(2), discounts.get(0).getQuantity());
         assertTrue(discounts.get(0).neverExpires());
     }
 

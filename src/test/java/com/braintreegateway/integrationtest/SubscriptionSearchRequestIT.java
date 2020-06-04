@@ -160,26 +160,11 @@ public class SubscriptionSearchRequestIT {
                 .toXML());
     }
 
-    @SuppressWarnings("deprecation")
-    @Test
-    public void priceXmlDeprecatedGreaterThanOrEqualOperator() {
-        String expected = "<search><price><min>5</min></price></search>";
-        assertEquals(expected, new SubscriptionSearchRequest().price().greaterThanOrEqual(new BigDecimal(5))
-                .toXML());
-    }
-
     @Test
     public void priceXmlGreaterThanOrEqualToOperator() {
         String expected = "<search><price><min>5</min></price></search>";
         assertEquals(expected, new SubscriptionSearchRequest().price().greaterThanOrEqualTo(new BigDecimal(5))
                 .toXML());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void priceXmlDeprecatedLessThanOrEqualOperator() {
-        String expected = "<search><price><max>5</max></price></search>";
-        assertEquals(expected, new SubscriptionSearchRequest().price().lessThanOrEqual(new BigDecimal(5)).toXML());
     }
 
     @Test

@@ -1,7 +1,6 @@
 package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
-import com.braintreegateway.exceptions.ForgedQueryStringException;
 import com.braintreegateway.test.Nonce;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.CreditCardDefaults;
@@ -18,28 +17,6 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 public class CreditCardIT extends IntegrationTest implements MerchantAccountTestConstants {
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void transparentRedirectURLForCreate() {
-        Configuration configuration = gateway.getConfiguration();
-        assertEquals(configuration.getBaseURL() + configuration.getMerchantPath() + "/payment_methods/all/create_via_transparent_redirect_request",
-                gateway.creditCard().transparentRedirectURLForCreate());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void transparentRedirectURLForUpdate() {
-        Configuration configuration = gateway.getConfiguration();
-        assertEquals(configuration.getBaseURL() + configuration.getMerchantPath() + "/payment_methods/all/update_via_transparent_redirect_request",
-                gateway.creditCard().transparentRedirectURLForUpdate());
-    }
-
-    @Test
-    public void trData() {
-        String trData = gateway.trData(new CreditCardRequest(), "http://example.com");
-        TestHelper.assertValidTrData(gateway.getConfiguration(), trData);
-    }
 
     @Test
     public void create() {
@@ -175,144 +152,6 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         Address billingAddress = card.getBillingAddress();
         assertEquals(address.getId(), billingAddress.getId());
         assertEquals("11111", billingAddress.getPostalCode());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void createViaTransparentRedirect() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-
-        CreditCardRequest trParams = new CreditCardRequest().customerId(customer.getId());
-
-        CreditCardRequest request = new CreditCardRequest().
-            cardholderName("John Doe").
-            number("5105105105105100").
-            expirationDate("05/12");
-
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.creditCard().transparentRedirectURLForCreate());
-        Result<CreditCard> result = gateway.creditCard().confirmTransparentRedirect(queryString);
-        assertTrue(result.isSuccess());
-        CreditCard card = result.getTarget();
-        assertEquals("John Doe", card.getCardholderName());
-        assertEquals("510510", card.getBin());
-        assertEquals("05", card.getExpirationMonth());
-        assertEquals("2012", card.getExpirationYear());
-        assertEquals("05/2012", card.getExpirationDate());
-        assertEquals("5100", card.getLast4());
-        assertTrue(card.getToken() != null);
-    }
-
-
-    @Test
-    public void createCreditCardFromTransparentRedirectWithCountry() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest request = new CreditCardRequest();
-        CreditCardRequest trParams = new CreditCardRequest().
-            customerId(customer.getId()).
-            number("4111111111111111").
-            expirationDate("10/10").
-            billingAddress().
-                countryName("Aruba").
-                countryCodeAlpha2("AW").
-                countryCodeAlpha3("ABW").
-                countryCodeNumeric("533").
-                done();
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
-
-        Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
-
-        assertTrue(result.isSuccess());
-        assertEquals("411111", result.getTarget().getBin());
-        assertEquals("1111", result.getTarget().getLast4());
-        assertEquals("10/2010", result.getTarget().getExpirationDate());
-        assertEquals("Aruba", result.getTarget().getBillingAddress().getCountryName());
-        assertEquals("AW", result.getTarget().getBillingAddress().getCountryCodeAlpha2());
-        assertEquals("ABW", result.getTarget().getBillingAddress().getCountryCodeAlpha3());
-        assertEquals("533", result.getTarget().getBillingAddress().getCountryCodeNumeric());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void createViaTransparentRedirectWithMakeDefaultFlagInTRParams() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-
-        CreditCardRequest request1 = new CreditCardRequest().
-            customerId(customer.getId()).
-            number("5105105105105100").
-            expirationDate("05/12");
-
-        gateway.creditCard().create(request1);
-
-        CreditCardRequest trParams = new CreditCardRequest().
-            customerId(customer.getId()).
-            options().
-                makeDefault(true).
-                done();
-
-        CreditCardRequest request2 = new CreditCardRequest().
-            number("5105105105105100").
-            expirationDate("05/12");
-
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request2, gateway.creditCard().transparentRedirectURLForCreate());
-        CreditCard card = gateway.creditCard().confirmTransparentRedirect(queryString).getTarget();
-        assertTrue(card.isDefault());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void createViaTransparentRedirectWithMakeDefaultFlagInRequest() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-
-        CreditCardRequest request1 = new CreditCardRequest().
-            customerId(customer.getId()).
-            number("5105105105105100").
-            expirationDate("05/12");
-
-        gateway.creditCard().create(request1);
-
-        CreditCardRequest trParams = new CreditCardRequest().
-            customerId(customer.getId());
-
-        CreditCardRequest request2 = new CreditCardRequest().
-            number("5105105105105100").
-            expirationDate("05/12").
-            options().
-                makeDefault(true).
-                done();
-
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request2, gateway.creditCard().transparentRedirectURLForCreate());
-        CreditCard card = gateway.creditCard().confirmTransparentRedirect(queryString).getTarget();
-        assertTrue(card.isDefault());
-    }
-
-    @Test
-    public void createCreditCardFromTransparentRedirectWithInconsistentCountries() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest request = new CreditCardRequest();
-        CreditCardRequest trParams = new CreditCardRequest().
-            customerId(customer.getId()).
-            number("4111111111111111").
-            expirationDate("10/10").
-            billingAddress().
-                countryName("Aruba").
-                countryCodeAlpha2("US").
-                done();
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.transparentRedirect().url());
-
-        Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
-
-        assertFalse(result.isSuccess());
-        assertEquals(ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY, result.getErrors().forObject("creditCard").forObject("billingAddress").onField("base").get(0).getCode());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test(expected = ForgedQueryStringException.class)
-    public void createViaTransparentRedirectThrowsWhenQueryStringHasBeenTamperedWith() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest trParams = new CreditCardRequest().customerId(customer.getId());
-
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, new CreditCardRequest(), gateway.creditCard().transparentRedirectURLForCreate());
-        gateway.creditCard().confirmTransparentRedirect(queryString + "this makes it invalid");
     }
 
     @Test
@@ -628,98 +467,6 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
             updated_result.getErrors().getAllDeepValidationErrors().get(0).getCode());
     }
 
-    @SuppressWarnings("deprecation")
-    @Test
-    public void updateViaTransparentRedirect() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest createRequest = new CreditCardRequest().
-            customerId(customer.getId()).
-            cardholderName("John Doe").
-            cvv("123").
-            number("5105105105105100").
-            expirationDate("05/12");
-        CreditCard card = gateway.creditCard().create(createRequest).getTarget();
-
-        CreditCardRequest trParams = new CreditCardRequest().
-            paymentMethodToken(card.getToken());
-
-        CreditCardRequest request = new CreditCardRequest().
-            cardholderName("joe cool");
-
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, request, gateway.creditCard().transparentRedirectURLForUpdate());
-        Result<CreditCard> result = gateway.creditCard().confirmTransparentRedirect(queryString);
-        assertTrue(result.isSuccess());
-        CreditCard updatedCard = result.getTarget();
-        assertEquals("joe cool", updatedCard.getCardholderName());
-    }
-
-    @Test
-    public void updateCountryFromTransparentRedirect() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest request = new CreditCardRequest().
-            customerId(customer.getId()).
-            number("5105105105105100").
-            expirationDate("05/12");
-        CreditCard card = gateway.creditCard().create(request).getTarget();
-
-        CreditCardRequest updateRequest = new CreditCardRequest();
-        CreditCardRequest trParams = new CreditCardRequest().
-            paymentMethodToken(card.getToken()).
-            number("4111111111111111").
-            expirationDate("10/10").
-            billingAddress().
-                countryName("Jersey").
-                countryCodeAlpha2("JE").
-                countryCodeAlpha3("JEY").
-                countryCodeNumeric("832").
-                done();
-
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, updateRequest, gateway.transparentRedirect().url());
-
-        Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
-
-        assertTrue(result.isSuccess());
-        CreditCard updatedCreditCard = gateway.creditCard().find(card.getToken());
-        assertEquals("411111", updatedCreditCard.getBin());
-        assertEquals("1111", updatedCreditCard.getLast4());
-        assertEquals("10/2010", updatedCreditCard.getExpirationDate());
-
-        assertEquals("Jersey", updatedCreditCard.getBillingAddress().getCountryName());
-        assertEquals("JE", updatedCreditCard.getBillingAddress().getCountryCodeAlpha2());
-        assertEquals("JEY", updatedCreditCard.getBillingAddress().getCountryCodeAlpha3());
-        assertEquals("832", updatedCreditCard.getBillingAddress().getCountryCodeNumeric());
-    }
-
-
-    @Test
-    public void updateCountryFromTransparentRedirectWithInvalidCountry() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest request = new CreditCardRequest().
-            customerId(customer.getId()).
-            number("5105105105105100").
-            expirationDate("05/12");
-        CreditCard card = gateway.creditCard().create(request).getTarget();
-
-        CreditCardRequest updateRequest = new CreditCardRequest();
-        CreditCardRequest trParams = new CreditCardRequest().
-            paymentMethodToken(card.getToken()).
-            number("4111111111111111").
-            expirationDate("10/10").
-            billingAddress().
-                countryCodeAlpha2("zz").
-                done();
-
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, updateRequest, gateway.transparentRedirect().url());
-
-        Result<CreditCard> result = gateway.transparentRedirect().confirmCreditCard(queryString);
-
-        assertFalse(result.isSuccess());
-        assertEquals(
-            ValidationErrorCode.ADDRESS_COUNTRY_CODE_ALPHA2_IS_NOT_ACCEPTED,
-            result.getErrors().forObject("creditCard").forObject("billingAddress").onField("countryCodeAlpha2").get(0).getCode()
-        );
-    }
-
     @Test
     public void updateToken() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -850,40 +597,6 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
             fail("Should throw NotFoundException");
         } catch (NotFoundException e) {
         }
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void updateWithBillingAddressUpdatesAddressWhenUpdateExistingIsTrueForTransparentRedirect() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest request = new CreditCardRequest().
-            customerId(customer.getId()).
-            number("5105105105105100").
-            expirationDate("05/12").
-            billingAddress().
-                firstName("John").
-                done();
-
-        CreditCard creditCard = gateway.creditCard().create(request).getTarget();
-
-        CreditCardRequest trParams = new CreditCardRequest().
-            paymentMethodToken(creditCard.getToken()).
-            billingAddress().
-                options().
-                    updateExisting(true).
-                    done().
-                done();
-
-        CreditCardRequest updateRequest = new CreditCardRequest().
-            billingAddress().
-                lastName("Jones").
-                done();
-
-        String queryString = TestHelper.simulateFormPostForTR(gateway, trParams, updateRequest, gateway.creditCard().transparentRedirectURLForUpdate());
-        CreditCard updatedCard = gateway.creditCard().confirmTransparentRedirect(queryString).getTarget();
-        assertEquals("John", updatedCard.getBillingAddress().getFirstName());
-        assertEquals("Jones", updatedCard.getBillingAddress().getLastName());
-        assertEquals(creditCard.getBillingAddress().getId(), updatedCard.getBillingAddress().getId());
     }
 
     @Test
@@ -1056,76 +769,6 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         } catch (NotFoundException e) {
             assertTrue(e.getMessage().matches(".*consumed.*"));
         }
-    }
-
-    @Test(expected=NotFoundException.class)
-    public void forwardRaisesException() {
-        BraintreeGateway forwardGateway = new BraintreeGateway(
-            Environment.DEVELOPMENT,
-            "forward_payment_method_merchant_id",
-            "forward_payment_method_public_key",
-            "forward_payment_method_private_key"
-        );
-
-        Customer customer = forwardGateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest request = new CreditCardRequest().
-            customerId(customer.getId()).
-            cardholderName("John Doe").
-            cvv("123").
-            number("5105105105105100").
-            expirationDate("05/12");
-        Result<CreditCard> createResult = forwardGateway.creditCard().create(request);
-        assertTrue(createResult.isSuccess());
-        CreditCard card = createResult.getTarget();
-
-        PaymentMethodForwardRequest forwardRequest = new PaymentMethodForwardRequest()
-            .token(card.getToken())
-            .receivingMerchantId("integration_merchant_id");
-        Result<PaymentMethodNonce> forwardResult = forwardGateway.creditCard()
-            .forward(forwardRequest);
-    }
-
-    @Test(expected=NotFoundException.class)
-    public void forwardInvalidToken() {
-        BraintreeGateway forwardGateway = new BraintreeGateway(
-            Environment.DEVELOPMENT,
-            "forward_payment_method_merchant_id",
-            "forward_payment_method_public_key",
-            "forward_payment_method_private_key"
-        );
-
-        PaymentMethodForwardRequest forwardRequest = new PaymentMethodForwardRequest()
-            .token("invalid")
-            .receivingMerchantId("integration_merchant_id");
-        Result<PaymentMethodNonce> forwardResult = forwardGateway.creditCard()
-            .forward(forwardRequest);
-    }
-
-    @Test(expected=NotFoundException.class)
-    public void forwardInvalidReceivingMerchantId() {
-        BraintreeGateway forwardGateway = new BraintreeGateway(
-            Environment.DEVELOPMENT,
-            "forward_payment_method_merchant_id",
-            "forward_payment_method_public_key",
-            "forward_payment_method_private_key"
-        );
-
-        Customer customer = forwardGateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest request = new CreditCardRequest().
-            customerId(customer.getId()).
-            cardholderName("John Doe").
-            cvv("123").
-            number("5105105105105100").
-            expirationDate("05/12");
-        Result<CreditCard> createResult = forwardGateway.creditCard().create(request);
-        assertTrue(createResult.isSuccess());
-        CreditCard card = createResult.getTarget();
-
-        PaymentMethodForwardRequest forwardRequest = new PaymentMethodForwardRequest()
-            .token(card.getToken())
-            .receivingMerchantId("invalid_merchant_id");
-        Result<PaymentMethodNonce> forwardResult = forwardGateway.creditCard()
-            .forward(forwardRequest);
     }
 
     @Test

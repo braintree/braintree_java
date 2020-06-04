@@ -35,15 +35,6 @@ public class WebhookNotification {
         DISPUTE_DISPUTED("dispute_disputed"),
         DISPUTE_EXPIRED("dispute_expired"),
         ACCOUNT_UPDATER_DAILY_REPORT("account_updater_daily_report"),
-        // NEXT_MAJOR_VERSION Remove this class as legacy Ideal has been removed/disabled in the Braintree Gateway
-        // DEPRECATED If you're looking to accept iDEAL as a payment method contact accounts@braintreepayments.com for a solution.
-        IDEAL_PAYMENT_COMPLETE("ideal_payment_complete"),
-        // NEXT_MAJOR_VERSION Remove this class as legacy Ideal has been removed/disabled in the Braintree Gateway
-        // DEPRECATED If you're looking to accept iDEAL as a payment method contact accounts@braintreepayments.com for a solution.
-        IDEAL_PAYMENT_FAILED("ideal_payment_failed"),
-        // NEXT_MAJOR_VERSION remove GRANTED_PAYMENT_INSTRUMENT_UPDATE. Kind is not sent by Braintree Gateway.
-        // Kind will either be GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD or RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD.
-        GRANTED_PAYMENT_INSTRUMENT_UPDATE("granted_payment_instrument_update"),
         GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD("grantor_updated_granted_payment_method"),
         RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD("recipient_updated_granted_payment_method"),
         GRANTED_PAYMENT_METHOD_REVOKED("granted_payment_method_revoked"),
@@ -76,7 +67,6 @@ public class WebhookNotification {
     private AccountUpdaterDailyReport accountUpdaterDailyReport;
     private ConnectedMerchantStatusTransitioned connectedMerchantStatusTransitioned;
     private ConnectedMerchantPayPalStatusChanged connectedMerchantPayPalStatusChanged;
-    private IdealPayment idealPayment;
     private GrantedPaymentInstrumentUpdate grantedPaymentInstrumentUpdate;
     private RevokedPaymentMethodMetadata revokedPaymentMethodMetadata;
     private LocalPaymentCompleted localPaymentCompleted;
@@ -132,10 +122,6 @@ public class WebhookNotification {
 
         if (wrapperNode.findFirst("account-updater-daily-report") != null) {
             this.accountUpdaterDailyReport = new AccountUpdaterDailyReport(wrapperNode.findFirst("account-updater-daily-report"));
-        }
-
-        if (wrapperNode.findFirst("ideal-payment") != null) {
-            this.idealPayment = new IdealPayment(wrapperNode.findFirst("ideal-payment"));
         }
 
         if (wrapperNode.findFirst("granted-payment-instrument-update") != null) {
@@ -209,10 +195,6 @@ public class WebhookNotification {
 
     public AccountUpdaterDailyReport getAccountUpdaterDailyReport() {
         return this.accountUpdaterDailyReport;
-    }
-
-    public IdealPayment getIdealPayment() {
-        return this.idealPayment;
     }
 
     public GrantedPaymentInstrumentUpdate getGrantedPaymentInstrumentUpdate() {

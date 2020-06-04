@@ -35,7 +35,7 @@ public class RequestBuilderTest {
     @Test
     public void list() {
        Open builder = new Open();
-       List<String> items = new ArrayList();
+       List<String> items = new ArrayList<String>();
        items.add("Chicken");
        items.add("Rabbit");
        String element = builder.publicBuildXmlElement("animals", items);

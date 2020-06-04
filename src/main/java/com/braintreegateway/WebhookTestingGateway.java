@@ -75,14 +75,6 @@ public class WebhookTestingGateway {
             case SUBSCRIPTION_CHARGED_SUCCESSFULLY: return subscriptionChargedSuccessfullyXml(id);
             case SUBSCRIPTION_CHARGED_UNSUCCESSFULLY: return subscriptionChargedUnsuccessfullyXml(id);
             case ACCOUNT_UPDATER_DAILY_REPORT: return accountUpdaterDailyReportXml(id);
-            // NEXT_MAJOR_VERSION Remove this class as legacy Ideal has been removed/disabled in the Braintree Gateway
-            // DEPRECATED If you're looking to accept iDEAL as a payment method contact accounts@braintreepayments.com for a solution.
-            case IDEAL_PAYMENT_COMPLETE: return idealPaymentCompleteXml(id);
-            // NEXT_MAJOR_VERSION Remove this class as legacy Ideal has been removed/disabled in the Braintree Gateway
-            // DEPRECATED If you're looking to accept iDEAL as a payment method contact accounts@braintreepayments.com for a solution.
-            case IDEAL_PAYMENT_FAILED: return idealPaymentFailedXml(id);
-            // NEXT_MAJOR_VERSION remove GRANTED_PAYMENT_INSTRUMENT_UPDATE
-            case GRANTED_PAYMENT_INSTRUMENT_UPDATE: return grantedPaymentInstrumentUpdateXml();
             case GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD: return grantedPaymentInstrumentUpdateXml();
             case RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD: return grantedPaymentInstrumentUpdateXml();
             case PAYMENT_METHOD_REVOKED_BY_CUSTOMER: return paymentMethodRevokedByCustomerXml(id);
@@ -467,34 +459,6 @@ public class WebhookTestingGateway {
         return node("account-updater-daily-report",
                 node("report-url", "link-to-csv-report"),
                 node("report-date", TYPE_DATE, "2016-01-14")
-        );
-    }
-
-    private String idealPaymentCompleteXml(String id) {
-        return node("ideal-payment",
-                node("id", id),
-                node("status", "COMPLETE"),
-                node("issuer", "ABCISSUER"),
-                node("order-id", "ORDERABC"),
-                node("currency", "EUR"),
-                node("amount", "10.00"),
-                node("created-at", "2016-11-29T23:27:34.547Z"),
-                node("approval-url", "https://example.com"),
-                node("ideal-transaction-id", "1234567890")
-        );
-    }
-
-    private String idealPaymentFailedXml(String id) {
-        return node("ideal-payment",
-                node("id", id),
-                node("status", "FAILED"),
-                node("issuer", "ABCISSUER"),
-                node("order-id", "ORDERABC"),
-                node("currency", "EUR"),
-                node("amount", "10.00"),
-                node("created-at", "2016-11-29T23:27:34.547Z"),
-                node("approval-url", "https://example.com"),
-                node("ideal-transaction-id", "1234567890")
         );
     }
 

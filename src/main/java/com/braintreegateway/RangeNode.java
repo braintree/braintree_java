@@ -22,39 +22,6 @@ public class RangeNode<T extends SearchRequest> extends SearchNode<T> {
         return parent;
     }
 
-    /**
-     * Use greaterThanOrEqualTo instead.
-     * @deprecated see #greaterThanOrEqualTo(BigDecimal)
-     * @param min the min value
-     * @return the parent object
-     */
-    @Deprecated
-    public T greaterThanOrEqual(BigDecimal min) {
-        return greaterThanOrEqualTo(min);
-    }
-
-    /**
-     * Use greaterThanOrEqualTo instead.
-     * @deprecated see #greaterThanOrEqualTo(int)
-     * @param min the min value
-     * @return the parent object
-     */
-    @Deprecated
-    public T greaterThanOrEqual(int min) {
-        return greaterThanOrEqualTo(min);
-    }
-
-    /**
-     * Use greaterThanOrEqualTo instead.
-     * @deprecated see #greaterThanOrEqualTo(String)
-     * @param min the min value
-     * @return the parent object
-     */
-    @Deprecated
-    public T greaterThanOrEqual(String min) {
-        return greaterThanOrEqualTo(min);
-    }
-
     public T greaterThanOrEqualTo(BigDecimal min) {
         return greaterThanOrEqualTo(min.toString());
     }
@@ -66,39 +33,6 @@ public class RangeNode<T extends SearchRequest> extends SearchNode<T> {
     public T greaterThanOrEqualTo(String min) {
         parent.addRangeCriteria(nodeName, new SearchCriteria("min", min));
         return parent;
-    }
-
-    /**
-     * Use lessThanOrEqualTo instead.
-     * @deprecated see #lessThanOrEqualTo(BigDecimal)
-     * @param max the max value
-     * @return the parent object
-     */
-    @Deprecated
-    public T lessThanOrEqual(BigDecimal max) {
-        return lessThanOrEqualTo(max);
-    }
-
-    /**
-     * Use lessThanOrEqualTo instead.
-     * @deprecated see #lessThanOrEqualTo(int)
-     * @param max the max value
-     * @return the parent object
-     */
-    @Deprecated
-    public T lessThanOrEqual(int max) {
-        return lessThanOrEqualTo(max);
-    }
-
-    /**
-     * Use lessThanOrEqualTo instead.
-     * @deprecated see #lessThanOrEqualTo(String)
-     * @param max the max value
-     * @return the parent object
-     */
-    @Deprecated
-    public T lessThanOrEqual(String max) {
-        return lessThanOrEqualTo(max);
     }
 
     public T lessThanOrEqualTo(BigDecimal max) {

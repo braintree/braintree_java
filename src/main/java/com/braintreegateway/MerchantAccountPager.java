@@ -1,7 +1,5 @@
 package com.braintreegateway;
 
-import java.util.List;
-
 public class MerchantAccountPager implements SimplePager<MerchantAccount> {
     private MerchantAccountGateway gateway;
 

@@ -3,12 +3,9 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
-import com.braintreegateway.test.Nonce;
-import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Test;
 import org.junit.Before;
 
-import java.net.URL;
 import java.util.*;
 
 import static org.junit.Assert.*;

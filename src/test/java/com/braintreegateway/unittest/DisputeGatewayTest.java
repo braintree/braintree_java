@@ -2,12 +2,8 @@ package com.braintreegateway.unittest;
 
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.DisputeGateway;
-import com.braintreegateway.DisputeEvidence;
 import com.braintreegateway.TextEvidenceRequest;
 import com.braintreegateway.FileEvidenceRequest;
-import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.util.SimpleNodeWrapper;
-import com.braintreegateway.Result;
 
 import org.junit.Test;
 

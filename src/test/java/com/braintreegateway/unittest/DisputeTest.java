@@ -101,7 +101,7 @@ public class DisputeTest {
         assertEquals(new BigDecimal("100.00"), dispute.getAmount());
         assertEquals("GBP", dispute.getCurrencyIsoCode());
         assertEquals("dispute_id", dispute.getId());
-        assertEquals("transaction_id", dispute.getTransactionDetails().getId());
+        assertEquals("transaction_id", dispute.getTransaction().getId());
   }
 
   @Test
@@ -133,8 +133,8 @@ public class DisputeTest {
         assertEquals(dispute.getCurrencyIsoCode(), "USD");
         assertEquals(dispute.getReason(), Dispute.Reason.FRAUD);
         assertEquals(dispute.getStatus(), Dispute.Status.OPEN);
-        assertEquals(dispute.getTransactionDetails().getId(), "1234");
-        assertEquals(dispute.getTransactionDetails().getAmount(), new BigDecimal("250.00"));
+        assertEquals(dispute.getTransaction().getId(), "1234");
+        assertEquals(dispute.getTransaction().getAmount(), new BigDecimal("250.00"));
         assertEquals(dispute.getOpenedDate().get(Calendar.YEAR), 2014);
         assertEquals(dispute.getOpenedDate().get(Calendar.MONTH)+1, 3);
         assertEquals(dispute.getOpenedDate().get(Calendar.DAY_OF_MONTH), 28);
@@ -155,8 +155,8 @@ public class DisputeTest {
         assertEquals(dispute.getCurrencyIsoCode(), "USD");
         assertEquals(dispute.getReason(), Dispute.Reason.FRAUD);
         assertEquals(dispute.getStatus(), Dispute.Status.OPEN);
-        assertEquals(dispute.getTransactionDetails().getId(), "123456");
-        assertEquals(dispute.getTransactionDetails().getAmount(), new BigDecimal("100.00"));
+        assertEquals(dispute.getTransaction().getId(), "123456");
+        assertEquals(dispute.getTransaction().getAmount(), new BigDecimal("100.00"));
         assertEquals(dispute.getOpenedDate().get(Calendar.YEAR), 2014);
         assertEquals(dispute.getOpenedDate().get(Calendar.MONTH)+1, 3);
         assertEquals(dispute.getOpenedDate().get(Calendar.DAY_OF_MONTH), 28);
@@ -181,7 +181,6 @@ public class DisputeTest {
         assertEquals(dispute.getCreatedAt().get(Calendar.HOUR), 8);
         assertEquals(dispute.getCreatedAt().get(Calendar.MINUTE), 44);
         assertEquals(dispute.getCreatedAt().get(Calendar.SECOND), 41);
-        assertEquals(dispute.getForwardedComments(), "Forwarded comments");
         assertEquals(dispute.getProcessorComments(), "Forwarded comments");
         assertEquals(dispute.getMerchantAccountId(), "abc123");
         assertEquals(dispute.getOriginalDisputeId(), "original_dispute_id");

@@ -38,7 +38,6 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
         this.creditCard = customer.getCreditCards().get(0);
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void createSimpleSubscriptionWithoutTrial() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
@@ -66,12 +65,11 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
         assertEquals(plan.getId(), subscription.getPlanId());
         assertEquals(plan.getPrice(), subscription.getPrice());
         assertEquals(new BigDecimal("0.00"), subscription.getBalance());
-        assertEquals(new Integer(1), subscription.getCurrentBillingCycle());
-        assertEquals(new BigDecimal("12.34"), subscription.getNextBillAmount());
+        assertEquals(Integer.valueOf(1), subscription.getCurrentBillingCycle());
         assertEquals(new BigDecimal("12.34"), subscription.getNextBillingPeriodAmount());
         assertTrue(subscription.getId().matches("^\\w{6}$"));
         assertEquals(Subscription.Status.ACTIVE, subscription.getStatus());
-        assertEquals(new Integer(0), subscription.getFailureCount());
+        assertEquals(Integer.valueOf(0), subscription.getFailureCount());
         assertEquals(false, subscription.hasTrialPeriod());
         assertEquals(DEFAULT_MERCHANT_ACCOUNT_ID, subscription.getMerchantAccountId());
 
@@ -94,7 +92,6 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
         TestHelper.assertDatesEqual(expectedFirstDate, subscription.getFirstBillingDate());
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void createSimpleSubscriptionWithPaymentMethodNonce() {
         Plan plan = PlanFixture.PLAN_WITHOUT_TRIAL;
@@ -122,8 +119,8 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
         assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
         Transaction transaction = subscription.getTransactions().get(0);
-        assertEquals(subscription.getBillingPeriodStartDate(), transaction.getSubscription().getBillingPeriodStartDate());
-        assertEquals(subscription.getBillingPeriodEndDate(), transaction.getSubscription().getBillingPeriodEndDate());
+        assertEquals(subscription.getBillingPeriodStartDate(), transaction.getSubscriptionDetails().getBillingPeriodStartDate());
+        assertEquals(subscription.getBillingPeriodEndDate(), transaction.getSubscriptionDetails().getBillingPeriodEndDate());
     }
 
     @Test
@@ -164,9 +161,9 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
 
         assertEquals(null, subscription.getBillingPeriodStartDate());
         assertEquals(null, subscription.getBillingPeriodEndDate());
-        assertEquals(new Integer(0), subscription.getCurrentBillingCycle());
+        assertEquals(Integer.valueOf(0), subscription.getCurrentBillingCycle());
 
-        assertEquals(new Integer(0), subscription.getFailureCount());
+        assertEquals(Integer.valueOf(0), subscription.getFailureCount());
         assertEquals(true, subscription.hasTrialPeriod());
         assertEquals(plan.getTrialDuration(), subscription.getTrialDuration());
         assertEquals(plan.getTrialDurationUnit().toString(), subscription.getTrialDurationUnit().toString());
@@ -218,7 +215,7 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
         Subscription subscription = createResult.getTarget();
 
         assertEquals(true, subscription.hasTrialPeriod());
-        assertEquals(new Integer(2), subscription.getTrialDuration());
+        assertEquals(Integer.valueOf(2), subscription.getTrialDuration());
         assertEquals(Subscription.DurationUnit.MONTH, subscription.getTrialDurationUnit());
     }
 
@@ -268,7 +265,7 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
                 numberOfBillingCycles(10);
 
         Subscription overriddenSubsription = gateway.subscription().create(overrideRequest).getTarget();
-        assertEquals(new Integer(10), overriddenSubsription.getNumberOfBillingCycles());
+        assertEquals(Integer.valueOf(10), overriddenSubsription.getNumberOfBillingCycles());
         assertFalse(overriddenSubsription.neverExpires());
     }
 
@@ -318,7 +315,7 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
 
         Subscription updatedSubscription = gateway.subscription().update(subscription.getId(), updateRequest).getTarget();
 
-        assertEquals(new Integer(14), updatedSubscription.getNumberOfBillingCycles());
+        assertEquals(Integer.valueOf(14), updatedSubscription.getNumberOfBillingCycles());
     }
 
     @Test
@@ -331,7 +328,7 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
         assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
-        assertEquals(new Integer(5), subscription.getBillingDayOfMonth());
+        assertEquals(Integer.valueOf(5), subscription.getBillingDayOfMonth());
     }
 
     @Test
@@ -345,7 +342,7 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
         assertTrue(createResult.isSuccess());
         Subscription subscription = createResult.getTarget();
 
-        assertEquals(new Integer(19), subscription.getBillingDayOfMonth());
+        assertEquals(Integer.valueOf(19), subscription.getBillingDayOfMonth());
     }
 
     @Test
@@ -518,17 +515,17 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
 
         assertEquals("increase_10", addOns.get(0).getId());
         assertEquals(new BigDecimal("10.00"), addOns.get(0).getAmount());
-        assertEquals(new Integer(1), addOns.get(0).getQuantity());
+        assertEquals(Integer.valueOf(1), addOns.get(0).getQuantity());
         assertTrue(addOns.get(0).neverExpires());
         assertNull(addOns.get(0).getNumberOfBillingCycles());
-        assertEquals(new Integer(0), addOns.get(0).getCurrentBillingCycle());
+        assertEquals(Integer.valueOf(0), addOns.get(0).getCurrentBillingCycle());
 
         assertEquals("increase_20", addOns.get(1).getId());
         assertEquals(new BigDecimal("20.00"), addOns.get(1).getAmount());
-        assertEquals(new Integer(1), addOns.get(1).getQuantity());
+        assertEquals(Integer.valueOf(1), addOns.get(1).getQuantity());
         assertTrue(addOns.get(1).neverExpires());
         assertNull(addOns.get(1).getNumberOfBillingCycles());
-        assertEquals(new Integer(0), addOns.get(1).getCurrentBillingCycle());
+        assertEquals(Integer.valueOf(0), addOns.get(1).getCurrentBillingCycle());
 
         List<Discount> discounts = subscription.getDiscounts();
         Collections.sort(discounts, new TestHelper.CompareModificationsById());
@@ -537,17 +534,17 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
 
         assertEquals("discount_11", discounts.get(0).getId());
         assertEquals(new BigDecimal("11.00"), discounts.get(0).getAmount());
-        assertEquals(new Integer(1), discounts.get(0).getQuantity());
+        assertEquals(Integer.valueOf(1), discounts.get(0).getQuantity());
         assertTrue(discounts.get(0).neverExpires());
         assertNull(discounts.get(0).getNumberOfBillingCycles());
-        assertEquals(new Integer(0), discounts.get(0).getCurrentBillingCycle());
+        assertEquals(Integer.valueOf(0), discounts.get(0).getCurrentBillingCycle());
 
         assertEquals("discount_7", discounts.get(1).getId());
         assertEquals(new BigDecimal("7.00"), discounts.get(1).getAmount());
-        assertEquals(new Integer(1), discounts.get(1).getQuantity());
+        assertEquals(Integer.valueOf(1), discounts.get(1).getQuantity());
         assertTrue(discounts.get(1).neverExpires());
         assertNull(discounts.get(1).getNumberOfBillingCycles());
-        assertEquals(new Integer(0), discounts.get(1).getCurrentBillingCycle());
+        assertEquals(Integer.valueOf(0), discounts.get(1).getCurrentBillingCycle());
     }
 
     @Test
@@ -587,15 +584,15 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
 
         assertEquals("increase_10", addOns.get(0).getId());
         assertEquals(new BigDecimal("30.00"), addOns.get(0).getAmount());
-        assertEquals(new Integer(3), addOns.get(0).getNumberOfBillingCycles());
+        assertEquals(Integer.valueOf(3), addOns.get(0).getNumberOfBillingCycles());
         assertFalse(addOns.get(0).neverExpires());
-        assertEquals(new Integer(9), addOns.get(0).getQuantity());
-        assertEquals(new Integer(0), addOns.get(0).getCurrentBillingCycle());
+        assertEquals(Integer.valueOf(9), addOns.get(0).getQuantity());
+        assertEquals(Integer.valueOf(0), addOns.get(0).getCurrentBillingCycle());
 
         assertEquals("increase_20", addOns.get(1).getId());
         assertEquals(new BigDecimal("40.00"), addOns.get(1).getAmount());
-        assertEquals(new Integer(1), addOns.get(1).getQuantity());
-        assertEquals(new Integer(0), addOns.get(1).getCurrentBillingCycle());
+        assertEquals(Integer.valueOf(1), addOns.get(1).getQuantity());
+        assertEquals(Integer.valueOf(0), addOns.get(1).getCurrentBillingCycle());
 
         List<Discount> discounts = subscription.getDiscounts();
         Collections.sort(discounts, new TestHelper.CompareModificationsById());
@@ -606,13 +603,13 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
         assertEquals(new BigDecimal("23.00"), discounts.get(0).getAmount());
         assertNull(discounts.get(0).getNumberOfBillingCycles());
         assertTrue(discounts.get(0).neverExpires());
-        assertEquals(new Integer(1), discounts.get(0).getQuantity());
-        assertEquals(new Integer(0), discounts.get(0).getCurrentBillingCycle());
+        assertEquals(Integer.valueOf(1), discounts.get(0).getQuantity());
+        assertEquals(Integer.valueOf(0), discounts.get(0).getCurrentBillingCycle());
 
         assertEquals("discount_7", discounts.get(1).getId());
         assertEquals(new BigDecimal("15.00"), discounts.get(1).getAmount());
-        assertEquals(new Integer(1), discounts.get(1).getQuantity());
-        assertEquals(new Integer(0), discounts.get(1).getCurrentBillingCycle());
+        assertEquals(Integer.valueOf(1), discounts.get(1).getQuantity());
+        assertEquals(Integer.valueOf(0), discounts.get(1).getCurrentBillingCycle());
     }
 
     @Test
@@ -692,18 +689,18 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
         assertEquals(1, subscription.getAddOns().size());
 
         assertEquals(new BigDecimal("40.00"), subscription.getAddOns().get(0).getAmount());
-        assertEquals(new Integer(6), subscription.getAddOns().get(0).getNumberOfBillingCycles());
+        assertEquals(Integer.valueOf(6), subscription.getAddOns().get(0).getNumberOfBillingCycles());
         assertFalse(subscription.getAddOns().get(0).neverExpires());
-        assertEquals(new Integer(3), subscription.getAddOns().get(0).getQuantity());
-        assertEquals(new Integer(0), subscription.getAddOns().get(0).getCurrentBillingCycle());
+        assertEquals(Integer.valueOf(3), subscription.getAddOns().get(0).getQuantity());
+        assertEquals(Integer.valueOf(0), subscription.getAddOns().get(0).getCurrentBillingCycle());
 
         assertEquals(1, subscription.getDiscounts().size());
 
         assertEquals(new BigDecimal("17.00"), subscription.getDiscounts().get(0).getAmount());
         assertNull(subscription.getDiscounts().get(0).getNumberOfBillingCycles());
         assertTrue(subscription.getDiscounts().get(0).neverExpires());
-        assertEquals(new Integer(2), subscription.getDiscounts().get(0).getQuantity());
-        assertEquals(new Integer(0), subscription.getDiscounts().get(0).getCurrentBillingCycle());
+        assertEquals(Integer.valueOf(2), subscription.getDiscounts().get(0).getQuantity());
+        assertEquals(Integer.valueOf(0), subscription.getDiscounts().get(0).getCurrentBillingCycle());
     }
 
     @Test
@@ -1046,10 +1043,10 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
         assertEquals(2, addOns.size());
 
         assertEquals(new BigDecimal("30.00"), addOns.get(0).getAmount());
-        assertEquals(new Integer(9), addOns.get(0).getQuantity());
+        assertEquals(Integer.valueOf(9), addOns.get(0).getQuantity());
 
         assertEquals(new BigDecimal("31.00"), addOns.get(1).getAmount());
-        assertEquals(new Integer(7), addOns.get(1).getQuantity());
+        assertEquals(Integer.valueOf(7), addOns.get(1).getQuantity());
 
         List<Discount> discounts = updatedSubscription.getDiscounts();
         Collections.sort(discounts, new TestHelper.CompareModificationsById());
@@ -1058,11 +1055,11 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
 
         assertEquals("discount_15", discounts.get(0).getId());
         assertEquals(new BigDecimal("23.00"), discounts.get(0).getAmount());
-        assertEquals(new Integer(1), discounts.get(0).getQuantity());
+        assertEquals(Integer.valueOf(1), discounts.get(0).getQuantity());
 
         assertEquals("discount_7", discounts.get(1).getId());
         assertEquals(new BigDecimal("15.00"), discounts.get(1).getAmount());
-        assertEquals(new Integer(1), discounts.get(1).getQuantity());
+        assertEquals(Integer.valueOf(1), discounts.get(1).getQuantity());
     }
 
     @Test
@@ -1109,10 +1106,10 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
         assertEquals(2, addOns.size());
 
         assertEquals(new BigDecimal("30.00"), addOns.get(0).getAmount());
-        assertEquals(new Integer(9), addOns.get(0).getQuantity());
+        assertEquals(Integer.valueOf(9), addOns.get(0).getQuantity());
 
         assertEquals(new BigDecimal("31.00"), addOns.get(1).getAmount());
-        assertEquals(new Integer(7), addOns.get(1).getQuantity());
+        assertEquals(Integer.valueOf(7), addOns.get(1).getQuantity());
 
         List<Discount> discounts = updatedSubscription.getDiscounts();
         Collections.sort(discounts, new TestHelper.CompareModificationsById());
@@ -1121,11 +1118,11 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
 
         assertEquals("discount_15", discounts.get(0).getId());
         assertEquals(new BigDecimal("23.00"), discounts.get(0).getAmount());
-        assertEquals(new Integer(1), discounts.get(0).getQuantity());
+        assertEquals(Integer.valueOf(1), discounts.get(0).getQuantity());
 
         assertEquals("discount_7", discounts.get(1).getId());
         assertEquals(new BigDecimal("15.00"), discounts.get(1).getAmount());
-        assertEquals(new Integer(1), discounts.get(1).getQuantity());
+        assertEquals(Integer.valueOf(1), discounts.get(1).getQuantity());
     }
 
     @Test
