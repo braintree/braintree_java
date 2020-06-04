@@ -1,4 +1,3 @@
-ENV['TEST_JDK_VERSION'] ||= "1.5"
 mvn = "MAVEN_OPTS='-Dhttps.protocols=TLSv1.2' mvn"
 
 task :default => :jar
@@ -43,17 +42,4 @@ task :single_test do
   else
     sh "#{mvn} test -Dtest=#{test_class}"
   end
-end
-
-desc "generate javadoc"
-task :javadoc do
-  excludes = [
-    "com.braintreegateway.util",
-    "com.braintreegateway.org"
-  ]
-  sh "javadoc -sourcepath src/main/java -subpackages com.braintreegateway -exclude #{excludes.join(":")} -d doc"
-end
-
-def jar_name
-  "braintree-java-#{version}.jar"
 end

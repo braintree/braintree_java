@@ -1,8 +1,5 @@
 package com.braintreegateway;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class TransactionOptionsAdyenRequest extends Request {
     private TransactionOptionsRequest parent;
     private Boolean overwriteBrand;

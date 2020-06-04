@@ -1,13 +1,8 @@
 package com.braintreegateway.integrationtest;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.OutputStream;
 import java.net.URL;
-import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.StreamHandler;
 
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Configuration;
@@ -20,7 +15,7 @@ import com.braintreegateway.DocumentUploadRequest;
 import com.braintreegateway.Environment;
 import com.braintreegateway.Result;
 import com.braintreegateway.exceptions.AuthenticationException;
-import com.braintreegateway.exceptions.DownForMaintenanceException;
+import com.braintreegateway.exceptions.ServiceUnavailableException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.ServerException;
 import com.braintreegateway.util.Http;
@@ -33,7 +28,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-@SuppressWarnings("deprecation")
 public class HttpTestIT extends IntegrationTest {
 
     @Test
@@ -153,7 +147,7 @@ public class HttpTestIT extends IntegrationTest {
             http.get("/");
         } catch (AuthenticationException ex) {
             // success
-        } catch (DownForMaintenanceException ex) {
+        } catch (ServiceUnavailableException ex) {
             // QA is down
         } catch (ServerException ex) {
             // QA is down

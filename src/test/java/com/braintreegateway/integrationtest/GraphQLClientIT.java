@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
 
-@SuppressWarnings("deprecation")
 public class GraphQLClientIT extends IntegrationTest {
 
     public String pingQuery =

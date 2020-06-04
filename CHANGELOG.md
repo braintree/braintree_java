@@ -1,3 +1,62 @@
+## 3.0.0
+* Add `RequestTimeoutException` and `GatewayTimeoutException`
+* Breaking Changes:
+  * Stop sending validation errors for declined refunds, instead send the transaction object
+  * Remove deprecated Coinbase references
+  * Remove deprecated Transparent Redirect, Ideal, SEPA modules, error codes, and functions
+  * Remove deprecated PaymentMethodForwardRequest class
+  * Remove deprecated methods from `Dispute`
+    * Remove `getForwardedComments` (use `getProcessorComments`)
+    * Remove `getTransactionDetails` (use `getTransaction`)
+  * Remove deprecated `getTag` (use `getCategory`) from `DisputeEvidence`
+  * Remove deprecated `paypalVaultWithoutUpgrade` from `PaymentMethodRequest`
+  * Remove deprecated parameters from `SearchRequest`
+    * Remove `transparentRedirectURLForCreate`
+    * Remove `creditTrData`
+  * Remove deprecated `getNextBillAmount` from `Subscription`
+  * Remove deprecated `tag` (use `category`) from `TextEvidenceRequest`
+  * Remove deprecated methods from `Transaction`
+    * Remove `getRefundId` (use `getRefundIds`)
+    * Remove `getSubscription` (use `getSubscriptionDetails`)
+  * Remove deprecated method `getRows` (use `TransactionLevelFeeReport#getCSVRecords`) from `TransactionLevelFeeReport`
+  * Remove deprecated validation error codes
+    * `CUSTOMER_ID_IS_INVAILD`
+    * `CUSTOMER_ID_IS_INVALID`
+    * `TRANSACTION_LINE_ITEM_DISCOUNT_AMOUNT_MUST_BE_GREATER_THAN_ZERO`
+    * `TRANSACTION_LINE_ITEM_UNIT_TAX_AMOUNT_MUST_BE_GREATER_THAN_ZERO`
+    * `TRANSACTION_LINE_ITEM_TAX_AMOUNT_MUST_BE_GREATER_THAN_ZERO`
+    * `EUROPE_BANK_ACCOUNT_ACCOUNT_HOLDER_NAME_IS_REQUIRED`
+    * `EUROPE_BANK_ACCOUNT_BIC_IS_REQUIRED`
+    * `EUROPE_BANK_ACCOUNT_IBAN_IS_REQUIRED`
+    * `SEPA_MANDATE_ACCOUNT_HOLDER_NAME_IS_REQUIRED`
+    * `SEPA_MANDATE_BIC_INVALID_CHARACTER`
+    * `SEPA_MANDATE_BIC_IS_REQUIRED`
+    * `SEPA_MANDATE_BIC_LENGTH_IS_INVALID`
+    * `SEPA_MANDATE_BIC_UNSUPPORTED_COUNTRY`
+    * `SEPA_MANDATE_BILLING_ADDRESS_CONFLICT`
+    * `SEPA_MANDATE_BILLING_ADDRESS_ID_IS_INVALID`
+    * `SEPA_MANDATE_IBAN_INVALID_CHARACTER`
+    * `SEPA_MANDATE_IBAN_INVALID_FORMAT`
+    * `SEPA_MANDATE_IBAN_IS_REQUIRED`
+    * `SEPA_MANDATE_IBAN_UNSUPPORTED_COUNTRY`
+    * `SEPA_MANDATE_TYPE_IS_REQUIRED`
+    * `SEPA_MANDATE_TYPE_IS_INVALID`
+    * `TRANSACTION_AMOUNT_DOES_NOT_MATCH_IDEAL_PAYMENT_AMOUNT`
+    * `TRANSACTION_IDEAL_PAYMENT_NOT_COMPLETE`
+    * `TRANSACTION_IDEAL_PAYMENTS_CANNOT_BE_VAULTED`
+    * `TRANSACTION_MERCHANT_ACCOUNT_DOES_NOT_MATCH_IDEAL_PAYMENT_MERCHANT_ACCOUNT`
+    * `TRANSACTION_MERCHANT_ACCOUNT_NAME_IS_INVALID`
+    * `TRANSACTION_ORDER_ID_DOES_NOT_MATCH_IDEAL_PAYMENT_ORDER_ID`
+    * `TRANSACTION_ORDER_ID_IS_REQUIRED_WITH_IDEAL_PAYMENT`
+    * `UNKOWN_VALIDATION_ERROR` (changed to `UNKNOWN_VALIDATION_ERROR`)
+  * Error codes cannot be modified
+  * Remove `GRANTED_PAYMENT_INSTRUMENT_UPDATE` Webhook notification
+  * Remove deprecated `greaterThanOrEqual` method for searches (use `greaterThanOrEqualTo`)
+  * Remove deprecated `lessThanOrEqual` method for searches (use `lessThanOrEqualTo`)
+  * `DownForMaintenance` exception renamed to `ServiceUnavailable` Exception
+  * Transaction searches throw `UnexpectedException` instead of `DownForMaintenance` when search response yields unexpected results
+  * Remove `recurringCustomerConsent` and `recurringMaxAmount` parameters from `authenticationInsightOptions` in `PaymentMethodNonce.create()`
+
 ## 2.109.0
 * Add `threeDSecurePassThru` to `CreditCard.create()`, `CreditCard.update()`, `Customer.create()`, `Customer.update()`, `PaymentMethod.create()` and `PaymentMethod.update()` 
 * Add missing `paymentMethodToken` search to `CreditCardVerificationSearchRequest`

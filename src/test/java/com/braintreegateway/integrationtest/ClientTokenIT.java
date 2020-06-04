@@ -10,9 +10,7 @@ import static org.junit.Assert.fail;
 
 import com.braintreegateway.testhelpers.HttpHelper;
 import com.braintreegateway.testhelpers.TestHelper;
-import com.braintreegateway.util.Http;
 import com.braintreegateway.util.QueryString;
-import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.*;
 
 public class ClientTokenIT extends IntegrationTest {

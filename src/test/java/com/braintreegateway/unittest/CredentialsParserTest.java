@@ -2,11 +2,8 @@ package com.braintreegateway.unittest;
 
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.ConfigurationException;
-import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.*;
 
 import static org.junit.Assert.*;
 

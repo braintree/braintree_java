@@ -10,8 +10,6 @@ public class Nonce {
   public static final String ApplePayAmex = "fake-apple-pay-amex-nonce";
   public static final String AbstractTransactable = "fake-abstract-transactable-nonce";
   public static final String PayPalBillingAgreement = "fake-paypal-billing-agreement-nonce";
-  public static final String Europe = "fake-europe-bank-account-nonce";
-  public static final String Coinbase = "fake-coinbase-nonce";
   public static final String AndroidPay = "fake-android-pay-nonce";
   public static final String AndroidPayDiscover = "fake-android-pay-discover-nonce";
   public static final String AndroidPayVisa = "fake-android-pay-visa-nonce";
@@ -69,7 +67,6 @@ public class Nonce {
   public static final String ProcessorFailureJCB = "fake-processor-failure-jcb-nonce";
   public static final String LuhnInvalid = "fake-luhn-invalid-nonce";
   public static final String PayPalFuturePaymentRefreshToken = "fake-paypal-future-refresh-token-nonce";
-  public static final String SEPA = "fake-sepa-bank-account-nonce";
   public static final String GatewayRejectedFraud = "fake-gateway-rejected-fraud-nonce";
   public static final String GatewayRejectedTokenIssuance = "fake-token-issuance-error-venmo-account-nonce";
   public static final String SamsungPayAmEx = "tokensam_fake_american_express";

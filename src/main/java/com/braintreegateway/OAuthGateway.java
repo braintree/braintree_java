@@ -2,7 +2,6 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.util.Sha256Hasher;
 
 public class OAuthGateway {
 
@@ -40,11 +39,5 @@ public class OAuthGateway {
         request.clientId(configuration.getClientId());
         String queryString = request.toQueryString();
         return configuration.getBaseURL() + "/oauth/connect?" + queryString;
-    }
-
-    @Deprecated
-    public String computeSignature(String url) {
-        Sha256Hasher hasher = new Sha256Hasher();
-        return hasher.hmacHash(configuration.getClientSecret(), url);
     }
 }

@@ -55,7 +55,7 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         PaymentMethodNonceRequest createRequest = new PaymentMethodNonceRequest().
             paymentMethodToken(paymentMethod.getToken()).
             merchantAccountId(MerchantAccountTestConstants.DEFAULT_MERCHANT_ACCOUNT_ID).
-            authenticationInsight(new Boolean(true));
+            authenticationInsight(Boolean.TRUE);
 
         Result<PaymentMethodNonce> result = gateway.paymentMethodNonce().create(createRequest);
         assertTrue(result.isSuccess());
@@ -73,11 +73,9 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         PaymentMethodNonceRequest createRequest = new PaymentMethodNonceRequest().
             paymentMethodToken("india_visa_credit").
             merchantAccountId(MerchantAccountTestConstants.INDIA_THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
-            authenticationInsight(new Boolean(true)).
+            authenticationInsight(Boolean.TRUE).
             authenticationInsightOptions().
                 amount(new BigDecimal("2500")).
-                recurringCustomerConsent(new Boolean(true)).
-                recurringMaxAmount(new BigDecimal("1000")).
                 done();
 
         Result<PaymentMethodNonce> result = gateway.paymentMethodNonce().create(createRequest);
@@ -96,7 +94,7 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         PaymentMethodNonceRequest createRequest = new PaymentMethodNonceRequest().
             paymentMethodToken("india_visa_credit").
             merchantAccountId(MerchantAccountTestConstants.INDIA_THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
-            authenticationInsight(new Boolean(true));
+            authenticationInsight(Boolean.TRUE);
 
         Result<PaymentMethodNonce> result = gateway.paymentMethodNonce().create(createRequest);
         assertTrue(result.isSuccess());

@@ -1,6 +1,5 @@
 package com.braintreegateway.util;
 
-import com.braintreegateway.org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

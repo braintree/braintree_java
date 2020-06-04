@@ -139,11 +139,6 @@ public class TransactionRequest extends Request {
         return industryRequest;
     }
 
-    @Override
-    public String getKind() {
-        return TransparentRedirectGateway.CREATE_TRANSACTION;
-    }
-
     public TransactionRequest merchantAccountId(String merchantAccountId) {
         this.merchantAccountId = merchantAccountId;
         return this;

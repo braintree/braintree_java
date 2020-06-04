@@ -13,7 +13,6 @@
 /tags
 .idea
 out/
-*.iml
 .metadata/
 target/
 large_file.png

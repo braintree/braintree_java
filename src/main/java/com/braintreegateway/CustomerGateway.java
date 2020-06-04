@@ -51,19 +51,6 @@ public class CustomerGateway {
     }
 
     /**
-     * Please use gateway.transparentRedirect().confirmCustomer() instead
-     * @deprecated see TransparentRedirectGateway#confirmCustomer(String)
-     * @param queryString the query string
-     * @return a customer
-     */
-    @Deprecated
-    public Result<Customer> confirmTransparentRedirect(String queryString) {
-        TransparentRedirectRequest trRequest = new TransparentRedirectRequest(configuration, queryString);
-        NodeWrapper node = http.post(configuration.getMerchantPath() + "/customers/all/confirm_transparent_redirect_request", trRequest);
-        return new Result<Customer>(node, Customer.class);
-    }
-
-    /**
      * Creates a {@link Customer}.
      *
      * @param request
@@ -132,26 +119,6 @@ public class CustomerGateway {
     public ResourceCollection<Customer> search(CustomerSearchRequest query) {
         NodeWrapper node = http.post(configuration.getMerchantPath() + "/customers/advanced_search_ids", query);
         return new ResourceCollection<Customer>(new CustomerPager(this, query), node);
-    }
-
-    /**
-     * Please use gateway.transparentRedirect().url() instead
-     * @deprecated see TransparentRedirectGateway#url()
-     * @return the redirect URL for create
-     */
-    @Deprecated
-    public String transparentRedirectURLForCreate() {
-        return configuration.getBaseURL() + configuration.getMerchantPath() + "/customers/all/create_via_transparent_redirect_request";
-    }
-
-    /**
-     * Please use gateway.transparentRedirect().url() instead
-     * @deprecated see TransparentRedirectGateway#url()
-     * @return the redirect URL for update
-     */
-    @Deprecated
-    public String transparentRedirectURLForUpdate() {
-        return configuration.getBaseURL() + configuration.getMerchantPath() + "/customers/all/update_via_transparent_redirect_request";
     }
 
     /**

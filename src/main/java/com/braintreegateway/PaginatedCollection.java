@@ -1,7 +1,5 @@
 package com.braintreegateway;
 
-import com.braintreegateway.util.NodeWrapper;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

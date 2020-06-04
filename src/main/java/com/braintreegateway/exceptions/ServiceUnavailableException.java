@@ -1,5 +1,5 @@
 package com.braintreegateway.exceptions;
 
-public class DownForMaintenanceException extends BraintreeException {
+public class ServiceUnavailableException extends BraintreeException {
     private static final long serialVersionUID = 1L;
 }

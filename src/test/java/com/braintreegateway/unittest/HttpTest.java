@@ -6,12 +6,13 @@ import static org.junit.Assert.*;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Environment;
-import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.AuthorizationException;
-import com.braintreegateway.exceptions.DownForMaintenanceException;
+import com.braintreegateway.exceptions.GatewayTimeoutException;
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.exceptions.RequestTimeoutException;
 import com.braintreegateway.exceptions.ServerException;
+import com.braintreegateway.exceptions.ServiceUnavailableException;
 import com.braintreegateway.exceptions.TooManyRequestsException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
@@ -33,6 +34,11 @@ public class HttpTest {
         Http.throwExceptionIfErrorStatusCode(404, null);
     }
 
+    @Test(expected = RequestTimeoutException.class)
+    public void throwRequstTimeoutIfRequestTimeout() {
+        Http.throwExceptionIfErrorStatusCode(408, null);
+    }
+
     @Test(expected = UpgradeRequiredException.class)
     public void throwUpgradeRequiredIfClientLibraryIsTooOld() {
         Http.throwExceptionIfErrorStatusCode(426, null);
@@ -48,14 +54,19 @@ public class HttpTest {
         Http.throwExceptionIfErrorStatusCode(500, null);
     }
 
-    @Test(expected = DownForMaintenanceException.class)
-    public void throwDownForMaintenanceIfDownForMaintenance() {
-        Http.throwExceptionIfErrorStatusCode(503, null);
-    }
-
     @Test(expected = UnexpectedException.class)
     public void throwUnexpectedIfUnexpected() {
         Http.throwExceptionIfErrorStatusCode(502, null);
+    }
+
+    @Test(expected = ServiceUnavailableException.class)
+    public void throwServiceUnavailableIfServiceUnavailable() {
+        Http.throwExceptionIfErrorStatusCode(503, null);
+    }
+
+    @Test(expected = GatewayTimeoutException.class)
+    public void throwGatewayTimeoutIfGatewayTimesOut() {
+        Http.throwExceptionIfErrorStatusCode(504, null);
     }
 
     @Test

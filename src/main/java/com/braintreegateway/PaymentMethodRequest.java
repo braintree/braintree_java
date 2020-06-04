@@ -18,8 +18,6 @@ public class PaymentMethodRequest extends Request {
     private String number;
     private String paymentMethodToken;
     private String paypalRefreshToken;
-    // NEXT_MAJOR_VERSION remove this variable as it has been ignored in the gateway
-    private Boolean paypalVaultWithoutUpgrade;
     private String venmoSdkPaymentMethodCode;
     private PaymentMethodThreeDSecurePassThruRequest threeDSecurePassThruRequest;
 
@@ -73,13 +71,6 @@ public class PaymentMethodRequest extends Request {
 
     public PaymentMethodRequest paypalRefreshToken(String paypalRefreshToken) {
         this.paypalRefreshToken = paypalRefreshToken;
-        return this;
-    }
-
-    // NEXT_MAJOR_VERSION remove this method as it has been ignored in the gateway
-    @Deprecated
-    public PaymentMethodRequest paypalVaultWithoutUpgrade(Boolean paypalVaultWithoutUpgrade) {
-        this.paypalVaultWithoutUpgrade = paypalVaultWithoutUpgrade;
         return this;
     }
 
@@ -162,8 +153,6 @@ public class PaymentMethodRequest extends Request {
             addElement("expirationYear", expirationYear).
             addElement("paymentMethodNonce", paymentMethodNonce).
             addElement("paypalRefreshToken", paypalRefreshToken).
-            // NEXT_MAJOR_VERSION remove this element as it has been ignored in the gateway
-            addElement("paypalVaultWithoutUpgrade", paypalVaultWithoutUpgrade).
             addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode);
 
         return builder;

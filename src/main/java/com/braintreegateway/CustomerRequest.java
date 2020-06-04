@@ -101,15 +101,6 @@ public class CustomerRequest extends Request {
         return optionsRequest;
     }
 
-    @Override
-    public String getKind() {
-        if (this.customerId == null) {
-            return TransparentRedirectGateway.CREATE_CUSTOMER;
-        } else {
-            return TransparentRedirectGateway.UPDATE_CUSTOMER;
-        }
-    }
-
     public CustomerRequest lastName(String lastName) {
         this.lastName = lastName;
         return this;

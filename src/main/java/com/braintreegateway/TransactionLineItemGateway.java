@@ -1,6 +1,7 @@
 package com.braintreegateway;
 
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
@@ -38,13 +39,17 @@ public class TransactionLineItemGateway {
 
         NodeWrapper node = http.get(configuration.getMerchantPath() + "/transactions/" + transactionId + "/line_items");
 
-        List<TransactionLineItem> transactionLineItems = new ArrayList<TransactionLineItem>();
+        if (node.getElementName().equals("line-items")) {
+            List<TransactionLineItem> transactionLineItems = new ArrayList<TransactionLineItem>();
 
-        for (NodeWrapper transactionLineItemResponse : node.findAll("line-item")) {
-            transactionLineItems.add(new TransactionLineItem(transactionLineItemResponse));
+            for (NodeWrapper transactionLineItemResponse : node.findAll("line-item")) {
+                transactionLineItems.add(new TransactionLineItem(transactionLineItemResponse));
+            }
+
+            return transactionLineItems;
+        } else {
+            throw new UnexpectedException("No line items found.");
         }
-
-        return transactionLineItems;
     }
 
 }

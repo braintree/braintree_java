@@ -9,6 +9,19 @@ The Braintree Java library provides integration access to the Braintree Gateway.
 
 * none
 
+Java version >= 8 is required. The Braintree Java SDK is tested against Java versions 8 and 11.
+
+## Versions
+
+Braintree employs a deprecation policy for our SDKs. For more information on the statuses of an SDK check our [developer docs](http://developers.braintreepayments.com/reference/general/server-sdk-deprecation-policy).
+
+| Major version number | Status      | Released   | Deprecated   | Unsupported  |
+| -------------------- | ----------- | ---------- | ------------ | ------------ |
+| 3.x.x                | Active      | June 2020  | TBA          | TBA          |
+| 2.x.x                | Inactive    | April 2010 | June 2022    | June 2023    |
+| 1.x.x                | Unsupported | March 2010 | January 2018 | January 2018 |
+
+
 ## Quick Start Example
 
 ````java

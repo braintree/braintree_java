@@ -3,7 +3,6 @@ package com.braintreegateway;
 import com.braintreegateway.test.TestingGateway;
 import com.braintreegateway.util.GraphQLClient;
 import com.braintreegateway.util.Http;
-import com.braintreegateway.util.TrUtil;
 
 /**
  * This is the primary interface to the Braintree Gateway. It is used to
@@ -193,14 +192,6 @@ public class BraintreeGateway {
         return new UsBankAccountGateway(this, http, configuration);
     }
 
-    // NEXT_MAJOR_VERSION Remove this class as legacy Ideal has been removed/disabled in the Braintree Gateway
-    /**
-     * @deprecated If you're looking to accept iDEAL as a payment method contact us at accounts@braintreepayments.com for a solution.
-     */
-    public IdealPaymentGateway idealPayment() {
-        return new IdealPaymentGateway(this, http, configuration);
-    }
-
     /**
      * Returns an {@link PlanGateway} for interacting with {@link Plan} objects.
      *
@@ -251,25 +242,6 @@ public class BraintreeGateway {
      */
     public TransactionLineItemGateway transactionLineItem() {
         return new TransactionLineItemGateway(http, configuration);
-    }
-
-    public TransparentRedirectGateway transparentRedirect() {
-        return new TransparentRedirectGateway(http, configuration);
-    }
-
-    /**
-     * Returns encoded transparent redirect data for the given {@link Request}
-     * and redirect URL
-     *
-     * @param trData
-     *            the transparent redirect data as a {@link Request} object.
-     * @param redirectURL
-     *            the redirect URL for the user after the transparent redirect
-     *            POST.
-     * @return a String of encoded transparent redirect data.
-     */
-    public String trData(Request trData, String redirectURL) {
-        return new TrUtil(configuration).buildTrData(trData, redirectURL);
     }
 
     public WebhookNotificationGateway webhookNotification() {

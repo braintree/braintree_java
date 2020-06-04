@@ -14,7 +14,7 @@ import com.braintreegateway.ValidationErrorCode;
 import com.braintreegateway.ValidationErrors;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.AuthorizationException;
-import com.braintreegateway.exceptions.DownForMaintenanceException;
+import com.braintreegateway.exceptions.ServiceUnavailableException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.ServerException;
 import com.braintreegateway.exceptions.TooManyRequestsException;
@@ -49,6 +49,9 @@ public class GraphQLClient extends Http {
         return query(definition, new HashMap<String, Object>());
     }
 
+    // NEXT_MAJOR_VERSION consider using JSONObject instead of Map here, should make
+    // little difference to the consumer of the SDK, but should make developing
+    // it a little easier
     public Map<String, Object> query(String definition, Map<String, Object> variables) {
         HttpURLConnection connection = null;
         Map<String, Object> jsonMap = null;
@@ -130,7 +133,7 @@ public class GraphQLClient extends Http {
                 case INTERNAL:
                     throw new ServerException();
                 case SERVICE_AVAILABILITY:
-                    throw new DownForMaintenanceException();
+                    throw new ServiceUnavailableException();
                 case UNKNOWN:
                     throw new UnexpectedException("Unexpected Response: " + message);
             }

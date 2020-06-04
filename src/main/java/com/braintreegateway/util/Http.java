@@ -36,9 +36,11 @@ import com.braintreegateway.Configuration;
 import com.braintreegateway.Request;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.AuthorizationException;
-import com.braintreegateway.exceptions.DownForMaintenanceException;
+import com.braintreegateway.exceptions.GatewayTimeoutException;
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.exceptions.RequestTimeoutException;
 import com.braintreegateway.exceptions.ServerException;
+import com.braintreegateway.exceptions.ServiceUnavailableException;
 import com.braintreegateway.exceptions.TimeoutException;
 import com.braintreegateway.exceptions.TooManyRequestsException;
 import com.braintreegateway.exceptions.UnexpectedException;
@@ -403,6 +405,8 @@ public class Http {
                     throw new AuthorizationException(decodedMessage);
                 case 404:
                     throw new NotFoundException();
+                case 408:
+                    throw new RequestTimeoutException();
                 case 426:
                     throw new UpgradeRequiredException();
                 case 429:
@@ -410,7 +414,9 @@ public class Http {
                 case 500:
                     throw new ServerException();
                 case 503:
-                    throw new DownForMaintenanceException();
+                    throw new ServiceUnavailableException();
+                case 504:
+                    throw new GatewayTimeoutException();
                 default:
                     throw new UnexpectedException("Unexpected HTTP_RESPONSE " + statusCode);
 

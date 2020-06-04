@@ -20,6 +20,8 @@ public class Dispute {
     }
 
     public enum Reason {
+        // This should be CANCELED but the Braintree Gateway
+        // returns this as CANCELLED.
         CANCELLED_RECURRING_TRANSACTION,
         CREDIT_NOT_PROCESSED,
         DUPLICATE,
@@ -136,16 +138,6 @@ public class Dispute {
         return currencyIsoCode;
     }
 
-    /**
-     * Use getProcessorComments() instead
-     * @deprecated see #getProcessorComments()
-     */
-    @Deprecated
-    public String getForwardedComments() {
-        return processorComments;
-    }
-    // NEXT_MAJOR_VERSION remove this method as it never returned anything anyway.
-
     public String getProcessorComments() {
         return processorComments;
     }
@@ -208,16 +200,6 @@ public class Dispute {
 
     public List<DisputeStatusHistory> getStatusHistory() {
         return statusHistory;
-    }
-
-    /**
-     * Please use {@link #getTransaction} instead
-     * @deprecated see #getTransaction()
-     * @return the transaction details
-     */
-    @Deprecated
-    public TransactionDetails getTransactionDetails() {
-      return transactionDetails;
     }
 
     public DisputeTransaction getTransaction() {

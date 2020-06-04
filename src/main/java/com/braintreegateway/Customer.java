@@ -23,7 +23,6 @@ public class Customer {
     private List<ApplePayCard> applePayCards;
     private List<AndroidPayCard> androidPayCards;
     private List<AmexExpressCheckoutCard> amexExpressCheckoutCards;
-    private List<CoinbaseAccount> coinbaseAccounts;
     private List<VenmoAccount> venmoAccounts;
     private List<VisaCheckoutCard> visaCheckoutCards;
     private List<MasterpassCard> masterpassCards;
@@ -64,10 +63,6 @@ public class Customer {
         amexExpressCheckoutCards = new ArrayList<AmexExpressCheckoutCard>();
         for (NodeWrapper amexExpressCheckoutCardResponse : node.findAll("amex-express-checkout-cards/amex-express-checkout-card")) {
             amexExpressCheckoutCards.add(new AmexExpressCheckoutCard(amexExpressCheckoutCardResponse));
-        }
-        coinbaseAccounts = new ArrayList<CoinbaseAccount>();
-        for (NodeWrapper coinbaseAccountResponse : node.findAll("coinbase-accounts/coinbase-account")) {
-            coinbaseAccounts.add(new CoinbaseAccount(coinbaseAccountResponse));
         }
         venmoAccounts = new ArrayList<VenmoAccount>();
         for (NodeWrapper venmoAccountResponse : node.findAll("venmo-accounts/venmo-account")) {
@@ -159,10 +154,6 @@ public class Customer {
         return Collections.unmodifiableList(paypalAccounts);
     }
 
-    public List<CoinbaseAccount> getCoinbaseAccounts() {
-        return Collections.unmodifiableList(coinbaseAccounts);
-    }
-
     public List<ApplePayCard> getApplePayCards() {
         return Collections.unmodifiableList(applePayCards);
     }
@@ -209,7 +200,6 @@ public class Customer {
         paymentMethods.addAll(getVenmoAccounts());
         paymentMethods.addAll(getVisaCheckoutCards());
         paymentMethods.addAll(getMasterpassCards());
-        paymentMethods.addAll(getCoinbaseAccounts());
         paymentMethods.addAll(getSamsungPayCards());
         paymentMethods.addAll(getCustomActionsPaymentMethods());
         return Collections.unmodifiableList(paymentMethods);

@@ -159,7 +159,7 @@ public class SimpleNodeWrapperTest {
     public void findInteger() {
         String xml = "<toplevel><foo>4</foo></toplevel>";
         NodeWrapper node = SimpleNodeWrapper.parse(xml);
-        assertEquals(new Integer(4), node.findInteger("foo"));
+        assertEquals(Integer.valueOf(4), node.findInteger("foo"));
     }
 
     @Test

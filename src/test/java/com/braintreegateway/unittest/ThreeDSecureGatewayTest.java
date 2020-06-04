@@ -3,7 +3,7 @@ package com.braintreegateway.unittest;
 import org.junit.Test;
 
 import java.util.regex.Pattern;
-import com.braintreegateway.BraintreeGateway;
+
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.BraintreeException;
 import static org.junit.Assert.*;

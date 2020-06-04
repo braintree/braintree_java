@@ -1,8 +1,6 @@
 package com.braintreegateway.unittest;
 
 import com.braintreegateway.ThreeDSecureLookup;
-import com.braintreegateway.ThreeDSecureLookupRequest;
-import com.braintreegateway.exceptions.BraintreeException;
 import org.junit.Test;
 
 import java.util.HashMap;

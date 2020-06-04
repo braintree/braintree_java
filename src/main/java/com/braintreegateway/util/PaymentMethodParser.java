@@ -4,11 +4,9 @@ import com.braintreegateway.Result;
 import com.braintreegateway.PaymentMethod;
 import com.braintreegateway.PayPalAccount;
 import com.braintreegateway.CreditCard;
-import com.braintreegateway.EuropeBankAccount;
 import com.braintreegateway.ApplePayCard;
 import com.braintreegateway.AndroidPayCard;
 import com.braintreegateway.AmexExpressCheckoutCard;
-import com.braintreegateway.CoinbaseAccount;
 import com.braintreegateway.UsBankAccount;
 import com.braintreegateway.VenmoAccount;
 import com.braintreegateway.VisaCheckoutCard;
@@ -16,7 +14,6 @@ import com.braintreegateway.MasterpassCard;
 import com.braintreegateway.SamsungPayCard;
 import com.braintreegateway.CustomActionsPaymentMethod;
 import com.braintreegateway.UnknownPaymentMethod;
-import com.braintreegateway.exceptions.UnexpectedException;
 
 public class PaymentMethodParser {
 
@@ -25,16 +22,12 @@ public class PaymentMethodParser {
             return new Result<PayPalAccount>(node, PayPalAccount.class);
         } else if (node.getElementName() == "credit-card") {
             return new Result<CreditCard>(node, CreditCard.class);
-        } else if (node.getElementName() == "europe-bank-account") {
-            return new Result<EuropeBankAccount>(node, EuropeBankAccount.class);
         } else if (node.getElementName() == "apple-pay-card") {
             return new Result<ApplePayCard>(node, ApplePayCard.class);
         } else if (node.getElementName() == "android-pay-card") {
             return new Result<AndroidPayCard>(node, AndroidPayCard.class);
         } else if (node.getElementName() == "amex-express-checkout-card") {
             return new Result<AmexExpressCheckoutCard>(node, AmexExpressCheckoutCard.class);
-        } else if (node.getElementName() == "coinbase-account") {
-            return new Result<CoinbaseAccount>(node, CoinbaseAccount.class);
         } else if (node.getElementName() == "us-bank-account") {
             return new Result<UsBankAccount>(node, UsBankAccount.class);
         } else if (node.getElementName() == "venmo-account") {

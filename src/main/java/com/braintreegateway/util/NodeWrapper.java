@@ -76,7 +76,7 @@ public abstract class NodeWrapper {
 
     public abstract String findString(String expression);
 
-    public abstract String getElementName(); //TODO MDM Rename to getName
+    public abstract String getElementName();
 
     public boolean isSuccess() {
         return !(getElementName().equals("api-error-response"));

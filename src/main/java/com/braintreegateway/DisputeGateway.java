@@ -1,6 +1,5 @@
 package com.braintreegateway;
 
-import com.braintreegateway.RequestBuilder;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;

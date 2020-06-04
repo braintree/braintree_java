@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.braintreegateway.BraintreeGateway;
-import com.braintreegateway.Configuration;
 import com.braintreegateway.PaymentMethodDeleteRequest;
 import com.braintreegateway.PaymentMethodGateway;
 import com.braintreegateway.util.Http;

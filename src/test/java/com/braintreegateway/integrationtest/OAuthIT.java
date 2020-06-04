@@ -281,14 +281,4 @@ public class OAuthIT extends IntegrationTest {
             fail("malformed url");
         }
     }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void computeSignatureReturnsCorrectSignature() {
-        String url = "http://localhost:3000/oauth/connect?business%5Bname%5D=We+Like+Spaces&client_id=client_id%24development%24integration_client_id";
-
-        String signature = gateway.oauth().computeSignature(url);
-
-        assertEquals("a36bcf10dd982e2e47e0d6a2cb930aea47ade73f954b7d59c58dae6167894d41", signature);
-    }
 }
