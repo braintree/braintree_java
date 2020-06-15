@@ -1680,6 +1680,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleWithFraudCardIsDeclined() {
+        createAdvancedFraudMerchantGateway();
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
