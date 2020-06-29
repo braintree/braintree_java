@@ -34,6 +34,7 @@ public class CreditCardVerification {
     private Calendar createdAt;
     private RiskData riskData;
     private ThreeDSecureInfo threeDSecureInfo;
+    private String networkTransactionId;
 
     public CreditCardVerification(NodeWrapper node) {
         this.amount = node.findBigDecimal("amount");
@@ -75,6 +76,8 @@ public class CreditCardVerification {
         }
 
         this.createdAt = node.findDateTime("created-at");
+
+        this.networkTransactionId = node.findString("network-transaction-id");
     }
 
     public BigDecimal getAmount() {
@@ -160,5 +163,9 @@ public class CreditCardVerification {
 
     public Status getStatus() {
         return status;
+    }
+
+    public String getNetworkTransactionId() {
+        return networkTransactionId;
     }
 }
