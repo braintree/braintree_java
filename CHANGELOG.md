@@ -1,3 +1,6 @@
+## Unreleased
+* Add `networkTransactionId` to `CreditCardVerification`
+
 ## 3.0.0
 * Add `RequestTimeoutException` and `GatewayTimeoutException`
 * Breaking Changes:
