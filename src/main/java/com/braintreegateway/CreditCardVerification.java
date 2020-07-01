@@ -25,6 +25,7 @@ public class CreditCardVerification {
     private ProcessorResponseType processorResponseType;
     private String networkResponseCode;
     private String networkResponseText;
+    private String networkTransactionId;
     private String merchantAccountId;
     private Status status;
     private String graphqlId;
@@ -34,7 +35,6 @@ public class CreditCardVerification {
     private Calendar createdAt;
     private RiskData riskData;
     private ThreeDSecureInfo threeDSecureInfo;
-    private String networkTransactionId;
 
     public CreditCardVerification(NodeWrapper node) {
         this.amount = node.findBigDecimal("amount");
@@ -49,6 +49,7 @@ public class CreditCardVerification {
         this.processorResponseType = EnumUtils.findByName(ProcessorResponseType.class, node.findString("processor-response-type"), ProcessorResponseType.UNRECOGNIZED);
         this.networkResponseCode = node.findString("network-response-code");
         this.networkResponseText = node.findString("network-response-text");
+        this.networkTransactionId = node.findString("network-transaction-id");
         this.merchantAccountId = node.findString("merchant-account-id");
         this.status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);
         this.graphqlId = node.findString("global-id");
@@ -76,8 +77,6 @@ public class CreditCardVerification {
         }
 
         this.createdAt = node.findDateTime("created-at");
-
-        this.networkTransactionId = node.findString("network-transaction-id");
     }
 
     public BigDecimal getAmount() {
@@ -157,15 +156,15 @@ public class CreditCardVerification {
         return networkResponseText;
     }
 
+    public String getNetworkTransactionId() {
+        return networkTransactionId;
+    }
+
     public String getMerchantAccountId() {
         return merchantAccountId;
     }
 
     public Status getStatus() {
         return status;
-    }
-
-    public String getNetworkTransactionId() {
-        return networkTransactionId;
     }
 }
