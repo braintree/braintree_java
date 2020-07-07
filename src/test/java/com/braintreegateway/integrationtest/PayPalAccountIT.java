@@ -40,7 +40,7 @@ public class PayPalAccountIT extends IntegrationTest {
 
     @Test
     public void findsBillingAgreementsPayPalAccountsByToken() {
-        String nonce = TestHelper.generateBillingAgreementPayPalNonce(gateway);
+        String nonce = Nonce.PayPalBillingAgreement;
 
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
@@ -58,7 +58,6 @@ public class PayPalAccountIT extends IntegrationTest {
         assertNotNull(found);
         assertEquals(found.getToken(), result.getTarget().getToken());
         assertNotNull(found.getImageUrl());
-        assertNotNull(found.getPayerId());
         assertNotNull(found.getCreatedAt());
         assertNotNull(found.getUpdatedAt());
         assertNotNull(found.isDefault());

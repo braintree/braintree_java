@@ -279,13 +279,6 @@ public abstract class TestHelper {
       return generatePayPalNonce(gateway, payload);
     }
 
-    public static String generateBillingAgreementPayPalNonce(BraintreeGateway gateway) {
-      QueryString payload = new QueryString();
-      payload.append("paypal_account[billing_agreement_token]", "fake_ba_token");
-
-      return generatePayPalNonce(gateway, payload);
-    }
-
     private static String generatePayPalNonce(BraintreeGateway gateway, QueryString payload) {
       String encodedClientToken = gateway.clientToken().generate();
       String clientToken = TestHelper.decodeClientToken(encodedClientToken);
