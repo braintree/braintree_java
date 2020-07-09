@@ -1,8 +1,28 @@
 package com.braintreegateway;
 
 public class TransactionAddressRequest extends AddressRequest {
+    public enum ShippingMethod {
+        SAME_DAY("same_day"),
+        NEXT_DAY("next_day"),
+        PRIORITY("priority"),
+        GROUND("ground"),
+        ELECTRONIC("electronic"),
+        SHIP_TO_STORE("ship_to_store");
+
+        private final String name;
+
+        ShippingMethod(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
 
     private TransactionRequest parent;
+    private ShippingMethod shippingMethod;
 
     public TransactionAddressRequest(TransactionRequest parent, String tagName) {
         this.parent = parent;
@@ -64,6 +84,12 @@ public class TransactionAddressRequest extends AddressRequest {
     }
 
     @Override
+    public TransactionAddressRequest phoneNumber(String phoneNumber) {
+        super.phoneNumber(phoneNumber);
+        return this;
+    }
+
+    @Override
     public TransactionAddressRequest postalCode(String postalCode) {
         super.postalCode(postalCode);
         return this;
@@ -75,6 +101,11 @@ public class TransactionAddressRequest extends AddressRequest {
         return this;
     }
 
+    public TransactionAddressRequest shippingMethod(ShippingMethod shippingMethod) {
+        this.shippingMethod = shippingMethod;
+        return this;
+    }
+
     @Override
     public TransactionAddressRequest streetAddress(String streetAddress) {
         super.streetAddress(streetAddress);
@@ -83,5 +114,14 @@ public class TransactionAddressRequest extends AddressRequest {
 
     public TransactionRequest done() {
         return parent;
+    }
+
+    @Override
+    protected RequestBuilder buildRequest(String root) {
+        RequestBuilder requestBuilder = super.buildRequest(root);
+        if (shippingMethod != null) {
+            requestBuilder = requestBuilder.addElement("shippingMethod", shippingMethod);
+        }
+        return requestBuilder;
     }
 }

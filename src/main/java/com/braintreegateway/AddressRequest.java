@@ -4,7 +4,6 @@ package com.braintreegateway;
  * Provides a fluent interface to build up requests around {@link Address Addresses}.
  */
 public class AddressRequest extends Request {
-
     private String countryCodeAlpha2;
     private String countryCodeAlpha3;
     private String countryCodeNumeric;
@@ -13,6 +12,7 @@ public class AddressRequest extends Request {
     private String firstName;
     private String lastName;
     private String locality;
+    private String phoneNumber;
     private String postalCode;
     private String region;
     private String streetAddress;
@@ -68,6 +68,11 @@ public class AddressRequest extends Request {
         return this;
     }
 
+    public AddressRequest phoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+        return this;
+    }
+
     public AddressRequest postalCode(String postalCode) {
         this.postalCode = postalCode;
         return this;
@@ -109,6 +114,7 @@ public class AddressRequest extends Request {
             addElement("countryCodeNumeric", countryCodeNumeric).
             addElement("extendedAddress", extendedAddress).
             addElement("locality", locality).
+            addElement("phoneNumber", phoneNumber).
             addElement("postalCode", postalCode).
             addElement("region", region).
             addElement("streetAddress", streetAddress);

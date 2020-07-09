@@ -424,6 +424,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             amount(TransactionAmount.AUTHORIZE.amount).
             channel("MyShoppingCartProvider").
             orderId("123").
+            productSku("productsku01").
             creditCard().
                 cardholderName("The Cardholder").
                 number(CreditCardNumber.VISA.number).
@@ -447,6 +448,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 extendedAddress("Suite 403").
                 locality("Chicago").
                 region("IL").
+                phoneNumber("122-555-1237").
                 postalCode("60622").
                 countryName("United States of America").
                 countryCodeAlpha2("US").
@@ -461,11 +463,13 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 extendedAddress("Apt 2F").
                 locality("Bartlett").
                 region("MA").
+                phoneNumber("122-555-1236").
                 postalCode("60103").
                 countryName("Mexico").
                 countryCodeAlpha2("MX").
                 countryCodeAlpha3("MEX").
                 countryCodeNumeric("484").
+                shippingMethod(TransactionAddressRequest.ShippingMethod.ELECTRONIC).
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
@@ -532,6 +536,71 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("MX", shipping.getCountryCodeAlpha2());
         assertEquals("MEX", shipping.getCountryCodeAlpha3());
         assertEquals("484", shipping.getCountryCodeNumeric());
+    }
+
+    @Test
+    public void saleErrorWithInvalidBillingPhoneNumber() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            channel("MyShoppingCartProvider").
+            orderId("123").
+            productSku("productsku01").
+            creditCard().
+                cardholderName("The Cardholder").
+                number(CreditCardNumber.VISA.number).
+                cvv("321").
+                expirationDate("05/2009").
+                done().
+            billingAddress().
+                phoneNumber("122-555-1237-123456").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_BILLING_PHONE_NUMBER_IS_INVALID,
+                result.getErrors().forObject("transaction").forObject("billing").onField("phone_number").get(0).getCode());
+    }
+
+    @Test
+    public void saleErrorWithInvalidShippingPhoneNumber() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            channel("MyShoppingCartProvider").
+            orderId("123").
+            productSku("productsku01").
+            creditCard().
+                cardholderName("The Cardholder").
+                number(CreditCardNumber.VISA.number).
+                cvv("321").
+                expirationDate("05/2009").
+                done().
+            shippingAddress().
+                phoneNumber("122-555-1236-123456").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_SHIPPING_PHONE_NUMBER_IS_INVALID,
+                result.getErrors().forObject("transaction").forObject("shipping").onField("phone_number").get(0).getCode());
+    }
+
+    @Test
+    public void saleErrorWithInvalidProductSku() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            orderId("123").
+            productSku("product$ku!").
+            creditCard().
+                cardholderName("The Cardholder").
+                number(CreditCardNumber.VISA.number).
+                cvv("321").
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_PRODUCT_SKU_IS_INVALID,
+                result.getErrors().forObject("transaction").onField("product_sku").get(0).getCode());
     }
 
     @Test
@@ -1737,11 +1806,36 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done().
             riskData().
                 customerBrowser("IE6").
+                customerDeviceId("customer_device_id_012").
                 customerIP("192.168.0.1").
+                customerLocationZip("91244").
+                customerTenure(new Integer(20)).
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void saleErrorWithInvalidRiskDataParam() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            riskData().
+                customerBrowser("IE6").
+                customerDeviceId("customer_device_id_012").
+                customerIP("192.168.0.1").
+                customerLocationZip("912$4").
+                customerTenure(new Integer(20)).
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.RISK_DATA_CUSTOMER_LOCATION_ZIP_INVALID_CHARACTERS,
+                result.getErrors().forObject("transaction").forObject("risk_data").onField("customer_location_zip").get(0).getCode());
     }
 
     @Test
