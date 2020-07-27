@@ -1,5 +1,8 @@
-package com.braintreegateway;
+package com.braintreegateway.unittest;
 
+import com.braintreegateway.BraintreeGateway;
+import com.braintreegateway.CreditCardGateway;
+import com.braintreegateway.Environment;
 import com.braintreegateway.exceptions.NotFoundException;
 
 import org.junit.Test;

@@ -197,6 +197,7 @@
                   </excludes>
                   <disableXmlReport>true</disableXmlReport>
                   <useFile>false</useFile>
+                  <skipTests>${skipUTs}</skipTests>
                 </configuration>
             </plugin>
 

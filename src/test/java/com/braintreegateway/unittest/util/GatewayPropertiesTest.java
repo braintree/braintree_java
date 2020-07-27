@@ -1,6 +1,7 @@
-package com.braintreegateway.util;
+package com.braintreegateway.unittest.util;
 
 import com.braintreegateway.*;
+import com.braintreegateway.util.ClientLibraryProperties;
 import org.junit.Test;
 
 import java.util.regex.Pattern;

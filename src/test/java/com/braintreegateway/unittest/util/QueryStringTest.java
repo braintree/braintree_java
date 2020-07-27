@@ -1,8 +1,9 @@
-package com.braintreegateway.util;
+package com.braintreegateway.unittest.util;
 
 import com.braintreegateway.CreditCardRequest;
 import com.braintreegateway.Request;
 import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.util.QueryString;
 import org.junit.Test;
 
 import java.math.BigDecimal;

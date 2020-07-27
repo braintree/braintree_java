@@ -1,4 +1,4 @@
-package com.braintreegateway.util;
+package com.braintreegateway.unittest.util;
 
 import java.io.*;
 import java.security.*;
