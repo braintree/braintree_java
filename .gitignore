@@ -16,3 +16,4 @@ out/
 .metadata/
 target/
 large_file.png
+empty_file.png
