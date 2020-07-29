@@ -155,6 +155,7 @@ public class Transaction {
     private LocalPaymentDetails localPaymentDetails;
     private CustomActionsPaymentMethodDetails customActionsPaymentMethodDetails;
     private String planId;
+    private boolean processedWithNetworkToken;
     private String processorAuthorizationCode;
     private String processorResponseCode;
     private String processorResponseText;
@@ -283,6 +284,7 @@ public class Transaction {
             customActionsPaymentMethodDetails = new CustomActionsPaymentMethodDetails(customActionsPaymentMethodNode);
         }
         planId = node.findString("plan-id");
+        processedWithNetworkToken = node.findBoolean("processed-with-network-token");
         processorAuthorizationCode = node.findString("processor-authorization-code");
         processorResponseCode = node.findString("processor-response-code");
         processorResponseText = node.findString("processor-response-text");
@@ -530,6 +532,10 @@ public class Transaction {
 
     public String getPlanId() {
         return planId;
+    }
+
+    public boolean isProcessedWithNetworkToken() {
+        return processedWithNetworkToken;
     }
 
     public String getProcessorAuthorizationCode() {

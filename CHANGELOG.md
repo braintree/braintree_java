@@ -13,6 +13,8 @@
   * `RISK_DATA_CUSTOMER_LOCATION_ZIP_IS_INVALID`
   * `RISK_DATA_CUSTOMER_LOCATION_ZIP_IS_TOO_LONG`
   * `RISK_DATA_CUSTOMER_TENURE_IS_TOO_LONG`
+* Add `isProcessedWithNetworkToken` to `Transaction`
+* Add `isNetworkTokenized` to `CreditCard`
 
 ## 3.0.0
 * Add `RequestTimeoutException` and `GatewayTimeoutException`

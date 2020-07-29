@@ -7476,4 +7476,27 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(transaction.getPayPalHereDetails());
         assertNotNull(transaction.getPayPalHereDetails().getRefundId());
     }
+
+    @Test
+    public void networkTokenizedCreditCardTransaction() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            paymentMethodToken("network_tokenized_credit_card");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget().isProcessedWithNetworkToken());
+    }
+
+    @Test
+    public void nonNetworkTokenizedCreditCardTransaction() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            paymentMethodNonce(nonce);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        assertFalse(result.getTarget().isProcessedWithNetworkToken());
+    }
 }

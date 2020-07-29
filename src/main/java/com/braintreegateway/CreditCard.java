@@ -173,6 +173,7 @@ public class CreditCard implements PaymentMethod {
     private boolean isDefault;
     private boolean isVenmoSdk;
     private boolean isExpired;
+    private boolean isNetworkTokenized;
     private String imageUrl;
     private String last4;
     private String commercial;
@@ -207,6 +208,7 @@ public class CreditCard implements PaymentMethod {
         isDefault = node.findBoolean("default");
         isVenmoSdk = node.findBoolean("venmo-sdk");
         isExpired = node.findBoolean("expired");
+        isNetworkTokenized = node.findBoolean("is-network-tokenized");
         last4 = node.findString("last-4");
         commercial = node.findString("commercial");
         debit = node.findString("debit");
@@ -374,6 +376,10 @@ public class CreditCard implements PaymentMethod {
 
     public boolean isExpired() {
         return isExpired;
+    }
+
+    public boolean isNetworkTokenized() {
+        return isNetworkTokenized;
     }
 
     public CreditCardVerification getVerification() {
