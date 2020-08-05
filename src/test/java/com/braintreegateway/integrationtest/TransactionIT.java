@@ -1766,6 +1766,24 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithRiskThresholdCardIsDeclined() {
+        createAdvancedFraudMerchantGateway();
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.RISK_THRESHOLD.number).
+                expirationDate("05/2016").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        assertEquals(Transaction.Status.GATEWAY_REJECTED, transaction.getStatus());
+        assertEquals(Transaction.GatewayRejectionReason.RISK_THRESHOLD, transaction.getGatewayRejectionReason());
+    }
+
+    @Test
     public void saleWithTokenIssuanceErrorNonceIsRejected() {
         TransactionRequest request = new TransactionRequest()
             .merchantAccountId(FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID)

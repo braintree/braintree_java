@@ -48,6 +48,7 @@ public class Transaction {
         CVV("cvv"),
         DUPLICATE("duplicate"),
         FRAUD("fraud"),
+        RISK_THRESHOLD("risk_threshold"),
         THREE_D_SECURE("three_d_secure"),
         TOKEN_ISSUANCE("token_issuance"),
         UNRECOGNIZED("unrecognized");
