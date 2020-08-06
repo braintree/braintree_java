@@ -1,31 +1,26 @@
 package com.braintreegateway.testhelpers;
 
-import com.braintreegateway.*;
-import com.braintreegateway.Transaction.Status;
-import com.braintreegateway.util.Http;
-import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.util.QueryString;
-import com.braintreegateway.util.StringUtils;
-
-import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
-
-import com.braintreegateway.org.apache.commons.codec.binary.Base64;
-
-import org.junit.Ignore;
-import com.fasterxml.jackson.jr.ob.JSON;
-
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLDecoder;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.HttpsURLConnection;
+import java.io.*;
+import java.net.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.*;
-import java.io.UnsupportedEncodingException;
 
-import static org.junit.Assert.*;
+import com.braintreegateway.*;
+import com.braintreegateway.Transaction.Status;
+import com.braintreegateway.org.apache.commons.codec.binary.Base64;
+import com.braintreegateway.util.*;
+import com.fasterxml.jackson.jr.ob.JSON;
+
+import org.junit.Ignore;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @Ignore("Testing utility class")
 public abstract class TestHelper {
@@ -279,13 +274,6 @@ public abstract class TestHelper {
       return generatePayPalNonce(gateway, payload);
     }
 
-    public static String generateBillingAgreementPayPalNonce(BraintreeGateway gateway) {
-      QueryString payload = new QueryString();
-      payload.append("paypal_account[billing_agreement_token]", "fake_ba_token");
-
-      return generatePayPalNonce(gateway, payload);
-    }
-
     private static String generatePayPalNonce(BraintreeGateway gateway, QueryString payload) {
       String encodedClientToken = gateway.clientToken().generate();
       String clientToken = TestHelper.decodeClientToken(encodedClientToken);
@@ -397,106 +385,95 @@ public abstract class TestHelper {
     }
 
     public static String generateValidUsBankAccountNonce(BraintreeGateway gateway, String accountNumber) {
-      String encodedClientToken = gateway.clientToken().generate();
-      String clientToken = TestHelper.decodeClientToken(encodedClientToken);
-      String payload = new StringBuilder()
-          .append("{\n")
-            .append("\"type\": \"us_bank_account\",\n")
-            .append("\"billing_address\": {\n")
-                .append("\"street_address\": \"123 Ave\",\n")
-                .append("\"region\": \"CA\",\n")
-                .append("\"locality\": \"San Francisco\",\n")
-                .append("\"postal_code\": \"94112\"\n")
-            .append("},\n")
-            .append("\"account_type\": \"checking\",\n")
-            .append("\"ownership_type\": \"personal\",\n")
-            .append("\"routing_number\": \"021000021\",\n")
-            .append("\"account_number\": \"" + accountNumber + "\",\n")
-            .append("\"first_name\": \"Dan\",\n")
-            .append("\"last_name\": \"Schulman\",\n")
-            .append("\"ach_mandate\": {\n")
-                .append("\"text\": \"cl mandate text\"\n")
-            .append("}\n")
-          .append("}")
-        .toString();
+        String mutation =
+            "mutation TokenizeUsBankAccount($input: TokenizeUsBankAccountInput!) {"
+            + "    tokenizeUsBankAccount(input: $input) {"
+            + "        paymentMethod {"
+            + "            id"
+            + "        }"
+            + "    }"
+            + "}";
 
-        String nonce = "";
+        String input =
+            "{\n"
+            + "  \"input\": {\n"
+            + "    \"usBankAccount\": {\n"
+            + "      \"accountNumber\": " + Integer.parseInt(accountNumber) + ",\n"
+            + "      \"routingNumber\": \"021000021\",\n"
+            + "      \"accountType\": \"CHECKING\",\n"
+            + "      \"individualOwner\": {\n"
+            + "        \"firstName\": \"Dan\",\n"
+            + "        \"lastName\": \"Schulman\"\n"
+            + "      },\n"
+            + "      \"billingAddress\": {\n"
+            + "        \"streetAddress\": \"123 Ave\",\n"
+            + "        \"state\": \"CA\",\n"
+            + "        \"city\": \"San Francisco\",\n"
+            + "        \"zipCode\": \"94112\"\n"
+            + "      },\n"
+            + "      \"achMandate\": \"cl mandate text\"\n"
+            + "    }\n"
+            + "  }\n"
+            + "}";
+
+        Map<String, Object> variables;
         try {
-            Map<String, Object> json = JSON.std.mapFrom(clientToken);
-            URL url = new URL(((Map) json.get("braintree_api")).get("url") + "/tokens");
-            String token = (String) ((Map) json.get("braintree_api")).get("access_token");
-            SSLContext sc = SSLContext.getInstance("TLSv1.2");
-            sc.init(null, null, null);
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            connection.setSSLSocketFactory(sc.getSocketFactory());
-            connection.setRequestMethod("POST");
-            connection.addRequestProperty("Content-Type", "application/json");
-            connection.addRequestProperty("Braintree-Version", "2016-10-07");
-            connection.addRequestProperty("Authorization", "Bearer " + token);
-            connection.setDoOutput(true);
-            connection.getOutputStream().write(payload.getBytes("UTF-8"));
-            connection.getOutputStream().close();
-
-            InputStream responseStream = connection.getInputStream();
-            String body = StringUtils.inputStreamToString(responseStream);
-            responseStream.close();
-            Map<String, Object> responseJson  = JSON.std.mapFrom(body);
-            nonce = (String) ((Map) responseJson.get("data")).get("id");
-        } catch (Exception e) {
+            variables = JSON.std.mapFrom(input);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return nonce;
+
+        Map<String, Object> response = sendGraphQLRequest(gateway, GraphQLClient.formatGraphQLRequest(mutation, variables));
+        Map<String, Object> data = (Map) response.get("data");
+        Map<String, Object> tokenizeUsBankAccount = (Map) data.get("tokenizeUsBankAccount");
+        Map<String, String> paymentMethod = (Map) tokenizeUsBankAccount.get("paymentMethod");
+        return paymentMethod.get("id");
     }
 
     public static String generatePlaidUsBankAccountNonce(BraintreeGateway gateway) {
-      String encodedClientToken = gateway.clientToken().generate();
-      String clientToken = TestHelper.decodeClientToken(encodedClientToken);
-      String payload = new StringBuilder()
-          .append("{\n")
-            .append("\"type\": \"plaid_public_token\",\n")
-            .append("\"public_token\": \"good\",\n")
-            .append("\"account_id\": \"plaid_account_id\",\n")
-            .append("\"billing_address\": {\n")
-                .append("\"street_address\": \"123 Ave\",\n")
-                .append("\"region\": \"CA\",\n")
-                .append("\"locality\": \"San Francisco\",\n")
-                .append("\"postal_code\": \"94112\"\n")
-            .append("},\n")
-            .append("\"ownership_type\": \"personal\",\n")
-            .append("\"first_name\": \"Dan\",\n")
-            .append("\"last_name\": \"Schulman\",\n")
-            .append("\"ach_mandate\": {\n")
-                .append("\"text\": \"cl mandate text\"\n")
-            .append("}\n")
-          .append("}")
-        .toString();
+        String mutation =
+            "mutation TokenizeUsBankLogin($input: TokenizeUsBankLoginInput!) {"
+            + "    tokenizeUsBankLogin(input: $input) {"
+            + "        paymentMethod {"
+            + "            id"
+            + "        }"
+            + "    }"
+            + "}";
 
-        String nonce = "";
+        String input =
+            "{\n"
+            + "  \"input\": {\n"
+            + "    \"usBankLogin\": {\n"
+            + "      \"accountId\": \"plaid_account_id\",\n"
+            + "      \"publicToken\": \"good\",\n"
+            + "      \"accountType\": \"CHECKING\",\n"
+            + "      \"individualOwner\": {\n"
+            + "        \"firstName\": \"Dan\",\n"
+            + "        \"lastName\": \"Schulman\"\n"
+            + "      },\n"
+            + "      \"billingAddress\": {\n"
+            + "        \"streetAddress\": \"123 Ave\",\n"
+            + "        \"state\": \"CA\",\n"
+            + "        \"city\": \"San Francisco\",\n"
+            + "        \"zipCode\": \"94112\"\n"
+            + "      },\n"
+            + "      \"achMandate\": \"cl mandate text\"\n"
+            + "    }\n"
+            + "  }\n"
+            + "}";
+
+        Map<String, Object> variables;
         try {
-            Map<String, Object> json = JSON.std.mapFrom(clientToken);
-            URL url = new URL(((Map) json.get("braintree_api")).get("url") + "/tokens");
-            String token = (String) ((Map) json.get("braintree_api")).get("access_token");
-            SSLContext sc = SSLContext.getInstance("TLSv1.2");
-            sc.init(null, null, null);
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            connection.setSSLSocketFactory(sc.getSocketFactory());
-            connection.setRequestMethod("POST");
-            connection.addRequestProperty("Content-Type", "application/json");
-            connection.addRequestProperty("Braintree-Version", "2016-10-07");
-            connection.addRequestProperty("Authorization", "Bearer " + token);
-            connection.setDoOutput(true);
-            connection.getOutputStream().write(payload.getBytes("UTF-8"));
-            connection.getOutputStream().close();
-
-            InputStream responseStream = connection.getInputStream();
-            String body = StringUtils.inputStreamToString(responseStream);
-            responseStream.close();
-            Map<String, Object> responseJson  = JSON.std.mapFrom(body);
-            nonce = (String) ((Map) responseJson.get("data")).get("id");
-        } catch (Exception e) {
+            variables = JSON.std.mapFrom(input);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return nonce;
+
+        Map<String, Object> response = sendGraphQLRequest(gateway, GraphQLClient.formatGraphQLRequest(mutation, variables));
+        Map<String, Object> data = (Map) response.get("data");
+        Map<String, Object> tokenizeUsBankLogin = (Map) data.get("tokenizeUsBankLogin");
+        Map<String, String> paymentMethod = (Map) tokenizeUsBankLogin.get("paymentMethod");
+        return paymentMethod.get("id");
     }
 
     public static String generateInvalidUsBankAccountNonce() {
@@ -510,5 +487,39 @@ public abstract class TestHelper {
             }
         }
         return token + "_xxx";
+    }
+    
+    private static Map<String, Object> sendGraphQLRequest(BraintreeGateway gateway, String graphQLRequest) {
+        String encodedClientToken = gateway.clientToken().generate();
+        String clientToken = TestHelper.decodeClientToken(encodedClientToken);
+
+        Map<String, Object> response;
+        try {
+            Map<String, Object> clientTokenJson = JSON.std.mapFrom(clientToken);
+            Map<String, Object> braintreeApi = (Map<String, Object>) clientTokenJson.get("braintree_api");
+            URL url = new URL(braintreeApi.get("url") + "/graphql");
+
+            SSLContext sc = SSLContext.getInstance("TLSv1.2");
+            sc.init(null, null, null);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            if (connection instanceof HttpsURLConnection) {
+              ((HttpsURLConnection) connection).setSSLSocketFactory(sc.getSocketFactory());
+            }
+            connection.setRequestMethod("POST");
+            connection.addRequestProperty("Content-Type", "application/json");
+            connection.addRequestProperty("Braintree-Version", "2016-10-07");
+            connection.addRequestProperty("Authorization", "Bearer " + braintreeApi.get("access_token"));
+            connection.setDoOutput(true);
+            connection.getOutputStream().write(graphQLRequest.getBytes(StandardCharsets.UTF_8));
+            connection.getOutputStream().close();
+
+            InputStream responseStream = connection.getInputStream();
+            String body = StringUtils.inputStreamToString(responseStream);
+            responseStream.close();
+            response  = JSON.std.mapFrom(body);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return response;
     }
 }

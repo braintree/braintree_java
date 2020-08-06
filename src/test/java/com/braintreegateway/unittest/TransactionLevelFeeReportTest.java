@@ -1,10 +1,11 @@
-package com.braintreegateway;
+package com.braintreegateway.unittest;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Map;
 
+import com.braintreegateway.TransactionLevelFeeReport;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

@@ -1,5 +1,6 @@
-package com.braintreegateway;
+package com.braintreegateway.unittest;
 
+import com.braintreegateway.RequestBuilder;
 import org.junit.Test;
 
 import java.util.ArrayList;

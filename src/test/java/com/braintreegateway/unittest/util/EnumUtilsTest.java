@@ -1,7 +1,8 @@
-package com.braintreegateway.util;
+package com.braintreegateway.unittest.util;
 
 import com.braintreegateway.CreditCard;
 import com.braintreegateway.Transaction;
+import com.braintreegateway.util.EnumUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

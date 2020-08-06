@@ -46,6 +46,7 @@ public class TransactionRequest extends Request {
     private String venmoSdkPaymentMethodCode;
     private String paymentMethodNonce;
     private BigDecimal serviceFeeAmount;
+    private String productSku;
 
     private String threeDSecureToken;
     private Boolean threeDSecureTransaction;
@@ -101,6 +102,11 @@ public class TransactionRequest extends Request {
 
     public TransactionRequest serviceFeeAmount(BigDecimal fee) {
         serviceFeeAmount = fee;
+        return this;
+    }
+
+    public TransactionRequest productSku(String productSku) {
+        this.productSku = productSku;
         return this;
     }
 
@@ -348,6 +354,7 @@ public class TransactionRequest extends Request {
             addElement("sharedShippingAddressId", sharedShippingAddressId).
             addElement("sharedBillingAddressId", sharedBillingAddressId).
             addElement("serviceFeeAmount", serviceFeeAmount).
+            addElement("productSku", productSku).
             addElement("riskData", riskDataTransactionRequest).
             addElement("externalVault", externalVaultRequest);
 

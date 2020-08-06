@@ -546,4 +546,40 @@ public class CreditCardVerificationIT extends IntegrationTest {
                     get(0).
                     getCode());
     }
+
+    @Test
+    public void createVerificationWithVisaReturnsNetworkTransactionId() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                cvv("123").
+                done().
+            options().
+                amount("5.00").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+        CreditCardVerification verification = result.getTarget();
+        assertNotNull(verification.getNetworkTransactionId());
+    }
+
+    @Test
+    public void createVerificationWithMasterCardReturnsNetworkTransactionId() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                cvv("123").
+                done().
+            options().
+                amount("5.00").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+        CreditCardVerification verification = result.getTarget();
+        assertNotNull(verification.getNetworkTransactionId());
+    }
 }

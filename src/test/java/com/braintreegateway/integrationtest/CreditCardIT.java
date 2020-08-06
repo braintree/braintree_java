@@ -1279,4 +1279,22 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertEquals("Unknown", card.getIssuingBank());
         assertEquals("Unknown", card.getProductId());
     }
+
+    @Test
+    public void findNetworkTokenizedCreditCard() {
+        assertTrue(gateway.creditCard().find("network_tokenized_credit_card").isNetworkTokenized());
+    }
+
+    @Test
+    public void findNonNetworkTokenizedCreditCard() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            number("5105105105105100").
+            expirationDate("05/12");
+        CreditCard card = gateway.creditCard().create(request).getTarget();
+
+        assertFalse(gateway.creditCard().find(card.getToken()).isNetworkTokenized());
+    }
 }

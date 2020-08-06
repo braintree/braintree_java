@@ -1,3 +1,22 @@
+## 3.1.0
+* Add `RISK_THRESHOLD` to `GatewayRejectionReason`
+* Add `networkTransactionId` to `CreditCardVerification`
+* Add `productSku` to `TransactionRequest`
+* Add `shippingMethod` and `phoneNumber` to `AddressRequest`, `TransactionAddressRequest`
+* Add `customerDeviceId`, `customerLocationZip`, and `customerTenure` to `AddressRequest`, `TransactionAddressRequest`
+* Add validation error codes:
+  * `TRANSACTION_PRODUCT_SKU_IS_INVALID`
+  * `TRANSACTION_SHIPPING_PHONE_NUMBER_IS_INVALID`
+  * `TRANSACTION_BILLING_PHONE_NUMBER_IS_INVALID`
+  * `RISK_DATA_CUSTOMER_BROWSER_IS_TOO_LONG`
+  * `RISK_DATA_CUSTOMER_DEVICE_ID_IS_TOO_LONG`
+  * `RISK_DATA_CUSTOMER_LOCATION_ZIP_INVALID_CHARACTERS`
+  * `RISK_DATA_CUSTOMER_LOCATION_ZIP_IS_INVALID`
+  * `RISK_DATA_CUSTOMER_LOCATION_ZIP_IS_TOO_LONG`
+  * `RISK_DATA_CUSTOMER_TENURE_IS_TOO_LONG`
+* Add `isProcessedWithNetworkToken` to `Transaction`
+* Add `isNetworkTokenized` to `CreditCard`
+
 ## 3.0.0
 * Add `RequestTimeoutException` and `GatewayTimeoutException`
 * Breaking Changes:

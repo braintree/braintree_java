@@ -5,7 +5,10 @@ package com.braintreegateway;
  */
 public class RiskDataTransactionRequest extends Request {
     private String customerBrowser;
+    private String customerDeviceId;
     private String customerIP;
+    private String customerLocationZip;
+    private Integer customerTenure;
     private TransactionRequest parent;
 
     public RiskDataTransactionRequest() {
@@ -24,8 +27,23 @@ public class RiskDataTransactionRequest extends Request {
         return this;
     }
 
+    public RiskDataTransactionRequest customerDeviceId(String deviceId) {
+        this.customerDeviceId = deviceId;
+        return this;
+    }
+
     public RiskDataTransactionRequest customerIP(String ip) {
         this.customerIP = ip;
+        return this;
+    }
+
+    public RiskDataTransactionRequest customerLocationZip(String locationZip) {
+        this.customerLocationZip = locationZip;
+        return this;
+    }
+
+    public RiskDataTransactionRequest customerTenure(Integer tenure) {
+        this.customerTenure = tenure;
         return this;
     }
 
@@ -47,6 +65,9 @@ public class RiskDataTransactionRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root).
             addElement("customerBrowser", customerBrowser).
-            addElement("customerIP", customerIP);
+            addElement("customerDeviceId", customerDeviceId).
+            addElement("customerIP", customerIP).
+            addElement("customerLocationZip", customerLocationZip).
+            addElement("customerTenure", customerTenure);
     }
 }

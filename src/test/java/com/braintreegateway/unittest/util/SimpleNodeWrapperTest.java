@@ -1,5 +1,8 @@
-package com.braintreegateway.util;
+package com.braintreegateway.unittest.util;
 
+import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.SimpleNodeWrapper;
+import com.braintreegateway.util.StringUtils;
 import org.junit.Test;
 
 import java.math.BigDecimal;

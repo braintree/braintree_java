@@ -185,6 +185,6 @@ public class HttpTestIT extends IntegrationTest {
     }
 
     private void startSSLServer() throws Exception {
-        new ProcessBuilder("java", "com.braintreegateway.util.HttpsTest").directory(new File("target/test-classes")).start(); Thread.sleep(2000);
+        new ProcessBuilder("java", "com.braintreegateway.unittest.util.HttpsTest").directory(new File("target/test-classes")).start(); Thread.sleep(2000);
     }
 }

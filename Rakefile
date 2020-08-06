@@ -13,9 +13,35 @@ task :compile do
 end
 
 namespace :test do
+
+  # Usage:
+  #   rake test:unit
+  #   rake test:unit[ConfigurationTest]
+  #   rake test:unit[ConfigurationTest,testStringEnvironmentConstructor]
   desc "run unit tests"
-  task :unit do
-    sh "#{mvn} verify -DskipITs"
+  task :unit, [:file_name, :test_name] do |task, args|
+    if args.file_name.nil?
+      sh "#{mvn} test"
+    elsif args.test_name.nil?
+      sh "#{mvn} test -Dtest=com.braintreegateway.unittest.#{args.file_name}"
+    else
+      sh "#{mvn} test -Dtest=com.braintreegateway.unittest.#{args.file_name}##{args.test_name}"
+    end
+  end
+
+  # Usage:
+  #   rake test:integration
+  #   rake test:integration[PlanIT]
+  #   rake test:integration[PlanIT,returnsAllPlans]
+  desc "run integration tests"
+  task :integration, [:file_name, :test_name] do |task, args|
+    if args.file_name.nil?
+      sh "#{mvn} verify -DskipUTs"
+    elsif args.test_name.nil?
+      sh "#{mvn} verify -DskipUTs -Dit.test=com.braintreegateway.integrationtest.#{args.file_name}"
+    else
+      sh "#{mvn} verify -DskipUTs -Dit.test=com.braintreegateway.integrationtest.#{args.file_name}##{args.test_name}"
+    end
   end
 
   desc "run unit and integration tests"
@@ -30,16 +56,4 @@ desc "compile, test, build a jar"
 task :jar do
   sh "#{mvn} verify package"
   sh "cp target/braintree-java-*.jar ./"
-end
-
-# e.g. rake single_test testclass=com.braintreegateway.integrationtest.TransactionIT
-# OR rake single_test testclass=com.braintreegateway.integrationtest.TransactionIT#sale_is_success
-desc "run a single unit or integration test class"
-task :single_test do
-  test_class = ENV['testclass']
-  if test_class.include? ".integrationtest."
-    sh "#{mvn} verify -Dit.test=#{test_class}"
-  else
-    sh "#{mvn} test -Dtest=#{test_class}"
-  end
 end

@@ -1,5 +1,9 @@
-package com.braintreegateway;
+package com.braintreegateway.unittest;
 
+import com.braintreegateway.BraintreeGateway;
+import com.braintreegateway.ClientTokenOptionsRequest;
+import com.braintreegateway.ClientTokenRequest;
+import com.braintreegateway.Environment;
 import org.junit.Test;
 import org.junit.Before;
 

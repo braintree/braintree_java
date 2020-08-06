@@ -1,5 +1,6 @@
-package com.braintreegateway.util;
+package com.braintreegateway.unittest.util;
 
+import com.braintreegateway.util.Crypto;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
