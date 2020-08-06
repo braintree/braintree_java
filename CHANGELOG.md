@@ -1,5 +1,5 @@
-## Unreleased
-* Add `RISK_THRESHOLD` to * GatewayRejectionReason
+## 3.1.0
+* Add `RISK_THRESHOLD` to `GatewayRejectionReason`
 * Add `networkTransactionId` to `CreditCardVerification`
 * Add `productSku` to `TransactionRequest`
 * Add `shippingMethod` and `phoneNumber` to `AddressRequest`, `TransactionAddressRequest`
