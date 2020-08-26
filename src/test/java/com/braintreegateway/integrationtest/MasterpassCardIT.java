@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 import static org.junit.Assert.*;
 
+// NEXT_MAJOR_VERSION - remove Masterpass
 public class MasterpassCardIT extends IntegrationTest {
 
     @Test

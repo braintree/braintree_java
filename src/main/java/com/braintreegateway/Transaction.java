@@ -499,6 +499,7 @@ public class Transaction {
         return androidPayDetails;
     }
 
+    @Deprecated
     public AmexExpressCheckoutDetails getAmexExpressCheckoutDetails() {
         return amexExpressCheckoutDetails;
     }
@@ -519,6 +520,7 @@ public class Transaction {
         return visaCheckoutCardDetails;
     }
 
+    @Deprecated
     public MasterpassCardDetails getMasterpassCardDetails() {
         return masterpassCardDetails;
     }

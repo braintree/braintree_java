@@ -1,3 +1,7 @@
+## unreleased
+* Deprecate `MasterpassCard` payment method
+* Deprecate `AmexExpressCheckoutCard` payment method
+
 ## 3.1.0
 * Add `RISK_THRESHOLD` to `GatewayRejectionReason`
 * Add `networkTransactionId` to `CreditCardVerification`

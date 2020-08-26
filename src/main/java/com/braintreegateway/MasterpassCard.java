@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+@Deprecated
 public class MasterpassCard implements PaymentMethod {
 
     private Address billingAddress;

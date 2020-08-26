@@ -2,6 +2,7 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 
+@Deprecated
 public class MasterpassCardDetails {
     private String bin;
     private String cardType;
