@@ -62,11 +62,15 @@ public class CustomerRequest extends Request {
         return this;
     }
 
+    @Deprecated
+    // Merchants should be using deviceData only
     public CustomerRequest deviceSessionId(String deviceSessionId) {
         this.deviceSessionId = deviceSessionId;
         return this;
     }
 
+    @Deprecated
+    // Merchants should be using deviceData only
     public CustomerRequest fraudMerchantId(String fraudMerchantId) {
         this.fraudMerchantId = fraudMerchantId;
         return this;
@@ -166,7 +170,8 @@ public class CustomerRequest extends Request {
             addElement("paymentMethodNonce", paymentMethodNonce).
             addElement("defaultPaymentMethodToken", defaultPaymentMethodToken).
             addElement("creditCard", creditCardRequest).
-            addElement("options", optionsRequest);
+            addElement("options", optionsRequest).
+            addElement("riskData", riskDataCustomerRequest);
 
         if (customFields.size() > 0) {
             builder.addElement("customFields", customFields);
