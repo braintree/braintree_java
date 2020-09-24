@@ -3,6 +3,7 @@
 * Deprecate `AmexExpressCheckoutCard` payment method
 * Deprecate `deviceSessionId` and `fraudMerchantId` in `CreditCardRequest`, `CustomerRequest`, `PaymentMethodRequest`, and `TransactionRequest` classes
 * Fix issue where risk data was not included in `CustomerRequest` (fixes #85)
+* Add `getInstallmentCount()` method to `dispute.getTransaction()` on dispute webhooks
 
 ## 3.1.0
 * Add `RISK_THRESHOLD` to `GatewayRejectionReason`

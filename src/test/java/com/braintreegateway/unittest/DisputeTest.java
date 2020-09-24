@@ -61,6 +61,7 @@ public class DisputeTest {
         "  <id>123456</id>\n " +
         "  <amount>100.00</amount>\n " +
         "  <created-at>2017-06-21T20:44:41Z</created-at>\n " +
+        "  <installment-count nil=\"true\"/>\n " +
         "  <order-id nil=\"true\"/>\n " +
         "  <purchase-order-number nil=\"true\"/>\n " +
         "  <payment-instrument-subtype>Visa</payment-instrument-subtype>\n " +
@@ -256,6 +257,7 @@ public class DisputeTest {
             "    <id>123456</id>\n " +
             "    <amount>100.00</amount>\n " +
             "    <created-at>2017-06-21T20:44:41Z</created-at>\n " +
+            "    <installment-count>2</installment-count>\n " +
             "    <order-id>ORDER-A1</order-id>\n " +
             "    <purchase-order-number>PO-ABC</purchase-order-number>\n " +
             "    <payment-instrument-subtype>Visa</payment-instrument-subtype>\n " +
@@ -273,6 +275,7 @@ public class DisputeTest {
         assertEquals(dispute.getTransaction().getCreatedAt().get(Calendar.HOUR), 8);
         assertEquals(dispute.getTransaction().getCreatedAt().get(Calendar.MINUTE), 44);
         assertEquals(dispute.getTransaction().getCreatedAt().get(Calendar.SECOND), 41);
+        assertEquals(dispute.getTransaction().getInstallmentCount(), "2");
         assertEquals(dispute.getTransaction().getOrderId(), "ORDER-A1");
         assertEquals(dispute.getTransaction().getPurchaseOrderNumber(), "PO-ABC");
         assertEquals(dispute.getTransaction().getPaymentInstrumentSubtype(), "Visa");
