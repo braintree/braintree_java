@@ -1,12 +1,12 @@
 package com.braintreegateway;
 
-import com.braintreegateway.Transaction.Type;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.braintreegateway.Transaction.Type;
 
 /**
  * Provides a fluent interface to build up requests around {@link Transaction Transactions}.
@@ -32,6 +32,7 @@ public class TransactionRequest extends Request {
     private String shippingAddressId;
     private String billingAddressId;
     private TransactionApplePayCardRequest applePayCardRequest;
+    private TransactionAndroidPayCardRequest androidPayCardRequest;
     private TransactionDescriptorRequest descriptorRequest;
     private TransactionIndustryRequest industryRequest;
     private TransactionAddressRequest shippingAddressRequest;
@@ -293,6 +294,11 @@ public class TransactionRequest extends Request {
         return applePayCardRequest;
     }
 
+    public TransactionAndroidPayCardRequest androidPayCardRequest() {
+        androidPayCardRequest = new TransactionAndroidPayCardRequest(this);
+        return androidPayCardRequest;
+    }
+
     public ExternalVaultRequest externalVault() {
         ExternalVaultRequest externalVaultRequest = new ExternalVaultRequest(this);
         this.externalVaultRequest = externalVaultRequest;
@@ -339,6 +345,7 @@ public class TransactionRequest extends Request {
             addElement("billingAddressId", billingAddressId).
             addElement("creditCard", creditCardRequest).
             addElement("applePayCard", applePayCardRequest).
+            addElement("androidPayCard", androidPayCardRequest).
             addElement("paypalAccount", paypalRequest).
             addElement("customer", customerRequest).
             addElement("descriptor", descriptorRequest).

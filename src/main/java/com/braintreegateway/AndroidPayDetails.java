@@ -2,6 +2,7 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 
+// NEXT_MAJOR_VERSION - rename this to GooglePayDetails
 public class AndroidPayDetails {
     private String cardType;
     private String last4;

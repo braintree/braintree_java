@@ -912,6 +912,34 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithGooglePayCardParams() {
+        TransactionRequest request = new TransactionRequest()
+          .amount(TransactionAmount.AUTHORIZE.amount)
+          .androidPayCardRequest()
+          .cryptogram("AAAAAAAA/COBt84dnIEcwAA3gAAGhgEDoLABAAhAgAABAAAALnNCLw==")
+          .eciIndicator("05")
+          .expirationMonth("10")
+          .expirationYear("14")
+          .googleTransactionId("25469d622c1dd37cb1a403c6d438e850")
+          .number("4012888888881881")
+          .sourceCardLastFour("1881")
+          .sourceCardType("Visa")
+          .done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(PaymentInstrumentType.ANDROID_PAY_CARD, transaction.getPaymentInstrumentType());
+        assertNotNull(transaction.getAndroidPayDetails());
+        assertEquals("10", transaction.getAndroidPayDetails().getExpirationMonth());
+        assertEquals("14", transaction.getAndroidPayDetails().getExpirationYear());
+        assertEquals("25469d622c1dd37cb1a403c6d438e850", transaction.getAndroidPayDetails().getGoogleTransactionId());
+        assertEquals("1881", transaction.getAndroidPayDetails().getLast4());
+        assertEquals("Visa", transaction.getAndroidPayDetails().getCardType());
+    }
+
+    @Test
     public void saleWithAndroidPayProxyCardNonce() {
         String androidPayCardNonce = Nonce.AndroidPayDiscover;
 
