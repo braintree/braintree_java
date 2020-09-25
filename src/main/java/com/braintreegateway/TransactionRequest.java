@@ -1,12 +1,11 @@
 package com.braintreegateway;
 
+import com.braintreegateway.Transaction.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.braintreegateway.Transaction.Type;
 
 /**
  * Provides a fluent interface to build up requests around {@link Transaction Transactions}.

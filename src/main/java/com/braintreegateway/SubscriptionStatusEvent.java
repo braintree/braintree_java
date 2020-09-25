@@ -4,7 +4,6 @@ import com.braintreegateway.Subscription.Source;
 import com.braintreegateway.Subscription.Status;
 import com.braintreegateway.util.EnumUtils;
 import com.braintreegateway.util.NodeWrapper;
-
 import java.math.BigDecimal;
 import java.util.Calendar;
 

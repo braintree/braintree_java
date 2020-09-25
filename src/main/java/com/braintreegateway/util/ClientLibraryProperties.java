@@ -1,7 +1,6 @@
 package com.braintreegateway.util;
 
 import com.braintreegateway.exceptions.UnexpectedException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;

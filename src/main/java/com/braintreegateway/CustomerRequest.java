@@ -3,7 +3,6 @@ package com.braintreegateway;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * Provides a fluent interface to build up requests around {@link Customer Customers}.
  */

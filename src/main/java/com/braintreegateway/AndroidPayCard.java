@@ -1,9 +1,9 @@
 package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.ArrayList;
 
 // NEXT_MAJOR_VERSION - rename this to GooglePayCard
 public class AndroidPayCard implements PaymentMethod {

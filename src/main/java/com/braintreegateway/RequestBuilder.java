@@ -2,7 +2,6 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.QueryString;
 import com.braintreegateway.util.StringUtils;
-
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;

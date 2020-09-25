@@ -17,13 +17,12 @@
 
 package com.braintreegateway.org.apache.commons.codec.binary;
 
-import java.io.UnsupportedEncodingException;
-
 import com.braintreegateway.org.apache.commons.codec.BinaryDecoder;
 import com.braintreegateway.org.apache.commons.codec.BinaryEncoder;
 import com.braintreegateway.org.apache.commons.codec.CharEncoding;
 import com.braintreegateway.org.apache.commons.codec.DecoderException;
 import com.braintreegateway.org.apache.commons.codec.EncoderException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Hex encoder and decoder. The charset used for certain operation can be set, the default is set in

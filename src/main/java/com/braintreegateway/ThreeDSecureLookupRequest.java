@@ -1,11 +1,11 @@
 package com.braintreegateway;
 
+import com.braintreegateway.exceptions.UnexpectedException;
+import com.fasterxml.jackson.jr.ob.JSON;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.braintreegateway.exceptions.UnexpectedException;
-import com.fasterxml.jackson.jr.ob.JSON;
 
 public class ThreeDSecureLookupRequest extends Request {
     private ThreeDSecureLookupAdditionalInformation additionalInformation;

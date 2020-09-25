@@ -1,9 +1,9 @@
 package com.braintreegateway;
 
+import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.PaymentMethodParser;
-import com.braintreegateway.exceptions.NotFoundException;
 
 public class PaymentMethodGateway {
     private Http http;

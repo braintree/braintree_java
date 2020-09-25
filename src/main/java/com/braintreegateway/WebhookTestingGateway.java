@@ -2,7 +2,6 @@ package com.braintreegateway;
 
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 import com.braintreegateway.util.Sha1Hasher;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -1,12 +1,5 @@
 package com.braintreegateway.util;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.braintreegateway.Configuration;
 import com.braintreegateway.Request;
 import com.braintreegateway.ValidationError;
@@ -14,13 +7,19 @@ import com.braintreegateway.ValidationErrorCode;
 import com.braintreegateway.ValidationErrors;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.AuthorizationException;
-import com.braintreegateway.exceptions.ServiceUnavailableException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.ServerException;
+import com.braintreegateway.exceptions.ServiceUnavailableException;
 import com.braintreegateway.exceptions.TooManyRequestsException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.fasterxml.jackson.jr.ob.JSON;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class GraphQLClient extends Http {
     private Configuration configuration;

@@ -1,8 +1,8 @@
 package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UsBankAccount implements PaymentMethod {
     private String routingNumber;

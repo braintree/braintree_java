@@ -17,9 +17,8 @@
 
 package com.braintreegateway.org.apache.commons.codec.binary;
 
-import java.io.UnsupportedEncodingException;
-
 import com.braintreegateway.org.apache.commons.codec.CharEncoding;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Converts String to and from bytes using the encodings required by the Java specification. These encodings are specified in <a

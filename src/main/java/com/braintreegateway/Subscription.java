@@ -2,7 +2,6 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.EnumUtils;
 import com.braintreegateway.util.NodeWrapper;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;

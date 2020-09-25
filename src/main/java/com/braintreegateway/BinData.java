@@ -1,10 +1,10 @@
 package com.braintreegateway;
 
-import java.util.Map;
+import static com.braintreegateway.util.EnumUtils.findByToString;
+
 import com.braintreegateway.CreditCard.*;
 import com.braintreegateway.util.NodeWrapper;
-
-import static com.braintreegateway.util.EnumUtils.findByToString;
+import java.util.Map;
 
 public class BinData {
     private String commercial;

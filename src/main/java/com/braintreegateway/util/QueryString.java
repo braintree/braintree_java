@@ -1,7 +1,6 @@
 package com.braintreegateway.util;
 
 import com.braintreegateway.Request;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;

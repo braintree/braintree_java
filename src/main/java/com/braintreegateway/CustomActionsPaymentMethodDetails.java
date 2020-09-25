@@ -1,10 +1,9 @@
 package com.braintreegateway;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-
 import com.braintreegateway.util.NodeWrapper;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class CustomActionsPaymentMethodDetails {
   private String token;

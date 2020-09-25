@@ -1,7 +1,6 @@
 package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
-
 import java.util.*;
 
 public class Customer {

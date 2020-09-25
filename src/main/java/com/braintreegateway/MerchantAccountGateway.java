@@ -1,9 +1,8 @@
 package com.braintreegateway;
 
+import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.exceptions.NotFoundException;
-
 import java.util.ArrayList;
 import java.util.List;
 

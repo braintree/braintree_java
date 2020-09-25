@@ -17,12 +17,11 @@
 
 package com.braintreegateway.org.apache.commons.codec.binary;
 
-import java.math.BigInteger;
-
 import com.braintreegateway.org.apache.commons.codec.BinaryDecoder;
 import com.braintreegateway.org.apache.commons.codec.BinaryEncoder;
 import com.braintreegateway.org.apache.commons.codec.DecoderException;
 import com.braintreegateway.org.apache.commons.codec.EncoderException;
+import java.math.BigInteger;
 
 /**
  * Provides Base64 encoding and decoding as defined by RFC 2045.

@@ -1,9 +1,8 @@
 package com.braintreegateway;
 
+import com.braintreegateway.util.NodeWrapper;
 import java.math.BigDecimal;
 import java.util.Calendar;
-
-import com.braintreegateway.util.NodeWrapper;
 
 public final class DisputeTransaction {
 

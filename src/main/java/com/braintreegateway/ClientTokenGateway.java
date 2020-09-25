@@ -1,9 +1,9 @@
 package com.braintreegateway;
 
-import java.util.ArrayList;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.StringUtils;
+import java.util.ArrayList;
 
 /**
  * Generates client tokens, which are used to authenticate requests made directly

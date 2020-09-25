@@ -1,14 +1,13 @@
 package com.braintreegateway;
 
-import com.braintreegateway.util.NodeWrapper;
+import static com.braintreegateway.util.EnumUtils.findByToString;
 
+import com.braintreegateway.util.NodeWrapper;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Comparator;
 import java.util.Collections;
-
-import static com.braintreegateway.util.EnumUtils.findByToString;
+import java.util.Comparator;
+import java.util.List;
 
 public class CreditCard implements PaymentMethod {
     public static final String VALUE_YES = "Yes";

@@ -1,4 +1,5 @@
 package com.braintreegateway;
+
 import java.util.List;
 
 public class MerchantRequest extends Request {

@@ -2,7 +2,6 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.StringUtils;
-
 import java.util.*;
 
 /**

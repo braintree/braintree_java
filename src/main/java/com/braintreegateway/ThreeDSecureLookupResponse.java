@@ -1,9 +1,9 @@
 package com.braintreegateway;
 
+import com.braintreegateway.exceptions.UnexpectedException;
+import com.fasterxml.jackson.jr.ob.JSON;
 import java.io.IOException;
 import java.util.Map;
-import com.fasterxml.jackson.jr.ob.JSON;
-import com.braintreegateway.exceptions.UnexpectedException;
 
 public class ThreeDSecureLookupResponse {
     private ThreeDSecureLookup lookup;
