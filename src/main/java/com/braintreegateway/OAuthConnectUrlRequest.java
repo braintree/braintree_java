@@ -51,8 +51,12 @@ public class OAuthConnectUrlRequest extends Request {
     }
 
     private Boolean isSignupOnly() {
-        if (this.signupOnly == null) { return false; }
-        if (this.loginOnly == null) { return this.signupOnly; }
+        if (this.signupOnly == null) {
+            return false;
+        }
+        if (this.loginOnly == null) {
+            return this.signupOnly;
+        }
         return this.signupOnly && !this.loginOnly;
     }
 

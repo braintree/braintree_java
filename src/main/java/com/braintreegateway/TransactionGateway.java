@@ -53,8 +53,9 @@ public class TransactionGateway {
      * @return the {@link Transaction} or raises a {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Transaction find(String id) {
-        if(id == null || id.trim().equals(""))
+        if(id == null || id.trim().equals("")) {
             throw new NotFoundException();
+        }
         return new Transaction(http.get(configuration.getMerchantPath() + "/transactions/" + id));
     }
 

@@ -70,8 +70,9 @@ public class CreditCardGateway {
      *         {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public CreditCard find(String token) {
-        if(token == null || token.trim().equals(""))
+        if(token == null || token.trim().equals("")) {
             throw new NotFoundException();
+        }
 
         return new CreditCard(http.get(configuration.getMerchantPath() + "/payment_methods/credit_card/" + token));
     }
@@ -85,8 +86,9 @@ public class CreditCardGateway {
      *         {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public CreditCard fromNonce(String nonce) {
-        if(nonce == null || nonce.trim().equals(""))
+        if(nonce == null || nonce.trim().equals("")) {
             throw new NotFoundException();
+        }
 
         try {
           return new CreditCard(http.get(configuration.getMerchantPath() + "/payment_methods/from_nonce/" + nonce));

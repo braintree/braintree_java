@@ -6,7 +6,9 @@ public class ClientTokenOptionsRequest extends Request {
     private Boolean failOnDuplicatePaymentMethod;
     private ClientTokenRequest parent;
 
-    public ClientTokenOptionsRequest() {}
+    public ClientTokenOptionsRequest() {
+
+    }
 
     public ClientTokenOptionsRequest(ClientTokenRequest parent) {
         this.parent = parent;

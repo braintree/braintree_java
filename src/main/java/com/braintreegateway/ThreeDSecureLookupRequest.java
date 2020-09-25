@@ -21,7 +21,9 @@ public class ThreeDSecureLookupRequest extends Request {
     private Boolean exemptionRequested;
     private String merchantAccountId;
 
-    public ThreeDSecureLookupRequest() {}
+    public ThreeDSecureLookupRequest() {
+
+    }
 
     public ThreeDSecureLookupRequest additionalInformation(ThreeDSecureLookupAdditionalInformation additionalInformation) {
         this.additionalInformation = additionalInformation;
@@ -107,11 +109,17 @@ public class ThreeDSecureLookupRequest extends Request {
         return challengeRequested;
     }
 
-    private Boolean getExemptionRequested() { return exemptionRequested; }
+    private Boolean getExemptionRequested() {
+        return exemptionRequested;
+    }
 
-    private String getEmail() { return email; }
+    private String getEmail() {
+        return email;
+    }
 
-    private String getMerchantAccountId() { return merchantAccountId; }
+    private String getMerchantAccountId() {
+        return merchantAccountId;
+    }
 
     public String toJSON() {
         Map<String, Object> additionalInfo;

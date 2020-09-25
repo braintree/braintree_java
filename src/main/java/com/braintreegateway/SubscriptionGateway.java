@@ -61,8 +61,9 @@ public class SubscriptionGateway {
      * @return the {@link Subscription} or raises a {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Subscription find(String id) {
-        if(id == null || id.trim().equals(""))
+        if(id == null || id.trim().equals("")) {
             throw new NotFoundException();
+        }
         return new Subscription(http.get(configuration.getMerchantPath() + "/subscriptions/" + id));
     }
 

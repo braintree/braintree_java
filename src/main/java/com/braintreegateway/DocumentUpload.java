@@ -9,10 +9,14 @@ public class DocumentUpload {
 
     private final String kind;
 
-    Kind(String kind) { this.kind = kind; }
+    Kind(String kind) {
+      this.kind = kind;
+    }
 
     @Override
-    public String toString() { return kind; }
+    public String toString() {
+      return kind;
+    }
   }
 
   private final String id;

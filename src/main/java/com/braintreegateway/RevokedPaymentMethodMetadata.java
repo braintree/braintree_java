@@ -10,7 +10,9 @@ public class RevokedPaymentMethodMetadata {
     private PaymentMethod revokedPaymentMethod;
 
     public RevokedPaymentMethodMetadata(NodeWrapper node) {
-        if (node.getChildren().size() == 0) throw new UnexpectedException("Couldn't parse webhook");
+        if (node.getChildren().size() == 0) {
+            throw new UnexpectedException("Couldn't parse webhook");
+        }
 
         revokedPaymentMethod = PaymentMethodParser.parsePaymentMethod(node.getChildren().get(0)).getTarget();
         customerId = revokedPaymentMethod.getCustomerId();

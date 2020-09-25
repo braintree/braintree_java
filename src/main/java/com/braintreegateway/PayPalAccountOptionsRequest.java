@@ -4,7 +4,9 @@ public class PayPalAccountOptionsRequest extends Request {
     private Boolean makeDefault;
     private PayPalAccountRequest parent;
 
-    public PayPalAccountOptionsRequest() {}
+    public PayPalAccountOptionsRequest() {
+
+    }
 
     public PayPalAccountOptionsRequest(PayPalAccountRequest parent) {
         this.parent = parent;

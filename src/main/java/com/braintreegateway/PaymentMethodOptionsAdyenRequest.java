@@ -5,7 +5,9 @@ public class PaymentMethodOptionsAdyenRequest extends Request {
     private Boolean overwriteBrand;
     private String selectedBrand;
 
-    public PaymentMethodOptionsAdyenRequest() {}
+    public PaymentMethodOptionsAdyenRequest() {
+
+    }
 
     public PaymentMethodOptionsAdyenRequest(PaymentMethodOptionsRequest parent) {
         this.parent = parent;

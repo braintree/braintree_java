@@ -255,8 +255,7 @@ public class Http {
                 outputStream.write(buffer, 0, bytesRead);
             }
             outputStream.flush();
-        }
-        finally {
+        } finally {
             inputStream.close();
         }
 

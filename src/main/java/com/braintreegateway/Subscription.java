@@ -253,8 +253,9 @@ public class Subscription {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof Subscription))
+        if (!(other instanceof Subscription)) {
             return false;
+        }
 
         return this.getId().equals(((Subscription)other).getId());
     }

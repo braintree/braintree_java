@@ -1,7 +1,9 @@
 package com.braintreegateway;
 
 public class ExternalVault {
-    private ExternalVault() {}
+    private ExternalVault() {
+
+    }
 
     public enum Status {
         WILL_VAULT("will_vault"),

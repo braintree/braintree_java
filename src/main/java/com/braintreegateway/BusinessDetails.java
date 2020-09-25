@@ -13,10 +13,11 @@ public final class BusinessDetails {
         legalName = node.findString("legal-name");
         taxId = node.findString("tax-id");
         NodeWrapper addressNode = node.findFirst("address");
-        if (addressNode != null)
+        if (addressNode != null) {
             this.address = new Address(addressNode);
-        else
+        } else {
             this.address = null;
+        }
     }
 
     public String getDbaName() {

@@ -5,7 +5,9 @@ public class PayPalOnlyAccountRequest extends Request {
     private String clientSecret;
     private MerchantRequest parent;
 
-    public PayPalOnlyAccountRequest() {}
+    public PayPalOnlyAccountRequest() {
+
+    }
 
     public PayPalOnlyAccountRequest(MerchantRequest parent) {
         this.parent = parent;

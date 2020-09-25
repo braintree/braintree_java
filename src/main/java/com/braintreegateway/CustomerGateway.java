@@ -82,8 +82,9 @@ public class CustomerGateway {
      *         {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Customer find(String id) {
-        if(id == null || id.trim().equals(""))
+        if(id == null || id.trim().equals("")) {
             throw new NotFoundException();
+        }
 
         return new Customer(http.get(configuration.getMerchantPath() + "/customers/" + id));
     }
@@ -99,11 +100,13 @@ public class CustomerGateway {
      *         {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Customer find(String id, String associationFilterId) {
-        if(id == null || id.trim().equals(""))
+        if(id == null || id.trim().equals("")) {
             throw new NotFoundException();
+        }
 
-        if(associationFilterId == null || associationFilterId.isEmpty())
+        if(associationFilterId == null || associationFilterId.isEmpty()) {
             throw new NotFoundException();
+        }
 
         String queryParams = "?association_filter_id=" + associationFilterId;
         return new Customer(http.get(configuration.getMerchantPath() + "/customers/" + id + queryParams));

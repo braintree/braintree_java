@@ -19,10 +19,11 @@ public final class IndividualDetails {
         phone = node.findString("phone");
         ssnLast4 = node.findString("ssn-last-4");
         NodeWrapper addressNode = node.findFirst("address");
-        if (addressNode != null)
+        if (addressNode != null) {
             this.address = new Address(addressNode);
-        else
+        } else {
             this.address = null;
+        }
     }
 
     public String getFirstName() {
