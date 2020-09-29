@@ -74,12 +74,6 @@
             <version>4.13</version>
             <scope>test</scope>
         </dependency>
-      <dependency>
-        <groupId>xmlunit</groupId>
-        <artifactId>xmlunit</artifactId>
-        <version>1.6</version>
-        <scope>test</scope>
-      </dependency>
         <dependency>
           <groupId>xmlunit</groupId>
           <artifactId>xmlunit</artifactId>
@@ -190,6 +184,12 @@
             </resource>
         </resources>
         <plugins>
+          <plugin>
+            <!--required for checkstyle-->
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>3.9.1</version>
+          </plugin>
            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -277,8 +277,14 @@
 
     <reporting>
         <plugins>
-
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.1.1</version>
+            <configuration>
+              <configLocation>google_checks.xml</configLocation>
+            </configuration>
+          </plugin>
         </plugins>
-
     </reporting>
 </project>
