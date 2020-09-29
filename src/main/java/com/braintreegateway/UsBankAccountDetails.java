@@ -13,7 +13,7 @@ public class UsBankAccountDetails {
     private AchMandate achMandate;
 
     public UsBankAccountDetails(NodeWrapper node) {
-        this.routingNumber= node.findString("routing-number");
+        this.routingNumber = node.findString("routing-number");
         this.last4 = node.findString("last-4");
         this.accountType = node.findString("account-type");
         this.accountHolderName = node.findString("account-holder-name");

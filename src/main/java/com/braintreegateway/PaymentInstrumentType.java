@@ -1,7 +1,7 @@
 package com.braintreegateway;
 
 public final class PaymentInstrumentType {
-    public static final String PAYPAL_ACCOUNT= "paypal_account";
+    public static final String PAYPAL_ACCOUNT = "paypal_account";
     public static final String PAYPAL_HERE = "paypal_here";
     public static final String CREDIT_CARD = "credit_card";
     public static final String APPLE_PAY_CARD = "apple_pay_card";

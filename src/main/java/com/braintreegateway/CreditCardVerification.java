@@ -66,12 +66,12 @@ public class CreditCardVerification {
 
 
         NodeWrapper creditCardNode = node.findFirst("credit-card");
-        if(creditCardNode != null) {
+        if (creditCardNode != null) {
             this.creditCard = new CreditCard(creditCardNode);
         }
 
         NodeWrapper billingAddressNode = node.findFirst("billing");
-        if(billingAddressNode != null) {
+        if (billingAddressNode != null) {
             this.billingAddress = new Address(billingAddressNode);
         }
 
@@ -122,7 +122,7 @@ public class CreditCardVerification {
         return graphqlId;
     }
 
-    public RiskData getRiskData(){
+    public RiskData getRiskData() {
         return riskData;
 
     }

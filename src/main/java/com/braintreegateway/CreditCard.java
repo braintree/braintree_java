@@ -233,7 +233,7 @@ public class CreditCard implements PaymentMethod {
     }
 
     private CreditCardVerification findNewestVerification(List<NodeWrapper> verificationNodes) {
-        if(verificationNodes.size() > 0) {
+        if (verificationNodes.size() > 0) {
             Collections.sort(verificationNodes, new Comparator<NodeWrapper>() {
                 public int compare(NodeWrapper node1, NodeWrapper node2) {
                     Calendar createdAt1 = node1.findDateTime("created-at");

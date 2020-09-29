@@ -65,37 +65,37 @@ public class TransactionIndustryDataRequest extends Request {
         return this;
     }
 
-    public TransactionIndustryDataRequest departureDate(String departureDate){
+    public TransactionIndustryDataRequest departureDate(String departureDate) {
         this.departureDate = departureDate;
         return this;
     }
 
-    public TransactionIndustryDataRequest lodgingCheckInDate(String lodgingCheckInDate){
+    public TransactionIndustryDataRequest lodgingCheckInDate(String lodgingCheckInDate) {
         this.lodgingCheckInDate = lodgingCheckInDate;
         return this;
     }
 
-    public TransactionIndustryDataRequest lodgingCheckOutDate(String lodgingCheckOutDate){
+    public TransactionIndustryDataRequest lodgingCheckOutDate(String lodgingCheckOutDate) {
         this.lodgingCheckOutDate = lodgingCheckOutDate;
         return this;
     }
 
-    public TransactionIndustryDataRequest lodgingName(String lodgingName){
+    public TransactionIndustryDataRequest lodgingName(String lodgingName) {
         this.lodgingName = lodgingName;
         return this;
     }
 
-    public TransactionIndustryDataRequest roomRate(String roomRate){
+    public TransactionIndustryDataRequest roomRate(String roomRate) {
         this.roomRate = roomRate;
         return this;
     }
 
-    public TransactionIndustryDataRequest roomRate(BigDecimal roomRate){
+    public TransactionIndustryDataRequest roomRate(BigDecimal roomRate) {
         this.roomRate = roomRate.toString();
         return this;
     }
 
-    public TransactionIndustryDataRequest roomTax(BigDecimal roomTax){
+    public TransactionIndustryDataRequest roomTax(BigDecimal roomTax) {
         this.roomTax = roomTax;
         return this;
     }

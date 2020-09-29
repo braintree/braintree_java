@@ -28,7 +28,7 @@ public class CreditCardVerificationGateway {
     }
 
     public CreditCardVerification find(String id) {
-        if(id == null || id.trim().equals("")) {
+        if (id == null || id.trim().equals("")) {
             throw new NotFoundException();
         }
 

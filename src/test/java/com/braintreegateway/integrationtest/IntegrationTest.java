@@ -95,7 +95,7 @@ public class IntegrationTest {
     }
 
     @Before
-    public void ignoreLogging(){
+    public void ignoreLogging() {
         if (this.gateway == null) {
             createGateway();
         }

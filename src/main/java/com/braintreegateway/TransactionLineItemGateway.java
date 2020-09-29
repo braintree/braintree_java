@@ -33,7 +33,7 @@ public class TransactionLineItemGateway {
      * @return the List&lt;TransactionLineItem&gt; or raises a com.braintreegateway.exceptions.NotFoundException.
      */
     public List<TransactionLineItem> findAll(String transactionId) {
-        if(transactionId == null || transactionId.trim().equals("")) {
+        if (transactionId == null || transactionId.trim().equals("")) {
             throw new NotFoundException();
         }
 

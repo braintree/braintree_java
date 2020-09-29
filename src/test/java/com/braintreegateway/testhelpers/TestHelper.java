@@ -479,9 +479,9 @@ public abstract class TestHelper {
     public static String generateInvalidUsBankAccountNonce() {
         String valid_characters = "bcdfghjkmnpqrstvwxyz23456789";
         String token = "tokenusbankacct";
-        for(int i=0; i < 4; i++) {
+        for (int i=0; i < 4; i++) {
             token += '_';
-            for(int j=0; j<6; j++) {
+            for (int j=0; j<6; j++) {
                 Integer pick = new Random().nextInt(valid_characters.length());
                 token += valid_characters.charAt(pick);
             }

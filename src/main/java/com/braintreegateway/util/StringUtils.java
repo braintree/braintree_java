@@ -57,7 +57,7 @@ public class StringUtils {
     }
 
     public static String join(Object[] tokens, String delimiter) {
-       if(tokens.length == 0) {
+       if (tokens.length == 0) {
            return "";
        }
 
@@ -65,10 +65,10 @@ public class StringUtils {
 
        boolean first = true;
        for(Object token : tokens) {
-         if(!first) {
-             joined.append(delimiter);
+         if (!first) {
+           joined.append(delimiter);
          } else {
-             first = false;
+           first = false;
          }
          joined.append(token);
        }
@@ -95,11 +95,11 @@ public class StringUtils {
 
     @SuppressWarnings("unchecked")
 	public static String toString(Object value) {
-        if(value instanceof Map) {
+        if (value instanceof Map) {
             return mapToString((Map<String, Object>) value);
-        } else if(value instanceof List) {
+        } else if (value instanceof List) {
             return listToString((List<Object>) value);
-        } else if(value == null) {
+        } else if (value == null) {
             return "null";
         } else {
             return value.toString().trim();
@@ -126,7 +126,7 @@ public class StringUtils {
               if (i < len) {
                   c = encodedString.charAt(i++);
                   if (c == 'u') {
-                      c = (char) Integer.parseInt(encodedString.substring(i,i+4),16);
+                      c = (char) Integer.parseInt(encodedString.substring(i,i + 4),16);
                       i += 4;
                   }
               }

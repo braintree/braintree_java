@@ -67,7 +67,7 @@ public class TransactionOptionsPayPalRequest extends Request {
             .addElement("payeeId", payeeId)
             .addElement("payeeEmail", payeeEmail);
 
-        if(!supplementaryData.isEmpty()) {
+        if (!supplementaryData.isEmpty()) {
             builder.addElement("supplementaryData", supplementaryData);
         }
 

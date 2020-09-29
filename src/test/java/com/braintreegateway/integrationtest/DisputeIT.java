@@ -393,7 +393,7 @@ public class DisputeIT extends IntegrationTest {
             .getAllValidationErrors();
 
         Set<ValidationErrorCode> codes = new HashSet<ValidationErrorCode>();
-        for(ValidationError e : errors) {
+        for (ValidationError e : errors) {
             codes.add(e.getCode());
         }
 
@@ -492,7 +492,7 @@ public class DisputeIT extends IntegrationTest {
         PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
             .search(request);
 
-        for(Dispute dispute : disputeCollection) {
+        for (Dispute dispute : disputeCollection) {
             disputes.add(dispute);
         }
 
@@ -508,7 +508,7 @@ public class DisputeIT extends IntegrationTest {
         PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
             .search(request);
 
-        for(Dispute dispute : disputeCollection) {
+        for (Dispute dispute : disputeCollection) {
             disputes.add(dispute);
         }
 
@@ -536,7 +536,7 @@ public class DisputeIT extends IntegrationTest {
         PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
             .search(request);
 
-        for(Dispute dispute : disputeCollection) {
+        for (Dispute dispute : disputeCollection) {
             disputes.add(dispute);
         }
 
@@ -553,7 +553,7 @@ public class DisputeIT extends IntegrationTest {
         PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
             .search(request);
 
-        for(Dispute dispute : disputeCollection) {
+        for (Dispute dispute : disputeCollection) {
             disputes.add(dispute);
         }
 
@@ -572,7 +572,7 @@ public class DisputeIT extends IntegrationTest {
         PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
             .search(request);
 
-        for(Dispute dispute : disputeCollection) {
+        for (Dispute dispute : disputeCollection) {
             disputes.add(dispute);
         }
 
@@ -594,7 +594,7 @@ public class DisputeIT extends IntegrationTest {
         PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
             .search(request);
 
-        for(Dispute dispute : disputeCollection) {
+        for (Dispute dispute : disputeCollection) {
             disputes.add(dispute);
         }
 
@@ -617,7 +617,7 @@ public class DisputeIT extends IntegrationTest {
         PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
             .search(request);
 
-        for(Dispute dispute : disputeCollection) {
+        for (Dispute dispute : disputeCollection) {
             disputes.add(dispute);
         }
 

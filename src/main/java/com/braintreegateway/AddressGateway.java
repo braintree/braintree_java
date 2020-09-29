@@ -53,7 +53,7 @@ public class AddressGateway {
      * @return the {@link Address} or raises a {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Address find(String customerId, String id) {
-        if(customerId == null || customerId.trim().equals("") || id == null || id.trim().equals("")) {
+        if (customerId == null || customerId.trim().equals("") || id == null || id.trim().equals("")) {
             throw new NotFoundException();
         }
 

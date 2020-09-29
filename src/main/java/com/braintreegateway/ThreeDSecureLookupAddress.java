@@ -62,7 +62,7 @@ public class ThreeDSecureLookupAddress {
     }
 
     public ThreeDSecureLookupAddress line3(String line3) {
-        this.line3= line3;
+        this.line3 = line3;
         return this;
     }
 

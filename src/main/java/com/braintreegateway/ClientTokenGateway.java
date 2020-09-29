@@ -61,7 +61,7 @@ public class ClientTokenGateway {
 
         if (invalidOptions.size() != 0) {
           String message = "Following arguments are invalid without customerId:";
-          for(String optionName: invalidOptions) {
+          for (String optionName: invalidOptions) {
             message += " " + optionName;
           }
           throw new IllegalArgumentException(message);

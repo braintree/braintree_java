@@ -32,15 +32,15 @@ public class GrantedPaymentInstrumentUpdate {
         return grantRecipientMerchantId;
     }
 
-    public String getPaymentMethodNonce(){
+    public String getPaymentMethodNonce() {
         return paymentMethodNonce;
     }
 
-    public String getToken(){
+    public String getToken() {
         return token;
     }
 
-    public List<String> getUpdatedFields(){
+    public List<String> getUpdatedFields() {
         return updatedFields;
     }
  }

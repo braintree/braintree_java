@@ -82,7 +82,7 @@ public class CustomerGateway {
      *         {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Customer find(String id) {
-        if(id == null || id.trim().equals("")) {
+        if (id == null || id.trim().equals("")) {
             throw new NotFoundException();
         }
 
@@ -100,11 +100,11 @@ public class CustomerGateway {
      *         {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Customer find(String id, String associationFilterId) {
-        if(id == null || id.trim().equals("")) {
+        if (id == null || id.trim().equals("")) {
             throw new NotFoundException();
         }
 
-        if(associationFilterId == null || associationFilterId.isEmpty()) {
+        if (associationFilterId == null || associationFilterId.isEmpty()) {
             throw new NotFoundException();
         }
 
