@@ -275,7 +275,7 @@ public class DisputeTest {
         assertEquals(dispute.getTransaction().getCreatedAt().get(Calendar.HOUR), 8);
         assertEquals(dispute.getTransaction().getCreatedAt().get(Calendar.MINUTE), 44);
         assertEquals(dispute.getTransaction().getCreatedAt().get(Calendar.SECOND), 41);
-        assertEquals(dispute.getTransaction().getInstallmentCount(), "2");
+        assertEquals(dispute.getTransaction().getInstallmentCount(), Integer.valueOf(2));
         assertEquals(dispute.getTransaction().getOrderId(), "ORDER-A1");
         assertEquals(dispute.getTransaction().getPurchaseOrderNumber(), "PO-ABC");
         assertEquals(dispute.getTransaction().getPaymentInstrumentSubtype(), "Visa");
