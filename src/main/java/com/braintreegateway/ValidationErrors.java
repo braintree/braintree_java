@@ -66,7 +66,7 @@ public class ValidationErrors {
 
     /**
      * Returns a {@link ValidationErrors} representing nested errors for the
-     * given ojbectName.
+     * given objectName.
      * 
      * @param objectName
      *            the name of the object with nested validation errors, e.g.

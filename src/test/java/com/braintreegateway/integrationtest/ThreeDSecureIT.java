@@ -4,11 +4,9 @@ import java.util.regex.Pattern;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.BraintreeException;
-import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import org.junit.Test;
-import org.junit.Ignore;
 
 import static org.junit.Assert.*;
 
@@ -46,7 +44,7 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         request.email("first.last@example.com");
         request.billingAddress(billingAddress);
 
-        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request);
+        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request).getTarget();
 
         PaymentMethodNonce paymentMethod = result.getPaymentMethod();
         ThreeDSecureLookup lookup = result.getLookup();
@@ -62,13 +60,12 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
     }
 
     @Test
-    @Ignore("Cardinal broke this test card.")
     public void lookupThreeDSecure_versionTwoTestCard() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         Customer customer = customerResult.getTarget();
 
         CreditCardRequest cardRequest = new CreditCardRequest().
-            number("4000000000001000").
+            number("5200000000001005").
             expirationMonth("01").
             expirationYear("2022");
 
@@ -94,7 +91,7 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         request.email("first.last@example.com");
         request.billingAddress(billingAddress);
 
-        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request);
+        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request).getTarget();
 
         PaymentMethodNonce paymentMethod = result.getPaymentMethod();
         ThreeDSecureLookup lookup = result.getLookup();
@@ -106,8 +103,6 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         assertNull(paymentMethod.getThreeDSecureInfo().getThreeDSecureServerTransactionId());
         assertNull(paymentMethod.getThreeDSecureInfo().getThreeDSecureLookupInfo().getTransStatus());
         assertNull(paymentMethod.getThreeDSecureInfo().getThreeDSecureLookupInfo().getTransStatusReason());
-        assertNull(paymentMethod.getThreeDSecureInfo().getThreeDSecureAuthenticateInfo().getTransStatus());
-        assertNull(paymentMethod.getThreeDSecureInfo().getThreeDSecureAuthenticateInfo().getTransStatusReason());
     }
 
     @Test
@@ -130,7 +125,7 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         request.clientData(clientData);
         request.email("first.last@example.com");
 
-        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request);
+        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request).getTarget();
 
         PaymentMethodNonce paymentMethod = result.getPaymentMethod();
         ThreeDSecureLookup lookup = result.getLookup();
@@ -164,7 +159,7 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         request.amount("199.00");
         request.clientData(clientData);
 
-        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request);
+        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request).getTarget();
 
         PaymentMethodNonce paymentMethod = result.getPaymentMethod();
         ThreeDSecureLookup lookup = result.getLookup();
@@ -180,7 +175,7 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
     }
 
     @Test
-    public void lookupThreeDSecure_thowsBraintreeException_forInvalidAuthrizationFingerprint() {
+    public void lookupThreeDSecure_throwsBraintreeException_forInvalidAuthorizationFingerprint() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         Customer customer = customerResult.getTarget();
 
@@ -211,7 +206,7 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         request.billingAddress(billingAddress);
 
         try {
-            ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request);
+            gateway.threeDSecure().lookup(request);
             fail("Should throw BraintreeException");
         } catch (BraintreeException e) {
             assertTrue(Pattern.matches(".*Authorization fingerprint is invalid.*", e.getMessage()));
@@ -251,10 +246,9 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         request.billingAddress(billingAddress);
         request.merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID);
 
-        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request);
+        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request).getTarget();
 
         PaymentMethodNonce paymentMethod = result.getPaymentMethod();
-        ThreeDSecureLookup lookup = result.getLookup();
 
         assertNotNull(result.getPayloadString());
         assertNotNull(paymentMethod.getNonce());
@@ -300,10 +294,9 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         request.billingAddress(billingAddress);
         request.merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID);
 
-        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request);
+        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request).getTarget();
 
         PaymentMethodNonce paymentMethod = result.getPaymentMethod();
-        ThreeDSecureLookup lookup = result.getLookup();
 
         assertNotNull(result.getPayloadString());
         assertNotNull(paymentMethod.getNonce());
@@ -318,29 +311,29 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
             transactionResult.getErrors().forObject("transaction").onField("merchant_account_id").get(0).getCode());
     }
 
-    @Test(expected = UnexpectedException.class)
-    public void lookupThreeDSecureTwice() {
+    @Test
+    public void lookup_whenNonceHasBeenConsumed_returnsValidationError() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         Customer customer = customerResult.getTarget();
 
         CreditCardRequest cardRequest = new CreditCardRequest().
-            number("4111111111111111").
-            expirationMonth("12").
-            expirationYear("2020");
+          number("4111111111111111").
+          expirationMonth("12").
+          expirationYear("2020");
 
         String nonce = TestHelper.generateNonceForCreditCard(gateway, cardRequest, customer.getId(), false);
         String authorizationFingerprint = TestHelper.generateAuthorizationFingerprint(gateway, customer.getId());
 
         ThreeDSecureLookupAddress billingAddress = new ThreeDSecureLookupAddress().
-            givenName("First").
-            surname("Last").
-            phoneNumber("1234567890").
-            locality("Oakland").
-            countryCodeAlpha2("US").
-            streetAddress("123 Address").
-            extendedAddress("Unit 2").
-            postalCode("94112").
-            region("CA");
+          givenName("First").
+          surname("Last").
+          phoneNumber("1234567890").
+          locality("Oakland").
+          countryCodeAlpha2("US").
+          streetAddress("123 Address").
+          extendedAddress("Unit 2").
+          postalCode("94112").
+          region("CA");
 
         String clientData = getClientDataString(nonce, authorizationFingerprint);
 
@@ -350,30 +343,29 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         request.email("first.last@example.com");
         request.billingAddress(billingAddress);
 
-        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request);
-        PaymentMethodNonce paymentMethod = result.getPaymentMethod();
+        Result<ThreeDSecureLookupResponse> result = gateway.threeDSecure().lookup(request);
+        PaymentMethodNonce paymentMethod = result.getTarget().getPaymentMethod();
 
         clientData = getClientDataString(paymentMethod.getNonce(), authorizationFingerprint);
         request.clientData(clientData);
-        // Expect the following lookup to throw an exception
         result = gateway.threeDSecure().lookup(request);
+
+        assertEquals("Nonce is already 3D Secure", result.getErrors().getAllValidationErrors().get(0).getMessage());
     }
 
     public String getClientDataString(String nonce, String authorizationFingerprint) {
-        return new StringBuilder()
-          .append("{\n")
-            .append("\"authorizationFingerprint\": \"" + authorizationFingerprint + "\",\n")
-            .append("\"braintreeLibraryVersion\": \"braintree/web/3.44.0\",\n")
-            .append("\"dfReferenceId\": \"ABC-123\",\n")
-            .append("\"nonce\": \"" + nonce + "\",\n")
-            .append("\"clientMetadata\": {\n")
-                .append("\"cardinalDeviceDataCollectionTimeElapsed\": 40,\n")
-                .append("\"issuerDeviceDataCollectionResult\": true,\n")
-                .append("\"issuerDeviceDataCollectionTimeElapsed\": 413,\n")
-                .append("\"requestedThreeDSecureVersion\": \"2\",\n")
-                .append("\"sdkVersion\": \"web/3.44.0\"\n")
-            .append("}\n")
-          .append("}")
-        .toString();
+        return "{\n" +
+                "\"authorizationFingerprint\": \"" + authorizationFingerprint + "\",\n" +
+                "\"braintreeLibraryVersion\": \"braintree/web/3.44.0\",\n" +
+                "\"dfReferenceId\": \"ABC-123\",\n" +
+                "\"nonce\": \"" + nonce + "\",\n" +
+                "\"clientMetadata\": {\n" +
+                "\"cardinalDeviceDataCollectionTimeElapsed\": 40,\n" +
+                "\"issuerDeviceDataCollectionResult\": true,\n" +
+                "\"issuerDeviceDataCollectionTimeElapsed\": 413,\n" +
+                "\"requestedThreeDSecureVersion\": \"2\",\n" +
+                "\"sdkVersion\": \"web/3.44.0\"\n" +
+                "}\n" +
+                "}";
     }
 }
