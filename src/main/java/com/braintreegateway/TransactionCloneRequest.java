@@ -28,10 +28,10 @@ public class TransactionCloneRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-            addElement("amount", amount).
-            addElement("channel", channel).
-            addElement("options", transactionOptionsCloneRequest);
+        RequestBuilder builder = new RequestBuilder(root)
+            .addElement("amount", amount)
+            .addElement("channel", channel)
+            .addElement("options", transactionOptionsCloneRequest);
 
         return builder;
     }

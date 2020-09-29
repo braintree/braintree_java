@@ -51,10 +51,10 @@ public class BusinessRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-                addElement("dbaName", dbaName).
-                addElement("legalName", legalName).
-                addElement("addressRequest", address).
-                addElement("taxId", taxId);
+        return new RequestBuilder(root)
+                .addElement("dbaName", dbaName)
+                .addElement("legalName", legalName)
+                .addElement("addressRequest", address)
+                .addElement("taxId", taxId);
     }
 }

@@ -56,9 +56,9 @@ public class ModificationsRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("add", adds).
-            addElement("remove", removeModificationIds).
-            addElement("update", updates);
+        return new RequestBuilder(root)
+            .addElement("add", adds)
+            .addElement("remove", removeModificationIds)
+            .addElement("update", updates);
     }
 }

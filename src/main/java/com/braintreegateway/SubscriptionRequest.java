@@ -117,23 +117,23 @@ public class SubscriptionRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-            addElement("id", id).
-            addElement("addOns", addOnsRequest).
-            addElement("billingDayOfMonth", billingDayOfMonth).
-            addElement("descriptor", descriptorRequest).
-            addElement("discounts", discountsRequest).
-            addElement("firstBillingDate", firstBillingDate).
-            addElement("merchantAccountId", merchantAccountId).
-            addElement("neverExpires", neverExpires).
-            addElement("numberOfBillingCycles", numberOfBillingCycles).
-            addElement("options", options).
-            addElement("paymentMethodToken", paymentMethodToken).
-            addElement("paymentMethodNonce", paymentMethodNonce).
-            addElement("planId", planId).
-            addElement("price", price).
-            addElement("trialPeriod", hasTrialPeriod).
-            addElement("trialDuration", trialDuration);
+        RequestBuilder builder = new RequestBuilder(root)
+            .addElement("id", id)
+            .addElement("addOns", addOnsRequest)
+            .addElement("billingDayOfMonth", billingDayOfMonth)
+            .addElement("descriptor", descriptorRequest)
+            .addElement("discounts", discountsRequest)
+            .addElement("firstBillingDate", firstBillingDate)
+            .addElement("merchantAccountId", merchantAccountId)
+            .addElement("neverExpires", neverExpires)
+            .addElement("numberOfBillingCycles", numberOfBillingCycles)
+            .addElement("options", options)
+            .addElement("paymentMethodToken", paymentMethodToken)
+            .addElement("paymentMethodNonce", paymentMethodNonce)
+            .addElement("planId", planId)
+            .addElement("price", price)
+            .addElement("trialPeriod", hasTrialPeriod)
+            .addElement("trialDuration", trialDuration);
 
         if (trialDurationUnit != null) {
             builder.addElement("trialDurationUnit", trialDurationUnit.toString().toLowerCase());

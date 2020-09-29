@@ -34,8 +34,8 @@ public class TransactionOptionsCreditCardRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-            addElement("accountType", accountType);
+        RequestBuilder builder = new RequestBuilder(root)
+            .addElement("accountType", accountType);
         return builder;
     }
 }

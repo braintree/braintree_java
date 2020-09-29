@@ -33,7 +33,7 @@ public class TransactionOptionsThreeDSecureRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("required", required);
+        return new RequestBuilder(root)
+            .addElement("required", required);
     }
 }

@@ -45,9 +45,9 @@ public class ThreeDSecureRequestForTests extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("expirationMonth", expirationMonth).
-            addElement("expirationYear", expirationYear).
-            addElement("number", number);
+        return new RequestBuilder(root)
+            .addElement("expirationMonth", expirationMonth)
+            .addElement("expirationYear", expirationYear)
+            .addElement("number", number);
     }
 }

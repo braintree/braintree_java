@@ -37,9 +37,9 @@ public class PayPalOnlyAccountRequest extends Request {
 
     @Override
     public String toXML() {
-        return new RequestBuilder("paypalAccount").
-            addElement("clientId", clientId).
-            addElement("clientSecret", clientSecret).
-            toXML();
+        return new RequestBuilder("paypalAccount")
+            .addElement("clientId", clientId)
+            .addElement("clientSecret", clientSecret)
+            .toXML();
     }
 }

@@ -112,24 +112,24 @@ public class OAuthConnectUrlBusinessRequest extends Request {
 
     @Override
     public String toQueryString(String root) {
-        RequestBuilder builder = new RequestBuilder("business").
-            addElement("name", name).
-            addElement("registeredAs", registeredAs).
-            addElement("industry", industry).
-            addElement("description", description).
-            addElement("streetAddress", streetAddress).
-            addElement("country", country).
-            addElement("locality", locality).
-            addElement("region", region).
-            addElement("postalCode", postalCode).
-            addElement("annualVolumeAmount", annualVolumeAmount).
-            addElement("averageTransactionAmount", averageTransactionAmount).
-            addElement("maximumTransactionAmount", maximumTransactionAmount).
-            addElement("shipPhysicalGoods", shipPhysicalGoods).
-            addElement("fulfillmentCompletedIn", fulfillmentCompletedIn).
-            addElement("currency", currency).
-            addElement("website", website).
-            addElement("establishedOn", establishedOn);
+        RequestBuilder builder = new RequestBuilder("business")
+            .addElement("name", name)
+            .addElement("registeredAs", registeredAs)
+            .addElement("industry", industry)
+            .addElement("description", description)
+            .addElement("streetAddress", streetAddress)
+            .addElement("country", country)
+            .addElement("locality", locality)
+            .addElement("region", region)
+            .addElement("postalCode", postalCode)
+            .addElement("annualVolumeAmount", annualVolumeAmount)
+            .addElement("averageTransactionAmount", averageTransactionAmount)
+            .addElement("maximumTransactionAmount", maximumTransactionAmount)
+            .addElement("shipPhysicalGoods", shipPhysicalGoods)
+            .addElement("fulfillmentCompletedIn", fulfillmentCompletedIn)
+            .addElement("currency", currency)
+            .addElement("website", website)
+            .addElement("establishedOn", establishedOn);
 
         return builder.toQueryString();
     }

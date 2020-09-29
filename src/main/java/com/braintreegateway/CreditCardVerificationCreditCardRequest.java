@@ -59,13 +59,13 @@ public class CreditCardVerificationCreditCardRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("cardholderName", cardholderName).
-            addElement("cvv", cvv).
-            addElement("number", number).
-            addElement("expirationDate", expirationDate).
-            addElement("expirationMonth", expirationMonth).
-            addElement("expirationYear", expirationYear).
-            addElement("billingAddress", billingAddress);
+        return new RequestBuilder(root)
+            .addElement("cardholderName", cardholderName)
+            .addElement("cvv", cvv)
+            .addElement("number", number)
+            .addElement("expirationDate", expirationDate)
+            .addElement("expirationMonth", expirationMonth)
+            .addElement("expirationYear", expirationYear)
+            .addElement("billingAddress", billingAddress);
     }
 }

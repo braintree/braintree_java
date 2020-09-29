@@ -15,10 +15,10 @@ public class StringUtils {
             return null;
         }
 
-        return str.replaceAll("([A-Z]+)([A-Z][a-z])", "$1-$2").
-            replaceAll("([a-z])([A-Z])", "$1-$2").
-            replaceAll("_", "-").
-            toLowerCase();
+        return str.replaceAll("([A-Z]+)([A-Z][a-z])", "$1-$2")
+            .replaceAll("([a-z])([A-Z])", "$1-$2")
+            .replaceAll("_", "-")
+            .toLowerCase();
     }
 
     public static String getFullPathOfFile(String filename) {
@@ -50,10 +50,10 @@ public class StringUtils {
             return null;
         }
 
-        return str.replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2").
-            replaceAll("([a-z])([A-Z])", "$1_$2").
-            replaceAll("-", "_").
-            toLowerCase();
+        return str.replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2")
+            .replaceAll("([a-z])([A-Z])", "$1_$2")
+            .replaceAll("-", "_")
+            .toLowerCase();
     }
 
     public static String join(Object[] tokens, String delimiter) {

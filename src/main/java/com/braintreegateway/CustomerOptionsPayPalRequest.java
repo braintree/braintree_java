@@ -65,12 +65,12 @@ public class CustomerOptionsPayPalRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("payeeEmail", payeeEmail).
-            addElement("description", description).
-            addElement("customField", customField).
-            addElement("orderId", orderId).
-            addElement("amount", amount).
-            addElement("shipping", shipping);
+        return new RequestBuilder(root)
+            .addElement("payeeEmail", payeeEmail)
+            .addElement("description", description)
+            .addElement("customField", customField)
+            .addElement("orderId", orderId)
+            .addElement("amount", amount)
+            .addElement("shipping", shipping);
     }
 }

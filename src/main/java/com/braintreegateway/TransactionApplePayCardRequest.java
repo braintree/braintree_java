@@ -64,12 +64,12 @@ public class TransactionApplePayCardRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-                addElement("number", number).
-                addElement("cardholderName", cardholderName).
-                addElement("cryptogram", cryptogram).
-                addElement("expirationMonth", expirationMonth).
-                addElement("expirationYear", expirationYear).
-                addElement("eciIndicator", eciIndicator);
+        return new RequestBuilder(root)
+                .addElement("number", number)
+                .addElement("cardholderName", cardholderName)
+                .addElement("cryptogram", cryptogram)
+                .addElement("expirationMonth", expirationMonth)
+                .addElement("expirationYear", expirationYear)
+                .addElement("eciIndicator", eciIndicator);
     }
 }

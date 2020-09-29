@@ -11,8 +11,8 @@ public class OAuthRevokeAccessTokenRequest extends Request {
 
     @Override
     public String toXML() {
-        return new RequestBuilder("credentials").
-            addElement("token", token).
-            toXML();
+        return new RequestBuilder("credentials")
+            .addElement("token", token)
+            .toXML();
     }
 }

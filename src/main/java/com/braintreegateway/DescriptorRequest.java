@@ -36,9 +36,9 @@ public abstract class DescriptorRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("name", name).
-            addElement("phone", phone).
-            addElement("url", url);
+        return new RequestBuilder(root)
+            .addElement("name", name)
+            .addElement("phone", phone)
+            .addElement("url", url);
     }
 }

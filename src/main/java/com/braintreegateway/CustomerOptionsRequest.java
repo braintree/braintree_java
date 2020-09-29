@@ -27,7 +27,7 @@ public class CustomerOptionsRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("paypal", customerOptionsPayPalRequest);
+        return new RequestBuilder(root)
+            .addElement("paypal", customerOptionsPayPalRequest);
     }
 }

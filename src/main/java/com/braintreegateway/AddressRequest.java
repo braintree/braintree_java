@@ -104,19 +104,19 @@ public class AddressRequest extends Request {
     }
     
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("firstName", firstName).
-            addElement("lastName", lastName).
-            addElement("company", company).
-            addElement("countryName", countryName).
-            addElement("countryCodeAlpha2", countryCodeAlpha2).
-            addElement("countryCodeAlpha3", countryCodeAlpha3).
-            addElement("countryCodeNumeric", countryCodeNumeric).
-            addElement("extendedAddress", extendedAddress).
-            addElement("locality", locality).
-            addElement("phoneNumber", phoneNumber).
-            addElement("postalCode", postalCode).
-            addElement("region", region).
-            addElement("streetAddress", streetAddress);
+        return new RequestBuilder(root)
+            .addElement("firstName", firstName)
+            .addElement("lastName", lastName)
+            .addElement("company", company)
+            .addElement("countryName", countryName)
+            .addElement("countryCodeAlpha2", countryCodeAlpha2)
+            .addElement("countryCodeAlpha3", countryCodeAlpha3)
+            .addElement("countryCodeNumeric", countryCodeNumeric)
+            .addElement("extendedAddress", extendedAddress)
+            .addElement("locality", locality)
+            .addElement("phoneNumber", phoneNumber)
+            .addElement("postalCode", postalCode)
+            .addElement("region", region)
+            .addElement("streetAddress", streetAddress);
     }
 }

@@ -73,13 +73,13 @@ public class TransactionCreditCardRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("cardholderName", cardholderName).
-            addElement("cvv", cvv).
-            addElement("number", number).
-            addElement("expirationDate", expirationDate).
-            addElement("expirationMonth", expirationMonth).
-            addElement("expirationYear", expirationYear).
-            addElement("token", token);
+        return new RequestBuilder(root)
+            .addElement("cardholderName", cardholderName)
+            .addElement("cvv", cvv)
+            .addElement("number", number)
+            .addElement("expirationDate", expirationDate)
+            .addElement("expirationMonth", expirationMonth)
+            .addElement("expirationYear", expirationYear)
+            .addElement("token", token);
     }
 }

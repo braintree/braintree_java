@@ -20,8 +20,8 @@ public class PayPalAccountRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("options", optionsRequest).
-            addElement("token", token);
+        return new RequestBuilder(root)
+            .addElement("options", optionsRequest)
+            .addElement("token", token);
     }
 }

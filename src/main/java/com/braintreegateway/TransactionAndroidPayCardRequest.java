@@ -77,14 +77,14 @@ public class TransactionAndroidPayCardRequest extends Request {
   }
 
   protected RequestBuilder buildRequest(String root) {
-    return new RequestBuilder(root).
-      addElement("cryptogram", cryptogram).
-      addElement("eciIndicator", eciIndicator).
-      addElement("expirationMonth", expirationMonth).
-      addElement("expirationYear", expirationYear).
-      addElement("number", number).
-      addElement("googleTransactionId", googleTransactionId).
-      addElement("sourceCardLastFour", sourceCardLastFour).
-      addElement("sourceCardType", sourceCardType);
+    return new RequestBuilder(root)
+      .addElement("cryptogram", cryptogram)
+      .addElement("eciIndicator", eciIndicator)
+      .addElement("expirationMonth", expirationMonth)
+      .addElement("expirationYear", expirationYear)
+      .addElement("number", number)
+      .addElement("googleTransactionId", googleTransactionId)
+      .addElement("sourceCardLastFour", sourceCardLastFour)
+      .addElement("sourceCardType", sourceCardType);
   }
 }

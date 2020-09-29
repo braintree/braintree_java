@@ -86,18 +86,18 @@ public class PlanRequest extends Request {
     }
 
     private RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-            addElement("id", id).
-            addElement("merchantId", merchantId).
-            addElement("billingDayOfMonth", billingDayOfMonth).
-            addElement("billingFrequency", billingFrequency).
-            addElement("currencyIsoCode", currencyIsoCode).
-            addElement("description", description).
-            addElement("name", name).
-            addElement("numberOfBillingCycles", numberOfBillingCycles).
-            addElement("price", price).
-            addElement("trialPeriod", hasTrialPeriod).
-            addElement("trialDuration", trialDuration);
+        RequestBuilder builder = new RequestBuilder(root)
+            .addElement("id", id)
+            .addElement("merchantId", merchantId)
+            .addElement("billingDayOfMonth", billingDayOfMonth)
+            .addElement("billingFrequency", billingFrequency)
+            .addElement("currencyIsoCode", currencyIsoCode)
+            .addElement("description", description)
+            .addElement("name", name)
+            .addElement("numberOfBillingCycles", numberOfBillingCycles)
+            .addElement("price", price)
+            .addElement("trialPeriod", hasTrialPeriod)
+            .addElement("trialDuration", trialDuration);
 
         if (trialDurationUnit != null) {
             builder.addElement("trialDurationUnit", trialDurationUnit.toString().toLowerCase());

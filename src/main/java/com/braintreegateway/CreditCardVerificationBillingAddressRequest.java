@@ -89,19 +89,19 @@ public class CreditCardVerificationBillingAddressRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-            addElement("company", company).
-            addElement("countryCodeAlpha2", countryCodeAlpha2).
-            addElement("countryCodeAlpha3", countryCodeAlpha3).
-            addElement("countryCodeNumeric", countryCodeNumeric).
-            addElement("countryName", countryName).
-            addElement("extendedAddress", extendedAddress).
-            addElement("firstName", firstName).
-            addElement("lastName", lastName).
-            addElement("locality", locality).
-            addElement("postalCode", postalCode).
-            addElement("region", region).
-            addElement("streetAddress", streetAddress);
+        RequestBuilder builder = new RequestBuilder(root)
+            .addElement("company", company)
+            .addElement("countryCodeAlpha2", countryCodeAlpha2)
+            .addElement("countryCodeAlpha3", countryCodeAlpha3)
+            .addElement("countryCodeNumeric", countryCodeNumeric)
+            .addElement("countryName", countryName)
+            .addElement("extendedAddress", extendedAddress)
+            .addElement("firstName", firstName)
+            .addElement("lastName", lastName)
+            .addElement("locality", locality)
+            .addElement("postalCode", postalCode)
+            .addElement("region", region)
+            .addElement("streetAddress", streetAddress);
         return builder;
     }
 }

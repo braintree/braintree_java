@@ -21,9 +21,9 @@ public class MerchantAccountCreateForCurrencyRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-                addElement("currency", currency).
-                addElement("id", id);
+        return new RequestBuilder(root)
+                .addElement("currency", currency)
+                .addElement("id", id);
     }
 
 }

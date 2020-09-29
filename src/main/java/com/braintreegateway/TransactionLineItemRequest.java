@@ -108,19 +108,19 @@ public class TransactionLineItemRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("quantity", quantity).
-            addElement("name", name).
-            addElement("description", description).
-            addElement("kind", kind).
-            addElement("unitAmount", unitAmount).
-            addElement("unitTaxAmount", unitTaxAmount).
-            addElement("totalAmount", totalAmount).
-            addElement("discountAmount", discountAmount).
-            addElement("taxAmount", taxAmount).
-            addElement("unitOfMeasure", unitOfMeasure).
-            addElement("productCode", productCode).
-            addElement("commodityCode", commodityCode).
-            addElement("url", url);
+        return new RequestBuilder(root)
+            .addElement("quantity", quantity)
+            .addElement("name", name)
+            .addElement("description", description)
+            .addElement("kind", kind)
+            .addElement("unitAmount", unitAmount)
+            .addElement("unitTaxAmount", unitTaxAmount)
+            .addElement("totalAmount", totalAmount)
+            .addElement("discountAmount", discountAmount)
+            .addElement("taxAmount", taxAmount)
+            .addElement("unitOfMeasure", unitOfMeasure)
+            .addElement("productCode", productCode)
+            .addElement("commodityCode", commodityCode)
+            .addElement("url", url);
     }
 }

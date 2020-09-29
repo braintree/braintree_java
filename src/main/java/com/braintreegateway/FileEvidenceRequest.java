@@ -27,8 +27,8 @@ public class FileEvidenceRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("document_upload_id", documentId).
-            addElement("category", category);
+        return new RequestBuilder(root)
+            .addElement("document_upload_id", documentId)
+            .addElement("category", category);
     }
 }

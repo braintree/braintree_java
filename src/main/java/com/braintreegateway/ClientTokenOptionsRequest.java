@@ -51,9 +51,9 @@ public class ClientTokenOptionsRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("makeDefault", makeDefault).
-            addElement("verifyCard", verifyCard).
-            addElement("failOnDuplicatePaymentMethod", failOnDuplicatePaymentMethod);
+        return new RequestBuilder(root)
+            .addElement("makeDefault", makeDefault)
+            .addElement("verifyCard", verifyCard)
+            .addElement("failOnDuplicatePaymentMethod", failOnDuplicatePaymentMethod);
     }
 }

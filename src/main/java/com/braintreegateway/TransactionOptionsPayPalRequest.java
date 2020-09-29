@@ -61,11 +61,11 @@ public class TransactionOptionsPayPalRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-            addElement("description", description).
-            addElement("customField", customField).
-            addElement("payeeId", payeeId).
-            addElement("payeeEmail", payeeEmail);
+        RequestBuilder builder = new RequestBuilder(root)
+            .addElement("description", description)
+            .addElement("customField", customField)
+            .addElement("payeeId", payeeId)
+            .addElement("payeeEmail", payeeEmail);
 
         if(!supplementaryData.isEmpty()) {
             builder.addElement("supplementaryData", supplementaryData);

@@ -34,9 +34,9 @@ public class TextEvidenceRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("comments", content).
-            addElement("category", category).
-            addElement("sequenceNumber", sequenceNumber);
+        return new RequestBuilder(root)
+            .addElement("comments", content)
+            .addElement("category", category)
+            .addElement("sequenceNumber", sequenceNumber);
     }
 }

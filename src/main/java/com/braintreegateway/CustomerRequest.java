@@ -150,27 +150,27 @@ public class CustomerRequest extends Request {
 
     @Override
     public String toQueryString(String root) {
-        return buildRequest(root).
-            addTopLevelElement("customerId", customerId).
-            toQueryString();
+        return buildRequest(root)
+            .addTopLevelElement("customerId", customerId)
+            .toQueryString();
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-            addElement("deviceData", deviceData).
-            addElement("company", company).
-            addElement("email", email).
-            addElement("fax", fax).
-            addElement("firstName", firstName).
-            addElement("id", id).
-            addElement("lastName", lastName).
-            addElement("phone", phone).
-            addElement("website", website).
-            addElement("paymentMethodNonce", paymentMethodNonce).
-            addElement("defaultPaymentMethodToken", defaultPaymentMethodToken).
-            addElement("creditCard", creditCardRequest).
-            addElement("options", optionsRequest).
-            addElement("riskData", riskDataCustomerRequest);
+        RequestBuilder builder = new RequestBuilder(root)
+            .addElement("deviceData", deviceData)
+            .addElement("company", company)
+            .addElement("email", email)
+            .addElement("fax", fax)
+            .addElement("firstName", firstName)
+            .addElement("id", id)
+            .addElement("lastName", lastName)
+            .addElement("phone", phone)
+            .addElement("website", website)
+            .addElement("paymentMethodNonce", paymentMethodNonce)
+            .addElement("defaultPaymentMethodToken", defaultPaymentMethodToken)
+            .addElement("creditCard", creditCardRequest)
+            .addElement("options", optionsRequest)
+            .addElement("riskData", riskDataCustomerRequest);
 
         if (customFields.size() > 0) {
             builder.addElement("customFields", customFields);

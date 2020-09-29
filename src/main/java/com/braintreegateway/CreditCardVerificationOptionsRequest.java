@@ -35,10 +35,10 @@ public class CreditCardVerificationOptionsRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-            addElement("merchantAccountId", merchantAccountId).
-            addElement("accountType", accountType).
-            addElement("amount", amount);
+        RequestBuilder builder = new RequestBuilder(root)
+            .addElement("merchantAccountId", merchantAccountId)
+            .addElement("accountType", accountType)
+            .addElement("amount", amount);
         return builder;
     }
 }

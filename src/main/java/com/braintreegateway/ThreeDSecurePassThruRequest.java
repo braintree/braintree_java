@@ -66,14 +66,14 @@ public class ThreeDSecurePassThruRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("eciFlag", eciFlag).
-            addElement("cavv", cavv).
-            addElement("threeDSecureVersion", threeDSecureVersion).
-            addElement("xid", xid).
-            addElement("authenticationResponse", authenticationResponse).
-            addElement("directoryResponse", directoryResponse).
-            addElement("cavvAlgorithm", cavvAlgorithm).
-            addElement("dsTransactionId", dsTransactionId);
+        return new RequestBuilder(root)
+            .addElement("eciFlag", eciFlag)
+            .addElement("cavv", cavv)
+            .addElement("threeDSecureVersion", threeDSecureVersion)
+            .addElement("xid", xid)
+            .addElement("authenticationResponse", authenticationResponse)
+            .addElement("directoryResponse", directoryResponse)
+            .addElement("cavvAlgorithm", cavvAlgorithm)
+            .addElement("dsTransactionId", dsTransactionId);
     }
 }

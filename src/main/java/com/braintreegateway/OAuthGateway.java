@@ -28,8 +28,8 @@ public class OAuthGateway {
     }
 
     public Result<OAuthResult> revokeAccessToken(String accessToken) {
-        OAuthRevokeAccessTokenRequest request = new OAuthRevokeAccessTokenRequest().
-            token(accessToken);
+        OAuthRevokeAccessTokenRequest request = new OAuthRevokeAccessTokenRequest()
+            .token(accessToken);
 
         NodeWrapper response = http.post("/oauth/revoke_access_token", request);
         return new Result<OAuthResult>(response, OAuthResult.class);

@@ -17,7 +17,7 @@ public class PaymentMethodDeleteRequest extends Request {
     }
 
     protected RequestBuilder buildRequest() {
-        return new RequestBuilder("").
-            addTopLevelElement("revokeAllGrants", Boolean.toString(revokeAllGrants));
+        return new RequestBuilder("")
+            .addTopLevelElement("revokeAllGrants", Boolean.toString(revokeAllGrants));
     }
 }

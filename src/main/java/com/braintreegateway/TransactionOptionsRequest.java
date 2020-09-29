@@ -135,24 +135,24 @@ public class TransactionOptionsRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("holdInEscrow", holdInEscrow).
-            addElement("storeInVault", storeInVault).
-            addElement("storeInVaultOnSuccess", storeInVaultOnSuccess).
-            addElement("addBillingAddressToPaymentMethod", addBillingAddressToPaymentMethod).
-            addElement("storeShippingAddressInVault", storeShippingAddressInVault).
-            addElement("submitForSettlement", submitForSettlement).
-            addElement("venmoSdkSession", venmoSdkSession).
-            addElement("payeeId", payeeId).
-            addElement("payeeEmail", payeeEmail).
-            addElement("skipAdvancedFraudChecking", skipAdvancedFraudChecking).
-            addElement("skipAvs", skipAvs).
-            addElement("skipCvv", skipCvv).
-            addElement("threeDSecure", transactionOptionsThreeDSecureRequest).
-            addElement("venmo", transactionOptionsVenmoRequest).
-            addElement("adyen", transactionOptionsAdyenRequest).
-            addElement("paypal", transactionOptionsPayPalRequest).
-            addElement("payWithAmexRewards", transactionOptionsAmexRewardsRequest).
-            addElement("creditCard", transactionOptionsCreditCardRequest);
+        return new RequestBuilder(root)
+            .addElement("holdInEscrow", holdInEscrow)
+            .addElement("storeInVault", storeInVault)
+            .addElement("storeInVaultOnSuccess", storeInVaultOnSuccess)
+            .addElement("addBillingAddressToPaymentMethod", addBillingAddressToPaymentMethod)
+            .addElement("storeShippingAddressInVault", storeShippingAddressInVault)
+            .addElement("submitForSettlement", submitForSettlement)
+            .addElement("venmoSdkSession", venmoSdkSession)
+            .addElement("payeeId", payeeId)
+            .addElement("payeeEmail", payeeEmail)
+            .addElement("skipAdvancedFraudChecking", skipAdvancedFraudChecking)
+            .addElement("skipAvs", skipAvs)
+            .addElement("skipCvv", skipCvv)
+            .addElement("threeDSecure", transactionOptionsThreeDSecureRequest)
+            .addElement("venmo", transactionOptionsVenmoRequest)
+            .addElement("adyen", transactionOptionsAdyenRequest)
+            .addElement("paypal", transactionOptionsPayPalRequest)
+            .addElement("payWithAmexRewards", transactionOptionsAmexRewardsRequest)
+            .addElement("creditCard", transactionOptionsCreditCardRequest);
     }
 }

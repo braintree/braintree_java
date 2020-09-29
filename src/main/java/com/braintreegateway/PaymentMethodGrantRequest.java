@@ -35,11 +35,11 @@ public class PaymentMethodGrantRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-            addElement("shared-payment-method-token", sharedPaymentMethodToken).
-            addElement("allow-vaulting", allowVaulting).
-            addElement("include-billing-postal-code", includeBillingPostalCode).
-            addElement("revoke-after", revokeAfter);
+        RequestBuilder builder = new RequestBuilder(root)
+            .addElement("shared-payment-method-token", sharedPaymentMethodToken)
+            .addElement("allow-vaulting", allowVaulting)
+            .addElement("include-billing-postal-code", includeBillingPostalCode)
+            .addElement("revoke-after", revokeAfter);
 
         return builder;
     }

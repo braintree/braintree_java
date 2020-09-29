@@ -90,8 +90,9 @@ public class Disbursement {
     }
 
     public ResourceCollection<Transaction> getTransactions(BraintreeGateway gateway) {
-        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-          ids().in(transactionIds);
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest()
+          .ids()
+          .in(transactionIds);
         return gateway.transaction().search(searchRequest);
     }
 }

@@ -213,35 +213,35 @@ public class TransactionIndustryDataRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-                addElement("folioNumber", folioNumber).
-                addElement("checkInDate", checkInDate).
-                addElement("checkOutDate", checkOutDate).
-                addElement("travelPackage", travelPackage).
-                addElement("departureDate", departureDate).
-                addElement("lodgingCheckInDate", lodgingCheckInDate).
-                addElement("lodgingCheckOutDate", lodgingCheckOutDate).
-                addElement("lodgingName", lodgingName).
-                addElement("roomRate", roomRate).
-                addElement("roomTax", roomTax).
-                addElement("passengerFirstName", passengerFirstName).
-                addElement("passengerLastName", passengerLastName).
-                addElement("passengerMiddleInitial", passengerMiddleInitial).
-                addElement("passengerTitle", passengerTitle).
-                addElement("issuedDate", issuedDate).
-                addElement("travelAgencyName", travelAgencyName).
-                addElement("travelAgencyCode", travelAgencyCode).
-                addElement("ticketNumber", ticketNumber).
-                addElement("issuingCarrierCode", issuingCarrierCode).
-                addElement("customerCode", customerCode).
-                addElement("fareAmount", fareAmount).
-                addElement("feeAmount", feeAmount).
-                addElement("taxAmount", taxAmount).
-                addElement("restrictedTicket", restrictedTicket).
-                addElement("noShow", noShow).
-                addElement("advancedDeposit", advancedDeposit).
-                addElement("fireSafe", fireSafe).
-                addElement("propertyPhone", propertyPhone);
+        RequestBuilder builder = new RequestBuilder(root)
+                .addElement("folioNumber", folioNumber)
+                .addElement("checkInDate", checkInDate)
+                .addElement("checkOutDate", checkOutDate)
+                .addElement("travelPackage", travelPackage)
+                .addElement("departureDate", departureDate)
+                .addElement("lodgingCheckInDate", lodgingCheckInDate)
+                .addElement("lodgingCheckOutDate", lodgingCheckOutDate)
+                .addElement("lodgingName", lodgingName)
+                .addElement("roomRate", roomRate)
+                .addElement("roomTax", roomTax)
+                .addElement("passengerFirstName", passengerFirstName)
+                .addElement("passengerLastName", passengerLastName)
+                .addElement("passengerMiddleInitial", passengerMiddleInitial)
+                .addElement("passengerTitle", passengerTitle)
+                .addElement("issuedDate", issuedDate)
+                .addElement("travelAgencyName", travelAgencyName)
+                .addElement("travelAgencyCode", travelAgencyCode)
+                .addElement("ticketNumber", ticketNumber)
+                .addElement("issuingCarrierCode", issuingCarrierCode)
+                .addElement("customerCode", customerCode)
+                .addElement("fareAmount", fareAmount)
+                .addElement("feeAmount", feeAmount)
+                .addElement("taxAmount", taxAmount)
+                .addElement("restrictedTicket", restrictedTicket)
+                .addElement("noShow", noShow)
+                .addElement("advancedDeposit", advancedDeposit)
+                .addElement("fireSafe", fireSafe)
+                .addElement("propertyPhone", propertyPhone);
 
         if (!legRequests.isEmpty()) {
             builder.addElement("legs", legRequests);

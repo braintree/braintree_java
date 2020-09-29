@@ -62,8 +62,8 @@ public class TransactionIndustryDataAdditionalChargeRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("kind", kind).
-            addElement("amount", amount);
+        return new RequestBuilder(root)
+            .addElement("kind", kind)
+            .addElement("amount", amount);
     }
 }
