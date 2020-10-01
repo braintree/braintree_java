@@ -5,6 +5,7 @@
 * Fix issue where risk data was not included in `CustomerRequest` (fixes #85)
 * Add `getInstallmentCount()` method to `dispute.getTransaction()` on dispute webhooks
 * Update `lookup` method on `ThreeDSecureGateway` to return a `Result` object
+* Add `implicitlyVaultedPaymentMethodToken` and `implicitlyVaultedPaymentMethodGlobalId` to `PayPalDetails`
 
 ## 3.1.0
 * Add `RISK_THRESHOLD` to `GatewayRejectionReason`
