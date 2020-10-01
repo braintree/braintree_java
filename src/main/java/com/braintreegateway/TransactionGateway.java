@@ -5,7 +5,6 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,8 +53,9 @@ public class TransactionGateway {
      * @return the {@link Transaction} or raises a {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Transaction find(String id) {
-        if(id == null || id.trim().equals(""))
+        if (id == null || id.trim().equals("")) {
             throw new NotFoundException();
+        }
         return new Transaction(http.get(configuration.getMerchantPath() + "/transactions/" + id));
     }
 

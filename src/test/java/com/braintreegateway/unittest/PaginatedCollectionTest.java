@@ -27,7 +27,7 @@ public class PaginatedCollectionTest {
         PaginatedCollection<Integer> collection = new PaginatedCollection<Integer>(pager);
 
         List<Integer> results = new ArrayList<Integer>();
-        for(Integer i : collection) {
+        for (Integer i : collection) {
             results.add(i);
         }
 

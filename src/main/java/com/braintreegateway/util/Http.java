@@ -1,5 +1,20 @@
 package com.braintreegateway.util;
 
+import com.braintreegateway.Configuration;
+import com.braintreegateway.Request;
+import com.braintreegateway.exceptions.AuthenticationException;
+import com.braintreegateway.exceptions.AuthorizationException;
+import com.braintreegateway.exceptions.GatewayTimeoutException;
+import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.exceptions.RequestTimeoutException;
+import com.braintreegateway.exceptions.ServerException;
+import com.braintreegateway.exceptions.ServiceUnavailableException;
+import com.braintreegateway.exceptions.TimeoutException;
+import com.braintreegateway.exceptions.TooManyRequestsException;
+import com.braintreegateway.exceptions.UnexpectedException;
+import com.braintreegateway.exceptions.UpgradeRequiredException;
+import com.braintreegateway.org.apache.commons.codec.binary.Base64;
+import com.fasterxml.jackson.jr.ob.JSON;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -31,23 +46,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
-
-import com.braintreegateway.Configuration;
-import com.braintreegateway.Request;
-import com.braintreegateway.exceptions.AuthenticationException;
-import com.braintreegateway.exceptions.AuthorizationException;
-import com.braintreegateway.exceptions.GatewayTimeoutException;
-import com.braintreegateway.exceptions.NotFoundException;
-import com.braintreegateway.exceptions.RequestTimeoutException;
-import com.braintreegateway.exceptions.ServerException;
-import com.braintreegateway.exceptions.ServiceUnavailableException;
-import com.braintreegateway.exceptions.TimeoutException;
-import com.braintreegateway.exceptions.TooManyRequestsException;
-import com.braintreegateway.exceptions.UnexpectedException;
-import com.braintreegateway.exceptions.UpgradeRequiredException;
-import com.braintreegateway.org.apache.commons.codec.binary.Base64;
-import com.fasterxml.jackson.jr.ob.JSON;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -257,8 +255,7 @@ public class Http {
                 outputStream.write(buffer, 0, bytesRead);
             }
             outputStream.flush();
-        }
-        finally {
+        } finally {
             inputStream.close();
         }
 

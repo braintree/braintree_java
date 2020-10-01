@@ -29,11 +29,11 @@ public class OAuthCredentialsRequest extends Request {
 
     @Override
     public String toXML() {
-        return new RequestBuilder("credentials").
-            addElement("code", code).
-            addElement("refreshToken", refreshToken).
-            addElement("scope", scope).
-            addElement("grantType", grantType).
-            toXML();
+        return new RequestBuilder("credentials")
+            .addElement("code", code)
+            .addElement("refreshToken", refreshToken)
+            .addElement("scope", scope)
+            .addElement("grantType", grantType)
+            .toXML();
     }
 }

@@ -1,8 +1,8 @@
 package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UsBankAccount implements PaymentMethod {
     private String routingNumber;
@@ -20,7 +20,7 @@ public class UsBankAccount implements PaymentMethod {
     private Boolean isVerified;
 
     public UsBankAccount(NodeWrapper node) {
-        this.routingNumber= node.findString("routing-number");
+        this.routingNumber = node.findString("routing-number");
         this.last4 = node.findString("last-4");
         this.accountType = node.findString("account-type");
         this.accountHolderName = node.findString("account-holder-name");

@@ -1,10 +1,9 @@
 package com.braintreegateway.util;
 
 import com.braintreegateway.org.apache.commons.codec.binary.Hex;
-
+import java.security.MessageDigest;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.MessageDigest;
 
 public class Sha256Hasher implements Hasher {
 

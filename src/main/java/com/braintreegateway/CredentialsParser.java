@@ -2,7 +2,7 @@ package com.braintreegateway;
 
 import com.braintreegateway.exceptions.ConfigurationException;
 
-public class CredentialsParser{
+public class CredentialsParser {
 
     public Environment environment;
     public String merchantId;

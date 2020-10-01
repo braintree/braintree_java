@@ -1,16 +1,15 @@
 package com.braintreegateway.util;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.StringReader;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 public class SimpleNodeWrapper extends NodeWrapper {
 
@@ -46,29 +45,33 @@ public class SimpleNodeWrapper extends NodeWrapper {
     }
 
     private void findAll(LinkedList<String> tokens, List<NodeWrapper> nodes) {
-        if (tokens.isEmpty())
+        if (tokens.isEmpty()) {
             nodes.add(this);
-        else {
+        } else {
             String first = tokens.getFirst();
-            if (".".equals(first))
+            if (".".equals(first)) {
                 findAll(restOf(tokens), nodes);
+            }
             for (SimpleNodeWrapper node : childNodes()) {
-                if ("*".equals(first) || first.equals(node.name))
+                if ("*".equals(first) || first.equals(node.name)) {
                     node.findAll(restOf(tokens), nodes);
+                }
             }
         }
     }
 
     private SimpleNodeWrapper find(LinkedList<String> tokens) {
-        if (tokens.isEmpty())
+        if (tokens.isEmpty()) {
             return this;
-        else {
+        } else {
             String first = tokens.getFirst();
-            if (".".equals(first))
+            if (".".equals(first)) {
                 return find(restOf(tokens));
+            }
             for (SimpleNodeWrapper node : childNodes()) {
-                if ("*".equals(first) || first.equals(node.name))
+                if ("*".equals(first) || first.equals(node.name)) {
                     return node.find(restOf(tokens));
+                }
             }
             return null;
         }
@@ -95,10 +98,11 @@ public class SimpleNodeWrapper extends NodeWrapper {
     @Override
     public String findString(String expression) {
         SimpleNodeWrapper node = find(expression);
-        if (node == null)
+        if (node == null) {
             return null;
-        else
+        } else {
             return node.stringValue();
+        }
     }
 
     @Override
@@ -107,8 +111,9 @@ public class SimpleNodeWrapper extends NodeWrapper {
     }
 
     private String stringValue() {
-        if (content.size() == 1 && content.get(0) == null)
+        if (content.size() == 1 && content.get(0) == null) {
             return null;
+        }
         StringBuilder value = new StringBuilder();
         for (Object o : content) {
             value.append(o.toString());
@@ -135,8 +140,9 @@ public class SimpleNodeWrapper extends NodeWrapper {
     private List<SimpleNodeWrapper> childNodes() {
         List<SimpleNodeWrapper> nodes = new LinkedList<SimpleNodeWrapper>();
         for (Object o : content) {
-            if (o instanceof SimpleNodeWrapper)
+            if (o instanceof SimpleNodeWrapper) {
                 nodes.add((SimpleNodeWrapper) o);
+            }
         }
         return nodes;
     }
@@ -153,11 +159,12 @@ public class SimpleNodeWrapper extends NodeWrapper {
     private void buildParams(String prefix, Map<String, String> params) {
         List<SimpleNodeWrapper> childNodes = childNodes();
         String newPrefix = "".equals(prefix) ? StringUtils.underscore(name) : prefix + "[" + StringUtils.underscore(name) + "]";
-        if (childNodes.isEmpty())
+        if (childNodes.isEmpty()) {
             params.put(newPrefix, stringValue());
-        else {
-            for (SimpleNodeWrapper childNode : childNodes)
+        } else {
+            for (SimpleNodeWrapper childNode : childNodes) {
                 childNode.buildParams(newPrefix, params);
+            }
         }
     }
 
@@ -178,14 +185,17 @@ public class SimpleNodeWrapper extends NodeWrapper {
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             SimpleNodeWrapper node = new SimpleNodeWrapper(qName);
 
-            for (int i = 0; i < attributes.getLength(); i++)
+            for (int i = 0; i < attributes.getLength(); i++) {
                 node.attributes.put(attributes.getQName(i), attributes.getValue(i));
+            }
 
-            if ("true".equals(node.attributes.get("nil")))
+            if ("true".equals(node.attributes.get("nil"))) {
                 node.content.add(null);
+            }
 
-            if (!stack.isEmpty())
+            if (!stack.isEmpty()) {
                 stack.peek().content.add(node);
+            }
 
             stack.push(node);
         }
@@ -193,8 +203,9 @@ public class SimpleNodeWrapper extends NodeWrapper {
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
             SimpleNodeWrapper pop = stack.pop();
-            if (stack.isEmpty())
+            if (stack.isEmpty()) {
                 root = pop;
+            }
         }
 
         @Override

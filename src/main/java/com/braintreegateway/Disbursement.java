@@ -1,8 +1,7 @@
 package com.braintreegateway;
 
-import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.EnumUtils;
-
+import com.braintreegateway.util.NodeWrapper;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -91,8 +90,9 @@ public class Disbursement {
     }
 
     public ResourceCollection<Transaction> getTransactions(BraintreeGateway gateway) {
-        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
-          ids().in(transactionIds);
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest()
+          .ids()
+          .in(transactionIds);
         return gateway.transaction().search(searchRequest);
     }
 }

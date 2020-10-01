@@ -3,7 +3,6 @@ package com.braintreegateway;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,8 +106,9 @@ public class DisputeGateway {
      * @throws IllegalArgumentException if the content is empty.
      */
     public Result<DisputeEvidence> addTextEvidence(String id, TextEvidenceRequest textEvidenceRequest) {
-        if (textEvidenceRequest == null)
+        if (textEvidenceRequest == null) {
             throw new IllegalArgumentException("TextEvidenceRequest cannot be null");
+        }
 
         return addTextEvidenceRequest(id, textEvidenceRequest);
     }

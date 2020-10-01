@@ -1,11 +1,10 @@
 package com.braintreegateway;
 
+import com.braintreegateway.util.NodeWrapper;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Collections;
-
-import com.braintreegateway.util.NodeWrapper;
+import java.util.List;
 
 public class CustomActionsPaymentMethod implements PaymentMethod {
 

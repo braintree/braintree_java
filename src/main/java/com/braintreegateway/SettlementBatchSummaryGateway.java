@@ -2,7 +2,6 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
-
 import java.util.Calendar;
 
 public class SettlementBatchSummaryGateway {

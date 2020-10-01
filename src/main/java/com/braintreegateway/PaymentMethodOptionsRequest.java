@@ -13,7 +13,9 @@ public class PaymentMethodOptionsRequest extends Request {
     private PaymentMethodOptionsPayPalRequest paymentMethodOptionsPayPalRequest;
     private UsBankAccountVerification.VerificationMethod usBankAccountVerificationMethod;
 
-    public PaymentMethodOptionsRequest() {}
+    public PaymentMethodOptionsRequest() {
+
+    }
 
     public PaymentMethodOptionsRequest(PaymentMethodRequest parent) {
         this.parent = parent;

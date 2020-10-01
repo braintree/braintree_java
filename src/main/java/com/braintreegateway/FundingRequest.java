@@ -65,12 +65,12 @@ public class FundingRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-                addElement("destination", destination).
-                addElement("email", email).
-                addElement("mobilePhone", mobilePhone).
-                addElement("routingNumber", routingNumber).
-                addElement("accountNumber", accountNumber).
-                addElement("descriptor", descriptor);
+        return new RequestBuilder(root)
+                .addElement("destination", destination)
+                .addElement("email", email)
+                .addElement("mobilePhone", mobilePhone)
+                .addElement("routingNumber", routingNumber)
+                .addElement("accountNumber", accountNumber)
+                .addElement("descriptor", descriptor);
     }
 }

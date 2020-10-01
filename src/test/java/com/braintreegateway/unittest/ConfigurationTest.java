@@ -77,7 +77,7 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void testConfigurationWhenSetByObject(){
+    public void testConfigurationWhenSetByObject() {
         Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", "integration_public_key", "integration_private_key");
 
         assertFalse(configuration.usesProxy());

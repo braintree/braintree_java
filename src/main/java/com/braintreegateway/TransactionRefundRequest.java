@@ -38,9 +38,9 @@ public class TransactionRefundRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-            addElement("amount", amount).
-            addElement("orderId", orderId);
+        RequestBuilder builder = new RequestBuilder(root)
+            .addElement("amount", amount)
+            .addElement("orderId", orderId);
 
         return builder;
     }

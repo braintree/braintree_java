@@ -3,7 +3,6 @@ package com.braintreegateway;
 import com.braintreegateway.Transaction.GatewayRejectionReason;
 import com.braintreegateway.util.EnumUtils;
 import com.braintreegateway.util.NodeWrapper;
-
 import java.util.Calendar;
 
 public class UsBankAccountVerification {

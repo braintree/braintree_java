@@ -51,10 +51,10 @@ public class TransactionOptionsAmexRewardsRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("request-id", requestId).
-            addElement("points", points).
-            addElement("currency-amount", currencyAmount).
-            addElement("currency-iso-code", currencyIsoCode);
+        return new RequestBuilder(root)
+            .addElement("request-id", requestId)
+            .addElement("points", points)
+            .addElement("currency-amount", currencyAmount)
+            .addElement("currency-iso-code", currencyIsoCode);
     }
 }

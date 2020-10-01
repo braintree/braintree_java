@@ -1,7 +1,6 @@
 package com.braintreegateway;
 
 import com.braintreegateway.Transaction.Type;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +31,7 @@ public class TransactionRequest extends Request {
     private String shippingAddressId;
     private String billingAddressId;
     private TransactionApplePayCardRequest applePayCardRequest;
+    private TransactionAndroidPayCardRequest androidPayCardRequest;
     private TransactionDescriptorRequest descriptorRequest;
     private TransactionIndustryRequest industryRequest;
     private TransactionAddressRequest shippingAddressRequest;
@@ -125,11 +125,15 @@ public class TransactionRequest extends Request {
         return this;
     }
 
+    @Deprecated
+    // Merchants should be using deviceData only
     public TransactionRequest deviceSessionId(String deviceSessionId) {
         this.deviceSessionId = deviceSessionId;
         return this;
     }
 
+    @Deprecated
+    // Merchants should be using deviceData only
     public TransactionRequest fraudMerchantId(String fraudMerchantId) {
         this.fraudMerchantId = fraudMerchantId;
         return this;
@@ -289,6 +293,11 @@ public class TransactionRequest extends Request {
         return applePayCardRequest;
     }
 
+    public TransactionAndroidPayCardRequest androidPayCardRequest() {
+        androidPayCardRequest = new TransactionAndroidPayCardRequest(this);
+        return androidPayCardRequest;
+    }
+
     public ExternalVaultRequest externalVault() {
         ExternalVaultRequest externalVaultRequest = new ExternalVaultRequest(this);
         this.externalVaultRequest = externalVaultRequest;
@@ -316,47 +325,48 @@ public class TransactionRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-            addElement("amount", amount).
-            addElement("deviceData", deviceData).
-            addElement("channel", channel).
-            addElement("customerId", customerId).
-            addElement("merchantAccountId", merchantAccountId).
-            addElement("orderId", orderId).
-            addElement("paymentMethodToken", paymentMethodToken).
-            addElement("paymentMethodNonce", paymentMethodNonce).
-            addElement("purchaseOrderNumber", purchaseOrderNumber).
-            addElement("taxAmount", taxAmount).
-            addElement("taxExempt", taxExempt).
-            addElement("shippingAmount", shippingAmount).
-            addElement("discountAmount", discountAmount).
-            addElement("shipsFromPostalCode", shipsFromPostalCode).
-            addElement("shippingAddressId", shippingAddressId).
-            addElement("billingAddressId", billingAddressId).
-            addElement("creditCard", creditCardRequest).
-            addElement("applePayCard", applePayCardRequest).
-            addElement("paypalAccount", paypalRequest).
-            addElement("customer", customerRequest).
-            addElement("descriptor", descriptorRequest).
-            addElement("industry", industryRequest).
-            addElement("billing", billingAddressRequest).
-            addElement("shipping", shippingAddressRequest).
-            addElement("options", transactionOptionsRequest).
-            addElement("threeDSecurePassThru", threeDSecurePassThruRequest).
-            addElement("recurring", recurring).
-            addElement("transactionSource", source).
-            addElement("deviceSessionId", deviceSessionId).
-            addElement("fraudMerchantId", fraudMerchantId).
-            addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode).
-            addElement("sharedPaymentMethodToken", sharedPaymentMethodToken).
-            addElement("sharedPaymentMethodNonce", sharedPaymentMethodNonce).
-            addElement("sharedCustomerId", sharedCustomerId).
-            addElement("sharedShippingAddressId", sharedShippingAddressId).
-            addElement("sharedBillingAddressId", sharedBillingAddressId).
-            addElement("serviceFeeAmount", serviceFeeAmount).
-            addElement("productSku", productSku).
-            addElement("riskData", riskDataTransactionRequest).
-            addElement("externalVault", externalVaultRequest);
+        RequestBuilder builder = new RequestBuilder(root)
+            .addElement("amount", amount)
+            .addElement("deviceData", deviceData)
+            .addElement("channel", channel)
+            .addElement("customerId", customerId)
+            .addElement("merchantAccountId", merchantAccountId)
+            .addElement("orderId", orderId)
+            .addElement("paymentMethodToken", paymentMethodToken)
+            .addElement("paymentMethodNonce", paymentMethodNonce)
+            .addElement("purchaseOrderNumber", purchaseOrderNumber)
+            .addElement("taxAmount", taxAmount)
+            .addElement("taxExempt", taxExempt)
+            .addElement("shippingAmount", shippingAmount)
+            .addElement("discountAmount", discountAmount)
+            .addElement("shipsFromPostalCode", shipsFromPostalCode)
+            .addElement("shippingAddressId", shippingAddressId)
+            .addElement("billingAddressId", billingAddressId)
+            .addElement("creditCard", creditCardRequest)
+            .addElement("applePayCard", applePayCardRequest)
+            .addElement("androidPayCard", androidPayCardRequest)
+            .addElement("paypalAccount", paypalRequest)
+            .addElement("customer", customerRequest)
+            .addElement("descriptor", descriptorRequest)
+            .addElement("industry", industryRequest)
+            .addElement("billing", billingAddressRequest)
+            .addElement("shipping", shippingAddressRequest)
+            .addElement("options", transactionOptionsRequest)
+            .addElement("threeDSecurePassThru", threeDSecurePassThruRequest)
+            .addElement("recurring", recurring)
+            .addElement("transactionSource", source)
+            .addElement("deviceSessionId", deviceSessionId)
+            .addElement("fraudMerchantId", fraudMerchantId)
+            .addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode)
+            .addElement("sharedPaymentMethodToken", sharedPaymentMethodToken)
+            .addElement("sharedPaymentMethodNonce", sharedPaymentMethodNonce)
+            .addElement("sharedCustomerId", sharedCustomerId)
+            .addElement("sharedShippingAddressId", sharedShippingAddressId)
+            .addElement("sharedBillingAddressId", sharedBillingAddressId)
+            .addElement("serviceFeeAmount", serviceFeeAmount)
+            .addElement("productSku", productSku)
+            .addElement("riskData", riskDataTransactionRequest)
+            .addElement("externalVault", externalVaultRequest);
 
         if (!customFields.isEmpty()) {
             builder.addElement("customFields", customFields);

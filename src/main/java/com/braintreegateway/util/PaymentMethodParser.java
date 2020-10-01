@@ -1,19 +1,19 @@
 package com.braintreegateway.util;
 
-import com.braintreegateway.Result;
-import com.braintreegateway.PaymentMethod;
-import com.braintreegateway.PayPalAccount;
-import com.braintreegateway.CreditCard;
-import com.braintreegateway.ApplePayCard;
-import com.braintreegateway.AndroidPayCard;
 import com.braintreegateway.AmexExpressCheckoutCard;
+import com.braintreegateway.AndroidPayCard;
+import com.braintreegateway.ApplePayCard;
+import com.braintreegateway.CreditCard;
+import com.braintreegateway.CustomActionsPaymentMethod;
+import com.braintreegateway.MasterpassCard;
+import com.braintreegateway.PayPalAccount;
+import com.braintreegateway.PaymentMethod;
+import com.braintreegateway.Result;
+import com.braintreegateway.SamsungPayCard;
+import com.braintreegateway.UnknownPaymentMethod;
 import com.braintreegateway.UsBankAccount;
 import com.braintreegateway.VenmoAccount;
 import com.braintreegateway.VisaCheckoutCard;
-import com.braintreegateway.MasterpassCard;
-import com.braintreegateway.SamsungPayCard;
-import com.braintreegateway.CustomActionsPaymentMethod;
-import com.braintreegateway.UnknownPaymentMethod;
 
 public class PaymentMethodParser {
 

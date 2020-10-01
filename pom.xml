@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.braintreepayments.gateway</groupId>
     <artifactId>braintree-java</artifactId>
-    <version>3.1.1-SNAPSHOT</version>
+    <version>3.2.0-SNAPSHOT</version>
     <description>Java Client Library for Braintree Payments Gateway</description>
     <packaging>bundle</packaging>
     <name>Braintree Gateway Java Client Library</name>
@@ -37,7 +37,7 @@
       <developerConnection>
         ${scmConnection}
       </developerConnection>
-      <tag>3.1.0</tag>
+      <tag>3.2.0</tag>
     </scm>
 
     <distributionManagement>
@@ -73,6 +73,12 @@
             <artifactId>junit</artifactId>
             <version>4.13</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>xmlunit</groupId>
+          <artifactId>xmlunit</artifactId>
+          <version>1.6</version>
+          <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>org.osgi</groupId>
@@ -178,6 +184,12 @@
             </resource>
         </resources>
         <plugins>
+          <plugin>
+            <!--required for checkstyle-->
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>3.9.1</version>
+          </plugin>
            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -265,8 +277,14 @@
 
     <reporting>
         <plugins>
-
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.1.1</version>
+            <configuration>
+              <configLocation>google_checks.xml</configLocation>
+            </configuration>
+          </plugin>
         </plugins>
-
     </reporting>
 </project>

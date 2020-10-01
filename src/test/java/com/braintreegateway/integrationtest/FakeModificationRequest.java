@@ -64,14 +64,14 @@ public class FakeModificationRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("amount", amount).
-            addElement("description", description).
-            addElement("id", id).
-            addElement("kind", kind).
-            addElement("name", name).
-            addElement("neverExpires", neverExpires).
-            addElement("numberOfBillingCycles", numberOfBillingCycles).
-            addElement("planId", planId);
+        return new RequestBuilder(root)
+            .addElement("amount", amount)
+            .addElement("description", description)
+            .addElement("id", id)
+            .addElement("kind", kind)
+            .addElement("name", name)
+            .addElement("neverExpires", neverExpires)
+            .addElement("numberOfBillingCycles", numberOfBillingCycles)
+            .addElement("planId", planId);
     }
 }

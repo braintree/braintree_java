@@ -1,11 +1,10 @@
 package com.braintreegateway;
 
+import com.braintreegateway.util.GraphQLClient;
+import com.braintreegateway.util.Http;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Map;
-
-import com.braintreegateway.util.GraphQLClient;
-import com.braintreegateway.util.Http;
 
 /**
  * Provides methods to interact with reports.

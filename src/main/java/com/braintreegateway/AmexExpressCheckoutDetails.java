@@ -2,6 +2,7 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 
+@Deprecated
 public class AmexExpressCheckoutDetails {
 
     private String cardType;

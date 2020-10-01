@@ -42,8 +42,8 @@ public class ExternalVaultVerificationRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("status", status).
-            addElement("previousNetworkTransactionId", previousNetworkTransactionId);
+        return new RequestBuilder(root)
+            .addElement("status", status)
+            .addElement("previousNetworkTransactionId", previousNetworkTransactionId);
     }
 }

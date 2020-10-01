@@ -44,10 +44,10 @@ public class ModificationRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("amount", amount).
-            addElement("neverExpires", neverExpires).
-            addElement("numberOfBillingCycles", numberOfBillingCycles).
-            addElement("quantity", quantity);
+        return new RequestBuilder(root)
+            .addElement("amount", amount)
+            .addElement("neverExpires", neverExpires)
+            .addElement("numberOfBillingCycles", numberOfBillingCycles)
+            .addElement("quantity", quantity);
     }
 }

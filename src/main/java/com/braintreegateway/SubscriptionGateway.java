@@ -3,7 +3,6 @@ package com.braintreegateway;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +61,9 @@ public class SubscriptionGateway {
      * @return the {@link Subscription} or raises a {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Subscription find(String id) {
-        if(id == null || id.trim().equals(""))
+        if (id == null || id.trim().equals("")) {
             throw new NotFoundException();
+        }
         return new Subscription(http.get(configuration.getMerchantPath() + "/subscriptions/" + id));
     }
 
@@ -106,28 +106,28 @@ public class SubscriptionGateway {
     }
 
     public Result<Transaction> retryCharge(String subscriptionId) {
-       return retryCharge(new SubscriptionTransactionRequest().
-         subscriptionId(subscriptionId));
+       return retryCharge(new SubscriptionTransactionRequest()
+         .subscriptionId(subscriptionId));
     }
 
     public Result<Transaction> retryCharge(String subscriptionId, BigDecimal amount) {
-        return retryCharge(new SubscriptionTransactionRequest().
-          subscriptionId(subscriptionId).
-          amount(amount));
+        return retryCharge(new SubscriptionTransactionRequest()
+          .subscriptionId(subscriptionId)
+          .amount(amount));
     }
 
     public Result<Transaction> retryCharge(String subscriptionId, Boolean submitForSettlement) {
-        return retryCharge(new SubscriptionTransactionRequest().
-          subscriptionId(subscriptionId)
+        return retryCharge(new SubscriptionTransactionRequest()
+          .subscriptionId(subscriptionId)
           .options()
             .submitForSettlement(submitForSettlement).done());
     }
 
     public Result<Transaction> retryCharge(String subscriptionId, BigDecimal amount, Boolean submitForSettlement) {
-        return retryCharge(new SubscriptionTransactionRequest().
-          subscriptionId(subscriptionId).
-          amount(amount).
-          options().
-            submitForSettlement(submitForSettlement).done());
+        return retryCharge(new SubscriptionTransactionRequest()
+          .subscriptionId(subscriptionId)
+          .amount(amount)
+          .options()
+          .submitForSettlement(submitForSettlement).done());
     }
 }

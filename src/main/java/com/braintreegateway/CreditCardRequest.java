@@ -61,11 +61,15 @@ public class CreditCardRequest extends Request {
         return this;
     }
 
+    @Deprecated
+    // Merchants should be using deviceData only
     public CreditCardRequest deviceSessionId(String deviceSessionId) {
         this.deviceSessionId = deviceSessionId;
         return this;
     }
 
+    @Deprecated
+    // Merchants should be using deviceData only
     public CreditCardRequest fraudMerchantId(String fraudMerchantId) {
         this.fraudMerchantId = fraudMerchantId;
         return this;
@@ -144,29 +148,29 @@ public class CreditCardRequest extends Request {
 
     @Override
     public String toQueryString(String root) {
-        return buildRequest(root).
-            addTopLevelElement("paymentMethodToken", paymentMethodToken).
-            toQueryString();
+        return buildRequest(root)
+            .addTopLevelElement("paymentMethodToken", paymentMethodToken)
+            .toQueryString();
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("billingAddress", billingAddressRequest).
-            addElement("billingAddressId", billingAddressId).
-            addElement("deviceData", deviceData).
-            addElement("options", optionsRequest).
-            addElement("threeDSecurePassThru", threeDSecurePassThruRequest).
-            addElement("customerId", customerId).
-            addElement("cardholderName", cardholderName).
-            addElement("cvv", cvv).
-            addElement("number", number).
-            addElement("deviceSessionId", deviceSessionId).
-            addElement("fraudMerchantId", fraudMerchantId).
-            addElement("expirationDate", expirationDate).
-            addElement("expirationMonth", expirationMonth).
-            addElement("expirationYear", expirationYear).
-            addElement("paymentMethodNonce", paymentMethodNonce).
-            addElement("token", token).
-            addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode);
+        return new RequestBuilder(root)
+            .addElement("billingAddress", billingAddressRequest)
+            .addElement("billingAddressId", billingAddressId)
+            .addElement("deviceData", deviceData)
+            .addElement("options", optionsRequest)
+            .addElement("threeDSecurePassThru", threeDSecurePassThruRequest)
+            .addElement("customerId", customerId)
+            .addElement("cardholderName", cardholderName)
+            .addElement("cvv", cvv)
+            .addElement("number", number)
+            .addElement("deviceSessionId", deviceSessionId)
+            .addElement("fraudMerchantId", fraudMerchantId)
+            .addElement("expirationDate", expirationDate)
+            .addElement("expirationMonth", expirationMonth)
+            .addElement("expirationYear", expirationYear)
+            .addElement("paymentMethodNonce", paymentMethodNonce)
+            .addElement("token", token)
+            .addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode);
     }
 }

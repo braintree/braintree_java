@@ -133,23 +133,23 @@ public class TransactionIndustryDataLegRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("conjunctionTicket", conjunctionTicket).
-            addElement("exchangeTicket", exchangeTicket).
-            addElement("couponNumber", couponNumber).
-            addElement("serviceClass", serviceClass).
-            addElement("carrierCode", carrierCode).
-            addElement("fareBasisCode", fareBasisCode).
-            addElement("flightNumber", flightNumber).
-            addElement("departureDate", departureDate).
-            addElement("departureAirportCode", departureAirportCode).
-            addElement("departureTime", departureTime).
-            addElement("arrivalAirportCode", arrivalAirportCode).
-            addElement("arrivalTime", arrivalTime).
-            addElement("stopoverPermitted", stopoverPermitted).
-            addElement("fareAmount", fareAmount).
-            addElement("feeAmount", feeAmount).
-            addElement("taxAmount", taxAmount).
-            addElement("endorsementOrRestrictions", endorsementOrRestrictions);
+        return new RequestBuilder(root)
+            .addElement("conjunctionTicket", conjunctionTicket)
+            .addElement("exchangeTicket", exchangeTicket)
+            .addElement("couponNumber", couponNumber)
+            .addElement("serviceClass", serviceClass)
+            .addElement("carrierCode", carrierCode)
+            .addElement("fareBasisCode", fareBasisCode)
+            .addElement("flightNumber", flightNumber)
+            .addElement("departureDate", departureDate)
+            .addElement("departureAirportCode", departureAirportCode)
+            .addElement("departureTime", departureTime)
+            .addElement("arrivalAirportCode", arrivalAirportCode)
+            .addElement("arrivalTime", arrivalTime)
+            .addElement("stopoverPermitted", stopoverPermitted)
+            .addElement("fareAmount", fareAmount)
+            .addElement("feeAmount", feeAmount)
+            .addElement("taxAmount", taxAmount)
+            .addElement("endorsementOrRestrictions", endorsementOrRestrictions);
     }
 }

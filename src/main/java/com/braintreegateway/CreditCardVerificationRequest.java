@@ -36,11 +36,11 @@ public class CreditCardVerificationRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-            addElement("creditCard", creditCardRequest).
-            addElement("options", optionsRequest).
-            addElement("externalVault", externalVaultVerificationRequest).
-            addElement("riskData", riskDataVerificationRequest);
+        RequestBuilder builder = new RequestBuilder(root)
+            .addElement("creditCard", creditCardRequest)
+            .addElement("options", optionsRequest)
+            .addElement("externalVault", externalVaultVerificationRequest)
+            .addElement("riskData", riskDataVerificationRequest);
         return builder;
     }
 }

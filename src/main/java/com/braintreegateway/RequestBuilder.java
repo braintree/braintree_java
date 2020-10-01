@@ -2,7 +2,6 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.QueryString;
 import com.braintreegateway.util.StringUtils;
-
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -78,8 +77,9 @@ public class RequestBuilder {
     }
 
     protected static String formatAsXML(String name, Map<String, Object> map) {
-        if (map == null)
+        if (map == null) {
             return "";
+        }
         StringBuilder xml = new StringBuilder();
         xml.append(String.format("<%s>", name));
         for (Map.Entry<String, Object> entry : map.entrySet()) {

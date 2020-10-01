@@ -33,7 +33,7 @@ public class TransactionOptionsVenmoRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("profile-id", profileId);
+        return new RequestBuilder(root)
+            .addElement("profile-id", profileId);
     }
 }

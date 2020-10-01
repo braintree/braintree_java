@@ -67,10 +67,10 @@ public class TransactionPayPalRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("payeeId", payeeId).
-            addElement("payeeEmail", payeeEmail).
-            addElement("payerId", payerId).
-            addElement("paymentId", paymentId);
+        return new RequestBuilder(root)
+            .addElement("payeeId", payeeId)
+            .addElement("payeeEmail", payeeEmail)
+            .addElement("payerId", payerId)
+            .addElement("paymentId", paymentId);
     }
 }

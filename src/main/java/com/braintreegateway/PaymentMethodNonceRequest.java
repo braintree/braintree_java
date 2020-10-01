@@ -51,10 +51,10 @@ public class PaymentMethodNonceRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-            addElement("merchant-account-id", merchantAccountId).
-            addElement("authentication-insight", authenticationInsight.toString()).
-            addElement("authentication-insight-options", authenticationInsightOptions);
+        RequestBuilder builder = new RequestBuilder(root)
+            .addElement("merchant-account-id", merchantAccountId)
+            .addElement("authentication-insight", authenticationInsight.toString())
+            .addElement("authentication-insight-options", authenticationInsightOptions);
 
 
         return builder;

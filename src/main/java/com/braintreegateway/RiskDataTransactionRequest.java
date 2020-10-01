@@ -63,11 +63,11 @@ public class RiskDataTransactionRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("customerBrowser", customerBrowser).
-            addElement("customerDeviceId", customerDeviceId).
-            addElement("customerIP", customerIP).
-            addElement("customerLocationZip", customerLocationZip).
-            addElement("customerTenure", customerTenure);
+        return new RequestBuilder(root)
+            .addElement("customerBrowser", customerBrowser)
+            .addElement("customerDeviceId", customerDeviceId)
+            .addElement("customerIP", customerIP)
+            .addElement("customerLocationZip", customerLocationZip)
+            .addElement("customerTenure", customerTenure);
     }
 }

@@ -51,8 +51,12 @@ public class OAuthConnectUrlRequest extends Request {
     }
 
     private Boolean isSignupOnly() {
-        if (this.signupOnly == null) { return false; }
-        if (this.loginOnly == null) { return this.signupOnly; }
+        if (this.signupOnly == null) {
+            return false;
+        }
+        if (this.loginOnly == null) {
+            return this.signupOnly;
+        }
         return this.signupOnly && !this.loginOnly;
     }
 
@@ -78,14 +82,14 @@ public class OAuthConnectUrlRequest extends Request {
 
     @Override
     public String toQueryString() {
-        RequestBuilder builder = new RequestBuilder("").
-            addTopLevelElement("merchantId", merchantId).
-            addTopLevelElement("scope", scope).
-            addTopLevelElement("clientId", clientId).
-            addTopLevelElement("state", state).
-            addTopLevelElement("redirectUri", redirectUri).
-            addTopLevelElement("landingPage", landingPage).
-            addTopLevelElement("loginOnly", String.valueOf(loginOnly));
+        RequestBuilder builder = new RequestBuilder("")
+            .addTopLevelElement("merchantId", merchantId)
+            .addTopLevelElement("scope", scope)
+            .addTopLevelElement("clientId", clientId)
+            .addTopLevelElement("state", state)
+            .addTopLevelElement("redirectUri", redirectUri)
+            .addTopLevelElement("landingPage", landingPage)
+            .addTopLevelElement("loginOnly", String.valueOf(loginOnly));
 
         if (isSignupOnly()) {
             builder.addTopLevelElement("signupOnly", "true");
@@ -95,8 +99,8 @@ public class OAuthConnectUrlRequest extends Request {
             builder.addTopLevelElement("payment_methods[]", paymentMethod);
         }
 
-        builder.addElement("user", user).
-            addElement("business", business);
+        builder.addElement("user", user)
+            .addElement("business", business);
 
         return builder.toQueryString();
     }

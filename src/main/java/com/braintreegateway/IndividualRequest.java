@@ -69,13 +69,13 @@ public class IndividualRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-                addElement("firstName", firstName).
-                addElement("lastName", lastName).
-                addElement("email", email).
-                addElement("phone", phone).
-                addElement("addressRequest", address).
-                addElement("dateOfBirth", dateOfBirth).
-                addElement("ssn", ssn);
+        return new RequestBuilder(root)
+                .addElement("firstName", firstName)
+                .addElement("lastName", lastName)
+                .addElement("email", email)
+                .addElement("phone", phone)
+                .addElement("addressRequest", address)
+                .addElement("dateOfBirth", dateOfBirth)
+                .addElement("ssn", ssn);
     }
 }

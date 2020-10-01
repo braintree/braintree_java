@@ -82,19 +82,19 @@ public class OAuthConnectUrlUserRequest extends Request {
 
     @Override
     public String toQueryString(String root) {
-        RequestBuilder builder = new RequestBuilder("user").
-            addElement("country", country).
-            addElement("email", email).
-            addElement("firstName", firstName).
-            addElement("lastName", lastName).
-            addElement("phone", phone).
-            addElement("dobYear", dobYear).
-            addElement("dobMonth", dobMonth).
-            addElement("dobDay", dobDay).
-            addElement("streetAddress", streetAddress).
-            addElement("locality", locality).
-            addElement("region", region).
-            addElement("postalCode", postalCode);
+        RequestBuilder builder = new RequestBuilder("user")
+            .addElement("country", country)
+            .addElement("email", email)
+            .addElement("firstName", firstName)
+            .addElement("lastName", lastName)
+            .addElement("phone", phone)
+            .addElement("dobYear", dobYear)
+            .addElement("dobMonth", dobMonth)
+            .addElement("dobDay", dobDay)
+            .addElement("streetAddress", streetAddress)
+            .addElement("locality", locality)
+            .addElement("region", region)
+            .addElement("postalCode", postalCode);
 
         return builder.toQueryString();
     }

@@ -1,5 +1,6 @@
 package com.braintreegateway;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +44,9 @@ public class ThreeDSecureLookupAdditionalInformation {
     private String transactionCountYear;
     private String userAgent;
 
-    public ThreeDSecureLookupAdditionalInformation() {}
+    public ThreeDSecureLookupAdditionalInformation() {
+
+    }
 
     public ThreeDSecureLookupAdditionalInformation shippingAddress(ThreeDSecureLookupAddress shippingAddress) {
         this.shippingAddress = shippingAddress;
@@ -440,7 +443,7 @@ public class ThreeDSecureLookupAdditionalInformation {
         jsonMap.put("purchase_date", getPurchaseDate());
         jsonMap.put("recurring_end", getRecurringEnd());
         jsonMap.put("recurring_frequency", getRecurringFrequency());
-        while (jsonMap.values().remove(null));
+        jsonMap.values().removeAll(Collections.singleton(null));
 
         return jsonMap;
     }

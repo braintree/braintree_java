@@ -1,7 +1,6 @@
 package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
-import com.braintreegateway.Transaction;
 
 public class LocalPaymentCompleted {
     private String paymentId;

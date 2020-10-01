@@ -53,12 +53,12 @@ public class SubscriptionOptionsRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("doNotInheritAddOnsOrDiscounts", doNotInheritAddOnsOrDiscounts).
-            addElement("prorateCharges", prorateCharges).
-            addElement("replaceAllAddOnsAndDiscounts", replaceAllAddOnsAndDiscounts).
-            addElement("revertSubscriptionOnProrationFailure", revertSubscriptionOnProrationFailure).
-            addElement("startImmediately", startImmediately).
-            addElement("paypal", paypal);
+        return new RequestBuilder(root)
+            .addElement("doNotInheritAddOnsOrDiscounts", doNotInheritAddOnsOrDiscounts)
+            .addElement("prorateCharges", prorateCharges)
+            .addElement("replaceAllAddOnsAndDiscounts", replaceAllAddOnsAndDiscounts)
+            .addElement("revertSubscriptionOnProrationFailure", revertSubscriptionOnProrationFailure)
+            .addElement("startImmediately", startImmediately)
+            .addElement("paypal", paypal);
     }
 }

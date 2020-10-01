@@ -12,7 +12,9 @@ public class ThreeDSecureLookupAddress {
     private String surname;
     private String line3;
 
-    public ThreeDSecureLookupAddress() {}
+    public ThreeDSecureLookupAddress() {
+
+    }
 
     public ThreeDSecureLookupAddress countryCodeAlpha2(String countryCodeAlpha2) {
         this.countryCodeAlpha2 = countryCodeAlpha2;
@@ -60,7 +62,7 @@ public class ThreeDSecureLookupAddress {
     }
 
     public ThreeDSecureLookupAddress line3(String line3) {
-        this.line3= line3;
+        this.line3 = line3;
         return this;
     }
 
@@ -100,5 +102,7 @@ public class ThreeDSecureLookupAddress {
         return surname;
     }
 
-    public String getLine3() { return line3; }
+    public String getLine3() {
+        return line3;
+    }
 }

@@ -45,8 +45,8 @@ public class RiskDataCustomerRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("customerBrowser", customerBrowser).
-            addElement("customerIP", customerIP);
+        return new RequestBuilder(root)
+            .addElement("customerBrowser", customerBrowser)
+            .addElement("customerIP", customerIP);
     }
 }

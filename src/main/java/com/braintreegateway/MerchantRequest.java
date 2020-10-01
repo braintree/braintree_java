@@ -1,4 +1,5 @@
 package com.braintreegateway;
+
 import java.util.List;
 
 public class MerchantRequest extends Request {
@@ -43,15 +44,15 @@ public class MerchantRequest extends Request {
 
     @Override
     public String toXML() {
-        return new RequestBuilder("merchant").
-            addElement("email", email).
-            addElement("countryCodeAlpha3", countryCodeAlpha3).
-            addElement("companyName", companyName).
-            addElement("paymentMethods", paymentMethods).
-            addElement("currencies", currencies).
-            addElement("scope", scope).
-            addElement("paypalAccount", payPalOnlyAccountRequest).
-            toXML();
+        return new RequestBuilder("merchant")
+            .addElement("email", email)
+            .addElement("countryCodeAlpha3", countryCodeAlpha3)
+            .addElement("companyName", companyName)
+            .addElement("paymentMethods", paymentMethods)
+            .addElement("currencies", currencies)
+            .addElement("scope", scope)
+            .addElement("paypalAccount", payPalOnlyAccountRequest)
+            .toXML();
     }
 
     public PayPalOnlyAccountRequest payPalAccount() {

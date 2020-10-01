@@ -65,37 +65,37 @@ public class TransactionIndustryDataRequest extends Request {
         return this;
     }
 
-    public TransactionIndustryDataRequest departureDate(String departureDate){
+    public TransactionIndustryDataRequest departureDate(String departureDate) {
         this.departureDate = departureDate;
         return this;
     }
 
-    public TransactionIndustryDataRequest lodgingCheckInDate(String lodgingCheckInDate){
+    public TransactionIndustryDataRequest lodgingCheckInDate(String lodgingCheckInDate) {
         this.lodgingCheckInDate = lodgingCheckInDate;
         return this;
     }
 
-    public TransactionIndustryDataRequest lodgingCheckOutDate(String lodgingCheckOutDate){
+    public TransactionIndustryDataRequest lodgingCheckOutDate(String lodgingCheckOutDate) {
         this.lodgingCheckOutDate = lodgingCheckOutDate;
         return this;
     }
 
-    public TransactionIndustryDataRequest lodgingName(String lodgingName){
+    public TransactionIndustryDataRequest lodgingName(String lodgingName) {
         this.lodgingName = lodgingName;
         return this;
     }
 
-    public TransactionIndustryDataRequest roomRate(String roomRate){
+    public TransactionIndustryDataRequest roomRate(String roomRate) {
         this.roomRate = roomRate;
         return this;
     }
 
-    public TransactionIndustryDataRequest roomRate(BigDecimal roomRate){
+    public TransactionIndustryDataRequest roomRate(BigDecimal roomRate) {
         this.roomRate = roomRate.toString();
         return this;
     }
 
-    public TransactionIndustryDataRequest roomTax(BigDecimal roomTax){
+    public TransactionIndustryDataRequest roomTax(BigDecimal roomTax) {
         this.roomTax = roomTax;
         return this;
     }
@@ -213,35 +213,35 @@ public class TransactionIndustryDataRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-                addElement("folioNumber", folioNumber).
-                addElement("checkInDate", checkInDate).
-                addElement("checkOutDate", checkOutDate).
-                addElement("travelPackage", travelPackage).
-                addElement("departureDate", departureDate).
-                addElement("lodgingCheckInDate", lodgingCheckInDate).
-                addElement("lodgingCheckOutDate", lodgingCheckOutDate).
-                addElement("lodgingName", lodgingName).
-                addElement("roomRate", roomRate).
-                addElement("roomTax", roomTax).
-                addElement("passengerFirstName", passengerFirstName).
-                addElement("passengerLastName", passengerLastName).
-                addElement("passengerMiddleInitial", passengerMiddleInitial).
-                addElement("passengerTitle", passengerTitle).
-                addElement("issuedDate", issuedDate).
-                addElement("travelAgencyName", travelAgencyName).
-                addElement("travelAgencyCode", travelAgencyCode).
-                addElement("ticketNumber", ticketNumber).
-                addElement("issuingCarrierCode", issuingCarrierCode).
-                addElement("customerCode", customerCode).
-                addElement("fareAmount", fareAmount).
-                addElement("feeAmount", feeAmount).
-                addElement("taxAmount", taxAmount).
-                addElement("restrictedTicket", restrictedTicket).
-                addElement("noShow", noShow).
-                addElement("advancedDeposit", advancedDeposit).
-                addElement("fireSafe", fireSafe).
-                addElement("propertyPhone", propertyPhone);
+        RequestBuilder builder = new RequestBuilder(root)
+                .addElement("folioNumber", folioNumber)
+                .addElement("checkInDate", checkInDate)
+                .addElement("checkOutDate", checkOutDate)
+                .addElement("travelPackage", travelPackage)
+                .addElement("departureDate", departureDate)
+                .addElement("lodgingCheckInDate", lodgingCheckInDate)
+                .addElement("lodgingCheckOutDate", lodgingCheckOutDate)
+                .addElement("lodgingName", lodgingName)
+                .addElement("roomRate", roomRate)
+                .addElement("roomTax", roomTax)
+                .addElement("passengerFirstName", passengerFirstName)
+                .addElement("passengerLastName", passengerLastName)
+                .addElement("passengerMiddleInitial", passengerMiddleInitial)
+                .addElement("passengerTitle", passengerTitle)
+                .addElement("issuedDate", issuedDate)
+                .addElement("travelAgencyName", travelAgencyName)
+                .addElement("travelAgencyCode", travelAgencyCode)
+                .addElement("ticketNumber", ticketNumber)
+                .addElement("issuingCarrierCode", issuingCarrierCode)
+                .addElement("customerCode", customerCode)
+                .addElement("fareAmount", fareAmount)
+                .addElement("feeAmount", feeAmount)
+                .addElement("taxAmount", taxAmount)
+                .addElement("restrictedTicket", restrictedTicket)
+                .addElement("noShow", noShow)
+                .addElement("advancedDeposit", advancedDeposit)
+                .addElement("fireSafe", fireSafe)
+                .addElement("propertyPhone", propertyPhone);
 
         if (!legRequests.isEmpty()) {
             builder.addElement("legs", legRequests);

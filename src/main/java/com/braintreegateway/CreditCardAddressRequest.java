@@ -82,8 +82,8 @@ public class CreditCardAddressRequest extends AddressRequest {
     
     @Override
     protected RequestBuilder buildRequest(String root) {
-        return super.buildRequest(root).
-            addElement("options", optionsRequest);
+        return super.buildRequest(root)
+            .addElement("options", optionsRequest);
     }
 
     @Override

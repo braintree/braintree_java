@@ -1,12 +1,11 @@
 package com.braintreegateway;
 
+import com.braintreegateway.exceptions.ConfigurationException;
+import com.braintreegateway.util.ClientLibraryProperties;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.braintreegateway.exceptions.ConfigurationException;
-import com.braintreegateway.util.ClientLibraryProperties;
 
 public class Configuration {
     private Environment environment;

@@ -2,7 +2,6 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.EnumUtils;
 import com.braintreegateway.util.NodeWrapper;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -499,6 +498,7 @@ public class Transaction {
         return androidPayDetails;
     }
 
+    @Deprecated
     public AmexExpressCheckoutDetails getAmexExpressCheckoutDetails() {
         return amexExpressCheckoutDetails;
     }
@@ -519,6 +519,7 @@ public class Transaction {
         return visaCheckoutCardDetails;
     }
 
+    @Deprecated
     public MasterpassCardDetails getMasterpassCardDetails() {
         return masterpassCardDetails;
     }

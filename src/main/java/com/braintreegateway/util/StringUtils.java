@@ -11,13 +11,14 @@ public class StringUtils {
     }
 
     public static String dasherize(String str) {
-        if (str == null)
+        if (str == null) {
             return null;
+        }
 
-        return str.replaceAll("([A-Z]+)([A-Z][a-z])", "$1-$2").
-            replaceAll("([a-z])([A-Z])", "$1-$2").
-            replaceAll("_", "-").
-            toLowerCase();
+        return str.replaceAll("([A-Z]+)([A-Z][a-z])", "$1-$2")
+            .replaceAll("([a-z])([A-Z])", "$1-$2")
+            .replaceAll("_", "-")
+            .toLowerCase();
     }
 
     public static String getFullPathOfFile(String filename) {
@@ -45,37 +46,37 @@ public class StringUtils {
     }
 
     public static String underscore(String str) {
-        if (str == null)
+        if (str == null) {
             return null;
+        }
 
-        return str.replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2").
-            replaceAll("([a-z])([A-Z])", "$1_$2").
-            replaceAll("-", "_").
-            toLowerCase();
+        return str.replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2")
+            .replaceAll("([a-z])([A-Z])", "$1_$2")
+            .replaceAll("-", "_")
+            .toLowerCase();
     }
 
-    public static String join(Object[] tokens, String delimiter)
-     {
-       if(tokens.length == 0)
-         return "";
+    public static String join(Object[] tokens, String delimiter) {
+       if (tokens.length == 0) {
+           return "";
+       }
 
        StringBuilder joined = new StringBuilder();
 
        boolean first = true;
-       for(Object token : tokens)
-       {
-         if(!first)
+       for(Object token : tokens) {
+         if (!first) {
            joined.append(delimiter);
-         else
+         } else {
            first = false;
+         }
          joined.append(token);
        }
 
        return joined.toString();
      }
 
-     public static String join(String delimiter, Object... tokens)
-     {
+     public static String join(String delimiter, Object... tokens) {
        return join(tokens, delimiter);
      }
 
@@ -83,8 +84,7 @@ public class StringUtils {
         LinkedList<String> pairs = new LinkedList<String>();
         ArrayList<String> keyList = new ArrayList<String>(map.keySet());
         Collections.sort(keyList);
-        for (String s : keyList)
-        {
+        for (String s : keyList) {
             Object value = map.get(s);
             String valueStr = toString(value);
             pairs.add(s + ": " + valueStr);
@@ -95,14 +95,15 @@ public class StringUtils {
 
     @SuppressWarnings("unchecked")
 	public static String toString(Object value) {
-        if(value instanceof Map)
+        if (value instanceof Map) {
             return mapToString((Map<String, Object>) value);
-        else if(value instanceof List)
+        } else if (value instanceof List) {
             return listToString((List<Object>) value);
-        else if(value == null)
+        } else if (value == null) {
             return "null";
-        else
+        } else {
             return value.toString().trim();
+        }
     }
 
     public static String listToString(List<Object> value) {
@@ -125,7 +126,7 @@ public class StringUtils {
               if (i < len) {
                   c = encodedString.charAt(i++);
                   if (c == 'u') {
-                      c = (char) Integer.parseInt(encodedString.substring(i,i+4),16);
+                      c = (char) Integer.parseInt(encodedString.substring(i,i + 4),16);
                       i += 4;
                   }
               }

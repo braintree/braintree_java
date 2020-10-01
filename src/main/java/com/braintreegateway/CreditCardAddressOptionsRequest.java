@@ -34,7 +34,7 @@ public class CreditCardAddressOptionsRequest extends Request {
     }
     
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("updateExisting", updateExisting);
+        return new RequestBuilder(root)
+            .addElement("updateExisting", updateExisting);
     }
 }

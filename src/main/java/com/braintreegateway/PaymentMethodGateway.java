@@ -1,9 +1,9 @@
 package com.braintreegateway;
 
+import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.PaymentMethodParser;
-import com.braintreegateway.exceptions.NotFoundException;
 
 public class PaymentMethodGateway {
     private Http http;
@@ -35,8 +35,9 @@ public class PaymentMethodGateway {
     }
 
     public PaymentMethod find(String token) {
-        if(token == null || token.trim().equals(""))
+        if(token == null || token.trim().equals("")) {
             throw new NotFoundException();
+        }
 
         NodeWrapper response = http.get(configuration.getMerchantPath() + "/payment_methods/any/" + token);
 

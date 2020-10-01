@@ -2,7 +2,6 @@ package com.braintreegateway;
 
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 import com.braintreegateway.util.Sha1Hasher;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -51,7 +50,7 @@ public class WebhookTestingGateway {
     }
 
     private String subjectXml(WebhookNotification.Kind kind, String id) {
-        switch(kind) {
+        switch (kind) {
             case CHECK: return checkXml();
             case SUB_MERCHANT_ACCOUNT_APPROVED: return merchantAccountXmlActive(id);
             case SUB_MERCHANT_ACCOUNT_DECLINED: return merchantAccountXmlDeclined(id);

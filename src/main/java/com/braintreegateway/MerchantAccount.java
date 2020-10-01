@@ -51,28 +51,32 @@ public class MerchantAccount {
         this.isDefault = node.findBoolean("default");
 
         NodeWrapper masterNode = node.findFirst("master-merchant-account");
-        if (masterNode != null)
+        if (masterNode != null) {
             this.masterMerchantAccount = new MerchantAccount(masterNode);
-        else
+        } else {
             this.masterMerchantAccount = null;
+        }
 
         NodeWrapper individualNode = node.findFirst("individual");
-        if (individualNode != null)
+        if (individualNode != null) {
             this.individualDetails = new IndividualDetails(individualNode);
-        else
+        } else {
             this.individualDetails = null;
+        }
 
         NodeWrapper businessNode = node.findFirst("business");
-        if (businessNode != null)
+        if (businessNode != null) {
             this.businessDetails = new BusinessDetails(businessNode);
-        else
+        } else {
             this.businessDetails = null;
+        }
 
         NodeWrapper fundingNode = node.findFirst("funding");
-        if (fundingNode != null)
+        if (fundingNode != null) {
             this.fundingDetails = new FundingDetails(fundingNode);
-        else
+        } else {
             this.fundingDetails = null;
+        }
     }
 
     public String getId() {

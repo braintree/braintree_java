@@ -23,7 +23,7 @@ public class SubscriptionTransactionOptionsRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("submitForSettlement", submitForSettlement);
+        return new RequestBuilder(root)
+            .addElement("submitForSettlement", submitForSettlement);
     }
 }

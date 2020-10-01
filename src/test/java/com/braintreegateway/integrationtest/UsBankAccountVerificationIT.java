@@ -345,7 +345,7 @@ public class UsBankAccountVerificationIT extends IntegrationTest {
         UsBankAccountVerificationConfirmRequest confirmRequest = new UsBankAccountVerificationConfirmRequest()
             .depositAmounts(depositAmounts);
 
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             Result<UsBankAccountVerification> confirmResult = gateway.usBankAccountVerification().confirmMicroTransferAmounts(verification.getId(), confirmRequest);
 
             assertFalse(confirmResult.isSuccess());

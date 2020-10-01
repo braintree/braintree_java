@@ -1,7 +1,5 @@
 package com.braintreegateway;
 
-import com.braintreegateway.EndsWithNode;
-
 public class UsBankAccountVerificationSearchRequest extends SearchRequest {
     public TextNode<UsBankAccountVerificationSearchRequest> id() {
         return new TextNode<UsBankAccountVerificationSearchRequest>("id", this);

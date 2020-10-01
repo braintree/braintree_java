@@ -64,14 +64,14 @@ public class MerchantAccountRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-                addElement("applicantDetails", applicantDetails).
-                addElement("individual", individual).
-                addElement("business", business).
-                addElement("funding", funding).
-                addElement("tosAccepted", tosAccepted).
-                addElement("masterMerchantAccountId", masterMerchantAccountId).
-                addElement("id", id);
+        return new RequestBuilder(root)
+                .addElement("applicantDetails", applicantDetails)
+                .addElement("individual", individual)
+                .addElement("business", business)
+                .addElement("funding", funding)
+                .addElement("tosAccepted", tosAccepted)
+                .addElement("masterMerchantAccountId", masterMerchantAccountId)
+                .addElement("id", id);
     }
 
 }

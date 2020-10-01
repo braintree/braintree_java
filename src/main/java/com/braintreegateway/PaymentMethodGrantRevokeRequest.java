@@ -17,8 +17,8 @@ public class PaymentMethodGrantRevokeRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-            addElement("shared-payment-method-token", sharedPaymentMethodToken);
+        RequestBuilder builder = new RequestBuilder(root)
+            .addElement("shared-payment-method-token", sharedPaymentMethodToken);
 
         return builder;
     }

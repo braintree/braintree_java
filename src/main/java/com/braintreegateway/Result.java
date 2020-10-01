@@ -1,7 +1,6 @@
 package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
@@ -20,11 +19,9 @@ public class Result<T> {
         Throwable cause = null;
         try {
             return klass.getConstructor(NodeWrapper.class).newInstance(node);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            cause = e;
         }
-        catch (InstantiationException e) { cause = e; }
-        catch (IllegalAccessException e) { cause = e; }
-        catch (InvocationTargetException e) { cause = e;  }
-        catch (NoSuchMethodException e) { cause = e; }
 
         throw new IllegalArgumentException("Unknown klass: " + klass, cause);
     }

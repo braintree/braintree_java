@@ -23,7 +23,7 @@ public class SubscriptionOptionsPayPalRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("description", description);
+        return new RequestBuilder(root)
+            .addElement("description", description);
     }
 }

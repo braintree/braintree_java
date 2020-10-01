@@ -3,7 +3,6 @@ package com.braintreegateway;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * Provides a fluent interface to build up requests around {@link Customer Customers}.
  */
@@ -62,11 +61,15 @@ public class CustomerRequest extends Request {
         return this;
     }
 
+    @Deprecated
+    // Merchants should be using deviceData only
     public CustomerRequest deviceSessionId(String deviceSessionId) {
         this.deviceSessionId = deviceSessionId;
         return this;
     }
 
+    @Deprecated
+    // Merchants should be using deviceData only
     public CustomerRequest fraudMerchantId(String fraudMerchantId) {
         this.fraudMerchantId = fraudMerchantId;
         return this;
@@ -147,26 +150,27 @@ public class CustomerRequest extends Request {
 
     @Override
     public String toQueryString(String root) {
-        return buildRequest(root).
-            addTopLevelElement("customerId", customerId).
-            toQueryString();
+        return buildRequest(root)
+            .addTopLevelElement("customerId", customerId)
+            .toQueryString();
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root).
-            addElement("deviceData", deviceData).
-            addElement("company", company).
-            addElement("email", email).
-            addElement("fax", fax).
-            addElement("firstName", firstName).
-            addElement("id", id).
-            addElement("lastName", lastName).
-            addElement("phone", phone).
-            addElement("website", website).
-            addElement("paymentMethodNonce", paymentMethodNonce).
-            addElement("defaultPaymentMethodToken", defaultPaymentMethodToken).
-            addElement("creditCard", creditCardRequest).
-            addElement("options", optionsRequest);
+        RequestBuilder builder = new RequestBuilder(root)
+            .addElement("deviceData", deviceData)
+            .addElement("company", company)
+            .addElement("email", email)
+            .addElement("fax", fax)
+            .addElement("firstName", firstName)
+            .addElement("id", id)
+            .addElement("lastName", lastName)
+            .addElement("phone", phone)
+            .addElement("website", website)
+            .addElement("paymentMethodNonce", paymentMethodNonce)
+            .addElement("defaultPaymentMethodToken", defaultPaymentMethodToken)
+            .addElement("creditCard", creditCardRequest)
+            .addElement("options", optionsRequest)
+            .addElement("riskData", riskDataCustomerRequest);
 
         if (customFields.size() > 0) {
             builder.addElement("customFields", customFields);

@@ -429,7 +429,7 @@ public class MerchantAccountIT extends IntegrationTest {
 
         PaginatedCollection<MerchantAccount> result = gateway.merchantAccount().all();
         List<MerchantAccount> merchantAccounts = new ArrayList<MerchantAccount>();
-        for(MerchantAccount merchantAccount : result) {
+        for (MerchantAccount merchantAccount : result) {
             merchantAccounts.add(merchantAccount);
         }
 
@@ -451,7 +451,7 @@ public class MerchantAccountIT extends IntegrationTest {
 
         PaginatedCollection<MerchantAccount> result = gateway.merchantAccount().all();
         List<MerchantAccount> merchantAccounts = new ArrayList<MerchantAccount>();
-        for(MerchantAccount merchantAccount : result) {
+        for (MerchantAccount merchantAccount : result) {
             merchantAccounts.add(merchantAccount);
         }
 

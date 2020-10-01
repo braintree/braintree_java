@@ -2,7 +2,6 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.EnumUtils;
 import com.braintreegateway.util.NodeWrapper;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -254,8 +253,9 @@ public class Subscription {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof Subscription))
+        if (!(other instanceof Subscription)) {
             return false;
+        }
 
         return this.getId().equals(((Subscription)other).getId());
     }

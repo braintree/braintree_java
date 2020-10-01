@@ -4,7 +4,9 @@ public class CustomerOptionsRequest extends Request {
     private CustomerRequest parent;
     private CustomerOptionsPayPalRequest customerOptionsPayPalRequest;
 
-    public CustomerOptionsRequest() {}
+    public CustomerOptionsRequest() {
+
+    }
 
     public CustomerOptionsRequest(CustomerRequest parent) {
         this.parent = parent;
@@ -25,7 +27,7 @@ public class CustomerOptionsRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("paypal", customerOptionsPayPalRequest);
+        return new RequestBuilder(root)
+            .addElement("paypal", customerOptionsPayPalRequest);
     }
 }

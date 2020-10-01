@@ -1,7 +1,6 @@
 package com.braintreegateway.util;
 
 import com.braintreegateway.Request;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -63,7 +62,7 @@ public class QueryString {
     public static String encode(String value) {
         try {
             return URLEncoder.encode(value, DEFAULT_ENCODING);
-        } catch(UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException(DEFAULT_ENCODING + " encoding should always be available");
         }
     }

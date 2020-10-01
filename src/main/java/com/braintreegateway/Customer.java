@@ -1,7 +1,6 @@
 package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
-
 import java.util.*;
 
 public class Customer {
@@ -162,6 +161,7 @@ public class Customer {
         return Collections.unmodifiableList(androidPayCards);
     }
 
+    @Deprecated
     public List<AmexExpressCheckoutCard> getAmexExpressCheckoutCards() {
         return Collections.unmodifiableList(amexExpressCheckoutCards);
     }
@@ -174,6 +174,7 @@ public class Customer {
         return Collections.unmodifiableList(visaCheckoutCards);
     }
 
+    @Deprecated
     public List<MasterpassCard> getMasterpassCards() {
         return Collections.unmodifiableList(masterpassCards);
     }

@@ -1,7 +1,6 @@
 package com.braintreegateway;
 
 import com.braintreegateway.Transaction.Type;
-
 import java.math.BigDecimal;
 
 public class SubscriptionTransactionRequest extends Request {
@@ -31,10 +30,10 @@ public class SubscriptionTransactionRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-            addElement("amount", amount).
-            addElement("subscriptionId", subscriptionId).
-            addElement("options", subscriptionTransactionOptionsRequest).
-            addElement("type", Type.SALE.toString().toLowerCase());
+        return new RequestBuilder(root)
+            .addElement("amount", amount)
+            .addElement("subscriptionId", subscriptionId)
+            .addElement("options", subscriptionTransactionOptionsRequest)
+            .addElement("type", Type.SALE.toString().toLowerCase());
     }
 }

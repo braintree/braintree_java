@@ -30,8 +30,8 @@ public abstract class IndustryRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).
-                addElement("industryType", industryType).
-                addElement("data", data);
+        return new RequestBuilder(root)
+                .addElement("industryType", industryType)
+                .addElement("data", data);
     }
 }

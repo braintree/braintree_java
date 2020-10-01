@@ -1,15 +1,14 @@
 package com.braintreegateway;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-
 import com.braintreegateway.exceptions.InvalidChallengeException;
 import com.braintreegateway.exceptions.InvalidSignatureException;
 import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 import com.braintreegateway.util.Crypto;
-import com.braintreegateway.util.Sha1Hasher;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
+import com.braintreegateway.util.Sha1Hasher;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WebhookNotificationGateway {
     private Configuration configuration;

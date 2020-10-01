@@ -91,7 +91,7 @@ public class VisaCheckoutCardDetails {
     }
 
     public CreditCard.Commercial getCommercial() {
-      if(commercial.equals(CreditCard.Commercial.YES.toString())) {
+      if (commercial.equals(CreditCard.Commercial.YES.toString())) {
         return CreditCard.Commercial.YES;
       } else if (commercial.equals(CreditCard.Commercial.NO.toString())) {
         return CreditCard.Commercial.NO;
@@ -101,7 +101,7 @@ public class VisaCheckoutCardDetails {
     }
 
     public CreditCard.Debit getDebit() {
-      if(debit.equals(CreditCard.Debit.YES.toString())) {
+      if (debit.equals(CreditCard.Debit.YES.toString())) {
         return CreditCard.Debit.YES;
       } else if (debit.equals(CreditCard.Debit.NO.toString())) {
         return CreditCard.Debit.NO;
@@ -111,7 +111,7 @@ public class VisaCheckoutCardDetails {
     }
 
     public CreditCard.DurbinRegulated getDurbinRegulated() {
-      if(durbinRegulated.equals(CreditCard.DurbinRegulated.YES.toString())) {
+      if (durbinRegulated.equals(CreditCard.DurbinRegulated.YES.toString())) {
         return CreditCard.DurbinRegulated.YES;
       } else if (durbinRegulated.equals(CreditCard.DurbinRegulated.NO.toString())) {
         return CreditCard.DurbinRegulated.NO;
@@ -121,7 +121,7 @@ public class VisaCheckoutCardDetails {
     }
 
     public CreditCard.Healthcare getHealthcare() {
-      if(healthcare.equals(CreditCard.Healthcare.YES.toString())) {
+      if (healthcare.equals(CreditCard.Healthcare.YES.toString())) {
         return CreditCard.Healthcare.YES;
       } else if (healthcare.equals(CreditCard.Healthcare.NO.toString())) {
         return CreditCard.Healthcare.NO;
@@ -131,7 +131,7 @@ public class VisaCheckoutCardDetails {
     }
 
     public CreditCard.Payroll getPayroll() {
-      if(payroll.equals(CreditCard.Payroll.YES.toString())) {
+      if (payroll.equals(CreditCard.Payroll.YES.toString())) {
         return CreditCard.Payroll.YES;
       } else if (payroll.equals(CreditCard.Payroll.NO.toString())) {
         return CreditCard.Payroll.NO;
@@ -141,7 +141,7 @@ public class VisaCheckoutCardDetails {
     }
 
     public CreditCard.Prepaid getPrepaid() {
-      if(prepaid.equals(CreditCard.Prepaid.YES.toString())) {
+      if (prepaid.equals(CreditCard.Prepaid.YES.toString())) {
         return CreditCard.Prepaid.YES;
       } else if (prepaid.equals(CreditCard.Prepaid.NO.toString())) {
         return CreditCard.Prepaid.NO;
@@ -151,7 +151,7 @@ public class VisaCheckoutCardDetails {
     }
 
     public String getProductId() {
-        if(productId.equals("")) {
+        if (productId.equals("")) {
             return "Unknown";
         } else {
             return productId;
@@ -159,7 +159,7 @@ public class VisaCheckoutCardDetails {
     }
 
     public String getCountryOfIssuance() {
-        if(countryOfIssuance.equals("")) {
+        if (countryOfIssuance.equals("")) {
             return "Unknown";
         } else {
             return countryOfIssuance;
@@ -167,7 +167,7 @@ public class VisaCheckoutCardDetails {
     }
 
     public String getIssuingBank() {
-        if(issuingBank.equals("")) {
+        if (issuingBank.equals("")) {
             return "Unknown";
         } else {
             return issuingBank;

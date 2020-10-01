@@ -24,6 +24,8 @@ public class PayPalDetails {
     private String refundFromTransactionFeeAmount;
     private String refundFromTransactionFeeCurrencyIsoCode;
     private String description;
+    private String implicitlyVaultedPaymentMethodToken;
+    private String implicitlyVaultedPaymentMethodGlobalId;
 
     public PayPalDetails(NodeWrapper node) {
         payerEmail = node.findString("payer-email");
@@ -47,6 +49,8 @@ public class PayPalDetails {
         refundFromTransactionFeeAmount = node.findString("refund-from-transaction-fee-amount");
         refundFromTransactionFeeCurrencyIsoCode = node.findString("refund-from-transaction-fee-currency-iso-code");
         description = node.findString("description");
+        implicitlyVaultedPaymentMethodToken = node.findString("implicitly-vaulted-payment-method-token");
+        implicitlyVaultedPaymentMethodGlobalId = node.findString("implicitly-vaulted-payment-method-global-id");
     }
 
     public String getPayerEmail() {
@@ -131,5 +135,13 @@ public class PayPalDetails {
 
     public String getDescription() {
       return description;
+    }
+
+    public String getImplicitlyVaultedPaymentMethodToken() {
+        return implicitlyVaultedPaymentMethodToken;
+    }
+
+    public String getImplicitlyVaultedPaymentMethodGlobalId() {
+        return implicitlyVaultedPaymentMethodGlobalId;
     }
 }

@@ -1,8 +1,8 @@
 package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GrantedPaymentInstrumentUpdate {
     private String grantOwnerMerchantId;
@@ -32,15 +32,15 @@ public class GrantedPaymentInstrumentUpdate {
         return grantRecipientMerchantId;
     }
 
-    public String getPaymentMethodNonce(){
+    public String getPaymentMethodNonce() {
         return paymentMethodNonce;
     }
 
-    public String getToken(){
+    public String getToken() {
         return token;
     }
 
-    public List<String> getUpdatedFields(){
+    public List<String> getUpdatedFields() {
         return updatedFields;
     }
  }
