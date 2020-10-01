@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.braintreepayments.gateway</groupId>
     <artifactId>braintree-java</artifactId>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>3.2.0</version>
     <description>Java Client Library for Braintree Payments Gateway</description>
     <packaging>bundle</packaging>
     <name>Braintree Gateway Java Client Library</name>
