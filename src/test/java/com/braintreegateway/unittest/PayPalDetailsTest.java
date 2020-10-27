@@ -34,6 +34,7 @@ public class PayPalDetailsTest {
                  "<description>item</description>" +
                  "<implicitly-vaulted-payment-method-token>implicittoken</implicitly-vaulted-payment-method-token>" +
                  "<implicitly-vaulted-payment-method-global-id>implicitglobalid</implicitly-vaulted-payment-method-global-id>" +
+                 "<billing-agreement-id>billingagreementid</billing-agreement-id>" +
                  "</paypal-details>";
     SimpleNodeWrapper node = SimpleNodeWrapper.parse(xml);
 
@@ -62,5 +63,6 @@ public class PayPalDetailsTest {
     assertEquals("item", details.getDescription());
     assertEquals("implicittoken", details.getImplicitlyVaultedPaymentMethodToken());
     assertEquals("implicitglobalid", details.getImplicitlyVaultedPaymentMethodGlobalId());
+    assertEquals("billingagreementid", details.getBillingAgreementId());
   }
 }
