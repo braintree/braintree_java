@@ -1,3 +1,6 @@
+## unreleased
+* Add `acquirerReferenceNumber` to `Transaction`
+
 ## 3.2.0
 * Deprecate `MasterpassCard` payment method
 * Deprecate `AmexExpressCheckoutCard` payment method

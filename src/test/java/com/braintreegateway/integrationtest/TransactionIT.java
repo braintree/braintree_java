@@ -276,6 +276,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getCreatedAt().get(Calendar.YEAR));
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), transaction.getUpdatedAt().get(Calendar.YEAR));
         assertNotNull(transaction.getRetrievalReferenceNumber());
+        assertNull(transaction.getAcquirerReferenceNumber());
 
         CreditCard creditCard = transaction.getCreditCard();
         assertEquals("411111", creditCard.getBin());
@@ -4415,6 +4416,13 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(new BigDecimal("1000.00"), dispute.getAmount());
         assertEquals(new BigDecimal("1000.00"), dispute.getTransaction().getAmount());
         assertEquals("retrievaltransaction", dispute.getTransaction().getId());
+    }
+
+    @Test
+    public void findWithAcquirerReferenceNumber() throws Exception {
+        Transaction foundTransaction = gateway.transaction().find("transactionwithacquirerreferencenumber");
+
+        assertEquals("123456789 091019", foundTransaction.getAcquirerReferenceNumber());
     }
 
     @Test
