@@ -1,3 +1,6 @@
+## unreleased
+* Add `billingAgreementId` to `PayPalDetails`
+
 ## 3.2.0
 * Deprecate `MasterpassCard` payment method
 * Deprecate `AmexExpressCheckoutCard` payment method
