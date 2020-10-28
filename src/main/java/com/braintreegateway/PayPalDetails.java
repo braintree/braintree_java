@@ -26,6 +26,7 @@ public class PayPalDetails {
     private String description;
     private String implicitlyVaultedPaymentMethodToken;
     private String implicitlyVaultedPaymentMethodGlobalId;
+    private String billingAgreementId;
 
     public PayPalDetails(NodeWrapper node) {
         payerEmail = node.findString("payer-email");
@@ -51,6 +52,7 @@ public class PayPalDetails {
         description = node.findString("description");
         implicitlyVaultedPaymentMethodToken = node.findString("implicitly-vaulted-payment-method-token");
         implicitlyVaultedPaymentMethodGlobalId = node.findString("implicitly-vaulted-payment-method-global-id");
+        billingAgreementId = node.findString("billing-agreement-id");
     }
 
     public String getPayerEmail() {
@@ -143,5 +145,9 @@ public class PayPalDetails {
 
     public String getImplicitlyVaultedPaymentMethodGlobalId() {
         return implicitlyVaultedPaymentMethodGlobalId;
+    }
+
+    public String getBillingAgreementId() {
+        return billingAgreementId;
     }
 }

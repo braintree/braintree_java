@@ -7108,6 +7108,28 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void createBillingAgreementPayPalTransactionAndAttemptToVault() {
+        String nonce = Nonce.PayPalBillingAgreement;
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce).
+            options().
+                storeInVault(true).
+                done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPayerEmail());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getToken());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getBillingAgreementId());
+    }
+
+    @Test
     public void createPayPalTransactionFromVaultRecord() {
         String nonce = TestHelper.generateFuturePaymentPayPalNonce(gateway);
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
