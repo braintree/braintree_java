@@ -1,4 +1,5 @@
 ## unreleased
+* Add `acquirerReferenceNumber` to `Transaction`
 * Add `billingAgreementId` to `PayPalDetails`
 
 ## 3.2.0
