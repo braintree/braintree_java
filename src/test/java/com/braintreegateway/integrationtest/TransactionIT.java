@@ -1937,6 +1937,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
         assertTrue(transaction.getRecurring());
+        assertTrue(transaction.isRecurring());
     }
 
     @Test
@@ -1952,6 +1953,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
         assertTrue(transaction.getRecurring());
+        assertTrue(transaction.isRecurring());
     }
 
     @Test
@@ -1967,6 +1969,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
         assertTrue(transaction.getRecurring());
+        assertTrue(transaction.isRecurring());
     }
 
     @Test
@@ -1982,6 +1985,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
         assertFalse(transaction.getRecurring());
+        assertFalse(transaction.isRecurring());
     }
 
     @Test
@@ -1997,6 +2001,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
         assertFalse(transaction.getRecurring());
+        assertFalse(transaction.isRecurring());
     }
 
     @Test

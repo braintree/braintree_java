@@ -659,7 +659,15 @@ public class Transaction {
         return type;
     }
 
+    /* @deprecated
+     * use isRecurring() instead
+     */
+    @Deprecated
     public Boolean getRecurring() {
+        return recurring;
+    }
+
+    public Boolean isRecurring() {
         return recurring;
     }
 
