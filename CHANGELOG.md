@@ -3,6 +3,7 @@
 * Add `billingAgreementId` to `PayPalDetails`
 * Add `isRecurring` to Transaction class
 * Deprecate `getRecurring` in Transaction class (use `isRecurring` instead)
+* Deprecate `recurring` in TransactionRequest
 
 ## 3.2.0
 * Deprecate `MasterpassCard` payment method
