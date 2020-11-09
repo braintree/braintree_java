@@ -1,4 +1,4 @@
-## unreleased
+## 3.3.0
 * Add `acquirerReferenceNumber` to `Transaction`
 * Add `billingAgreementId` to `PayPalDetails`
 * Add `isRecurring` to Transaction class
