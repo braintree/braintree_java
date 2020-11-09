@@ -172,6 +172,7 @@ public class Transaction {
     private String refundId;
     private List<String> refundIds;
     private String retrievalReferenceNumber;
+    private String acquirerReferenceNumber;
     private SamsungPayCardDetails samsungPayCardDetails;
     private String settlementBatchId;
     private Address shippingAddress;
@@ -340,6 +341,8 @@ public class Transaction {
         }
 
         retrievalReferenceNumber = node.findString("retrieval-reference-number");
+
+        acquirerReferenceNumber = node.findString("acquirer-reference-number");
 
         statusHistory = new ArrayList<StatusEvent>();
         for (NodeWrapper statusNode : node.findAll("status-history/status-event")) {
@@ -596,6 +599,10 @@ public class Transaction {
         return retrievalReferenceNumber;
     }
 
+    public String getAcquirerReferenceNumber() {
+        return acquirerReferenceNumber;
+    }
+
     public RiskData getRiskData() {
         return riskData;
     }
@@ -652,7 +659,15 @@ public class Transaction {
         return type;
     }
 
+    /* @deprecated
+     * use isRecurring() instead
+     */
+    @Deprecated
     public Boolean getRecurring() {
+        return recurring;
+    }
+
+    public Boolean isRecurring() {
         return recurring;
     }
 

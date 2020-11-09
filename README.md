@@ -22,6 +22,12 @@ Braintree employs a deprecation policy for our SDKs. For more information on the
 | 1.x.x                | Unsupported | March 2010 | January 2018 | January 2018 |
 
 
+## Documentation
+
+ * [Official documentation](https://developers.braintreepayments.com/java/sdk/server/overview)
+
+Updating from an Inactive, Deprecated, or Unsupported version of this SDK? Check our [Migration Guide](https://developers.braintreepayments.com/reference/general/server-sdk-migration-guide/java) for tips.
+
 ## Quick Start Example
 
 ````java
@@ -65,10 +71,6 @@ public class BraintreeExample {
     }
 }
 ````
-
-## Documentation
-
- * [Official documentation](https://developers.braintreepayments.com/java/sdk/server/overview)
 
 ## Maven
 

@@ -179,6 +179,10 @@ public class TransactionRequest extends Request {
         return this;
     }
 
+    /* @deprecated
+     * use transactionSource instead
+     */
+    @Deprecated
     public TransactionRequest recurring(Boolean recurring) {
         this.recurring = recurring;
         return this;
