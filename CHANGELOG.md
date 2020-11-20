@@ -1,3 +1,6 @@
+## 3.4.0
+* Fix bug in `ThreeDSecureInfo` loading auth data from wrong XML node
+
 ## 3.3.0
 * Add `acquirerReferenceNumber` to `Transaction`
 * Add `billingAgreementId` to `PayPalDetails`
