@@ -1,4 +1,4 @@
-## 3.4.0
+## unreleased
 * Fix bug in `ThreeDSecureInfo` loading auth data from wrong XML node
 
 ## 3.3.0
