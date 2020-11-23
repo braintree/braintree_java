@@ -1457,6 +1457,86 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void createWithCurrencyValidationAndCC() {
+        CustomerRequest request = new CustomerRequest();
+        request.firstName("Fred").
+                creditCard().
+                cardholderName("Fred Jones").
+                number("4111111111111111").
+                cvv("123").
+                expirationDate("05/22").
+                options().
+                verifyCard(true).
+                verificationCurrencyIsoCode("USD").
+                done().
+                done().
+                lastName("Jones");
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void createShouldFailWithCurrencyValidationAndCC() {
+        CustomerRequest request = new CustomerRequest();
+        request.firstName("Fred").
+                creditCard().
+                cardholderName("Fred Jones").
+                number("4111111111111111").
+                cvv("123").
+                expirationDate("05/22").
+                options().
+                verifyCard(true).
+                //supplying invalid merchant currency
+                verificationCurrencyIsoCode("GBP").
+                done().
+                done().
+                lastName("Jones");
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.CREDIT_CARD_OPTIONS_VERIFICATION_INVALID_PRESENTMENT_CURRENCY.code,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode().code);
+    }
+
+    @Test
+    public void createWithCurrencyValidationAndNonce() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway);
+        CustomerRequest request = new CustomerRequest().
+                firstName("Fred").
+                creditCard().
+                paymentMethodNonce(nonce).
+                options().
+                verificationCurrencyIsoCode("USD").
+                done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        assertEquals(1, result.getTarget().getCreditCards().size());
+    }
+
+    @Test
+    public void createShouldFailWithCurrencyValidationAndNonce() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway);
+        CustomerRequest request = new CustomerRequest().
+                firstName("Fred").
+                creditCard().
+                paymentMethodNonce(nonce).
+                options().
+                //supplying invalid merchant currency
+                verificationCurrencyIsoCode("GBP").
+                done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.CREDIT_CARD_OPTIONS_VERIFICATION_INVALID_PRESENTMENT_CURRENCY.code,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode().code);
+    }
+
+
+    @Test
     public void delete() {
         CustomerRequest request = new CustomerRequest().
             firstName("Mark").

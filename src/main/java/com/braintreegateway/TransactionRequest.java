@@ -47,6 +47,8 @@ public class TransactionRequest extends Request {
     private String paymentMethodNonce;
     private BigDecimal serviceFeeAmount;
     private String productSku;
+    private String currencyIsoCode;
+
 
     private String threeDSecureToken;
     private Boolean threeDSecureTransaction;
@@ -107,6 +109,11 @@ public class TransactionRequest extends Request {
 
     public TransactionRequest productSku(String productSku) {
         this.productSku = productSku;
+        return this;
+    }
+
+    public TransactionRequest currencyIsoCode(String currencyIsoCode) {
+        this.currencyIsoCode = currencyIsoCode;
         return this;
     }
 
@@ -370,7 +377,8 @@ public class TransactionRequest extends Request {
             .addElement("serviceFeeAmount", serviceFeeAmount)
             .addElement("productSku", productSku)
             .addElement("riskData", riskDataTransactionRequest)
-            .addElement("externalVault", externalVaultRequest);
+            .addElement("externalVault", externalVaultRequest)
+            .addElement("currencyIsoCode", currencyIsoCode);
 
         if (!customFields.isEmpty()) {
             builder.addElement("customFields", customFields);

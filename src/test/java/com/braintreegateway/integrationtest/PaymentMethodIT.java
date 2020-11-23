@@ -1727,6 +1727,110 @@ public class PaymentMethodIT extends IntegrationTest {
         assertTrue(revokeResult.isSuccess());
     }
 
+    @Test
+    public void createWithNonceAndCurrencyOption() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway, null, SandboxValues.CreditCardNumber.VISA.number);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+                customerId(customer.getId()).
+                paymentMethodNonce(nonce).
+                options().
+                verificationCurrencyIsoCode("USD").
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+        assertNotNull(paymentMethod.getToken());
+
+        CreditCard creditCard = (CreditCard) paymentMethod;
+        assertEquals("1111", creditCard.getLast4());
+    }
+
+    @Test
+    public void createWithNonceAndInvalidCurrencyOption() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway, null, SandboxValues.CreditCardNumber.VISA.number);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+                customerId(customer.getId()).
+                paymentMethodNonce(nonce).
+                options().
+                verificationCurrencyIsoCode("GBP").
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.CREDIT_CARD_OPTIONS_VERIFICATION_INVALID_PRESENTMENT_CURRENCY.code,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode().code);
+    }
+
+    @Test
+    public void updatePaymentMethodCCWithCurrencyCode() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+                customerId(customer.getId()).
+                cardholderName("John Doe").
+                number(SandboxValues.CreditCardNumber.VISA.number).
+                expirationDate("05/12");
+        Result<CreditCard> creditCardResult = gateway.creditCard().create(creditCardRequest);
+        assertTrue(creditCardResult.isSuccess());
+
+        CreditCard oldCreditCard = creditCardResult.getTarget();
+
+        PaymentMethodRequest updateCardRequest = new PaymentMethodRequest().
+                expirationMonth("06").
+                expirationYear("2013").
+                options().
+                verificationCurrencyIsoCode("USD").
+                done();
+
+        String token = oldCreditCard.getToken();
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().update(token, updateCardRequest);
+
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget() instanceof CreditCard);
+        CreditCard creditCard = (CreditCard) result.getTarget();
+        assertEquals(creditCard.getExpirationMonth(), "06");
+        assertEquals(creditCard.getExpirationYear(), "2013");
+        assertEquals(creditCard.getExpirationDate(), "06/2013");
+    }
+
+    @Test
+    public void updatePaymentMethodCCWithInvalidCurrencyCode() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+                customerId(customer.getId()).
+                cardholderName("John Doe").
+                number(SandboxValues.CreditCardNumber.VISA.number).
+                expirationDate("05/12");
+        Result<CreditCard> creditCardResult = gateway.creditCard().create(creditCardRequest);
+        assertTrue(creditCardResult.isSuccess());
+
+        CreditCard oldCreditCard = creditCardResult.getTarget();
+
+        PaymentMethodRequest updateCardRequest = new PaymentMethodRequest().
+                expirationMonth("06").
+                expirationYear("2013").
+                options().
+                verificationCurrencyIsoCode("GBP").
+                done();
+
+        String token = oldCreditCard.getToken();
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().update(token, updateCardRequest);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.CREDIT_CARD_OPTIONS_VERIFICATION_INVALID_PRESENTMENT_CURRENCY.code,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode().code);
+    }
+
     private String createPaymentMethodForGrant(BraintreeGateway partnerMerchantGateway) {
         Result<Customer> customerResult = partnerMerchantGateway.customer().create(new CustomerRequest());
         Customer customer = customerResult.getTarget();

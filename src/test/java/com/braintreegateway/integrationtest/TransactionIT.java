@@ -7580,4 +7580,105 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         assertFalse(result.getTarget().isProcessedWithNetworkToken());
     }
+
+    @Test
+    public void saleWithMerchantCurrencyAndCc() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2030").
+                done().
+                currencyIsoCode("USD");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void saleWithInvalidMerchantCurrencyAndCc() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2030").
+                done().
+                currencyIsoCode("GBP");
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_OPTIONS_INVALID_PRESENTMENT_CURRENCY.code,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode().code);
+    }
+
+    @Test
+    public void saleWithMerchantCurrencyAndPaymentMethodNonce() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                paymentMethodNonce(nonce).
+                currencyIsoCode("USD");
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assert(result.isSuccess());
+    }
+
+    @Test
+    public void saleWithInvalidMerchantCurrencyAndPaymentMethodNonce() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                paymentMethodNonce(nonce).
+                currencyIsoCode("GBP");
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_OPTIONS_INVALID_PRESENTMENT_CURRENCY.code,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode().code);
+    }
+
+    @Test
+    public void saleWithPaymentMethodTokenAndMerchantCurrency() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+                customerId(customer.getId()).
+                number("5105105105105100").
+                expirationDate("05/12");
+        CreditCard creditCard = gateway.creditCard().create(creditCardRequest).getTarget();
+
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                paymentMethodToken(creditCard.getToken()).
+                creditCard().
+                done().
+                currencyIsoCode("USD");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(creditCard.getToken(), transaction.getCreditCard().getToken());
+        assertEquals("510510", transaction.getCreditCard().getBin());
+        assertEquals("05/2012", transaction.getCreditCard().getExpirationDate());
+        assertEquals("S", transaction.getCvvResponseCode());
+    }
+
+    @Test
+    public void saleWithPaymentMethodTokenAndInvalidMerchantCurrency() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+                customerId(customer.getId()).
+                number("5105105105105100").
+                expirationDate("05/12");
+        CreditCard creditCard = gateway.creditCard().create(creditCardRequest).getTarget();
+
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                paymentMethodToken(creditCard.getToken()).
+                creditCard().
+                done().
+                currencyIsoCode("GBP");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_OPTIONS_INVALID_PRESENTMENT_CURRENCY.code,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode().code);
+    }
 }

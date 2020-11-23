@@ -1297,4 +1297,56 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
 
         assertFalse(gateway.creditCard().find(card.getToken()).isNetworkTokenized());
     }
+
+    @Test
+    public void createWithCurrencyVerification() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+                customerId(customer.getId()).
+                cardholderName("John Doe").
+                cvv("123").
+                number("5105105105105100").
+                expirationDate("05/21").
+                options().
+                verificationCurrencyIsoCode("USD").
+                done();
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+        CreditCard card = result.getTarget();
+        assertEquals("John Doe", card.getCardholderName());
+        assertEquals("MasterCard", card.getCardType());
+        assertEquals(customer.getId(), card.getCustomerId());
+        assertEquals("US", card.getCustomerLocation());
+        assertEquals("510510", card.getBin());
+        assertEquals("05", card.getExpirationMonth());
+        assertEquals("2021", card.getExpirationYear());
+        assertEquals("05/2021", card.getExpirationDate());
+        assertEquals("5100", card.getLast4());
+        assertEquals("510510******5100", card.getMaskedNumber());
+        assertTrue(card.getToken() != null);
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getCreatedAt().get(Calendar.YEAR));
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getUpdatedAt().get(Calendar.YEAR));
+        assertTrue(card.getUniqueNumberIdentifier().matches("\\A\\w{32}\\z"));
+        assertFalse(card.isVenmoSdk());
+        assertTrue(card.getImageUrl().matches(".*png.*"));
+    }
+
+    @Test
+    public void createWithInvalidMerchantCurrency() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+                customerId(customer.getId()).
+                cardholderName("John Doe").
+                cvv("123").
+                number("5105105105105100").
+                expirationDate("05/21").
+                options().
+                verificationCurrencyIsoCode("JP").
+                done();
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+                ValidationErrorCode.CREDIT_CARD_OPTIONS_VERIFICATION_INVALID_PRESENTMENT_CURRENCY,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode());
+    }
 }
