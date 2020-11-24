@@ -7606,7 +7606,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 currencyIsoCode("GBP");
         Result<Transaction> result = gateway.transaction().sale(request);
         assertFalse(result.isSuccess());
-        assertEquals(ValidationErrorCode.TRANSACTION_OPTIONS_INVALID_PRESENTMENT_CURRENCY.code,
+        assertEquals(ValidationErrorCode.TRANSACTION_INVALID_PRESENTMENT_CURRENCY.code,
                 result.getErrors().getAllDeepValidationErrors().get(0).getCode().code);
     }
 
@@ -7630,7 +7630,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 currencyIsoCode("GBP");
         Result<Transaction> result = gateway.transaction().sale(request);
         assertFalse(result.isSuccess());
-        assertEquals(ValidationErrorCode.TRANSACTION_OPTIONS_INVALID_PRESENTMENT_CURRENCY.code,
+        assertEquals(ValidationErrorCode.TRANSACTION_INVALID_PRESENTMENT_CURRENCY.code,
                 result.getErrors().getAllDeepValidationErrors().get(0).getCode().code);
     }
 
@@ -7678,7 +7678,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertFalse(result.isSuccess());
-        assertEquals(ValidationErrorCode.TRANSACTION_OPTIONS_INVALID_PRESENTMENT_CURRENCY.code,
+        assertEquals(ValidationErrorCode.TRANSACTION_INVALID_PRESENTMENT_CURRENCY.code,
                 result.getErrors().getAllDeepValidationErrors().get(0).getCode().code);
     }
 }
