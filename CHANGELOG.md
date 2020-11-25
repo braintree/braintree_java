@@ -1,3 +1,10 @@
+## unreleased
+* Add `currencyIsoCode` to `Transaction`
+* Add `verificationCurrencyIsoCode` to `CreditCard`, `PaymentMethod`, and `Customer`
+* Add validation error codes:
+  * `CREDIT_CARD_OPTIONS_VERIFICATION_INVALID_PRESENTMENT_CURRENCY`
+  * `TRANSACTION_INVALID_PRESENTMENT_CURRENCY`
+
 ## 3.3.0
 * Add `acquirerReferenceNumber` to `Transaction`
 * Add `billingAgreementId` to `PayPalDetails`
