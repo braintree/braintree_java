@@ -1,3 +1,6 @@
+## 3.3.1
+* No need to do a complex status message parsing if the server response is a success
+
 ## 3.3.0
 * Add `acquirerReferenceNumber` to `Transaction`
 * Add `billingAgreementId` to `PayPalDetails`

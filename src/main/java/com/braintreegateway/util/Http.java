@@ -384,17 +384,19 @@ public class Http {
     }
 
     public static void throwExceptionIfErrorStatusCode(int statusCode, String message) {
-        String decodedMessage = null;
-        if (message != null) {
-            try {
-                decodedMessage = URLDecoder.decode(message, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                Logger logger = Logger.getLogger("Braintree");
-                logger.log(Level.FINEST, e.getMessage(), e.getStackTrace());
-            }
-        }
 
         if (isErrorCode(statusCode)) {
+            
+            String decodedMessage = null;
+            if (message != null) {
+                try {
+                    decodedMessage = URLDecoder.decode(message, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    Logger logger = Logger.getLogger("Braintree");
+                    logger.log(Level.FINEST, e.getMessage(), e.getStackTrace());
+                }
+            }
+
             switch (statusCode) {
                 case 401:
                     throw new AuthenticationException();
