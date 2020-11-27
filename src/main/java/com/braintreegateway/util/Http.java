@@ -55,6 +55,11 @@ import javax.net.ssl.TrustManagerFactory;
 
 public class Http {
     public static final String LINE_FEED = "\r\n";
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("<number>(.{6}).+?(.{4})</number>");
+    private static final Pattern START_GROUP_PATTERN = Pattern.compile("(^)", Pattern.MULTILINE);
+    private static final Pattern CVV_PATTERN = Pattern.compile("<cvv>.+?</cvv>");
+    
+    
     private volatile SSLSocketFactory sslSocketFactory;
 
     public enum RequestMethod {
@@ -274,19 +279,17 @@ public class Http {
             return body;
         }
 
-        Pattern regex = Pattern.compile("(^)", Pattern.MULTILINE);
-        Matcher regexMatcher = regex.matcher(body);
+        Matcher regexMatcher = START_GROUP_PATTERN.matcher(body);
         if (regexMatcher.find()) {
             body = regexMatcher.replaceAll("[Braintree] $1");
         }
 
-        regex = Pattern.compile("<number>(.{6}).+?(.{4})</number>");
-        regexMatcher = regex.matcher(body);
+        regexMatcher = NUMBER_PATTERN.matcher(body);
         if (regexMatcher.find()) {
             body = regexMatcher.replaceAll("<number>$1******$2</number>");
         }
 
-        body = body.replaceAll("<cvv>.+?</cvv>", "<cvv>***</cvv>");
+        body = CVV_PATTERN.matcher(body).replaceAll("<cvv>***</cvv>");
 
         return body;
     }

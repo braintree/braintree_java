@@ -11,6 +11,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WebhookNotificationGateway {
+    
+    private static final Pattern PAYLOAD_CHARS_PATTERN = Pattern.compile("[^A-Za-z0-9+=/\n]");
+    private static final Pattern CHALLENGE_CHARS_PATTERN = Pattern.compile("^[a-f0-9]{20,32}$");
+    
     private Configuration configuration;
 
     public WebhookNotificationGateway(Configuration configuration) {
@@ -24,8 +28,7 @@ public class WebhookNotificationGateway {
         if (payload == null) {
             throw new InvalidSignatureException("payload cannot be null");
         }
-        Pattern p = Pattern.compile("[^A-Za-z0-9+=/\n]");
-        Matcher m = p.matcher(payload);
+        Matcher m = PAYLOAD_CHARS_PATTERN.matcher(payload);
         if (m.find()) {
           throw new InvalidSignatureException("payload contains illegal characters");
         }
@@ -64,7 +67,7 @@ public class WebhookNotificationGateway {
     }
 
     public String verify(String challenge) {
-        if (!challenge.matches("^[a-f0-9]{20,32}$")) {
+        if (!CHALLENGE_CHARS_PATTERN.matcher(challenge).matches()) {
           throw new InvalidChallengeException("challenge contains non-hex characters");
         }
         return publicKeySignaturePair(challenge);

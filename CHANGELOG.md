@@ -1,3 +1,6 @@
+## 3.3.1
+* Patter / regexp usage optimization : Re-use patterns / Avoid compiling / creating patterns when not needed
+
 ## 3.3.0
 * Add `acquirerReferenceNumber` to `Transaction`
 * Add `billingAgreementId` to `PayPalDetails`
