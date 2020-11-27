@@ -1,3 +1,6 @@
+## 3.3.1
+* avoid allocating memory / constructing object if the message is not going to be logged
+
 ## 3.3.0
 * Add `acquirerReferenceNumber` to `Transaction`
 * Add `billingAgreementId` to `PayPalDetails`
