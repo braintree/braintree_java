@@ -1172,7 +1172,7 @@ public class PaymentMethodIT extends IntegrationTest {
         CreditCard creditCard = (CreditCard) result.getTarget();
         assertEquals(creditCard.getBillingAddress().getRegion(),"Illinois");
         assertEquals(creditCard.getBillingAddress().getStreetAddress(), "1 E Main St");
-        assertTrue(!creditCard.getBillingAddress().getId().equals(oldCreditCard.getBillingAddress().getId()));
+        assertTrue(creditCard.getBillingAddress().getId().equals(oldCreditCard.getBillingAddress().getId()));
     }
 
     @Test
