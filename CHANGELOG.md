@@ -1,4 +1,7 @@
 ## 3.3.0
+* Avoid multiple node traversal in webhooks parsing
+
+## 3.3.0
 * Add `acquirerReferenceNumber` to `Transaction`
 * Add `billingAgreementId` to `PayPalDetails`
 * Add `isRecurring` to Transaction class
