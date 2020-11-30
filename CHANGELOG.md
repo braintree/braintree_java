@@ -1,3 +1,6 @@
+## 3.3.1
+* Fix Crypto#secureCompare to use the primitive type as the return value could not be null
+
 ## 3.3.0
 * Avoid multiple node traversal in webhooks parsing
 

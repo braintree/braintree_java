@@ -1,7 +1,7 @@
 package com.braintreegateway.util;
 
 public class Crypto {
-    public Boolean secureCompare(String left, String right) {
+    public boolean secureCompare(String left, String right) {
         if (left == null || right == null || (left.length() != right.length())) {
             return false;
         }
