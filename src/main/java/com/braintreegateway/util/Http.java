@@ -390,9 +390,7 @@ public class Http {
     }
 
     public static void throwExceptionIfErrorStatusCode(int statusCode, String message) {
-
         if (isErrorCode(statusCode)) {
-            
             String decodedMessage = null;
             if (message != null) {
                 try {
