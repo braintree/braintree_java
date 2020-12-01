@@ -1,5 +1,5 @@
 ## unreleased
-* Fix bug in `ThreeDSecureInfo` loading auth data from wrong XML node
+* Fix bug in `ThreeDSecureInfo` loading auth data from wrong XML node (thanks @iainjames88!)
 
 ## 3.3.0
 * Add `acquirerReferenceNumber` to `Transaction`
