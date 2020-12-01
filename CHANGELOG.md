@@ -1,7 +1,5 @@
-## 3.3.1
-* avoid allocating memory / constructing object if the message is not going to be logged
-
-## 3.3.0
+## unreleased
+* Avoid allocating memory / constructing object if the message is not going to be logged
 * Avoid multiple node traversal in webhooks parsing
 
 ## 3.3.0
