@@ -1,3 +1,9 @@
+## unreleased
+* Fix bug in `ThreeDSecureInfo` loading auth data from wrong XML node (thanks @iainjames88!)
+* Avoid allocating memory / constructing object if the message is not going to be logged (thanks @benbenw!)
+* Avoid multiple node traversal in webhooks parsing (thanks @benbenw!)
+* No need to do a complex status message parsing if the server response is a success (thanks @benbenw!)
+
 ## 3.3.0
 * Add `acquirerReferenceNumber` to `Transaction`
 * Add `billingAgreementId` to `PayPalDetails`

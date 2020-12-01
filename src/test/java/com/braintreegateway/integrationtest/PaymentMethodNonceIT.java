@@ -300,17 +300,20 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         String nonce = TestHelper.generateThreeDSecureNonce(gateway, creditCardRequest);
 
         PaymentMethodNonce foundNonce = gateway.paymentMethodNonce().find(nonce);
+        ThreeDSecureInfo info = foundNonce.getThreeDSecureInfo();
 
         assertEquals(nonce, foundNonce.getNonce());
-        assertTrue(foundNonce.getThreeDSecureInfo().isLiabilityShifted());
-        assertTrue(foundNonce.getThreeDSecureInfo().isLiabilityShiftPossible());
-        assertNotNull(foundNonce.getThreeDSecureInfo().getStatus());
-        assertEquals("test_cavv", foundNonce.getThreeDSecureInfo().getCAVV());
-        assertEquals("test_xid", foundNonce.getThreeDSecureInfo().getXID());
-        assertEquals("test_eci", foundNonce.getThreeDSecureInfo().getECIFlag());
-        assertEquals("1.0.2", foundNonce.getThreeDSecureInfo().getThreeDSecureVersion());
-        assertEquals((String)null, foundNonce.getThreeDSecureInfo().getDsTransactionId());
-    }
+        assertTrue(info.isLiabilityShifted());
+        assertTrue(info.isLiabilityShiftPossible());
+        assertNotNull(info.getStatus());
+        assertEquals("test_cavv", info.getCAVV());
+        assertEquals("test_xid", info.getXID());
+        assertEquals("test_eci", info.getECIFlag());
+        assertEquals("1.0.2", info.getThreeDSecureVersion());
+        assertEquals((String)null, info.getDsTransactionId());
+        assertTrue(info.getThreeDSecureLookupInfo() instanceof ThreeDSecureLookupInfo);
+        assertTrue(info.getThreeDSecureAuthenticateInfo() instanceof ThreeDSecureAuthenticateInfo);
+}
 
     @Test
     public void findReturnsNull3DSDetailsIfNotPresent() {

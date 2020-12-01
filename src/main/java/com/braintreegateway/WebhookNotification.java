@@ -79,60 +79,73 @@ public class WebhookNotification {
 
         NodeWrapper wrapperNode = node.findFirst("subject");
 
-        if (wrapperNode.findFirst("api-error-response") != null) {
-            wrapperNode = wrapperNode.findFirst("api-error-response");
+        NodeWrapper errorNode = wrapperNode.findFirst("api-error-response");
+        if (errorNode != null) {
+            wrapperNode = errorNode;
         }
 
-        if (wrapperNode.findFirst("subscription") != null) {
-            this.subscription = new Subscription(wrapperNode.findFirst("subscription"));
+        NodeWrapper subscriptionNode = wrapperNode.findFirst("subscription");
+        if (subscriptionNode != null) {
+            this.subscription = new Subscription(subscriptionNode);
         }
 
-        if (wrapperNode.findFirst("disbursement") != null) {
-            this.disbursement = new Disbursement(wrapperNode.findFirst("disbursement"));
+        NodeWrapper disbursementNode = wrapperNode.findFirst("disbursement");
+        if (disbursementNode != null) {
+            this.disbursement = new Disbursement(disbursementNode);
         }
 
-        if (wrapperNode.findFirst("merchant-account") != null) {
-            this.merchantAccount = new MerchantAccount(wrapperNode.findFirst("merchant-account"));
+        NodeWrapper merchantAccountNode = wrapperNode.findFirst("merchant-account");
+        if (merchantAccountNode != null) {
+            this.merchantAccount = new MerchantAccount(merchantAccountNode);
         }
 
-        if (wrapperNode.findFirst("dispute") != null) {
-            this.dispute = new Dispute(wrapperNode.findFirst("dispute"));
+        NodeWrapper disputeNode = wrapperNode.findFirst("dispute");
+        if (disputeNode != null) {
+            this.dispute = new Dispute(disputeNode);
         }
 
-        if (wrapperNode.findFirst("transaction") != null) {
-            this.transaction = new Transaction(wrapperNode.findFirst("transaction"));
+        NodeWrapper transactionNode = wrapperNode.findFirst("transaction");
+        if (transactionNode != null) {
+            this.transaction = new Transaction(transactionNode);
         }
 
-        if (wrapperNode.findFirst("partner-merchant") != null) {
-            this.partnerMerchant = new PartnerMerchant(wrapperNode.findFirst("partner-merchant"));
+        NodeWrapper partnerMerchantNode = wrapperNode.findFirst("partner-merchant");
+        if (partnerMerchantNode != null) {
+            this.partnerMerchant = new PartnerMerchant(partnerMerchantNode);
         }
 
-        if (wrapperNode.findFirst("oauth-application-revocation") != null) {
-            this.oauthAccessRevocation = new OAuthAccessRevocation(wrapperNode.findFirst("oauth-application-revocation"));
+        NodeWrapper oAuthAccessRevocationNode = wrapperNode.findFirst("oauth-application-revocation");
+        if (oAuthAccessRevocationNode != null) {
+            this.oauthAccessRevocation = new OAuthAccessRevocation(oAuthAccessRevocationNode);
         }
 
-        if (wrapperNode.findFirst("connected-merchant-status-transitioned") != null) {
-            this.connectedMerchantStatusTransitioned = new ConnectedMerchantStatusTransitioned(wrapperNode.findFirst("connected-merchant-status-transitioned"));
+        NodeWrapper connectedMerchantStatusTransitionedNode = wrapperNode.findFirst("connected-merchant-status-transitioned");
+        if (connectedMerchantStatusTransitionedNode != null) {
+            this.connectedMerchantStatusTransitioned = new ConnectedMerchantStatusTransitioned(connectedMerchantStatusTransitionedNode);
         }
 
-        if (wrapperNode.findFirst("connected-merchant-paypal-status-changed") != null) {
-            this.connectedMerchantPayPalStatusChanged = new ConnectedMerchantPayPalStatusChanged(wrapperNode.findFirst("connected-merchant-paypal-status-changed"));
+        NodeWrapper connectedMerchantPayPalStatusChangedNode = wrapperNode.findFirst("connected-merchant-paypal-status-changed");
+        if (connectedMerchantPayPalStatusChangedNode != null) {
+            this.connectedMerchantPayPalStatusChanged = new ConnectedMerchantPayPalStatusChanged(connectedMerchantPayPalStatusChangedNode);
         }
 
-        if (wrapperNode.findFirst("account-updater-daily-report") != null) {
-            this.accountUpdaterDailyReport = new AccountUpdaterDailyReport(wrapperNode.findFirst("account-updater-daily-report"));
+        NodeWrapper accountUpdaterDailyReportNode = wrapperNode.findFirst("account-updater-daily-report");
+        if (accountUpdaterDailyReportNode != null) {
+            this.accountUpdaterDailyReport = new AccountUpdaterDailyReport(accountUpdaterDailyReportNode);
         }
 
-        if (wrapperNode.findFirst("granted-payment-instrument-update") != null) {
-            this.grantedPaymentInstrumentUpdate = new GrantedPaymentInstrumentUpdate(wrapperNode.findFirst("granted-payment-instrument-update"));
+        NodeWrapper grantedPaymentInstrumentUpdateNode = wrapperNode.findFirst("granted-payment-instrument-update");
+        if (grantedPaymentInstrumentUpdateNode != null) {
+            this.grantedPaymentInstrumentUpdate = new GrantedPaymentInstrumentUpdate(grantedPaymentInstrumentUpdateNode);
         }
 
         if (kind == WebhookNotification.Kind.GRANTED_PAYMENT_METHOD_REVOKED || kind == WebhookNotification.Kind.PAYMENT_METHOD_REVOKED_BY_CUSTOMER) {
             this.revokedPaymentMethodMetadata = new RevokedPaymentMethodMetadata(wrapperNode);
         }
 
-        if (wrapperNode.findFirst("local-payment") != null) {
-            this.localPaymentCompleted = new LocalPaymentCompleted(wrapperNode.findFirst("local-payment"));
+        NodeWrapper localPaymentNode = wrapperNode.findFirst("local-payment");
+        if (localPaymentNode != null) {
+            this.localPaymentCompleted = new LocalPaymentCompleted(localPaymentNode);
         }
 
         if (!wrapperNode.isSuccess()) {
