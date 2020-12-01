@@ -114,7 +114,8 @@ public class Http {
 
         try {
             Logger logger = configuration.getLogger();
-            if (postBody != null) {
+
+            if (postBody != null && logger.isLoggable(Level.FINE)) {
                 logger.log(Level.FINE, formatSanitizeBodyForLog(postBody));
             }
 
@@ -160,15 +161,20 @@ public class Http {
 
                 response = StringUtils.inputStreamToString(responseStream);
 
-                logger.log(Level.INFO,
+                if (logger.isLoggable(Level.INFO)) {
+                    logger.log(Level.INFO,
                            "[Braintree] [{0}]] {1} {2}",
                            new Object[]{getCurrentTime(), requestMethod.toString(), url});
-                logger.log(Level.FINE,
-                           "[Braintree] [{0}] {1} {2} {3}",
-                           new Object[]{getCurrentTime(), requestMethod.toString(), url, connection.getResponseCode()});
+                }
 
-                if (response != null) {
-                    logger.log(Level.FINE, formatSanitizeBodyForLog(response));
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.log(Level.FINE,
+                            "[Braintree] [{0}] {1} {2} {3}",
+                            new Object[]{getCurrentTime(), requestMethod.toString(), url, connection.getResponseCode()});
+
+                    if (response != null) {
+                        logger.log(Level.FINE, formatSanitizeBodyForLog(response));
+                    }
                 }
 
                 if (response == null || response.trim().equals("")) {
@@ -384,17 +390,17 @@ public class Http {
     }
 
     public static void throwExceptionIfErrorStatusCode(int statusCode, String message) {
-        String decodedMessage = null;
-        if (message != null) {
-            try {
-                decodedMessage = URLDecoder.decode(message, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                Logger logger = Logger.getLogger("Braintree");
-                logger.log(Level.FINEST, e.getMessage(), e.getStackTrace());
-            }
-        }
-
         if (isErrorCode(statusCode)) {
+            String decodedMessage = null;
+            if (message != null) {
+                try {
+                    decodedMessage = URLDecoder.decode(message, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    Logger logger = Logger.getLogger("Braintree");
+                    logger.log(Level.FINEST, e.getMessage(), e.getStackTrace());
+                }
+            }
+
             switch (statusCode) {
                 case 401:
                     throw new AuthenticationException();
