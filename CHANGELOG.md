@@ -1,6 +1,7 @@
 ## unreleased
 * Avoid allocating memory / constructing object if the message is not going to be logged
 * Avoid multiple node traversal in webhooks parsing
+* No need to do a complex status message parsing if the server response is a success
 
 ## 3.3.0
 * Add `acquirerReferenceNumber` to `Transaction`
