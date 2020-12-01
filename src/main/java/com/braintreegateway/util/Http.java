@@ -114,7 +114,7 @@ public class Http {
 
         try {
             Logger logger = configuration.getLogger();
-            
+
             if (postBody != null && logger.isLoggable(Level.FINE)) {
                 logger.log(Level.FINE, formatSanitizeBodyForLog(postBody));
             }
@@ -166,12 +166,12 @@ public class Http {
                            "[Braintree] [{0}]] {1} {2}",
                            new Object[]{getCurrentTime(), requestMethod.toString(), url});
                 }
-                
+
                 if (logger.isLoggable(Level.FINE)) {
                     logger.log(Level.FINE,
                             "[Braintree] [{0}] {1} {2} {3}",
                             new Object[]{getCurrentTime(), requestMethod.toString(), url, connection.getResponseCode()});
-                    
+
                     if (response != null) {
                         logger.log(Level.FINE, formatSanitizeBodyForLog(response));
                     }
