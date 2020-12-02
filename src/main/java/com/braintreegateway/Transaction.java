@@ -199,6 +199,9 @@ public class Transaction {
     private FacilitatorDetails facilitatorDetails;
     private String networkTransactionId;
     private Calendar authorizationExpiresAt;
+    private Integer installmentCount;
+    private List<Installment> installments;
+    private List<Installment> refundedInstallments;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -391,6 +394,18 @@ public class Transaction {
         networkTransactionId = node.findString("network-transaction-id");
 
         authorizationExpiresAt = node.findDateTime("authorization-expires-at");
+
+        installmentCount = node.findInteger("installment-count");
+
+        installments = new ArrayList<Installment>();
+        for (NodeWrapper installmentsNode : node.findAll("installments/installment")) {
+          installments.add(new Installment(installmentsNode));
+        }
+
+        refundedInstallments = new ArrayList<Installment>();
+        for (NodeWrapper installmentsNode : node.findAll("refunded-installments/refunded-installment")) {
+          refundedInstallments.add(new Installment(installmentsNode));
+        }
     }
 
     public List<AddOn> getAddOns() {
@@ -741,5 +756,17 @@ public class Transaction {
 
     public Calendar getAuthorizationExpiresAt() {
         return authorizationExpiresAt;
+    }
+
+    public Integer getInstallmentCount() {
+        return installmentCount;
+    }
+
+    public List<Installment> getInstallments() {
+        return installments;
+    }
+
+    public List<Installment> getRefundedInstallments() {
+        return refundedInstallments;
     }
 }

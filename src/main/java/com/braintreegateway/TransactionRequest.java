@@ -64,6 +64,8 @@ public class TransactionRequest extends Request {
 
     private ExternalVaultRequest externalVaultRequest;
 
+    private InstallmentRequest installments;
+
     public TransactionRequest() {
         this.customFields = new HashMap<String, String>();
         this.threeDSecureTransaction = false;
@@ -328,6 +330,11 @@ public class TransactionRequest extends Request {
         return this;
     }
 
+    public InstallmentRequest installments() {
+        this.installments = new InstallmentRequest(this);
+        return this.installments;
+    }
+
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root)
             .addElement("amount", amount)
@@ -370,7 +377,8 @@ public class TransactionRequest extends Request {
             .addElement("serviceFeeAmount", serviceFeeAmount)
             .addElement("productSku", productSku)
             .addElement("riskData", riskDataTransactionRequest)
-            .addElement("externalVault", externalVaultRequest);
+            .addElement("externalVault", externalVaultRequest)
+            .addElement("installments", installments);
 
         if (!customFields.isEmpty()) {
             builder.addElement("customFields", customFields);
