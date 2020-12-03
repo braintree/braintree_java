@@ -1,4 +1,4 @@
-## unreleased
+## 3.4.0
 * Add `installments` to `TransactionRequest`
 * Add `count` to `InstallmentRequest`
 * Add `installment` and `refunded_installments` to `Transaction`
