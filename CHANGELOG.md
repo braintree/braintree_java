@@ -1,4 +1,8 @@
-## unreleased
+## 3.4.0
+* Add `installments` to `TransactionRequest`
+* Add `count` to `InstallmentRequest`
+* Add `installment` and `refunded_installments` to `Transaction`
+* Add `adjustment` to `Installment`
 * Fix bug in `ThreeDSecureInfo` loading auth data from wrong XML node (thanks @iainjames88!)
 * Avoid allocating memory / constructing object if the message is not going to be logged (thanks @benbenw!)
 * Avoid multiple node traversal in webhooks parsing (thanks @benbenw!)
