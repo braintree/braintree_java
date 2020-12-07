@@ -1,10 +1,67 @@
 package com.braintreegateway.integrationtest;
 
-import com.braintreegateway.*;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.TimeZone;
+
+import com.braintreegateway.AddOn;
+import com.braintreegateway.Address;
+import com.braintreegateway.AddressRequest;
+import com.braintreegateway.Adjustment;
+import com.braintreegateway.AmexExpressCheckoutDetails;
+import com.braintreegateway.AndroidPayDetails;
+import com.braintreegateway.AuthorizationAdjustment;
+import com.braintreegateway.BraintreeGateway;
+import com.braintreegateway.CreditCard;
+import com.braintreegateway.CreditCardRequest;
+import com.braintreegateway.Customer;
+import com.braintreegateway.CustomerRequest;
+import com.braintreegateway.DisbursementDetails;
+import com.braintreegateway.Discount;
+import com.braintreegateway.Dispute;
+import com.braintreegateway.Environment;
+import com.braintreegateway.Installment;
+import com.braintreegateway.Merchant;
+import com.braintreegateway.MerchantRequest;
+import com.braintreegateway.OAuthCredentials;
+import com.braintreegateway.OAuthCredentialsRequest;
+import com.braintreegateway.PartialMatchNode;
+import com.braintreegateway.PaymentInstrumentType;
+import com.braintreegateway.PaymentMethod;
+import com.braintreegateway.PaymentMethodGrantRequest;
+import com.braintreegateway.PaymentMethodNonce;
+import com.braintreegateway.PaymentMethodRequest;
+import com.braintreegateway.ProcessorResponseType;
+import com.braintreegateway.ResourceCollection;
+import com.braintreegateway.Result;
+import com.braintreegateway.RiskData;
+import com.braintreegateway.SandboxValues;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
-import com.braintreegateway.exceptions.UnexpectedException;
+import com.braintreegateway.SubscriptionRequest;
+import com.braintreegateway.ThreeDSecureInfo;
+import com.braintreegateway.Transaction;
+import com.braintreegateway.TransactionAddressRequest;
+import com.braintreegateway.TransactionCloneRequest;
+import com.braintreegateway.TransactionIndustryDataAdditionalChargeRequest;
+import com.braintreegateway.TransactionLineItem;
+import com.braintreegateway.TransactionRefundRequest;
+import com.braintreegateway.TransactionRequest;
+import com.braintreegateway.TransactionSearchRequest;
+import com.braintreegateway.ValidationError;
+import com.braintreegateway.ValidationErrorCode;
+import com.braintreegateway.VenmoAccountDetails;
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.test.CreditCardNumbers;
 import com.braintreegateway.test.Nonce;
 import com.braintreegateway.test.VenmoSdk;
@@ -13,13 +70,15 @@ import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
 import com.braintreegateway.util.NodeWrapperFactory;
+
 import org.junit.Test;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.util.*;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class TransactionIT extends IntegrationTest implements MerchantAccountTestConstants {
 
@@ -7582,7 +7641,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleWithMerchantCurrencyAndCc() {
+    public void saleWithCurrencyIsoCodeSpecified() {
         TransactionRequest request = new TransactionRequest().
                 amount(TransactionAmount.AUTHORIZE.amount).
                 creditCard().
@@ -7593,10 +7652,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
+        assertEquals("USD", result.getTarget().getCurrencyIsoCode());
     }
 
     @Test
-    public void saleWithInvalidMerchantCurrencyAndCc() {
+    public void saleWithInvalidCurrencyIsoCodeSpecified() {
         TransactionRequest request = new TransactionRequest().
                 amount(TransactionAmount.AUTHORIZE.amount).
                 creditCard().
@@ -7611,7 +7671,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleWithMerchantCurrencyAndPaymentMethodNonce() {
+    public void saleWithPaymentMethodNonceAndCurrencyIsoCodeSpecified() {
         String nonce = TestHelper.generateUnlockedNonce(gateway);
         TransactionRequest request = new TransactionRequest().
                 amount(TransactionAmount.AUTHORIZE.amount).
@@ -7619,10 +7679,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 currencyIsoCode("USD");
         Result<Transaction> result = gateway.transaction().sale(request);
         assert(result.isSuccess());
+        assertEquals("USD", result.getTarget().getCurrencyIsoCode());
     }
 
     @Test
-    public void saleWithInvalidMerchantCurrencyAndPaymentMethodNonce() {
+    public void saleWithPaymentMethodNonceAndInvalidCurrencyIsoCodeSpecified() {
         String nonce = TestHelper.generateUnlockedNonce(gateway);
         TransactionRequest request = new TransactionRequest().
                 amount(TransactionAmount.AUTHORIZE.amount).
@@ -7635,7 +7696,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleWithPaymentMethodTokenAndMerchantCurrency() {
+    public void saleWithPaymentMethodTokenAndCurrencyIsoCodeSpecified() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest creditCardRequest = new CreditCardRequest().
                 customerId(customer.getId()).
@@ -7653,15 +7714,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
-
-        assertEquals(creditCard.getToken(), transaction.getCreditCard().getToken());
-        assertEquals("510510", transaction.getCreditCard().getBin());
-        assertEquals("05/2012", transaction.getCreditCard().getExpirationDate());
-        assertEquals("S", transaction.getCvvResponseCode());
+        assertEquals("USD", result.getTarget().getCurrencyIsoCode());
     }
 
     @Test
-    public void saleWithPaymentMethodTokenAndInvalidMerchantCurrency() {
+    public void saleWithPaymentMethodTokenAndInvalidCurrencyIsoCodeSpecified() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest creditCardRequest = new CreditCardRequest().
                 customerId(customer.getId()).
@@ -7680,5 +7737,64 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertFalse(result.isSuccess());
         assertEquals(ValidationErrorCode.TRANSACTION_INVALID_PRESENTMENT_CURRENCY.code,
                 result.getErrors().getAllDeepValidationErrors().get(0).getCode().code);
+    }
+    public void installmentCountPresentForBrazilTransactionAuth() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId("card_processor_brl").
+            creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2020").
+            done().
+            options().
+            creditCard().
+            accountType("credit").
+            done().
+            done().
+            installments().
+            count(4).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        assertEquals(new Integer(4), transaction.getInstallmentCount());
+        assertEquals(new ArrayList<Installment>() , transaction.getInstallments());
+    }
+
+    @Test
+    public void installmentsAndRefundInstallmentsPresentForBrazilTransaction() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId("card_processor_brl").
+            creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2020").
+            done().
+            options().
+            submitForSettlement(true).
+            creditCard().
+            accountType("credit").
+            done().
+            done().
+            installments().
+            count(4).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        assertEquals(Transaction.Status.SETTLING, transaction.getStatus());
+        assertEquals(new Integer(4), transaction.getInstallmentCount());
+        List<Installment> installments = transaction.getInstallments();
+        for (int i = 0; i < installments.size(); i++) {
+            assertEquals(transaction.getId() + "_INST_" + (i + 1), installments.get(i).getId());
+            assertEquals(new BigDecimal("250.00"), installments.get(0).getAmount());
+        }
+        Transaction refundTransaction =
+          gateway.transaction().refund(transaction.getId(), new BigDecimal("20.00")).getTarget();
+
+        List<Installment> refundedInstallments = refundTransaction.getRefundedInstallments();
+        for (int i = 0; i < refundedInstallments.size(); i++) {
+            assertEquals(new BigDecimal("5.00"), refundedInstallments.get(i).getAdjustments().get(0).getAmount());
+            assertEquals(Adjustment.KIND.REFUND, refundedInstallments.get(i).getAdjustments().get(0).getKind());
+        }
     }
 }

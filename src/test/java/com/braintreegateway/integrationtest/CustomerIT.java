@@ -1457,9 +1457,10 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
-    public void createWithCurrencyValidationAndCC() {
+    public void createWithVerificationCurrencyIsoCodeSpecified() {
         CustomerRequest request = new CustomerRequest();
         request.firstName("Fred").
+                lastName("Jones").
                 creditCard().
                 cardholderName("Fred Jones").
                 number("4111111111111111").
@@ -1469,17 +1470,19 @@ public class CustomerIT extends IntegrationTest {
                 verifyCard(true).
                 verificationCurrencyIsoCode("USD").
                 done().
-                done().
-                lastName("Jones");
+                done();
 
         Result<Customer> result = gateway.customer().create(request);
         assertTrue(result.isSuccess());
+        CreditCard creditCard = result.getTarget().getCreditCards().get(0);
+        assertEquals("USD", creditCard.getVerification().getCreditCard().getVerificationCurrencyIsoCode());
     }
 
     @Test
-    public void createShouldFailWithCurrencyValidationAndCC() {
+    public void createWithInvalidVerificationCurrencyIsoCodeSpecified() {
         CustomerRequest request = new CustomerRequest();
         request.firstName("Fred").
+                lastName("Jones").
                 creditCard().
                 cardholderName("Fred Jones").
                 number("4111111111111111").
@@ -1487,11 +1490,10 @@ public class CustomerIT extends IntegrationTest {
                 expirationDate("05/22").
                 options().
                 verifyCard(true).
-                //supplying invalid merchant currency
+                //test account is setup to process USD, supply any currency than USD
                 verificationCurrencyIsoCode("GBP").
                 done().
-                done().
-                lastName("Jones");
+                done();
 
         Result<Customer> result = gateway.customer().create(request);
         assertFalse(result.isSuccess());
@@ -1500,7 +1502,7 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
-    public void createWithCurrencyValidationAndNonce() {
+    public void createWithNonceAndVerificationCurrencyIsoCodeSpecified() {
         String nonce = TestHelper.generateUnlockedNonce(gateway);
         CustomerRequest request = new CustomerRequest().
                 firstName("Fred").
@@ -1514,17 +1516,19 @@ public class CustomerIT extends IntegrationTest {
         Result<Customer> result = gateway.customer().create(request);
         assertTrue(result.isSuccess());
         assertEquals(1, result.getTarget().getCreditCards().size());
+        CreditCard creditCard = result.getTarget().getCreditCards().get(0);
+        assertEquals("USD", creditCard.getVerification().getCreditCard().getVerificationCurrencyIsoCode());
     }
 
     @Test
-    public void createShouldFailWithCurrencyValidationAndNonce() {
+    public void createWithNonceAndInvalidVerificationCurrencyIsoCodeSpecified() {
         String nonce = TestHelper.generateUnlockedNonce(gateway);
         CustomerRequest request = new CustomerRequest().
                 firstName("Fred").
                 creditCard().
                 paymentMethodNonce(nonce).
                 options().
-                //supplying invalid merchant currency
+                //test account is setup to process USD, supply any currency than USD
                 verificationCurrencyIsoCode("GBP").
                 done().
                 done();

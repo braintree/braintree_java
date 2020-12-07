@@ -4,6 +4,16 @@
 * Add validation error codes:
   * `CREDIT_CARD_OPTIONS_VERIFICATION_INVALID_PRESENTMENT_CURRENCY`
   * `TRANSACTION_INVALID_PRESENTMENT_CURRENCY`
+  
+## 3.4.0
+* Add `installments` to `TransactionRequest`
+* Add `count` to `InstallmentRequest`
+* Add `installment` and `refunded_installments` to `Transaction`
+* Add `adjustment` to `Installment`
+* Fix bug in `ThreeDSecureInfo` loading auth data from wrong XML node (thanks @iainjames88!)
+* Avoid allocating memory / constructing object if the message is not going to be logged (thanks @benbenw!)
+* Avoid multiple node traversal in webhooks parsing (thanks @benbenw!)
+* No need to do a complex status message parsing if the server response is a success (thanks @benbenw!)
 
 ## 3.3.0
 * Add `acquirerReferenceNumber` to `Transaction`

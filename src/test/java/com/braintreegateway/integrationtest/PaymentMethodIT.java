@@ -1171,8 +1171,8 @@ public class PaymentMethodIT extends IntegrationTest {
         assertTrue(result.getTarget() instanceof CreditCard);
         CreditCard creditCard = (CreditCard) result.getTarget();
         assertEquals(creditCard.getBillingAddress().getRegion(),"Illinois");
-        assertEquals(creditCard.getBillingAddress().getStreetAddress(), null);
-        assertTrue(!creditCard.getBillingAddress().getId().equals(oldCreditCard.getBillingAddress().getId()));
+        assertEquals(creditCard.getBillingAddress().getStreetAddress(), "1 E Main St");
+        assertTrue(creditCard.getBillingAddress().getId().equals(oldCreditCard.getBillingAddress().getId()));
     }
 
     @Test
@@ -1728,7 +1728,7 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
-    public void createWithNonceAndCurrencyOption() {
+    public void createWithNonceAndVerificationCurrencyIsoCodeSpecified() {
         String nonce = TestHelper.generateUnlockedNonce(gateway, null, SandboxValues.CreditCardNumber.VISA.number);
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
@@ -1749,10 +1749,11 @@ public class PaymentMethodIT extends IntegrationTest {
 
         CreditCard creditCard = (CreditCard) paymentMethod;
         assertEquals("1111", creditCard.getLast4());
+        assertEquals("USD", creditCard.getVerification().getCreditCard().getVerificationCurrencyIsoCode());
     }
 
     @Test
-    public void createWithNonceAndInvalidCurrencyOption() {
+    public void createWithNonceAndInvalidVerificationCurrencyIsoCodeSpecified() {
         String nonce = TestHelper.generateUnlockedNonce(gateway, null, SandboxValues.CreditCardNumber.VISA.number);
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
@@ -1772,7 +1773,7 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
-    public void updatePaymentMethodCCWithCurrencyCode() {
+    public void updatePaymentMethodWithVerificationCurrencyIsoCodeSpecified() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         Customer customer = customerResult.getTarget();
         CreditCardRequest creditCardRequest = new CreditCardRequest().
@@ -1801,10 +1802,11 @@ public class PaymentMethodIT extends IntegrationTest {
         assertEquals(creditCard.getExpirationMonth(), "06");
         assertEquals(creditCard.getExpirationYear(), "2013");
         assertEquals(creditCard.getExpirationDate(), "06/2013");
+        assertEquals("USD", creditCard.getVerification().getCreditCard().getVerificationCurrencyIsoCode());
     }
 
     @Test
-    public void updatePaymentMethodCCWithInvalidCurrencyCode() {
+    public void updatePaymentMethodWithInvalidVerificationCurrencyIsoCodeSpecified() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         Customer customer = customerResult.getTarget();
         CreditCardRequest creditCardRequest = new CreditCardRequest().

@@ -1299,7 +1299,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
     }
 
     @Test
-    public void createWithMerchantCurrencyVerification() {
+    public void createWithCurrencyIsoCodeSpecified() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
                 customerId(customer.getId()).
@@ -1313,26 +1313,11 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         Result<CreditCard> result = gateway.creditCard().create(request);
         assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
-        assertEquals("John Doe", card.getCardholderName());
-        assertEquals("MasterCard", card.getCardType());
-        assertEquals(customer.getId(), card.getCustomerId());
-        assertEquals("US", card.getCustomerLocation());
-        assertEquals("510510", card.getBin());
-        assertEquals("05", card.getExpirationMonth());
-        assertEquals("2021", card.getExpirationYear());
-        assertEquals("05/2021", card.getExpirationDate());
-        assertEquals("5100", card.getLast4());
-        assertEquals("510510******5100", card.getMaskedNumber());
-        assertTrue(card.getToken() != null);
-        assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getCreatedAt().get(Calendar.YEAR));
-        assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getUpdatedAt().get(Calendar.YEAR));
-        assertTrue(card.getUniqueNumberIdentifier().matches("\\A\\w{32}\\z"));
-        assertFalse(card.isVenmoSdk());
-        assertTrue(card.getImageUrl().matches(".*png.*"));
+        assertEquals("USD", card.getVerification().getCreditCard().getVerificationCurrencyIsoCode());
     }
 
     @Test
-    public void createWithInvalidMerchantCurrency() {
+    public void createWithInvalidCurrencyIsoCodeSpecified() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
                 customerId(customer.getId()).
@@ -1351,7 +1336,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
     }
 
     @Test
-    public void updateWithCurrencyVerification() {
+    public void updateWithCurrencyIsoCodeSpecified() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
                 customerId(customer.getId()).
@@ -1371,35 +1356,17 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
                 expirationDate("12/05").
                 options().
                 verificationCurrencyIsoCode("USD").
-                done().
-                billingAddress().
-                countryName("Italy").
-                countryCodeAlpha2("IT").
-                countryCodeAlpha3("ITA").
-                countryCodeNumeric("380").
                 done();
-
 
         Result<CreditCard> updateResult = gateway.creditCard().update(card.getToken(), updateRequest);
         assertTrue(updateResult.isSuccess());
         CreditCard updatedCard = updateResult.getTarget();
 
-        assertEquals("Jane Jones", updatedCard.getCardholderName());
-        assertEquals("411111", updatedCard.getBin());
-        assertEquals("12", updatedCard.getExpirationMonth());
-        assertEquals("2005", updatedCard.getExpirationYear());
-        assertEquals("12/2005", updatedCard.getExpirationDate());
-        assertEquals("1111", updatedCard.getLast4());
-        assertTrue(updatedCard.getToken() != card.getToken());
-
-        assertEquals("Italy", updatedCard.getBillingAddress().getCountryName());
-        assertEquals("IT", updatedCard.getBillingAddress().getCountryCodeAlpha2());
-        assertEquals("ITA", updatedCard.getBillingAddress().getCountryCodeAlpha3());
-        assertEquals("380", updatedCard.getBillingAddress().getCountryCodeNumeric());
+        assertEquals("USD", updatedCard.getVerification().getCreditCard().getVerificationCurrencyIsoCode());
     }
 
     @Test
-    public void updateWithInvalidMerchantCurrency() {
+    public void updateWithInvalidCurrencyIsoCodeSpecified() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
                 customerId(customer.getId()).
@@ -1419,14 +1386,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
                 expirationDate("12/05").
                 options().
                 verificationCurrencyIsoCode("JP").
-                done().
-                billingAddress().
-                countryName("Italy").
-                countryCodeAlpha2("IT").
-                countryCodeAlpha3("ITA").
-                countryCodeNumeric("380").
                 done();
-
 
         Result<CreditCard> updateResult = gateway.creditCard().update(card.getToken(), updateRequest);
         assertFalse(updateResult.isSuccess());

@@ -1,4 +1,4 @@
-package com.braintreegateway.integrationtest;
+package com.braintreegateway.unittest;
 
 import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.testhelpers.TestHelper;
@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class TransactionRequestIT {
+public class TransactionRequestTest {
     @Test
     public void toQueryStringWithNestedCustomer() {
         TransactionRequest request = new TransactionRequest().
@@ -46,5 +46,12 @@ public class TransactionRequestIT {
                 skipAdvancedFraudChecking(false).
                 done();
         TestHelper.assertIncludes("<skipAdvancedFraudChecking>false</skipAdvancedFraudChecking>", request.toXML());
+    }
+
+    @Test
+    public void toXmlIncludesInstallmentParams() {
+        TransactionRequest request = new TransactionRequest().installments().count(10).done();
+        TestHelper.assertIncludes("installments", request.toXML());
+        TestHelper.assertIncludes("count", request.toXML());
     }
 }
