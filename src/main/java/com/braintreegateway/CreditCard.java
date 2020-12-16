@@ -190,7 +190,6 @@ public class CreditCard implements PaymentMethod {
     private Calendar updatedAt;
     private CreditCardVerification verification;
     private String accountType;
-    private String verificationCurrencyIsoCode;
 
     public CreditCard(NodeWrapper node) {
         token = node.findString("token");
@@ -220,7 +219,6 @@ public class CreditCard implements PaymentMethod {
         countryOfIssuance = node.findString("country-of-issuance");
         issuingBank = node.findString("issuing-bank");
         uniqueNumberIdentifier = node.findString("unique-number-identifier");
-        verificationCurrencyIsoCode = node.findString("verification-currency-iso-code");
         NodeWrapper billingAddressResponse = node.findFirst("billing-address");
         if (billingAddressResponse != null) {
             billingAddress = new Address(billingAddressResponse);
@@ -389,9 +387,5 @@ public class CreditCard implements PaymentMethod {
 
     public String getAccountType() {
         return accountType;
-    }
-
-    public String getVerificationCurrencyIsoCode() {
-         return verificationCurrencyIsoCode;
     }
 }

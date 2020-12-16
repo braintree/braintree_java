@@ -1738,8 +1738,9 @@ public class PaymentMethodIT extends IntegrationTest {
                 customerId(customer.getId()).
                 paymentMethodNonce(nonce).
                 options().
-                verificationCurrencyIsoCode("USD").
-                done();
+                    verificationCurrencyIsoCode("USD").
+                    verifyCard(true).
+                    done();
 
         Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
 
@@ -1749,7 +1750,7 @@ public class PaymentMethodIT extends IntegrationTest {
 
         CreditCard creditCard = (CreditCard) paymentMethod;
         assertEquals("1111", creditCard.getLast4());
-        assertEquals("USD", creditCard.getVerification().getCreditCard().getVerificationCurrencyIsoCode());
+        assertEquals("USD", creditCard.getVerification().getCurrencyIsoCode());
     }
 
     @Test
@@ -1763,8 +1764,9 @@ public class PaymentMethodIT extends IntegrationTest {
                 customerId(customer.getId()).
                 paymentMethodNonce(nonce).
                 options().
-                verificationCurrencyIsoCode("GBP").
-                done();
+                    verificationCurrencyIsoCode("GBP").
+                    verifyCard(true).
+                    done();
 
         Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
         assertFalse(result.isSuccess());
@@ -1790,8 +1792,9 @@ public class PaymentMethodIT extends IntegrationTest {
                 expirationMonth("06").
                 expirationYear("2013").
                 options().
-                verificationCurrencyIsoCode("USD").
-                done();
+                    verificationCurrencyIsoCode("USD").
+                    verifyCard(true).
+                    done();
 
         String token = oldCreditCard.getToken();
         Result<? extends PaymentMethod> result = gateway.paymentMethod().update(token, updateCardRequest);
@@ -1802,7 +1805,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertEquals(creditCard.getExpirationMonth(), "06");
         assertEquals(creditCard.getExpirationYear(), "2013");
         assertEquals(creditCard.getExpirationDate(), "06/2013");
-        assertEquals("USD", creditCard.getVerification().getCreditCard().getVerificationCurrencyIsoCode());
+        assertEquals("USD", creditCard.getVerification().getCurrencyIsoCode());
     }
 
     @Test
@@ -1823,8 +1826,9 @@ public class PaymentMethodIT extends IntegrationTest {
                 expirationMonth("06").
                 expirationYear("2013").
                 options().
-                verificationCurrencyIsoCode("GBP").
-                done();
+                    verificationCurrencyIsoCode("GBP").
+                    verifyCard(true).
+                    done();
 
         String token = oldCreditCard.getToken();
         Result<? extends PaymentMethod> result = gateway.paymentMethod().update(token, updateCardRequest);

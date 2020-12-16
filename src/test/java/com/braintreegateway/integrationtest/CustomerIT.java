@@ -1467,15 +1467,15 @@ public class CustomerIT extends IntegrationTest {
                 cvv("123").
                 expirationDate("05/22").
                 options().
-                verifyCard(true).
-                verificationCurrencyIsoCode("USD").
-                done().
+                    verifyCard(true).
+                    verificationCurrencyIsoCode("USD").
+                    done().
                 done();
 
         Result<Customer> result = gateway.customer().create(request);
         assertTrue(result.isSuccess());
         CreditCard creditCard = result.getTarget().getCreditCards().get(0);
-        assertEquals("USD", creditCard.getVerification().getCreditCard().getVerificationCurrencyIsoCode());
+        assertEquals("USD", creditCard.getVerification().getCurrencyIsoCode());
     }
 
     @Test
@@ -1489,10 +1489,10 @@ public class CustomerIT extends IntegrationTest {
                 cvv("123").
                 expirationDate("05/22").
                 options().
-                verifyCard(true).
+                    verifyCard(true).
                 //test account is setup to process USD, supply any currency than USD
-                verificationCurrencyIsoCode("GBP").
-                done().
+                    verificationCurrencyIsoCode("GBP").
+                    done().
                 done();
 
         Result<Customer> result = gateway.customer().create(request);
@@ -1509,15 +1509,16 @@ public class CustomerIT extends IntegrationTest {
                 creditCard().
                 paymentMethodNonce(nonce).
                 options().
-                verificationCurrencyIsoCode("USD").
-                done().
+                    verificationCurrencyIsoCode("USD").
+                    verifyCard(true).
+                    done().
                 done();
 
         Result<Customer> result = gateway.customer().create(request);
         assertTrue(result.isSuccess());
         assertEquals(1, result.getTarget().getCreditCards().size());
         CreditCard creditCard = result.getTarget().getCreditCards().get(0);
-        assertEquals("USD", creditCard.getVerification().getCreditCard().getVerificationCurrencyIsoCode());
+        assertEquals("USD", creditCard.getVerification().getCurrencyIsoCode());
     }
 
     @Test
@@ -1529,8 +1530,9 @@ public class CustomerIT extends IntegrationTest {
                 paymentMethodNonce(nonce).
                 options().
                 //test account is setup to process USD, supply any currency than USD
-                verificationCurrencyIsoCode("GBP").
-                done().
+                    verificationCurrencyIsoCode("GBP").
+                    verifyCard(true).
+                    done().
                 done();
 
         Result<Customer> result = gateway.customer().create(request);

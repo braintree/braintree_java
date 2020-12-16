@@ -1305,15 +1305,16 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
                 customerId(customer.getId()).
                 cardholderName("John Doe").
                 cvv("123").
-                number("5105105105105100").
+                number(CreditCardNumber.VISA.number).
                 expirationDate("05/21").
                 options().
-                verificationCurrencyIsoCode("USD").
-                done();
+                    verificationCurrencyIsoCode("USD").
+                    verifyCard(true).
+                    done();
         Result<CreditCard> result = gateway.creditCard().create(request);
         assertTrue(result.isSuccess());
         CreditCard card = result.getTarget();
-        assertEquals("USD", card.getVerification().getCreditCard().getVerificationCurrencyIsoCode());
+        assertEquals("USD", card.getVerification().getCurrencyIsoCode());
     }
 
     @Test
@@ -1323,11 +1324,12 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
                 customerId(customer.getId()).
                 cardholderName("John Doe").
                 cvv("123").
-                number("5105105105105100").
+                number(CreditCardNumber.VISA.number).
                 expirationDate("05/21").
                 options().
-                verificationCurrencyIsoCode("JP").
-                done();
+                    verificationCurrencyIsoCode("JP").
+                    verifyCard(true).
+                    done();
         Result<CreditCard> result = gateway.creditCard().create(request);
         assertFalse(result.isSuccess());
         assertEquals(
@@ -1342,7 +1344,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
                 customerId(customer.getId()).
                 cardholderName("John Doe").
                 cvv("123").
-                number("5105105105105100").
+                number(CreditCardNumber.VISA.number).
                 expirationDate("05/12");
         Result<CreditCard> result = gateway.creditCard().create(request);
         assertTrue(result.isSuccess());
@@ -1355,14 +1357,15 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
                 number("4111111111111111").
                 expirationDate("12/05").
                 options().
-                verificationCurrencyIsoCode("USD").
-                done();
+                    verificationCurrencyIsoCode("USD").
+                    verifyCard(true).
+                    done();
 
         Result<CreditCard> updateResult = gateway.creditCard().update(card.getToken(), updateRequest);
         assertTrue(updateResult.isSuccess());
         CreditCard updatedCard = updateResult.getTarget();
 
-        assertEquals("USD", updatedCard.getVerification().getCreditCard().getVerificationCurrencyIsoCode());
+        assertEquals("USD", updatedCard.getVerification().getCurrencyIsoCode());
     }
 
     @Test
@@ -1372,7 +1375,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
                 customerId(customer.getId()).
                 cardholderName("John Doe").
                 cvv("123").
-                number("5105105105105100").
+                number(CreditCardNumber.VISA.number).
                 expirationDate("05/12");
         Result<CreditCard> result = gateway.creditCard().create(request);
         assertTrue(result.isSuccess());
@@ -1385,8 +1388,9 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
                 number("4111111111111111").
                 expirationDate("12/05").
                 options().
-                verificationCurrencyIsoCode("JP").
-                done();
+                    verificationCurrencyIsoCode("JP").
+                    verifyCard(true).
+                    done();
 
         Result<CreditCard> updateResult = gateway.creditCard().update(card.getToken(), updateRequest);
         assertFalse(updateResult.isSuccess());
