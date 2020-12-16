@@ -7666,8 +7666,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 currencyIsoCode("GBP");
         Result<Transaction> result = gateway.transaction().sale(request);
         assertFalse(result.isSuccess());
-        assertEquals(ValidationErrorCode.TRANSACTION_INVALID_PRESENTMENT_CURRENCY.code,
-                result.getErrors().getAllDeepValidationErrors().get(0).getCode().code);
+        assertEquals(ValidationErrorCode.TRANSACTION_INVALID_PRESENTMENT_CURRENCY,
+                result.getErrors().forObject("transaction").onField("currency-iso-code").get(0).getCode());
     }
 
     @Test
@@ -7691,8 +7691,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 currencyIsoCode("GBP");
         Result<Transaction> result = gateway.transaction().sale(request);
         assertFalse(result.isSuccess());
-        assertEquals(ValidationErrorCode.TRANSACTION_INVALID_PRESENTMENT_CURRENCY.code,
-                result.getErrors().getAllDeepValidationErrors().get(0).getCode().code);
+        assertEquals(ValidationErrorCode.TRANSACTION_INVALID_PRESENTMENT_CURRENCY,
+                result.getErrors().forObject("transaction").onField("currency-iso-code").get(0).getCode());
     }
 
     @Test
@@ -7735,8 +7735,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertFalse(result.isSuccess());
-        assertEquals(ValidationErrorCode.TRANSACTION_INVALID_PRESENTMENT_CURRENCY.code,
-                result.getErrors().getAllDeepValidationErrors().get(0).getCode().code);
+        assertEquals(ValidationErrorCode.TRANSACTION_INVALID_PRESENTMENT_CURRENCY,
+                result.getErrors().forObject("transaction").onField("currency-iso-code").get(0).getCode());
     }
     public void installmentCountPresentForBrazilTransactionAuth() {
         TransactionRequest request = new TransactionRequest().
