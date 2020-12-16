@@ -7696,7 +7696,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         List<Installment> refundedInstallments = refundTransaction.getRefundedInstallments();
         for (int i = 0; i < refundedInstallments.size(); i++) {
-            assertEquals(new BigDecimal("5.00"), refundedInstallments.get(i).getAdjustments().get(0).getAmount());
+            assertEquals(new BigDecimal("-5.00"), refundedInstallments.get(i).getAdjustments().get(0).getAmount());
             assertEquals(Adjustment.KIND.REFUND, refundedInstallments.get(i).getAdjustments().get(0).getKind());
         }
     }
