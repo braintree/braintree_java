@@ -9,6 +9,7 @@ public class PaymentMethodOptionsRequest extends Request {
     private Boolean verifyCard;
     private String verificationAmount;
     private String venmoSdkSession;
+    private String verificationCurrencyIsoCode;
     private PaymentMethodOptionsAdyenRequest paymentMethodOptionsAdyenRequest;
     private PaymentMethodOptionsPayPalRequest paymentMethodOptionsPayPalRequest;
     private UsBankAccountVerification.VerificationMethod usBankAccountVerificationMethod;
@@ -64,6 +65,11 @@ public class PaymentMethodOptionsRequest extends Request {
         return this;
     }
 
+    public PaymentMethodOptionsRequest verificationCurrencyIsoCode(String verificationCurrencyIsoCode) {
+        this.verificationCurrencyIsoCode = verificationCurrencyIsoCode;
+        return this;
+    }
+
     public PaymentMethodOptionsPayPalRequest paypal() {
         paymentMethodOptionsPayPalRequest = new PaymentMethodOptionsPayPalRequest(this);
         return paymentMethodOptionsPayPalRequest;
@@ -98,6 +104,7 @@ public class PaymentMethodOptionsRequest extends Request {
         }
 
         builder.addElement("venmoSdkSession", venmoSdkSession);
+        builder.addElement("verificationCurrencyIsoCode", verificationCurrencyIsoCode);
         builder.addElement("paypal", paymentMethodOptionsPayPalRequest);
         builder.addElement("adyen", paymentMethodOptionsAdyenRequest);
         builder.addElement("usBankAccountVerificationMethod", usBankAccountVerificationMethod);
