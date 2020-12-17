@@ -1297,4 +1297,105 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
 
         assertFalse(gateway.creditCard().find(card.getToken()).isNetworkTokenized());
     }
+
+    @Test
+    public void createWithCurrencyIsoCodeSpecified() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+                customerId(customer.getId()).
+                cardholderName("John Doe").
+                cvv("123").
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/21").
+                options().
+                    verificationCurrencyIsoCode("USD").
+                    verifyCard(true).
+                    done();
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+        CreditCard card = result.getTarget();
+        assertEquals("USD", card.getVerification().getCurrencyIsoCode());
+    }
+
+    @Test
+    public void createWithInvalidCurrencyIsoCodeSpecified() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+                customerId(customer.getId()).
+                cardholderName("John Doe").
+                cvv("123").
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/21").
+                options().
+                    verificationCurrencyIsoCode("JP").
+                    verifyCard(true).
+                    done();
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+                ValidationErrorCode.CREDIT_CARD_OPTIONS_VERIFICATION_INVALID_PRESENTMENT_CURRENCY,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode());
+    }
+
+    @Test
+    public void updateWithCurrencyIsoCodeSpecified() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+                customerId(customer.getId()).
+                cardholderName("John Doe").
+                cvv("123").
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/12");
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+        CreditCard card = result.getTarget();
+
+        CreditCardRequest updateRequest = new CreditCardRequest().
+                customerId(customer.getId()).
+                cardholderName("Jane Jones").
+                cvv("321").
+                number("4111111111111111").
+                expirationDate("12/05").
+                options().
+                    verificationCurrencyIsoCode("USD").
+                    verifyCard(true).
+                    done();
+
+        Result<CreditCard> updateResult = gateway.creditCard().update(card.getToken(), updateRequest);
+        assertTrue(updateResult.isSuccess());
+        CreditCard updatedCard = updateResult.getTarget();
+
+        assertEquals("USD", updatedCard.getVerification().getCurrencyIsoCode());
+    }
+
+    @Test
+    public void updateWithInvalidCurrencyIsoCodeSpecified() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+                customerId(customer.getId()).
+                cardholderName("John Doe").
+                cvv("123").
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/12");
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+        CreditCard card = result.getTarget();
+
+        CreditCardRequest updateRequest = new CreditCardRequest().
+                customerId(customer.getId()).
+                cardholderName("Jane Jones").
+                cvv("321").
+                number("4111111111111111").
+                expirationDate("12/05").
+                options().
+                    verificationCurrencyIsoCode("JP").
+                    verifyCard(true).
+                    done();
+
+        Result<CreditCard> updateResult = gateway.creditCard().update(card.getToken(), updateRequest);
+        assertFalse(updateResult.isSuccess());
+        assertEquals(
+                ValidationErrorCode.CREDIT_CARD_OPTIONS_VERIFICATION_INVALID_PRESENTMENT_CURRENCY,
+                updateResult.getErrors().getAllDeepValidationErrors().get(0).getCode());
+    }
 }

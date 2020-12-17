@@ -10,6 +10,7 @@ public class CreditCardOptionsRequest extends Request {
     private Boolean makeDefault;
     private String updateExistingToken;
     private String venmoSdkSession;
+    private String verificationCurrencyIsoCode;
 
     public CreditCardOptionsRequest(CreditCardRequest parent) {
         this.parent = parent;
@@ -59,6 +60,11 @@ public class CreditCardOptionsRequest extends Request {
         return this;
     }
 
+    public CreditCardOptionsRequest verificationCurrencyIsoCode(String verificationCurrencyIsoCode) {
+        this.verificationCurrencyIsoCode = verificationCurrencyIsoCode;
+        return this;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("options").toXML();
@@ -87,6 +93,7 @@ public class CreditCardOptionsRequest extends Request {
         }
         builder.addElement("updateExistingToken", updateExistingToken);
         builder.addElement("venmoSdkSession", venmoSdkSession);
+        builder.addElement("verificationCurrencyIsoCode", verificationCurrencyIsoCode);
 
         return builder;
     }

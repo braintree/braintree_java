@@ -1,3 +1,10 @@
+## 3.5.0
+* Add `currencyIsoCode` to `Transaction`
+* Add `verificationCurrencyIsoCode` to `CreditCard`, `PaymentMethod`, and `Customer`
+* Add validation error codes:
+  * `CREDIT_CARD_OPTIONS_VERIFICATION_INVALID_PRESENTMENT_CURRENCY`
+  * `TRANSACTION_INVALID_PRESENTMENT_CURRENCY`
+  
 ## 3.4.0
 * Add `installments` to `TransactionRequest`
 * Add `count` to `InstallmentRequest`

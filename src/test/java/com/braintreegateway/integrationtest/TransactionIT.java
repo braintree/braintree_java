@@ -7641,6 +7641,103 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithCurrencyIsoCodeSpecified() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2030").
+                done().
+                currencyIsoCode("USD");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        assertEquals("USD", result.getTarget().getCurrencyIsoCode());
+    }
+
+    @Test
+    public void saleWithInvalidCurrencyIsoCodeSpecified() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2030").
+                done().
+                currencyIsoCode("GBP");
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_INVALID_PRESENTMENT_CURRENCY,
+                result.getErrors().forObject("transaction").onField("currency-iso-code").get(0).getCode());
+    }
+
+    @Test
+    public void saleWithPaymentMethodNonceAndCurrencyIsoCodeSpecified() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                paymentMethodNonce(nonce).
+                currencyIsoCode("USD");
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assert(result.isSuccess());
+        assertEquals("USD", result.getTarget().getCurrencyIsoCode());
+    }
+
+    @Test
+    public void saleWithPaymentMethodNonceAndInvalidCurrencyIsoCodeSpecified() {
+        String nonce = TestHelper.generateUnlockedNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                paymentMethodNonce(nonce).
+                currencyIsoCode("GBP");
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_INVALID_PRESENTMENT_CURRENCY,
+                result.getErrors().forObject("transaction").onField("currency-iso-code").get(0).getCode());
+    }
+
+    @Test
+    public void saleWithPaymentMethodTokenAndCurrencyIsoCodeSpecified() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+                customerId(customer.getId()).
+                number("5105105105105100").
+                expirationDate("05/12");
+        CreditCard creditCard = gateway.creditCard().create(creditCardRequest).getTarget();
+
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                paymentMethodToken(creditCard.getToken()).
+                creditCard().
+                done().
+                currencyIsoCode("USD");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertEquals("USD", result.getTarget().getCurrencyIsoCode());
+    }
+
+    @Test
+    public void saleWithPaymentMethodTokenAndInvalidCurrencyIsoCodeSpecified() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+                customerId(customer.getId()).
+                number("5105105105105100").
+                expirationDate("05/12");
+        CreditCard creditCard = gateway.creditCard().create(creditCardRequest).getTarget();
+
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                paymentMethodToken(creditCard.getToken()).
+                creditCard().
+                done().
+                currencyIsoCode("GBP");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_INVALID_PRESENTMENT_CURRENCY,
+                result.getErrors().forObject("transaction").onField("currency-iso-code").get(0).getCode());
+    }
     public void installmentCountPresentForBrazilTransactionAuth() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -7696,7 +7793,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         List<Installment> refundedInstallments = refundTransaction.getRefundedInstallments();
         for (int i = 0; i < refundedInstallments.size(); i++) {
-            assertEquals(new BigDecimal("5.00"), refundedInstallments.get(i).getAdjustments().get(0).getAmount());
+            assertEquals(new BigDecimal("-5.00"), refundedInstallments.get(i).getAdjustments().get(0).getAmount());
             assertEquals(Adjustment.KIND.REFUND, refundedInstallments.get(i).getAdjustments().get(0).getKind());
         }
     }
