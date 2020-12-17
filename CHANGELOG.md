@@ -1,4 +1,4 @@
-## unreleased
+## 3.5.0
 * Add `currencyIsoCode` to `Transaction`
 * Add `verificationCurrencyIsoCode` to `CreditCard`, `PaymentMethod`, and `Customer`
 * Add validation error codes:
