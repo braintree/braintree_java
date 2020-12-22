@@ -4237,27 +4237,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleWithExternalVaultValidationErrorInvalidCardType() {
-        TransactionRequest request = new TransactionRequest().
-            amount(new BigDecimal("10.00")).
-            creditCard().
-                number(CreditCardNumber.AMEX.number).
-                expirationDate("05/2009").
-                done().
-            externalVault().
-                vaulted().
-                previousNetworkTransactionId("123456789012345").
-                done();
-
-        Result<Transaction> result = gateway.transaction().sale(request);
-        assertFalse(result.isSuccess());
-        assertEquals(
-            ValidationErrorCode.TRANSACTION_EXTERNAL_VAULT_CARD_TYPE_IS_INVALID,
-            result.getErrors().forObject("transaction").forObject("external_vault").onField("previousNetworkTransactionId").get(0).getCode()
-        );
-    }
-
-    @Test
     public void credit() {
         TransactionRequest request = new TransactionRequest().
             amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
