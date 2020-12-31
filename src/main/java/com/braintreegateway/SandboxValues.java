@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 public class SandboxValues {
     public enum CreditCardNumber {
         VISA("4111111111111111"),
+        VISA_COUNTRY_OF_ISSUANCE_IE("4023490000000008"),
         MASTER_CARD("5555555555554444"),
         FRAUD("4000111111111511"),
         RISK_THRESHOLD("4111130000000003"),

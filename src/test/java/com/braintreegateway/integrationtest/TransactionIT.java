@@ -50,6 +50,7 @@ import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.SubscriptionRequest;
 import com.braintreegateway.ThreeDSecureInfo;
 import com.braintreegateway.Transaction;
+import com.braintreegateway.Transaction.ScaExemption;
 import com.braintreegateway.TransactionAddressRequest;
 import com.braintreegateway.TransactionCloneRequest;
 import com.braintreegateway.TransactionIndustryDataAdditionalChargeRequest;
@@ -7775,5 +7776,21 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             assertEquals(new BigDecimal("-5.00"), refundedInstallments.get(i).getAdjustments().get(0).getAmount());
             assertEquals(Adjustment.KIND.REFUND, refundedInstallments.get(i).getAdjustments().get(0).getKind());
         }
+    }
+
+    @Test
+    public void scaExemptionTransactionSaleSuccess() {
+        TransactionRequest request = new TransactionRequest().
+            scaExemption(ScaExemption.LOW_VALUE).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA_COUNTRY_OF_ISSUANCE_IE.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertEquals(ScaExemption.LOW_VALUE, transaction.getScaExemptionRequested());
     }
 }

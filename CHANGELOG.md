@@ -1,3 +1,9 @@
+## unreleased
+* Add `scaExemption` to `TransactionRequest`
+* Add `scaExemptionRequested` to `Transaction`
+* Add validation error code:
+  * `TRANSACTION_SCA_EXEMPTION_IS_INVALID`
+
 ## 3.5.0
 * Add `currencyIsoCode` to `Transaction`
 * Add `verificationCurrencyIsoCode` to `CreditCard`, `PaymentMethod`, and `Customer`
