@@ -20,7 +20,7 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         CreditCardRequest cardRequest = new CreditCardRequest().
             number("4111111111111111").
             expirationMonth("12").
-            expirationYear("2020");
+            expirationYear("2030");
 
         String nonce = TestHelper.generateNonceForCreditCard(gateway, cardRequest, customer.getId(), false);
         String authorizationFingerprint = TestHelper.generateAuthorizationFingerprint(gateway, customer.getId());
@@ -113,7 +113,7 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         CreditCardRequest cardRequest = new CreditCardRequest().
             number("4111111111111111").
             expirationMonth("12").
-            expirationYear("2020");
+            expirationYear("2030");
 
         String nonce = TestHelper.generateNonceForCreditCard(gateway, cardRequest, customer.getId(), false);
         String authorizationFingerprint = TestHelper.generateAuthorizationFingerprint(gateway, customer.getId());
@@ -148,7 +148,7 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         CreditCardRequest cardRequest = new CreditCardRequest().
             number("4111111111111111").
             expirationMonth("12").
-            expirationYear("2020");
+            expirationYear("2030");
 
         String nonce = TestHelper.generateNonceForCreditCard(gateway, cardRequest, customer.getId(), false);
         String authorizationFingerprint = TestHelper.generateAuthorizationFingerprint(gateway, customer.getId());
