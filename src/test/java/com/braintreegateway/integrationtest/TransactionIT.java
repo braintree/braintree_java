@@ -4069,11 +4069,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleNonVisaMastercardDiscoverDoesNotReceiveNetworkTransactionIdentifier() {
+    public void saleNonVisaMastercardDiscoverAmexDoesNotReceiveNetworkTransactionIdentifier() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
             creditCard().
-                number(CreditCardNumber.AMEX.number).
+                number(CreditCardNumber.JCB.number).
                 expirationDate("05/2009").
                 done();
 
@@ -4119,6 +4119,24 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithExternalVaultStatusAmex() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number(CreditCardNumber.AMEX.number).
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                vaulted().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertTrue(transaction.getNetworkTransactionId().length() > 0);
+    }
+
+    @Test
     public void saleWithExternalVaultStatusDiscover() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
@@ -4137,11 +4155,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleWithExternalVaultStatusNonVisaMastercardDiscover() {
+    public void saleWithExternalVaultStatusNonVisaMastercardDiscoverAmex() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
             creditCard().
-                number(CreditCardNumber.AMEX.number).
+                number(CreditCardNumber.JCB.number).
                 expirationDate("05/2009").
                 done().
             externalVault().

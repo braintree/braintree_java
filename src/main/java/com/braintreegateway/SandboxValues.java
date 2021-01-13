@@ -15,7 +15,8 @@ public class SandboxValues {
         AMEX("378282246310005"),
         ELO("5066991111111118"),
         HIPER("6370950000000005"),
-        HIPERCARD("6062820524845321");
+        HIPERCARD("6062820524845321"),
+        JCB("3530111333300000");
         public String number;
 
         private CreditCardNumber(String number) {
