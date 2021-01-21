@@ -41,6 +41,11 @@ public class EnumUtilsTest {
         assertEquals(Transaction.Status.UNRECOGNIZED, EnumUtils.findByName(Transaction.Status.class, "blah", Transaction.Status.UNRECOGNIZED));
         assertEquals(Transaction.Type.UNRECOGNIZED, EnumUtils.findByName(Transaction.Type.class, "blah", Transaction.Type.UNRECOGNIZED));
     }
+    
+    @Test
+    public void findByNameWithWhiteSpace() {
+        assertEquals(Transaction.Status.AUTHORIZATION_EXPIRED, EnumUtils.findByName(Transaction.Status.class, "AUTHORIZATION EXPIRED", Transaction.Status.UNRECOGNIZED));
+    }
 
     @Test
     public void findByToString_returnsEnumWithExactMatch() {

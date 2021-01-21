@@ -4,8 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class StringUtils {
+    
+    private static final Pattern CONTIGUOUS_UPPERCASE = Pattern.compile("([A-Z]+)([A-Z][a-z])");
+    private static final Pattern CAMEL_CASE = Pattern.compile("([a-z])([A-Z])");
+    
     public static <T> String classToXMLName(Class<T> klass) {
         return dasherize(klass.getSimpleName()).toLowerCase();
     }
@@ -15,9 +20,10 @@ public class StringUtils {
             return null;
         }
 
-        return str.replaceAll("([A-Z]+)([A-Z][a-z])", "$1-$2")
-            .replaceAll("([a-z])([A-Z])", "$1-$2")
-            .replaceAll("_", "-")
+        str = CONTIGUOUS_UPPERCASE.matcher(str).replaceAll("$1-$2");
+        str = CAMEL_CASE.matcher(str).replaceAll("$1-$2");
+        
+        return str.replace('_', '-')
             .toLowerCase();
     }
 
@@ -50,9 +56,10 @@ public class StringUtils {
             return null;
         }
 
-        return str.replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2")
-            .replaceAll("([a-z])([A-Z])", "$1_$2")
-            .replaceAll("-", "_")
+        str = CONTIGUOUS_UPPERCASE.matcher(str).replaceAll("$1_$2");
+        str = CAMEL_CASE.matcher(str).replaceAll("$1_$2");
+        
+        return str.replace('-', '_')
             .toLowerCase();
     }
 
