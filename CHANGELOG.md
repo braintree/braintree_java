@@ -20,6 +20,7 @@
 * Avoid allocating memory / constructing object if the message is not going to be logged (thanks @benbenw!)
 * Avoid multiple node traversal in webhooks parsing (thanks @benbenw!)
 * No need to do a complex status message parsing if the server response is a success (thanks @benbenw!)
+* Pattern / regexp usage optimization : Re-use patterns / Avoid compiling / creating patterns when not needed (thanks @benbenw!)
 
 ## 3.3.0
 * Add `acquirerReferenceNumber` to `Transaction`
