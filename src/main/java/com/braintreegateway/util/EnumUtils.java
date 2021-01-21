@@ -7,7 +7,7 @@ public class EnumUtils {
             return null;
         }
         try {
-            return Enum.valueOf(enumType, name.toUpperCase().replaceAll(" ", "_"));
+            return Enum.valueOf(enumType, name.toUpperCase().replace(' ', '_'));
         } catch (IllegalArgumentException e) {
             return defaultValue;
         }
