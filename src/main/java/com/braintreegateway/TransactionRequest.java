@@ -1,5 +1,6 @@
 package com.braintreegateway;
 
+import com.braintreegateway.Transaction.ScaExemption;
 import com.braintreegateway.Transaction.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class TransactionRequest extends Request {
     private String paymentMethodToken;
     private String purchaseOrderNumber;
     private Boolean recurring;
+    private ScaExemption scaExemption;
     private String source;
     private String shippingAddressId;
     private String billingAddressId;
@@ -130,6 +132,11 @@ public class TransactionRequest extends Request {
 
     public TransactionRequest customField(String apiName, String value) {
         customFields.put(apiName, value);
+        return this;
+    }
+
+    public TransactionRequest scaExemption(ScaExemption scaExemption) {
+        this.scaExemption = scaExemption;
         return this;
     }
 
@@ -392,6 +399,10 @@ public class TransactionRequest extends Request {
         }
         if (type != null) {
             builder.addElement("type", type.toString().toLowerCase());
+        }
+
+        if (scaExemption != null) {
+            builder.addElement("scaExemption", scaExemption.toString());
         }
 
         if (threeDSecureTransaction) {

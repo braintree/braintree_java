@@ -64,6 +64,21 @@ public class Transaction {
         }
     }
 
+    public enum ScaExemption {
+        LOW_VALUE("low_value"),
+        SECURE_CORPORATE("secure_corporate"),
+        TRUSTED_BENEFICIARY("trusted_beneficiary"),
+        TRANSACTION_RISK_ANALYSIS("transaction_risk_analysis");
+        private final String exemption;
+        ScaExemption(String exemption) {
+            this.exemption = exemption;
+        }
+        @Override
+        public String toString() {
+            return exemption;
+        }
+    }
+
     public enum Source {
         API("api"),
         CONTROL_PANEL("control_panel"),
@@ -198,6 +213,7 @@ public class Transaction {
     private FacilitatedDetails facilitatedDetails;
     private FacilitatorDetails facilitatorDetails;
     private String networkTransactionId;
+    private ScaExemption scaExemptionRequested;
     private Calendar authorizationExpiresAt;
     private Integer installmentCount;
     private List<Installment> installments;
@@ -219,6 +235,7 @@ public class Transaction {
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
         orderId = node.findString("order-id");
+        scaExemptionRequested = EnumUtils.findByName(ScaExemption.class, node.findString("sca-exemption-requested"), null);
         NodeWrapper billingAddressNode = node.findFirst("billing");
         if (billingAddressNode != null) {
             billingAddress = new Address(billingAddressNode);
@@ -506,6 +523,10 @@ public class Transaction {
 
     public PayPalHereDetails getPayPalHereDetails() {
         return paypalHereDetails;
+    }
+
+    public ScaExemption getScaExemptionRequested() {
+        return scaExemptionRequested;
     }
 
     public ApplePayDetails getApplePayDetails() {

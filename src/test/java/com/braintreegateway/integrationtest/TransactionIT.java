@@ -50,6 +50,7 @@ import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.SubscriptionRequest;
 import com.braintreegateway.ThreeDSecureInfo;
 import com.braintreegateway.Transaction;
+import com.braintreegateway.Transaction.ScaExemption;
 import com.braintreegateway.TransactionAddressRequest;
 import com.braintreegateway.TransactionCloneRequest;
 import com.braintreegateway.TransactionIndustryDataAdditionalChargeRequest;
@@ -4068,11 +4069,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleNonVisaMastercardDiscoverDoesNotReceiveNetworkTransactionIdentifier() {
+    public void saleNonVisaMastercardDiscoverAmexDoesNotReceiveNetworkTransactionIdentifier() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
             creditCard().
-                number(CreditCardNumber.AMEX.number).
+                number(CreditCardNumber.JCB.number).
                 expirationDate("05/2009").
                 done();
 
@@ -4118,6 +4119,24 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithExternalVaultStatusAmex() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number(CreditCardNumber.AMEX.number).
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                vaulted().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertTrue(transaction.getNetworkTransactionId().length() > 0);
+    }
+
+    @Test
     public void saleWithExternalVaultStatusDiscover() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
@@ -4136,11 +4155,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleWithExternalVaultStatusNonVisaMastercardDiscover() {
+    public void saleWithExternalVaultStatusNonVisaMastercardDiscoverAmex() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
             creditCard().
-                number(CreditCardNumber.AMEX.number).
+                number(CreditCardNumber.JCB.number).
                 expirationDate("05/2009").
                 done().
             externalVault().
@@ -4233,27 +4252,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(
             ValidationErrorCode.TRANSACTION_EXTERNAL_VAULT_STATUS_WITH_PREVIOUS_NETWORK_TRANSACTION_ID_IS_INVALID,
             result.getErrors().forObject("transaction").forObject("external_vault").onField("status").get(0).getCode()
-        );
-    }
-
-    @Test
-    public void saleWithExternalVaultValidationErrorInvalidCardType() {
-        TransactionRequest request = new TransactionRequest().
-            amount(new BigDecimal("10.00")).
-            creditCard().
-                number(CreditCardNumber.AMEX.number).
-                expirationDate("05/2009").
-                done().
-            externalVault().
-                vaulted().
-                previousNetworkTransactionId("123456789012345").
-                done();
-
-        Result<Transaction> result = gateway.transaction().sale(request);
-        assertFalse(result.isSuccess());
-        assertEquals(
-            ValidationErrorCode.TRANSACTION_EXTERNAL_VAULT_CARD_TYPE_IS_INVALID,
-            result.getErrors().forObject("transaction").forObject("external_vault").onField("previousNetworkTransactionId").get(0).getCode()
         );
     }
 
@@ -7796,5 +7794,21 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             assertEquals(new BigDecimal("-5.00"), refundedInstallments.get(i).getAdjustments().get(0).getAmount());
             assertEquals(Adjustment.KIND.REFUND, refundedInstallments.get(i).getAdjustments().get(0).getKind());
         }
+    }
+
+    @Test
+    public void scaExemptionTransactionSaleSuccess() {
+        TransactionRequest request = new TransactionRequest().
+            scaExemption(ScaExemption.LOW_VALUE).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA_COUNTRY_OF_ISSUANCE_IE.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertEquals(ScaExemption.LOW_VALUE, transaction.getScaExemptionRequested());
     }
 }
