@@ -1423,7 +1423,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             merchantAccountId(ADYEN_MERCHANT_ACCOUNT_ID).
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
-                number(CreditCardNumber.VISA.number).
+                number(CreditCardNumber.MASTER_CARD.number).
                 expirationDate("10/2020").
                 cvv("737").
                 done().
