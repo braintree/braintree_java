@@ -1,3 +1,6 @@
+## UNRELEASED
+* Add `decision_reasons` and `transaction_risk_score` to `RiskData`
+
 ## 3.6.0
 * Add `scaExemption` to `TransactionRequest`
 * Add `scaExemptionRequested` to `Transaction`

@@ -435,7 +435,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleReturnsRiskData() {
-        createAdvancedFraudMerchantGateway();
+        createFraudProtectionEnterpriseMerchantGateway();
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             deviceSessionId("abc123").
@@ -453,6 +453,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertFalse(riskData.getDeviceDataCaptured());
         assertNotNull(riskData.getId());
         assertNotNull(riskData.getFraudServiceProvider());
+        assertNotNull(riskData.getTransactionRiskScore());
+        assertNotNull(riskData.getDecisionReasons());
     }
 
     @Test
@@ -1839,7 +1841,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleWithFraudCardIsDeclined() {
-        createAdvancedFraudMerchantGateway();
+        createAdvancedFraudKountMerchantGateway();
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
@@ -1857,7 +1859,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleWithRiskThresholdCardIsDeclined() {
-        createAdvancedFraudMerchantGateway();
+        createAdvancedFraudKountMerchantGateway();
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
@@ -2854,7 +2856,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleWithAdvancedFraudCheckingSkipped() {
-        createAdvancedFraudMerchantGateway();
+        createAdvancedFraudKountMerchantGateway();
         TransactionRequest request = new TransactionRequest().
                 amount(TransactionAmount.AUTHORIZE.amount).
                 creditCard().
