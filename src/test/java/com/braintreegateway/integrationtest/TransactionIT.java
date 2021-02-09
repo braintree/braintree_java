@@ -46,6 +46,7 @@ import com.braintreegateway.Result;
 import com.braintreegateway.RiskData;
 import com.braintreegateway.SandboxValues;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
+import com.braintreegateway.SandboxValues.ExpirationDate;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.SubscriptionRequest;
 import com.braintreegateway.ThreeDSecureInfo;
@@ -375,7 +376,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             merchantAccountId(ADYEN_MERCHANT_ACCOUNT_ID).
             creditCard().
                 number(CreditCardNumber.ELO.number).
-                expirationDate("10/2020").
+                expirationDate(ExpirationDate.ADYEN.expiration).
                 cvv("737").
                 done();
 
@@ -395,9 +396,9 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         CreditCard creditCard = transaction.getCreditCard();
         assertEquals("506699", creditCard.getBin());
         assertEquals("1118", creditCard.getLast4());
-        assertEquals("10", creditCard.getExpirationMonth());
-        assertEquals("2020", creditCard.getExpirationYear());
-        assertEquals("10/2020", creditCard.getExpirationDate());
+        assertEquals("03", creditCard.getExpirationMonth());
+        assertEquals("2030", creditCard.getExpirationYear());
+        assertEquals("03/2030", creditCard.getExpirationDate());
     }
 
     @Test
@@ -1423,8 +1424,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             merchantAccountId(ADYEN_MERCHANT_ACCOUNT_ID).
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
-                number(CreditCardNumber.MASTER_CARD.number).
-                expirationDate("10/2020").
+                number(CreditCardNumber.VISA.number).
+                expirationDate(ExpirationDate.ADYEN.expiration).
                 cvv("737").
                 done().
             threeDSecurePassThru().
@@ -1452,7 +1453,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
                 number(CreditCardNumber.VISA.number).
-                expirationDate("10/2020").
+                expirationDate(ExpirationDate.ADYEN.expiration).
                 cvv("737").
                 done().
             threeDSecurePassThru().
@@ -1478,7 +1479,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
                 number(CreditCardNumber.VISA.number).
-                expirationDate("10/2020").
+                expirationDate(ExpirationDate.ADYEN.expiration).
                 cvv("737").
                 done().
             threeDSecurePassThru().
@@ -1503,7 +1504,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
                 number(CreditCardNumber.VISA.number).
-                expirationDate("10/2020").
+                expirationDate(ExpirationDate.ADYEN.expiration).
                 cvv("737").
                 done().
             threeDSecurePassThru().
@@ -5383,7 +5384,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             merchantAccountId(ADYEN_MERCHANT_ACCOUNT_ID).
             creditCard().
                 number(CreditCardNumber.ELO.number).
-                expirationDate("10/2020").
+                expirationDate(ExpirationDate.ADYEN.expiration).
                 cvv("737").
                 done();
 
