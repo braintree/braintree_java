@@ -453,7 +453,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertFalse(riskData.getDeviceDataCaptured());
         assertNotNull(riskData.getId());
         assertNotNull(riskData.getFraudServiceProvider());
-        assertNotNull(riskData.getTransactionRiskScore());
         assertNotNull(riskData.getDecisionReasons());
     }
 

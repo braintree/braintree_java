@@ -886,7 +886,6 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertFalse(riskData.getDeviceDataCaptured());
         assertNotNull(riskData.getId());
         assertNotNull(riskData.getFraudServiceProvider());
-        assertNotNull(riskData.getTransactionRiskScore());
         assertNotNull(riskData.getDecisionReasons());
     }
 
