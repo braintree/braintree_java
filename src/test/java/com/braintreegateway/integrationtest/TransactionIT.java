@@ -46,6 +46,7 @@ import com.braintreegateway.Result;
 import com.braintreegateway.RiskData;
 import com.braintreegateway.SandboxValues;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
+import com.braintreegateway.SandboxValues.ExpirationDate;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.SubscriptionRequest;
 import com.braintreegateway.ThreeDSecureInfo;
@@ -375,7 +376,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             merchantAccountId(ADYEN_MERCHANT_ACCOUNT_ID).
             creditCard().
                 number(CreditCardNumber.ELO.number).
-                expirationDate("10/2020").
+                expirationDate(ExpirationDate.ADYEN.expiration).
                 cvv("737").
                 done();
 
@@ -395,9 +396,9 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         CreditCard creditCard = transaction.getCreditCard();
         assertEquals("506699", creditCard.getBin());
         assertEquals("1118", creditCard.getLast4());
-        assertEquals("10", creditCard.getExpirationMonth());
-        assertEquals("2020", creditCard.getExpirationYear());
-        assertEquals("10/2020", creditCard.getExpirationDate());
+        assertEquals("03", creditCard.getExpirationMonth());
+        assertEquals("2030", creditCard.getExpirationYear());
+        assertEquals("03/2030", creditCard.getExpirationDate());
     }
 
     @Test
@@ -434,7 +435,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleReturnsRiskData() {
-        createAdvancedFraudMerchantGateway();
+        createFraudProtectionEnterpriseMerchantGateway();
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             deviceSessionId("abc123").
@@ -452,6 +453,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertFalse(riskData.getDeviceDataCaptured());
         assertNotNull(riskData.getId());
         assertNotNull(riskData.getFraudServiceProvider());
+        assertNotNull(riskData.getDecisionReasons());
     }
 
     @Test
@@ -1424,7 +1426,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
                 number(CreditCardNumber.VISA.number).
-                expirationDate("10/2020").
+                expirationDate(ExpirationDate.ADYEN.expiration).
                 cvv("737").
                 done().
             threeDSecurePassThru().
@@ -1452,7 +1454,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
                 number(CreditCardNumber.VISA.number).
-                expirationDate("10/2020").
+                expirationDate(ExpirationDate.ADYEN.expiration).
                 cvv("737").
                 done().
             threeDSecurePassThru().
@@ -1478,7 +1480,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
                 number(CreditCardNumber.VISA.number).
-                expirationDate("10/2020").
+                expirationDate(ExpirationDate.ADYEN.expiration).
                 cvv("737").
                 done().
             threeDSecurePassThru().
@@ -1503,7 +1505,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
                 number(CreditCardNumber.VISA.number).
-                expirationDate("10/2020").
+                expirationDate(ExpirationDate.ADYEN.expiration).
                 cvv("737").
                 done().
             threeDSecurePassThru().
@@ -1838,7 +1840,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleWithFraudCardIsDeclined() {
-        createAdvancedFraudMerchantGateway();
+        createAdvancedFraudKountMerchantGateway();
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
@@ -1856,7 +1858,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleWithRiskThresholdCardIsDeclined() {
-        createAdvancedFraudMerchantGateway();
+        createAdvancedFraudKountMerchantGateway();
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
@@ -2853,7 +2855,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleWithAdvancedFraudCheckingSkipped() {
-        createAdvancedFraudMerchantGateway();
+        createAdvancedFraudKountMerchantGateway();
         TransactionRequest request = new TransactionRequest().
                 amount(TransactionAmount.AUTHORIZE.amount).
                 creditCard().
@@ -5383,7 +5385,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             merchantAccountId(ADYEN_MERCHANT_ACCOUNT_ID).
             creditCard().
                 number(CreditCardNumber.ELO.number).
-                expirationDate("10/2020").
+                expirationDate(ExpirationDate.ADYEN.expiration).
                 cvv("737").
                 done();
 

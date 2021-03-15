@@ -39,14 +39,12 @@ public class SandboxValues {
         public static final String CHARGEBACK = "4023898493988028";
     }
 
-    public enum PaymentMethodNonce {
-        APPLE_PAY_VISA("fake-apple-pay-visa-nonce"),
-        APPLE_PAY_AMEX("fake-apple-pay-amex-nonce"),
-        APPLE_PAY_MASTERCARD("fake-apple-pay-mastercard-nonce");
-        public String nonce;
+    public enum ExpirationDate {
+        ADYEN("03/2030");
+        public String expiration;
 
-        private PaymentMethodNonce(String nonce) {
-            this.nonce = nonce;
+        private ExpirationDate(String expiration) {
+            this.expiration = expiration;
         }
     }
 
@@ -56,6 +54,17 @@ public class SandboxValues {
 
         private FailsVerification(String number) {
             this.number = number;
+        }
+    }
+
+    public enum PaymentMethodNonce {
+        APPLE_PAY_VISA("fake-apple-pay-visa-nonce"),
+        APPLE_PAY_AMEX("fake-apple-pay-amex-nonce"),
+        APPLE_PAY_MASTERCARD("fake-apple-pay-mastercard-nonce");
+        public String nonce;
+
+        private PaymentMethodNonce(String nonce) {
+            this.nonce = nonce;
         }
     }
 

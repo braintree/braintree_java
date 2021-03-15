@@ -3,6 +3,7 @@ package com.braintreegateway;
 import com.braintreegateway.util.NodeWrapper;
 import java.util.Map;
 
+// NEXT_MAJOR_VERSION rename this to ThreeDSecureAuthenticationInfo
 public class ThreeDSecureAuthenticateInfo {
 
     private String transStatus;

@@ -39,12 +39,21 @@ public class IntegrationTest {
         );
     }
 
-    public void createAdvancedFraudMerchantGateway() {
+    public void createAdvancedFraudKountMerchantGateway() {
         this.gateway = new BraintreeGateway(
             Environment.DEVELOPMENT,
             "advanced_fraud_integration_merchant_id",
             "advanced_fraud_integration_public_key",
             "advanced_fraud_integration_private_key"
+        );
+    }
+
+    public void createFraudProtectionEnterpriseMerchantGateway() {
+        this.gateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "fraud_protection_enterprise_integration_merchant_id",
+            "fraud_protection_enterprise_integration_public_key",
+            "fraud_protection_enterprise_integration_private_key"
         );
     }
 
