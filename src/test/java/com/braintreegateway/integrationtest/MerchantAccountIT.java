@@ -95,7 +95,6 @@ public class MerchantAccountIT extends IntegrationTest {
         String merchantAccountId = ma.getId();
 
         MerchantAccount found_ma = gateway.merchantAccount().find(merchantAccountId);
-        assertEquals("found account status should be active", MerchantAccount.Status.ACTIVE, found_ma.getStatus());
         assertEquals("found account individual first name should match original", "Job", found_ma.getIndividualDetails().getFirstName());
         assertEquals("found account individual last name should match original", "Leoggs", found_ma.getIndividualDetails().getLastName());
     }
@@ -111,11 +110,9 @@ public class MerchantAccountIT extends IntegrationTest {
 
     @Test
     public void updateUpdatesAllFields() {
-        Result<MerchantAccount> result = gateway.merchantAccount().create(updateRequest());
-        assertTrue("merchant account creation should succeed", result.isSuccess());
         MerchantAccountRequest request = creationRequest().
             masterMerchantAccountId(null);
-        Result<MerchantAccount> updateResult = gateway.merchantAccount().update(result.getTarget().getId(), request);
+        Result<MerchantAccount> updateResult = gateway.merchantAccount().update("sandbox_sub_merchant_account", request);
         assertTrue("merchant account update should succeed", updateResult.isSuccess());
         MerchantAccount merchantAccount = updateResult.getTarget();
         assertEquals("Job", merchantAccount.getIndividualDetails().getFirstName());
