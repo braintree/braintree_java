@@ -8,6 +8,7 @@ public interface MerchantAccountTestConstants {
     public static final String THREE_D_SECURE_MERCHANT_ACCOUNT_ID = "three_d_secure_merchant_account";
     public static final String INDIA_THREE_D_SECURE_MERCHANT_ACCOUNT_ID = "india_three_d_secure_merchant_account";
     public static final String FAKE_AMEX_DIRECT_MERCHANT_ACCOUNT_ID = "fake_amex_direct_usd";
+    public static final String FAKE_FIRST_DATA_MERCHANT_ACCOUNT_ID = "fake_first_data_merchant_account";
     public static final String FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID = "fake_first_data_venmo_account";
     public static final String US_BANK_MERCHANT_ACCOUNT = "us_bank_merchant_account";
     public static final String ANOTHER_US_BANK_MERCHANT_ACCOUNT = "another_us_bank_merchant_account";

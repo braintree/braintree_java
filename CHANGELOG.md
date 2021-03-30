@@ -1,3 +1,6 @@
+## Unreleased
+* Add `Transaction.adjustAuthorization` method to support for multiple authorizations for a single transaction
+
 ## 3.7.0
 * Add `decision_reasons` and `transaction_risk_score` to `RiskData`
 

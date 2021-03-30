@@ -32,6 +32,28 @@ public class TransactionGateway {
         this.configuration = configuration;
     }
 
+    /**
+     * Submits the transaction with the given id to be adjusted for the given amount which must be less than or equal to the authorization amount.
+     * @param id of the transaction to to be adjusted.
+     * @param amount to be adjusted.
+     * @return {@link Result}.
+     */
+    public Result<Transaction> adjustAuthorization(String id, BigDecimal amount) {
+        TransactionRequest request = new TransactionRequest().amount(amount);
+        return adjustAuthorization(id, request);
+    }
+
+    /**
+     * Submits the transaction with the given id to be adjusted for the given amount which must be less than or equal to the authorization amount.
+     * @param id of the transaction to to be adjusted.
+     * @param request is the TransactionRequest object with amount details.
+     * @return {@link Result}.
+     */
+    public Result<Transaction> adjustAuthorization(String id, TransactionRequest request) {
+        NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/adjust_authorization", request);
+        return new Result<Transaction>(response, Transaction.class);
+    }
+
     public Result<Transaction> cloneTransaction(String id, TransactionCloneRequest request) {
         NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/clone", request);
         return new Result<Transaction>(response, Transaction.class);
@@ -228,5 +250,4 @@ public class TransactionGateway {
         NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/submit_for_partial_settlement", request);
         return new Result<Transaction>(response, Transaction.class);
     }
-
 }
