@@ -6288,6 +6288,28 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void refundTransactionWithMerchantAccountId() {
+        TransactionRequest request = new TransactionRequest().
+        amount(TransactionAmount.AUTHORIZE.amount).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done().
+        options().
+            submitForSettlement(true).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+
+        TransactionRefundRequest refundRequest = new TransactionRefundRequest().
+            merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID);
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), refundRequest);
+        assertTrue(result.isSuccess());
+        assertEquals(NON_DEFAULT_MERCHANT_ACCOUNT_ID, result.getTarget().getMerchantAccountId());
+    }
+
+    @Test
     public void refundTransactionWithHardDecline() {
         TransactionRequest request = new TransactionRequest().
         amount(new BigDecimal(9000.00)).
