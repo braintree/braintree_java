@@ -1,4 +1,5 @@
 ## Unreleased
+* Add `storeId` and `storeIds` to `TransactionSearchRequest`
 * Add `merchantAccountId` to `TransactionRefundRequest`
 * Add `Transaction.adjustAuthorization` method to support for multiple authorizations for a single transaction
 

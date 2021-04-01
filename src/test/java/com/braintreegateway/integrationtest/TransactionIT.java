@@ -6191,6 +6191,39 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void searchOnStoreIds() {
+        String transactionId = "contact_visa_transaction";
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transactionId).
+            storeIds().in("store-id");
+
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transactionId).
+            storeIds().in("invalid-store-id");
+
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    @Test
+    public void searchOnStoreId() {
+        String transactionId = "contact_visa_transaction";
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transactionId).
+            storeId().is("store-id");
+
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transactionId).
+            storeId().is("invalid-store-id");
+
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+    @Test
     public void searchOnPayPalFields() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
         TransactionRequest request = new TransactionRequest().
