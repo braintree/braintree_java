@@ -713,4 +713,17 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertEquals("ee257d98-de40-47e8-96b3-a6954ea7a9a4", payment.getPaymentMethodNonce());
         assertNotNull(payment.getTransaction());
     }
+
+    @Test
+    public void createsLocalPaymentReversed() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.LOCAL_PAYMENT_REVERSED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.LOCAL_PAYMENT_REVERSED, notification.getKind());
+
+        LocalPaymentReversed payment = notification.getLocalPaymentReversed();
+
+        assertEquals("a-payment-id", payment.getPaymentId());
+    }
 }
