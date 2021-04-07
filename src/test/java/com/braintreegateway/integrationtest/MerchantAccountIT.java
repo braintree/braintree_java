@@ -26,7 +26,7 @@ public class MerchantAccountIT extends IntegrationTest {
 
     @Test
     public void createWillUseIdIfPassed() {
-        int randomNumber = new Random().nextInt() % 10000;
+        int randomNumber = (new Random().nextInt() & Integer.MAX_VALUE) % 10000;
         String subMerchantAccountId = String.format("sub_merchant_account_id_%d", randomNumber);
         MerchantAccountRequest request = creationRequest().id(subMerchantAccountId);
         Result<MerchantAccount> result = gateway.merchantAccount().create(request);
@@ -538,4 +538,3 @@ public class MerchantAccountIT extends IntegrationTest {
             masterMerchantAccountId("sandbox_master_merchant_account");
     }
 }
-
