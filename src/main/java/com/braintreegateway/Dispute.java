@@ -42,6 +42,12 @@ public class Dispute {
         UNRECOGNIZED;
     }
 
+    public enum ChargebackProtectionLevel {
+        EFFORTLESS,
+        STANDARD,
+        NOT_PROTECTED;
+    }
+
     private final Calendar createdAt;
     private final Calendar receivedDate;
     private final Calendar replyByDate;
