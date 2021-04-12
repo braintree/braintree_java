@@ -1,5 +1,5 @@
-## Unreleased
-* Add support for `LocalPaymentReversed` webhook notifications.
+## 3.8.0
+* Add support for `LocalPaymentReversed` webhook notifications
 * Add `storeId` and `storeIds` to `TransactionSearchRequest`
 * Add `merchantAccountId` to `TransactionRefundRequest`
 * Add `Transaction.adjustAuthorization` method to support for multiple authorizations for a single transaction
