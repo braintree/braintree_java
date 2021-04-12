@@ -6,13 +6,28 @@ import java.util.Calendar;
 
 public class WebhookNotification {
     public enum Kind {
+        ACCOUNT_UPDATER_DAILY_REPORT("account_updater_daily_report"),
         CHECK("check"),
+        CONNECTED_MERCHANT_STATUS_TRANSITIONED("connected_merchant_status_transitioned"),
+        CONNECTED_MERCHANT_PAYPAL_STATUS_CHANGED("connected_merchant_paypal_status_changed"),
+        DISBURSEMENT("disbursement"),
+        DISBURSEMENT_EXCEPTION("disbursement_exception"),
+        DISPUTE_ACCEPTED("dispute_accepted"),
+        DISPUTE_DISPUTED("dispute_disputed"),
+        DISPUTE_EXPIRED("dispute_expired"),
+        DISPUTE_LOST("dispute_lost"),
+        DISPUTE_OPENED("dispute_opened"),
+        DISPUTE_WON("dispute_won"),
+        GRANTED_PAYMENT_METHOD_REVOKED("granted_payment_method_revoked"),
+        GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD("grantor_updated_granted_payment_method"),
+        LOCAL_PAYMENT_COMPLETED("local_payment_completed"),
+        LOCAL_PAYMENT_REVERSED("local_payment_reversed"),
+        OAUTH_ACCESS_REVOKED("oauth_access_revoked"),
         PARTNER_MERCHANT_DISCONNECTED("partner_merchant_disconnected"),
         PARTNER_MERCHANT_CONNECTED("partner_merchant_connected"),
         PARTNER_MERCHANT_DECLINED("partner_merchant_declined"),
-        OAUTH_ACCESS_REVOKED("oauth_access_revoked"),
-        CONNECTED_MERCHANT_STATUS_TRANSITIONED("connected_merchant_status_transitioned"),
-        CONNECTED_MERCHANT_PAYPAL_STATUS_CHANGED("connected_merchant_paypal_status_changed"),
+        PAYMENT_METHOD_REVOKED_BY_CUSTOMER("payment_method_revoked_by_customer"),
+        RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD("recipient_updated_granted_payment_method"),
         SUB_MERCHANT_ACCOUNT_APPROVED("sub_merchant_account_approved"),
         SUB_MERCHANT_ACCOUNT_DECLINED("sub_merchant_account_declined"),
         SUBSCRIPTION_CANCELED("subscription_canceled"),
@@ -25,20 +40,6 @@ public class WebhookNotification {
         TRANSACTION_DISBURSED("transaction_disbursed"),
         TRANSACTION_SETTLED("transaction_settled"),
         TRANSACTION_SETTLEMENT_DECLINED("transaction_settlement_declined"),
-        DISBURSEMENT_EXCEPTION("disbursement_exception"),
-        DISBURSEMENT("disbursement"),
-        DISPUTE_OPENED("dispute_opened"),
-        DISPUTE_LOST("dispute_lost"),
-        DISPUTE_WON("dispute_won"),
-        DISPUTE_ACCEPTED("dispute_accepted"),
-        DISPUTE_DISPUTED("dispute_disputed"),
-        DISPUTE_EXPIRED("dispute_expired"),
-        ACCOUNT_UPDATER_DAILY_REPORT("account_updater_daily_report"),
-        GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD("grantor_updated_granted_payment_method"),
-        RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD("recipient_updated_granted_payment_method"),
-        GRANTED_PAYMENT_METHOD_REVOKED("granted_payment_method_revoked"),
-        PAYMENT_METHOD_REVOKED_BY_CUSTOMER("payment_method_revoked_by_customer"),
-        LOCAL_PAYMENT_COMPLETED("local_payment_completed"),
         UNRECOGNIZED("unrecognized");
 
         private final String name;
@@ -53,23 +54,25 @@ public class WebhookNotification {
         }
     }
 
-    private ValidationErrors errors;
-    private MerchantAccount merchantAccount;
-    private Subscription subscription;
-    private Transaction transaction;
+
+    private AccountUpdaterDailyReport accountUpdaterDailyReport;
+    private ConnectedMerchantPayPalStatusChanged connectedMerchantPayPalStatusChanged;
+    private ConnectedMerchantStatusTransitioned connectedMerchantStatusTransitioned;
     private Disbursement disbursement;
     private Dispute dispute;
-    private Kind kind;
-    private Calendar timestamp;
-    private PartnerMerchant partnerMerchant;
-    private OAuthAccessRevocation oauthAccessRevocation;
-    private AccountUpdaterDailyReport accountUpdaterDailyReport;
-    private ConnectedMerchantStatusTransitioned connectedMerchantStatusTransitioned;
-    private ConnectedMerchantPayPalStatusChanged connectedMerchantPayPalStatusChanged;
+    private ValidationErrors errors;
     private GrantedPaymentInstrumentUpdate grantedPaymentInstrumentUpdate;
-    private RevokedPaymentMethodMetadata revokedPaymentMethodMetadata;
+    private Kind kind;
     private LocalPaymentCompleted localPaymentCompleted;
+    private LocalPaymentReversed localPaymentReversed;
+    private MerchantAccount merchantAccount;
+    private OAuthAccessRevocation oauthAccessRevocation;
+    private PartnerMerchant partnerMerchant;
+    private RevokedPaymentMethodMetadata revokedPaymentMethodMetadata;
     private String sourceMerchantId;
+    private Subscription subscription;
+    private Calendar timestamp;
+    private Transaction transaction;
 
     public WebhookNotification(NodeWrapper node) {
         this.kind = EnumUtils.findByName(Kind.class, node.findString("kind"), Kind.UNRECOGNIZED);
@@ -143,8 +146,13 @@ public class WebhookNotification {
             this.revokedPaymentMethodMetadata = new RevokedPaymentMethodMetadata(wrapperNode);
         }
 
+        NodeWrapper localPaymentReverseNode = wrapperNode.findFirst("local-payment-reversed");
+        if (localPaymentReverseNode != null && kind == Kind.LOCAL_PAYMENT_REVERSED) {
+            this.localPaymentReversed = new LocalPaymentReversed(localPaymentReverseNode);
+        }
+
         NodeWrapper localPaymentNode = wrapperNode.findFirst("local-payment");
-        if (localPaymentNode != null) {
+        if (localPaymentNode != null && kind == Kind.LOCAL_PAYMENT_COMPLETED) {
             this.localPaymentCompleted = new LocalPaymentCompleted(localPaymentNode);
         }
 
@@ -219,5 +227,9 @@ public class WebhookNotification {
 
     public LocalPaymentCompleted getLocalPaymentCompleted() {
         return this.localPaymentCompleted;
+    }
+
+    public LocalPaymentReversed getLocalPaymentReversed() {
+        return this.localPaymentReversed;
     }
 }

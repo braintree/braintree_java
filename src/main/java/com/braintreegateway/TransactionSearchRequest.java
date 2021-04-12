@@ -257,6 +257,14 @@ public class TransactionSearchRequest extends SearchRequest {
         return new TextNode<TransactionSearchRequest>(fieldName, this);
     }
 
+    public TextNode<TransactionSearchRequest> storeId() {
+        return textNode("store_id");
+    }
+
+    public MultipleValueNode<TransactionSearchRequest, String> storeIds() {
+        return multiTypeNode("store_ids");
+    }
+
     private <T> MultipleValueNode<TransactionSearchRequest, T> multiTypeNode(String type) {
         return new MultipleValueNode<TransactionSearchRequest, T>(type, this);
     }

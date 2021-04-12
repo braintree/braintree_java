@@ -449,7 +449,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         Transaction transaction = result.getTarget();
 
         RiskData riskData = transaction.getRiskData();
-        assertEquals("Approve", riskData.getDecision());
         assertFalse(riskData.getDeviceDataCaptured());
         assertNotNull(riskData.getId());
         assertNotNull(riskData.getFraudServiceProvider());
@@ -6191,6 +6190,39 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void searchOnStoreIds() {
+        String transactionId = "contact_visa_transaction";
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transactionId).
+            storeIds().in("store-id");
+
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transactionId).
+            storeIds().in("invalid-store-id");
+
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    @Test
+    public void searchOnStoreId() {
+        String transactionId = "contact_visa_transaction";
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transactionId).
+            storeId().is("store-id");
+
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+
+        searchRequest = new TransactionSearchRequest().
+            id().is(transactionId).
+            storeId().is("invalid-store-id");
+
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+    @Test
     public void searchOnPayPalFields() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
         TransactionRequest request = new TransactionRequest().
@@ -6285,6 +6317,28 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         assertEquals("12345678", result.getTarget().getOrderId());
         assertEquals(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal("2")), result.getTarget().getAmount());
+    }
+
+    @Test
+    public void refundTransactionWithMerchantAccountId() {
+        TransactionRequest request = new TransactionRequest().
+        amount(TransactionAmount.AUTHORIZE.amount).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done().
+        options().
+            submitForSettlement(true).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+
+        TransactionRefundRequest refundRequest = new TransactionRefundRequest().
+            merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID);
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), refundRequest);
+        assertTrue(result.isSuccess());
+        assertEquals(NON_DEFAULT_MERCHANT_ACCOUNT_ID, result.getTarget().getMerchantAccountId());
     }
 
     @Test
@@ -7812,5 +7866,198 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
         assertEquals(ScaExemption.LOW_VALUE, transaction.getScaExemptionRequested());
+    }
+
+    @Test
+    public void adjustAuthorizationSuccessWithTransactionRequest() {
+        BigDecimal initial_amount = new BigDecimal("75.50");
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID).
+            amount(initial_amount).
+            creditCard().
+                number("5105105105105100").
+                expirationDate("05/2012").
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        BigDecimal new_adjusted_amount = new BigDecimal("85.50");
+
+        TransactionRequest adjustAuthorizationRequest = new TransactionRequest().
+            amount(new_adjusted_amount);
+
+        Result<Transaction> result = gateway.transaction().adjustAuthorization(transaction.getId(), adjustAuthorizationRequest);
+        assertTrue(result.isSuccess());
+        Transaction result_transaction = result.getTarget();
+        assertEquals(new_adjusted_amount, result_transaction.getAmount());
+    }
+
+    @Test
+    public void adjustAuthorizationSuccess() {
+        BigDecimal initial_amount = new BigDecimal("75.50");
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID).
+            amount(initial_amount).
+            creditCard().
+                number("5105105105105100").
+                expirationDate("05/2012").
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        BigDecimal new_adjusted_amount = new BigDecimal("85.50");
+        Result<Transaction> result = gateway.transaction().adjustAuthorization(transaction.getId(), new_adjusted_amount);
+        assertTrue(result.isSuccess());
+        Transaction result_transaction = result.getTarget();
+        assertEquals(new_adjusted_amount, result_transaction.getAmount());
+    }
+
+    @Test
+    public void adjustAuthorizationOnNonMultiAuthAdjustmentProcessor() {
+        BigDecimal initial_amount = new BigDecimal("75.50");
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(DEFAULT_MERCHANT_ACCOUNT_ID).
+            amount(initial_amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("06/2009").
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        BigDecimal new_adjusted_amount = new BigDecimal("85.50");
+        Result<Transaction> result = gateway.transaction().adjustAuthorization(transaction.getId(), new_adjusted_amount);
+        assertFalse(result.isSuccess());
+        Transaction result_transaction = result.getTransaction();
+        assertEquals(initial_amount, result_transaction.getAmount());
+        assertEquals(ValidationErrorCode.PROCESSOR_DOES_NOT_SUPPORT_AUTH_ADJUSTMENT,
+                     result.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
+
+    @Test
+    public void adjustAuthorizationOnAmountSubmittedIsZero() {
+        BigDecimal initial_amount = new BigDecimal("75.50");
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID).
+            amount(initial_amount).
+            creditCard().
+                number("5105105105105100").
+                expirationDate("05/2012").
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        BigDecimal new_adjusted_amount = new BigDecimal("0.0");
+        Result<Transaction> result = gateway.transaction().adjustAuthorization(transaction.getId(), new_adjusted_amount);
+        assertFalse(result.isSuccess());
+        Transaction result_transaction = result.getTransaction();
+        assertEquals(initial_amount, result_transaction.getAmount());
+        assertEquals(ValidationErrorCode.ADJUSTMENT_AMOUNT_MUST_BE_GREATER_THAN_ZERO,
+                     result.getErrors().forObject("authorization_adjustment").onField("amount").get(0).getCode());
+    }
+
+    @Test
+    public void adjustAuthorizationOnAmountSubmittedIsSameAsAuthorized() {
+        BigDecimal initial_amount = new BigDecimal("75.50");
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID).
+            amount(initial_amount).
+            creditCard().
+                number("5105105105105100").
+                expirationDate("05/2012").
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        BigDecimal new_adjusted_amount = new BigDecimal("75.50");
+        Result<Transaction> result = gateway.transaction().adjustAuthorization(transaction.getId(), new_adjusted_amount);
+        assertFalse(result.isSuccess());
+        Transaction result_transaction = result.getTransaction();
+        assertEquals(initial_amount, result_transaction.getAmount());
+        assertEquals(ValidationErrorCode.NO_NET_AMOUNT_TO_PERFORM_AUTH_ADJUSTMENT,
+                     result.getErrors().forObject("authorization_adjustment").onField("base").get(0).getCode());
+    }
+
+    @Test
+    public void adjustAuthorizationOnUnAuthorizedTransaction() {
+        BigDecimal initial_amount = new BigDecimal("75.50");
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID).
+            amount(initial_amount).
+            creditCard().
+                number("5105105105105100").
+                expirationDate("05/2012").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        BigDecimal new_adjusted_amount = new BigDecimal("85.50");
+        Result<Transaction> result = gateway.transaction().adjustAuthorization(transaction.getId(), new_adjusted_amount);
+        assertFalse(result.isSuccess());
+        Transaction result_transaction = result.getTransaction();
+        assertEquals(initial_amount, result_transaction.getAmount());
+        assertEquals(ValidationErrorCode.TRANSACTION_MUST_BE_IN_STATE_AUTHORIZED,
+                     result.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
+
+    @Test
+    public void adjustAuthorizationOnTransactionTypeFinalOrUndefined() {
+        BigDecimal initial_amount = new BigDecimal("75.50");
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID).
+            amount(initial_amount).
+            transactionSource("recurring_first").
+            creditCard().
+                number("5105105105105100").
+                expirationDate("05/2012").
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        BigDecimal new_adjusted_amount = new BigDecimal("85.50");
+        Result<Transaction> result = gateway.transaction().adjustAuthorization(transaction.getId(), new_adjusted_amount);
+        assertFalse(result.isSuccess());
+        Transaction result_transaction = result.getTransaction();
+        assertEquals(initial_amount, result_transaction.getAmount());
+        assertEquals(ValidationErrorCode.TRANSACTION_IS_NOT_ELIGIBLE_FOR_ADJUSTMENT,
+                     result.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
+
+    @Test
+    public void adjustAuthorizationOnProcessorNotSupportingIncrementalAuth() {
+        BigDecimal initial_amount = new BigDecimal("75.50");
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_FIRST_DATA_MERCHANT_ACCOUNT_ID).
+            amount(initial_amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2012").
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        BigDecimal new_adjusted_amount = new BigDecimal("85.50");
+        Result<Transaction> result = gateway.transaction().adjustAuthorization(transaction.getId(), new_adjusted_amount);
+        assertFalse(result.isSuccess());
+        Transaction result_transaction = result.getTransaction();
+        assertEquals(initial_amount, result_transaction.getAmount());
+        assertEquals(ValidationErrorCode.PROCESSOR_DOES_NOT_SUPPORT_INCREMENTAL_AUTH,
+                     result.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
+
+    @Test
+    public void adjustAuthorizationOnProcessorNotSupportingAuthReversal() {
+        BigDecimal initial_amount = new BigDecimal("75.50");
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(FAKE_FIRST_DATA_MERCHANT_ACCOUNT_ID).
+            amount(initial_amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2012").
+                done();
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        BigDecimal new_adjusted_amount = new BigDecimal("65.50");
+        Result<Transaction> result = gateway.transaction().adjustAuthorization(transaction.getId(), new_adjusted_amount);
+        assertFalse(result.isSuccess());
+        Transaction result_transaction = result.getTransaction();
+        assertEquals(initial_amount, result_transaction.getAmount());
+        assertEquals(ValidationErrorCode.PROCESSOR_DOES_NOT_SUPPORT_PARTIAL_AUTH_REVERSAL,
+                     result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 }

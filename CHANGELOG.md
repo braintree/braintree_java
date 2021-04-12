@@ -1,3 +1,9 @@
+## 3.8.0
+* Add support for `LocalPaymentReversed` webhook notifications
+* Add `storeId` and `storeIds` to `TransactionSearchRequest`
+* Add `merchantAccountId` to `TransactionRefundRequest`
+* Add `Transaction.adjustAuthorization` method to support for multiple authorizations for a single transaction
+
 ## 3.7.0
 * Add `decision_reasons` and `transaction_risk_score` to `RiskData`
 
