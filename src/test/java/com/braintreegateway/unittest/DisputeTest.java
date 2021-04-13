@@ -23,6 +23,7 @@ public class DisputeTest {
         "<amount-disputed>100.00</amount-disputed>\n" +
         "<amount-won>95.00</amount-won>\n " +
         "<case-number>CASE-12345</case-number>\n " +
+        "<chargeback-protection-level>effortless</chargeback-protection-level>\n " +
         "<created-at type=\"datetime\">2017-06-16T20:44:41Z</created-at>\n " +
         "<currency-iso-code>USD</currency-iso-code>\n " +
         "<processor-comments>Forwarded comments</processor-comments>\n" +
@@ -226,6 +227,7 @@ public class DisputeTest {
         assertEquals(dispute.getStatusHistory().get(0).getTimestamp().get(Calendar.HOUR), 10);
         assertEquals(dispute.getStatusHistory().get(0).getTimestamp().get(Calendar.MINUTE), 50);
         assertEquals(dispute.getStatusHistory().get(0).getTimestamp().get(Calendar.SECOND), 39);
+        assertEquals(dispute.getChargebackProtectionLevel(), Dispute.ChargebackProtectionLevel.EFFORTLESS);
     }
 
     @Test
