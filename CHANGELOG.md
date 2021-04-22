@@ -1,4 +1,5 @@
 ## Unreleased
+* Add `chargeback_protection_level` into dispute search 
 * Add support for `LocalPaymentReversed` webhook notifications.
 * Add `storeId` and `storeIds` to `TransactionSearchRequest`
 * Add `merchantAccountId` to `TransactionRefundRequest`
