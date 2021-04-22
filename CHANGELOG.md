@@ -1,3 +1,6 @@
+## unreleased
+* Add `taxIdentifier` to `CustomerRequest`
+
 ## 3.8.0
 * Add support for `LocalPaymentReversed` webhook notifications
 * Add `storeId` and `storeIds` to `TransactionSearchRequest`

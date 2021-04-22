@@ -1541,6 +1541,46 @@ public class CustomerIT extends IntegrationTest {
                 result.getErrors().getAllDeepValidationErrors().get(0).getCode().code);
     }
 
+    @Test
+    public void createWithTaxIdentifiers() {
+        CustomerRequest request = new CustomerRequest().
+            taxIdentifier().
+                countryCode("US").
+                identifier("987654321").
+                done().
+            taxIdentifier().
+                countryCode("CL").
+                identifier("123456789").
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void updateWtihTaxIdentifiers() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Mark").
+            lastName("Jones");
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            taxIdentifier().
+                countryCode("US").
+                identifier("987654321").
+                done().
+            taxIdentifier().
+                countryCode("CL").
+                identifier("123456789").
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+        assertTrue(updateResult.isSuccess());
+    }
 
     @Test
     public void delete() {

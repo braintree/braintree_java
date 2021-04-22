@@ -30,6 +30,10 @@ public class CustomerRequestTest {
       .customField("some-custom-field", "some-custom-value")
       .creditCard().number("12345").done()
       .riskData().customerIP("6789").done()
+      .taxIdentifier()
+        .countryCode("US")
+        .identifier("123")
+        .done()
       .options().paypal().amount(BigDecimal.valueOf(10)).done().done();
 
     String expectedXML =
@@ -59,6 +63,12 @@ public class CustomerRequestTest {
       + "  <riskData>\n"
       + "    <customerIP>6789</customerIP>\n"
       + "  </riskData>\n"
+      + "  <taxIdentifiers type=\"array\">\n"
+      + "    <taxIdentifier>\n"
+      + "      <countryCode>US</countryCode>\n"
+      + "      <identifier>123</identifier>\n"
+      + "    </taxIdentifier>\n"
+      + "  </taxIdentifiers>\n"
       + "</customer>";
 
     XMLUnit.setIgnoreWhitespace(true);
