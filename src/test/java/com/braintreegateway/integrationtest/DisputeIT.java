@@ -560,6 +560,26 @@ public class DisputeIT extends IntegrationTest {
         assertTrue(disputes.size() >= 2);
 	}
 
+    @Test
+    public void searchWithChargebackProtectionLevelReturnsDispute() {
+        List<Dispute> disputes = new ArrayList<Dispute>();
+        DisputeSearchRequest request = new DisputeSearchRequest()
+                .chargebackProtectionLevel()
+                .in(Dispute.ChargebackProtectionLevel.EFFORTLESS);
+
+        PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
+                .search(request);
+
+        for (Dispute dispute : disputeCollection) {
+            disputes.add(dispute);
+        }
+
+        assertTrue(disputes.size() == 1);
+        assertEquals(disputes.get(0).getCaseNumber(), "CASE-CHARGEBACK-PROTECTED");
+        assertEquals(disputes.get(0).getReason(), Dispute.Reason.FRAUD);
+        assertEquals(disputes.get(0).getChargebackProtectionLevel(), Dispute.ChargebackProtectionLevel.EFFORTLESS);
+    }
+
 	@Test
     public void searchReceivedDateRangeReturnsDispute() throws ParseException{
         List<Dispute> disputes = new ArrayList<Dispute>();
