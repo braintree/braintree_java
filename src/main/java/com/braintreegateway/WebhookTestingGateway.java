@@ -76,7 +76,7 @@ public class WebhookTestingGateway {
             case ACCOUNT_UPDATER_DAILY_REPORT: return accountUpdaterDailyReportXml(id);
             case GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD: return grantedPaymentInstrumentUpdateXml();
             case RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD: return grantedPaymentInstrumentUpdateXml();
-            case GRANTED_PAYMENT_METHOD_REVOKE: return grantedPaymentMethodRevokeXml(id);
+            case GRANTED_PAYMENT_METHOD_REVOKED: return grantedPaymentMethodRevokedXml(id);
             case PAYMENT_METHOD_REVOKED_BY_CUSTOMER: return paymentMethodRevokedByCustomerXml(id);
             case LOCAL_PAYMENT_COMPLETED: return localPaymentCompletedXml();
             case LOCAL_PAYMENT_REVERSED: return localPaymentReversedXml();
@@ -480,7 +480,7 @@ public class WebhookTestingGateway {
                 );
     }
 
-    private String grantedPaymentMethodRevokeXml(String id) {
+    private String grantedPaymentMethodRevokedXml(String id) {
         return node("venmo-account",
                 node("created-at", TYPE_DATE_TIME, "2018-10-11T21:28:37Z"),
                 node("updated-at", TYPE_DATE_TIME, "2018-10-11T21:28:37Z"),
