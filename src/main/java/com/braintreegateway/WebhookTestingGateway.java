@@ -76,6 +76,7 @@ public class WebhookTestingGateway {
             case ACCOUNT_UPDATER_DAILY_REPORT: return accountUpdaterDailyReportXml(id);
             case GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD: return grantedPaymentInstrumentUpdateXml();
             case RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD: return grantedPaymentInstrumentUpdateXml();
+            case GRANTED_PAYMENT_METHOD_REVOKE: return grantedPaymentMethodRevokeXml(id);
             case PAYMENT_METHOD_REVOKED_BY_CUSTOMER: return paymentMethodRevokedByCustomerXml(id);
             case LOCAL_PAYMENT_COMPLETED: return localPaymentCompletedXml();
             case LOCAL_PAYMENT_REVERSED: return localPaymentReversedXml();
@@ -476,6 +477,21 @@ public class WebhookTestingGateway {
                     node("item", "expiration-month"),
                     node("item", "expiration-year")
                     )
+                );
+    }
+
+    private String grantedPaymentMethodRevokeXml(String id) {
+        return node("venmo-account",
+                node("created-at", TYPE_DATE_TIME, "2018-10-11T21:28:37Z"),
+                node("updated-at", TYPE_DATE_TIME, "2018-10-11T21:28:37Z"),
+                node("default", TYPE_BOOLEAN, "true"),
+                node("image-url", "https://assets.braintreegateway.com/payment_method_logo/venmo.png?environment=test"),
+                node("token", id),
+                node("source-description", "Venmo Account: venmojoe"),
+                node("username", "venmojoe"),
+                node("venmo-user-id", "456"),
+                node("customer-id", "venmo_customer_id"),
+                node("global-id", "cGF5bWVudG1ldGhvZF92ZW5tb2FjY291bnQ")
                 );
     }
 
