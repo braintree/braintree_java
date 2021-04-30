@@ -1,4 +1,5 @@
 ## unreleased
+* Add webhook sample for `GrantedPaymentMethodRevoked`
 * Add `taxIdentifier` to `CustomerRequest`
 
 ## 3.8.0
