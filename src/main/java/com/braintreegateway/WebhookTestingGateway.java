@@ -492,7 +492,7 @@ public class WebhookTestingGateway {
                 node("venmo-user-id", "456"),
                 node("customer-id", "venmo_customer_id"),
                 node("global-id", "cGF5bWVudG1ldGhvZF92ZW5tb2FjY291bnQ")
-                );
+        );
     }
 
     private String paymentMethodRevokedByCustomerXml(String id) {
