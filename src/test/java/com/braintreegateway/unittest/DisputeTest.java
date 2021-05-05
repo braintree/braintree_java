@@ -44,6 +44,13 @@ public class DisputeTest {
         "    <effective-date type=\"date\">2013-04-10</effective-date>\n " +
         "  </status-history>\n " +
         "</status-history>\n " +
+        "<paypal-messages type=\"array\">\n " +
+        "  <paypal-messages>\n " +
+        "    <message>message</message>\n " +
+        "    <sender>seller</sender>\n " +
+        "    <sent-at type=\"datetime\">2013-04-10T10:50:39Z</sent-at>\n " +
+        "  </paypal-messages>\n " +
+        "</paypal-messages>\n " +
         "<evidence type=\"array\">\n " +
         "  <evidence>\n" +
         "    <created-at type=\"datetime\">2013-04-11T10:50:39Z</created-at>\n " +
@@ -216,6 +223,11 @@ public class DisputeTest {
         assertEquals(dispute.getEvidence().get(1).getSentToProcessorAt().get(Calendar.MONTH)+1, 4);
         assertEquals(dispute.getEvidence().get(1).getSentToProcessorAt().get(Calendar.DAY_OF_MONTH), 11);
         assertNull(dispute.getEvidence().get(1).getUrl());
+        assertEquals(dispute.getPayPalMessages().get(0).getMessage(), "message");
+        assertEquals(dispute.getPayPalMessages().get(0).getSender(), "seller");
+        assertEquals(dispute.getPayPalMessages().get(0).getSentAt().get(Calendar.YEAR), 2013);
+        assertEquals(dispute.getPayPalMessages().get(0).getSentAt().get(Calendar.MONTH)+1, 4);
+        assertEquals(dispute.getPayPalMessages().get(0).getSentAt().get(Calendar.DAY_OF_MONTH), 10);
         assertEquals(dispute.getStatusHistory().get(0).getEffectiveDate().get(Calendar.YEAR), 2013);
         assertEquals(dispute.getStatusHistory().get(0).getEffectiveDate().get(Calendar.MONTH)+1, 4);
         assertEquals(dispute.getStatusHistory().get(0).getEffectiveDate().get(Calendar.DAY_OF_MONTH), 10);
@@ -245,6 +257,7 @@ public class DisputeTest {
         assertNull(dispute.getOpenedDate());
         assertNull(dispute.getWonDate());
         assertTrue(dispute.getEvidence().isEmpty());
+        assertTrue(dispute.getPayPalMessages().isEmpty());
         assertNull(dispute.getReplyByDate());
         assertTrue(dispute.getStatusHistory().isEmpty());
     }

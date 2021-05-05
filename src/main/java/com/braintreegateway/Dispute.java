@@ -49,6 +49,7 @@ public class Dispute {
     private final Calendar updatedAt;
     private final Calendar wonDate;
     private final List<DisputeEvidence> evidence;
+    private final List<DisputePayPalMessage> paypalMessages;
     private final List<DisputeStatusHistory> statusHistory;
     private final String caseNumber;
     private final String currencyIsoCode;
@@ -98,6 +99,11 @@ public class Dispute {
         evidence = new ArrayList<DisputeEvidence>();
         for (NodeWrapper evidenceNode : node.findAll("evidence/evidence")) {
             evidence.add(new DisputeEvidence(evidenceNode));
+        }
+
+        paypalMessages = new ArrayList<DisputePayPalMessage>();
+        for (NodeWrapper paypalMessageNode : node.findAll("paypal-messages/paypal-messages")) {
+            paypalMessages.add(new DisputePayPalMessage(paypalMessageNode));
         }
 
         statusHistory = new ArrayList<DisputeStatusHistory>();
@@ -196,6 +202,10 @@ public class Dispute {
 
     public List<DisputeEvidence> getEvidence() {
         return evidence;
+    }
+
+    public List<DisputePayPalMessage> getPayPalMessages() {
+        return paypalMessages;
     }
 
     public List<DisputeStatusHistory> getStatusHistory() {
