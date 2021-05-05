@@ -1,4 +1,4 @@
-## unreleased
+## 3.9.0
 * Add `getPaypalMessages` to `Dispute`
 * Add webhook sample for `GrantedPaymentMethodRevoked`
 * Add `taxIdentifier` to `CustomerRequest`
