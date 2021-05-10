@@ -269,4 +269,30 @@ public class ThreeDSecureLookupRequestTest {
         assertTrue(outputJSON.matches("^\\{.+\\}$"));
         assertTrue(outputJSON.matches("^.+\"challengeRequested\":true.+$"));
     }
+
+    @Test
+    public void serializesWithDataOnlyRequestedTrue() {
+        String clientData = "{\n" +
+                "  \"authorizationFingerprint\": \"auth-fingerprint\",\n" +
+                "  \"braintreeLibraryVersion\": \"braintree/web/3.44.0\",\n" +
+                "  \"dfReferenceId\": \"ABC-123\",\n" +
+                "  \"nonce\": \"FAKE-NONCE\",\n" +
+                "  \"clientMetadata\": {\n" +
+                "    \"cardinalDeviceDataCollectionTimeElapsed\": 40,\n" +
+                "    \"issuerDeviceDataCollectionResult\": true,\n" +
+                "    \"issuerDeviceDataCollectionTimeElapsed\": 413,\n" +
+                "    \"requestedThreeDSecureVersion\": \"2\",\n" +
+                "    \"sdkVersion\": \"web/3.42.0\"\n" +
+                "  }\n" +
+                "}";
+
+        ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
+        request.amount("10.00");
+        request.dataOnlyRequested(true);
+        request.clientData(clientData);
+
+        String outputJSON = request.toJSON();
+        assertTrue(outputJSON.matches("^\\{.+\\}$"));
+        assertTrue(outputJSON.matches("^.+\"dataOnlyRequested\":true.+$"));
+    }
 }
