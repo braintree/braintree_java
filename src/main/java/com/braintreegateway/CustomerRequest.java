@@ -1,6 +1,8 @@
 package com.braintreegateway;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,9 +28,11 @@ public class CustomerRequest extends Request {
     private RiskDataCustomerRequest riskDataCustomerRequest;
     private CustomerOptionsRequest optionsRequest;
     private TransactionRequest parent;
+    private List<TaxIdentifierRequest> taxIdentifierRequests;
 
     public CustomerRequest() {
         this.customFields = new HashMap<String, String>();
+        this.taxIdentifierRequests = new ArrayList<TaxIdentifierRequest>();
     }
 
     public CustomerRequest(TransactionRequest transactionRequest) {
@@ -138,6 +142,12 @@ public class CustomerRequest extends Request {
         return this;
     }
 
+    public TaxIdentifierRequest taxIdentifier() {
+        TaxIdentifierRequest taxIdentiferRequest = new TaxIdentifierRequest(this);
+        taxIdentifierRequests.add(taxIdentiferRequest);
+        return taxIdentiferRequest;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("customer").toXML();
@@ -174,6 +184,10 @@ public class CustomerRequest extends Request {
 
         if (customFields.size() > 0) {
             builder.addElement("customFields", customFields);
+        }
+
+        if (!taxIdentifierRequests.isEmpty()) {
+            builder.addElement("taxIdentifiers", taxIdentifierRequests);
         }
 
         return builder;
