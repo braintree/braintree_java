@@ -1,3 +1,6 @@
+## unreleased
+* Add `dataOnlyRequested` to `ThreeDSecureLookupRequest`
+
 ## 3.9.0
 * Add `getPaypalMessages` to `Dispute`
 * Add webhook sample for `GrantedPaymentMethodRevoked`
