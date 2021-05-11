@@ -1,6 +1,3 @@
-## unreleased
-* Add unit test for the sample webhook generated for the `GrantedPaymentMethodRevoked` kind
-
 ## 3.9.0
 * Add `getPaypalMessages` to `Dispute`
 * Add webhook sample for `GrantedPaymentMethodRevoked`
