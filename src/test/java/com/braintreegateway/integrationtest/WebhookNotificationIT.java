@@ -683,6 +683,21 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test
+    public void webhookTestingCreatesSampleNotificationForGrantedPaymentMethodRevoked() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.GRANTED_PAYMENT_METHOD_REVOKED, "granted_payment_method_revoked_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.GRANTED_PAYMENT_METHOD_REVOKED, notification.getKind());
+
+        RevokedPaymentMethodMetadata metadata = notification.getRevokedPaymentMethodMetadata();
+
+        assertEquals("granted_payment_method_revoked_id", metadata.getToken());
+        assertEquals("venmo_customer_id", metadata.getCustomerId());
+        assertTrue(metadata.getRevokedPaymentMethod() instanceof VenmoAccount);
+    }
+
+    @Test
     public void createsSampleNotificationForPaymentMethodRevokedByCustomer() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.PAYMENT_METHOD_REVOKED_BY_CUSTOMER, "my_payment_method_token");
 
