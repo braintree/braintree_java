@@ -102,6 +102,74 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
+    public void createIncludesRiskDataWhenSkipAdvancedFraudCheckingIsFalse() {
+        createFraudProtectionEnterpriseMerchantGateway();
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest request = new CreditCardRequest().
+            number("4111111111111111").
+            expirationMonth("12").
+            expirationYear("2020");
+
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, request, customer.getId(), false);
+
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce).
+            options().
+                verifyCard(true).
+                skipAdvancedFraudChecking(false).
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(paymentMethodRequest);
+
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget() instanceof CreditCard);
+        CreditCard card = (CreditCard) result.getTarget();
+
+        CreditCardVerification verification = card.getVerification();
+        assertNotNull(verification);
+
+        RiskData riskData = verification.getRiskData();
+        assertNotNull(riskData);
+    }
+
+    @Test
+    public void createDoesNotIncludeRiskDataWhenSkipAdvancedFraudCheckingIsTrue() {
+        createFraudProtectionEnterpriseMerchantGateway();
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest request = new CreditCardRequest().
+            number("4111111111111111").
+            expirationMonth("12").
+            expirationYear("2020");
+
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, request, customer.getId(), false);
+
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce).
+            options().
+                verifyCard(true).
+                skipAdvancedFraudChecking(true).
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(paymentMethodRequest);
+
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget() instanceof CreditCard);
+        CreditCard card = (CreditCard) result.getTarget();
+
+        CreditCardVerification verification = card.getVerification();
+        assertNotNull(verification);
+
+        RiskData riskData = verification.getRiskData();
+        assertNull(riskData);
+    }
+
+    @Test
     public void createPayPalAccountWithNonce() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
@@ -1130,6 +1198,74 @@ public class PaymentMethodIT extends IntegrationTest {
         assertEquals(
                 ValidationErrorCode.VERIFICATION_THREE_D_SECURE_PASS_THRU_ECI_FLAG_IS_REQUIRED,
                 result.getErrors().getAllDeepValidationErrors().get(0).getCode());
+    }
+
+    @Test
+    public void updateIncludesRiskDataWhenSkipAdvancedFraudCheckingIsFalse() {
+        createFraudProtectionEnterpriseMerchantGateway();
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest createRequest = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("4111111111111111").
+            expirationDate("05/12");
+
+        CreditCard originalCard = gateway.creditCard().create(createRequest).getTarget();
+
+        PaymentMethodRequest updateRequest = new PaymentMethodRequest().
+            expirationDate("06/23").
+            options().
+              verifyCard(true).
+              skipAdvancedFraudChecking(false).
+            done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().update(originalCard.getToken(), updateRequest);
+        assertTrue(result.isSuccess());
+
+        CreditCard card = (CreditCard) result.getTarget();
+
+        CreditCardVerification verification = card.getVerification();
+        assertNotNull(verification);
+
+        RiskData riskData = verification.getRiskData();
+        assertNotNull(riskData);
+    }
+
+    @Test
+    public void updateDoesNotIncludeRiskDataWhenSkipAdvancedFraudCheckingIsTrue() {
+        createFraudProtectionEnterpriseMerchantGateway();
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest createRequest = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("4111111111111111").
+            expirationDate("05/12");
+
+        CreditCard originalCard = gateway.creditCard().create(createRequest).getTarget();
+
+        PaymentMethodRequest updateRequest = new PaymentMethodRequest().
+            expirationDate("06/23").
+            options().
+              verifyCard(true).
+              skipAdvancedFraudChecking(false).
+            done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().update(originalCard.getToken(), updateRequest);
+        assertTrue(result.isSuccess());
+
+        CreditCard card = (CreditCard) result.getTarget();
+
+        CreditCardVerification verification = card.getVerification();
+        assertNotNull(verification);
+
+        RiskData riskData = verification.getRiskData();
+        assertNotNull(riskData);
     }
 
     @Test
