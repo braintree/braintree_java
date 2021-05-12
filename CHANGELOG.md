@@ -1,5 +1,6 @@
 ## unreleased
 * Add `dataOnlyRequested` to `ThreeDSecureLookupRequest`
+* Add `chargeback_protection_level` into dispute search 
 
 ## 3.9.0
 * Add `getPaypalMessages` to `Dispute`
