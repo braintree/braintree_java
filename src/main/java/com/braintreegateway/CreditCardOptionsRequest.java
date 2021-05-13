@@ -1,16 +1,17 @@
 package com.braintreegateway;
 
 public class CreditCardOptionsRequest extends Request {
-    private CreditCardRequest parent;
-    private String verificationMerchantAccountId;
-    private String verificationAccountType;
     private Boolean failOnDuplicatePaymentMethod;
-    private Boolean verifyCard;
-    private String verificationAmount;
     private Boolean makeDefault;
+    private Boolean skipAdvancedFraudChecking;
+    private Boolean verifyCard;
+    private CreditCardRequest parent;
     private String updateExistingToken;
     private String venmoSdkSession;
+    private String verificationAccountType; // NEXT_MAJOR_VERSION - This should be enum with [credit, debit]
+    private String verificationAmount;
     private String verificationCurrencyIsoCode;
+    private String verificationMerchantAccountId;
 
     public CreditCardOptionsRequest(CreditCardRequest parent) {
         this.parent = parent;
@@ -42,6 +43,11 @@ public class CreditCardOptionsRequest extends Request {
 
     public CreditCardOptionsRequest verifyCard(Boolean verifyCard) {
         this.verifyCard = verifyCard;
+        return this;
+    }
+
+    public CreditCardOptionsRequest skipAdvancedFraudChecking(Boolean skipAdvancedFraudChecking) {
+        this.skipAdvancedFraudChecking = skipAdvancedFraudChecking;
         return this;
     }
 
@@ -84,16 +90,17 @@ public class CreditCardOptionsRequest extends Request {
         RequestBuilder builder = new RequestBuilder(root);
 
         builder.addElement("failOnDuplicatePaymentMethod", failOnDuplicatePaymentMethod);
-        builder.addElement("verifyCard", verifyCard);
-        builder.addElement("verificationAmount", verificationAmount);
-        builder.addElement("verificationMerchantAccountId", verificationMerchantAccountId);
+        builder.addElement("skipAdvancedFraudChecking", skipAdvancedFraudChecking);
+        builder.addElement("updateExistingToken", updateExistingToken);
+        builder.addElement("venmoSdkSession", venmoSdkSession);
         builder.addElement("verificationAccountType", verificationAccountType);
+        builder.addElement("verificationAmount", verificationAmount);
+        builder.addElement("verificationCurrencyIsoCode", verificationCurrencyIsoCode);
+        builder.addElement("verificationMerchantAccountId", verificationMerchantAccountId);
+        builder.addElement("verifyCard", verifyCard);
         if (makeDefault != null && makeDefault.booleanValue()) {
             builder.addElement("makeDefault", makeDefault);
         }
-        builder.addElement("updateExistingToken", updateExistingToken);
-        builder.addElement("venmoSdkSession", venmoSdkSession);
-        builder.addElement("verificationCurrencyIsoCode", verificationCurrencyIsoCode);
 
         return builder;
     }
