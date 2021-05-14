@@ -4070,7 +4070,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleNonVisaMastercardDiscoverAmexDoesNotReceiveNetworkTransactionIdentifier() {
+    public void saleNonVisaMastercardDiscoverAmexDoesReceiveNetworkTransactionIdentifier() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
             creditCard().
@@ -4080,7 +4080,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().sale(request);
         Transaction transaction = result.getTarget();
-        assertNull(transaction.getNetworkTransactionId());
+        assertTrue(transaction.getNetworkTransactionId().length() > 0);
     }
 
     @Test
@@ -4170,7 +4170,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
-        assertNull(transaction.getNetworkTransactionId());
+        assertTrue(transaction.getNetworkTransactionId().length() > 0);
     }
 
     @Test
