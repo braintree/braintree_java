@@ -40,6 +40,7 @@ import com.braintreegateway.PaymentMethod;
 import com.braintreegateway.PaymentMethodGrantRequest;
 import com.braintreegateway.PaymentMethodNonce;
 import com.braintreegateway.PaymentMethodRequest;
+import com.braintreegateway.CreditCardRequest;
 import com.braintreegateway.ProcessorResponseType;
 import com.braintreegateway.ResourceCollection;
 import com.braintreegateway.Result;
@@ -4070,7 +4071,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleNonVisaMastercardDiscoverAmexDoesNotReceiveNetworkTransactionIdentifier() {
+    public void saleNonVisaMastercardDiscoverAmexDoesReceiveNetworkTransactionIdentifier() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
             creditCard().
@@ -4080,7 +4081,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().sale(request);
         Transaction transaction = result.getTarget();
-        assertNull(transaction.getNetworkTransactionId());
+        assertTrue(transaction.getNetworkTransactionId().length() > 0);
     }
 
     @Test
@@ -4170,7 +4171,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
-        assertNull(transaction.getNetworkTransactionId());
+        assertTrue(transaction.getNetworkTransactionId().length() > 0);
     }
 
     @Test
@@ -7850,6 +7851,34 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             assertEquals(new BigDecimal("-5.00"), refundedInstallments.get(i).getAdjustments().get(0).getAmount());
             assertEquals(Adjustment.KIND.REFUND, refundedInstallments.get(i).getAdjustments().get(0).getKind());
         }
+    }
+
+    @Test
+    public void successfullManualKeyEntrySaleTest() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().paymentReaderCardDetails().
+            encryptedCardData("8F34DFB312DC79C24FD5320622F3E11682D79E6B0C0FD881").
+            keySerialNumber("FFFFFF02000572A00005").
+            done().
+            done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void unsuccessfullManualKeyEntrySaleTest() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().paymentReaderCardDetails().
+            encryptedCardData("").
+            keySerialNumber("").
+            done().
+            done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_PAYMENT_INSTRUMENT_NOT_SUPPORTED_BY_MERCHANT_ACCOUNT,
+                     result.getErrors().forObject("transaction").onField("merchantAccountId").get(0).getCode());
     }
 
     @Test

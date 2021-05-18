@@ -1,5 +1,8 @@
 ## unreleased
 * Add `dataOnlyRequested` to `ThreeDSecureLookupRequest`
+* Add `paymentReaderCardDetails` to `TransactionCreditCardRequest`
+* Add `chargebackProtectionLevel` to `Dispute` and `DisputeSearchRequest`
+* Add `skipAdvancedFraudChecking` to `CreditCardOptionsRequest` and `PaymentMethodOptionsRequest`
 
 ## 3.9.0
 * Add `getPaypalMessages` to `Dispute`

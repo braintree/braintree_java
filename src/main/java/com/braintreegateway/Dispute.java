@@ -42,6 +42,12 @@ public class Dispute {
         UNRECOGNIZED;
     }
 
+    public enum ChargebackProtectionLevel {
+        EFFORTLESS,
+        STANDARD,
+        NOT_PROTECTED;
+    }
+
     private final Calendar createdAt;
     private final Calendar receivedDate;
     private final Calendar replyByDate;
@@ -64,6 +70,7 @@ public class Dispute {
     private final Reason reason;
     private final Status status;
     private final Kind kind;
+    private final ChargebackProtectionLevel chargebackProtectionLevel;
     private final BigDecimal amount;
     private final BigDecimal disputedAmount;
     private final BigDecimal wonAmount;
@@ -88,6 +95,7 @@ public class Dispute {
         reason = EnumUtils.findByName(Reason.class, node.findString("reason"), Reason.GENERAL);
         status = EnumUtils.findByName(Status.class, node.findString("status"), Status.UNRECOGNIZED);
         kind = EnumUtils.findByName(Kind.class, node.findString("kind"), Kind.UNRECOGNIZED);
+        chargebackProtectionLevel = EnumUtils.findByName(ChargebackProtectionLevel.class, node.findString("chargeback-protection-level"), ChargebackProtectionLevel.NOT_PROTECTED);
         amount = node.findBigDecimal("amount");
         disputedAmount = node.findBigDecimal("amount-disputed");
         wonAmount = node.findBigDecimal("amount-won");
@@ -186,6 +194,10 @@ public class Dispute {
 
     public Kind getKind() {
         return kind;
+    }
+
+    public ChargebackProtectionLevel getChargebackProtectionLevel() {
+        return chargebackProtectionLevel;
     }
 
     public BigDecimal getAmount() {
