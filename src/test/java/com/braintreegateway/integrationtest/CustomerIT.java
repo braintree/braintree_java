@@ -124,6 +124,64 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void createIncludesRiskDataWhenSkipAdvancedFraudCheckingIsFalse() {
+        createFraudProtectionEnterpriseMerchantGateway();
+        CustomerRequest request = new CustomerRequest().
+            creditCard().
+              cardholderName("John Doe").
+              cvv("123").
+              number("4111111111111111").
+              expirationDate("05/12").
+              options().
+                verifyCard(true).
+                skipAdvancedFraudChecking(false).
+                done().
+            done();
+
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        assertNotNull(customer);
+
+        CreditCardVerification verification = customer.getCreditCards().get(0).getVerification();
+        assertNotNull(verification);
+
+        RiskData riskData = verification.getRiskData();
+        assertNotNull(riskData);
+    }
+
+    @Test
+    public void createDoesNotIncludeRiskDataWhenSkipAdvancedFraudCheckingIsTrue() {
+        createFraudProtectionEnterpriseMerchantGateway();
+        CustomerRequest request = new CustomerRequest().
+            creditCard().
+              cardholderName("John Doe").
+              cvv("123").
+              number("4111111111111111").
+              expirationDate("05/12").
+              options().
+                verifyCard(true).
+                skipAdvancedFraudChecking(true).
+                done().
+            done();
+
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        assertNotNull(customer);
+
+        CreditCardVerification verification = customer.getCreditCards().get(0).getVerification();
+        assertNotNull(verification);
+
+        RiskData riskData = verification.getRiskData();
+        assertNull(riskData);
+    }
+
+    @Test
     public void createWithCustomFields() {
         CustomerRequest request = new CustomerRequest().
             customField("store_me", "custom value").
@@ -1223,6 +1281,66 @@ public class CustomerIT extends IntegrationTest {
         assertEquals(
                 ValidationErrorCode.VERIFICATION_THREE_D_SECURE_PASS_THRU_ECI_FLAG_IS_REQUIRED,
                 result.getErrors().getAllDeepValidationErrors().get(0).getCode());
+    }
+
+    @Test
+    public void updateIncludesRiskDataWhenSkipAdvancedFraudCheckingIsFalse() {
+        createFraudProtectionEnterpriseMerchantGateway();
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            creditCard().
+              cardholderName("John Doe").
+              cvv("123").
+              number("4111111111111111").
+              expirationDate("05/12").
+              options().
+                verifyCard(true).
+                skipAdvancedFraudChecking(false).
+                done().
+              done();
+
+        Result<Customer> result = gateway.customer().update(customer.getId(), updateRequest);
+        assertTrue(result.isSuccess());
+
+        Customer updatedCustomer = result.getTarget();
+        assertNotNull(updatedCustomer);
+
+        CreditCardVerification verification = updatedCustomer.getCreditCards().get(0).getVerification();
+        assertNotNull(verification);
+
+        RiskData riskData = verification.getRiskData();
+        assertNotNull(riskData);
+    }
+
+    @Test
+    public void updateDoesNotIncludeRiskDataWhenSkipAdvancedFraudCheckingIsTrue() {
+        createFraudProtectionEnterpriseMerchantGateway();
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            creditCard().
+              cardholderName("John Doe").
+              cvv("123").
+              number("4111111111111111").
+              expirationDate("05/12").
+              options().
+                verifyCard(true).
+                skipAdvancedFraudChecking(true).
+                done().
+              done();
+
+        Result<Customer> result = gateway.customer().update(customer.getId(), updateRequest);
+        assertTrue(result.isSuccess());
+
+        Customer updatedCustomer = result.getTarget();
+        assertNotNull(updatedCustomer);
+
+        CreditCardVerification verification = updatedCustomer.getCreditCards().get(0).getVerification();
+        assertNotNull(verification);
+
+        RiskData riskData = verification.getRiskData();
+        assertNull(riskData);
     }
 
     @Test

@@ -1,17 +1,18 @@
 package com.braintreegateway;
 
 public class PaymentMethodOptionsRequest extends Request {
-    private Boolean makeDefault;
-    private PaymentMethodRequest parent;
-    private String verificationMerchantAccountId;
-    private String verificationAccountType;
     private Boolean failOnDuplicatePaymentMethod;
+    private Boolean makeDefault;
+    private Boolean skipAdvancedFraudChecking;
     private Boolean verifyCard;
-    private String verificationAmount;
-    private String venmoSdkSession;
-    private String verificationCurrencyIsoCode;
     private PaymentMethodOptionsAdyenRequest paymentMethodOptionsAdyenRequest;
     private PaymentMethodOptionsPayPalRequest paymentMethodOptionsPayPalRequest;
+    private PaymentMethodRequest parent;
+    private String venmoSdkSession;
+    private String verificationAccountType; // NEXT_MAJOR_VERSION - This should be enum with [credit, debit]
+    private String verificationAmount;
+    private String verificationCurrencyIsoCode;
+    private String verificationMerchantAccountId;
     private UsBankAccountVerification.VerificationMethod usBankAccountVerificationMethod;
 
     public PaymentMethodOptionsRequest() {
@@ -55,6 +56,11 @@ public class PaymentMethodOptionsRequest extends Request {
         return this;
     }
 
+    public PaymentMethodOptionsRequest skipAdvancedFraudChecking(Boolean skipAdvancedFraudChecking) {
+        this.skipAdvancedFraudChecking = skipAdvancedFraudChecking;
+        return this;
+    }
+
     public PaymentMethodOptionsRequest verificationAmount(String verificationAmount) {
         this.verificationAmount = verificationAmount;
         return this;
@@ -94,20 +100,21 @@ public class PaymentMethodOptionsRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root);
 
+        builder.addElement("adyen", paymentMethodOptionsAdyenRequest);
         builder.addElement("failOnDuplicatePaymentMethod", failOnDuplicatePaymentMethod);
-        builder.addElement("verifyCard", verifyCard);
-        builder.addElement("verificationAmount", verificationAmount);
-        builder.addElement("verificationMerchantAccountId", verificationMerchantAccountId);
+        builder.addElement("paypal", paymentMethodOptionsPayPalRequest);
+        builder.addElement("skipAdvancedFraudChecking", skipAdvancedFraudChecking);
+        builder.addElement("usBankAccountVerificationMethod", usBankAccountVerificationMethod);
+        builder.addElement("venmoSdkSession", venmoSdkSession);
         builder.addElement("verificationAccountType", verificationAccountType);
+        builder.addElement("verificationAmount", verificationAmount);
+        builder.addElement("verificationCurrencyIsoCode", verificationCurrencyIsoCode);
+        builder.addElement("verificationMerchantAccountId", verificationMerchantAccountId);
+        builder.addElement("verifyCard", verifyCard);
+
         if (makeDefault != null && makeDefault.booleanValue()) {
             builder.addElement("makeDefault", makeDefault);
         }
-
-        builder.addElement("venmoSdkSession", venmoSdkSession);
-        builder.addElement("verificationCurrencyIsoCode", verificationCurrencyIsoCode);
-        builder.addElement("paypal", paymentMethodOptionsPayPalRequest);
-        builder.addElement("adyen", paymentMethodOptionsAdyenRequest);
-        builder.addElement("usBankAccountVerificationMethod", usBankAccountVerificationMethod);
         return builder;
     }
 }
