@@ -1,4 +1,5 @@
 ## Unreleased
+* Add `paymentReaderCardDetails` to `TransactionCreditCardRequest`
 * Add `dataOnlyRequested` to `ThreeDSecureLookupRequest`
 * Add `chargeback_protection_level` into dispute search 
 * Add `skipAdvancedFraudChecking` to `CreditCardOptionsRequest` and `PaymentMethodOptionsRequest`

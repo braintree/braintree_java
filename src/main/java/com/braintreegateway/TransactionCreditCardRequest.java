@@ -9,6 +9,7 @@ public class TransactionCreditCardRequest extends Request {
     private String number;
     private TransactionRequest parent;
     private String token;
+    private PaymentReaderCardDetailsRequest paymentReaderCardDetailsRequest;
 
     public TransactionCreditCardRequest(TransactionRequest parent) {
         this.parent = parent;
@@ -57,6 +58,11 @@ public class TransactionCreditCardRequest extends Request {
         return this;
     }
 
+    public PaymentReaderCardDetailsRequest paymentReaderCardDetails() {
+        this.paymentReaderCardDetailsRequest = new PaymentReaderCardDetailsRequest(this);
+        return paymentReaderCardDetailsRequest;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("creditCard").toXML();
@@ -80,6 +86,7 @@ public class TransactionCreditCardRequest extends Request {
             .addElement("expirationDate", expirationDate)
             .addElement("expirationMonth", expirationMonth)
             .addElement("expirationYear", expirationYear)
-            .addElement("token", token);
+            .addElement("token", token)
+            .addElement("paymentReaderCardDetails", paymentReaderCardDetailsRequest);
     }
 }
