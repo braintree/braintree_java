@@ -1,4 +1,4 @@
-## unreleased
+## 3.10.0
 * Add `dataOnlyRequested` to `ThreeDSecureLookupRequest`
 * Add `paymentReaderCardDetails` to `TransactionCreditCardRequest`
 * Add `chargebackProtectionLevel` to `Dispute` and `DisputeSearchRequest`
