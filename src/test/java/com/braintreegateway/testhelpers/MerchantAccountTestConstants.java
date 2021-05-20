@@ -13,5 +13,4 @@ public interface MerchantAccountTestConstants {
     public static final String US_BANK_MERCHANT_ACCOUNT = "us_bank_merchant_account";
     public static final String ANOTHER_US_BANK_MERCHANT_ACCOUNT = "another_us_bank_merchant_account";
     public static final String ADYEN_MERCHANT_ACCOUNT_ID = "adyen_ma";
-    public static final String AIB_SWEDEN_MERCHANT_ACCOUNT_ID = "aib_swe_ma";
 }

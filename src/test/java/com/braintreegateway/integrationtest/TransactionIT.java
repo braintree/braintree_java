@@ -7726,44 +7726,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleWithCreditCardToVerifyErrorCodeTaxAmountIsRequiredForAibSwedish() {
-        TransactionRequest request = new TransactionRequest().
-                amount(TransactionAmount.AUTHORIZE.amount).
-                merchantAccountId(AIB_SWEDEN_MERCHANT_ACCOUNT_ID).
-                creditCard().
-                number(CreditCardNumber.VISA.number).
-                expirationDate("05/2030").
-                done().
-                currencyIsoCode("SEK");
-        Result<Transaction> result = gateway.transaction().sale(request);
-        assertFalse(result.isSuccess());
-        assertEquals(ValidationErrorCode.TRANSACTION_TAX_AMOUNT_IS_REQUIRED_FOR_AIB_SWEDISH,
-                result.getErrors().forObject("transaction").onField("tax-amount").get(0).getCode());
-    }
-
-    @Test
-    public void saleWithPaymentMethodTokenToVerifyErrorCodeTaxAmountIsRequiredForAibSwedish() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest creditCardRequest = new CreditCardRequest().
-                customerId(customer.getId()).
-                number("5105105105105100").
-                expirationDate("05/30");
-        CreditCard creditCard = gateway.creditCard().create(creditCardRequest).getTarget();
-        TransactionRequest request = new TransactionRequest().
-                amount(TransactionAmount.AUTHORIZE.amount).
-                merchantAccountId(AIB_SWEDEN_MERCHANT_ACCOUNT_ID).
-                paymentMethodToken(creditCard.getToken()).
-                creditCard().
-                done().
-                currencyIsoCode("SEK");
-        Result<Transaction> result = gateway.transaction().sale(request);
-        assertFalse(result.isSuccess());
-        assertEquals(ValidationErrorCode.TRANSACTION_TAX_AMOUNT_IS_REQUIRED_FOR_AIB_SWEDISH,
-                result.getErrors().forObject("transaction").onField("tax-amount").get(0).getCode());
-    }
-
-
-    @Test
     public void saleWithPaymentMethodNonceAndCurrencyIsoCodeSpecified() {
         String nonce = TestHelper.generateUnlockedNonce(gateway);
         TransactionRequest request = new TransactionRequest().
