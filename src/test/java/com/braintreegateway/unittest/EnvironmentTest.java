@@ -1,10 +1,9 @@
 package com.braintreegateway.unittest;
 
 import com.braintreegateway.*;
-import org.junit.Before;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EnvironmentTest {
 
@@ -33,13 +32,17 @@ public class EnvironmentTest {
         assertEquals(Environment.QA, Environment.parseEnvironment("qa"));
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testParseEnvironmentThrowsError() {
-        Environment.parseEnvironment("Development_2");
+        assertThrows(IllegalArgumentException.class, () -> {
+            Environment.parseEnvironment("Development_2");
+        });
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testParseEnvironmentThrowsErrorOnEmptyString() {
-        Environment.parseEnvironment("");
+        assertThrows(IllegalArgumentException.class, () -> {
+            Environment.parseEnvironment("");
+        });
     }
 }

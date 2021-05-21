@@ -4,15 +4,15 @@ import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.ClientTokenOptionsRequest;
 import com.braintreegateway.ClientTokenRequest;
 import com.braintreegateway.Environment;
-import org.junit.Test;
-import org.junit.Before;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ClientTokenGatewayTest {
     private BraintreeGateway gateway;
 
-    @Before
+    @BeforeEach
     public void createGateway() {
         this.gateway = new BraintreeGateway(
             Environment.DEVELOPMENT,
@@ -26,38 +26,38 @@ public class ClientTokenGatewayTest {
     public void generateRaisesExceptionIfVerifyCardIsIncludedWithoutCustomerId() {
         ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
                 .options(new ClientTokenOptionsRequest().verifyCard(true));
-        try {
+
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
             gateway.clientToken().generate(clientTokenRequest);
-            fail("generate() should have raised an exception!");
-        } catch (IllegalArgumentException e) {
-            assertTrue("exception message should mention verifyCard",
-                    e.getMessage().contains("verifyCard"));
-        }
+        });
+
+        assertTrue(e.getMessage().contains("verifyCard"),
+                "exception message should mention verifyCard");
     }
 
     @Test
     public void generateRaisesExceptionIfMakeDefaultIsIncludedWithoutCustomerId() {
         ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
                 .options(new ClientTokenOptionsRequest().makeDefault(true));
-        try {
+
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
             gateway.clientToken().generate(clientTokenRequest);
-            fail("generate() should have raised an exception!");
-        } catch (IllegalArgumentException e) {
-            assertTrue("exception message should mention makeDefault",
-                    e.getMessage().contains("makeDefault"));
-        }
+        });
+
+        assertTrue(e.getMessage().contains("makeDefault"),
+                "exception message should mention makeDefault");
     }
 
     @Test
     public void generateRaisesExceptionIfFailOnDuplicatePaymentMethodIsIncludedWithoutCustomerId() {
         ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
                 .options(new ClientTokenOptionsRequest().failOnDuplicatePaymentMethod(true));
-        try {
+
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
             gateway.clientToken().generate(clientTokenRequest);
-            fail("generate() should have raised an exception!");
-        } catch (IllegalArgumentException e) {
-            assertTrue("exception message should mention failOnDuplicatePaymentMethod",
-                    e.getMessage().contains("failOnDuplicatePaymentMethod"));
-        }
+        });
+
+        assertTrue(e.getMessage().contains("failOnDuplicatePaymentMethod"),
+                "exception message should mention failOnDuplicatePaymentMethod");
     }
 }

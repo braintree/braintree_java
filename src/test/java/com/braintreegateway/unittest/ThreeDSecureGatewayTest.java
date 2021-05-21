@@ -1,12 +1,12 @@
 package com.braintreegateway.unittest;
 
-import org.junit.Test;
-
 import java.util.regex.Pattern;
 
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.BraintreeException;
-import static org.junit.Assert.*;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ThreeDSecureGatewayTest {
 
@@ -31,12 +31,11 @@ public class ThreeDSecureGatewayTest {
         ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
         request.clientData(clientData);
 
-        try {
+        Exception e = assertThrows(BraintreeException.class, () -> {
             gateway.threeDSecure().lookup(request);
-            fail("Should throw BraintreeException");
-        } catch (BraintreeException e) {
-            assertTrue(Pattern.matches("Amount required", e.getMessage()));
-        }
+        });
+
+        assertTrue(Pattern.matches("Amount required", e.getMessage()));
     }
 
     @Test
@@ -60,12 +59,10 @@ public class ThreeDSecureGatewayTest {
         request.amount("10.00");
         request.clientData(clientData);
 
-        try {
+        Exception e = assertThrows(BraintreeException.class, () -> {
             gateway.threeDSecure().lookup(request);
-            fail("Should throw BraintreeException");
-        } catch (BraintreeException e) {
-            System.out.println(e.getMessage());
-            assertTrue(Pattern.matches("Payment method nonce required", e.getMessage()));
-        }
+        });
+
+        assertTrue(Pattern.matches("Payment method nonce required", e.getMessage()));
     }
 }

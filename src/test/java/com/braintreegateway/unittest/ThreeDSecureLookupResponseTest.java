@@ -2,12 +2,12 @@ package com.braintreegateway.unittest;
 
 import com.braintreegateway.ThreeDSecureLookupResponse;
 import com.fasterxml.jackson.jr.ob.JSON;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ThreeDSecureLookupResponseTest {
 

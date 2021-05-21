@@ -2,11 +2,9 @@ package com.braintreegateway.unittest;
 
 import com.braintreegateway.SearchRequest;
 import com.braintreegateway.SearchCriteria;
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SearchRequestTest {
 

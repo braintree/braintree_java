@@ -3,14 +3,14 @@ package com.braintreegateway.unittest.util;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.SimpleNodeWrapper;
 import com.braintreegateway.util.StringUtils;
-import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SimpleNodeWrapperTest {
 

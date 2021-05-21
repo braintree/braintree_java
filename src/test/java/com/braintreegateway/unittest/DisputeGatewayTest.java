@@ -5,234 +5,214 @@ import com.braintreegateway.DisputeGateway;
 import com.braintreegateway.TextEvidenceRequest;
 import com.braintreegateway.FileEvidenceRequest;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DisputeGatewayTest {
 
     @Test
     public void acceptNullRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).accept(null);
-            fail("DisputeGateway#accept allowed null");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "dispute with id \"null\" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "dispute with id \"null\" not found");
     }
 
     @Test
     public void acceptEmptyStringRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).accept(" ");
-            fail("DisputeGateway#accept allowed empty string");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "dispute with id \" \" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "dispute with id \" \" not found");
     }
 
     @Test
     public void addTextEvidenceNullIdRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).addTextEvidence(null, "content");
-            fail("DisputeGateway#addTextEvidence allowed null ID");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "Dispute ID is required");
-        }
+        });
+
+        assertEquals(e.getMessage(), "Dispute ID is required");
     }
 
     @Test
     public void addTextEvidenceEmptyStringIdRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).addTextEvidence(" ", "content");
-            fail("DisputeGateway#addTextEvidence allowed empty string ID");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "Dispute ID is required");
-        }
+        });
+
+        assertEquals(e.getMessage(), "Dispute ID is required");
     }
 
     @Test
     public void addTextEvidenceNullTextEvidenceRequestRaisesIllegalArgumentException() {
-        try {
-            TextEvidenceRequest textEvidenceRequest = null;
+        TextEvidenceRequest textEvidenceRequest = null;
+
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
             new DisputeGateway(null, null).addTextEvidence("id", textEvidenceRequest);
-            fail("DisputeGateway#addTextEvidence allowed null content");
-        } catch (IllegalArgumentException exception) {
-            assertEquals(exception.getMessage(), "TextEvidenceRequest cannot be null");
-        }
+        });
+
+        assertEquals(e.getMessage(), "TextEvidenceRequest cannot be null");
     }
 
     @Test
     public void addTextEvidenceNullContentRaisesIllegalArgumentException() {
-        try {
-            String content = null;
+        String content = null;
+
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
             new DisputeGateway(null, null).addTextEvidence("id", content);
-            fail("DisputeGateway#addTextEvidence allowed null content");
-        } catch (IllegalArgumentException exception) {
-            assertEquals(exception.getMessage(), "Content cannot be empty");
-        }
+        });
+
+        assertEquals(e.getMessage(), "Content cannot be empty");
     }
 
     @Test
     public void addTextEvidenceEmptyStringContentRaisesIllegalArgumentException() {
-        try {
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
             new DisputeGateway(null, null).addTextEvidence("id", " ");
-            fail("DisputeGateway#addTextEvidence allowed empty string content");
-        } catch (IllegalArgumentException exception) {
-            assertEquals(exception.getMessage(), "Content cannot be empty");
-        }
+        });
+
+        assertEquals(e.getMessage(), "Content cannot be empty");
     }
 
     @Test
     public void addTextEvidenceRequestEmptyStringContentRaisesIllegalArgumentException() {
-        try {
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
             new DisputeGateway(null, null).addTextEvidence("id", new TextEvidenceRequest().content(" "));
-            fail("DisputeGateway#addTextEvidence allowed empty string content");
-        } catch (IllegalArgumentException exception) {
-            assertEquals(exception.getMessage(), "Content cannot be empty");
-        }
+        });
+
+        assertEquals(e.getMessage(), "Content cannot be empty");
     }
 
 	@Test
     public void addFileEvidenceNullDisputeIdRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).addFileEvidence(null, "documentId");
-            fail("DisputeGateway#addFileEvidence allowed null despute ID");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "dispute with id \"null\" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "dispute with id \"null\" not found");
     }
 
     @Test
     public void addFileEvidenceEmptyStringDisputeIdRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).addFileEvidence(" ", "documentId");
-            fail("DisputeGateway#addFileEvidence allowed empty string dispute ID");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "dispute with id \" \" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "dispute with id \" \" not found");
     }
 
 	@Test
     public void addFileEvidenceNullDocumentIdRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).addFileEvidence("disputeId", (String) null);
-            fail("DisputeGateway#addFileEvidence allowed null document ID");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "document with id \"null\" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "document with id \"null\" not found");
     }
 
     @Test
     public void addFileEvidenceEmptyStringDocumentIdRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).addFileEvidence("disputeId", " ");
-            fail("DisputeGateway#addFileEvidence allowed empty string ID");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "document with id \" \" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "document with id \" \" not found");
     }
 
     @Test
     public void addFileEvidenceWithFileEvidenceRequestNullDocumentIdRaisesNotFoundException() {
-        try {
-            FileEvidenceRequest request = new FileEvidenceRequest().documentId(null);
+        FileEvidenceRequest request = new FileEvidenceRequest().documentId(null);
+
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).addFileEvidence("disputeId", request);
-            fail("DisputeGateway#addFileEvidence allowed null ID in FileEvidenceRequest");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "document with id \"null\" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "document with id \"null\" not found");
     }
 
     @Test
     public void addFileEvidenceWithFileEvidenceRequestEmptyDocumentIdRaisesNotFoundException() {
-        try {
-            FileEvidenceRequest request = new FileEvidenceRequest().documentId("");
+        FileEvidenceRequest request = new FileEvidenceRequest().documentId("");
+
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).addFileEvidence("disputeId", request);
-            fail("DisputeGateway#addFileEvidence allowed null ID in FileEvidenceRequest");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "document with id \"\" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "document with id \"\" not found");
     }
 
     @Test
     public void finalizeNullRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).finalize(null);
-            fail("DisputeGateway#finalize allowed null");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "dispute with id \"null\" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "dispute with id \"null\" not found");
     }
 
     @Test
     public void finalizeEmptyStringRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).finalize(" ");
-            fail("DisputeGateway#finalize allowed empty string");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "dispute with id \" \" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "dispute with id \" \" not found");
     }
 
     @Test
     public void findNullRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).find(null);
-            fail("DisputeGateway#find allowed null");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "dispute with id \"null\" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "dispute with id \"null\" not found");
     }
 
     @Test
     public void findEmptyStringRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).find(" ");
-            fail("DisputeGateway#find allowed empty string");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "dispute with id \" \" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "dispute with id \" \" not found");
     }
 
     @Test
     public void removeEvidenceNullDisputeIdRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).removeEvidence(null, "evidenceId");
-            fail("DisputeGateway#removeEvidence allowed null despute ID");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "evidence with id \"evidenceId\" for dispute with id \"null\" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "evidence with id \"evidenceId\" for dispute with id \"null\" not found");
     }
 
     @Test
     public void removeEvidenceEmptyStringDisputeIdRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).removeEvidence(" ", "evidenceId");
-            fail("DisputeGateway#removeEvidence allowed empty string dispute ID");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "evidence with id \"evidenceId\" for dispute with id \" \" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "evidence with id \"evidenceId\" for dispute with id \" \" not found");
     }
 
 	@Test
     public void removeEvidenceNullEvidenceIdRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).removeEvidence("disputeId", null);
-            fail("DisputeGateway#removeEvidence allowed null document ID");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "evidence with id \"null\" for dispute with id \"disputeId\" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "evidence with id \"null\" for dispute with id \"disputeId\" not found");
     }
 
     @Test
     public void removeEvidenceEmptyStringEvidenceIdRaisesNotFoundException() {
-        try {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).removeEvidence("disputeId", " ");
-            fail("DisputeGateway#removeEvidence allowed empty string ID");
-        } catch (NotFoundException exception) {
-            assertEquals(exception.getMessage(), "evidence with id \" \" for dispute with id \"disputeId\" not found");
-        }
+        });
+
+        assertEquals(e.getMessage(), "evidence with id \" \" for dispute with id \"disputeId\" not found");
     }
 }

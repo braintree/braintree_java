@@ -1,11 +1,11 @@
 package com.braintreegateway.unittest;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import com.braintreegateway.OAuthAccessRevocation;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OAuthAccessRevocationTest {
     @Test
