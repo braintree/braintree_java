@@ -27,7 +27,7 @@ public class DocumentUploadTest {
       ValidationErrorCode.DOCUMENT_UPLOAD_FILE_TYPE_IS_INVALID,
       "Only PNG, JPG, JPEG, and PDF files are accepted."
     );
-    assertTrue(validationErrorList.contains(expectedValidationError), "received validation error for invalid file type");
+    assertTrue(validationErrorList.contains(expectedValidationError));
   }
 
   @Test
@@ -43,7 +43,7 @@ public class DocumentUploadTest {
       ValidationErrorCode.DOCUMENT_UPLOAD_FILE_IS_MALFORMED_OR_ENCRYPTED,
       "Malformed or encrypted files are not accepted"
     );
-    assertTrue(validationErrorList.contains(expectedValidationError), "received validation error for file that is malformed");
+    assertTrue(validationErrorList.contains(expectedValidationError));
   }
 
   @Test
@@ -59,7 +59,7 @@ public class DocumentUploadTest {
       ValidationErrorCode.DOCUMENT_UPLOAD_FILE_IS_TOO_LARGE,
       "File size is limited to 4 MB."
     );
-    assertTrue(validationErrorList.contains(expectedValidationError), "received validation error for file that is too large");
+    assertTrue(validationErrorList.contains(expectedValidationError));
   }
 
   @Test
@@ -75,7 +75,7 @@ public class DocumentUploadTest {
       ValidationErrorCode.DOCUMENT_UPLOAD_FILE_IS_EMPTY,
       "File cannot be empty."
     );
-    assertTrue(validationErrorList.contains(expectedValidationError), "received validation error for file that is empty");
+    assertTrue(validationErrorList.contains(expectedValidationError));
   }
 
   @Test
@@ -91,7 +91,7 @@ public class DocumentUploadTest {
       ValidationErrorCode.DOCUMENT_UPLOAD_FILE_IS_TOO_LONG,
       "PDF page length is limited to 50 pages"
     );
-    assertTrue(validationErrorList.contains(expectedValidationError), "received validation error for file that is too long");
+    assertTrue(validationErrorList.contains(expectedValidationError));
   }
 
   private String FILE_TYPE_IS_INVALID_RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
