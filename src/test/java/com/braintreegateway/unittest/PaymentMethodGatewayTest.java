@@ -36,7 +36,7 @@ public class PaymentMethodGatewayTest {
     }
 
     @Test
-    public void findThrowsErrorOnNullPointer() {
+    public void findThrowsNotFoundExceptionOnNullPointer() {
         PaymentMethodGateway paymentMethodGateway = this.gateway.paymentMethod();
         assertThrows(NotFoundException.class, () -> {
             paymentMethodGateway.find(null);
