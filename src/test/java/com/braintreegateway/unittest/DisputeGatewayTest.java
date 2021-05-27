@@ -6,6 +6,7 @@ import com.braintreegateway.TextEvidenceRequest;
 import com.braintreegateway.FileEvidenceRequest;
 
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DisputeGatewayTest {
@@ -86,7 +87,7 @@ public class DisputeGatewayTest {
         assertEquals(e.getMessage(), "Content cannot be empty");
     }
 
-	@Test
+    @Test
     public void addFileEvidenceNullDisputeIdRaisesNotFoundException() {
         Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).addFileEvidence(null, "documentId");
@@ -104,7 +105,7 @@ public class DisputeGatewayTest {
         assertEquals(e.getMessage(), "dispute with id \" \" not found");
     }
 
-	@Test
+    @Test
     public void addFileEvidenceNullDocumentIdRaisesNotFoundException() {
         Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).addFileEvidence("disputeId", (String) null);
@@ -198,7 +199,7 @@ public class DisputeGatewayTest {
         assertEquals(e.getMessage(), "evidence with id \"evidenceId\" for dispute with id \" \" not found");
     }
 
-	@Test
+    @Test
     public void removeEvidenceNullEvidenceIdRaisesNotFoundException() {
         Exception e = assertThrows(NotFoundException.class, () -> {
             new DisputeGateway(null, null).removeEvidence("disputeId", null);
