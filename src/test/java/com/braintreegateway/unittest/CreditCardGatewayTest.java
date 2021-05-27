@@ -31,7 +31,7 @@ public class CreditCardGatewayTest {
     }
 
     @Test
-    public void fromNonceThrowsErrorOnNullPointer() {
+    public void fromNonceThrowsNotFoundExceptionOnNullPointer() {
         CreditCardGateway creditCardGateway = this.gateway.creditCard();
         assertThrows(NotFoundException.class, () -> {
             creditCardGateway.fromNonce(null);
