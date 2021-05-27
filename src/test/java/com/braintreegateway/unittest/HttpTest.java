@@ -1,8 +1,5 @@
 package com.braintreegateway.unittest;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import com.braintreegateway.util.Http;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Environment;
@@ -17,56 +14,79 @@ import com.braintreegateway.exceptions.TooManyRequestsException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
 
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 public class HttpTest {
 
-    @Test(expected = AuthenticationException.class)
+    @Test
     public void throwAuthenticationIfNotAuthenticated() {
-        Http.throwExceptionIfErrorStatusCode(401, null);
+        assertThrows(AuthenticationException.class, () -> {
+            Http.throwExceptionIfErrorStatusCode(401, null);
+        });
     }
 
-    @Test(expected = AuthorizationException.class)
+    @Test
     public void throwAuthorizationIfNotAuthorized() {
-        Http.throwExceptionIfErrorStatusCode(403, "Not Authorized");
+        assertThrows(AuthorizationException.class, () -> {
+            Http.throwExceptionIfErrorStatusCode(403, "Not Authorized");
+        });
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void throwNotFoundIfElementNotFound() {
-        Http.throwExceptionIfErrorStatusCode(404, null);
+        assertThrows(NotFoundException.class, () -> {
+            Http.throwExceptionIfErrorStatusCode(404, null);
+        });
     }
 
-    @Test(expected = RequestTimeoutException.class)
+    @Test
     public void throwRequstTimeoutIfRequestTimeout() {
-        Http.throwExceptionIfErrorStatusCode(408, null);
+        assertThrows(RequestTimeoutException.class, () -> {
+            Http.throwExceptionIfErrorStatusCode(408, null);
+        });
     }
 
-    @Test(expected = UpgradeRequiredException.class)
+    @Test
     public void throwUpgradeRequiredIfClientLibraryIsTooOld() {
-        Http.throwExceptionIfErrorStatusCode(426, null);
+        assertThrows(UpgradeRequiredException.class, () -> {
+            Http.throwExceptionIfErrorStatusCode(426, null);
+        });
     }
 
-    @Test(expected = TooManyRequestsException.class)
+    @Test
     public void throwTooManyRequestsIfRateLimitExceeded() {
-        Http.throwExceptionIfErrorStatusCode(429, null);
+        assertThrows(TooManyRequestsException.class, () -> {
+            Http.throwExceptionIfErrorStatusCode(429, null);
+        });
     }
 
-    @Test(expected = ServerException.class)
+    @Test
     public void throwServerIfInternalServerError() {
-        Http.throwExceptionIfErrorStatusCode(500, null);
+        assertThrows(ServerException.class, () -> {
+            Http.throwExceptionIfErrorStatusCode(500, null);
+        });
     }
 
-    @Test(expected = UnexpectedException.class)
+    @Test
     public void throwUnexpectedIfUnexpected() {
-        Http.throwExceptionIfErrorStatusCode(502, null);
+        assertThrows(UnexpectedException.class, () -> {
+            Http.throwExceptionIfErrorStatusCode(502, null);
+        });
     }
 
-    @Test(expected = ServiceUnavailableException.class)
+    @Test
     public void throwServiceUnavailableIfServiceUnavailable() {
-        Http.throwExceptionIfErrorStatusCode(503, null);
+        assertThrows(ServiceUnavailableException.class, () -> {
+            Http.throwExceptionIfErrorStatusCode(503, null);
+        });
     }
 
-    @Test(expected = GatewayTimeoutException.class)
+    @Test
     public void throwGatewayTimeoutIfGatewayTimesOut() {
-        Http.throwExceptionIfErrorStatusCode(504, null);
+        assertThrows(GatewayTimeoutException.class, () -> {
+            Http.throwExceptionIfErrorStatusCode(504, null);
+        });
     }
 
     @Test

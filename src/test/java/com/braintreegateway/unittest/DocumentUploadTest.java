@@ -9,10 +9,8 @@ import com.braintreegateway.ValidationErrorCode;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DocumentUploadTest {
 
@@ -29,7 +27,7 @@ public class DocumentUploadTest {
       ValidationErrorCode.DOCUMENT_UPLOAD_FILE_TYPE_IS_INVALID,
       "Only PNG, JPG, JPEG, and PDF files are accepted."
     );
-    assertTrue("received validation error for invalid file type", validationErrorList.contains(expectedValidationError));
+    assertTrue(validationErrorList.contains(expectedValidationError));
   }
 
   @Test
@@ -45,7 +43,7 @@ public class DocumentUploadTest {
       ValidationErrorCode.DOCUMENT_UPLOAD_FILE_IS_MALFORMED_OR_ENCRYPTED,
       "Malformed or encrypted files are not accepted"
     );
-    assertTrue("received validation error for file that is malformed", validationErrorList.contains(expectedValidationError));
+    assertTrue(validationErrorList.contains(expectedValidationError));
   }
 
   @Test
@@ -61,7 +59,7 @@ public class DocumentUploadTest {
       ValidationErrorCode.DOCUMENT_UPLOAD_FILE_IS_TOO_LARGE,
       "File size is limited to 4 MB."
     );
-    assertTrue("received validation error for file that is too large", validationErrorList.contains(expectedValidationError));
+    assertTrue(validationErrorList.contains(expectedValidationError));
   }
 
   @Test
@@ -77,7 +75,7 @@ public class DocumentUploadTest {
       ValidationErrorCode.DOCUMENT_UPLOAD_FILE_IS_EMPTY,
       "File cannot be empty."
     );
-    assertTrue("received validation error for file that is empty", validationErrorList.contains(expectedValidationError));
+    assertTrue(validationErrorList.contains(expectedValidationError));
   }
 
   @Test
@@ -93,7 +91,7 @@ public class DocumentUploadTest {
       ValidationErrorCode.DOCUMENT_UPLOAD_FILE_IS_TOO_LONG,
       "PDF page length is limited to 50 pages"
     );
-    assertTrue("received validation error for file that is too long", validationErrorList.contains(expectedValidationError));
+    assertTrue(validationErrorList.contains(expectedValidationError));
   }
 
   private String FILE_TYPE_IS_INVALID_RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

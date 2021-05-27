@@ -6,10 +6,9 @@ import java.text.ParseException;
 import java.util.Map;
 
 import com.braintreegateway.TransactionLevelFeeReport;
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TransactionLevelFeeReportTest {
     @Test

@@ -1,10 +1,9 @@
 package com.braintreegateway.unittest.util;
 
 import com.braintreegateway.util.Sha1Hasher;
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Sha1HasherTest {
 

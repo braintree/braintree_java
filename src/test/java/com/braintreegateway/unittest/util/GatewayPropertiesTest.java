@@ -2,11 +2,11 @@ package com.braintreegateway.unittest.util;
 
 import com.braintreegateway.*;
 import com.braintreegateway.util.ClientLibraryProperties;
-import org.junit.Test;
 
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GatewayPropertiesTest {
 
@@ -39,7 +39,7 @@ public class GatewayPropertiesTest {
     @Test
     public void canRetrieveVersion() {
         String version = new ClientLibraryProperties().version();
-        assertTrue("Expecting version to loaded from ClientLibraryProperties", versionValid(version));
+        assertTrue(versionValid(version), "Expecting version to loaded from ClientLibraryProperties");
     }
 
     @Test

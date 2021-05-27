@@ -7,29 +7,28 @@ import com.braintreegateway.DocumentUploadRequest;
 
 import java.io.File;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DocumentUploadRequestTest {
   @Test
   public void documentUploadRequestThrowsExceptionWhenKindIsNull() {
       URL fileToUpload = getClass().getClassLoader().getResource("fixtures/bt_logo.png");
 
-      try {
+      Exception e = assertThrows(IllegalArgumentException.class, () -> {
           DocumentUploadRequest uploadRequest = new DocumentUploadRequest(null,
                   new File(fileToUpload.getFile()));
-      } catch (IllegalArgumentException e) {
-          assertEquals("DocumentUpload.Kind must not be null", e.getMessage());
-      }
+      });
+
+      assertEquals("DocumentUpload.Kind must not be null", e.getMessage());
   }
 
   @Test
   public void documentUploadRequestThrowsExceptionWhenFileIsNull() {
-      try {
+      Exception e = assertThrows(IllegalArgumentException.class, () -> {
           DocumentUploadRequest uploadRequest = new DocumentUploadRequest(DocumentUpload.Kind.EVIDENCE_DOCUMENT, null);
-      } catch (IllegalArgumentException e) {
-          assertEquals("File must not be null", e.getMessage());
-      }
+      });
+
+      assertEquals("File must not be null", e.getMessage());
   }
 }

@@ -3,13 +3,11 @@ package com.braintreegateway.unittest;
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.ConfigurationException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-
-import static org.junit.Assert.*;
 
 public class ConfigurationTest {
 
@@ -19,34 +17,46 @@ public class ConfigurationTest {
        assertEquals(Environment.DEVELOPMENT, configuration.getEnvironment());
     }
 
-    @Test(expected=ConfigurationException.class)
+    @Test
     public void configurationThrowsErrorOnNullMerchantId() {
-        Configuration configuration = new Configuration(Environment.DEVELOPMENT, null, "integration_public_key", "integration_private_key");
+        assertThrows(ConfigurationException.class, () -> {
+            Configuration configuration = new Configuration(Environment.DEVELOPMENT, null, "integration_public_key", "integration_private_key");
+        });
     }
 
-    @Test(expected=ConfigurationException.class)
+    @Test
     public void configurationThrowsErrorOnEmptyMerchantId() {
-        Configuration configuration = new Configuration(Environment.DEVELOPMENT, "", "integration_public_key", "integration_private_key");
+        assertThrows(ConfigurationException.class, () -> {
+            Configuration configuration = new Configuration(Environment.DEVELOPMENT, "", "integration_public_key", "integration_private_key");
+        });
     }
 
-    @Test(expected=ConfigurationException.class)
+    @Test
     public void configurationThrowsErrorOnNullPublicKey() {
-        Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", null, "integration_private_key");
+        assertThrows(ConfigurationException.class, () -> {
+            Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", null, "integration_private_key");
+        });
     }
 
-    @Test(expected=ConfigurationException.class)
+    @Test
     public void configurationThrowsErrorOnEmptyPublicKey() {
-        Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", "", "integration_private_key");
+        assertThrows(ConfigurationException.class, () -> {
+            Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", "", "integration_private_key");
+        });
     }
 
-    @Test(expected=ConfigurationException.class)
+    @Test
     public void configurationThrowsErrorOnNullPrivateKey() {
-        Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", "integration_public_key", null);
+        assertThrows(ConfigurationException.class, () -> {
+            Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", "integration_public_key", null);
+        });
     }
 
-    @Test(expected=ConfigurationException.class)
+    @Test
     public void configurationThrowsErrorOnEmptyPrivateKey() {
-        Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", "integration_public_key", "");
+        assertThrows(ConfigurationException.class, () -> {
+            Configuration configuration = new Configuration(Environment.DEVELOPMENT, "merchant_id", "integration_public_key", "");
+        });
     }
 
     @Test
