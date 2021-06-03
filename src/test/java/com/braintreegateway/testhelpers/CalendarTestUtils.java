@@ -1,7 +1,7 @@
 package com.braintreegateway.testhelpers;
 
 import com.braintreegateway.util.NodeWrapper;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-@Ignore("Testing utility class")
+@Disabled("Testing utility class")
 public abstract class CalendarTestUtils {
     public static final String UTC = "UTC";
 

@@ -14,7 +14,7 @@ import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 import com.braintreegateway.util.*;
 import com.fasterxml.jackson.jr.ob.JSON;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -22,7 +22,7 @@ import javax.net.ssl.SSLContext;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-@Ignore("Testing utility class")
+@Disabled("Testing utility class")
 public abstract class TestHelper {
 
     public static final class CompareModificationsById implements Comparator<Modification> {
