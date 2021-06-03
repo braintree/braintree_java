@@ -2,15 +2,14 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.NotFoundException;
-import org.junit.Test;
 
 import java.util.Calendar;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-
-public class AddressIT extends IntegrationTest {
+public class AddressIT extends IntegrationTestNew {
 
     @Test
     public void create() {

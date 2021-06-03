@@ -4,21 +4,20 @@ import com.braintreegateway.*;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Calendar;
 import java.util.Map;
 import java.util.TimeZone;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class SettlementBatchSummaryIT extends IntegrationTest {
+public class SettlementBatchSummaryIT extends IntegrationTestNew {
 
     private TimeZone eastern_timezone;
 
-    @Before
+    @BeforeEach
     public void setTimezone() {
         this.eastern_timezone = TimeZone.getTimeZone("America/New_York");
     }

@@ -5,11 +5,10 @@ import java.util.Map;
 import com.braintreegateway.Configuration;
 import com.braintreegateway.util.GraphQLClient;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.Assert.assertNotNull;
-
-public class GraphQLClientIT extends IntegrationTest {
+public class GraphQLClientIT extends IntegrationTestNew {
 
     public String pingQuery =
         "query {" +

@@ -10,11 +10,11 @@ import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.Nonce;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class PaymentMethodIT extends IntegrationTest {
+public class PaymentMethodIT extends IntegrationTestNew {
     @Test
     public void createWithThreeDSecureNonce() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());

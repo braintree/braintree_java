@@ -8,15 +8,15 @@ import com.braintreegateway.test.Nonce;
 import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
-import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class CustomerIT extends IntegrationTest {
+public class CustomerIT extends IntegrationTestNew {
 
     @Test
     public void create() {

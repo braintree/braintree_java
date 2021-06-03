@@ -2,9 +2,9 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.CreditCardRequest;
 import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CreditCardRequestIT {
     @Test

@@ -11,12 +11,13 @@ import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.exceptions.NotFoundException;
 import java.math.BigDecimal;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 import static org.hamcrest.CoreMatchers.*;
 
-public class PaymentMethodNonceIT extends IntegrationTest {
+public class PaymentMethodNonceIT extends IntegrationTestNew {
 
     @Test
     public void createFromExistingPaymentMethod() {
@@ -104,7 +105,7 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertNotNull(newNonce.getNonce());
         assertNotNull(newNonce.getAuthenticationInsight());
         assertEquals("rbi", newNonce.getAuthenticationInsight().getRegulationEnvironment());
-        assertThat("sca_required", not(newNonce.getAuthenticationInsight().getScaIndicator()));
+        assertNotEquals("sca_required", newNonce.getAuthenticationInsight().getScaIndicator());
         assertNotNull(newNonce.getAuthenticationInsight().getScaIndicator());
     }
 

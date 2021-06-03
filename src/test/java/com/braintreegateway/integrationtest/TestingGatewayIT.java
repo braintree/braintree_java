@@ -5,38 +5,46 @@ import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.exceptions.TestOperationPerformedInProductionException;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestingGatewayIT implements MerchantAccountTestConstants {
 
-    @Test(expected = TestOperationPerformedInProductionException.class)
+    @Test
     public void testSettleRaisesErrorInProduction() {
         BraintreeGateway gateway = new BraintreeGateway(Environment.PRODUCTION, "merchant_id", "public_key", "private_key");
 
-        gateway.testing().settle("transaction_id");
+        assertThrows(TestOperationPerformedInProductionException.class, () -> {
+            gateway.testing().settle("transaction_id");
+        });
     }
 
-    @Test(expected = TestOperationPerformedInProductionException.class)
+    @Test
     public void testSettlementConfirmRaisesErrorInProduction() {
         BraintreeGateway gateway = new BraintreeGateway(Environment.PRODUCTION, "merchant_id", "public_key", "private_key");
 
-        gateway.testing().settlementConfirm("transaction_id");
+        assertThrows(TestOperationPerformedInProductionException.class, () -> {
+            gateway.testing().settlementConfirm("transaction_id");
+        });
     }
 
-    @Test(expected = TestOperationPerformedInProductionException.class)
+    @Test
     public void testSettlementDeclineRaisesErrorInProduction() {
         BraintreeGateway gateway = new BraintreeGateway(Environment.PRODUCTION, "merchant_id", "public_key", "private_key");
 
-        gateway.testing().settlementDecline("transaction_id");
+        assertThrows(TestOperationPerformedInProductionException.class, () -> {
+            gateway.testing().settlementDecline("transaction_id");
+        });
     }
 
-    @Test(expected = TestOperationPerformedInProductionException.class)
+    @Test
     public void testSettlementPendingRaisesErrorInProduction() {
         BraintreeGateway gateway = new BraintreeGateway(Environment.PRODUCTION, "merchant_id", "public_key", "private_key");
 
-        gateway.testing().settlementPending("transaction_id");
+        assertThrows(TestOperationPerformedInProductionException.class, () -> {
+            gateway.testing().settlementPending("transaction_id");
+        });
     }
 
     @Test

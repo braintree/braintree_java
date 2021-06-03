@@ -5,12 +5,11 @@ import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import java.util.regex.Pattern;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Before;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class PaymentMethodWithUsBankAccountIT extends IntegrationTest {
+public class PaymentMethodWithUsBankAccountIT extends IntegrationTestNew {
     @Test
     public void createUsBankAccountFromNonce() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());

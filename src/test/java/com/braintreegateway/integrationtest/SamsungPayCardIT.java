@@ -19,13 +19,10 @@ import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.TransactionSearchRequest;
 import com.braintreegateway.test.Nonce;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-public class SamsungPayCardIT extends IntegrationTest {
+public class SamsungPayCardIT extends IntegrationTestNew {
 
   @Test
   public void createWithPaymentMethodNonce() {

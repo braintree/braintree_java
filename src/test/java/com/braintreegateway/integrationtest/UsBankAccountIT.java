@@ -5,14 +5,14 @@ import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.NotFoundException;
-import org.junit.Test;
 
 import java.util.regex.Pattern;
 import java.math.BigDecimal;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class UsBankAccountIT extends IntegrationTest {
+public class UsBankAccountIT extends IntegrationTestNew {
 
     @Test
     public void findsUsBankAccountByToken() {

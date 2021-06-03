@@ -3,17 +3,17 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Test;
-import org.junit.Before;
 
 import java.util.*;
 import java.net.URL;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class OAuthIT extends IntegrationTest {
+public class OAuthIT extends IntegrationTestNew {
 
-    @Before
+    @BeforeEach
     public void createGateway() {
         this.gateway = new BraintreeGateway("client_id$development$integration_client_id",
            "client_secret$development$integration_client_secret"
@@ -74,7 +74,7 @@ public class OAuthIT extends IntegrationTest {
         assertEquals("bearer", refreshTokenResult.getTarget().getTokenType());
     }
 
-    @Test(expected = AuthenticationException.class)
+    @Test
     public void revokeAccessToken() {
         String code = TestHelper.createOAuthGrant(gateway, "integration_merchant_id", "read_write");
 
@@ -91,7 +91,10 @@ public class OAuthIT extends IntegrationTest {
         assertTrue(revokeAccessTokenResult.getTarget().getResult());
 
         gateway = new BraintreeGateway(accessToken);
-        gateway.customer().create(new CustomerRequest());
+
+        assertThrows(AuthenticationException.class, () -> {
+            gateway.customer().create(new CustomerRequest());
+        });
     }
 
     @Test

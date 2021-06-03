@@ -9,20 +9,20 @@ import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class SubscriptionIT extends IntegrationTest implements MerchantAccountTestConstants {
+public class SubscriptionIT extends IntegrationTestNew implements MerchantAccountTestConstants {
 
     private Customer customer;
     private CreditCard creditCard;
 
-    @Before
+    @BeforeEach
     public void createCustomer() {
         CustomerRequest request = new CustomerRequest();
         request.

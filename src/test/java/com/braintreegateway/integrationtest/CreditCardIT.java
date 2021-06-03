@@ -9,14 +9,14 @@ import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
-import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class CreditCardIT extends IntegrationTest implements MerchantAccountTestConstants {
+public class CreditCardIT extends IntegrationTestNew implements MerchantAccountTestConstants {
 
     @Test
     public void create() {
@@ -777,9 +777,11 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertEquals("integration_trialless_plan", foundCard.getSubscriptions().get(0).getPlanId());
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void findWithBadToken() {
-        gateway.creditCard().find("badToken");
+        assertThrows(NotFoundException.class, () -> {
+            gateway.creditCard().find("badToken");
+        });
     }
 
     @Test

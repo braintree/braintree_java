@@ -6,7 +6,6 @@ import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.FailsVerification;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
-import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -15,9 +14,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class CreditCardVerificationIT extends IntegrationTest {
+public class CreditCardVerificationIT extends IntegrationTestNew {
 
     @Test
     public void createVerification() {

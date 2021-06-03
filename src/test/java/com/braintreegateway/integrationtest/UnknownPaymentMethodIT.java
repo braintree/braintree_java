@@ -2,14 +2,15 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
 import com.braintreegateway.util.NodeWrapper;
-import org.junit.Test;
 import java.util.Collections;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class UnknownPaymentMethodIT extends IntegrationTest {
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class UnknownPaymentMethodIT extends IntegrationTestNew {
 
     @Test
     public void findReturnsNoSubscriptionsAssociatedWithUnknownPaymentMethod() {

@@ -2,15 +2,15 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Test;
 
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class UsBankAccountVerificationIT extends IntegrationTest {
+public class UsBankAccountVerificationIT extends IntegrationTestNew {
 
     @Test
     public void findById() {

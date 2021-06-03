@@ -3,17 +3,15 @@ package com.braintreegateway.integrationtest;
 import java.net.URLEncoder;
 import java.util.List;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import com.braintreegateway.testhelpers.HttpHelper;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.QueryString;
 import com.braintreegateway.*;
 
-public class ClientTokenIT extends IntegrationTest {
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ClientTokenIT extends IntegrationTestNew {
     private String urlencode(String string) {
         String encodedString = "";
         try {

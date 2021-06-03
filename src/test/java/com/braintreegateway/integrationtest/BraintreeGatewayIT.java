@@ -7,10 +7,10 @@ import com.braintreegateway.Configuration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class BraintreeGatewayIT extends IntegrationTest {
+public class BraintreeGatewayIT extends IntegrationTestNew {
 
     @Test
     public void developmentBaseMerchantUrl() {

@@ -2,13 +2,13 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
 import com.braintreegateway.test.Nonce;
-import org.junit.Test;
 
 import java.math.BigDecimal;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class VisaCheckoutCardIT extends IntegrationTest {
+public class VisaCheckoutCardIT extends IntegrationTestNew {
 
     @Test
     public void createWithPaymentMethodNonce() {
