@@ -19,8 +19,7 @@ import org.junit.jupiter.api.Disabled;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Disabled("Testing utility class")
 public abstract class TestHelper {

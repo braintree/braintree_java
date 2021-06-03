@@ -12,9 +12,6 @@ import com.braintreegateway.ValidationErrorCode;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
