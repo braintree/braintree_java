@@ -15,9 +15,7 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import static org.hamcrest.CoreMatchers.*;
-
-public class PaymentMethodNonceIT extends IntegrationTestNew {
+public class PaymentMethodNonceIT extends IntegrationTest {
 
     @Test
     public void createFromExistingPaymentMethod() {

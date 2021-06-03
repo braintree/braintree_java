@@ -16,7 +16,7 @@ import java.util.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CreditCardIT extends IntegrationTestNew implements MerchantAccountTestConstants {
+public class CreditCardIT extends IntegrationTest implements MerchantAccountTestConstants {
 
     @Test
     public void create() {

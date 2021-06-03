@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AddOnIT extends IntegrationTestNew {
+public class AddOnIT extends IntegrationTest {
     private Http http;
 
     @BeforeEach

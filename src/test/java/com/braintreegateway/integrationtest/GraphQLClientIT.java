@@ -8,7 +8,7 @@ import com.braintreegateway.util.GraphQLClient;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GraphQLClientIT extends IntegrationTestNew {
+public class GraphQLClientIT extends IntegrationTest {
 
     public String pingQuery =
         "query {" +

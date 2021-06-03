@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class VisaCheckoutCardIT extends IntegrationTestNew {
+public class VisaCheckoutCardIT extends IntegrationTest {
 
     @Test
     public void createWithPaymentMethodNonce() {

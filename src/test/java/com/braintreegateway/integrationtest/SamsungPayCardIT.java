@@ -22,7 +22,7 @@ import com.braintreegateway.test.Nonce;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SamsungPayCardIT extends IntegrationTestNew {
+public class SamsungPayCardIT extends IntegrationTest {
 
   @Test
   public void createWithPaymentMethodNonce() {

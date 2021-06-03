@@ -14,7 +14,7 @@ import com.braintreegateway.test.Nonce;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PaymentMethodIT extends IntegrationTestNew {
+public class PaymentMethodIT extends IntegrationTest {
     @Test
     public void createWithThreeDSecureNonce() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());

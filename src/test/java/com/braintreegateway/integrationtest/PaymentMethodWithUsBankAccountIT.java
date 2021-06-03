@@ -9,7 +9,7 @@ import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PaymentMethodWithUsBankAccountIT extends IntegrationTestNew {
+public class PaymentMethodWithUsBankAccountIT extends IntegrationTest {
     @Test
     public void createUsBankAccountFromNonce() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());

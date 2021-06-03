@@ -9,7 +9,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AddressIT extends IntegrationTestNew {
+public class AddressIT extends IntegrationTest {
 
     @Test
     public void create() {

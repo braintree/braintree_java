@@ -11,7 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CustomActionsPaymentMethodIT extends IntegrationTestNew {
+public class CustomActionsPaymentMethodIT extends IntegrationTest {
 
   @Test
   public void findWithId() {

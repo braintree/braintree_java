@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SettlementBatchSummaryIT extends IntegrationTestNew {
+public class SettlementBatchSummaryIT extends IntegrationTest {
 
     private TimeZone eastern_timezone;
 

@@ -11,7 +11,7 @@ import com.braintreegateway.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ClientTokenIT extends IntegrationTestNew {
+public class ClientTokenIT extends IntegrationTest {
     private String urlencode(String string) {
         String encodedString = "";
         try {

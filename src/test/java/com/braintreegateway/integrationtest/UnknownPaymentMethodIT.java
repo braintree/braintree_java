@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UnknownPaymentMethodIT extends IntegrationTestNew {
+public class UnknownPaymentMethodIT extends IntegrationTest {
 
     @Test
     public void findReturnsNoSubscriptionsAssociatedWithUnknownPaymentMethod() {

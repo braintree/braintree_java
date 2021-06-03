@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 // NEXT_MAJOR_VERSION - remove Masterpass
-public class MasterpassCardIT extends IntegrationTestNew {
+public class MasterpassCardIT extends IntegrationTest {
 
     @Test
     public void createWithPaymentMethodNonce() {

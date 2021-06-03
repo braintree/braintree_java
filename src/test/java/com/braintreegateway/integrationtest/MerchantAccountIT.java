@@ -9,7 +9,7 @@ import java.util.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MerchantAccountIT extends IntegrationTestNew {
+public class MerchantAccountIT extends IntegrationTest {
 
     @Test
     public void createRequiresNoId() {

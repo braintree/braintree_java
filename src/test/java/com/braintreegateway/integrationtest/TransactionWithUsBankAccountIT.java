@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Disabled;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TransactionWithUsBankAccountIT extends IntegrationTestNew implements MerchantAccountTestConstants {
+public class TransactionWithUsBankAccountIT extends IntegrationTest implements MerchantAccountTestConstants {
     @Test
     public void saleWithUsBankAccountNonce() {
         TransactionRequest request = new TransactionRequest()

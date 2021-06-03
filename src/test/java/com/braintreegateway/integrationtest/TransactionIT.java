@@ -76,7 +76,7 @@ import com.braintreegateway.util.NodeWrapperFactory;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TransactionIT extends IntegrationTestNew implements MerchantAccountTestConstants {
+public class TransactionIT extends IntegrationTest implements MerchantAccountTestConstants {
 
     public static final String DISBURSEMENT_TRANSACTION_ID = "deposittransaction";
     public static final String DISPUTED_TRANSACTION_ID = "disputedtransaction";

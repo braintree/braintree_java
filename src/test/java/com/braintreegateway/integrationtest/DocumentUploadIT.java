@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DocumentUploadIT extends IntegrationTestNew {
+public class DocumentUploadIT extends IntegrationTest {
 
   private String UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\Z";
 

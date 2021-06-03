@@ -24,7 +24,7 @@ import com.braintreegateway.util.NodeWrapper;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HttpTestIT extends IntegrationTestNew {
+public class HttpTestIT extends IntegrationTest {
 
     @Test
     public void smokeTestGet() {

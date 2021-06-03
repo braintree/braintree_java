@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class OAuthIT extends IntegrationTestNew {
+public class OAuthIT extends IntegrationTest {
 
     @BeforeEach
     public void createGateway() {

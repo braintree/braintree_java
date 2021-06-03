@@ -10,7 +10,7 @@ import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ThreeDSecureIT extends IntegrationTestNew implements MerchantAccountTestConstants {
+public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTestConstants {
 
     @Test
     public void lookupThreeDSecure() {

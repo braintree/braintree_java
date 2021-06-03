@@ -14,7 +14,7 @@ import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class WebhookNotificationIT extends IntegrationTestNew {
+public class WebhookNotificationIT extends IntegrationTest {
 
     @Test
     public void createNotificationWithUnrecognizedKind() {

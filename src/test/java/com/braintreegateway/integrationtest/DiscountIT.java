@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DiscountIT extends IntegrationTestNew {
+public class DiscountIT extends IntegrationTest {
 
     private Http http;
 

@@ -9,7 +9,7 @@ import java.util.Random;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PayPalAccountIT extends IntegrationTestNew {
+public class PayPalAccountIT extends IntegrationTest {
 
     @Test
     public void findsPayPalAccountsByToken() {

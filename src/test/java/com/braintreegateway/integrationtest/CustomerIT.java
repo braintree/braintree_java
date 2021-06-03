@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CustomerIT extends IntegrationTestNew {
+public class CustomerIT extends IntegrationTest {
 
     @Test
     public void create() {

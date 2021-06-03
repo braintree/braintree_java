@@ -10,7 +10,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class BraintreeGatewayIT extends IntegrationTestNew {
+public class BraintreeGatewayIT extends IntegrationTest {
 
     @Test
     public void developmentBaseMerchantUrl() {

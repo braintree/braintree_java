@@ -17,7 +17,7 @@ import java.util.Random;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CreditCardVerificationIT extends IntegrationTestNew {
+public class CreditCardVerificationIT extends IntegrationTest {
 
     @Test
     public void createVerification() {

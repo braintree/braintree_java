@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MerchantIT extends IntegrationTestNew {
+public class MerchantIT extends IntegrationTest {
     private MerchantAccount getMerchantAccountForCurrency(Merchant merchant, String currency) {
         for (MerchantAccount merchantAccount : merchant.getMerchantAccounts()) {
             if (merchantAccount.getId().equals(currency)) {

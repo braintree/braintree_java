@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SubscriptionIT extends IntegrationTestNew implements MerchantAccountTestConstants {
+public class SubscriptionIT extends IntegrationTest implements MerchantAccountTestConstants {
 
     private Customer customer;
     private CreditCard creditCard;

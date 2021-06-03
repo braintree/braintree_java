@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DisputeIT extends IntegrationTestNew {
+public class DisputeIT extends IntegrationTest {
 
     private Http http;
 
