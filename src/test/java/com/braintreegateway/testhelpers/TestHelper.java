@@ -55,7 +55,7 @@ public abstract class TestHelper {
     }
 
     public static void assertIncludes(String expected, String all) {
-        assertTrue("Expected:\n" + all + "\nto include:\n" + expected, all.indexOf(expected) >= 0);
+        assertTrue(all.indexOf(expected) >= 0, "Expected:\n" + all + "\nto include:\n" + expected);
     }
 
     public static boolean listIncludes(List<? extends Object> list, Object expectedItem) {
