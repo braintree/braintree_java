@@ -34,7 +34,7 @@ public class MerchantAccountIT extends IntegrationTest {
         assertTrue(result.isSuccess());
         MerchantAccount ma = result.getTarget();
         assertEquals(MerchantAccount.Status.PENDING, ma.getStatus(), "account status should be pending");
-        assertEquals("submerchant id should be assigned", subMerchantAccountId, ma.getId());
+        assertEquals(subMerchantAccountId, ma.getId());
         assertEquals("sandbox_master_merchant_account", ma.getMasterMerchantAccount().getId());
         assertTrue(ma.isSubMerchant());
         assertFalse(ma.getMasterMerchantAccount().isSubMerchant());
