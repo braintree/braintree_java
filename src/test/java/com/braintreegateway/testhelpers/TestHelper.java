@@ -21,7 +21,6 @@ import javax.net.ssl.SSLContext;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled("Testing utility class")
 public abstract class TestHelper {
 
     public static final class CompareModificationsById implements Comparator<Modification> {
