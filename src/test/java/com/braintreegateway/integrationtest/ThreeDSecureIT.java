@@ -6,9 +6,9 @@ import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.BraintreeException;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTestConstants {
 

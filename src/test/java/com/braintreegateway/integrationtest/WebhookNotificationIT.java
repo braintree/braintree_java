@@ -6,13 +6,13 @@ import com.braintreegateway.exceptions.InvalidChallengeException;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
-import org.junit.Test;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WebhookNotificationIT extends IntegrationTest {
 
@@ -219,21 +219,27 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertNull(notification.getSourceMerchantId());
     }
 
-    @Test(expected = InvalidSignatureException.class)
+    @Test
     public void invalidSignatureRaisesExceptionWhenSignatureIsNull() {
-        this.gateway.webhookNotification().parse(null, "payload");
+        assertThrows(InvalidSignatureException.class, () -> {
+            this.gateway.webhookNotification().parse(null, "payload");
+        });
     }
 
-    @Test(expected = InvalidSignatureException.class)
+    @Test
     public void invalidSignatureRaisesExceptionWhenPayloadIsNull() {
-        this.gateway.webhookNotification().parse("signature", null);
+        assertThrows(InvalidSignatureException.class, () -> {
+            this.gateway.webhookNotification().parse("signature", null);
+        });
     }
 
-    @Test(expected = InvalidSignatureException.class)
+    @Test
     public void invalidSignatureRaisesException() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_WENT_PAST_DUE, "my_id");
 
-        this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature") + "bad_stuff", sampleNotification.get("bt_payload"));
+        assertThrows(InvalidSignatureException.class, () -> {
+            this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature") + "bad_stuff", sampleNotification.get("bt_payload"));
+        });
     }
 
     @Test

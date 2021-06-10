@@ -2,15 +2,14 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
 import com.braintreegateway.util.NodeWrapperFactory;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DisbursementIT extends IntegrationTest {
 

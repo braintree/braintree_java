@@ -12,34 +12,30 @@ import com.braintreegateway.ValidationErrorCode;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TransactionLevelFeeReportIT extends IntegrationTest {
     private Http http;
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
-    @Before
+    @BeforeEach
     public void createHttp() {
         http = new Http(this.gateway.getConfiguration());
     }
 
     @Test
     public void itConnectsToTheGatewayAndParsesSuccessfully() throws IOException, ParseException {
-        expectedException.expect(NotFoundException.class);
-        expectedException.expectMessage("No report exists because there are no transactions on that date.");
         TransactionLevelFeeReportRequest request = new TransactionLevelFeeReportRequest()
             .date(new GregorianCalendar(2018, 1, 1))
             .merchantAccountId("14LaddersLLC_instant");
 
-        gateway.report().transactionLevelFees(request);
+        Exception e = assertThrows(NotFoundException.class, () -> {
+            gateway.report().transactionLevelFees(request);
+        });
+
+        assertEquals(e.getMessage(), "No report exists because there are no transactions on that date.");
     }
 
     @Test

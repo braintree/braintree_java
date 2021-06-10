@@ -4,10 +4,10 @@ import com.braintreegateway.test.Nonce;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.exceptions.NotFoundException;
-import org.junit.Test;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PayPalAccountIT extends IntegrationTest {
 

@@ -2,19 +2,19 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.AddOn;
 import com.braintreegateway.util.Http;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AddOnIT extends IntegrationTest {
     private Http http;
 
-    @Before
+    @BeforeEach
     public void createHttp() {
         http = new Http(this.gateway.getConfiguration());
     }
