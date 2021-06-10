@@ -172,7 +172,7 @@ public class TransactionWithUsBankAccountIT extends IntegrationTest implements M
     }
 
     // Ignoring this test until we have a more stable CI env
-    @Disabled
+    @Disabled("Ignoring test due to unstable CI")
     @Test
     public void compliantMerchantChargePlaidNonce() {
         BraintreeGateway gateway = new BraintreeGateway(
