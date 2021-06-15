@@ -478,6 +478,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     public void saleWithAllAttributes() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
+            exchangeRateQuoteId("1qi=ds09fnobhufisfno89hfsldk").
             channel("MyShoppingCartProvider").
             orderId("123").
             productSku("productsku01").
@@ -533,6 +534,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         Transaction transaction = result.getTarget();
 
         assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
+        assertEquals("1qids09fnobhufisfno89hfsldk", transaction.getExchangeRateQuoteId());
         assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
         assertEquals("MyShoppingCartProvider", transaction.getChannel());
         assertEquals("123", transaction.getOrderId());

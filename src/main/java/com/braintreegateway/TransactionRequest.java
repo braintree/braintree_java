@@ -20,6 +20,7 @@ public class TransactionRequest extends Request {
     private String channel;
     private String customerId;
     private String deviceSessionId;
+    private String exchangeRateQuoteId;
     private String fraudMerchantId;
     private CustomerRequest customerRequest;
     private Map<String, String> customFields;
@@ -157,6 +158,11 @@ public class TransactionRequest extends Request {
     public TransactionDescriptorRequest descriptor() {
         descriptorRequest = new TransactionDescriptorRequest(this);
         return descriptorRequest;
+    }
+
+    public TransactionRequest exchangeRateQuoteId(String exchangeRateQuoteId) {
+        this.exchangeRateQuoteId = exchangeRateQuoteId;
+        return this;
     }
 
     public TransactionIndustryRequest industry() {
@@ -354,6 +360,7 @@ public class TransactionRequest extends Request {
             .addElement("deviceData", deviceData)
             .addElement("channel", channel)
             .addElement("customerId", customerId)
+            .addElement("exchangeRateQuoteId", exchangeRateQuoteId)
             .addElement("merchantAccountId", merchantAccountId)
             .addElement("orderId", orderId)
             .addElement("paymentMethodToken", paymentMethodToken)
