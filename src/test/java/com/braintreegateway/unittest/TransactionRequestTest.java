@@ -3,6 +3,7 @@ package com.braintreegateway.unittest;
 import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.testhelpers.TestHelper;
 
+import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -53,5 +54,14 @@ public class TransactionRequestTest {
         TransactionRequest request = new TransactionRequest().installments().count(10).done();
         TestHelper.assertIncludes("installments", request.toXML());
         TestHelper.assertIncludes("count", request.toXML());
+    }
+
+    @Test
+    public void toXmlIncludesExchangeRateQuoteId() {
+        TransactionRequest request = new TransactionRequest()
+            .amount(new BigDecimal(10))
+            .exchangeRateQuoteId("dummyExchangeRateQuoteId1234");
+        TestHelper.assertIncludes("amount", request.toXML());
+        TestHelper.assertIncludes("exchangeRateQuoteId", request.toXML());
     }
 }

@@ -478,8 +478,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     public void saleWithAllAttributes() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
-            exchangeRateQuoteId("1qi=ds09fnobhufisfno89hfsldk").
             channel("MyShoppingCartProvider").
+            exchangeRateQuoteId("dummyExchangeRateQuoteId-Brainree-Java").
             orderId("123").
             productSku("productsku01").
             creditCard().
@@ -534,7 +534,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         Transaction transaction = result.getTarget();
 
         assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
-        assertEquals("1qids09fnobhufisfno89hfsldk", transaction.getExchangeRateQuoteId());
         assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
         assertEquals("MyShoppingCartProvider", transaction.getChannel());
         assertEquals("123", transaction.getOrderId());
@@ -595,6 +594,42 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("MEX", shipping.getCountryCodeAlpha3());
         assertEquals("484", shipping.getCountryCodeNumeric());
     }
+
+    @Test
+    public void saleWithExchangeRateQuoteId() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            exchangeRateQuoteId("dummyExchangeRateQuoteId-Brainree-Java").
+            creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2009").
+            done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void saleErrorWithInvalidExchangeRateQuoteId() {
+        char[] chars = new char[4010];
+        Arrays.fill(chars, 'a');
+        String invalidExchangeRateQuoteId = new String(chars);
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            exchangeRateQuoteId(invalidExchangeRateQuoteId).
+            creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2009").
+            done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.EXCHANGE_RATE_QUOTE_ID_TOO_LONG,
+            result.getErrors().forObject("transaction").onField("exchangeRateQuoteId")
+                .get(0).getCode());
+    }
+
 
     @Test
     public void saleErrorWithInvalidBillingPhoneNumber() {
