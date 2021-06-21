@@ -1,3 +1,6 @@
+## Unreleased
+* Add error code `TRANSACTION_TAX_AMOUNT_IS_REQUIRED_FOR_AIB_SWEDISH` for attribute `tax-amount` in `transaction` key for AIB:Domestic transactions in sweden
+
 ## 3.10.0
 * Add `dataOnlyRequested` to `ThreeDSecureLookupRequest`
 * Add `paymentReaderCardDetails` to `TransactionCreditCardRequest`
