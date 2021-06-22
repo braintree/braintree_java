@@ -1,10 +1,10 @@
 package com.braintreegateway.unittest;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-
 import com.braintreegateway.FacilitatorDetails;
 import com.braintreegateway.util.SimpleNodeWrapper;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FacilitatorDetailsTest {
     @Test

@@ -5,15 +5,14 @@ import com.braintreegateway.CreditCardGateway;
 import com.braintreegateway.Environment;
 import com.braintreegateway.exceptions.NotFoundException;
 
-import org.junit.Test;
-import org.junit.Before;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CreditCardGatewayTest {
     private BraintreeGateway gateway;
 
-    @Before
+    @BeforeEach
     public void createGateway() {
         this.gateway = new BraintreeGateway(
             Environment.DEVELOPMENT,
@@ -23,15 +22,19 @@ public class CreditCardGatewayTest {
         );
     }
 
-    @Test(expected=NotFoundException.class)
-    public void findHandlesNullPointer() {
+    @Test
+    public void findThrowsNotFoundExceptionOnNullPointer() {
         CreditCardGateway creditCardGateway = this.gateway.creditCard();
-        creditCardGateway.find(null);
+        assertThrows(NotFoundException.class, () -> {
+            creditCardGateway.find(null);
+        });
     }
 
-    @Test(expected=NotFoundException.class)
-    public void fromNonceHandlesNullPointer() {
+    @Test
+    public void fromNonceThrowsNotFoundExceptionOnNullPointer() {
         CreditCardGateway creditCardGateway = this.gateway.creditCard();
-        creditCardGateway.fromNonce(null);
+        assertThrows(NotFoundException.class, () -> {
+            creditCardGateway.fromNonce(null);
+        });
     }
 }

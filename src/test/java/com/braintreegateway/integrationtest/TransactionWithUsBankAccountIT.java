@@ -2,15 +2,15 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
-import org.junit.Test;
-import org.junit.Ignore;
 
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TransactionWithUsBankAccountIT extends IntegrationTest implements MerchantAccountTestConstants {
     @Test
@@ -172,7 +172,7 @@ public class TransactionWithUsBankAccountIT extends IntegrationTest implements M
     }
 
     // Ignoring this test until we have a more stable CI env
-    @Ignore
+    @Disabled("Ignoring test due to unstable CI")
     @Test
     public void compliantMerchantChargePlaidNonce() {
         BraintreeGateway gateway = new BraintreeGateway(

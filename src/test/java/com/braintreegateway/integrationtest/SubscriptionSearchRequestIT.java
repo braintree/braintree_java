@@ -2,14 +2,14 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.Subscription.Status;
 import com.braintreegateway.SubscriptionSearchRequest;
-import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SubscriptionSearchRequestIT {
     @Test

@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 public class IntegrationTest {
 
@@ -29,41 +29,41 @@ public class IntegrationTest {
     protected static StreamHandler customLogHandler;
 
 
-    @Before
+    @BeforeEach
     public void createGateway() {
         this.gateway = new BraintreeGateway(
-            Environment.DEVELOPMENT,
-            "integration_merchant_id",
-            "integration_public_key",
-            "integration_private_key"
+                Environment.DEVELOPMENT,
+                "integration_merchant_id",
+                "integration_public_key",
+                "integration_private_key"
         );
     }
 
     public void createAdvancedFraudKountMerchantGateway() {
         this.gateway = new BraintreeGateway(
-            Environment.DEVELOPMENT,
-            "advanced_fraud_integration_merchant_id",
-            "advanced_fraud_integration_public_key",
-            "advanced_fraud_integration_private_key"
+                Environment.DEVELOPMENT,
+                "advanced_fraud_integration_merchant_id",
+                "advanced_fraud_integration_public_key",
+                "advanced_fraud_integration_private_key"
         );
     }
 
     public void createFraudProtectionEnterpriseMerchantGateway() {
         this.gateway = new BraintreeGateway(
-            Environment.DEVELOPMENT,
-            "fraud_protection_enterprise_integration_merchant_id",
-            "fraud_protection_enterprise_integration_public_key",
-            "fraud_protection_enterprise_integration_private_key"
+                Environment.DEVELOPMENT,
+                "fraud_protection_enterprise_integration_merchant_id",
+                "fraud_protection_enterprise_integration_public_key",
+                "fraud_protection_enterprise_integration_private_key"
         );
     }
 
     protected Transaction createDisputedTransaction() throws InterruptedException {
         TransactionRequest request = new TransactionRequest()
-            .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
-            .creditCard()
-            .number(SandboxValues.Dispute.CHARGEBACK)
-            .expirationDate("05/2010")
-            .done();
+                .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
+                .creditCard()
+                .number(SandboxValues.Dispute.CHARGEBACK)
+                .expirationDate("05/2010")
+                .done();
 
         return this.gateway.transaction().sale(request).getTarget();
     }
@@ -88,8 +88,8 @@ public class IntegrationTest {
         oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest()
-            .id().is(this.disputedTransaction.getId())
-            .disputeDate().between(oneDayEarlier, oneDayLater);
+                .id().is(this.disputedTransaction.getId())
+                .disputeDate().between(oneDayEarlier, oneDayLater);
 
         for (int i=0; i<90; i++) {
             Thread.sleep(1000);
@@ -103,7 +103,7 @@ public class IntegrationTest {
         return this.disputedTransaction;
     }
 
-    @Before
+    @BeforeEach
     public void ignoreLogging() {
         if (this.gateway == null) {
             createGateway();
@@ -127,7 +127,7 @@ public class IntegrationTest {
 
     protected String getTestCapturedLog()
     {
-      customLogHandler.flush();
-      return logCapturingStream.toString();
+        customLogHandler.flush();
+        return logCapturingStream.toString();
     }
 }

@@ -3,14 +3,13 @@ package com.braintreegateway.unittest.util;
 import com.braintreegateway.CreditCard;
 import com.braintreegateway.Transaction;
 import com.braintreegateway.util.StringUtils;
-import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class StringUtilsTest {
 

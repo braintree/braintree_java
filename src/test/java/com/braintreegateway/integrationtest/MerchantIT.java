@@ -3,12 +3,12 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.TransactionAmount;
-import org.junit.Test;
-import org.junit.Before;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MerchantIT extends IntegrationTest {
     private MerchantAccount getMerchantAccountForCurrency(Merchant merchant, String currency) {
@@ -20,7 +20,7 @@ public class MerchantIT extends IntegrationTest {
         return null;
     }
 
-    @Before
+    @BeforeEach
     public void createGateway() {
         this.gateway = new BraintreeGateway(
             "client_id$development$integration_client_id",

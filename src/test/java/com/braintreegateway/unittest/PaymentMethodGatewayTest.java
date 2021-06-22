@@ -4,19 +4,18 @@ import com.braintreegateway.*;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import com.braintreegateway.util.Http;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.mockito.Mockito;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PaymentMethodGatewayTest {
     private BraintreeGateway gateway;
 
-    @Before
+    @BeforeEach
     public void createGateway() {
         this.gateway = new BraintreeGateway(
                 Environment.DEVELOPMENT,
@@ -36,11 +35,14 @@ public class PaymentMethodGatewayTest {
         assertTrue(result.getTarget() instanceof UnknownPaymentMethod);
     }
 
-    @Test(expected= NotFoundException.class)
-    public void findHandlesNullPointer() {
+    @Test
+    public void findThrowsNotFoundExceptionOnNullPointer() {
         PaymentMethodGateway paymentMethodGateway = this.gateway.paymentMethod();
-        paymentMethodGateway.find(null);
+        assertThrows(NotFoundException.class, () -> {
+            paymentMethodGateway.find(null);
+        });
     }
+    
     @Test
     public void deleteAndRevokeAllGrants() {
         Http http = Mockito.mock(Http.class);

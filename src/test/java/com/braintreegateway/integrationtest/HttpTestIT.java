@@ -21,12 +21,8 @@ import com.braintreegateway.exceptions.ServerException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HttpTestIT extends IntegrationTest {
 
@@ -133,10 +129,13 @@ public class HttpTestIT extends IntegrationTest {
         }
     }
 
-    @Test(expected = AuthenticationException.class)
+    @Test
     public void authenticationException() {
         BraintreeGateway gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "bad_public_key", "bad_private_key");
-        new Http(gateway.getConfiguration()).get("/");
+
+        assertThrows(AuthenticationException.class, () -> {
+            new Http(gateway.getConfiguration()).get("/");
+        });
     }
 
     @Test
@@ -156,18 +155,24 @@ public class HttpTestIT extends IntegrationTest {
         }
     }
 
-    @Test(expected = AuthenticationException.class)
+    @Test
     public void sslCertificateSuccessfulInSandbox() {
         BraintreeGateway gateway = new BraintreeGateway(Environment.SANDBOX, "integration_merchant_id", "integration_public_key", "integration_private_key");
         Http http = new Http(gateway.getConfiguration());
-        http.get("/");
+
+        assertThrows(AuthenticationException.class, () -> {
+            http.get("/");
+        });
     }
 
-    @Test(expected = AuthenticationException.class)
+    @Test
     public void sslCertificateSuccessfulInProduction() {
         BraintreeGateway gateway = new BraintreeGateway(Environment.PRODUCTION, "integration_merchant_id", "integration_public_key", "integration_private_key");
         Http http = new Http(gateway.getConfiguration());
-        http.get("/");
+
+        assertThrows(AuthenticationException.class, () -> {
+            http.get("/");
+        });
     }
 
     @Test

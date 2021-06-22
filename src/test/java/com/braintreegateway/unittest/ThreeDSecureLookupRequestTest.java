@@ -9,8 +9,8 @@ import com.braintreegateway.ThreeDSecureLookupAdditionalInformation;
 import java.util.Map;
 import com.fasterxml.jackson.jr.ob.JSON;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ThreeDSecureLookupRequestTest {
 

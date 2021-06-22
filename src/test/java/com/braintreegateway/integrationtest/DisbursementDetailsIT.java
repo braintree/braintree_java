@@ -3,13 +3,13 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.DisbursementDetails;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.util.NodeWrapper;
-import org.junit.Test;
 
 import java.text.ParseException;
 import java.util.Calendar;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

@@ -40,7 +40,6 @@ import com.braintreegateway.PaymentMethod;
 import com.braintreegateway.PaymentMethodGrantRequest;
 import com.braintreegateway.PaymentMethodNonce;
 import com.braintreegateway.PaymentMethodRequest;
-import com.braintreegateway.CreditCardRequest;
 import com.braintreegateway.ProcessorResponseType;
 import com.braintreegateway.ResourceCollection;
 import com.braintreegateway.Result;
@@ -74,14 +73,8 @@ import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
 import com.braintreegateway.util.NodeWrapperFactory;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TransactionIT extends IntegrationTest implements MerchantAccountTestConstants {
 
@@ -4373,14 +4366,18 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("05/2008", foundTransaction.getCreditCard().getExpirationDate());
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void findWithBadId() {
-        gateway.transaction().find("badId");
+        assertThrows(NotFoundException.class, () -> {
+            gateway.transaction().find("badId");
+        });
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void findWithWhitespaceId() {
-        gateway.transaction().find(" ");
+        assertThrows(NotFoundException.class, () -> {
+            gateway.transaction().find(" ");
+        });
     }
 
     @Test
@@ -4528,9 +4525,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.VOIDED, result.getTarget().getStatus());
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void voidWithBadId() {
-        gateway.transaction().voidTransaction("badId");
+        assertThrows(NotFoundException.class, () -> {
+            gateway.transaction().voidTransaction("badId");
+        });
     }
 
     @Test
@@ -4875,9 +4874,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void submitForSettlementWithBadId() {
-        gateway.transaction().submitForSettlement("badId");
+        assertThrows(NotFoundException.class, () -> {
+            gateway.transaction().submitForSettlement("badId");
+        });
     }
 
     @Test
@@ -6241,12 +6242,14 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
-    @Test(expected = UnexpectedException.class)
+    @Test
     public void searchReturnsAndHandlesInvalidCriteria() {
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             amount().is(new BigDecimal("-500"));
 
-        gateway.transaction().search(searchRequest);
+        assertThrows(UnexpectedException.class, () -> {
+            gateway.transaction().search(searchRequest);
+        });
     }
 
     @Test
@@ -7724,6 +7727,44 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(ValidationErrorCode.TRANSACTION_INVALID_PRESENTMENT_CURRENCY,
                 result.getErrors().forObject("transaction").onField("currency-iso-code").get(0).getCode());
     }
+
+    @Test
+    public void saleWithCreditCardToVerifyErrorCodeTaxAmountIsRequiredForAibSwedish() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                merchantAccountId(AIB_SWEDEN_MERCHANT_ACCOUNT_ID).
+                creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2030").
+                done().
+                currencyIsoCode("SEK");
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_TAX_AMOUNT_IS_REQUIRED_FOR_AIB_SWEDISH,
+                result.getErrors().forObject("transaction").onField("tax-amount").get(0).getCode());
+    }
+
+    @Test
+    public void saleWithPaymentMethodTokenToVerifyErrorCodeTaxAmountIsRequiredForAibSwedish() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+                customerId(customer.getId()).
+                number("5105105105105100").
+                expirationDate("05/30");
+        CreditCard creditCard = gateway.creditCard().create(creditCardRequest).getTarget();
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                merchantAccountId(AIB_SWEDEN_MERCHANT_ACCOUNT_ID).
+                paymentMethodToken(creditCard.getToken()).
+                creditCard().
+                done().
+                currencyIsoCode("SEK");
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_TAX_AMOUNT_IS_REQUIRED_FOR_AIB_SWEDISH,
+                result.getErrors().forObject("transaction").onField("tax-amount").get(0).getCode());
+    }
+
 
     @Test
     public void saleWithPaymentMethodNonceAndCurrencyIsoCodeSpecified() {

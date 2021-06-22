@@ -1,12 +1,12 @@
 package com.braintreegateway.unittest;
 
 import java.util.Calendar;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 import com.braintreegateway.UsBankAccountVerification;
 import com.braintreegateway.util.SimpleNodeWrapper;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UsBankAccountVerificationTest {
     @Test

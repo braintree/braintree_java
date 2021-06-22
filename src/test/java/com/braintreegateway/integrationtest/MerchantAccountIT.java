@@ -1,13 +1,13 @@
 package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
-import org.junit.Test;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.testhelpers.TestHelper;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MerchantAccountIT extends IntegrationTest {
 
@@ -15,10 +15,10 @@ public class MerchantAccountIT extends IntegrationTest {
     public void createRequiresNoId() {
         Result<MerchantAccount> result = gateway.merchantAccount().create(creationRequest());
 
-        assertTrue("merchant account creation should succeed", result.isSuccess());
+        assertTrue(result.isSuccess());
 
         MerchantAccount ma = result.getTarget();
-        assertEquals("account status should be pending", MerchantAccount.Status.PENDING, ma.getStatus());
+        assertEquals(MerchantAccount.Status.PENDING, ma.getStatus(), "account status should be pending");
         assertEquals("sandbox_master_merchant_account", ma.getMasterMerchantAccount().getId());
         assertTrue(ma.isSubMerchant());
         assertFalse(ma.getMasterMerchantAccount().isSubMerchant());
@@ -31,10 +31,10 @@ public class MerchantAccountIT extends IntegrationTest {
         MerchantAccountRequest request = creationRequest().id(subMerchantAccountId);
         Result<MerchantAccount> result = gateway.merchantAccount().create(request);
 
-        assertTrue("merchant account creation should succeed", result.isSuccess());
+        assertTrue(result.isSuccess());
         MerchantAccount ma = result.getTarget();
-        assertEquals("account status should be pending", MerchantAccount.Status.PENDING, ma.getStatus());
-        assertEquals("submerchant id should be assigned", subMerchantAccountId, ma.getId());
+        assertEquals(MerchantAccount.Status.PENDING, ma.getStatus(), "account status should be pending");
+        assertEquals(subMerchantAccountId, ma.getId());
         assertEquals("sandbox_master_merchant_account", ma.getMasterMerchantAccount().getId());
         assertTrue(ma.isSubMerchant());
         assertFalse(ma.getMasterMerchantAccount().isSubMerchant());
@@ -58,7 +58,7 @@ public class MerchantAccountIT extends IntegrationTest {
                 done();
         Result<MerchantAccount> result = gateway.merchantAccount().create(request);
 
-        assertTrue("merchant account creation should succeed", result.isSuccess());
+        assertTrue(result.isSuccess());
     }
 
     @Test
@@ -70,7 +70,7 @@ public class MerchantAccountIT extends IntegrationTest {
                 done();
         Result<MerchantAccount> result = gateway.merchantAccount().create(request);
 
-        assertTrue("merchant account creation should succeed", result.isSuccess());
+        assertTrue(result.isSuccess());
     }
 
     @Test
@@ -82,21 +82,21 @@ public class MerchantAccountIT extends IntegrationTest {
                 done();
         Result<MerchantAccount> result = gateway.merchantAccount().create(request);
 
-        assertTrue("merchant account creation should succeed", result.isSuccess());
+        assertTrue(result.isSuccess());
     }
 
     @Test
     public void findMerchantAccountWithGivenToken() {
         Result<MerchantAccount> result = gateway.merchantAccount().create(creationRequest());
-        assertTrue("merchant account creation should succeed", result.isSuccess());
+        assertTrue(result.isSuccess());
         MerchantAccount ma = result.getTarget();
-        assertEquals("account status should be pending", MerchantAccount.Status.PENDING, ma.getStatus());
+        assertEquals(MerchantAccount.Status.PENDING, ma.getStatus(), "account status should be pending");
 
         String merchantAccountId = ma.getId();
 
         MerchantAccount found_ma = gateway.merchantAccount().find(merchantAccountId);
-        assertEquals("found account individual first name should match original", "Job", found_ma.getIndividualDetails().getFirstName());
-        assertEquals("found account individual last name should match original", "Leoggs", found_ma.getIndividualDetails().getLastName());
+        assertEquals("Job", found_ma.getIndividualDetails().getFirstName());
+        assertEquals("Leoggs", found_ma.getIndividualDetails().getLastName());
     }
 
     @Test
@@ -113,7 +113,7 @@ public class MerchantAccountIT extends IntegrationTest {
         MerchantAccountRequest request = creationRequest().
             masterMerchantAccountId(null);
         Result<MerchantAccount> updateResult = gateway.merchantAccount().update("sandbox_sub_merchant_account", request);
-        assertTrue("merchant account update should succeed", updateResult.isSuccess());
+        assertTrue(updateResult.isSuccess());
         MerchantAccount merchantAccount = updateResult.getTarget();
         assertEquals("Job", merchantAccount.getIndividualDetails().getFirstName());
         assertEquals("Leoggs", merchantAccount.getIndividualDetails().getLastName());

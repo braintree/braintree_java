@@ -4,13 +4,13 @@ import com.braintreegateway.CreditCardRequest;
 import com.braintreegateway.Request;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.QueryString;
-import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class QueryStringTest {
     @Test

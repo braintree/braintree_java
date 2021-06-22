@@ -1,14 +1,12 @@
 package com.braintreegateway.unittest;
 
 import com.braintreegateway.ThreeDSecureLookup;
-import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ThreeDSecureLookupTest {
 

@@ -14,15 +14,13 @@ import com.braintreegateway.org.apache.commons.codec.binary.Base64;
 import com.braintreegateway.util.*;
 import com.fasterxml.jackson.jr.ob.JSON;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-@Ignore("Testing utility class")
 public abstract class TestHelper {
 
     public static final class CompareModificationsById implements Comparator<Modification> {
@@ -56,7 +54,7 @@ public abstract class TestHelper {
     }
 
     public static void assertIncludes(String expected, String all) {
-        assertTrue("Expected:\n" + all + "\nto include:\n" + expected, all.indexOf(expected) >= 0);
+        assertTrue(all.indexOf(expected) >= 0, "Expected:\n" + all + "\nto include:\n" + expected);
     }
 
     public static boolean listIncludes(List<? extends Object> list, Object expectedItem) {
