@@ -25,6 +25,16 @@ public class WebhookNotificationGateway {
         if (signature == null) {
             throw new InvalidSignatureException("signature cannot be null");
         }
+        return parse(signature, payload, true);
+    }
+
+    // this method is only available in the Java SDK for select merchants;
+    // we highly encourage using WebhookNotificationGateway#parse() instead
+    public WebhookNotification parseWithoutSignatureVerification(String payload) {
+        return parse(null, payload, false);
+    }
+
+    private WebhookNotification parse(String signature, String payload, boolean shouldValidateSignature) {
         if (payload == null) {
             throw new InvalidSignatureException("payload cannot be null");
         }
@@ -32,7 +42,9 @@ public class WebhookNotificationGateway {
         if (m.find()) {
           throw new InvalidSignatureException("payload contains illegal characters");
         }
-        validateSignature(signature, payload);
+        if (shouldValidateSignature) {
+            validateSignature(signature, payload);
+        }
         String xmlPayload = new String(Base64.decodeBase64(payload));
         NodeWrapper node = NodeWrapperFactory.instance.create(xmlPayload);
         return new WebhookNotification(node);
