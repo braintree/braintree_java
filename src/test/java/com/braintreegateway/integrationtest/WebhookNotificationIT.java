@@ -220,6 +220,14 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test
+    public void parseWithoutSignatureVerification_parsesWebhook() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_CHARGED_SUCCESSFULLY, "my_id");
+        WebhookNotification notification = this.gateway.webhookNotification().parseWithoutSignatureVerification(sampleNotification.get("bt_payload"));
+
+        assertNotNull(notification);
+    }
+
+    @Test
     public void invalidSignatureRaisesExceptionWhenSignatureIsNull() {
         assertThrows(InvalidSignatureException.class, () -> {
             this.gateway.webhookNotification().parse(null, "payload");

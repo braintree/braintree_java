@@ -95,8 +95,8 @@ public class MerchantAccountIT extends IntegrationTest {
         String merchantAccountId = ma.getId();
 
         MerchantAccount found_ma = gateway.merchantAccount().find(merchantAccountId);
-        assertEquals("found account individual first name should match original", "Job", found_ma.getIndividualDetails().getFirstName());
-        assertEquals("found account individual last name should match original", "Leoggs", found_ma.getIndividualDetails().getLastName());
+        assertEquals("Job", found_ma.getIndividualDetails().getFirstName());
+        assertEquals("Leoggs", found_ma.getIndividualDetails().getLastName());
     }
 
     @Test
