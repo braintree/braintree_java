@@ -630,7 +630,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 .get(0).getCode());
     }
 
-
     @Test
     public void saleErrorWithInvalidBillingPhoneNumber() {
         TransactionRequest request = new TransactionRequest().
