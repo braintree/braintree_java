@@ -1,7 +1,5 @@
 ## Unreleased
 * Add `exchangeRateQuoteId` to `TransactionRequest`
-* Add `exchangeRateQuoteId` to `Transaction`
-
 
 ## 3.10.0
 * Add `dataOnlyRequested` to `ThreeDSecureLookupRequest`

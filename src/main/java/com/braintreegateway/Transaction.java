@@ -153,7 +153,6 @@ public class Transaction {
     private Descriptor descriptor;
     private List<Discount> discounts;
     private EscrowStatus escrowStatus;
-    private String exchangeRateQuoteId;
     private GatewayRejectionReason gatewayRejectionReason;
     private String graphqlId;
     private String id;
@@ -231,7 +230,6 @@ public class Transaction {
         customFields = node.findMap("custom-fields/*");
         cvvResponseCode = node.findString("cvv-response-code");
         escrowStatus = EnumUtils.findByName(EscrowStatus.class, node.findString("escrow-status"), EscrowStatus.UNRECOGNIZED);
-        exchangeRateQuoteId = node.findString("exchange-rate-quote-id");
         gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"), GatewayRejectionReason.UNRECOGNIZED);
         graphqlId = node.findString("global-id");
         id = node.findString("id");
@@ -497,10 +495,6 @@ public class Transaction {
 
     public EscrowStatus getEscrowStatus() {
         return escrowStatus;
-    }
-
-    public String getExchangeRateQuoteId() {
-        return exchangeRateQuoteId;
     }
 
     public GatewayRejectionReason getGatewayRejectionReason() {
