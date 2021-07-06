@@ -157,6 +157,15 @@ public class PaymentMethodNonceTest {
                 "    <cardholder-name>Visa Apple Pay Cardholder</cardholder-name>" +
                 "    <payment-instrument-name>Visa 8886</payment-instrument-name>" +
                 "    <dpan-last-two>81</dpan-last-two>" +
+                "    <commercial>a-commercial<commercial>"
+                "    <debit>a-debit<debit>"
+                "    <durbin-regulated>a-durbin-regulated<durbin-regulated>"
+                "    <healthcare>a-healthcare<healthcare>"
+                "    <payroll>a-payroll<payroll>"
+                "    <prepaid>a-prepaid<prepaid>"
+                "    <product-id>a-product-id<product-id>"
+                "    <country-of-issuance>a-country-of-issuance<country-of-issuance>"
+                "    <issuing-bank>an-issuing-bank<issuing-bank>"
                 "  </details>" +
                 "</payment-method-nonce>";
 
@@ -172,6 +181,16 @@ public class PaymentMethodNonceTest {
         assertEquals("Visa Apple Pay Cardholder", paymentMethodNonce.getDetails().getCardholderName());
         assertEquals("Visa 8886", paymentMethodNonce.getDetails().getPaymentInstrumentName());
         assertEquals("81", paymentMethodNonce.getDetails().getDpanLastTwo());
+
+        assertEquals("a-commercial", paymentMethodNonce.getDetails().getCommercial());
+        assertEquals("a-debit", paymentMethodNonce.getDetails().getDebit());
+        assertEquals("a-durbin-regulated", paymentMethodNonce.getDetails().getDurbinRegulated());
+        assertEquals("a-healthcare", paymentMethodNonce.getDetails().getHealthcare());
+        assertEquals("a-payroll", paymentMethodNonce.getDetails().getPayroll());
+        assertEquals("a-prepaid", paymentMethodNonce.getDetails().getPrepaid());
+        assertEquals("a-product-id", paymentMethodNonce.getDetails().getProductId());
+        assertEquals("a-country-of-issuance", paymentMethodNonce.getDetails().getCountryOfIssuance());
+        assertEquals("issuing-bank", paymentMethodNonce.getDetails().getIssuingBank());
     }
 
     @Test
