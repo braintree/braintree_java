@@ -19,6 +19,8 @@ public class PayPalDetails {
     private String sellerProtectionStatus;
     private String captureId;
     private String refundId;
+    private String taxId;
+    private String taxIdType;
     private String transactionFeeAmount;
     private String transactionFeeCurrencyIsoCode;
     private String refundFromTransactionFeeAmount;
@@ -45,6 +47,8 @@ public class PayPalDetails {
         sellerProtectionStatus = node.findString("seller-protection-status");
         refundId = node.findString("refund-id");
         captureId = node.findString("capture-id");
+        taxId = node.findString("tax-id");
+        taxIdType = node.findString("tax-id-type");
         transactionFeeAmount = node.findString("transaction-fee-amount");
         transactionFeeCurrencyIsoCode = node.findString("transaction-fee-currency-iso-code");
         refundFromTransactionFeeAmount = node.findString("refund-from-transaction-fee-amount");
@@ -117,6 +121,14 @@ public class PayPalDetails {
 
     public String getRefundId() {
       return refundId;
+    }
+
+    public String getTaxId() {
+      return taxId;
+    }
+
+    public String getTaxIdType() {
+      return taxIdType;
     }
 
     public String getTransactionFeeAmount() {

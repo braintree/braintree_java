@@ -6917,6 +6917,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getImageUrl());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getTaxId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getTaxIdType());
         assertNull(saleResult.getTarget().getPayPalDetails().getToken());
 
         assertEquals(
