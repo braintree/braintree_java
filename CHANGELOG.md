@@ -1,6 +1,16 @@
 ## Unreleased
 * Add `exchangeRateQuoteId` to `TransactionRequest`
 * Add `EXCHANGE_RATE_QUOTE_ID_TOO_LONG` to `ValidationErrorCode`
+* Add the following fields to `AndroidPayCard` and `ApplePayCard`:
+  * `commercial`
+  * `debit`
+  * `durbinRegulated`
+  * `healthcare`
+  * `payroll`
+  * `prepaid`
+  * `productId`
+  * `countryOfIssuance`
+  * `issuingBank`
 
 ## 3.11.0
 * Add error code `TRANSACTION_TAX_AMOUNT_IS_REQUIRED_FOR_AIB_SWEDISH` for attribute `tax-amount` in `transaction` key for AIB:Domestic transactions in sweden
