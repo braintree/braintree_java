@@ -22,6 +22,15 @@ public class ApplePayCard implements PaymentMethod {
     private Calendar createdAt;
     private Calendar updatedAt;
     private List<Subscription> subscriptions;
+    private String prepaid;
+    private String healthcare;
+    private String debit;
+    private String durbinRegulated;
+    private String commercial;
+    private String payroll;
+    private String issuingBank;
+    private String countryOfIssuance;
+    private String productId;
 
     public ApplePayCard(NodeWrapper node) {
         this.token = node.findString("token");
@@ -40,6 +49,15 @@ public class ApplePayCard implements PaymentMethod {
         this.createdAt = node.findDateTime("created-at");
         this.updatedAt = node.findDateTime("updated-at");
         this.subscriptions = new ArrayList<Subscription>();
+        this.prepaid = node.findString("prepaid");
+        this.healthcare = node.findString("healthcare");
+        this.debit = node.findString("debit");
+        this.durbinRegulated = node.findString("durbin-regulated");
+        this.commercial = node.findString("commercial");
+        this.payroll = node.findString("payroll");
+        this.issuingBank = node.findString("issuing-bank");
+        this.countryOfIssuance = node.findString("country-of-issuance");
+        this.productId = node.findString("product-id");
         for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
             this.subscriptions.add(new Subscription(subscriptionResponse));
         }
@@ -108,5 +126,41 @@ public class ApplePayCard implements PaymentMethod {
 
     public String getCardholderName() {
         return cardholderName;
+    }
+
+    public String getPrepaid() {
+        return prepaid;
+    }
+
+    public String getHealthcare() {
+        return healthcare;
+    }
+
+    public String getDebit() {
+        return debit;
+    }
+
+    public String getDurbinRegulated() {
+        return durbinRegulated;
+    }
+
+    public String getCommercial() {
+        return commercial;
+    }
+
+    public String getPayroll() {
+        return payroll;
+    }
+
+    public String getIssuingBank() {
+        return issuingBank;
+    }
+
+    public String getCountryOfIssuance() {
+        return countryOfIssuance;
+    }
+
+    public String getProductId() {
+        return productId;
     }
 }
