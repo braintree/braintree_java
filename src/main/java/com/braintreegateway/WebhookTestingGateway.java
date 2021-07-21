@@ -79,6 +79,8 @@ public class WebhookTestingGateway {
             case GRANTED_PAYMENT_METHOD_REVOKED: return grantedPaymentMethodRevokedXml(id);
             case PAYMENT_METHOD_REVOKED_BY_CUSTOMER: return paymentMethodRevokedByCustomerXml(id);
             case LOCAL_PAYMENT_COMPLETED: return localPaymentCompletedXml();
+            case LOCAL_PAYMENT_EXPIRED: return localPaymentExpiredXml();
+            case LOCAL_PAYMENT_FUNDED: return localPaymentFundedXml();
             case LOCAL_PAYMENT_REVERSED: return localPaymentReversedXml();
             default: return subscriptionXml(id);
         }
@@ -526,6 +528,26 @@ public class WebhookTestingGateway {
                      node("order-id", "order1234")
                     )
                 );
+    }
+
+    private String localPaymentFundedXml() {
+        return node("local-payment-funded",
+                node("payment-id", "a-payment-id"),
+                node("payment-context-id", "a-payment-context-id"),
+                node("transaction",
+                     node("id", "1"),
+                     node("status", "settled"),
+                     node("amount", "10.00"),
+                     node("order-id", "order1234")
+                    )
+        );
+    }
+
+    private String localPaymentExpiredXml() {
+        return node("local-payment-expired",
+                node("payment-id", "a-payment-id"),
+                node("payment-context-id", "a-payment-context-id")
+        );
     }
 
     private String localPaymentReversedXml() {
