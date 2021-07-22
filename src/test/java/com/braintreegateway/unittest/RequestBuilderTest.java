@@ -3,7 +3,7 @@ package com.braintreegateway.unittest;
 import com.braintreegateway.RequestBuilder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +46,7 @@ public class RequestBuilderTest {
     @Test
     public void map() {
         Open builder = new Open();
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new LinkedHashMap<String, Object>();
         map.put("color", "green");
         map.put("insect", "bee");
         String element = builder.formatMap("examples", map);
