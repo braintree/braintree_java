@@ -21,6 +21,8 @@ public class WebhookNotification {
         GRANTED_PAYMENT_METHOD_REVOKED("granted_payment_method_revoked"),
         GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD("grantor_updated_granted_payment_method"),
         LOCAL_PAYMENT_COMPLETED("local_payment_completed"),
+        LOCAL_PAYMENT_EXPIRED("local_payment_expired"),
+        LOCAL_PAYMENT_FUNDED("local_payment_funded"),
         LOCAL_PAYMENT_REVERSED("local_payment_reversed"),
         OAUTH_ACCESS_REVOKED("oauth_access_revoked"),
         PARTNER_MERCHANT_DISCONNECTED("partner_merchant_disconnected"),
@@ -64,6 +66,8 @@ public class WebhookNotification {
     private GrantedPaymentInstrumentUpdate grantedPaymentInstrumentUpdate;
     private Kind kind;
     private LocalPaymentCompleted localPaymentCompleted;
+    private LocalPaymentExpired localPaymentExpired;
+    private LocalPaymentFunded localPaymentFunded;
     private LocalPaymentReversed localPaymentReversed;
     private MerchantAccount merchantAccount;
     private OAuthAccessRevocation oauthAccessRevocation;
@@ -156,6 +160,16 @@ public class WebhookNotification {
             this.localPaymentCompleted = new LocalPaymentCompleted(localPaymentNode);
         }
 
+        NodeWrapper localPaymentExpiredNode = wrapperNode.findFirst("local-payment-expired");
+        if (localPaymentExpiredNode != null && kind == Kind.LOCAL_PAYMENT_EXPIRED) {
+            this.localPaymentExpired = new LocalPaymentExpired(localPaymentExpiredNode);
+        }
+
+        NodeWrapper localPaymentFundedNode = wrapperNode.findFirst("local-payment-funded");
+        if (localPaymentFundedNode != null && kind == Kind.LOCAL_PAYMENT_FUNDED) {
+            this.localPaymentFunded = new LocalPaymentFunded(localPaymentFundedNode);
+        }
+
         if (!wrapperNode.isSuccess()) {
             this.errors = new ValidationErrors(wrapperNode);
         }
@@ -227,6 +241,14 @@ public class WebhookNotification {
 
     public LocalPaymentCompleted getLocalPaymentCompleted() {
         return this.localPaymentCompleted;
+    }
+
+    public LocalPaymentExpired getLocalPaymentExpired() {
+        return this.localPaymentExpired;
+    }
+
+    public LocalPaymentFunded getLocalPaymentFunded() {
+        return this.localPaymentFunded;
     }
 
     public LocalPaymentReversed getLocalPaymentReversed() {

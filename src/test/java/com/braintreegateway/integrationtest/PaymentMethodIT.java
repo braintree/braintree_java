@@ -325,6 +325,15 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(applePayCard.getSubscriptions());
         assertNotNull(applePayCard.getLast4());
         assertNotNull(applePayCard.getCustomerId());
+        assertNotNull(applePayCard.getCommercial());
+        assertNotNull(applePayCard.getDebit());
+        assertNotNull(applePayCard.getDurbinRegulated());
+        assertNotNull(applePayCard.getHealthcare());
+        assertNotNull(applePayCard.getPrepaid());
+        assertNotNull(applePayCard.getPayroll());
+        assertNotNull(applePayCard.getProductId());
+        assertNotNull(applePayCard.getCountryOfIssuance());
+        assertNotNull(applePayCard.getIssuingBank());
         assertTrue(applePayCard.getSubscriptions().isEmpty());
     }
 
@@ -436,6 +445,15 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(androidPayCard.getUpdatedAt());
         assertNotNull(androidPayCard.getSubscriptions());
         assertNotNull(androidPayCard.getCustomerId());
+        assertNotNull(androidPayCard.getCommercial());
+        assertNotNull(androidPayCard.getDebit());
+        assertNotNull(androidPayCard.getDurbinRegulated());
+        assertNotNull(androidPayCard.getHealthcare());
+        assertNotNull(androidPayCard.getPayroll());
+        assertNotNull(androidPayCard.getPrepaid());
+        assertNotNull(androidPayCard.getProductId());
+        assertNotNull(androidPayCard.getCountryOfIssuance());
+        assertNotNull(androidPayCard.getIssuingBank());
         assertTrue(androidPayCard.getSubscriptions().isEmpty());
     }
 

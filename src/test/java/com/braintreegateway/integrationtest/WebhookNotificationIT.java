@@ -744,6 +744,35 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test
+    public void createsLocalPaymentExpired() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.LOCAL_PAYMENT_EXPIRED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.LOCAL_PAYMENT_EXPIRED, notification.getKind());
+        assertEquals("a-payment-id", notification.getLocalPaymentExpired().getPaymentId());
+        assertEquals("a-payment-context-id", notification.getLocalPaymentExpired().getPaymentContextId());
+    }
+
+    @Test
+    public void createsLocalPaymentFunded() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.LOCAL_PAYMENT_FUNDED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.LOCAL_PAYMENT_FUNDED, notification.getKind());
+        assertEquals("a-payment-id", notification.getLocalPaymentFunded().getPaymentId());
+        assertEquals("a-payment-context-id", notification.getLocalPaymentFunded().getPaymentContextId());
+
+        Transaction transaction = notification.getLocalPaymentFunded().getTransaction();
+
+        assertNotNull(transaction);
+        assertEquals("1", transaction.getId());
+        assertEquals(Transaction.Status.SETTLED, transaction.getStatus());
+        assertEquals("order1234", transaction.getOrderId());
+    }
+
+    @Test
     public void createsLocalPaymentReversed() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.LOCAL_PAYMENT_REVERSED, "my_id");
 

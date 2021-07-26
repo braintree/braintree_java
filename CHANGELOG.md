@@ -1,3 +1,21 @@
+## 3.12.0
+* Add `exchangeRateQuoteId` to `TransactionRequest`
+* Add `EXCHANGE_RATE_QUOTE_ID_TOO_LONG` to `ValidationErrorCode`
+* Add the following fields to `AndroidPayCard` and `ApplePayCard`:
+  * `commercial`
+  * `debit`
+  * `durbinRegulated`
+  * `healthcare`
+  * `payroll`
+  * `prepaid`
+  * `productId`
+  * `countryOfIssuance`
+  * `issuingBank`
+* Add the following fields to `PayPalDetails`:
+  * `taxId`
+  * `taxIdType`
+* Add support for `localPaymentFunded` and `localPaymentExpired` webhook notications
+
 ## 3.11.0
 * Add error code `TRANSACTION_TAX_AMOUNT_IS_REQUIRED_FOR_AIB_SWEDISH` for attribute `tax-amount` in `transaction` key for AIB:Domestic transactions in sweden
 
@@ -34,7 +52,7 @@
 * Add validation error codes:
   * `CREDIT_CARD_OPTIONS_VERIFICATION_INVALID_PRESENTMENT_CURRENCY`
   * `TRANSACTION_INVALID_PRESENTMENT_CURRENCY`
-  
+
 ## 3.4.0
 * Add `installments` to `TransactionRequest`
 * Add `count` to `InstallmentRequest`

@@ -26,6 +26,8 @@ public class PayPalDetailsTest {
                  "<seller-protection-status>12345</seller-protection-status>" +
                  "<refund-id>8675309</refund-id>" +
                  "<capture-id>2468</capture-id>" +
+                 "<tax-id>54321</tax-id>" +
+                 "<tax-id-type>BR_CPF</tax-id-type>" +
                  "<transaction-fee-amount>10.00</transaction-fee-amount>" +
                  "<transaction-fee-currency-iso-code>123</transaction-fee-currency-iso-code>" +
                  "<refund-from-transaction-fee-amount>2.00</refund-from-transaction-fee-amount>" +
@@ -55,6 +57,8 @@ public class PayPalDetailsTest {
     assertEquals("12345", details.getSellerProtectionStatus());
     assertEquals("8675309", details.getRefundId());
     assertEquals("2468", details.getCaptureId());
+    assertEquals("54321", details.getTaxId());
+    assertEquals("BR_CPF", details.getTaxIdType());
     assertEquals("10.00", details.getTransactionFeeAmount());
     assertEquals("123", details.getTransactionFeeCurrencyIsoCode());
     assertEquals("2.00", details.getRefundFromTransactionFeeAmount());
