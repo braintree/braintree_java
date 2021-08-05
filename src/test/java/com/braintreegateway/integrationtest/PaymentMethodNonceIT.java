@@ -291,23 +291,17 @@ public class PaymentMethodNonceIT extends IntegrationTest {
 
     @Test
     public void findReturnsPaymentMethodNonceWith3DSDetails() {
-        CreditCardRequest creditCardRequest = new CreditCardRequest().
-            number(SandboxValues.CreditCardNumber.VISA.number).
-            expirationMonth("12").
-            expirationYear("2020");
-
-        String nonce = TestHelper.generateThreeDSecureNonce(gateway, creditCardRequest);
-
-        PaymentMethodNonce foundNonce = gateway.paymentMethodNonce().find(nonce);
+        String nonceString = "fake-three-d-secure-visa-full-authentication-nonce";
+        PaymentMethodNonce foundNonce = gateway.paymentMethodNonce().find(nonceString);
         ThreeDSecureInfo info = foundNonce.getThreeDSecureInfo();
 
-        assertEquals(nonce, foundNonce.getNonce());
+        assertEquals(nonceString, foundNonce.getNonce());
         assertTrue(info.isLiabilityShifted());
         assertTrue(info.isLiabilityShiftPossible());
         assertNotNull(info.getStatus());
-        assertEquals("test_cavv", info.getCAVV());
-        assertEquals("test_xid", info.getXID());
-        assertEquals("test_eci", info.getECIFlag());
+        assertEquals("cavv_value", info.getCAVV());
+        assertEquals("xid_value", info.getXID());
+        assertEquals("05", info.getECIFlag());
         assertEquals("1.0.2", info.getThreeDSecureVersion());
         assertEquals((String)null, info.getDsTransactionId());
         assertTrue(info.getThreeDSecureLookupInfo() instanceof ThreeDSecureLookupInfo);
