@@ -1,3 +1,6 @@
+## unreleased
+* Make `junit-vintage` a test dependency (thanks @jamesbroadhead)
+
 ## 3.12.0
 * Add `exchangeRateQuoteId` to `TransactionRequest`
 * Add `EXCHANGE_RATE_QUOTE_ID_TOO_LONG` to `ValidationErrorCode`
