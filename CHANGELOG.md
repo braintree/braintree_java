@@ -1,5 +1,6 @@
 ## unreleased
 * Make `junit-vintage` a test dependency (thanks @jamesbroadhead)
+* Add plan create/update/find API endpoint
 
 ## 3.12.0
 * Add `exchangeRateQuoteId` to `TransactionRequest`
