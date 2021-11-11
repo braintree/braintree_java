@@ -1,5 +1,6 @@
 ## unreleased
 * Make `junit-vintage` a test dependency (thanks @jamesbroadhead)
+* Add support for `TransactionReview` webhook notification
 
 ## 3.12.0
 * Add `exchangeRateQuoteId` to `TransactionRequest`
