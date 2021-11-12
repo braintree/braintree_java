@@ -347,7 +347,7 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertEquals("a smart decision", notification.getTransactionReview().getDecision());
         assertEquals("hey@girl.com", notification.getTransactionReview().getReviewerEmail());
         assertEquals("i reviewed this", notification.getTransactionReview().getReviewerNote());
-        assertNotNull(notification.getTransactionReview().getReviewerTime());
+        assertNotNull(notification.getTransactionReview().getReviewedTime());
     }
 
     @Test

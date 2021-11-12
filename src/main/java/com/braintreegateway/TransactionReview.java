@@ -8,14 +8,14 @@ public final class TransactionReview {
     private final String decision;
     private final String reviewerEmail;
     private final String reviewerNote;
-    private final Calendar reviewerTime;
+    private final Calendar reviewedTime;
 
     public TransactionReview(NodeWrapper node) {
         this.transactionId = node.findString("transaction-id");
         this.decision = node.findString("decision");
         this.reviewerEmail = node.findString("reviewer-email");
         this.reviewerNote = node.findString("reviewer-note");
-        this.reviewerTime = node.findDateTime("reviewer-time");
+        this.reviewedTime = node.findDateTime("reviewed-time");
     }
 
     public String getTransactionId() {
@@ -34,8 +34,8 @@ public final class TransactionReview {
         return reviewerNote;
     }
 
-    public Calendar getReviewerTime() {
-        return reviewerTime;
+    public Calendar getReviewedTime() {
+        return reviewedTime;
     }
 
 }

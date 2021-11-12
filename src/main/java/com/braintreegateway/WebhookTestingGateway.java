@@ -205,7 +205,7 @@ public class WebhookTestingGateway {
                 node("decision", "a smart decision"),
                 node("reviewer-email", "hey@girl.com"),
                 node("reviewer-note", "i reviewed this"),
-                node("reviewer-time", TYPE_DATE_TIME, "2018-10-11T21:28:37Z")
+                node("reviewed-time", TYPE_DATE_TIME, "2018-10-11T21:28:37Z")
         );
     }
 
