@@ -1,4 +1,4 @@
-## unreleased
+## 3.13.0
 * Make `junit-vintage` a test dependency (thanks @jamesbroadhead)
 * Add plan create/update/find API endpoint
 * Add support for `TransactionReview` webhook notification
