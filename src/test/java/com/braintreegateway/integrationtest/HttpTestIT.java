@@ -14,12 +14,15 @@ import com.braintreegateway.DocumentUpload;
 import com.braintreegateway.DocumentUploadRequest;
 import com.braintreegateway.Environment;
 import com.braintreegateway.Result;
+import com.braintreegateway.Transaction;
+import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.ServiceUnavailableException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.ServerException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.SandboxValues.TransactionAmount;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -100,6 +103,27 @@ public class HttpTestIT extends IntegrationTest {
         assertTrue(capturedLog.contains("<cardholder-name>John Doe</cardholder-name>"));
         assertTrue(capturedLog.contains("<number>510510******5100</number>"));
         assertTrue(capturedLog.contains("<cvv>***</cvv>"));
+        assertTrue(capturedLog.contains("<expirationDate>05/12</expirationDate>"));
+    }
+
+    @Test
+    public void smokeTestLogsFullTransactionRequestInDebugMode() {
+        Configuration configuration = gateway.getConfiguration();
+        configuration.getLogger().setLevel(Level.FINEST);
+        attachLogCapturer();
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().paymentReaderCardDetails().
+            encryptedCardData("8F34DFB312DC79C24FD5320622F3E11682D79E6B0C0FD881").
+            keySerialNumber("FFFFFF02000572A00005").
+            done().
+            done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+
+        String capturedLog = getTestCapturedLog();
+        assertTrue(capturedLog.contains("[Braintree]"));
+        assertTrue(capturedLog.contains("<encryptedCardData>***</encryptedCardData>"));
     }
 
     @Test

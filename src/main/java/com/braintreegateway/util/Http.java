@@ -58,7 +58,8 @@ public class Http {
     private static final Pattern NUMBER_PATTERN = Pattern.compile("<number>(.{6}).+?(.{4})</number>");
     private static final Pattern START_GROUP_PATTERN = Pattern.compile("(^)", Pattern.MULTILINE);
     private static final Pattern CVV_PATTERN = Pattern.compile("<cvv>.+?</cvv>");
-    
+    private static final Pattern ENCRYPTED_CARD_DATA_PATTERN = Pattern.compile("<encryptedCardData>.+?</encryptedCardData>");
+
     
     private volatile SSLSocketFactory sslSocketFactory;
 
@@ -295,6 +296,7 @@ public class Http {
             body = regexMatcher.replaceAll("<number>$1******$2</number>");
         }
 
+        body = ENCRYPTED_CARD_DATA_PATTERN.matcher(body).replaceAll("<encryptedCardData>***</encryptedCardData>");
         body = CVV_PATTERN.matcher(body).replaceAll("<cvv>***</cvv>");
 
         return body;

@@ -337,6 +337,20 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test
+    public void createsSampleTransactionReviewedNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.TRANSACTION_REVIEWED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.TRANSACTION_REVIEWED, notification.getKind());
+        assertEquals("my-id", notification.getTransactionReview().getTransactionId());
+        assertEquals("a smart decision", notification.getTransactionReview().getDecision());
+        assertEquals("hey@girl.com", notification.getTransactionReview().getReviewerEmail());
+        assertEquals("i reviewed this", notification.getTransactionReview().getReviewerNote());
+        assertNotNull(notification.getTransactionReview().getReviewedTime());
+    }
+
+    @Test
     public void createsSampleTransactionSettledNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.TRANSACTION_SETTLED, "my_id");
 

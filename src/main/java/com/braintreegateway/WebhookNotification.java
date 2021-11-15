@@ -40,6 +40,7 @@ public class WebhookNotification {
         SUBSCRIPTION_WENT_ACTIVE("subscription_went_active"),
         SUBSCRIPTION_WENT_PAST_DUE("subscription_went_past_due"),
         TRANSACTION_DISBURSED("transaction_disbursed"),
+        TRANSACTION_REVIEWED("transaction_reviewed"),
         TRANSACTION_SETTLED("transaction_settled"),
         TRANSACTION_SETTLEMENT_DECLINED("transaction_settlement_declined"),
         UNRECOGNIZED("unrecognized");
@@ -77,6 +78,7 @@ public class WebhookNotification {
     private Subscription subscription;
     private Calendar timestamp;
     private Transaction transaction;
+    private TransactionReview transactionReview;
 
     public WebhookNotification(NodeWrapper node) {
         this.kind = EnumUtils.findByName(Kind.class, node.findString("kind"), Kind.UNRECOGNIZED);
@@ -114,6 +116,11 @@ public class WebhookNotification {
         NodeWrapper transactionNode = wrapperNode.findFirst("transaction");
         if (transactionNode != null) {
             this.transaction = new Transaction(transactionNode);
+        }
+
+        NodeWrapper transactionReviewNode = wrapperNode.findFirst("transaction-review");
+        if (transactionReviewNode != null) {
+            this.transactionReview = new TransactionReview(transactionReviewNode);
         }
 
         NodeWrapper partnerMerchantNode = wrapperNode.findFirst("partner-merchant");
@@ -197,6 +204,10 @@ public class WebhookNotification {
 
     public Transaction getTransaction() {
         return this.transaction;
+    }
+
+    public TransactionReview getTransactionReview() {
+        return this.transactionReview;
     }
 
     public Disbursement getDisbursement() {

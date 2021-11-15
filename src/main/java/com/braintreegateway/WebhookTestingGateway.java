@@ -55,6 +55,7 @@ public class WebhookTestingGateway {
             case SUB_MERCHANT_ACCOUNT_APPROVED: return merchantAccountXmlActive(id);
             case SUB_MERCHANT_ACCOUNT_DECLINED: return merchantAccountXmlDeclined(id);
             case TRANSACTION_DISBURSED: return transactionXml(id);
+            case TRANSACTION_REVIEWED: return transactionReviewXml(id);
             case TRANSACTION_SETTLED: return transactionSettledXml(id);
             case TRANSACTION_SETTLEMENT_DECLINED: return transactionSettlementDeclinedXml(id);
             case DISBURSEMENT: return disbursementXml(id);
@@ -195,6 +196,16 @@ public class WebhookTestingGateway {
                 node("descriptor"),
                 node("shipping"),
                 node("subscription")
+        );
+    }
+
+    private String transactionReviewXml(String id) {
+        return node("transaction-review",
+                node("transaction-id", "my-id"),
+                node("decision", "a smart decision"),
+                node("reviewer-email", "hey@girl.com"),
+                node("reviewer-note", "i reviewed this"),
+                node("reviewed-time", TYPE_DATE_TIME, "2018-10-11T21:28:37Z")
         );
     }
 
