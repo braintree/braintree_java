@@ -83,6 +83,7 @@ public class WebhookTestingGateway {
             case LOCAL_PAYMENT_EXPIRED: return localPaymentExpiredXml();
             case LOCAL_PAYMENT_FUNDED: return localPaymentFundedXml();
             case LOCAL_PAYMENT_REVERSED: return localPaymentReversedXml();
+            case PAYMENT_METHOD_CUSTOMER_DATA_UPDATED: return paymentMethodCustomerDataUpdatedXml(id);
             default: return subscriptionXml(id);
         }
     }
@@ -494,18 +495,7 @@ public class WebhookTestingGateway {
     }
 
     private String grantedPaymentMethodRevokedXml(String id) {
-        return node("venmo-account",
-                node("created-at", TYPE_DATE_TIME, "2018-10-11T21:28:37Z"),
-                node("updated-at", TYPE_DATE_TIME, "2018-10-11T21:28:37Z"),
-                node("default", TYPE_BOOLEAN, "true"),
-                node("image-url", "https://assets.braintreegateway.com/payment_method_logo/venmo.png?environment=test"),
-                node("token", id),
-                node("source-description", "Venmo Account: venmojoe"),
-                node("username", "venmojoe"),
-                node("venmo-user-id", "456"),
-                node("customer-id", "venmo_customer_id"),
-                node("global-id", "cGF5bWVudG1ldGhvZF92ZW5tb2FjY291bnQ")
-        );
+        return venmoAccountXml(id);
     }
 
     private String paymentMethodRevokedByCustomerXml(String id) {
@@ -564,6 +554,41 @@ public class WebhookTestingGateway {
     private String localPaymentReversedXml() {
         return node("local-payment-reversed",
                 node("payment-id", "a-payment-id")
+        );
+    }
+
+    private String paymentMethodCustomerDataUpdatedXml(String id) {
+        return node("payment-method-customer-data-updated-metadata",
+                node("token", "TOKEN-12345"),
+                node("payment-method", venmoAccountXml(id)),
+                node("datetime-updated", "2022-01-01T21:28:37Z"),
+                node("enriched-customer-data",
+                     node("fields-updated", TYPE_ARRAY,
+                          node("item", "username")
+                     ),
+                     node("profile-data",
+                          node("username", "venmo_username"),
+                          node("first-name", "John"),
+                          node("last-name", "Doe"),
+                          node("phone-number", "1231231234"),
+                          node("email", "john.doe@paypal.com")
+                     )
+                )
+        );
+    }
+
+    private String venmoAccountXml(String id) {
+        return node("venmo-account",
+                node("created-at", TYPE_DATE_TIME, "2018-10-11T21:28:37Z"),
+                node("updated-at", TYPE_DATE_TIME, "2018-10-11T21:28:37Z"),
+                node("default", TYPE_BOOLEAN, "true"),
+                node("image-url", "https://assets.braintreegateway.com/payment_method_logo/venmo.png?environment=test"),
+                node("token", id),
+                node("source-description", "Venmo Account: venmojoe"),
+                node("username", "venmojoe"),
+                node("venmo-user-id", "456"),
+                node("customer-id", "venmo_customer_id"),
+                node("global-id", "cGF5bWVudG1ldGhvZF92ZW5tb2FjY291bnQ")
         );
     }
 

@@ -798,4 +798,31 @@ public class WebhookNotificationIT extends IntegrationTest {
 
         assertEquals("a-payment-id", payment.getPaymentId());
     }
+
+    @Test
+    public void createsPaymentMethodCustomerDataUpdated() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.PAYMENT_METHOD_CUSTOMER_DATA_UPDATED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.PAYMENT_METHOD_CUSTOMER_DATA_UPDATED, notification.getKind());
+
+        PaymentMethodCustomerDataUpdatedMetadata paymentMethodCustomerDataUpdatedMetadata = notification.getPaymentMethodCustomerDataUpdatedMetadata();
+        assertEquals("TOKEN-12345", paymentMethodCustomerDataUpdatedMetadata.getToken());
+        assertEquals("2022-01-01T21:28:37Z", paymentMethodCustomerDataUpdatedMetadata.getDatetimeUpdated());
+
+        PaymentMethod paymentMethod = paymentMethodCustomerDataUpdatedMetadata.getPaymentMethod();
+        assertEquals("my_id", paymentMethod.getToken());
+
+        EnrichedCustomerData enrichedCustomerData = paymentMethodCustomerDataUpdatedMetadata.getEnrichedCustomerData();
+        assertEquals(1, enrichedCustomerData.getFieldsUpdated().size());
+        assertEquals("username", enrichedCustomerData.getFieldsUpdated().get(0));
+
+        VenmoProfileData profileData = enrichedCustomerData.getProfileData();
+        assertEquals("John", profileData.getFirstName());
+        assertEquals("Doe", profileData.getLastName());
+        assertEquals("venmo_username", profileData.getUsername());
+        assertEquals("1231231234", profileData.getPhoneNumber());
+        assertEquals("john.doe@paypal.com", profileData.getEmail());
+    }
 }

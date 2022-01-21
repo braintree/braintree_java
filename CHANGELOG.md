@@ -1,3 +1,6 @@
+# Unreleased
+* Add `PaymentMethodCustomerDataUpdated` webhook notification support
+
 ## 3.13.0
 * Make `junit-vintage` a test dependency (thanks @jamesbroadhead)
 * Add plan create/update/find API endpoint
