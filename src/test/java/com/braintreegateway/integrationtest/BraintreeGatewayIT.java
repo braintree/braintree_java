@@ -7,7 +7,8 @@ import com.braintreegateway.Configuration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.*;
+import org.junit.Ignore;
+import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BraintreeGatewayIT extends IntegrationTest {
