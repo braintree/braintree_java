@@ -41,7 +41,7 @@ public class BraintreeGatewayIT extends IntegrationTest {
         assertEquals("https://api.braintreegateway.com:443/merchants/production_merchant_id", configuration.getBaseURL() + configuration.getMerchantPath());
     }
 
-    @Ignore("Skipping pending investigation on why this fails in CI only)
+    @Ignore("Skipping pending investigation on why this fails in CI only")
     @Test
     public void tokenizeRawCreditCardDetailsWithGraphQL() {
         String query = "mutation ExampleServerSideSingleUseToken($input: TokenizeCreditCardInput!) {" +
