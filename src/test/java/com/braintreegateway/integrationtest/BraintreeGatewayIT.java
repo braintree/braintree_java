@@ -7,8 +7,7 @@ import com.braintreegateway.Configuration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Ignore;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BraintreeGatewayIT extends IntegrationTest {
@@ -42,7 +41,7 @@ public class BraintreeGatewayIT extends IntegrationTest {
         assertEquals("https://api.braintreegateway.com:443/merchants/production_merchant_id", configuration.getBaseURL() + configuration.getMerchantPath());
     }
 
-    @Ignore("Skipping pending investigation on why this fails in CI only")
+    @Disabled("Skipping pending investigation on why this fails in CI only")
     @Test
     public void tokenizeRawCreditCardDetailsWithGraphQL() {
         String query = "mutation ExampleServerSideSingleUseToken($input: TokenizeCreditCardInput!) {" +
