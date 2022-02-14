@@ -20,7 +20,7 @@ import java.util.List;
  * gateway.transaction().create(...)
  * </pre>
  *
- * For more detailed information on {@link Transaction Transactions}, see <a href="https://developers.braintreepayments.com/reference/response/transaction/java" target="_blank">https://developers.braintreepayments.com/reference/response/transaction/java</a>
+ * For more detailed information on {@link Transaction Transactions}, see <a href="https://developer.paypal.com/braintree/docs/reference/response/transaction/java" target="_blank">https://developer.paypal.com/braintree/docs/reference/response/transaction/java</a>
  */
 public class TransactionGateway {
 
@@ -114,7 +114,7 @@ public class TransactionGateway {
 
     /**
      * Finds all Transactions that match the query and returns a {@link ResourceCollection}.
-     * See: <a href="https://developers.braintreepayments.com/reference/request/transaction/search/java" target="_blank">https://developers.braintreepayments.com/reference/request/transaction/search/java</a>
+     * See: <a href="https://developer.paypal.com/braintree/docs/reference/request/transaction/search/java" target="_blank">https://developer.paypal.com/braintree/docs/reference/request/transaction/search/java</a>
      * @param query the search query
      * @return a {@link ResourceCollection} or raises a {@link UnexpectedException}.
      */

@@ -16,7 +16,7 @@ import java.util.List;
  * gateway.dispute().find(...)
  * </pre>
  *
- * For more detailed information on {@link Dispute disputes}, see <a href="https://developers.braintreepayments.com/reference/response/dispute/java" target="_blank">https://developers.braintreepayments.com/reference/response/dispute/java</a>
+ * For more detailed information on {@link Dispute disputes}, see <a href="https://developer.paypal.com/braintree/docs/reference/response/dispute/java" target="_blank">https://developer.paypal.com/braintree/docs/reference/response/dispute/java</a>
  */
 public class DisputeGateway {
     private Configuration configuration;

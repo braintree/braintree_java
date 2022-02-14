@@ -13,7 +13,7 @@ Java version >= 8 is required. The Braintree Java SDK is tested against Java ver
 
 ## Versions
 
-Braintree employs a deprecation policy for our SDKs. For more information on the statuses of an SDK check our [developer docs](http://developers.braintreepayments.com/reference/general/server-sdk-deprecation-policy).
+Braintree employs a deprecation policy for our SDKs. For more information on the statuses of an SDK check our [developer docs](https://developer.paypal.com/braintree/docs/reference/general/server-sdk-deprecation-policy).
 
 | Major version number | Status      | Released   | Deprecated   | Unsupported  |
 | -------------------- | ----------- | ---------- | ------------ | ------------ |
@@ -22,9 +22,9 @@ Braintree employs a deprecation policy for our SDKs. For more information on the
 
 ## Documentation
 
- * [Official documentation](https://developers.braintreepayments.com/java/sdk/server/overview)
+ * [Official documentation](https://developer.paypal.com/braintree/docs/start/hello-server/java)
 
-Updating from an Inactive, Deprecated, or Unsupported version of this SDK? Check our [Migration Guide](https://developers.braintreepayments.com/reference/general/server-sdk-migration-guide/java) for tips.
+Updating from an Inactive, Deprecated, or Unsupported version of this SDK? Check our [Migration Guide](https://developer.paypal.com/braintree/docs/reference/general/server-sdk-migration-guide/java) for tips.
 
 ## Quick Start Example
 
