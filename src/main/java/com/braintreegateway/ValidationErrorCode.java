@@ -711,7 +711,7 @@ public enum ValidationErrorCode {
     RISK_DATA_CUSTOMER_LOCATION_ZIP_IS_TOO_LONG("94705"),
     RISK_DATA_CUSTOMER_TENURE_IS_TOO_LONG("94706"),
 
-    // Stanza should match https://developers.braintreepayments.com/reference/general/validation-errors/all/java#venmo
+    // Stanza should match https://developer.paypal.com/braintree/docs/reference/general/validation-errors/all/java#venmo-account
     VENMO_COMMON_ID_REQUIRED("84101"),
     VENMO_USERNAME_REQUIRED("84102"),
     VENMO_USER_ID_REQUIRED("84103"),

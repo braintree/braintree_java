@@ -16,7 +16,7 @@ import java.util.List;
  * gateway.customer().create(...)
  * </pre>
  *
- * For more detailed information on {@link Customer Customers}, see <a href="https://developers.braintreepayments.com/reference/response/customer/java" target="_blank">https://developers.braintreepayments.com/reference/response/customer/java</a>
+ * For more detailed information on {@link Customer Customers}, see <a href="https://developer.paypal.com/braintree/docs/reference/response/customer/java" target="_blank">https://developer.paypal.com/braintree/docs/reference/response/customer/java</a>
  */
 public class CustomerGateway {
     private Configuration configuration;
@@ -114,7 +114,7 @@ public class CustomerGateway {
 
     /**
      * Finds all Transactions that match the query and returns a {@link ResourceCollection}.
-     * See: <a href="https://developers.braintreepayments.com/reference/request/transaction/search/java" target="_blank">https://developers.braintreepayments.com/reference/request/transaction/search/java</a>
+     * See: <a href="https://developer.paypal.com/braintree/docs/reference/request/transaction/search/java" target="_blank">https://developer.paypal.com/braintree/docs/reference/request/transaction/search/java</a>
      * @param query the request query to use for search
      * @return a {@link ResourceCollection}.
      */

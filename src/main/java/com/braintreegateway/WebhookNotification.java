@@ -28,6 +28,7 @@ public class WebhookNotification {
         PARTNER_MERCHANT_DISCONNECTED("partner_merchant_disconnected"),
         PARTNER_MERCHANT_CONNECTED("partner_merchant_connected"),
         PARTNER_MERCHANT_DECLINED("partner_merchant_declined"),
+        PAYMENT_METHOD_CUSTOMER_DATA_UPDATED("payment_method_customer_data_updated"),
         PAYMENT_METHOD_REVOKED_BY_CUSTOMER("payment_method_revoked_by_customer"),
         RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD("recipient_updated_granted_payment_method"),
         SUB_MERCHANT_ACCOUNT_APPROVED("sub_merchant_account_approved"),
@@ -73,6 +74,7 @@ public class WebhookNotification {
     private MerchantAccount merchantAccount;
     private OAuthAccessRevocation oauthAccessRevocation;
     private PartnerMerchant partnerMerchant;
+    private PaymentMethodCustomerDataUpdatedMetadata paymentMethodCustomerDataUpdatedMetadata;
     private RevokedPaymentMethodMetadata revokedPaymentMethodMetadata;
     private String sourceMerchantId;
     private Subscription subscription;
@@ -177,6 +179,11 @@ public class WebhookNotification {
             this.localPaymentFunded = new LocalPaymentFunded(localPaymentFundedNode);
         }
 
+        NodeWrapper paymentMethodCustomerDataUpdatedMetadataNode = wrapperNode.findFirst("payment-method-customer-data-updated-metadata");
+        if (paymentMethodCustomerDataUpdatedMetadataNode != null && kind == Kind.PAYMENT_METHOD_CUSTOMER_DATA_UPDATED) {
+            this.paymentMethodCustomerDataUpdatedMetadata = new PaymentMethodCustomerDataUpdatedMetadata(paymentMethodCustomerDataUpdatedMetadataNode);
+        }
+
         if (!wrapperNode.isSuccess()) {
             this.errors = new ValidationErrors(wrapperNode);
         }
@@ -264,5 +271,9 @@ public class WebhookNotification {
 
     public LocalPaymentReversed getLocalPaymentReversed() {
         return this.localPaymentReversed;
+    }
+
+    public PaymentMethodCustomerDataUpdatedMetadata getPaymentMethodCustomerDataUpdatedMetadata() {
+        return this.paymentMethodCustomerDataUpdatedMetadata;
     }
 }
