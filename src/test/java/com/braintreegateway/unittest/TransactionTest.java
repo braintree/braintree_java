@@ -111,12 +111,12 @@ public class TransactionTest {
 				"  <escrow-status></escrow-status>\n" +
 				"  <disbursement-details></disbursement-details>\n" +
 				"  <payment-instrument-type>credit_card</payment-instrument-type>\n" +
-				"  <ach-return-code>R1</ach-return-code>\n" +
+				"  <ach-return-code>R01</ach-return-code>\n" +
 				"</transaction>\n";
 
 		SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
 		Transaction transaction = new Transaction(transactionNode);
 
-		assertEquals("R1", transaction.getAchReturnCode());
+		assertEquals("R01", transaction.getAchReturnCode());
 	}
 }
