@@ -135,6 +135,7 @@ public class Transaction {
         }
     }
 
+    private String achReturnCode;
     private List<AddOn> addOns;
     private BigDecimal amount;
     private String avsErrorResponseCode;
@@ -304,6 +305,7 @@ public class Transaction {
         if (customActionsPaymentMethodNode != null) {
             customActionsPaymentMethodDetails = new CustomActionsPaymentMethodDetails(customActionsPaymentMethodNode);
         }
+        achReturnCode = node.findString("ach-return-code");
         planId = node.findString("plan-id");
         processedWithNetworkToken = node.findBoolean("processed-with-network-token");
         processorAuthorizationCode = node.findString("processor-authorization-code");
@@ -609,6 +611,10 @@ public class Transaction {
 
     public String getNetworkResponseCode() {
         return networkResponseCode;
+    }
+
+    public String getAchReturnCode() {
+        return achReturnCode;
     }
 
     public String getNetworkResponseText() {

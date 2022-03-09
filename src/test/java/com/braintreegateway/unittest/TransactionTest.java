@@ -92,4 +92,31 @@ public class TransactionTest {
 		assertEquals("11", transaction.getNetworkResponseCode());
 		assertEquals("Approved", transaction.getNetworkResponseText());
 	}
+
+	@Test
+	public void parseAchReturnCode() {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<transaction>\n" +
+				"  <id>recognized_transaction_id</id>\n" +
+				"  <status></status>\n" +
+				"  <type>sale</type>\n" +
+				"  <customer></customer>\n" +
+				"  <billing></billing>\n" +
+				"  <shipping></shipping>\n" +
+				"  <custom-fields/>\n" +
+				"  <credit-card></credit-card>\n" +
+				"  <status-history type=\"array\"></status-history>\n" +
+				"  <subscription></subscription>\n" +
+				"  <descriptor></descriptor>\n" +
+				"  <escrow-status></escrow-status>\n" +
+				"  <disbursement-details></disbursement-details>\n" +
+				"  <payment-instrument-type>credit_card</payment-instrument-type>\n" +
+				"  <ach-return-code>R01</ach-return-code>\n" +
+				"</transaction>\n";
+
+		SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+		Transaction transaction = new Transaction(transactionNode);
+
+		assertEquals("R01", transaction.getAchReturnCode());
+	}
 }
