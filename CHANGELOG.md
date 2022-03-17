@@ -4,6 +4,7 @@
 
 ## 3.14.0 
 * Add `PaymentMethodCustomerDataUpdated` webhook notification support
+* Add ExchangeRateQuote API
 
 ## 3.13.0
 * Make `junit-vintage` a test dependency (thanks @jamesbroadhead)

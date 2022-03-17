@@ -281,4 +281,8 @@ public class BraintreeGateway {
     public ReportGateway report() {
         return new ReportGateway(http, graphQLClient, configuration);
     }
+
+    public ExchangeRateQuoteGateway exchangeRateQuote() {
+        return new ExchangeRateQuoteGateway(http, graphQLClient, configuration);
+    }
 }
