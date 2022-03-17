@@ -22,6 +22,7 @@ public class AddressIT extends IntegrationTest {
             extendedAddress("Unit 2").
             locality("Chicago").
             region("Illinois").
+            phoneNumber("8675309").
             postalCode("60607").
             countryName("United States of America").
             countryCodeAlpha2("US").
@@ -37,6 +38,7 @@ public class AddressIT extends IntegrationTest {
         assertEquals("1 E Main St", address.getStreetAddress());
         assertEquals("Unit 2", address.getExtendedAddress());
         assertEquals("Chicago", address.getLocality());
+        assertEquals("8675309", address.getPhoneNumber());
         assertEquals("Illinois", address.getRegion());
         assertEquals("60607", address.getPostalCode());
         assertEquals("United States of America", address.getCountryName());

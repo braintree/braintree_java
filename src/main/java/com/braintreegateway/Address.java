@@ -26,6 +26,7 @@ public class Address {
     private String id;
     private String lastName;
     private String locality;
+    private String phoneNumber;
     private String postalCode;
     private String region;
     private String recipientName; // only for PayPal PayerInfo object
@@ -45,6 +46,7 @@ public class Address {
         id = node.findString("id");
         lastName = node.findString("last-name");
         locality = node.findString("locality");
+        phoneNumber = node.findString("phone-number");
         postalCode = node.findString("postal-code");
         region = node.findString("region");
         streetAddress = node.findString("street-address");
@@ -112,6 +114,10 @@ public class Address {
 
     public String getLocality() {
         return locality;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
     public String getPostalCode() {
