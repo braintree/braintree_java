@@ -2,6 +2,7 @@
 # Unreleased
 * Add `AchReturnCode` to transaction object
 * Add ExchangeRateQuote API
+* Add 'retried' to transaction object
 
 ## 3.14.0 
 * Add `PaymentMethodCustomerDataUpdated` webhook notification support

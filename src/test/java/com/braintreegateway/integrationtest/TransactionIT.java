@@ -8166,4 +8166,41 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(ValidationErrorCode.PROCESSOR_DOES_NOT_SUPPORT_PARTIAL_AUTH_REVERSAL,
                      result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
+
+   @Test
+   public void testRetriedTransaction() {
+       TransactionRequest request = new TransactionRequest().
+       amount(new BigDecimal("2000")).
+       paymentMethodToken("network_tokenized_credit_card");
+       Result<Transaction> result = gateway.transaction().sale(request);
+       Transaction result_transaction = result.getTransaction();
+       assertTrue(result_transaction.isRetried());
+       assertFalse(result.isSuccess());
+    }
+
+   @Test
+    public void testNonRetriedTransaction() {
+       TransactionRequest request = new TransactionRequest().
+       amount(TransactionAmount.AUTHORIZE.amount).
+       paymentMethodToken("network_tokenized_credit_card");
+       Result<Transaction> result = gateway.transaction().sale(request);
+       Transaction result_transaction = result.getTarget();
+       assertFalse(result_transaction.isRetried());
+       assertTrue(result.isSuccess());
+    }
+
+   @Test
+    public void testIneligibleRetriedTransaction() {
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+            creditCard().
+                number(SandboxValues.CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+       Result<Transaction> result = gateway.transaction().sale(request);
+       Transaction result_transaction = result.getTarget();
+       assertFalse(result_transaction.isRetried());
+       assertTrue(result.isSuccess());
+    }
 }

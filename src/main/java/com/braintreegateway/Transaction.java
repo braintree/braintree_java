@@ -219,6 +219,7 @@ public class Transaction {
     private Integer installmentCount;
     private List<Installment> installments;
     private List<Installment> refundedInstallments;
+    private boolean retried;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -425,6 +426,7 @@ public class Transaction {
         for (NodeWrapper installmentsNode : node.findAll("refunded-installments/refunded-installment")) {
           refundedInstallments.add(new Installment(installmentsNode));
         }
+        retried = node.findBoolean("retried");
     }
 
     public List<AddOn> getAddOns() {
@@ -795,5 +797,9 @@ public class Transaction {
 
     public List<Installment> getRefundedInstallments() {
         return refundedInstallments;
+    }
+
+    public boolean isRetried() {
+        return retried;
     }
 }
