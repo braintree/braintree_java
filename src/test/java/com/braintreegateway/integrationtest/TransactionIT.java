@@ -5490,6 +5490,16 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void searchForSettlementConfirmedTransaction() {
+        String transactionId = "settlement_confirmed_txn";
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transactionId);
+
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    @Test
     public void searchOnAuthorizationExpiredStatus() {
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             status().is(Transaction.Status.AUTHORIZATION_EXPIRED);
