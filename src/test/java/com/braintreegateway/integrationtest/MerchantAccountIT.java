@@ -169,7 +169,7 @@ public class MerchantAccountIT extends IntegrationTest {
     }
 
     @Test
-    public void createHandlesInvalidValidationErrors() {
+    public void updateHandlesInvalidValidationErrors() {
         MerchantAccountRequest request = new MerchantAccountRequest().
             individual().
                 firstName("<>").
@@ -203,7 +203,7 @@ public class MerchantAccountIT extends IntegrationTest {
                 done().
             tosAccepted(true).
             masterMerchantAccountId("sandbox_master_merchant_account");
-        Result<MerchantAccount> result = gateway.merchantAccount().create(request);
+        Result<MerchantAccount> result = gateway.merchantAccount().update("sandbox_sub_merchant_account", request);
         assertFalse(result.isSuccess());
         ValidationErrors errors = result.getErrors().forObject("merchant-account");
         assertEquals(ValidationErrorCode.MERCHANT_ACCOUNT_INDIVIDUAL_FIRST_NAME_IS_INVALID,
