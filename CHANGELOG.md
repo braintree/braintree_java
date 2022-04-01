@@ -1,5 +1,5 @@
 # Changelog
-# Unreleased
+# 3.15.0
 * Add `AchReturnCode` to transaction object
 * Add ExchangeRateQuote API
 * Add 'retried' to transaction object
