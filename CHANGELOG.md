@@ -1,7 +1,12 @@
 # Changelog
+# 3.15.0
+* Add `AchReturnCode` to transaction object
+* Add ExchangeRateQuote API
+* Add 'retried' to transaction object
 
 ## 3.14.0 
 * Add `PaymentMethodCustomerDataUpdated` webhook notification support
+* Add `phoneNumber` to `Address`
 
 ## 3.13.0
 * Make `junit-vintage` a test dependency (thanks @jamesbroadhead)

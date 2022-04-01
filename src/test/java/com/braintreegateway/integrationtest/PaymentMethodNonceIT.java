@@ -141,7 +141,7 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertNotNull(nonce.getDetails());
         assertEquals("99", nonce.getDetails().getLastTwo());
         assertEquals("venmojoe", nonce.getDetails().getUsername());
-        assertEquals("Venmo-Joe-1", nonce.getDetails().getVenmoUserId());
+        assertEquals("1234567891234567891", nonce.getDetails().getVenmoUserId());
     }
 
     @Test

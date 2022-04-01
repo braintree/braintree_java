@@ -849,7 +849,7 @@ public class CustomerIT extends IntegrationTest {
         VenmoAccount account = foundCustomer.getVenmoAccounts().get(0);
         assertNotNull(account);
         assertEquals(account.getUsername(), "venmojoe");
-        assertEquals(account.getVenmoUserId(), "Venmo-Joe-1");
+        assertEquals(account.getVenmoUserId(), "1234567891234567891");
     }
 
     @Test

@@ -127,7 +127,7 @@ public class PaymentMethodNonceTest {
                 "  <details>" +
                 "    <last-two>22</last-two>" +
                 "    <username>venmojoe</username>" +
-                "    <venmo-user-id>Venmo-Joe-1</venmo-user-id>" +
+                "    <venmo-user-id>1234567891234567891</venmo-user-id>" +
                 "  </details>" +
                 "</payment-method-nonce>";
 
@@ -141,7 +141,7 @@ public class PaymentMethodNonceTest {
         assertNotNull(paymentMethodNonce.getDetails());
         assertEquals("22", paymentMethodNonce.getDetails().getLastTwo());
         assertEquals("venmojoe", paymentMethodNonce.getDetails().getUsername());
-        assertEquals("Venmo-Joe-1", paymentMethodNonce.getDetails().getVenmoUserId());
+        assertEquals("1234567891234567891", paymentMethodNonce.getDetails().getVenmoUserId());
     }
 
     @Test

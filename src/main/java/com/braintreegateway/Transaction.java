@@ -135,6 +135,7 @@ public class Transaction {
         }
     }
 
+    private String achReturnCode;
     private List<AddOn> addOns;
     private BigDecimal amount;
     private String avsErrorResponseCode;
@@ -218,6 +219,7 @@ public class Transaction {
     private Integer installmentCount;
     private List<Installment> installments;
     private List<Installment> refundedInstallments;
+    private boolean retried;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -304,6 +306,7 @@ public class Transaction {
         if (customActionsPaymentMethodNode != null) {
             customActionsPaymentMethodDetails = new CustomActionsPaymentMethodDetails(customActionsPaymentMethodNode);
         }
+        achReturnCode = node.findString("ach-return-code");
         planId = node.findString("plan-id");
         processedWithNetworkToken = node.findBoolean("processed-with-network-token");
         processorAuthorizationCode = node.findString("processor-authorization-code");
@@ -423,6 +426,7 @@ public class Transaction {
         for (NodeWrapper installmentsNode : node.findAll("refunded-installments/refunded-installment")) {
           refundedInstallments.add(new Installment(installmentsNode));
         }
+        retried = node.findBoolean("retried");
     }
 
     public List<AddOn> getAddOns() {
@@ -611,6 +615,10 @@ public class Transaction {
         return networkResponseCode;
     }
 
+    public String getAchReturnCode() {
+        return achReturnCode;
+    }
+
     public String getNetworkResponseText() {
         return networkResponseText;
     }
@@ -789,5 +797,9 @@ public class Transaction {
 
     public List<Installment> getRefundedInstallments() {
         return refundedInstallments;
+    }
+
+    public boolean isRetried() {
+        return retried;
     }
 }
