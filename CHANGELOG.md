@@ -1,4 +1,8 @@
 # Changelog
+
+# Unreleased
+* Add `LiabilityShift` class and `getLiabilityShift` to RiskData
+
 # 3.15.0
 * Add `AchReturnCode` to transaction object
 * Add ExchangeRateQuote API

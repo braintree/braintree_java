@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import com.braintreegateway.RiskData;
+import com.braintreegateway.LiabilityShift;
 import com.braintreegateway.util.SimpleNodeWrapper;
 
 import org.junit.jupiter.api.Test;
@@ -23,11 +24,19 @@ public class RiskDataTest {
                  "  <decision-reason>eeny</decision-reason>\n" +
                  "  <decision-reason>meeny</decision-reason>\n" +
                  "</decision-reasons>\n" +
+                 "<liability-shift>\n" +
+                 "<responsible-party>paypal</responsible-party>\n" +
+                 "<conditions type=\"array\">\n" +
+                 "  <condition>eeny</condition>\n" +
+                 "  <condition>meeny</condition>\n" +
+                 "</conditions>\n" +
+                 "</liability-shift>\n" +
                  "</risk-data>\n";
 
     SimpleNodeWrapper riskDataNode = SimpleNodeWrapper.parse(xml);
     RiskData riskData = new RiskData(riskDataNode);
     List<String> decisions = riskData.getDecisionReasons();
+    LiabilityShift liabilityShift = riskData.getLiabilityShift();
 
     assertEquals("decision", riskData.getDecision());
     assertEquals("provider", riskData.getFraudServiceProvider());
@@ -35,5 +44,6 @@ public class RiskDataTest {
     assertEquals("50", riskData.getTransactionRiskScore());
     assertTrue(riskData.getDeviceDataCaptured());
     assertEquals(decisions, riskData.getDecisionReasons());
+    assertEquals(liabilityShift, riskData.getLiabilityShift());
   }
 }

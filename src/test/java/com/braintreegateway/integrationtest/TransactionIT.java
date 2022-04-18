@@ -30,6 +30,7 @@ import com.braintreegateway.Discount;
 import com.braintreegateway.Dispute;
 import com.braintreegateway.Environment;
 import com.braintreegateway.Installment;
+import com.braintreegateway.LiabilityShift;
 import com.braintreegateway.Merchant;
 import com.braintreegateway.MerchantRequest;
 import com.braintreegateway.OAuthCredentials;
@@ -432,7 +433,26 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         createFraudProtectionEnterpriseMerchantGateway();
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
-            deviceSessionId("abc123").
+            deviceData("abc123").
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        RiskData riskData = transaction.getRiskData();
+        assertNotNull(riskData.getId());
+        assertNotNull(riskData.getFraudServiceProvider());
+        assertNotNull(riskData.getDecisionReasons());
+    }
+
+    @Test
+    public void saleReturnsChargebackProtectionRiskData() {
+        createEffortlessChargebackProtectionGateway();
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
             creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2009").
@@ -443,10 +463,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         Transaction transaction = result.getTarget();
 
         RiskData riskData = transaction.getRiskData();
-        assertFalse(riskData.getDeviceDataCaptured());
-        assertNotNull(riskData.getId());
-        assertNotNull(riskData.getFraudServiceProvider());
-        assertNotNull(riskData.getDecisionReasons());
+        LiabilityShift liabilityShift = riskData.getLiabilityShift();
     }
 
     @Test
