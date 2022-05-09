@@ -2,6 +2,7 @@ package com.braintreegateway.unittest;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Arrays;
 
 import com.braintreegateway.RiskData;
 import com.braintreegateway.LiabilityShift;
@@ -21,21 +22,20 @@ public class RiskDataTest {
                  "<id>heylookanid</id>\n" +
                  "<transaction-risk-score>50</transaction-risk-score>\n" +
                  "<decision-reasons type=\"array\">\n" +
-                 "  <decision-reason>eeny</decision-reason>\n" +
-                 "  <decision-reason>meeny</decision-reason>\n" +
+                 "  <decision-reason>decision-reason1</decision-reason>\n" +
+                 "  <decision-reason>decision-reason2</decision-reason>\n" +
                  "</decision-reasons>\n" +
                  "<liability-shift>\n" +
                  "<responsible-party>paypal</responsible-party>\n" +
                  "<conditions type=\"array\">\n" +
-                 "  <condition>eeny</condition>\n" +
-                 "  <condition>meeny</condition>\n" +
+                 "  <condition>condition1</condition>\n" +
+                 "  <condition>condition2</condition>\n" +
                  "</conditions>\n" +
                  "</liability-shift>\n" +
                  "</risk-data>\n";
 
     SimpleNodeWrapper riskDataNode = SimpleNodeWrapper.parse(xml);
     RiskData riskData = new RiskData(riskDataNode);
-    List<String> decisions = riskData.getDecisionReasons();
     LiabilityShift liabilityShift = riskData.getLiabilityShift();
 
     assertEquals("decision", riskData.getDecision());
@@ -43,7 +43,7 @@ public class RiskDataTest {
     assertEquals("heylookanid", riskData.getId());
     assertEquals("50", riskData.getTransactionRiskScore());
     assertTrue(riskData.getDeviceDataCaptured());
-    assertEquals(decisions, riskData.getDecisionReasons());
+    assertEquals(Arrays.asList("decision-reason1", "decision-reason2"), riskData.getDecisionReasons());
     assertEquals(liabilityShift, riskData.getLiabilityShift());
   }
 }
