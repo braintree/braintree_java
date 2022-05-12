@@ -2,12 +2,14 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 import java.util.List;
+import java.util.ArrayList;
 
 public class RiskData {
 
-    private String decision;
-    private List<String> decisionReasons;
     private Boolean deviceDataCaptured;
+    private LiabilityShift liabilityShift;
+    private List<String> decisionReasons;
+    private String decision;
     private String fraudServiceProvider;
     private String id;
     private String transactionRiskScore;
@@ -21,6 +23,11 @@ public class RiskData {
         transactionRiskScore = node.findString("transaction-risk-score");
 
         decisionReasons = node.findAllStrings("decision-reasons");
+
+        NodeWrapper liabilityShiftNode = node.findFirst("liability-shift");
+        if (liabilityShiftNode != null && !liabilityShiftNode.isBlank()) {
+            liabilityShift = new LiabilityShift(liabilityShiftNode);
+        }
     }
 
     public String getId() {
@@ -41,6 +48,10 @@ public class RiskData {
 
     public String getFraudServiceProvider() {
         return fraudServiceProvider;
+    }
+
+    public LiabilityShift getLiabilityShift() {
+        return liabilityShift;
     }
 
     public String getTransactionRiskScore() {

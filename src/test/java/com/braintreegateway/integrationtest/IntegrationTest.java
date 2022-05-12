@@ -57,6 +57,15 @@ public class IntegrationTest {
         );
     }
 
+    public void createEffortlessChargebackProtectionGateway() {
+        this.gateway = new BraintreeGateway(
+                Environment.DEVELOPMENT,
+                "fraud_protection_effortless_chargeback_protection_merchant_id",
+                "effortless_chargeback_protection_public_key",
+                "effortless_chargeback_protection_private_key"
+        );
+    }
+
     protected Transaction createDisputedTransaction() throws InterruptedException {
         TransactionRequest request = new TransactionRequest()
                 .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
