@@ -1,5 +1,8 @@
 # Changelog
 
+# Unreleased
+* Fix bug where changes to `findAllStrings` broke the creation of ResourceCollection objects (fixes #108)
+
 # 3.16.0
 * Add `LiabilityShift` class and `getLiabilityShift` to RiskData
 * Fixed a bug where `decision reasons` was returning an un-parsed string instead of array

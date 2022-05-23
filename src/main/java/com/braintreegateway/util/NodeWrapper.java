@@ -19,9 +19,16 @@ public abstract class NodeWrapper {
         List<String> strings = new ArrayList<String>();
 
         for (NodeWrapper node : findAll(expression)) {
-            for (NodeWrapper child : node.getChildren()) {
-                strings.add(child.findString("."));
+            List<NodeWrapper> children = node.getChildren();
+            if (children.size() > 0) {
+                for (NodeWrapper child : children) {
+                    strings.add(child.findString("."));
+                }
             }
+            else {
+                strings.add(node.findString("."));
+            }
+
         }
 
         return strings;
