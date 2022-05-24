@@ -8,7 +8,6 @@ import java.util.Map;
 public class ExchangeRateQuoteRequest extends Request {
 
     private List<ExchangeRateQuoteInput> quotes = new ArrayList<>();
-    private String clientMutationId; //Optional
 
     public ExchangeRateQuoteInput addExchangeRateQuoteInput() {
         ExchangeRateQuoteInput newInput = new ExchangeRateQuoteInput(this);
@@ -16,20 +15,11 @@ public class ExchangeRateQuoteRequest extends Request {
         return newInput;
     }
 
-    public ExchangeRateQuoteRequest clientMutationId(String clientMutationId) {
-        this.clientMutationId = clientMutationId;
-        return this;
-    }
-
     @Override
     public Map<String, Object> toGraphQLVariables() {
 
         Map<String, Object> variables = new HashMap<>();
         Map<String, Object> input = new HashMap<>();
-
-        if (clientMutationId != null) {
-            input.put("clientMutationId", clientMutationId);
-        }
 
         List<Map<String, Object>> quotesList = new ArrayList<>();
 

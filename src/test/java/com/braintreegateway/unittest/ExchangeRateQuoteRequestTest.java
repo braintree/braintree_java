@@ -9,7 +9,6 @@ public class ExchangeRateQuoteRequestTest {
   @Test
   public void testToGraphQLVariables() {
     ExchangeRateQuoteRequest request = new ExchangeRateQuoteRequest()
-        .clientMutationId("abc123")
         .addExchangeRateQuoteInput()
           .baseCurrency("USD")
           .quoteCurrency("EUR")
@@ -26,7 +25,6 @@ public class ExchangeRateQuoteRequestTest {
     Map<String, Object> map = request.toGraphQLVariables();
     Map<String, Object> requestMap = (Map<String, Object>)map.get("exchangeRateQuoteRequest");
     assertNotNull(requestMap);
-    assertEquals("abc123", requestMap.get("clientMutationId"));
     Object[] quotes = (Object[])requestMap.get("quotes");
     assertNotNull(quotes);
     assertEquals(2, quotes.length);
@@ -58,7 +56,6 @@ public class ExchangeRateQuoteRequestTest {
     Map<String, Object> map = request.toGraphQLVariables();
     Map<String, Object> requestMap = (Map<String, Object>)map.get("exchangeRateQuoteRequest");
     assertNotNull(requestMap);
-    assertEquals(null, requestMap.get("clientMutationId"));
     Object[] quotes = (Object[])requestMap.get("quotes");
     assertNotNull(quotes);
     assertEquals(2, quotes.length);

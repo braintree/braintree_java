@@ -18,7 +18,6 @@ public class ExchangeRateQuoteGateway {
     private static final String EXCHANGE_RATE_QUOTE_MUTATION =
         "mutation ($exchangeRateQuoteRequest: GenerateExchangeRateQuoteInput!) { "
         + "generateExchangeRateQuote(input: $exchangeRateQuoteRequest) {"
-        + "    clientMutationId"
         + "    quotes {"
         + "      id"
         + "      baseAmount {value, currencyCode}"
