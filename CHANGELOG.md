@@ -1,6 +1,6 @@
 # Changelog
 
-# Unreleased
+# 3.16.1
 * Fix bug where changes to `findAllStrings` broke the creation of ResourceCollection objects (fixes #108)
 
 # 3.16.0
