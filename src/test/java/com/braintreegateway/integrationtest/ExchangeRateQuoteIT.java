@@ -18,7 +18,6 @@ public class ExchangeRateQuoteIT extends IntegrationTest {
     public void exchangeRateQuoteWithGraphQL() {
 
         ExchangeRateQuoteRequest request = new ExchangeRateQuoteRequest()
-            .clientMutationId("abc123")
             .addExchangeRateQuoteInput()
                 .baseCurrency("USD")
                 .quoteCurrency("EUR")
@@ -34,7 +33,6 @@ public class ExchangeRateQuoteIT extends IntegrationTest {
 
         Result<ExchangeRateQuotePayload> result = gateway.exchangeRateQuote().generate(request);
         Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals("abc123", result.getTarget().getClientMutationId());
         List<ExchangeRateQuote> quotes = result.getTarget().getQuotes();
         assertNotNull(quotes);
         assertEquals(2, quotes.size());
@@ -66,7 +64,6 @@ public class ExchangeRateQuoteIT extends IntegrationTest {
     public void exchangeRateQuoteWithGraphQLQuoteCurrencyValidationError() {
 
         ExchangeRateQuoteRequest request = new ExchangeRateQuoteRequest()
-            .clientMutationId("abc123")
             .addExchangeRateQuoteInput()
                 .baseCurrency("USD")
                 .baseAmount("12.19")
@@ -81,16 +78,13 @@ public class ExchangeRateQuoteIT extends IntegrationTest {
 
         Result<ExchangeRateQuotePayload> result = gateway.exchangeRateQuote().generate(request);
         Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals("Field 'quoteCurrency' of variable 'exchangeRateQuoteRequest' "
-                + "has coerced Null value for NonNull type 'CurrencyCodeAlpha!'",
-            result.getErrors().getAllValidationErrors().get(0).getMessage());
+        Assert.assertTrue(result.getErrors().getAllValidationErrors().get(0).getMessage().contains("'quoteCurrency'"));
     }
 
     @Test
     public void exchangeRateQuoteWithGraphQLBaseCurrencyValidationError() {
 
         ExchangeRateQuoteRequest request = new ExchangeRateQuoteRequest()
-            .clientMutationId("abc123")
             .addExchangeRateQuoteInput()
                 .baseCurrency("USD")
                 .quoteCurrency("EUR")
@@ -105,16 +99,13 @@ public class ExchangeRateQuoteIT extends IntegrationTest {
 
         Result<ExchangeRateQuotePayload> result = gateway.exchangeRateQuote().generate(request);
         Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals("Field 'baseCurrency' of variable 'exchangeRateQuoteRequest' "
-            + "has coerced Null value for NonNull type 'CurrencyCodeAlpha!'",
-            result.getErrors().getAllValidationErrors().get(0).getMessage());
+        Assert.assertTrue(result.getErrors().getAllValidationErrors().get(0).getMessage().contains("'baseCurrency'"));
     }
 
     @Test
     public void exchangeRateQuoteWithGraphQLWithoutbaseAmount() {
 
         ExchangeRateQuoteRequest request = new ExchangeRateQuoteRequest()
-            .clientMutationId("abc123")
             .addExchangeRateQuoteInput()
                 .baseCurrency("USD")
                 .quoteCurrency("EUR")

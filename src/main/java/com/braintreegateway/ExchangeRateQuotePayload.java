@@ -7,15 +7,9 @@ import java.util.Map;
 
 public class ExchangeRateQuotePayload {
     private List<ExchangeRateQuote> quotes;
-    private String clientMutationId;
 
     public ExchangeRateQuotePayload quotes(List<ExchangeRateQuote> quotes) {
         this.quotes = quotes;
-        return this;
-    }
-
-    public ExchangeRateQuotePayload clientMutationId(String clientMutationId) {
-        this.clientMutationId = clientMutationId;
         return this;
     }
 
@@ -24,7 +18,6 @@ public class ExchangeRateQuotePayload {
 
     public ExchangeRateQuotePayload (Map<String, Object> data) {
         this.quotes = new ArrayList<>();
-        this.clientMutationId = (String)data.get("clientMutationId");
         List<Map<String, Object>> quoteObjs = (List<Map<String, Object>>)data.get("quotes");
 
         for (Map<String, Object> quoteObj : quoteObjs) {
@@ -52,9 +45,5 @@ public class ExchangeRateQuotePayload {
 
     public List<ExchangeRateQuote> getQuotes() {
         return quotes;
-    }
-
-    public String getClientMutationId() {
-        return this.clientMutationId;
     }
 }

@@ -70,7 +70,6 @@ public class ExchangeRateQuoteGatewayTest {
     ExchangeRateQuoteGateway exchangeRateQuoteGateway = new ExchangeRateQuoteGateway(null,
         graphQLClient, null);
     Result<ExchangeRateQuotePayload> result = exchangeRateQuoteGateway.generate(request);
-    Assert.assertEquals(null, result.getTarget().getClientMutationId());
     List<ExchangeRateQuote> quotes = result.getTarget().getQuotes();
     assertNotNull(quotes);
     assertEquals(1, quotes.size());
@@ -122,8 +121,7 @@ public class ExchangeRateQuoteGatewayTest {
     ExchangeRateQuoteGateway exchangeRateQuoteGateway = new ExchangeRateQuoteGateway(null,
         graphQLClient, null);
     Result<ExchangeRateQuotePayload> result = exchangeRateQuoteGateway.generate(request);
-    Assert.assertEquals("Field 'quoteCurrency' of variable 'exchangeRateQuoteRequest' has coerced Null value for NonNull type 'CurrencyCodeAlpha!'",
-        result.getErrors().getAllValidationErrors().get(0).getMessage());
+    Assert.assertTrue(result.getErrors().getAllValidationErrors().get(0).getMessage().contains("'quoteCurrency'"));
   }
 
 }

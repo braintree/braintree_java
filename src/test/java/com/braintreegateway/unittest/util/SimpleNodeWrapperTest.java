@@ -209,6 +209,71 @@ public class SimpleNodeWrapperTest {
     }
 
     @Test
+    public void findAllStringsSingleNoWildcard() {
+        String xml = "<search-results>\n" +
+                "  <page-size type=\"integer\">50</page-size>\n" +
+                "  <ids type=\"array\">\n" +
+                "      <item>4krz35h8</item>\n" +
+                "  </ids>\n" +
+                "</search-results>";
+
+        SimpleNodeWrapper nodeWrapper = SimpleNodeWrapper.parse(xml);
+
+        List<String> ids = nodeWrapper.findAllStrings("ids");
+
+        assertEquals(1, ids.size());
+    }
+
+    @Test
+    public void findAllStringsSingleWithWildcard() {
+        String xml = "<search-results>\n" +
+                "  <page-size type=\"integer\">50</page-size>\n" +
+                "  <ids type=\"array\">\n" +
+                "      <item>4krz35h8</item>\n" +
+                "  </ids>\n" +
+                "</search-results>";
+
+        SimpleNodeWrapper nodeWrapper = SimpleNodeWrapper.parse(xml);
+
+        List<String> ids = nodeWrapper.findAllStrings("ids/*");
+
+        assertEquals(1, ids.size());
+    }
+
+    @Test
+    public void findAllStringsMultipleNoWildcard() {
+        String xml = "<search-results>\n" +
+                "  <page-size type=\"integer\">50</page-size>\n" +
+                "  <ids type=\"array\">\n" +
+                "      <item>4krz35h8</item>\n" +
+                "      <item>3mgrz1ma</item>\n" +
+                "  </ids>\n" +
+                "</search-results>";
+
+        SimpleNodeWrapper nodeWrapper = SimpleNodeWrapper.parse(xml);
+
+        List<String> ids = nodeWrapper.findAllStrings("ids");
+
+        assertEquals(2, ids.size());
+    }
+
+    @Test
+    public void findAllStringsMultipleWithWildcard() {
+        String xml = "<search-results>\n" +
+                "  <page-size type=\"integer\">50</page-size>\n" +
+                "  <ids type=\"array\">\n" +
+                "      <item>4krz35h8</item>\n" +
+                "      <item>3mgrz1ma</item>\n" +
+                "  </ids>\n" +
+                "</search-results>";
+
+        SimpleNodeWrapper nodeWrapper = SimpleNodeWrapper.parse(xml);
+
+        List<String> ids = nodeWrapper.findAllStrings("ids/*");
+
+        assertEquals(2, ids.size());
+    }
+    @Test
     public void findFirst() {
         String xml = "<toplevel><foo type='array'><bar><greeting>hi</greeting></bar><bar><greeting>hello</greeting></bar></foo></toplevel>";
         NodeWrapper node = SimpleNodeWrapper.parse(xml).findFirst("foo/bar");

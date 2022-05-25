@@ -1,4 +1,4 @@
-package com.braintreegateway.integrationtest;
+package com.braintreegateway.unittest;
 
 import com.braintreegateway.Pager;
 import com.braintreegateway.ResourceCollection;
@@ -12,7 +12,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ResourceCollectionIT {
+public class ResourceCollectionTest {
     private String[] values = new String[]{"a", "b", "c", "d", "e"};
 
     class TestPager implements Pager<String> {
