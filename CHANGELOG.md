@@ -1,5 +1,10 @@
 # Changelog
 
+# Unreleased
+
+* Add `reasonCode` to transaction search object
+* Add `AchReturnResponseCreatedAt` to transction search
+
 # 3.16.1
 * Fix bug where changes to `findAllStrings` broke the creation of ResourceCollection objects (fixes #108)
 
