@@ -265,6 +265,18 @@ public class TransactionSearchRequest extends SearchRequest {
         return multiTypeNode("store_ids");
     }
 
+    public MultipleValueNode<TransactionSearchRequest, String> reasonCodes() {
+        return multiTypeNode("reason_code");
+    }
+
+    public TextNode<TransactionSearchRequest> reasonCode() {
+        return textNode("reason_code");
+    }
+
+    public DateRangeNode<TransactionSearchRequest> achReturnResponsesCreatedAt() {
+        return dateRange("ach_return_responses_created_at");
+    }
+
     private <T> MultipleValueNode<TransactionSearchRequest, T> multiTypeNode(String type) {
         return new MultipleValueNode<TransactionSearchRequest, T>(type, this);
     }

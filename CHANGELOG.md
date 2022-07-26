@@ -1,13 +1,17 @@
 # Changelog
 
-# 3.16.1
+## 3.17.0
+* Add `reasonCode` to transaction search object
+* Add `AchReturnResponseCreatedAt` to transction search
+
+## 3.16.1
 * Fix bug where changes to `findAllStrings` broke the creation of ResourceCollection objects (fixes #108)
 
-# 3.16.0
+## 3.16.0
 * Add `LiabilityShift` class and `getLiabilityShift` to RiskData
 * Fixed a bug where `decision reasons` was returning an un-parsed string instead of array
 
-# 3.15.0
+## 3.15.0
 * Add `AchReturnCode` to transaction object
 * Add ExchangeRateQuote API
 * Add 'retried' to transaction object

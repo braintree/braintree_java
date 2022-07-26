@@ -182,6 +182,7 @@ public class Transaction {
     private String networkResponseCode;
     private String networkResponseText;
     private String voiceReferralNumber;
+    private List<AchReturnResponse> achReturnResponses;
     private String purchaseOrderNumber;
     private Boolean recurring;
     private String refundedTransactionId;
@@ -370,6 +371,11 @@ public class Transaction {
         statusHistory = new ArrayList<StatusEvent>();
         for (NodeWrapper statusNode : node.findAll("status-history/status-event")) {
             statusHistory.add(new StatusEvent(statusNode));
+        }
+
+        achReturnResponses = new ArrayList<AchReturnResponse>();
+        for (NodeWrapper statusNode : node.findAll("ach-return-responses/ach-return-response")) {
+            achReturnResponses.add(new AchReturnResponse(statusNode));
         }
 
         addOns = new ArrayList<AddOn>();
@@ -625,6 +631,10 @@ public class Transaction {
 
     public String getVoiceReferralNumber() {
         return voiceReferralNumber;
+    }
+
+    public List<AchReturnResponse> getAchReturnResponses() {
+        return achReturnResponses;
     }
 
     public String getPurchaseOrderNumber() {

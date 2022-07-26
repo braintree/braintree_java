@@ -5062,6 +5062,50 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void searchOnReasonSpecificReasonCodes() {
+            TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+                reasonCodes().in("R01");
+
+            ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+            assertEquals(1, collection.getMaximumSize());
+
+            assertEquals("ach_txn_ret1", collection.getFirst().getId());
+            assertEquals("R01", collection.getFirst().getAchReturnResponses().get(0).getReasonCode());
+    }
+
+    public void searchOnReasonAllReasonCodes() {
+            TransactionSearchRequest searchRequestAny = new TransactionSearchRequest().
+                reasonCodes().in("any_reason_code");
+
+            assertEquals(2, gateway.transaction().search(searchRequestAny).getMaximumSize());
+
+            TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+                reasonCodes().in("ABC");
+
+            assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    public void searchOnReasonAchReturnedResponsesCreatedAt() {
+            Calendar ReturnResponsesCreatedAt = Calendar.getInstance();
+            try{
+                ReturnResponsesCreatedAt = CalendarTestUtils.today();
+            } catch(Exception e){
+                assertNull(e);
+            }
+
+            Calendar oneDayEarlier = ((Calendar) ReturnResponsesCreatedAt.clone());
+            oneDayEarlier.add(Calendar.DAY_OF_MONTH, -1);
+
+            Calendar oneDayLater = ((Calendar) ReturnResponsesCreatedAt.clone());
+            oneDayLater.add(Calendar.DAY_OF_MONTH, 1);
+
+            TransactionSearchRequest searchRequestAt = new TransactionSearchRequest().
+                achReturnResponsesCreatedAt().between(oneDayEarlier, oneDayLater);
+
+            assertEquals(2, gateway.transaction().search(searchRequestAt).getMaximumSize());
+    }
+
+    @Test
     public void searchWithCreditCardNumberStartsWithEndsWithReusingPartialNode() {
         String creditCardToken = String.valueOf(new Random().nextInt());
 
