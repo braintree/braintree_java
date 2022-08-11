@@ -1,8 +1,13 @@
 # Changelog
 
+## Unreleased
+
+## 3.18.0
+* Add `ExternalVaultCardRequest` class
+
 ## 3.17.0
 * Add `reasonCode` to transaction search object
-* Add `AchReturnResponseCreatedAt` to transction search
+* Add `AchReturnResponseCreatedAt` to transaction search
 
 ## 3.16.1
 * Fix bug where changes to `findAllStrings` broke the creation of ResourceCollection objects (fixes #108)
