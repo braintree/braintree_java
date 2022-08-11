@@ -4,25 +4,26 @@ package com.braintreegateway;
  * Provides a fluent interface to build up requests around {@link CreditCard CreditCards}.
  */
 public class CreditCardRequest extends Request {
-    private CreditCardAddressRequest billingAddressRequest;
     private String billingAddressId;
-    private String deviceData;
     private String cardholderName;
     private String customerId;
     private String cvv;
+    private String deviceData;
     private String deviceSessionId;
     private String fraudMerchantId;
     private String expirationDate;
     private String expirationMonth;
     private String expirationYear;
     private String number;
-    private CreditCardOptionsRequest optionsRequest;
-    private CustomerRequest parent;
-    private String token;
-    private String paymentMethodToken;
     private String paymentMethodNonce;
+    private String paymentMethodToken;
+    private String token;
     private String venmoSdkPaymentMethodCode;
+    private CreditCardAddressRequest billingAddressRequest;
+    private CreditCardOptionsRequest optionsRequest;
     private CreditCardThreeDSecurePassThruRequest threeDSecurePassThruRequest;
+    private CustomerRequest parent;
+    private ExternalVaultCardRequest externalVaultCardRequest;
 
     public CreditCardRequest() {
     }
@@ -36,13 +37,13 @@ public class CreditCardRequest extends Request {
         return billingAddressRequest;
     }
 
-    public CreditCardRequest billingAddressId(String billingAddressId) {
-        this.billingAddressId = billingAddressId;
-        return this;
+    public CreditCardOptionsRequest options() {
+        this.optionsRequest = new CreditCardOptionsRequest(this);
+        return optionsRequest;
     }
 
-    public CreditCardRequest deviceData(String deviceData) {
-        this.deviceData = deviceData;
+    public CreditCardRequest billingAddressId(String billingAddressId) {
+        this.billingAddressId = billingAddressId;
         return this;
     }
 
@@ -61,6 +62,11 @@ public class CreditCardRequest extends Request {
         return this;
     }
 
+    public CreditCardRequest deviceData(String deviceData) {
+        this.deviceData = deviceData;
+        return this;
+    }
+
     @Deprecated
     // Merchants should be using deviceData only
     public CreditCardRequest deviceSessionId(String deviceSessionId) {
@@ -74,6 +80,7 @@ public class CreditCardRequest extends Request {
         this.fraudMerchantId = fraudMerchantId;
         return this;
     }
+
     public CustomerRequest done() {
         return parent;
     }
@@ -93,37 +100,14 @@ public class CreditCardRequest extends Request {
         return this;
     }
 
-    public CreditCardRequest paymentMethodNonce(String nonce) {
-        this.paymentMethodNonce = nonce;
-        return this;
-    }
-
-    public String getCustomerId() {
-        return customerId;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
     public CreditCardRequest number(String number) {
         this.number = number;
         return this;
     }
 
-    public CreditCardRequest venmoSdkPaymentMethodCode(String venmoSdkPaymentMethodCode) {
-        this.venmoSdkPaymentMethodCode = venmoSdkPaymentMethodCode;
+    public CreditCardRequest paymentMethodNonce(String nonce) {
+        this.paymentMethodNonce = nonce;
         return this;
-    }
-
-    public CreditCardOptionsRequest options() {
-        this.optionsRequest = new CreditCardOptionsRequest(this);
-        return optionsRequest;
-    }
-
-    public CreditCardThreeDSecurePassThruRequest threeDSecurePassThruRequest() {
-        this.threeDSecurePassThruRequest = new CreditCardThreeDSecurePassThruRequest(this);
-        return threeDSecurePassThruRequest;
     }
 
     public CreditCardRequest paymentMethodToken(String paymentMethodToken) {
@@ -134,6 +118,29 @@ public class CreditCardRequest extends Request {
     public CreditCardRequest token(String token) {
         this.token = token;
         return this;
+    }
+
+    public CreditCardRequest venmoSdkPaymentMethodCode(String venmoSdkPaymentMethodCode) {
+        this.venmoSdkPaymentMethodCode = venmoSdkPaymentMethodCode;
+        return this;
+    }
+
+    public CreditCardThreeDSecurePassThruRequest threeDSecurePassThruRequest() {
+        this.threeDSecurePassThruRequest = new CreditCardThreeDSecurePassThruRequest(this);
+        return threeDSecurePassThruRequest;
+    }
+
+    public ExternalVaultCardRequest externalVault() {
+        this.externalVaultCardRequest = new ExternalVaultCardRequest(this);
+        return externalVaultCardRequest;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     @Override
@@ -158,18 +165,19 @@ public class CreditCardRequest extends Request {
             .addElement("billingAddress", billingAddressRequest)
             .addElement("billingAddressId", billingAddressId)
             .addElement("deviceData", deviceData)
-            .addElement("options", optionsRequest)
-            .addElement("threeDSecurePassThru", threeDSecurePassThruRequest)
             .addElement("customerId", customerId)
             .addElement("cardholderName", cardholderName)
             .addElement("cvv", cvv)
-            .addElement("number", number)
             .addElement("deviceSessionId", deviceSessionId)
-            .addElement("fraudMerchantId", fraudMerchantId)
             .addElement("expirationDate", expirationDate)
             .addElement("expirationMonth", expirationMonth)
             .addElement("expirationYear", expirationYear)
+            .addElement("externalVault", externalVaultCardRequest)
+            .addElement("fraudMerchantId", fraudMerchantId)
+            .addElement("number", number)
+            .addElement("options", optionsRequest)
             .addElement("paymentMethodNonce", paymentMethodNonce)
+            .addElement("threeDSecurePassThru", threeDSecurePassThruRequest)
             .addElement("token", token)
             .addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode);
     }

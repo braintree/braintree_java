@@ -181,6 +181,22 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
     }
 
     @Test
+    public void createWithNetworkTransactionId() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number("4111111111111111").
+            expirationDate("05/23").
+            externalVault().
+                networkTransactionId("MCC123456789").
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+     }
+
+    @Test
     public void createWithVenmoSdkPaymentMethodCode() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
