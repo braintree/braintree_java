@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+
+## 3.18.0
 * Add `ExternalVaultCardRequest` class
 
 ## 3.17.0
