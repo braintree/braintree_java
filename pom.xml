@@ -172,6 +172,35 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+          <activation>
+            <property>
+              <name>env.JUNIT</name>
+              <value>1</value>
+            </property>
+          </activation>
+          <build>
+            <plugins>
+              <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                  <disableXmlReport>false</disableXmlReport>
+                  <reportsDirectory>tmp/build/surefire-reports</reportsDirectory>
+                </configuration>
+              </plugin>
+              <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                  <reportsDirectory>tmp/build/failsafe-reports</reportsDirectory>
+                </configuration>
+              </plugin>
+            </plugins>
+          </build>
+        </profile>
     </profiles>
 
     <build>
