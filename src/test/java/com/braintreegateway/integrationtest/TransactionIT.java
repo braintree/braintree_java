@@ -75,6 +75,7 @@ import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
 import com.braintreegateway.util.NodeWrapperFactory;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TransactionIT extends IntegrationTest implements MerchantAccountTestConstants {
@@ -1658,6 +1659,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 result.getErrors().forObject("transaction").forObject("threeDSecurePassThru").onField("eciFlag").get(0).getCode());
     }
 
+    @Disabled
     @Test
     public void saleWithAmexRewards() {
         TransactionRequest request = new TransactionRequest().
@@ -1684,6 +1686,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
     }
 
+    @Disabled
     @Test
     public void saleWithAmexRewardsSucceedsEvenIfCardIneligible() {
         TransactionRequest request = new TransactionRequest().
@@ -1710,6 +1713,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
     }
 
+    @Disabled
     @Test
     public void saleWithAmexRewardsSucceedsEvenIfCardBalanceIsInsufficient() {
         TransactionRequest request = new TransactionRequest().
@@ -1736,6 +1740,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
     }
 
+    @Disabled
     @Test
     public void submitForSettlementWithAmexRewards() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
@@ -1766,6 +1771,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
     }
 
+    @Disabled
     @Test
     public void submitForSettlementWithAmexRewardsSucceedsEvenIfCardIsIneligible() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
@@ -1796,6 +1802,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
     }
 
+    @Disabled
     @Test
     public void submitForSettlementWithAmexRewardsSucceedsEvenIfCardBalanceIsInsufficient() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
