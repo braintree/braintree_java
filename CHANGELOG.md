@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+* Deprecate `chargebackProtectionLevel` and add `protectionLevel` to `Dispute` and `DisputeSearchRequest`
 
 ## 3.18.0
 * Add `ExternalVaultCardRequest` class

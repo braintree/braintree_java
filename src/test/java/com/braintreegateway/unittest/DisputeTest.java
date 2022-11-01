@@ -236,7 +236,9 @@ public class DisputeTest {
         assertEquals(dispute.getStatusHistory().get(0).getTimestamp().get(Calendar.HOUR), 10);
         assertEquals(dispute.getStatusHistory().get(0).getTimestamp().get(Calendar.MINUTE), 50);
         assertEquals(dispute.getStatusHistory().get(0).getTimestamp().get(Calendar.SECOND), 39);
+        // NEXT_MAJOR_VERSION Remove this assertion when chargebackProtectionLevel is removed from the SDK
         assertEquals(dispute.getChargebackProtectionLevel(), Dispute.ChargebackProtectionLevel.EFFORTLESS);
+        assertEquals(dispute.getProtectionLevel(), Dispute.ProtectionLevel.EFFORTLESS_CBP);
     }
 
     @Test

@@ -26,8 +26,17 @@ public class DisputeSearchRequest extends SearchRequest {
         return new MultipleValueNode<DisputeSearchRequest, Dispute.Kind>("kind", this);
     }
 
+    // NEXT_MAJOR_VERSION Remove this attribute
+    /**
+     * @deprecated use protectionLevel attribute
+     */
+    @Deprecated
     public MultipleValueNode<DisputeSearchRequest, Dispute.ChargebackProtectionLevel> chargebackProtectionLevel() {
         return new MultipleValueNode<DisputeSearchRequest, Dispute.ChargebackProtectionLevel>("chargebackProtectionLevel", this);
+    }
+
+    public MultipleValueNode<DisputeSearchRequest, Dispute.ProtectionLevel> protectionLevel() {
+        return new MultipleValueNode<DisputeSearchRequest, Dispute.ProtectionLevel>("protectionLevel", this);
     }
 
     public MultipleValueNode<DisputeSearchRequest, String> merchantAccountId() {
