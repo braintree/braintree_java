@@ -8281,4 +8281,48 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
        assertFalse(result_transaction.isRetried());
        assertTrue(result.isSuccess());
     }
+
+  @Test
+  public void createWithThirdPartyCardOnFileNetworkToken() {
+    TransactionRequest request = new TransactionRequest().
+      amount(TransactionAmount.AUTHORIZE.amount).
+      creditCard().
+      number(CreditCardNumber.VISA.number).
+      expirationDate("05/2023").
+      networkTokenizationAttributes().
+        cryptogram("/wAAAAAAAcb8AlGUF/1JQEkAAAA=").
+        tokenRequestorId("45310020105").
+        ecommerceIndicator("05").
+        done().
+        done();
+
+    Result<Transaction> result = gateway.transaction().sale(request);
+    assertTrue(result.isSuccess());
+    assertTrue(result.getTarget().isProcessedWithNetworkToken());
+    assertTrue(result.getTarget().getNetworkToken().isNetworkTokenized());
+  }
+
+  @Test
+  public void testCryptogramMissingInThirdPartyCardOnFileNetworkTokenRequest() {
+    TransactionRequest request = new TransactionRequest().
+      amount(TransactionAmount.AUTHORIZE.amount).
+      creditCard().
+      number(CreditCardNumber.VISA.number).
+      expirationDate("05/2023").
+      networkTokenizationAttributes().
+        tokenRequestorId("45310020105").
+        ecommerceIndicator("05").
+        done().
+        done();
+
+    Result<Transaction> result = gateway.transaction().sale(request);
+    assertFalse(result.isSuccess());
+    assertEquals(ValidationErrorCode.CREDIT_CARD_NETWORK_TOKENIZATION_ATTRIBUTE_CRYPTOGRAM_IS_REQUIRED,
+    result.getErrors()
+      .forObject("transaction")
+      .forObject("credit-card")
+      .onField("network_tokenization_attributes")
+      .get(0)
+      .getCode());
+  }
 }

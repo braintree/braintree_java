@@ -10,6 +10,7 @@ public class TransactionCreditCardRequest extends Request {
     private TransactionRequest parent;
     private String token;
     private PaymentReaderCardDetailsRequest paymentReaderCardDetailsRequest;
+    private NetworkTokenizationAttributesRequest networkTokenizationAttributesRequest;
 
     public TransactionCreditCardRequest(TransactionRequest parent) {
         this.parent = parent;
@@ -63,6 +64,11 @@ public class TransactionCreditCardRequest extends Request {
         return paymentReaderCardDetailsRequest;
     }
 
+    public NetworkTokenizationAttributesRequest networkTokenizationAttributes() {
+        this.networkTokenizationAttributesRequest = new NetworkTokenizationAttributesRequest(this);
+        return networkTokenizationAttributesRequest;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("creditCard").toXML();
@@ -87,6 +93,7 @@ public class TransactionCreditCardRequest extends Request {
             .addElement("expirationMonth", expirationMonth)
             .addElement("expirationYear", expirationYear)
             .addElement("token", token)
-            .addElement("paymentReaderCardDetails", paymentReaderCardDetailsRequest);
+            .addElement("paymentReaderCardDetails", paymentReaderCardDetailsRequest)
+            .addElement("networkTokenizationAttributes", networkTokenizationAttributesRequest);
     }
 }
