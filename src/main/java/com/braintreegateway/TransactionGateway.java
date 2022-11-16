@@ -250,4 +250,15 @@ public class TransactionGateway {
         NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/submit_for_partial_settlement", request);
         return new Result<Transaction>(response, Transaction.class);
     }
+
+    /**
+     * Updates custom field values for a given transaction
+     * @param id of the transaction being updated.
+     * @param request a TransactionRequest object containing custom field info..
+     * @return {@link Result}.
+     */
+    public Result<Transaction> updateCustomFields(String id, TransactionRequest request) {
+        NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/custom_fields", request);
+        return new Result<Transaction>(response, Transaction.class);
+    }
 }

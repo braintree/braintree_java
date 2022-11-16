@@ -145,6 +145,7 @@ public class Transaction {
     private String channel;
     private Calendar createdAt;
     private CreditCard creditCard;
+    private CreditCard networkToken;
     private String currencyIsoCode;
     private Customer customer;
     private Map<String, String> customFields;
@@ -246,6 +247,10 @@ public class Transaction {
         NodeWrapper creditCardNode = node.findFirst("credit-card");
         if (creditCardNode != null) {
             creditCard = new CreditCard(creditCardNode);
+        }
+        NodeWrapper networkTokenNode = node.findFirst("network-token");
+        if (networkTokenNode != null) {
+            networkToken = new CreditCard(networkTokenNode);
         }
         NodeWrapper customerNode = node.findFirst("customer");
         if (customerNode != null) {
@@ -521,6 +526,10 @@ public class Transaction {
 
     public String getMerchantAccountId() {
         return merchantAccountId;
+    }
+
+    public CreditCard getNetworkToken() {
+        return networkToken;
     }
 
     public String getOrderId() {

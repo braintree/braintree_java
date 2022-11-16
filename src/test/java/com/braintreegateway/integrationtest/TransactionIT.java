@@ -75,6 +75,7 @@ import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
 import com.braintreegateway.util.NodeWrapperFactory;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TransactionIT extends IntegrationTest implements MerchantAccountTestConstants {
@@ -1658,6 +1659,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 result.getErrors().forObject("transaction").forObject("threeDSecurePassThru").onField("eciFlag").get(0).getCode());
     }
 
+    @Disabled
     @Test
     public void saleWithAmexRewards() {
         TransactionRequest request = new TransactionRequest().
@@ -1684,6 +1686,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
     }
 
+    @Disabled
     @Test
     public void saleWithAmexRewardsSucceedsEvenIfCardIneligible() {
         TransactionRequest request = new TransactionRequest().
@@ -1710,6 +1713,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
     }
 
+    @Disabled
     @Test
     public void saleWithAmexRewardsSucceedsEvenIfCardBalanceIsInsufficient() {
         TransactionRequest request = new TransactionRequest().
@@ -1736,6 +1740,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
     }
 
+    @Disabled
     @Test
     public void submitForSettlementWithAmexRewards() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
@@ -1766,6 +1771,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
     }
 
+    @Disabled
     @Test
     public void submitForSettlementWithAmexRewardsSucceedsEvenIfCardIsIneligible() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
@@ -1796,6 +1802,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
     }
 
+    @Disabled
     @Test
     public void submitForSettlementWithAmexRewardsSucceedsEvenIfCardBalanceIsInsufficient() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
@@ -8273,5 +8280,130 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
        Transaction result_transaction = result.getTarget();
        assertFalse(result_transaction.isRetried());
        assertTrue(result.isSuccess());
+    }
+
+  @Test
+  public void createWithThirdPartyCardOnFileNetworkToken() {
+    TransactionRequest request = new TransactionRequest().
+      amount(TransactionAmount.AUTHORIZE.amount).
+      creditCard().
+      number(CreditCardNumber.VISA.number).
+      expirationDate("05/2023").
+      networkTokenizationAttributes().
+        cryptogram("/wAAAAAAAcb8AlGUF/1JQEkAAAA=").
+        tokenRequestorId("45310020105").
+        ecommerceIndicator("05").
+        done().
+        done();
+
+    Result<Transaction> result = gateway.transaction().sale(request);
+    assertTrue(result.isSuccess());
+    assertTrue(result.getTarget().isProcessedWithNetworkToken());
+    assertTrue(result.getTarget().getNetworkToken().isNetworkTokenized());
+  }
+
+  @Test
+  public void testCryptogramMissingInThirdPartyCardOnFileNetworkTokenRequest() {
+    TransactionRequest request = new TransactionRequest().
+      amount(TransactionAmount.AUTHORIZE.amount).
+      creditCard().
+      number(CreditCardNumber.VISA.number).
+      expirationDate("05/2023").
+      networkTokenizationAttributes().
+        tokenRequestorId("45310020105").
+        ecommerceIndicator("05").
+        done().
+        done();
+
+    Result<Transaction> result = gateway.transaction().sale(request);
+    assertFalse(result.isSuccess());
+    assertEquals(ValidationErrorCode.CREDIT_CARD_NETWORK_TOKENIZATION_ATTRIBUTE_CRYPTOGRAM_IS_REQUIRED,
+    result.getErrors()
+      .forObject("transaction")
+      .forObject("credit-card")
+      .onField("network_tokenization_attributes")
+      .get(0)
+      .getCode());
+  }
+
+   @Test
+    public void testUpdateCustomFields() {
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+            creditCard().
+                number(SandboxValues.CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+       Result<Transaction> transaction = gateway.transaction().sale(request);
+       String id = transaction.getTarget().getId();
+       System.out.println("THIS IS THE ID: " + id);
+
+       TransactionRequest customFieldsRequest = new TransactionRequest().
+           customField("storeMe", "foo");
+       Result<Transaction> result = gateway.transaction().updateCustomFields(id, customFieldsRequest);
+       Transaction result_transaction = result.getTarget();
+       assertTrue(result.isSuccess());
+       Map<String, String> expected = new HashMap<String, String>();
+       expected.put("store_me", "foo");
+
+       assertEquals(expected, result_transaction.getCustomFields());
+    }
+
+   @Test
+    public void testUpdateExistingCustomFields() {
+        TransactionRequest request = new TransactionRequest().
+            customField("storeMe", "foo").
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+            creditCard().
+                number(SandboxValues.CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+       Result<Transaction> result = gateway.transaction().sale(request);
+       Transaction result_transaction = result.getTarget();
+       assertTrue(result.isSuccess());
+
+       Map<String, String> expected = new HashMap<String, String>();
+       expected.put("store_me", "foo");
+
+       assertEquals(expected, result_transaction.getCustomFields());
+
+       TransactionRequest updateRequest = new TransactionRequest().
+            customField("storeMe", "bar");
+       Result<Transaction> updatedResult = gateway.transaction().updateCustomFields(result_transaction.getId(), updateRequest);
+       Transaction transaction = updatedResult.getTarget();
+       assertTrue(updatedResult.isSuccess());
+
+       Map<String, String> updatedExpected = new HashMap<String, String>();
+       updatedExpected.put("store_me", "bar");
+
+       assertEquals(updatedExpected, transaction.getCustomFields());
+    }
+
+   @Test
+    public void testUpdateCustomFieldsOnlyUpdatesCustomFields() {
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+            creditCard().
+                number(SandboxValues.CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+       Result<Transaction> result = gateway.transaction().sale(request);
+       Transaction result_transaction = result.getTarget();
+       assertTrue(result.isSuccess());
+
+       TransactionRequest updateRequest = new TransactionRequest().
+            channel("disney");
+       Result<Transaction> updatedResult = gateway.transaction().updateCustomFields(result_transaction.getId(), updateRequest);
+       assertTrue(updatedResult.isSuccess());
+
+       Transaction transaction = updatedResult.getTarget();
+       assertNull(transaction.getChannel());
+
+       Map<String, String> updatedExpected = new HashMap<String, String>();
+
+       assertEquals(updatedExpected, transaction.getCustomFields());
     }
 }

@@ -570,7 +570,9 @@ public class DisputeIT extends IntegrationTest {
         assertTrue(disputes.size() == 1);
         assertEquals(disputes.get(0).getCaseNumber(), "CASE-CHARGEBACK-PROTECTED");
         assertEquals(disputes.get(0).getReason(), Dispute.Reason.FRAUD);
+        // NEXT_MAJOR_VERSION Remove this assertion when chargebackProtectionLevel is removed from the SDK
         assertEquals(disputes.get(0).getChargebackProtectionLevel(), Dispute.ChargebackProtectionLevel.EFFORTLESS);
+        assertEquals(disputes.get(0).getProtectionLevel(), Dispute.ProtectionLevel.EFFORTLESS_CBP);
     }
 
 	@Test
