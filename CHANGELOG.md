@@ -4,8 +4,8 @@
 * Deprecate `chargebackProtectionLevel` and add `protectionLevel` to `Dispute` and `DisputeSearchRequest`
 * Add `networkTokenizationAttributes` to `TransactionCreditCardRequest`
 * Add `NetworkTokenizationAttributesRequest` class
-* Add validation error codes:
-  * `CREDIT_CARD_NETWORK_TOKENIZATION_ATTRIBUTE_CRYPTOGRAM_IS_REQUIRED`
+* Add validation error code `CREDIT_CARD_NETWORK_TOKENIZATION_ATTRIBUTE_CRYPTOGRAM_IS_REQUIRED`
+* Add 'updateCustomFields' to `Transaction`
 
 ## 3.18.0
 * Add `ExternalVaultCardRequest` class

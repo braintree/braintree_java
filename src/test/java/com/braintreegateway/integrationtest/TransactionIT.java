@@ -8325,4 +8325,85 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
       .get(0)
       .getCode());
   }
+
+   @Test
+    public void testUpdateCustomFields() {
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+            creditCard().
+                number(SandboxValues.CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+       Result<Transaction> transaction = gateway.transaction().sale(request);
+       String id = transaction.getTarget().getId();
+       System.out.println("THIS IS THE ID: " + id);
+
+       TransactionRequest customFieldsRequest = new TransactionRequest().
+           customField("storeMe", "foo");
+       Result<Transaction> result = gateway.transaction().updateCustomFields(id, customFieldsRequest);
+       Transaction result_transaction = result.getTarget();
+       assertTrue(result.isSuccess());
+       Map<String, String> expected = new HashMap<String, String>();
+       expected.put("store_me", "foo");
+
+       assertEquals(expected, result_transaction.getCustomFields());
+    }
+
+   @Test
+    public void testUpdateExistingCustomFields() {
+        TransactionRequest request = new TransactionRequest().
+            customField("storeMe", "foo").
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+            creditCard().
+                number(SandboxValues.CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+       Result<Transaction> result = gateway.transaction().sale(request);
+       Transaction result_transaction = result.getTarget();
+       assertTrue(result.isSuccess());
+
+       Map<String, String> expected = new HashMap<String, String>();
+       expected.put("store_me", "foo");
+
+       assertEquals(expected, result_transaction.getCustomFields());
+
+       TransactionRequest updateRequest = new TransactionRequest().
+            customField("storeMe", "bar");
+       Result<Transaction> updatedResult = gateway.transaction().updateCustomFields(result_transaction.getId(), updateRequest);
+       Transaction transaction = updatedResult.getTarget();
+       assertTrue(updatedResult.isSuccess());
+
+       Map<String, String> updatedExpected = new HashMap<String, String>();
+       updatedExpected.put("store_me", "bar");
+
+       assertEquals(updatedExpected, transaction.getCustomFields());
+    }
+
+   @Test
+    public void testUpdateCustomFieldsOnlyUpdatesCustomFields() {
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId(NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+            creditCard().
+                number(SandboxValues.CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+       Result<Transaction> result = gateway.transaction().sale(request);
+       Transaction result_transaction = result.getTarget();
+       assertTrue(result.isSuccess());
+
+       TransactionRequest updateRequest = new TransactionRequest().
+            channel("disney");
+       Result<Transaction> updatedResult = gateway.transaction().updateCustomFields(result_transaction.getId(), updateRequest);
+       assertTrue(updatedResult.isSuccess());
+
+       Transaction transaction = updatedResult.getTarget();
+       assertNull(transaction.getChannel());
+
+       Map<String, String> updatedExpected = new HashMap<String, String>();
+
+       assertEquals(updatedExpected, transaction.getCustomFields());
+    }
 }
