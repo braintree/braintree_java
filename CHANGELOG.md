@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+* Add `getExpirationMonth` and `getExpirationYear` to `PaymentMethodNonceDetails`
+
 ## 3.19.0
 * Deprecate `chargebackProtectionLevel` and add `protectionLevel` to `Dispute` and `DisputeSearchRequest`
 * Add `networkTokenizationAttributes` to `TransactionCreditCardRequest`

@@ -11,6 +11,7 @@ import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.exceptions.NotFoundException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -128,6 +129,8 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertEquals("401288", nonce.getDetails().getBin());
         assertEquals("81", nonce.getDetails().getLastTwo());
         assertEquals("Visa", nonce.getDetails().getCardType());
+        assertEquals("12", nonce.getDetails().getExpirationMonth());
+        assertEquals(String.valueOf(LocalDate.now().plusYears(1).getYear()), nonce.getDetails().getExpirationYear());
     }
 
     @Test
