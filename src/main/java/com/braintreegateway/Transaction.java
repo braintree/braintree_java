@@ -46,6 +46,7 @@ public class Transaction {
         AVS_AND_CVV("avs_and_cvv"),
         CVV("cvv"),
         DUPLICATE("duplicate"),
+        EXCESSIVE_RETRY("excessive_retry"),
         FRAUD("fraud"),
         RISK_THRESHOLD("risk_threshold"),
         THREE_D_SECURE("three_d_secure"),

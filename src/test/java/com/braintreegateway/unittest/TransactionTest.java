@@ -38,6 +38,33 @@ public class TransactionTest {
 	}
 
 	@Test
+	public void recognizesExcessiveRetryGatewayRejectReason() {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<transaction>\n" +
+				"  <id>unrecognized_transaction_id</id>\n" +
+				"  <status></status>\n" +
+				"  <type>sale</type>\n" +
+				"  <customer></customer>\n" +
+				"  <billing></billing>\n" +
+				"  <shipping></shipping>\n" +
+				"  <custom-fields/>\n" +
+				"  <gateway-rejection-reason>excessive_retry</gateway-rejection-reason>\n" +
+				"  <credit-card></credit-card>\n" +
+				"  <status-history type=\"array\"></status-history>\n" +
+				"  <subscription></subscription>\n" +
+				"  <descriptor></descriptor>\n" +
+				"  <escrow-status></escrow-status>\n" +
+				"  <disbursement-details></disbursement-details>\n" +
+				"  <payment-instrument-type>credit_card</payment-instrument-type>\n" +
+				"</transaction>\n";
+
+		SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+		Transaction transaction = new Transaction(transactionNode);
+
+		assertEquals(Transaction.GatewayRejectionReason.EXCESSIVE_RETRY, transaction.getGatewayRejectionReason());
+	}
+
+	@Test
 	public void recognizesTokenIssuanceGatewayRejectReason() {
 		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 				"<transaction>\n" +

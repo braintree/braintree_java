@@ -1892,6 +1892,27 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void gatewayRejectedOnExcessiveRetry() {
+        createDuplicateCheckingMerchantGateway();
+        Result<Transaction> result = new Result<Transaction>();
+        for (int i = 0; i <= 16; i++) {
+            TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.DECLINE.amount).
+                creditCard().
+                    number(CreditCardNumber.VISA.number).
+                    expirationDate("05/2016").
+                    done();
+            result = gateway.transaction().sale(request);
+        }
+
+        assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        assertEquals(Transaction.Status.GATEWAY_REJECTED, transaction.getStatus());
+        assertEquals(Transaction.GatewayRejectionReason.EXCESSIVE_RETRY, transaction.getGatewayRejectionReason());
+    }
+
+    @Test
     public void saleWithFraudCardIsDeclined() {
         createAdvancedFraudKountMerchantGateway();
         TransactionRequest request = new TransactionRequest().
