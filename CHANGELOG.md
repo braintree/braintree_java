@@ -4,6 +4,8 @@
 * Add `getExpirationMonth` and `getExpirationYear` to `PaymentMethodNonceDetails`
 * Add `ExcessiveRetry` to `GatewayRejectionReason`
 * Add `preDisputeProgram` to `Dispute` and `DisputeSearchRequest`
+* Add `AUTO_ACCEPTED` Dispute Status
+* Add `DISPUTE_AUTO_ACCEPTED` WebhookNotification Kind
 
 ## 3.19.0
 * Deprecate `chargebackProtectionLevel` and add `protectionLevel` to `Dispute` and `DisputeSearchRequest`

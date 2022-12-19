@@ -15,6 +15,7 @@ public class Dispute {
         WON,
         UNRECOGNIZED,
         ACCEPTED,
+        AUTO_ACCEPTED,
         DISPUTED,
         EXPIRED
     }
