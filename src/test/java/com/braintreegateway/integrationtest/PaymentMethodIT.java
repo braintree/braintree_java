@@ -994,7 +994,7 @@ public class PaymentMethodIT extends IntegrationTest {
 
         String[] nonces = {
             Nonce.AndroidPay, Nonce.ApplePayVisa,
-            Nonce.Transactable, Nonce.PayPalFuturePayment
+            Nonce.Transactable, Nonce.PayPalBillingAgreement
         };
 
         List<String> subscriptionIds = new ArrayList<String>();

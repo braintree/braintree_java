@@ -5294,7 +5294,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     public void searchOnsPaymentInstrumentTypeIsPayPal() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("1000")).
-            paymentMethodNonce(Nonce.PayPalFuturePayment);
+            paymentMethodNonce(Nonce.PayPalBillingAgreement);
 
         Transaction transaction = gateway.transaction().sale(request).getTarget();
 

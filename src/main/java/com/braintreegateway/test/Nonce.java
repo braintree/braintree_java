@@ -4,6 +4,7 @@ public class Nonce {
   public static final String Transactable = "fake-valid-nonce";
   public static final String Consumed = "fake-consumed-nonce";
   public static final String PayPalOneTimePayment = "fake-paypal-one-time-nonce";
+  // NEXT_MAJOR_VERSION - no longer supported in the Gateway, remove this constant
   public static final String PayPalFuturePayment = "fake-paypal-future-nonce";
   public static final String ApplePayVisa = "fake-apple-pay-visa-nonce";
   public static final String ApplePayMastercard = "fake-apple-pay-mastercard-nonce";
