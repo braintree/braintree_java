@@ -3,6 +3,7 @@
 ## Unreleased
 * Add `getExpirationMonth` and `getExpirationYear` to `PaymentMethodNonceDetails`
 * Add `ExcessiveRetry` to `GatewayRejectionReason`
+* Add `preDisputeProgram` to `Dispute` and `DisputeSearchRequest`
 
 ## 3.19.0
 * Deprecate `chargebackProtectionLevel` and add `protectionLevel` to `Dispute` and `DisputeSearchRequest`

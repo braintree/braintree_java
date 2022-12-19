@@ -39,6 +39,10 @@ public class DisputeSearchRequest extends SearchRequest {
         return new MultipleValueNode<DisputeSearchRequest, Dispute.ProtectionLevel>("protectionLevel", this);
     }
 
+    public MultipleValueNode<DisputeSearchRequest, Dispute.PreDisputeProgram> preDisputeProgram() {
+        return new MultipleValueNode<DisputeSearchRequest, Dispute.PreDisputeProgram>("pre_dispute_program", this);
+    }
+
     public MultipleValueNode<DisputeSearchRequest, String> merchantAccountId() {
         return new MultipleValueNode<DisputeSearchRequest, String>("merchant_account_id", this);
     }

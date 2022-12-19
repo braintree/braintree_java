@@ -26,6 +26,7 @@ public class DisputeTest {
         "<processor-comments>Forwarded comments</processor-comments>\n" +
         "<kind>chargeback</kind>\n " +
         "<merchant-account-id>abc123</merchant-account-id>\n " +
+        "<pre-dispute-program>none</pre-dispute-program>\n " +
         "<reason>fraud</reason>\n " +
         "<reason-code>83</reason-code>\n " +
         "<reason-description>Reason code 83 description</reason-description>\n " +
@@ -239,6 +240,7 @@ public class DisputeTest {
         // NEXT_MAJOR_VERSION Remove this assertion when chargebackProtectionLevel is removed from the SDK
         assertEquals(dispute.getChargebackProtectionLevel(), Dispute.ChargebackProtectionLevel.EFFORTLESS);
         assertEquals(dispute.getProtectionLevel(), Dispute.ProtectionLevel.EFFORTLESS_CBP);
+        assertEquals(dispute.getPreDisputeProgram(), Dispute.PreDisputeProgram.NONE);
     }
 
     @Test

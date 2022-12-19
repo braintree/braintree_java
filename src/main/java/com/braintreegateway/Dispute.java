@@ -70,6 +70,12 @@ public class Dispute {
         }
     }
 
+    public enum PreDisputeProgram {
+        NONE,
+        UNRECOGNIZED,
+        VISA_RDR;
+    }
+
     private final Calendar createdAt;
     private final Calendar receivedDate;
     private final Calendar replyByDate;
@@ -95,6 +101,7 @@ public class Dispute {
     @Deprecated
     private final ChargebackProtectionLevel chargebackProtectionLevel; // Deprecated
     private final ProtectionLevel protectionLevel;
+    private final PreDisputeProgram preDisputeProgram;
     private final BigDecimal amount;
     private final BigDecimal disputedAmount;
     private final BigDecimal wonAmount;
@@ -130,6 +137,7 @@ public class Dispute {
             default:
                 protectionLevel = ProtectionLevel.NO_PROTECTION;
         }
+        preDisputeProgram = EnumUtils.findByName(PreDisputeProgram.class, node.findString("pre-dispute-program"), PreDisputeProgram.UNRECOGNIZED);
 
         amount = node.findBigDecimal("amount");
         disputedAmount = node.findBigDecimal("amount-disputed");
@@ -241,6 +249,10 @@ public class Dispute {
 
     public ProtectionLevel getProtectionLevel() {
         return protectionLevel;
+    }
+
+    public PreDisputeProgram getPreDisputeProgram() {
+        return preDisputeProgram;
     }
 
     public BigDecimal getAmount() {
