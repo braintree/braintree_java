@@ -129,6 +129,10 @@ public class TransactionSearchRequest extends SearchRequest {
         return textNode("settlement_batch_id");
     }
 
+    public TextNode<TransactionSearchRequest> sepaDirectDebitPayPalV2OrderId() {
+        return textNode("sepa_debit_paypal_v2_order_id");
+    }
+
     public TextNode<TransactionSearchRequest> shippingCompany() {
         return textNode("shipping_company");
     }

@@ -20,6 +20,7 @@ public class Nonce {
   public static final String AmexExpressCheckout = "fake-amex-express-checkout-nonce";
   public static final String VenmoAccount = "fake-venmo-account-nonce";
   public static final String LocalPayment = "fake-local-payment-method-nonce";
+  public static final String SepaDebit = "fake-sepa-direct-debit-nonce";
   @Deprecated
   public static final String MasterpassAmEx = "fake-masterpass-amex-nonce";
   @Deprecated

@@ -202,6 +202,23 @@ public class PaymentMethodNonceIT extends IntegrationTest {
     }
 
     @Test
+    public void findSepaDirectDebitAccountNonceReturnsValidValues() {
+        String nonceString = "fake-sepa-direct-debit-nonce";
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
+        assertNotNull(nonce);
+        assertEquals(nonceString, nonce.getNonce());
+
+        assertNotNull(nonce.getDetails());
+        assertEquals(false, nonce.isConsumed());
+        assertEquals(false, nonce.isDefault());
+        assertNull(nonce.getDetails().getSepaDirectDebit().getCorrelationId());
+        assertEquals("1234", nonce.getDetails().getSepaDirectDebit().getIbanLastChars());
+        assertEquals("a-fake-mp-customer-id", nonce.getDetails().getSepaDirectDebit().getMerchantOrPartnerCustomerId());
+        assertEquals("RECURRENT", nonce.getDetails().getSepaDirectDebit().getMandateType());
+        assertEquals("a-fake-bank-reference-token", nonce.getDetails().getSepaDirectDebit().getBankReferenceToken());
+    }
+
+    @Test
     public void findCreditCardNonceReturnsValidBinDataPrepaidValue() {
         String nonceString = "fake-valid-prepaid-nonce";
         PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);

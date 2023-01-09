@@ -1,6 +1,12 @@
 # Changelog
 
 ## Unreleased
+* Add `SEPADirectDebitAccount` payment method
+* Add `SEPADirectDebitAccountDetails` and `SepaDirectDebitReturnCode`to transaction object
+* Add `SEPA_DIRECT_DEBIT_ACCOUNT` to payment instrument type
+* Add `PaymentMethodNonceDetailsSepaDirectDebit` to payment method nonce details object
+* Add SEPA Direct Debit specific error codes
+* Add SEPA Direct Debit array to customer object
 * Add `getExpirationMonth` and `getExpirationYear` to `PaymentMethodNonceDetails`
 * Add `ExcessiveRetry` to `GatewayRejectionReason`
 * Add `preDisputeProgram` to `Dispute` and `DisputeSearchRequest`

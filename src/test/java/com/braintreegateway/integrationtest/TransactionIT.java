@@ -49,6 +49,7 @@ import com.braintreegateway.SandboxValues;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.ExpirationDate;
 import com.braintreegateway.SandboxValues.TransactionAmount;
+import com.braintreegateway.SepaDirectDebitAccountDetails;
 import com.braintreegateway.SubscriptionRequest;
 import com.braintreegateway.ThreeDSecureInfo;
 import com.braintreegateway.Transaction;
@@ -1174,6 +1175,42 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(venmoAccountDetails.getVenmoUserId());
         assertNotNull(venmoAccountDetails.getImageUrl());
         assertNotNull(venmoAccountDetails.getSourceDescription());
+    }
+
+    @Test
+    public void saleWithSepaDirectDebitAccountNonce() {
+        String sepaDirectDebitNonce = Nonce.SepaDebit;
+
+        TransactionRequest request = new TransactionRequest()
+            .options()
+                .submitForSettlement(true)
+                .done()
+            .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
+            .paymentMethodNonce(sepaDirectDebitNonce);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(PaymentInstrumentType.SEPA_DIRECT_DEBIT_ACCOUNT, transaction.getPaymentInstrumentType());
+
+        SepaDirectDebitAccountDetails sepaDirectDebitAccountDetails = transaction.getSepaDirectDebitAccountDetails();
+        assertNotNull(sepaDirectDebitAccountDetails);
+
+        assertNull(sepaDirectDebitAccountDetails.getToken());
+        assertNull(sepaDirectDebitAccountDetails.getRefundFromTransactionFeeAmount());
+        assertNull(sepaDirectDebitAccountDetails.getRefundFromTransactionFeeCurrencyIsoCode());
+        assertNull(sepaDirectDebitAccountDetails.getRefundId());
+        assertNull(sepaDirectDebitAccountDetails.getSettlementType());
+        assertNull(sepaDirectDebitAccountDetails.getDebugId());
+        assertNotNull(sepaDirectDebitAccountDetails.getCaptureId());
+        assertNotNull(sepaDirectDebitAccountDetails.getTransactionFeeAmount());
+        assertNotNull(sepaDirectDebitAccountDetails.getTransactionFeeCurrencyIsoCode());
+        assertNotNull(sepaDirectDebitAccountDetails.getMerchantOrPartnerCustomerId());
+        assertNotNull(sepaDirectDebitAccountDetails.getLast4());
+        assertNotNull(sepaDirectDebitAccountDetails.getBankReferenceToken());
+        assertNotNull(sepaDirectDebitAccountDetails.getMandateType());
+        assertNotNull(sepaDirectDebitAccountDetails.getPayPalV2OrderId());
     }
 
     @Test
@@ -5323,6 +5360,45 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
         assertEquals(collection.getFirst().getPaymentInstrumentType(), PaymentInstrumentType.LOCAL_PAYMENT);
+    }
+
+    @Test
+    public void searchOnsPaymentInstrumentTypeIsSepaDirectDebit() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            options().
+                submitForSettlement(true).
+                done().
+            paymentMethodNonce(Nonce.SepaDebit);
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            paymentInstrumentType().is("SEPADebitAccountDetail");
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+        assertEquals(collection.getFirst().getPaymentInstrumentType(), PaymentInstrumentType.SEPA_DIRECT_DEBIT_ACCOUNT);
+    }
+
+    @Test
+    public void searchOnsSepaDirectDebitPayPalV2OrderId() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("1000")).
+            options().
+                submitForSettlement(true).
+                done().
+            paymentMethodNonce(Nonce.SepaDebit);
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        SepaDirectDebitAccountDetails sepaDirectDebitAccountDetails = transaction.getSepaDirectDebitAccountDetails();
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            sepaDirectDebitPayPalV2OrderId().is(sepaDirectDebitAccountDetails.getPayPalV2OrderId());
+
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test

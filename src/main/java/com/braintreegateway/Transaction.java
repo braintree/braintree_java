@@ -136,92 +136,94 @@ public class Transaction {
         }
     }
 
-    private String achReturnCode;
-    private List<AddOn> addOns;
+    private Address billingAddress;
+    private Address shippingAddress;
+    private AmexExpressCheckoutDetails amexExpressCheckoutDetails;
+    private AndroidPayDetails androidPayDetails;
+    private ApplePayDetails applePayDetails;
     private BigDecimal amount;
+    private BigDecimal discountAmount;
+    private BigDecimal serviceFeeAmount;
+    private BigDecimal shippingAmount;
+    private BigDecimal taxAmount;
+    private Boolean recurring;
+    private Boolean taxExempt;
+    private Calendar authorizationExpiresAt;
+    private Calendar createdAt;
+    private Calendar updatedAt;
+    private CreditCard creditCard;
+    private CustomActionsPaymentMethodDetails customActionsPaymentMethodDetails;
+    private CreditCard networkToken;
+    private Customer customer;
+    private Descriptor descriptor;
+    private DisbursementDetails disbursementDetails;
+    private EscrowStatus escrowStatus;
+    private FacilitatedDetails facilitatedDetails;
+    private FacilitatorDetails facilitatorDetails;
+    private GatewayRejectionReason gatewayRejectionReason;
+    private Integer installmentCount;
+    private List<AchReturnResponse> achReturnResponses;
+    private List<AddOn> addOns;
+    private List<AuthorizationAdjustment> authorizationAdjustments;
+    private List<Discount> discounts;
+    private List<Dispute> disputes;
+    private List<Installment> installments;
+    private List<Installment> refundedInstallments;
+    private List<StatusEvent> statusHistory;
+    private List<String> partialSettlementTransactionIds;
+    private List<String> refundIds;
+    private LocalPaymentDetails localPaymentDetails;
+    private Map<String, String> customFields;
+    private MasterpassCardDetails masterpassCardDetails;
+    private PayPalDetails paypalDetails;
+    private PayPalHereDetails paypalHereDetails;
+    private ProcessorResponseType processorResponseType;
+    private RiskData riskData;
+    private SamsungPayCardDetails samsungPayCardDetails;
+    private ScaExemption scaExemptionRequested;
+    private SepaDirectDebitAccountDetails sepaDirectDebitAccountDetails;
+    private Status status;
+    private String achReturnCode;
+    private String acquirerReferenceNumber;
+    private String additionalProcessorResponse;
+    private String authorizedTransactionId;
     private String avsErrorResponseCode;
     private String avsPostalCodeResponseCode;
     private String avsStreetAddressResponseCode;
-    private Address billingAddress;
     private String channel;
-    private Calendar createdAt;
-    private CreditCard creditCard;
-    private CreditCard networkToken;
     private String currencyIsoCode;
-    private Customer customer;
-    private Map<String, String> customFields;
     private String cvvResponseCode;
-    private DisbursementDetails disbursementDetails;
-    private List<Dispute> disputes;
-    private Descriptor descriptor;
-    private List<Discount> discounts;
-    private EscrowStatus escrowStatus;
-    private GatewayRejectionReason gatewayRejectionReason;
     private String graphqlId;
     private String id;
     private String merchantAccountId;
+    private String networkResponseCode;
+    private String networkResponseText;
+    private String networkTransactionId;
     private String orderId;
-    private PayPalDetails paypalDetails;
-    private PayPalHereDetails paypalHereDetails;
-    private ApplePayDetails applePayDetails;
-    private AndroidPayDetails androidPayDetails;
-    private AmexExpressCheckoutDetails amexExpressCheckoutDetails;
-    private VenmoAccountDetails venmoAccountDetails;
-    private UsBankAccountDetails usBankAccountDetails;
-    private VisaCheckoutCardDetails visaCheckoutCardDetails;
-    private MasterpassCardDetails masterpassCardDetails;
-    private LocalPaymentDetails localPaymentDetails;
-    private CustomActionsPaymentMethodDetails customActionsPaymentMethodDetails;
+    private String paymentInstrumentType;
     private String planId;
-    private boolean processedWithNetworkToken;
     private String processorAuthorizationCode;
     private String processorResponseCode;
     private String processorResponseText;
-    private ProcessorResponseType processorResponseType;
     private String processorSettlementResponseCode;
     private String processorSettlementResponseText;
-    private String additionalProcessorResponse;
-    private String networkResponseCode;
-    private String networkResponseText;
-    private String voiceReferralNumber;
-    private List<AchReturnResponse> achReturnResponses;
     private String purchaseOrderNumber;
-    private Boolean recurring;
-    private String refundedTransactionId;
     private String refundId;
-    private List<String> refundIds;
+    private String refundedTransactionId;
     private String retrievalReferenceNumber;
-    private String acquirerReferenceNumber;
-    private SamsungPayCardDetails samsungPayCardDetails;
+    private String sepaDirectDebitReturnCode;
     private String settlementBatchId;
-    private Address shippingAddress;
-    private Status status;
-    private List<StatusEvent> statusHistory;
+    private String shipsFromPostalCode;
     private String subscriptionId;
+    private String voiceReferralNumber;
     private Subscription subscription;
     private SubscriptionDetails subscriptionDetails;
-    private BigDecimal taxAmount;
-    private Boolean taxExempt;
-    private BigDecimal shippingAmount;
-    private BigDecimal discountAmount;
-    private String shipsFromPostalCode;
-    private Type type;
-    private Calendar updatedAt;
-    private BigDecimal serviceFeeAmount;
-    private String paymentInstrumentType;
-    private RiskData riskData;
     private ThreeDSecureInfo threeDSecureInfo;
-    private String authorizedTransactionId;
-    private List<String> partialSettlementTransactionIds;
-    private List<AuthorizationAdjustment> authorizationAdjustments;
-    private FacilitatedDetails facilitatedDetails;
-    private FacilitatorDetails facilitatorDetails;
-    private String networkTransactionId;
-    private ScaExemption scaExemptionRequested;
-    private Calendar authorizationExpiresAt;
-    private Integer installmentCount;
-    private List<Installment> installments;
-    private List<Installment> refundedInstallments;
+    private Type type;
+    private UsBankAccountDetails usBankAccountDetails;
+    private VenmoAccountDetails venmoAccountDetails;
+    private VisaCheckoutCardDetails visaCheckoutCardDetails;
+    private boolean processedWithNetworkToken;
     private boolean retried;
 
     public Transaction(NodeWrapper node) {
@@ -285,6 +287,10 @@ public class Transaction {
         if (amexExpressCheckoutCardNode != null) {
             amexExpressCheckoutDetails = new AmexExpressCheckoutDetails(amexExpressCheckoutCardNode);
         }
+        NodeWrapper sepaDirectDebitAccountNode = node.findFirst("sepa-debit-account-detail");
+        if (sepaDirectDebitAccountNode != null) {
+            sepaDirectDebitAccountDetails = new SepaDirectDebitAccountDetails(sepaDirectDebitAccountNode);
+        }
         NodeWrapper venmoAccountNode = node.findFirst("venmo-account");
         if (venmoAccountNode != null) {
             venmoAccountDetails = new VenmoAccountDetails(venmoAccountNode);
@@ -314,6 +320,7 @@ public class Transaction {
             customActionsPaymentMethodDetails = new CustomActionsPaymentMethodDetails(customActionsPaymentMethodNode);
         }
         achReturnCode = node.findString("ach-return-code");
+        sepaDirectDebitReturnCode = node.findString("sepa-direct-debit-return-code");
         planId = node.findString("plan-id");
         processedWithNetworkToken = node.findBoolean("processed-with-network-token");
         processorAuthorizationCode = node.findString("processor-authorization-code");
@@ -545,6 +552,10 @@ public class Transaction {
         return paypalHereDetails;
     }
 
+    public SepaDirectDebitAccountDetails getSepaDirectDebitAccountDetails() {
+        return sepaDirectDebitAccountDetails;
+    }
+
     public ScaExemption getScaExemptionRequested() {
         return scaExemptionRequested;
     }
@@ -633,6 +644,10 @@ public class Transaction {
 
     public String getAchReturnCode() {
         return achReturnCode;
+    }
+
+    public String getSepaDirectDebitReturnCode() {
+        return sepaDirectDebitReturnCode;
     }
 
     public String getNetworkResponseText() {

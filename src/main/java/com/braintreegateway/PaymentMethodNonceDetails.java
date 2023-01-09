@@ -4,6 +4,9 @@ import com.braintreegateway.util.NodeWrapper;
 import java.util.Map;
 
 public class PaymentMethodNonceDetails {
+
+    private PaymentMethodNonceDetailsPayerInfo payerInfo;
+    private PaymentMethodNonceDetailsSepaDirectDebit sepaDirectDebit;
     private String bin;
     private String cardType;
     private String cardholderName;
@@ -16,7 +19,6 @@ public class PaymentMethodNonceDetails {
     private String paymentInstrumentName;
     private String username;
     private String venmoUserId;
-    private PaymentMethodNonceDetailsPayerInfo payerInfo;
 
     public PaymentMethodNonceDetails(NodeWrapper node) {
         bin = node.findString("bin");
@@ -35,6 +37,10 @@ public class PaymentMethodNonceDetails {
         NodeWrapper payerInfoNode = node.findFirst("payer-info");
         if (payerInfoNode != null && !payerInfoNode.isBlank()) {
             payerInfo = new PaymentMethodNonceDetailsPayerInfo(payerInfoNode);
+        }
+
+        if (node.findString("bank-reference-token") != null && node.findString("iban-last-chars") != null) {
+            sepaDirectDebit = new PaymentMethodNonceDetailsSepaDirectDebit(node);
         }
     }
 
@@ -55,6 +61,10 @@ public class PaymentMethodNonceDetails {
         Map<String, String> payerInfoMap = (Map) map.get("payer-info");
         if (payerInfoMap != null) {
             payerInfo = new PaymentMethodNonceDetailsPayerInfo(payerInfoMap);
+        }
+
+        if (map.get("bank-reference-token") != null && map.get("iban-last-chars") != null) {
+            sepaDirectDebit = new PaymentMethodNonceDetailsSepaDirectDebit(map);
         }
     }
 
@@ -108,5 +118,9 @@ public class PaymentMethodNonceDetails {
 
     public PaymentMethodNonceDetailsPayerInfo getPayerInfo() {
         return payerInfo;
+    }
+
+    public PaymentMethodNonceDetailsSepaDirectDebit getSepaDirectDebit() {
+        return sepaDirectDebit;
     }
 }
