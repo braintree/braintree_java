@@ -10,17 +10,18 @@ import java.util.Map;
 public class ThreeDSecureLookupRequest extends Request {
     private ThreeDSecureLookupAdditionalInformation additionalInformation;
     private String amount;
-    private String nonce;
-    private String email;
     private String authorizationFingerprint;
-    private String dfReferenceId;
-    private String braintreeLibraryVersion;
     private ThreeDSecureLookupAddress billingAddress;
-    private Map clientMetadata;
+    private String braintreeLibraryVersion;
     private Boolean challengeRequested;
-    private Boolean exemptionRequested;
+    private Map clientMetadata;
     private Boolean dataOnlyRequested;
+    private String dfReferenceId;
+    private String email;
+    private Boolean exemptionRequested;
     private String merchantAccountId;
+    private String nonce;
+    private String requestedExemptionType;
 
     public ThreeDSecureLookupRequest() {
 
@@ -65,6 +66,11 @@ public class ThreeDSecureLookupRequest extends Request {
 
     public ThreeDSecureLookupRequest exemptionRequested(Boolean exemptionRequested) {
         this.exemptionRequested = exemptionRequested;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest requestedExemptionType(String requestedExemptionType) {
+        this.requestedExemptionType = requestedExemptionType;
         return this;
     }
 
@@ -119,6 +125,10 @@ public class ThreeDSecureLookupRequest extends Request {
         return exemptionRequested;
     }
 
+    private String getRequestedExemptionType() {
+        return requestedExemptionType;
+    }
+
     private Boolean getDataOnlyRequested() {
         return dataOnlyRequested;
     }
@@ -156,6 +166,7 @@ public class ThreeDSecureLookupRequest extends Request {
             jsonMap.put("_meta", metaMap);
             jsonMap.put("challengeRequested", getChallengeRequested());
             jsonMap.put("exemptionRequested", getExemptionRequested());
+            jsonMap.put("requestedExemptionType", getRequestedExemptionType());
             jsonMap.put("dataOnlyRequested", getDataOnlyRequested());
             jsonMap.put("merchantAccountId", getMerchantAccountId());
 

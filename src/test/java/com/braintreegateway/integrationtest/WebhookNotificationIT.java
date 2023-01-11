@@ -7,6 +7,7 @@ import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -159,6 +160,31 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertEquals(Dispute.Kind.CHARGEBACK, notification.getDispute().getKind());
         assertNotNull(notification.getDispute().getOpenedDate());
         assertNull(notification.getDispute().getWonDate());
+    }
+
+    @Test
+    public void createsSampleDisputeAutoAcceptedNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_AUTO_ACCEPTED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+        Dispute dispute = notification.getDispute();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        assertEquals(WebhookNotification.Kind.DISPUTE_AUTO_ACCEPTED, notification.getKind());
+        assertEquals("my_id", dispute.getId());
+        assertEquals("250.00", dispute.getAmount().toString());
+        assertEquals("250.00", dispute.getDisputedAmount().toString());
+        assertEquals("0.00", dispute.getWonAmount().toString());
+        assertEquals("2014-03-21", dateFormat.format(dispute.getReceivedDate().getTime()).toString());
+        assertEquals("2014-03-21", dateFormat.format(dispute.getReplyByDate().getTime()).toString());
+        assertEquals("2014-03-21", dateFormat.format(dispute.getOpenedDate().getTime()).toString());
+        assertEquals(Dispute.Kind.CHARGEBACK, dispute.getKind());
+        assertEquals("USD", dispute.getCurrencyIsoCode());
+        assertEquals(Dispute.Status.AUTO_ACCEPTED, dispute.getStatus());
+        assertEquals(Dispute.Reason.FRAUD, dispute.getReason());
+        assertEquals("my_id", dispute.getTransaction().getId());
+        assertEquals("250.00", dispute.getTransaction().getAmount().toString());
     }
 
     @Test

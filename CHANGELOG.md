@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.20.0
+* Add `SEPADirectDebitAccount` payment method
+* Add `SEPADirectDebitAccountDetails` and `SepaDirectDebitReturnCode`to transaction object
+* Add `SEPA_DIRECT_DEBIT_ACCOUNT` to payment instrument type
+* Add `PaymentMethodNonceDetailsSepaDirectDebit` to payment method nonce details object
+* Add SEPA Direct Debit specific error codes
+* Add SEPA Direct Debit array to customer object
+* Add `getExpirationMonth` and `getExpirationYear` to `PaymentMethodNonceDetails`
+* Add `ExcessiveRetry` to `GatewayRejectionReason`
+* Add `preDisputeProgram` to `Dispute` and `DisputeSearchRequest`
+* Add `AUTO_ACCEPTED` Dispute Status
+* Add `DISPUTE_AUTO_ACCEPTED` WebhookNotification Kind
+* Add `requestedExemptionType` to `ThreeDSecureLookupRequest`
+
 ## 3.19.0
 * Deprecate `chargebackProtectionLevel` and add `protectionLevel` to `Dispute` and `DisputeSearchRequest`
 * Add `networkTokenizationAttributes` to `TransactionCreditCardRequest`

@@ -4,24 +4,30 @@ import com.braintreegateway.util.NodeWrapper;
 import java.util.Map;
 
 public class PaymentMethodNonceDetails {
+
+    private PaymentMethodNonceDetailsPayerInfo payerInfo;
+    private PaymentMethodNonceDetailsSepaDirectDebit sepaDirectDebit;
+    private String bin;
     private String cardType;
     private String cardholderName;
     private String dpanLastTwo;
     private String email;
-    private String bin;
+    private String expirationMonth;
+    private String expirationYear;
     private String lastFour;
     private String lastTwo;
     private String paymentInstrumentName;
     private String username;
     private String venmoUserId;
-    private PaymentMethodNonceDetailsPayerInfo payerInfo;
 
     public PaymentMethodNonceDetails(NodeWrapper node) {
+        bin = node.findString("bin");
         cardType = node.findString("card-type");
         cardholderName = node.findString("cardholder-name");
         dpanLastTwo = node.findString("dpan-last-two");
         email = node.findString("email");
-        bin = node.findString("bin");
+        expirationMonth = node.findString("expiration-month");
+        expirationYear = node.findString("expiration-year");
         lastFour = node.findString("last-four");
         lastTwo = node.findString("last-two");
         paymentInstrumentName = node.findString("payment-instrument-name");
@@ -32,14 +38,20 @@ public class PaymentMethodNonceDetails {
         if (payerInfoNode != null && !payerInfoNode.isBlank()) {
             payerInfo = new PaymentMethodNonceDetailsPayerInfo(payerInfoNode);
         }
+
+        if (node.findString("bank-reference-token") != null && node.findString("iban-last-chars") != null) {
+            sepaDirectDebit = new PaymentMethodNonceDetailsSepaDirectDebit(node);
+        }
     }
 
     public PaymentMethodNonceDetails(Map<String, Object> map) {
+        bin = (String) map.get("bin");
         cardType = (String) map.get("card-type");
         cardholderName = (String) map.get("cardholder-name");
         dpanLastTwo = (String) map.get("dpan-last-two");
         email = (String) map.get("email");
-        bin = (String) map.get("bin");
+        expirationMonth = (String) map.get("expiration-month");
+        expirationYear = (String) map.get("expiration-year");
         lastFour = (String) map.get("last-four");
         lastTwo = (String) map.get("last-two");
         paymentInstrumentName = (String) map.get("payment-instrument-name");
@@ -50,6 +62,14 @@ public class PaymentMethodNonceDetails {
         if (payerInfoMap != null) {
             payerInfo = new PaymentMethodNonceDetailsPayerInfo(payerInfoMap);
         }
+
+        if (map.get("bank-reference-token") != null && map.get("iban-last-chars") != null) {
+            sepaDirectDebit = new PaymentMethodNonceDetailsSepaDirectDebit(map);
+        }
+    }
+
+    public String getBin() {
+        return bin;
     }
 
     public String getCardType() {
@@ -68,8 +88,12 @@ public class PaymentMethodNonceDetails {
         return email;
     }
 
-    public String getBin() {
-        return bin;
+    public String getExpirationMonth() {
+        return expirationMonth;
+    }
+
+    public String getExpirationYear() {
+        return expirationYear;
     }
 
     public String getLastTwo() {
@@ -94,5 +118,9 @@ public class PaymentMethodNonceDetails {
 
     public PaymentMethodNonceDetailsPayerInfo getPayerInfo() {
         return payerInfo;
+    }
+
+    public PaymentMethodNonceDetailsSepaDirectDebit getSepaDirectDebit() {
+        return sepaDirectDebit;
     }
 }

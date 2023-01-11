@@ -13,6 +13,7 @@ public class WebhookNotification {
         DISBURSEMENT("disbursement"),
         DISBURSEMENT_EXCEPTION("disbursement_exception"),
         DISPUTE_ACCEPTED("dispute_accepted"),
+        DISPUTE_AUTO_ACCEPTED("dispute_auto_accepted"),
         DISPUTE_DISPUTED("dispute_disputed"),
         DISPUTE_EXPIRED("dispute_expired"),
         DISPUTE_LOST("dispute_lost"),
