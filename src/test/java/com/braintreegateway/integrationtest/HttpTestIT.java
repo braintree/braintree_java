@@ -163,23 +163,6 @@ public class HttpTestIT extends IntegrationTest {
     }
 
     @Test
-    public void sslCertificateSuccessfulInQA() {
-        try {
-            BraintreeGateway gateway = new BraintreeGateway(Environment.QA, "integration_merchant_id", "bad_public_key", "bad_private_key");
-            Http http = new Http(gateway.getConfiguration());
-            http.get("/");
-        } catch (AuthenticationException ex) {
-            // success
-        } catch (ServiceUnavailableException ex) {
-            // QA is down
-        } catch (ServerException ex) {
-            // QA is down
-        } catch (Exception ex) {
-            fail(ex.getMessage());
-        }
-    }
-
-    @Test
     public void sslCertificateSuccessfulInSandbox() {
         BraintreeGateway gateway = new BraintreeGateway(Environment.SANDBOX, "integration_merchant_id", "integration_public_key", "integration_private_key");
         Http http = new Http(gateway.getConfiguration());

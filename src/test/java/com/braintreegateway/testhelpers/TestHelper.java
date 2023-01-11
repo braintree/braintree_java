@@ -265,6 +265,33 @@ public abstract class TestHelper {
       return nonce;
     }
 
+    public static String generateSepaDebitNonce(BraintreeGateway gateway) {
+      String encodedClientToken = gateway.clientToken().generate();
+      String clientToken = TestHelper.decodeClientToken(encodedClientToken);
+
+      String authorizationFingerprint = extractParamFromJson("authorizationFingerprint", clientToken);
+      Configuration configuration = gateway.getConfiguration();
+      String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods/sepa_debit_accounts";
+
+      QueryString payload = new QueryString();
+
+      payload.append("authorization_fingerprint", authorizationFingerprint).
+        append("sepa_debit_account[last_4]", "1234").
+        append("sepa_debit_account[merchant_or_partner_customer_id]", "a-mp-customer-id").
+        append("sepa_debit_account[bank_reference_token]", "123456789").
+        append("sepa_debit_account[mandate_type]", "RECURRENT");
+
+      String responseBody;
+      String nonce = "";
+      try {
+        responseBody = HttpHelper.post(url, payload.toString());
+        nonce = extractParamFromJson("nonce", responseBody);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+      return nonce;
+    }
+
     public static String generateFuturePaymentPayPalNonce(BraintreeGateway gateway) {
       QueryString payload = new QueryString();
       payload.append("paypal_account[consent_code]", "consent");

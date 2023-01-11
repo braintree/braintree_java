@@ -16,33 +16,34 @@ public class Customer {
     private String lastName;
     private String phone;
     private String website;
-    private Map<String, String> customFields;
-    private List<CreditCard> creditCards;
-    private List<PayPalAccount> paypalAccounts;
-    private List<ApplePayCard> applePayCards;
-    private List<AndroidPayCard> androidPayCards;
+    private List<Address> addresses;
     private List<AmexExpressCheckoutCard> amexExpressCheckoutCards;
+    private List<AndroidPayCard> androidPayCards;
+    private List<ApplePayCard> applePayCards;
+    private List<CreditCard> creditCards;
+    private List<CustomActionsPaymentMethod> customActionsPaymentMethods;
+    private List<MasterpassCard> masterpassCards;
+    private List<PayPalAccount> paypalAccounts;
+    private List<SamsungPayCard> samsungPayCards;
+    private List<SepaDirectDebitAccount> sepaDirectDebitAccounts;
+    private List<UsBankAccount> usBankAccounts;
     private List<VenmoAccount> venmoAccounts;
     private List<VisaCheckoutCard> visaCheckoutCards;
-    private List<MasterpassCard> masterpassCards;
-    private List<UsBankAccount> usBankAccounts;
-    private List<SamsungPayCard> samsungPayCards;
-    private List<CustomActionsPaymentMethod> customActionsPaymentMethods;
-    private List<Address> addresses;
+    private Map<String, String> customFields;
 
     public Customer(NodeWrapper node) {
-        id = node.findString("id");
-        graphqlId = node.findString("global-id");
-        firstName = node.findString("first-name");
-        lastName = node.findString("last-name");
         company = node.findString("company");
+        createdAt = node.findDateTime("created-at");
+        customFields = node.findMap("custom-fields/*");
         email = node.findString("email");
         fax = node.findString("fax");
+        firstName = node.findString("first-name");
+        graphqlId = node.findString("global-id");
+        id = node.findString("id");
+        lastName = node.findString("last-name");
         phone = node.findString("phone");
-        website = node.findString("website");
-        createdAt = node.findDateTime("created-at");
         updatedAt = node.findDateTime("updated-at");
-        customFields = node.findMap("custom-fields/*");
+        website = node.findString("website");
         creditCards = new ArrayList<CreditCard>();
         for (NodeWrapper creditCardResponse : node.findAll("credit-cards/credit-card")) {
             creditCards.add(new CreditCard(creditCardResponse));
@@ -78,6 +79,10 @@ public class Customer {
         usBankAccounts = new ArrayList<UsBankAccount>();
         for (NodeWrapper usBankAccountResponse : node.findAll("us-bank-accounts/us-bank-account")) {
             usBankAccounts.add(new UsBankAccount(usBankAccountResponse));
+        }
+        sepaDirectDebitAccounts = new ArrayList<SepaDirectDebitAccount>();
+        for (NodeWrapper sepaDirectDebitAccountResponse : node.findAll("sepa-debit-accounts/sepa-debit-account")) {
+            sepaDirectDebitAccounts.add(new SepaDirectDebitAccount(sepaDirectDebitAccountResponse));
         }
         samsungPayCards = new ArrayList<SamsungPayCard>();
         for (NodeWrapper samsungPayCardResponse : node.findAll("samsung-pay-cards/samsung-pay-card")) {
@@ -183,6 +188,10 @@ public class Customer {
         return Collections.unmodifiableList(usBankAccounts);
     }
 
+    public List<SepaDirectDebitAccount> getSepaDirectDebitAccounts() {
+        return Collections.unmodifiableList(sepaDirectDebitAccounts);
+    }
+
     public List<SamsungPayCard> getSamsungPayCards() {
         return Collections.unmodifiableList(samsungPayCards);
     }
@@ -202,6 +211,7 @@ public class Customer {
         paymentMethods.addAll(getVisaCheckoutCards());
         paymentMethods.addAll(getMasterpassCards());
         paymentMethods.addAll(getSamsungPayCards());
+        paymentMethods.addAll(getSepaDirectDebitAccounts());
         paymentMethods.addAll(getCustomActionsPaymentMethods());
         return Collections.unmodifiableList(paymentMethods);
     }

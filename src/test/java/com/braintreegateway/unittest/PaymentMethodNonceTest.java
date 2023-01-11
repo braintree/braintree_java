@@ -25,6 +25,8 @@ public class PaymentMethodNonceTest {
                 "    <last-two>22</last-two>" +
                 "    <last-four>2222</last-four>" +
                 "    <card-type>Visa</card-type>" +
+                "    <expiration-month>12</expiration-month>" +
+                "    <expiration-year>2028</expiration-year>" +
                 "  </details>" +
                 "  <bin-data>" +
                 "    <healthcare>Yes</healthcare>" +
@@ -62,6 +64,8 @@ public class PaymentMethodNonceTest {
         assertEquals("22", paymentMethodNonce.getDetails().getLastTwo());
         assertEquals("2222", paymentMethodNonce.getDetails().getLastFour());
         assertEquals("Visa", paymentMethodNonce.getDetails().getCardType());
+        assertEquals("12", paymentMethodNonce.getDetails().getExpirationMonth());
+        assertEquals("2028", paymentMethodNonce.getDetails().getExpirationYear());
     }
 
     @Test

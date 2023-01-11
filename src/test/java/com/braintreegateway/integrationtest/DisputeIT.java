@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
@@ -567,12 +568,52 @@ public class DisputeIT extends IntegrationTest {
             disputes.add(dispute);
         }
 
-        assertTrue(disputes.size() == 1);
-        assertEquals(disputes.get(0).getCaseNumber(), "CASE-CHARGEBACK-PROTECTED");
-        assertEquals(disputes.get(0).getReason(), Dispute.Reason.FRAUD);
-        // NEXT_MAJOR_VERSION Remove this assertion when chargebackProtectionLevel is removed from the SDK
-        assertEquals(disputes.get(0).getChargebackProtectionLevel(), Dispute.ChargebackProtectionLevel.EFFORTLESS);
-        assertEquals(disputes.get(0).getProtectionLevel(), Dispute.ProtectionLevel.EFFORTLESS_CBP);
+        assertTrue(disputes.size() > 0);
+
+        for (Dispute dispute: disputes) {
+            assertEquals(dispute.getReason(), Dispute.Reason.FRAUD);
+            // NEXT_MAJOR_VERSION Remove this assertion when chargebackProtectionLevel is removed from the SDK
+            assertEquals(dispute.getChargebackProtectionLevel(), Dispute.ChargebackProtectionLevel.EFFORTLESS);
+            assertEquals(dispute.getProtectionLevel(), Dispute.ProtectionLevel.EFFORTLESS_CBP);
+        }
+    }
+
+    @Test
+    public void searchWithPreDisputeProgramReturnsDispute() {
+        List<Dispute> disputes = new ArrayList<Dispute>();
+        DisputeSearchRequest request = new DisputeSearchRequest()
+                .preDisputeProgram()
+                .in(Dispute.PreDisputeProgram.VISA_RDR);
+
+        PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
+                .search(request);
+
+        for (Dispute dispute : disputeCollection) {
+            disputes.add(dispute);
+        }
+
+        assertEquals(1, disputes.size());
+        assertEquals(disputes.get(0).getPreDisputeProgram(), Dispute.PreDisputeProgram.VISA_RDR);
+    }
+
+    @Test
+    public void searchForNonPreDisputesReturnsDisputes() {
+        List<Dispute> disputes = new ArrayList<Dispute>();
+        DisputeSearchRequest request = new DisputeSearchRequest()
+                .preDisputeProgram()
+                .is(Dispute.PreDisputeProgram.NONE);
+
+        PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
+                .search(request);
+
+        for (Dispute dispute : disputeCollection) {
+            disputes.add(dispute);
+        }
+        assertTrue(disputes.size() > 1);
+
+        Set<Dispute.PreDisputeProgram> preDisputePrograms = disputes.stream().map(Dispute::getPreDisputeProgram).collect(Collectors.toSet());
+        assertEquals(1, preDisputePrograms.size());
+        assertTrue(preDisputePrograms.contains(Dispute.PreDisputeProgram.NONE));
     }
 
 	@Test

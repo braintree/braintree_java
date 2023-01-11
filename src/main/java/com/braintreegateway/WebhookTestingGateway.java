@@ -63,6 +63,7 @@ public class WebhookTestingGateway {
             case DISPUTE_LOST: return disputeLostXml(id);
             case DISPUTE_WON: return disputeWonXml(id);
             case DISPUTE_ACCEPTED: return disputeAcceptedXml(id);
+            case DISPUTE_AUTO_ACCEPTED: return disputeAutoAcceptedXml(id);
             case DISPUTE_DISPUTED: return disputeDisputedXml(id);
             case DISPUTE_EXPIRED: return disputeExpiredXml(id);
             case DISBURSEMENT_EXCEPTION: return disbursementExceptionXml(id);
@@ -333,6 +334,26 @@ public class WebhookTestingGateway {
                 node("kind", "chargeback"),
                 node("currency-iso-code", "USD"),
                 node("status", "accepted"),
+                node("reason", "fraud"),
+                node("transaction",
+                    node("id", id),
+                    node("amount", "250.00")
+                )
+        );
+    }
+
+    private String disputeAutoAcceptedXml(String id) {
+        return node("dispute",
+                node("id", id),
+                node("amount", "250.00"),
+                node("amount-disputed", "250.00"),
+                node("amount-won", "0.00"),
+                node("received-date", TYPE_DATE, "2014-03-21"),
+                node("reply-by-date", TYPE_DATE, "2014-03-21"),
+                node("date-opened", TYPE_DATE, "2014-03-21"),
+                node("kind", "chargeback"),
+                node("currency-iso-code", "USD"),
+                node("status", "auto_accepted"),
                 node("reason", "fraud"),
                 node("transaction",
                     node("id", id),

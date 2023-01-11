@@ -66,6 +66,15 @@ public class IntegrationTest {
         );
     }
 
+    public void createDuplicateCheckingMerchantGateway() {
+        this.gateway = new BraintreeGateway(
+                Environment.DEVELOPMENT,
+                "dup_checking_integration_merchant_id",
+                "dup_checking_integration_public_key",
+                "dup_checking_integration_private_key"
+        );
+    }
+
     protected Transaction createDisputedTransaction() throws InterruptedException {
         TransactionRequest request = new TransactionRequest()
                 .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)

@@ -11,6 +11,7 @@ import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.exceptions.NotFoundException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -128,6 +129,8 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertEquals("401288", nonce.getDetails().getBin());
         assertEquals("81", nonce.getDetails().getLastTwo());
         assertEquals("Visa", nonce.getDetails().getCardType());
+        assertEquals("12", nonce.getDetails().getExpirationMonth());
+        assertEquals(String.valueOf(LocalDate.now().plusYears(1).getYear()), nonce.getDetails().getExpirationYear());
     }
 
     @Test
@@ -196,6 +199,23 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertNotNull(payerInfo.getShippingAddress().getRegion());
         assertNotNull(payerInfo.getShippingAddress().getPostalCode());
         assertNotNull(payerInfo.getShippingAddress().getCountryCodeAlpha2());
+    }
+
+    @Test
+    public void findSepaDirectDebitAccountNonceReturnsValidValues() {
+        String nonceString = "fake-sepa-direct-debit-nonce";
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
+        assertNotNull(nonce);
+        assertEquals(nonceString, nonce.getNonce());
+
+        assertNotNull(nonce.getDetails());
+        assertEquals(false, nonce.isConsumed());
+        assertEquals(false, nonce.isDefault());
+        assertNull(nonce.getDetails().getSepaDirectDebit().getCorrelationId());
+        assertEquals("1234", nonce.getDetails().getSepaDirectDebit().getIbanLastChars());
+        assertEquals("a-fake-mp-customer-id", nonce.getDetails().getSepaDirectDebit().getMerchantOrPartnerCustomerId());
+        assertEquals("RECURRENT", nonce.getDetails().getSepaDirectDebit().getMandateType());
+        assertEquals("a-fake-bank-reference-token", nonce.getDetails().getSepaDirectDebit().getBankReferenceToken());
     }
 
     @Test
