@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.20.0
 * Add `SEPADirectDebitAccount` payment method
 * Add `SEPADirectDebitAccountDetails` and `SepaDirectDebitReturnCode`to transaction object
 * Add `SEPA_DIRECT_DEBIT_ACCOUNT` to payment instrument type
