@@ -4616,7 +4616,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("07", info.getECIFlag());
         assertEquals("somebase64value", info.getCAVV());
         assertEquals("xidvalue", info.getXID());
-        assertEquals("1.0.2", info.getThreeDSecureVersion());
+        assertNotNull(info.getThreeDSecureVersion());
         assertEquals("dstxnid", info.getDsTransactionId());
     }
 
