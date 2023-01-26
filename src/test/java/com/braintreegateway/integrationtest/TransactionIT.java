@@ -8284,7 +8284,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID).
             amount(initial_amount).
-            transactionSource("recurring_first").
+            transactionSource("recurring").
             creditCard().
                 number("5105105105105100").
                 expirationDate("05/2012").
