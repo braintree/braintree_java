@@ -13,6 +13,11 @@
 * Add `AUTO_ACCEPTED` Dispute Status
 * Add `DISPUTE_AUTO_ACCEPTED` WebhookNotification Kind
 * Add `requestedExemptionType` to `ThreeDSecureLookupRequest`
+* Add `intendedTransactionSource` to `CreditCardVerificationRequest`
+* Add `paymentMethodNonce` to `CreditCardVerificationRequest`
+* Add `threeDSecureAuthenticationID` to `CreditCardVerificationRequest`
+* Add `threeDSecureToken` to `CreditCardVerificationRequest`
+* Add `verificationThreeDSecurePassThruRequest` to `CreditCardVerificationRequest`
 
 ## 3.19.0
 * Deprecate `chargebackProtectionLevel` and add `protectionLevel` to `Dispute` and `DisputeSearchRequest`

@@ -2146,6 +2146,38 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithTransactionSourceAsInstallment() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            transactionSource("installment").
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2025").
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertFalse(transaction.getRecurring());
+        assertFalse(transaction.isRecurring());
+    }
+
+    @Test
+    public void saleWithTransactionSourceAsInstallmentFirst() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            transactionSource("installment_first").
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2025").
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertFalse(transaction.getRecurring());
+        assertFalse(transaction.isRecurring());
+    }
+
+    @Test
     public void saleWithTransactionSourceAsMerchant() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
