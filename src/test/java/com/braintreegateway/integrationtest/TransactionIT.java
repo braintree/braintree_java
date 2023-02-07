@@ -5378,7 +5378,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     @Test
     public void searchOnsPaymentInstrumentTypeIsLocalPayment() {
         TransactionRequest request = new TransactionRequest().
-            amount(new BigDecimal("1000")).
+            amount(TransactionAmount.AUTHORIZE.amount).
             options().
                 submitForSettlement(true).
                 done().
@@ -7135,7 +7135,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     @Test
     public void createLocalPaymentTransaction() {
         TransactionRequest request = new TransactionRequest().
-            amount(new BigDecimal("100.00")).
+            amount(TransactionAmount.AUTHORIZE.amount).
             options().
                 submitForSettlement(true).
                 done().
