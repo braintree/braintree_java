@@ -1,6 +1,6 @@
 # Changelog
 
-## unreleased
+## 3.21.0
 * Add `intendedTransactionSource` to `CreditCardVerificationRequest`
 * Add `paymentMethodNonce` to `CreditCardVerificationRequest`
 * Add `threeDSecureAuthenticationID` to `CreditCardVerificationRequest`
