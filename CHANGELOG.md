@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.21.0
+* Add `intendedTransactionSource` to `CreditCardVerificationRequest`
+* Add `paymentMethodNonce` to `CreditCardVerificationRequest`
+* Add `threeDSecureAuthenticationID` to `CreditCardVerificationRequest`
+* Add `threeDSecureToken` to `CreditCardVerificationRequest`
+* Add `verificationThreeDSecurePassThruRequest` to `CreditCardVerificationRequest`
+
 ## 3.20.0
 * Add `SEPADirectDebitAccount` payment method
 * Add `SEPADirectDebitAccountDetails` and `SepaDirectDebitReturnCode`to transaction object

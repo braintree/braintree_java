@@ -1,7 +1,9 @@
 package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
+import com.braintreegateway.test.Nonce;
 import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.SandboxValues.FailsVerification;
 import com.braintreegateway.util.NodeWrapper;
@@ -203,6 +205,105 @@ public class CreditCardVerificationIT extends IntegrationTest {
         TestHelper.assertIncludes("customer-browser-user-agent", request.toXML());
         TestHelper.assertIncludes("127.0.0.1", request.toXML());
     }
+
+    @Test
+    public void createVerificationWithThreeDSecureAuthenticationId() {
+
+        String threeDSecureAuthenticationId = TestHelper.createTest3DS(gateway, "three_d_secure_merchant_account", new ThreeDSecureRequestForTests().
+            number(CreditCardNumber.VISA.number).
+            expirationMonth("05").
+            expirationYear("2029")
+        );
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            threeDSecureAuthenticationID(threeDSecureAuthenticationId).
+            options().
+                merchantAccountId("three_d_secure_merchant_account").
+                done().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2029").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+    }
+
+
+    @Test
+    public void createVerificationWithThreeDSecureToken() {
+
+        String threeDSecureToken = TestHelper.createTest3DS(gateway, "three_d_secure_merchant_account", new ThreeDSecureRequestForTests().
+            number(CreditCardNumber.VISA.number).
+            expirationMonth("05").
+            expirationYear("2029")
+        );
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            options().
+                merchantAccountId("three_d_secure_merchant_account").
+                done().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2029").
+                done().
+            threeDSecureToken(threeDSecureToken);
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void createVerificationWithThreeDSecurePassThruRequest() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            options().
+                merchantAccountId("three_d_secure_merchant_account").
+                done().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2029").
+                done().
+            verificationThreeDSecurePassThruRequest().
+                eciFlag("05").
+                cavv("some-cavv").
+                xid("some-xid").
+                threeDSecureVersion("2.2.0").
+                dsTransactionId("some-ds-transaction-id").
+                authenticationResponse("some-auth-response").
+                directoryResponse("some-directory-response").
+                cavvAlgorithm("algorithm").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void createVerificationWithPaymentMethodNonce() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            paymentMethodNonce(TestHelper.generateUnlockedNonce(gateway));
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void createVerificationWithThreeDSecureWith3DSNonce() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            paymentMethodNonce(Nonce.ThreeDSecureVisaFullAuthentication);
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void createVerificationWithIntendedTransactionSource() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            paymentMethodNonce(Nonce.ThreeDSecureVisaFullAuthentication).
+            intendedTransactionSource("installment");
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+    }
+
 
     @Test
     public void constructFromResponse() {

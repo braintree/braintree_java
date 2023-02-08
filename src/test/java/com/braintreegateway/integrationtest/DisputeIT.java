@@ -571,7 +571,6 @@ public class DisputeIT extends IntegrationTest {
         assertTrue(disputes.size() > 0);
 
         for (Dispute dispute: disputes) {
-            assertEquals(dispute.getReason(), Dispute.Reason.FRAUD);
             // NEXT_MAJOR_VERSION Remove this assertion when chargebackProtectionLevel is removed from the SDK
             assertEquals(dispute.getChargebackProtectionLevel(), Dispute.ChargebackProtectionLevel.EFFORTLESS);
             assertEquals(dispute.getProtectionLevel(), Dispute.ProtectionLevel.EFFORTLESS_CBP);

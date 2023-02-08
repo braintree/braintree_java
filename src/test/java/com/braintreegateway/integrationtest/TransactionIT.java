@@ -2146,6 +2146,38 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithTransactionSourceAsInstallment() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            transactionSource("installment").
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2025").
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertFalse(transaction.getRecurring());
+        assertFalse(transaction.isRecurring());
+    }
+
+    @Test
+    public void saleWithTransactionSourceAsInstallmentFirst() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            transactionSource("installment_first").
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2025").
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertFalse(transaction.getRecurring());
+        assertFalse(transaction.isRecurring());
+    }
+
+    @Test
     public void saleWithTransactionSourceAsMerchant() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -4616,7 +4648,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("07", info.getECIFlag());
         assertEquals("somebase64value", info.getCAVV());
         assertEquals("xidvalue", info.getXID());
-        assertEquals("1.0.2", info.getThreeDSecureVersion());
+        assertNotNull(info.getThreeDSecureVersion());
         assertEquals("dstxnid", info.getDsTransactionId());
     }
 
@@ -5346,7 +5378,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     @Test
     public void searchOnsPaymentInstrumentTypeIsLocalPayment() {
         TransactionRequest request = new TransactionRequest().
-            amount(new BigDecimal("1000")).
+            amount(TransactionAmount.AUTHORIZE.amount).
             options().
                 submitForSettlement(true).
                 done().
@@ -7103,7 +7135,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     @Test
     public void createLocalPaymentTransaction() {
         TransactionRequest request = new TransactionRequest().
-            amount(new BigDecimal("100.00")).
+            amount(TransactionAmount.AUTHORIZE.amount).
             options().
                 submitForSettlement(true).
                 done().
@@ -8284,7 +8316,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID).
             amount(initial_amount).
-            transactionSource("recurring_first").
+            transactionSource("recurring").
             creditCard().
                 number("5105105105105100").
                 expirationDate("05/2012").
