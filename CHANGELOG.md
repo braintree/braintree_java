@@ -1,5 +1,12 @@
 # Changelog
 
+## unreleased
+* Add `intendedTransactionSource` to `CreditCardVerificationRequest`
+* Add `paymentMethodNonce` to `CreditCardVerificationRequest`
+* Add `threeDSecureAuthenticationID` to `CreditCardVerificationRequest`
+* Add `threeDSecureToken` to `CreditCardVerificationRequest`
+* Add `verificationThreeDSecurePassThruRequest` to `CreditCardVerificationRequest`
+
 ## 3.20.0
 * Add `SEPADirectDebitAccount` payment method
 * Add `SEPADirectDebitAccountDetails` and `SepaDirectDebitReturnCode`to transaction object
@@ -13,11 +20,6 @@
 * Add `AUTO_ACCEPTED` Dispute Status
 * Add `DISPUTE_AUTO_ACCEPTED` WebhookNotification Kind
 * Add `requestedExemptionType` to `ThreeDSecureLookupRequest`
-* Add `intendedTransactionSource` to `CreditCardVerificationRequest`
-* Add `paymentMethodNonce` to `CreditCardVerificationRequest`
-* Add `threeDSecureAuthenticationID` to `CreditCardVerificationRequest`
-* Add `threeDSecureToken` to `CreditCardVerificationRequest`
-* Add `verificationThreeDSecurePassThruRequest` to `CreditCardVerificationRequest`
 
 ## 3.19.0
 * Deprecate `chargebackProtectionLevel` and add `protectionLevel` to `Dispute` and `DisputeSearchRequest`
