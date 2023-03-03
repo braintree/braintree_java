@@ -5,7 +5,6 @@ import com.braintreegateway.test.Nonce;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.CreditCardDefaults;
 import com.braintreegateway.test.CreditCardNumbers;
-import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
@@ -44,7 +43,6 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getCreatedAt().get(Calendar.YEAR));
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), card.getUpdatedAt().get(Calendar.YEAR));
         assertTrue(card.getUniqueNumberIdentifier().matches("\\A\\w{32}\\z"));
-        assertFalse(card.isVenmoSdk());
         assertTrue(card.getImageUrl().matches(".*png.*"));
     }
 
@@ -197,20 +195,6 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
      }
 
     @Test
-    public void createWithVenmoSdkPaymentMethodCode() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest request = new CreditCardRequest().
-            customerId(customer.getId()).
-            venmoSdkPaymentMethodCode(VenmoSdk.PaymentMethodCode.Visa.code);
-
-        Result<CreditCard> result = gateway.creditCard().create(request);
-        assertTrue(result.isSuccess());
-        CreditCard card = result.getTarget();
-        assertEquals("411111", card.getBin());
-        assertFalse(card.isVenmoSdk());
-    }
-
-    @Test
     public void createWithPaymentMethodNonce() {
         String nonce = TestHelper.generateUnlockedNonce(gateway);
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
@@ -293,60 +277,6 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertEquals(
                 ValidationErrorCode.VERIFICATION_THREE_D_SECURE_PASS_THRU_ECI_FLAG_IS_REQUIRED,
                 result.getErrors().getAllDeepValidationErrors().get(0).getCode());
-    }
-
-    @Test
-    public void createWithInvalidVenmoSdkPaymentMethodCode() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest request = new CreditCardRequest().
-            customerId(customer.getId()).
-            venmoSdkPaymentMethodCode(VenmoSdk.PaymentMethodCode.Invalid.code);
-
-        Result<CreditCard> result = gateway.creditCard().create(request);
-        ValidationErrorCode errorCode = result.getErrors().forObject("creditCard")
-            .onField("venmoSdkPaymentMethodCode").get(0).getCode();
-
-        assertFalse(result.isSuccess());
-        assertEquals("Invalid VenmoSDK payment method code", result.getMessage());
-        assertEquals(ValidationErrorCode.CREDIT_CARD_INVALID_VENMO_SDK_PAYMENT_METHOD_CODE, errorCode);
-    }
-
-    @Test
-    public void createWithVenmoSdkSession() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest request = new CreditCardRequest().
-            customerId(customer.getId()).
-            cardholderName("John Doe").
-            number("5105105105105100").
-            expirationDate("05/12").
-            options().
-                venmoSdkSession(VenmoSdk.Session.Valid.value).
-                done();
-
-        Result<CreditCard> result = gateway.creditCard().create(request);
-        assertTrue(result.isSuccess());
-        CreditCard card = result.getTarget();
-        assertEquals("510510", card.getBin());
-        assertFalse(card.isVenmoSdk());
-    }
-
-    @Test
-    public void createWithInvalidVenmoSdkSession() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest request = new CreditCardRequest().
-            customerId(customer.getId()).
-            cardholderName("John Doe").
-            number("5105105105105100").
-            expirationDate("05/12").
-            options().
-                venmoSdkSession(VenmoSdk.Session.Invalid.value).
-                done();
-
-        Result<CreditCard> result = gateway.creditCard().create(request);
-        assertTrue(result.isSuccess());
-        CreditCard card = result.getTarget();
-        assertEquals("510510", card.getBin());
-        assertFalse(card.isVenmoSdk());
     }
 
     @Test
