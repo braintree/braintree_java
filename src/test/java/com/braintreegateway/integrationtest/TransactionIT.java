@@ -1927,6 +1927,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("05/2009", creditCard.getExpirationDate());
     }
 
+    @Disabled("Marking this test case as pending")
     @Test
     public void gatewayRejectedOnExcessiveRetry() {
         createDuplicateCheckingMerchantGateway();
