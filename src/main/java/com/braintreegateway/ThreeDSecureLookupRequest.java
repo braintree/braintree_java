@@ -23,6 +23,18 @@ public class ThreeDSecureLookupRequest extends Request {
     private String nonce;
     private String requestedExemptionType;
 
+    private String browserAcceptHeader;
+    private String browserColorDepth;
+    private Boolean browserJavaEnabled;
+    private Boolean browserJavascriptEnabled;
+    private String browserLanguage;
+    private String browserScreenHeight;
+    private String browserScreenWidth;
+    private String browserTimeZone;
+    private String deviceChannel;
+    private String ipAddress;
+    private String userAgent;
+
     public ThreeDSecureLookupRequest() {
 
     }
@@ -89,6 +101,61 @@ public class ThreeDSecureLookupRequest extends Request {
         return this;
     }
 
+    public ThreeDSecureLookupRequest browserJavaEnabled(Boolean enabled) {
+        this.browserJavaEnabled = enabled;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest browserAcceptHeader(String header) {
+        this.browserAcceptHeader = header;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest browserLanguage(String language) {
+        this.browserLanguage = language;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest browserColorDepth(String depth) {
+        this.browserColorDepth = depth;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest browserScreenHeight(String height) {
+        this.browserScreenHeight = height;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest browserScreenWidth(String width) {
+        this.browserScreenWidth = width;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest browserTimeZone(String zone) {
+        this.browserTimeZone = zone;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest userAgent(String agent) {
+        this.userAgent = agent;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest ipAddress(String address) {
+        this.ipAddress = address;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest deviceChannel(String channel) {
+        this.deviceChannel = channel;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest browserJavascriptEnabled(Boolean enabled) {
+        this.browserJavascriptEnabled = enabled;
+        return this;
+    }
+
     private ThreeDSecureLookupAdditionalInformation getAdditionalInformation() {
         return additionalInformation;
     }
@@ -141,6 +208,50 @@ public class ThreeDSecureLookupRequest extends Request {
         return merchantAccountId;
     }
 
+    private Boolean getBrowserJavaEnabled() {
+        return browserJavaEnabled;
+    }
+
+    private String getBrowserAcceptHeader() {
+        return browserAcceptHeader;
+    }
+
+    private String getBrowserLanguage() {
+        return browserLanguage;
+    }
+
+    private String getBrowserColorDepth() {
+        return browserColorDepth;
+    }
+
+    private String getBrowserScreenHeight() {
+        return browserScreenHeight;
+    }
+
+    private String getBrowserScreenWidth() {
+        return browserScreenWidth;
+    }
+
+    private String getBrowserTimeZone() {
+        return browserTimeZone;
+    }
+
+    private String getUserAgent() {
+        return userAgent;
+    }
+
+    private String getIpAddress() {
+        return ipAddress;
+    }
+
+    private String getDeviceChannel() {
+        return deviceChannel;
+    }
+
+    private Boolean getBrowserJavascriptEnabled() {
+        return browserJavascriptEnabled;
+    }
+
     public String toJSON() {
         Map<String, Object> additionalInfo;
         Map<String, Object> jsonMap = new HashMap<>();
@@ -169,6 +280,17 @@ public class ThreeDSecureLookupRequest extends Request {
             jsonMap.put("requestedExemptionType", getRequestedExemptionType());
             jsonMap.put("dataOnlyRequested", getDataOnlyRequested());
             jsonMap.put("merchantAccountId", getMerchantAccountId());
+            jsonMap.put("browserColorDepth", getBrowserColorDepth());
+            jsonMap.put("browserHeader", getBrowserAcceptHeader());
+            jsonMap.put("browserLanguage", getBrowserLanguage());
+            jsonMap.put("browserJavaEnabled", getBrowserJavaEnabled());
+            jsonMap.put("browserJavascriptEnabled", getBrowserJavascriptEnabled());
+            jsonMap.put("browserScreenHeight", getBrowserScreenHeight());
+            jsonMap.put("browserScreenWidth", getBrowserScreenWidth());
+            jsonMap.put("browserTimeZone", getBrowserTimeZone());
+            jsonMap.put("deviceChannel", getDeviceChannel());
+            jsonMap.put("ipAddress", getIpAddress());
+            jsonMap.put("userAgent", getUserAgent());
 
             if (billingAddress != null) {
                 additionalInfo.put("billingGivenName", billingAddress.getGivenName());

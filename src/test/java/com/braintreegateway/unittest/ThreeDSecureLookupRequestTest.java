@@ -322,4 +322,33 @@ public class ThreeDSecureLookupRequestTest {
         assertTrue(outputJSON.matches("^\\{.+\\}$"));
         assertTrue(outputJSON.matches("^.+\"dataOnlyRequested\":true.+$"));
     }
+
+    @Test
+    public void serializesDeviceDataFields() {
+        ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
+        request.browserJavaEnabled(false);
+        request.browserAcceptHeader("text/html;q=0.8");
+        request.browserLanguage("fr-CA");
+        request.browserColorDepth("48");
+        request.browserScreenHeight("600");
+        request.browserScreenWidth("800");
+        request.browserTimeZone("-60");
+        request.userAgent("Mozilla/5.0");
+        request.ipAddress("2001:0db8:0000:0000:0000:ff00:0042:8329");
+        request.deviceChannel("Browser");
+        request.browserJavascriptEnabled(true);
+
+        String outputJSON = request.toJSON();
+        assertTrue(outputJSON.matches("^.+\"browserJavaEnabled\":false.+$"));
+        assertTrue(outputJSON.matches("^.+\"browserHeader\":\"text/html;q=0.8\".+$"));
+        assertTrue(outputJSON.matches("^.+\"browserLanguage\":\"fr-CA\".+$"));
+        assertTrue(outputJSON.matches("^.+\"browserColorDepth\":\"48\".+$"));
+        assertTrue(outputJSON.matches("^.+\"browserScreenHeight\":\"600\".+$"));
+        assertTrue(outputJSON.matches("^.+\"browserScreenWidth\":\"800\".+$"));
+        assertTrue(outputJSON.matches("^.+\"browserTimeZone\":\"-60\".+$"));
+        assertTrue(outputJSON.matches("^.+\"userAgent\":\"Mozilla/5.0\".+$"));
+        assertTrue(outputJSON.matches("^.+\"ipAddress\":\"2001:0db8:0000:0000:0000:ff00:0042:8329\".+$"));
+        assertTrue(outputJSON.matches("^.+\"deviceChannel\":\"Browser\".+$"));
+        assertTrue(outputJSON.matches("^.+\"browserJavascriptEnabled\":true.+$"));
+    }
 }
