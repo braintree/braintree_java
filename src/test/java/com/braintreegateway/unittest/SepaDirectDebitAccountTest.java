@@ -1,10 +1,14 @@
 package com.braintreegateway.unittest;
 
 import com.braintreegateway.SepaDirectDebitAccount;
+import com.braintreegateway.Subscription;
 import com.braintreegateway.util.SimpleNodeWrapper;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public class SepaDirectDebitAccountTest {
     @Test
@@ -21,6 +25,7 @@ public class SepaDirectDebitAccountTest {
                      + "<default type=\"boolean\">true</default>"
                      + "<mandate-type>ONE_OFF</mandate-type>"
                      + "<merchant-account-id>a-merchant-account-id</merchant-account-id>"
+                     + "<subscriptions type='array'><subscription><price>10.00</price></subscription></subscriptions>"
                      + "<token>ch6byss</token>"
                      + "<updated-at type=\"datetime\">2017-06-16T20:44:41Z</updated-at>"
                      + "<view-mandate-url>https://paypal.com/</view-mandate-url>"
@@ -40,6 +45,9 @@ public class SepaDirectDebitAccountTest {
         assertEquals(true, sepaDirectDebitAccount.isDefault());
         assertEquals("ONE_OFF", sepaDirectDebitAccount.getMandateType().name());
         assertEquals("a-merchant-account-id", sepaDirectDebitAccount.getMerchantAccountId());
+        List<Subscription> subs = sepaDirectDebitAccount.getSubscriptions();
+        assertEquals(1, subs.size());
+        assertEquals(new BigDecimal("10.00"), subs.get(0).getPrice());
         assertEquals("ch6byss", sepaDirectDebitAccount.getToken());
         assertNotNull(sepaDirectDebitAccount.getUpdatedAt());
         assertEquals("https://paypal.com/", sepaDirectDebitAccount.getViewMandateUrl());
