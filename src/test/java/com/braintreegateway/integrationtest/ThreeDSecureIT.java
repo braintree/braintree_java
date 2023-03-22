@@ -7,20 +7,19 @@ import com.braintreegateway.exceptions.BraintreeException;
 import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.fail;
 
 public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTestConstants {
 
-    @Disabled("Skipping to pass builds until we add device data (https://paypal.atlassian.net/browse/DTBTFTAUTH-2085)")
     @Test
     public void lookupThreeDSecure() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         Customer customer = customerResult.getTarget();
 
         CreditCardRequest cardRequest = new CreditCardRequest().
-            number("4111111111111111").
+            number("4000000000001091").
             expirationMonth("12").
             expirationYear("2030");
 
@@ -46,8 +45,23 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         request.email("first.last@example.com");
         request.billingAddress(billingAddress);
 
-        ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request).getTarget();
+        setDeviceDataFields(request);
 
+        Result<ThreeDSecureLookupResponse> outerResult = gateway.threeDSecure().lookup(request);
+
+        if (outerResult.getErrors() != null) {
+            StringBuilder results = new StringBuilder();
+            results.append("validation errors:\n");
+            for (ValidationError error : outerResult.getErrors().getAllDeepValidationErrors()) {
+                results.append(error.getCode());
+                results.append("\n");
+                results.append(error.getMessage());
+                results.append("\n");
+            }
+            fail(results.toString());
+        }
+
+        ThreeDSecureLookupResponse result = outerResult.getTarget();
         PaymentMethodNonce paymentMethod = result.getPaymentMethod();
         ThreeDSecureLookup lookup = result.getLookup();
 
@@ -107,14 +121,13 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         assertNull(paymentMethod.getThreeDSecureInfo().getThreeDSecureLookupInfo().getTransStatusReason());
     }
 
-    @Disabled("Skipping to pass builds until we add device data (https://paypal.atlassian.net/browse/DTBTFTAUTH-2085)")
     @Test
     public void lookupThreeDSecure_partialCustomerInfo() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         Customer customer = customerResult.getTarget();
 
         CreditCardRequest cardRequest = new CreditCardRequest().
-            number("4111111111111111").
+            number("4000000000001091").
             expirationMonth("12").
             expirationYear("2030");
 
@@ -127,6 +140,8 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         request.amount("199.00");
         request.clientData(clientData);
         request.email("first.last@example.com");
+
+        setDeviceDataFields(request);
 
         ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request).getTarget();
 
@@ -143,14 +158,13 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         assertNotNull(lookup.getTransactionId());
     }
 
-    @Disabled("Skipping to pass builds until we add device data (https://paypal.atlassian.net/browse/DTBTFTAUTH-2085)")
     @Test
     public void lookupThreeDSecure_missingCustomerInfo() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         Customer customer = customerResult.getTarget();
 
         CreditCardRequest cardRequest = new CreditCardRequest().
-            number("4111111111111111").
+            number("4000000000001091").
             expirationMonth("12").
             expirationYear("2030");
 
@@ -162,6 +176,8 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
         request.amount("199.00");
         request.clientData(clientData);
+
+        setDeviceDataFields(request);
 
         ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request).getTarget();
 
@@ -371,5 +387,19 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
                 "\"sdkVersion\": \"web/3.44.0\"\n" +
                 "}\n" +
                 "}";
+    }
+
+    private void setDeviceDataFields(ThreeDSecureLookupRequest request) {
+        request.browserJavaEnabled(false);
+        request.browserAcceptHeader("text/html;q=0.8");
+        request.browserLanguage("fr-CA");
+        request.browserColorDepth("48");
+        request.browserScreenHeight("600");
+        request.browserScreenWidth("800");
+        request.browserTimeZone("-60");
+        request.userAgent("Mozilla/5.0");
+        request.ipAddress("2001:0db8:0000:0000:0000:ff00:0042:8329");
+        request.deviceChannel("Browser");
+        request.browserJavascriptEnabled(true);
     }
 }
