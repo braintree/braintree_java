@@ -1,9 +1,11 @@
 package com.braintreegateway;
 
+import com.braintreegateway.exceptions.ClientTokenGenerationException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.StringUtils;
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * Generates client tokens, which are used to authenticate requests made directly
@@ -32,15 +34,18 @@ public class ClientTokenGateway {
     }
 
     public String generate(ClientTokenRequest request) {
-      NodeWrapper response = null;
-      verifyOptions(request);
-      response = http.post(configuration.getMerchantPath() + "/client_token", request);
 
-      String token = response.findString("value");
-      if (token != null) {
-          token = StringUtils.unescapeUtf8(token);
+      verifyOptions(request);
+      NodeWrapper response = http.post(configuration.getMerchantPath() + "/client_token", request);
+
+      if (response.isSuccess()) {
+          return Optional.ofNullable(response.findString("value"))
+                  .map(StringUtils::unescapeUtf8)
+                  .orElse(null);
+      } else {
+          final String message = response.findString("message");
+          throw new ClientTokenGenerationException(message);
       }
-      return token;
     }
 
     private void verifyOptions(ClientTokenRequest request) {
