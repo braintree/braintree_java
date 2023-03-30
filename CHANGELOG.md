@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.21.1
+* Fix issue where null is returned as a client token value when customer matching customer_id from the request does not exist. 
+
 ## 3.21.0
 * Add `intendedTransactionSource` to `CreditCardVerificationRequest`
 * Add `paymentMethodNonce` to `CreditCardVerificationRequest`
