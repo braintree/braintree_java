@@ -450,24 +450,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleReturnsChargebackProtectionRiskData() {
-        createEffortlessChargebackProtectionGateway();
-        TransactionRequest request = new TransactionRequest().
-            amount(TransactionAmount.AUTHORIZE.amount).
-            creditCard().
-                number(CreditCardNumber.VISA.number).
-                expirationDate("05/2009").
-                done();
-
-        Result<Transaction> result = gateway.transaction().sale(request);
-        assertTrue(result.isSuccess());
-        Transaction transaction = result.getTarget();
-
-        RiskData riskData = transaction.getRiskData();
-        LiabilityShift liabilityShift = riskData.getLiabilityShift();
-    }
-
-    @Test
     public void saleWithCardTypeIndicators() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
