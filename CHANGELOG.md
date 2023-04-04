@@ -1,6 +1,7 @@
 # Changelog
 
 ## unreleased
+* Add subscriptions to `SepaDirectDebitAccount`
 * Add device data fields to `ThreeDSecureLookupRequest`
   * `browserJavaEnabled`
   * `browserAcceptHeader`
@@ -20,7 +21,6 @@
 * Add `threeDSecureAuthenticationID` to `CreditCardVerificationRequest`
 * Add `threeDSecureToken` to `CreditCardVerificationRequest`
 * Add `verificationThreeDSecurePassThruRequest` to `CreditCardVerificationRequest`
-* Add subscriptions to `SepaDirectDebitAccount`
 
 ## 3.20.0
 * Add `SEPADirectDebitAccount` payment method
