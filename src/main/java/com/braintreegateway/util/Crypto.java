@@ -2,7 +2,7 @@ package com.braintreegateway.util;
 
 public class Crypto {
     public Boolean secureCompare(String left, String right) {
-        if (left == null || right == null || (left.length() != right.length())) {
+        if (checkSecureCompareDirections(left, right)) {
             return false;
         }
 
@@ -14,5 +14,9 @@ public class Crypto {
             result = result | leftBytes[i] ^ rightBytes[i];
         }
         return result == 0;
+    }
+
+    public Boolean checkSecureCompareDirections(String left, String right) {
+        return left == null || right == null || (left.length() != right.length());
     }
 }
