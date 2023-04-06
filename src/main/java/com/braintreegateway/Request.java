@@ -26,11 +26,4 @@ public abstract class Request {
         return null;
     }
 
-    protected String buildXMLElement(Object element) {
-        return RequestBuilder.buildXMLElement(element);
-    }
-
-    protected String buildXMLElement(String name, Object element) {
-        return RequestBuilder.buildXMLElement(name, element);
-    }
 }

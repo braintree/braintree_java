@@ -140,7 +140,7 @@ public class OAuthIT extends IntegrationTest {
                 establishedOn("1988-10").
                 done();
 
-        String urlString = gateway.oauth().connectUrl(request);
+        String urlString = gateway.getConfiguration().connectUrl(request);
 
         URL url;
 
@@ -203,7 +203,7 @@ public class OAuthIT extends IntegrationTest {
     public void connectUrlReturnsCorrectUrlWithoutOptionalParams() {
         OAuthConnectUrlRequest request = new OAuthConnectUrlRequest();
 
-        String urlString = gateway.oauth().connectUrl(request);
+        String urlString = gateway.getConfiguration().connectUrl(request);
 
         URL url;
 
@@ -225,7 +225,7 @@ public class OAuthIT extends IntegrationTest {
         OAuthConnectUrlRequest request = new OAuthConnectUrlRequest().
             paymentMethods(new String[] {"credit_card", "paypal"});
 
-        String urlString = gateway.oauth().connectUrl(request);
+        String urlString = gateway.getConfiguration().connectUrl(request);
 
         URL url;
 
@@ -248,7 +248,7 @@ public class OAuthIT extends IntegrationTest {
         OAuthConnectUrlRequest request = new OAuthConnectUrlRequest()
             .signupOnly(true);
 
-        String urlString = gateway.oauth().connectUrl(request);
+        String urlString = gateway.getConfiguration().connectUrl(request);
 
         try {
             URL url = new URL(urlString);
@@ -269,7 +269,7 @@ public class OAuthIT extends IntegrationTest {
             .loginOnly(true)
             .signupOnly(true);
 
-        String urlString = gateway.oauth().connectUrl(request);
+        String urlString = gateway.getConfiguration().connectUrl(request);
 
         try {
             URL url = new URL(urlString);
