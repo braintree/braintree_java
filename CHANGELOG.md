@@ -1,6 +1,6 @@
 # Changelog
 
-## unreleased
+## 3.22.0
 * Add subscriptions to `SepaDirectDebitAccount`
 * Add device data fields to `ThreeDSecureLookupRequest`
   * `browserJavaEnabled`
