@@ -1,5 +1,20 @@
 # Changelog
 
+## 3.22.0
+* Add subscriptions to `SepaDirectDebitAccount`
+* Add device data fields to `ThreeDSecureLookupRequest`
+  * `browserJavaEnabled`
+  * `browserAcceptHeader`
+  * `browserLanguage`
+  * `browserColorDepth`
+  * `browserScreenHeight`
+  * `browserScreenWidth`
+  * `browserTimeZone`
+  * `userAgent`
+  * `ipAddress`
+  * `deviceChannel`
+  * `browserJavascriptEnabled`
+
 ## 3.21.0
 * Add `intendedTransactionSource` to `CreditCardVerificationRequest`
 * Add `paymentMethodNonce` to `CreditCardVerificationRequest`

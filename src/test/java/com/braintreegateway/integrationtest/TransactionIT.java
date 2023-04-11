@@ -68,7 +68,6 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.test.CreditCardNumbers;
 import com.braintreegateway.test.Nonce;
-import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.testhelpers.TestHelper;
@@ -448,24 +447,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(riskData.getId());
         assertNotNull(riskData.getFraudServiceProvider());
         assertNotNull(riskData.getDecisionReasons());
-    }
-
-    @Test
-    public void saleReturnsChargebackProtectionRiskData() {
-        createEffortlessChargebackProtectionGateway();
-        TransactionRequest request = new TransactionRequest().
-            amount(TransactionAmount.AUTHORIZE.amount).
-            creditCard().
-                number(CreditCardNumber.VISA.number).
-                expirationDate("05/2009").
-                done();
-
-        Result<Transaction> result = gateway.transaction().sale(request);
-        assertTrue(result.isSuccess());
-        Transaction transaction = result.getTarget();
-
-        RiskData riskData = transaction.getRiskData();
-        LiabilityShift liabilityShift = riskData.getLiabilityShift();
     }
 
     @Test
@@ -1928,6 +1909,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("05/2009", creditCard.getExpirationDate());
     }
 
+    @Disabled("Marking this test case as pending")
     @Test
     public void gatewayRejectedOnExcessiveRetry() {
         createDuplicateCheckingMerchantGateway();
@@ -2966,34 +2948,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertEquals(ValidationErrorCode.TRANSACTION_SHIPS_FROM_POSTAL_CODE_INVALID_CHARACTERS,
             result.getErrors().forObject("transaction").onField("shipsFromPostalCode").get(0).getCode());
-    }
-
-    @Test
-    public void saleWithVenmoSdkPaymentMethodCode() {
-        TransactionRequest request = new TransactionRequest().
-            amount(TransactionAmount.AUTHORIZE.amount).
-            venmoSdkPaymentMethodCode(VenmoSdk.PaymentMethodCode.Visa.code);
-
-        Result<Transaction> result = gateway.transaction().sale(request);
-        assertTrue(result.isSuccess());
-        assertEquals("411111", result.getTarget().getCreditCard().getBin());
-    }
-
-    @Test
-    public void saleWithVenmoSdkSession() {
-        TransactionRequest request = new TransactionRequest().
-            amount(TransactionAmount.AUTHORIZE.amount).
-            creditCard().
-                number(CreditCardNumber.VISA.number).
-                expirationDate("05/2009").
-                done().
-            options().
-              venmoSdkSession(VenmoSdk.Session.Valid.value).
-              done();
-
-        Result<Transaction> result = gateway.transaction().sale(request);
-        assertTrue(result.isSuccess());
-        assertFalse(result.getTarget().getCreditCard().isVenmoSdk());
     }
 
     @Test

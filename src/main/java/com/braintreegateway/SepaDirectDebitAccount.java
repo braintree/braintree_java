@@ -36,6 +36,10 @@ public class SepaDirectDebitAccount implements PaymentMethod {
         isDefault = node.findBoolean("default");
         mandateType = EnumUtils.findByName(MandateType.class, node.findString("mandate-type"), MandateType.ONE_OFF);
         merchantAccountId = node.findString("merchant-account-id");
+        subscriptions = new ArrayList<Subscription>();
+        for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
+            subscriptions.add(new Subscription(subscriptionResponse));
+        }
         token = node.findString("token");
         updatedAt = node.findDateTime("updated-at");
         viewMandateUrl = node.findString("view-mandate-url");
@@ -90,7 +94,7 @@ public class SepaDirectDebitAccount implements PaymentMethod {
     }
 
     public List<Subscription> getSubscriptions() {
-        return null;
+        return subscriptions;
     }
 
     public Calendar getCreatedAt() {

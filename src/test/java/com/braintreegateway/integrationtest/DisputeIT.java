@@ -226,7 +226,7 @@ public class DisputeIT extends IntegrationTest {
         Result<DisputeEvidence> trackingEvidenceZeroResult = gateway.dispute().addTextEvidence(dispute.getId(), textEvidenceRequest);
 
         textEvidenceRequest = new TextEvidenceRequest().
-            content("94").
+            content("https://example.com/tracking-number/abc12345").
             category("TRACKING_URL").
             sequenceNumber("1");
         Result<DisputeEvidence> trackingEvidenceOneResult = gateway.dispute().addTextEvidence(dispute.getId(), textEvidenceRequest);
@@ -250,7 +250,7 @@ public class DisputeIT extends IntegrationTest {
 
         assertTrue(trackingEvidenceOneResult.isSuccess());
         DisputeEvidence trackingEvidenceOne = trackingEvidenceOneResult.getTarget();
-        assertEquals("94", trackingEvidenceOne.getComment());
+        assertEquals("https://example.com/tracking-number/abc12345", trackingEvidenceOne.getComment());
         assertEquals("TRACKING_URL", trackingEvidenceOne.getCategory());
         assertEquals("1", trackingEvidenceOne.getSequenceNumber());
     }
