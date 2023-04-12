@@ -193,6 +193,7 @@ public class Transaction {
     private String channel;
     private String currencyIsoCode;
     private String cvvResponseCode;
+    private String debitNetwork;
     private String graphqlId;
     private String id;
     private String merchantAccountId;
@@ -236,6 +237,7 @@ public class Transaction {
         currencyIsoCode = node.findString("currency-iso-code");
         customFields = node.findMap("custom-fields/*");
         cvvResponseCode = node.findString("cvv-response-code");
+        debitNetwork = node.findString("debit-network");
         escrowStatus = EnumUtils.findByName(EscrowStatus.class, node.findString("escrow-status"), EscrowStatus.UNRECOGNIZED);
         gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"), GatewayRejectionReason.UNRECOGNIZED);
         graphqlId = node.findString("global-id");
@@ -498,6 +500,10 @@ public class Transaction {
 
     public String getCvvResponseCode() {
         return cvvResponseCode;
+    }
+
+    public String getDebitNetwork() {
+        return debitNetwork;
     }
 
     public DisbursementDetails getDisbursementDetails() {

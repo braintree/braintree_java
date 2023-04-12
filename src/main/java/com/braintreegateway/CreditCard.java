@@ -160,6 +160,14 @@ public class CreditCard implements PaymentMethod {
         }
     }
 
+    public enum DebitNetwork {
+        ACCEL,
+        NYCE,
+        PULSE,
+        STAR,
+        STAR_ACCESS;
+    }
+
     private Address billingAddress;
     private String bin;
     private String cardholderName;

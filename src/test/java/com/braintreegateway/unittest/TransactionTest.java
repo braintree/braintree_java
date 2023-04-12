@@ -1,5 +1,4 @@
 package com.braintreegateway.unittest;
-
 import com.braintreegateway.Transaction;
 import com.braintreegateway.util.SimpleNodeWrapper;
 import com.braintreegateway.SepaDirectDebitAccountDetails;
@@ -218,4 +217,36 @@ public class TransactionTest {
         assertEquals("12.34", sepaDirectDebitAccountDetails.getTransactionFeeAmount());
         assertEquals("EUR", sepaDirectDebitAccountDetails.getTransactionFeeCurrencyIsoCode());
 	}
+
+    @Test
+    public void parseDebitNetworkForNonPinlessTransaction(){
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<transaction>\n" +
+            "  <id>recognized_transaction_id</id>\n" +
+            "  <type>sale</type>\n" +
+            "  <payment-instrument-type>credit_card</payment-instrument-type>\n" +
+            "</transaction>";
+
+        SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+        Transaction transaction = new Transaction(transactionNode);
+
+        assertNull(transaction.getDebitNetwork());
+    }
+
+    @Test
+    public void parseDebitNetworkPinlessTransaction(){
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<transaction>\n" +
+            "  <id>recognized_transaction_id</id>\n" +
+            "  <type>sale</type>\n" +
+            "  <payment-method-nonce>fake-pinless-debit-visa-nonce</payment-method-nonce>\n" +
+            "  <merchant-account-id>pinless_debit</merchant-account-id>\n" +
+            "  <debit-network>STAR</debit-network>\n" +
+            "</transaction>";
+
+        SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+        Transaction transaction = new Transaction(transactionNode);
+
+        assertEquals("STAR", transaction.getDebitNetwork());
+    }
 }

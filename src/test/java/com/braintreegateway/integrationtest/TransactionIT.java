@@ -4354,6 +4354,21 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         );
     }
 
+
+    @Test
+    public void debitNetworkInResponseForPinlessTransaction(){
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(Nonce.TransactablePinlessDebitVisa).
+            merchantAccountId(PINLESS_DEBIT);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+        assertNull(transaction.getDebitNetwork());
+    }
+
     @Test
     public void credit() {
         TransactionRequest request = new TransactionRequest().
@@ -6447,6 +6462,20 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertThrows(UnexpectedException.class, () -> {
             gateway.transaction().search(searchRequest);
         });
+    }
+
+    @Test
+    public void searchOnDebitNetworks() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(Nonce.TransactablePinlessDebitVisa).
+            merchantAccountId(PINLESS_DEBIT);
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            debitNetwork().is(CreditCard.DebitNetwork.STAR);
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
     @Test
