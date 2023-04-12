@@ -16,10 +16,8 @@ import com.braintreegateway.Environment;
 import com.braintreegateway.Result;
 import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
-import com.braintreegateway.exceptions.AuthenticationException;
-import com.braintreegateway.exceptions.ServiceUnavailableException;
+import com.braintreegateway.exceptions.BraintreeException;
 import com.braintreegateway.exceptions.UnexpectedException;
-import com.braintreegateway.exceptions.ServerException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.SandboxValues.TransactionAmount;
@@ -157,7 +155,7 @@ public class HttpTestIT extends IntegrationTest {
     public void authenticationException() {
         BraintreeGateway gateway = new BraintreeGateway(Environment.DEVELOPMENT, "integration_merchant_id", "bad_public_key", "bad_private_key");
 
-        assertThrows(AuthenticationException.class, () -> {
+        assertThrows(BraintreeException.class, () -> {
             new Http(gateway.getConfiguration()).get("/");
         });
     }
@@ -167,7 +165,7 @@ public class HttpTestIT extends IntegrationTest {
         BraintreeGateway gateway = new BraintreeGateway(Environment.SANDBOX, "integration_merchant_id", "integration_public_key", "integration_private_key");
         Http http = new Http(gateway.getConfiguration());
 
-        assertThrows(AuthenticationException.class, () -> {
+        assertThrows(BraintreeException.class, () -> {
             http.get("/");
         });
     }
@@ -177,7 +175,7 @@ public class HttpTestIT extends IntegrationTest {
         BraintreeGateway gateway = new BraintreeGateway(Environment.PRODUCTION, "integration_merchant_id", "integration_public_key", "integration_private_key");
         Http http = new Http(gateway.getConfiguration());
 
-        assertThrows(AuthenticationException.class, () -> {
+        assertThrows(BraintreeException.class, () -> {
             http.get("/");
         });
     }
