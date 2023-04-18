@@ -1,7 +1,7 @@
 # Changelog
 
 ## unreleased
-* Fix issue where null is returned as a client token value when customer matching customer_id from the request does not exist. 
+* Add `ClientTokenGenerationException` and throw on failed client token generation
 
 ## 3.22.0
 * Add subscriptions to `SepaDirectDebitAccount`
