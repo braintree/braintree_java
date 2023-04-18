@@ -34,7 +34,6 @@ public class ClientTokenGateway {
     }
 
     public String generate(ClientTokenRequest request) {
-
       verifyOptions(request);
       NodeWrapper response = http.post(configuration.getMerchantPath() + "/client_token", request);
 
