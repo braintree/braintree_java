@@ -76,7 +76,7 @@ public class ClientTokenGatewayTest {
     }
 
     @Test
-    void generateRaisesExceptionIfApiReturnsError() {
+    public void generateRaisesExceptionIfApiReturnsError() {
         ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
                 .customerId("123456789");
 
