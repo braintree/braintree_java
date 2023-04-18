@@ -5,7 +5,6 @@ import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.Nonce;
-import com.braintreegateway.test.VenmoSdk;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 
@@ -400,37 +399,6 @@ public class CustomerIT extends IntegrationTest {
             ValidationErrorCode.ADDRESS_INCONSISTENT_COUNTRY,
             result.getErrors().forObject("customer").forObject("creditCard").forObject("billingAddress").onField("base").get(0).getCode()
         );
-    }
-
-    @Test
-    public void createWithVenmoSdkPaymentMethodCode() {
-        CustomerRequest request = new CustomerRequest().
-            firstName("Fred").
-            creditCard().
-                venmoSdkPaymentMethodCode(VenmoSdk.generateTestPaymentMethodCode("5105105105105100")).
-                done();
-
-        Result<Customer> result = gateway.customer().create(request);
-        assertTrue(result.isSuccess());
-        assertEquals("510510", result.getTarget().getCreditCards().get(0).getBin());
-    }
-
-    @Test
-    public void createWithVenmoSdkSession() {
-        CustomerRequest request = new CustomerRequest().
-            firstName("Fred").
-            creditCard().
-                number("5105105105105100").
-                cvv("123").
-                expirationDate("05/12").
-                options().
-                  venmoSdkSession(VenmoSdk.Session.Valid.value).
-                  done().
-                done();
-
-        Result<Customer> result = gateway.customer().create(request);
-        assertTrue(result.isSuccess());
-        assertFalse(result.getTarget().getCreditCards().get(0).isVenmoSdk());
     }
 
     @Test
