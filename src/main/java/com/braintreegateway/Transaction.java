@@ -194,6 +194,7 @@ public class Transaction {
     private String currencyIsoCode;
     private String cvvResponseCode;
     private String debitNetwork;
+    private String duplicateOfTransactionId;
     private String graphqlId;
     private String id;
     private String merchantAccountId;
@@ -240,6 +241,7 @@ public class Transaction {
         debitNetwork = node.findString("debit-network");
         escrowStatus = EnumUtils.findByName(EscrowStatus.class, node.findString("escrow-status"), EscrowStatus.UNRECOGNIZED);
         gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"), GatewayRejectionReason.UNRECOGNIZED);
+        duplicateOfTransactionId = node.findString("duplicate-of-transaction-id");
         graphqlId = node.findString("global-id");
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
@@ -520,6 +522,10 @@ public class Transaction {
 
     public List<Discount> getDiscounts() {
         return discounts;
+    }
+
+    public String getDuplicateOfTransactionId() {
+        return duplicateOfTransactionId;
     }
 
     public EscrowStatus getEscrowStatus() {

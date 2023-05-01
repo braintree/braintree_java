@@ -4,6 +4,7 @@
 * Add `debitNetwork` field to `Transaction` and `TransactionSearchRequest`
 * Add `DebitNetwork` enum to `CreditCard`
 * Fix typos in `WebhookTestingGateway`
+* Add `duplicateOfTransactionId` to `Transaction`
 
 ## 3.22.0
 * Add subscriptions to `SepaDirectDebitAccount`

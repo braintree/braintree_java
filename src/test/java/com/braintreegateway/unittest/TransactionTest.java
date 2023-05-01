@@ -92,6 +92,23 @@ public class TransactionTest {
 	}
 
 	@Test
+	public void recognizesDuplicateTransactionGatewayRejectReason() {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<transaction>\n" +
+				"  <id>unrecognized_transaction_id</id>\n" +
+				"  <gateway-rejection-reason>duplicate</gateway-rejection-reason>\n" +
+				"  <payment-instrument-type>credit_card</payment-instrument-type>\n" +
+				"  <duplicate-of-transaction-id>recognized_transaction_id</duplicate-of-transaction-id>" +
+				"</transaction>\n";
+		
+				SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+				Transaction transaction = new Transaction(transactionNode);
+		
+				assertEquals(Transaction.GatewayRejectionReason.DUPLICATE, transaction.getGatewayRejectionReason());
+				assertNotNull(transaction.getDuplicateOfTransactionId());
+	}
+
+	@Test
 	public void parsesNetworkResponseCodeAndText() {
 		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 				"<transaction>\n" +

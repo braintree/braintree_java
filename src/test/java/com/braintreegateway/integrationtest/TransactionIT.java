@@ -1984,6 +1984,29 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithDuplicateTransactionIsRejected() {
+        createDuplicateCheckingMerchantGateway();
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("50.00")).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2016").
+                done().
+            orderId("some-order-id");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Result<Transaction> duplicateResult = gateway.transaction().sale(request);
+        
+        assertTrue(result.isSuccess());
+        String transactionId = result.getTarget().getId();
+
+        assertFalse(duplicateResult.isSuccess());
+        Transaction duplicateTransaction = duplicateResult.getTransaction();
+        assertEquals(Transaction.Status.GATEWAY_REJECTED, duplicateTransaction.getStatus());
+        assertEquals(transactionId, duplicateTransaction.getDuplicateOfTransactionId());
+    }
+
+    @Test
     public void saleWithSecurityParams() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
