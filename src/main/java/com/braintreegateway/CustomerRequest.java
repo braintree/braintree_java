@@ -23,6 +23,7 @@ public class CustomerRequest extends Request {
     private String paymentMethodNonce;
     private String phone;
     private String website;
+    private AndroidPayCardRequest androidPayCardRequest;
     private ApplePayCardRequest applePayCardRequest;
     private CreditCardRequest creditCardRequest;
     private CustomerOptionsRequest optionsRequest;
@@ -35,12 +36,17 @@ public class CustomerRequest extends Request {
         this.customFields = new HashMap<String, String>();
         this.taxIdentifierRequests = new ArrayList<TaxIdentifierRequest>();
     }
-
+    
     public CustomerRequest(TransactionRequest transactionRequest) {
         this();
         this.parent = transactionRequest;
     }
 
+    public AndroidPayCardRequest androidPayCard() {
+        androidPayCardRequest = new AndroidPayCardRequest(this);
+        return this.androidPayCardRequest;
+    }
+  
     public ApplePayCardRequest applePayCard() {
         applePayCardRequest = new ApplePayCardRequest(this);
         return this.applePayCardRequest;
@@ -60,7 +66,7 @@ public class CustomerRequest extends Request {
         this.customerId = customerId;
         return this;
     }
-
+    
     public CustomerRequest customField(String apiName, String value) {
         customFields.put(apiName, value);
         return this;
@@ -87,12 +93,12 @@ public class CustomerRequest extends Request {
         this.email = email;
         return this;
     }
-
+    
     public CustomerRequest fax(String fax) {
         this.fax = fax;
         return this;
     }
-
+    
     public CustomerRequest firstName(String firstName) {
         this.firstName = firstName;
         return this;
@@ -104,7 +110,7 @@ public class CustomerRequest extends Request {
         this.fraudMerchantId = fraudMerchantId;
         return this;
     }
-
+  
     public CustomerRequest id(String id) {
         this.id = id;
         return this;
@@ -124,7 +130,7 @@ public class CustomerRequest extends Request {
         this.phone = phone;
         return this;
     }
-
+    
     public CustomerRequest website(String website) {
         this.website = website;
         return this;
@@ -143,7 +149,7 @@ public class CustomerRequest extends Request {
     public String getId() {
         return id;
     }
-
+    
     public TaxIdentifierRequest taxIdentifier() {
         TaxIdentifierRequest taxIdentiferRequest = new TaxIdentifierRequest(this);
         taxIdentifierRequests.add(taxIdentiferRequest);
@@ -158,12 +164,12 @@ public class CustomerRequest extends Request {
     public String toXML() {
         return buildRequest("customer").toXML();
     }
-
+    
     @Override
     public String toQueryString() {
         return toQueryString("customer");
     }
-
+    
     @Override
     public String toQueryString(String root) {
         return buildRequest(root)
@@ -173,6 +179,7 @@ public class CustomerRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root)
+            .addElement("androidPayCard", androidPayCardRequest)
             .addElement("applePayCard", applePayCardRequest)
             .addElement("company", company)
             .addElement("creditCard", creditCardRequest)

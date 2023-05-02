@@ -7,6 +7,8 @@
 * Add `duplicateOfTransactionId` to `Transaction`
 * Create `ApplePayCardAddressRequest`, `ApplePayCardOptionsRequest`, and `ApplePayCardRequest`, and add `ApplePayCardRequest` to `CustomerRequest`
 * Add `billingAddress` to `ApplePayCard`
+* Create `AndroidPayCardAddressRequest`, `AndroidPayCardOptionsRequest`, and `AndroidPayCardRequest`, and add `AndroidPayCardRequest` to `CustomerRequest`
+* Add `billingAddress` to `AndroidPayCard`
 
 ## 3.22.0
 * Add subscriptions to `SepaDirectDebitAccount`

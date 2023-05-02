@@ -809,6 +809,46 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void createWithAndroidPayCardRequest() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("John").
+            lastName("Doe").
+            androidPayCard().
+                billingAddress().
+                    postalCode("98126").
+                    done().
+                cryptogram("01010101010101010101").
+                cardholderName("John Doe").
+                expirationMonth("05").
+                expirationYear("2024").
+                googleTransactionId("dontbeevil").
+                number("4111111111111111").
+                token(String.valueOf(new Random().nextInt())).
+                options().
+                    makeDefault(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        assertEquals("John", customer.getFirstName());
+        assertEquals("Doe", customer.getLastName());
+        assertNotEquals(0, customer.getAndroidPayCards());
+
+        AndroidPayCard androidPayCard = customer.getAndroidPayCards().get(0);
+        assertEquals("98126", androidPayCard.getBillingAddress().getPostalCode());
+        assertEquals("411111", androidPayCard.getBin());
+        assertEquals("1111", androidPayCard.getLast4());
+        assertEquals("05", androidPayCard.getExpirationMonth());
+        assertEquals("2024", androidPayCard.getExpirationYear());
+        assertEquals("dontbeevil", androidPayCard.getGoogleTransactionId());
+        assertNotNull(androidPayCard.getToken());
+        assertTrue(androidPayCard.isDefault());
+    }
+
+    @Test
     public void createWithAndroidPayNetworkToken() {
         CustomerRequest request = new CustomerRequest().
             paymentMethodNonce(Nonce.AndroidPayMasterCard);
@@ -1705,7 +1745,54 @@ public class CustomerIT extends IntegrationTest {
         Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
         assertTrue(updateResult.isSuccess());
     }
+  
+    @Test
+    public void updateWithAndroidPayCardRequest() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Billy").
+            lastName("Bob");
 
+        CustomerRequest updateRequest = new CustomerRequest().
+            androidPayCard().
+            billingAddress().
+                postalCode("98126").
+                done().
+            cryptogram("01010101010101010101").
+            cardholderName("Billy Bob").
+            expirationMonth("10").
+            expirationYear("2024").
+            googleTransactionId("dontbeevil").
+            number("4111111111111111").
+            options().
+                makeDefault(true).
+                done().
+            token(String.valueOf(new Random().nextInt())).
+            done();
+
+        Result<Customer> result = gateway.customer().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+        assertTrue(updateResult.isSuccess());
+
+        Customer updatedCustomer = updateResult.getTarget();
+        assertEquals("Billy", updatedCustomer.getFirstName());
+        assertEquals("Bob", updatedCustomer.getLastName());
+        assertNotEquals(0, updatedCustomer.getAndroidPayCards());
+
+        AndroidPayCard androidPayCard = updatedCustomer.getAndroidPayCards().get(0);
+        assertEquals("98126", androidPayCard.getBillingAddress().getPostalCode());
+        assertEquals("411111", androidPayCard.getBin());
+        assertEquals("1111", androidPayCard.getLast4());
+        assertEquals("10", androidPayCard.getExpirationMonth());
+        assertEquals("2024", androidPayCard.getExpirationYear());
+        assertEquals("dontbeevil", androidPayCard.getGoogleTransactionId());
+        assertNotNull(androidPayCard.getToken());
+        assertTrue(androidPayCard.isDefault());
+    }
+  
     @Test
     public void updateWithApplePayCardRequest() {
         CustomerRequest createRequest = new CustomerRequest().
