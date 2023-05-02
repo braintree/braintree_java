@@ -755,6 +755,44 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void createWithApplePayCardRequest() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Jane").
+            lastName("Doe").
+            applePayCard().
+                billingAddress().
+                    postalCode("98126").
+                    done().
+                cryptogram("01010101010101010101").
+                cardholderName("Jane Doe").
+                eciIndicator("5").
+                expirationMonth("10").
+                expirationYear("2024").
+                number("4111111111111111").
+                options().
+                    makeDefault(true).
+                    done().
+                token(String.valueOf(new Random().nextInt())).
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        assertEquals("Jane", customer.getFirstName());
+        assertEquals("Doe", customer.getLastName());
+        assertNotEquals(0, customer.getApplePayCards());
+
+        ApplePayCard applePayCard = customer.getApplePayCards().get(0);
+        assertEquals("98126", applePayCard.getBillingAddress().getPostalCode());
+        assertEquals("411111", applePayCard.getBin());
+        assertEquals("1111", applePayCard.getLast4());
+        assertEquals("10", applePayCard.getExpirationMonth());
+        assertEquals("2024", applePayCard.getExpirationYear());
+        assertTrue(applePayCard.isDefault());
+    }
+
+    @Test
     public void createWithAndroidPayProxyCard() {
         CustomerRequest request = new CustomerRequest().
             paymentMethodNonce(Nonce.AndroidPayDiscover);
@@ -1666,6 +1704,51 @@ public class CustomerIT extends IntegrationTest {
 
         Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
         assertTrue(updateResult.isSuccess());
+    }
+
+    @Test
+    public void updateWithApplePayCardRequest() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Billy").
+            lastName("Bob");
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            applePayCard().
+            billingAddress().
+                postalCode("98126").
+                done().
+            cryptogram("01010101010101010101").
+            cardholderName("Billy Bob").
+            eciIndicator("5").
+            expirationMonth("10").
+            expirationYear("2024").
+            number("4111111111111111").
+            options().
+                makeDefault(true).
+                done().
+            token(String.valueOf(new Random().nextInt())).
+            done();
+
+        Result<Customer> result = gateway.customer().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+        assertTrue(updateResult.isSuccess());
+
+        Customer updatedCustomer = updateResult.getTarget();
+        assertEquals("Billy", updatedCustomer.getFirstName());
+        assertEquals("Bob", updatedCustomer.getLastName());
+        assertNotEquals(0, updatedCustomer.getApplePayCards());
+
+        ApplePayCard applePayCard = updatedCustomer.getApplePayCards().get(0);
+        assertEquals("98126", applePayCard.getBillingAddress().getPostalCode());
+        assertEquals("411111", applePayCard.getBin());
+        assertEquals("1111", applePayCard.getLast4());
+        assertEquals("10", applePayCard.getExpirationMonth());
+        assertEquals("2024", applePayCard.getExpirationYear());
+        assertTrue(applePayCard.isDefault());
     }
 
     @Test

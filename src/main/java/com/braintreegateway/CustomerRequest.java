@@ -9,26 +9,27 @@ import java.util.Map;
  * Provides a fluent interface to build up requests around {@link Customer Customers}.
  */
 public class CustomerRequest extends Request {
-    private String deviceData;
     private String company;
     private String customerId;
+    private String defaultPaymentMethodToken;
+    private String deviceData;
     private String deviceSessionId;
-    private String fraudMerchantId;
     private String email;
     private String fax;
     private String firstName;
+    private String fraudMerchantId;
     private String id;
     private String lastName;
+    private String paymentMethodNonce;
     private String phone;
     private String website;
-    private String paymentMethodNonce;
-    private String defaultPaymentMethodToken;
-    private Map<String, String> customFields;
+    private ApplePayCardRequest applePayCardRequest;
     private CreditCardRequest creditCardRequest;
-    private RiskDataCustomerRequest riskDataCustomerRequest;
     private CustomerOptionsRequest optionsRequest;
-    private TransactionRequest parent;
     private List<TaxIdentifierRequest> taxIdentifierRequests;
+    private Map<String, String> customFields;
+    private RiskDataCustomerRequest riskDataCustomerRequest;
+    private TransactionRequest parent;
 
     public CustomerRequest() {
         this.customFields = new HashMap<String, String>();
@@ -40,19 +41,19 @@ public class CustomerRequest extends Request {
         this.parent = transactionRequest;
     }
 
-    public CustomerRequest deviceData(String deviceData) {
-        this.deviceData = deviceData;
-        return this;
-    }
-
-    public CustomerRequest company(String company) {
-        this.company = company;
-        return this;
+    public ApplePayCardRequest applePayCard() {
+        applePayCardRequest = new ApplePayCardRequest(this);
+        return this.applePayCardRequest;
     }
 
     public CreditCardRequest creditCard() {
         creditCardRequest = new CreditCardRequest(this);
         return this.creditCardRequest;
+    }
+
+    public CustomerRequest company(String company) {
+        this.company = company;
+        return this;
     }
 
     public CustomerRequest customerId(String customerId) {
@@ -65,22 +66,21 @@ public class CustomerRequest extends Request {
         return this;
     }
 
+    public CustomerRequest defaultPaymentMethodToken(String token) {
+        this.defaultPaymentMethodToken = token;
+        return this;
+    }
+
+    public CustomerRequest deviceData(String deviceData) {
+        this.deviceData = deviceData;
+        return this;
+    }
+
     @Deprecated
     // Merchants should be using deviceData only
     public CustomerRequest deviceSessionId(String deviceSessionId) {
         this.deviceSessionId = deviceSessionId;
         return this;
-    }
-
-    @Deprecated
-    // Merchants should be using deviceData only
-    public CustomerRequest fraudMerchantId(String fraudMerchantId) {
-        this.fraudMerchantId = fraudMerchantId;
-        return this;
-    }
-
-    public TransactionRequest done() {
-        return parent;
     }
 
     public CustomerRequest email(String email) {
@@ -98,18 +98,10 @@ public class CustomerRequest extends Request {
         return this;
     }
 
-    public RiskDataCustomerRequest riskData() {
-        riskDataCustomerRequest = new RiskDataCustomerRequest(this);
-        return this.riskDataCustomerRequest;
-    }
-
-    public CustomerOptionsRequest options() {
-        this.optionsRequest = new CustomerOptionsRequest(this);
-        return optionsRequest;
-    }
-
-    public CustomerRequest lastName(String lastName) {
-        this.lastName = lastName;
+    @Deprecated
+    // Merchants should be using deviceData only
+    public CustomerRequest fraudMerchantId(String fraudMerchantId) {
+        this.fraudMerchantId = fraudMerchantId;
         return this;
     }
 
@@ -118,8 +110,14 @@ public class CustomerRequest extends Request {
         return this;
     }
 
-    public String getId() {
-        return id;
+    public CustomerRequest lastName(String lastName) {
+        this.lastName = lastName;
+        return this;
+    }
+
+    public CustomerRequest paymentMethodNonce(String nonce) {
+        this.paymentMethodNonce = nonce;
+        return this;
     }
 
     public CustomerRequest phone(String phone) {
@@ -132,20 +130,28 @@ public class CustomerRequest extends Request {
         return this;
     }
 
-    public CustomerRequest paymentMethodNonce(String nonce) {
-        this.paymentMethodNonce = nonce;
-        return this;
+    public CustomerOptionsRequest options() {
+        this.optionsRequest = new CustomerOptionsRequest(this);
+        return optionsRequest;
     }
 
-    public CustomerRequest defaultPaymentMethodToken(String token) {
-        this.defaultPaymentMethodToken = token;
-        return this;
+    public RiskDataCustomerRequest riskData() {
+        riskDataCustomerRequest = new RiskDataCustomerRequest(this);
+        return this.riskDataCustomerRequest;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public TaxIdentifierRequest taxIdentifier() {
         TaxIdentifierRequest taxIdentiferRequest = new TaxIdentifierRequest(this);
         taxIdentifierRequests.add(taxIdentiferRequest);
         return taxIdentiferRequest;
+    }
+
+    public TransactionRequest done() {
+        return parent;
     }
 
     @Override
@@ -167,20 +173,21 @@ public class CustomerRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root)
-            .addElement("deviceData", deviceData)
+            .addElement("applePayCard", applePayCardRequest)
             .addElement("company", company)
+            .addElement("creditCard", creditCardRequest)
+            .addElement("defaultPaymentMethodToken", defaultPaymentMethodToken)
+            .addElement("deviceData", deviceData)
             .addElement("email", email)
             .addElement("fax", fax)
             .addElement("firstName", firstName)
             .addElement("id", id)
             .addElement("lastName", lastName)
-            .addElement("phone", phone)
-            .addElement("website", website)
-            .addElement("paymentMethodNonce", paymentMethodNonce)
-            .addElement("defaultPaymentMethodToken", defaultPaymentMethodToken)
-            .addElement("creditCard", creditCardRequest)
             .addElement("options", optionsRequest)
-            .addElement("riskData", riskDataCustomerRequest);
+            .addElement("paymentMethodNonce", paymentMethodNonce)
+            .addElement("phone", phone)
+            .addElement("riskData", riskDataCustomerRequest)
+            .addElement("website", website);
 
         if (customFields.size() > 0) {
             builder.addElement("customFields", customFields);

@@ -5,6 +5,8 @@
 * Add `DebitNetwork` enum to `CreditCard`
 * Fix typos in `WebhookTestingGateway`
 * Add `duplicateOfTransactionId` to `Transaction`
+* Create `ApplePayCardAddressRequest`, `ApplePayCardOptionsRequest`, and `ApplePayCardRequest`, and add `ApplePayCardRequest` to `CustomerRequest`
+* Add `billingAddress` to `ApplePayCard`
 
 ## 3.22.0
 * Add subscriptions to `SepaDirectDebitAccount`

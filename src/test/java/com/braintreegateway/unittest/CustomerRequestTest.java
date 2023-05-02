@@ -3,13 +3,13 @@ package com.braintreegateway.unittest;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import com.braintreegateway.CustomerRequest;
-import com.braintreegateway.testhelpers.TestHelper;
-
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
+
+import com.braintreegateway.CustomerRequest;
+import com.braintreegateway.testhelpers.TestHelper;
 
 public class CustomerRequestTest {
   @Test
@@ -28,6 +28,7 @@ public class CustomerRequestTest {
       .paymentMethodNonce("some-nonce")
       .defaultPaymentMethodToken("some-token")
       .customField("some-custom-field", "some-custom-value")
+      .applePayCard().number("12345").done()
       .creditCard().number("12345").done()
       .riskData().customerIP("6789").done()
       .taxIdentifier()
@@ -49,6 +50,9 @@ public class CustomerRequestTest {
       + "  <website>some-website</website>\n"
       + "  <paymentMethodNonce>some-nonce</paymentMethodNonce>\n"
       + "  <defaultPaymentMethodToken>some-token</defaultPaymentMethodToken>\n"
+      + "  <applePayCard>\n"
+      + "    <number>12345</number>\n"
+      + "  </applePayCard>\n"
       + "  <creditCard>\n"
       + "    <number>12345</number>\n"
       + "  </creditCard>\n"

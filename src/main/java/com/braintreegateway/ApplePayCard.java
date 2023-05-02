@@ -1,139 +1,105 @@
 package com.braintreegateway;
 
-import com.braintreegateway.util.NodeWrapper;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.braintreegateway.util.NodeWrapper;
+
 public class ApplePayCard implements PaymentMethod {
-    private String imageUrl;
-    private String token;
-    private boolean isDefault;
+    private Address billingAddress;
     private String bin;
+    private String cardholderName;
     private String cardType;
-    private String paymentInstrumentName;
-    private String sourceDescription;
-    private String last4;
+    private String commercial;
+    private String countryOfIssuance;
+    private Calendar createdAt;
+    private String customerId;
+    private String debit;
+    private String durbinRegulated;
     private String expirationMonth;
     private String expirationYear;
     private boolean expired;
-    private String customerId;
-    private String cardholderName;
-    private Calendar createdAt;
-    private Calendar updatedAt;
-    private List<Subscription> subscriptions;
-    private String prepaid;
     private String healthcare;
-    private String debit;
-    private String durbinRegulated;
-    private String commercial;
-    private String payroll;
+    private String imageUrl;
+    private boolean isDefault;
     private String issuingBank;
-    private String countryOfIssuance;
+    private String last4;
+    private String paymentInstrumentName;
+    private String payroll;
+    private String prepaid;
     private String productId;
+    private String sourceDescription;
+    private List<Subscription> subscriptions;
+    private String token;
+    private Calendar updatedAt;
 
     public ApplePayCard(NodeWrapper node) {
-        this.token = node.findString("token");
-        this.imageUrl = node.findString("image-url");
-        this.isDefault = node.findBoolean("default");
         this.bin = node.findString("bin");
+        this.cardholderName = node.findString("cardholder-name");
         this.cardType = node.findString("card-type");
-        this.paymentInstrumentName = node.findString("payment-instrument-name");
-        this.sourceDescription = node.findString("source-description");
-        this.last4 = node.findString("last-4");
+        this.commercial = node.findString("commercial");
+        this.countryOfIssuance = node.findString("country-of-issuance");
+        this.createdAt = node.findDateTime("created-at");
+        this.customerId = node.findString("customer-id");
+        this.debit = node.findString("debit");
+        this.durbinRegulated = node.findString("durbin-regulated");
         this.expirationMonth = node.findString("expiration-month");
         this.expirationYear = node.findString("expiration-year");
         this.expired = node.findBoolean("expired");
-        this.customerId = node.findString("customer-id");
-        this.cardholderName = node.findString("cardholder-name");
-        this.createdAt = node.findDateTime("created-at");
-        this.updatedAt = node.findDateTime("updated-at");
-        this.subscriptions = new ArrayList<Subscription>();
-        this.prepaid = node.findString("prepaid");
         this.healthcare = node.findString("healthcare");
-        this.debit = node.findString("debit");
-        this.durbinRegulated = node.findString("durbin-regulated");
-        this.commercial = node.findString("commercial");
-        this.payroll = node.findString("payroll");
+        this.imageUrl = node.findString("image-url");
+        this.isDefault = node.findBoolean("default");
         this.issuingBank = node.findString("issuing-bank");
-        this.countryOfIssuance = node.findString("country-of-issuance");
+        this.last4 = node.findString("last-4");
+        this.paymentInstrumentName = node.findString("payment-instrument-name");
+        this.payroll = node.findString("payroll");
+        this.prepaid = node.findString("prepaid");
         this.productId = node.findString("product-id");
+        this.sourceDescription = node.findString("source-description");
+        this.subscriptions = new ArrayList<Subscription>();
+        this.token = node.findString("token");
+        this.updatedAt = node.findDateTime("updated-at");
         for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
             this.subscriptions.add(new Subscription(subscriptionResponse));
+        }
+        NodeWrapper billingAddressResponse = node.findFirst("billing-address");
+        if (billingAddressResponse != null) {
+            this.billingAddress = new Address(billingAddressResponse);
         }
 
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public boolean isDefault() {
-        return isDefault;
+    public Address getBillingAddress() {
+        return billingAddress;
     }
 
     public String getBin() {
         return bin;
     }
 
+    public String getCardholderName() {
+        return cardholderName;
+    }
+
     public String getCardType() {
         return cardType;
     }
 
-    public String getPaymentInstrumentName() {
-        return paymentInstrumentName;
+    public String getCommercial() {
+        return commercial;
     }
 
-    public String getSourceDescription() {
-        return sourceDescription;
-    }
-
-    public String getExpirationMonth() {
-        return expirationMonth;
-    }
-
-    public String getExpirationYear() {
-        return expirationYear;
-    }
-
-    public boolean getExpired() {
-        return expired;
-    }
-
-    public Calendar getCreatedAt() {
-        return createdAt;
-    }
-
-    public Calendar getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public List<Subscription> getSubscriptions() {
-        return subscriptions;
-    }
-
-    public String getLast4() {
-        return last4;
+    public String getCountryOfIssuance() {
+        return countryOfIssuance;
     }
 
     public String getCustomerId() {
         return customerId;
     }
 
-    public String getCardholderName() {
-        return cardholderName;
-    }
-
-    public String getPrepaid() {
-        return prepaid;
-    }
-
-    public String getHealthcare() {
-        return healthcare;
+    public Calendar getCreatedAt() {
+        return createdAt;
     }
 
     public String getDebit() {
@@ -144,23 +110,67 @@ public class ApplePayCard implements PaymentMethod {
         return durbinRegulated;
     }
 
-    public String getCommercial() {
-        return commercial;
+    public boolean getExpired() {
+        return expired;
     }
 
-    public String getPayroll() {
-        return payroll;
+    public String getExpirationMonth() {
+        return expirationMonth;
+    }
+
+    public String getExpirationYear() {
+        return expirationYear;
+    }
+
+    public String getHealthcare() {
+        return healthcare;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public String getIssuingBank() {
         return issuingBank;
     }
 
-    public String getCountryOfIssuance() {
-        return countryOfIssuance;
+    public String getLast4() {
+        return last4;
+    }
+
+    public String getPaymentInstrumentName() {
+        return paymentInstrumentName;
+    }
+
+    public String getPayroll() {
+        return payroll;
+    }
+
+    public String getPrepaid() {
+        return prepaid;
     }
 
     public String getProductId() {
         return productId;
+    }
+
+    public String getSourceDescription() {
+        return sourceDescription;
+    }
+
+    public List<Subscription> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public Calendar getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
     }
 }
