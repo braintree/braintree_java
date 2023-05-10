@@ -37,7 +37,7 @@
       <developerConnection>
         ${scmConnection}
       </developerConnection>
-      <tag>3.23.03.23.03.23.0</tag>
+      <tag>3.23.0</tag>
     </scm>
 
     <distributionManagement>
