@@ -1,6 +1,6 @@
 # Changelog
 
-## unreleased
+## 3.23.0
 * Add `debitNetwork` field to `Transaction` and `TransactionSearchRequest`
 * Add `DebitNetwork` enum to `CreditCard`
 * Fix typos in `WebhookTestingGateway`
