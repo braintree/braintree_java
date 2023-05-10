@@ -1,5 +1,4 @@
 package com.braintreegateway.unittest;
-
 import com.braintreegateway.Transaction;
 import com.braintreegateway.util.SimpleNodeWrapper;
 import com.braintreegateway.SepaDirectDebitAccountDetails;
@@ -37,6 +36,34 @@ public class TransactionTest {
 		assertEquals(Transaction.EscrowStatus.UNRECOGNIZED, transaction.getEscrowStatus());
 		assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
 	}
+
+
+    @Test
+    public void parseMerchantAdviceCodeDetails() {
+      String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+          "<transaction>\n" +
+          "  <id>recognized_transaction_id</id>\n" +
+          "  <status></status>\n" +
+          "  <type>sale</type>\n" +
+          "  <customer></customer>\n" +
+          "  <billing></billing>\n" +
+          "  <shipping></shipping>\n" +
+          "  <custom-fields/>\n" +
+          "  <credit-card></credit-card>\n" +
+          "  <status-history type=\"array\"></status-history>\n" +
+          "  <subscription></subscription>\n" +
+          "  <descriptor></descriptor>\n" +
+          "  <payment-instrument-type>sepa_debit_account</payment-instrument-type>\n" +
+          "  <merchant-advice-code>03</merchant-advice-code>\n" +
+          "  <merchant-advice-code-text>Do not retry this payment</merchant-advice-code-text>\n" +
+          "</transaction>\n";
+
+      SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+      Transaction transaction = new Transaction(transactionNode);
+
+      assertEquals("03", transaction.getMerchantAdviceCode());
+	  	assertEquals("Do not retry this payment", transaction.getMerchantAdviceCodeText());
+    }
 
 	@Test
 	public void recognizesExcessiveRetryGatewayRejectReason() {
@@ -90,6 +117,23 @@ public class TransactionTest {
 		Transaction transaction = new Transaction(transactionNode);
 
 		assertEquals(Transaction.GatewayRejectionReason.TOKEN_ISSUANCE, transaction.getGatewayRejectionReason());
+	}
+
+	@Test
+	public void recognizesDuplicateTransactionGatewayRejectReason() {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<transaction>\n" +
+				"  <id>unrecognized_transaction_id</id>\n" +
+				"  <gateway-rejection-reason>duplicate</gateway-rejection-reason>\n" +
+				"  <payment-instrument-type>credit_card</payment-instrument-type>\n" +
+				"  <duplicate-of-transaction-id>recognized_transaction_id</duplicate-of-transaction-id>" +
+				"</transaction>\n";
+		
+				SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+				Transaction transaction = new Transaction(transactionNode);
+		
+				assertEquals(Transaction.GatewayRejectionReason.DUPLICATE, transaction.getGatewayRejectionReason());
+				assertNotNull(transaction.getDuplicateOfTransactionId());
 	}
 
 	@Test
@@ -218,4 +262,36 @@ public class TransactionTest {
         assertEquals("12.34", sepaDirectDebitAccountDetails.getTransactionFeeAmount());
         assertEquals("EUR", sepaDirectDebitAccountDetails.getTransactionFeeCurrencyIsoCode());
 	}
+
+    @Test
+    public void parseDebitNetworkForNonPinlessTransaction(){
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<transaction>\n" +
+            "  <id>recognized_transaction_id</id>\n" +
+            "  <type>sale</type>\n" +
+            "  <payment-instrument-type>credit_card</payment-instrument-type>\n" +
+            "</transaction>";
+
+        SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+        Transaction transaction = new Transaction(transactionNode);
+
+        assertNull(transaction.getDebitNetwork());
+    }
+
+    @Test
+    public void parseDebitNetworkPinlessTransaction(){
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<transaction>\n" +
+            "  <id>recognized_transaction_id</id>\n" +
+            "  <type>sale</type>\n" +
+            "  <payment-method-nonce>fake-pinless-debit-visa-nonce</payment-method-nonce>\n" +
+            "  <merchant-account-id>pinless_debit</merchant-account-id>\n" +
+            "  <debit-network>STAR</debit-network>\n" +
+            "</transaction>";
+
+        SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+        Transaction transaction = new Transaction(transactionNode);
+
+        assertEquals("STAR", transaction.getDebitNetwork());
+    }
 }

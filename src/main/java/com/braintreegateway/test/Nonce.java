@@ -63,6 +63,7 @@ public class Nonce {
   public static final String TransactableHealthcare = "fake-valid-healthcare-nonce";
   public static final String TransactableDebit = "fake-valid-debit-nonce";
   public static final String TransactablePayroll = "fake-valid-payroll-nonce";
+  public static final String TransactablePinlessDebitVisa = "fake-pinless-debit-visa-nonce";
   public static final String TransactableNoIndicators = "fake-valid-no-indicators-nonce";
   public static final String TransactableUnknownIndicators = "fake-valid-unknown-indicators-nonce";
   public static final String TransactableCountryOfIssuanceUSA = "fake-valid-country-of-issuance-usa-nonce";

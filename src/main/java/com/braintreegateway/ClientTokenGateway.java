@@ -31,6 +31,9 @@ public class ClientTokenGateway {
       return generate(new ClientTokenRequest());
     }
 
+    // NEXT_MAJOR_VERSION change this return type to Result<ClientToken>
+    // That will allow for better error handling.
+    // See this issue for more detail https://github.com/braintree/braintree_java/issues/119
     public String generate(ClientTokenRequest request) {
       NodeWrapper response = null;
       verifyOptions(request);

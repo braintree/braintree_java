@@ -1984,6 +1984,29 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithDuplicateTransactionIsRejected() {
+        createDuplicateCheckingMerchantGateway();
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("50.00")).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2016").
+                done().
+            orderId("some-order-id");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        Result<Transaction> duplicateResult = gateway.transaction().sale(request);
+        
+        assertTrue(result.isSuccess());
+        String transactionId = result.getTarget().getId();
+
+        assertFalse(duplicateResult.isSuccess());
+        Transaction duplicateTransaction = duplicateResult.getTransaction();
+        assertEquals(Transaction.Status.GATEWAY_REJECTED, duplicateTransaction.getStatus());
+        assertEquals(transactionId, duplicateTransaction.getDuplicateOfTransactionId());
+    }
+
+    @Test
     public void saleWithSecurityParams() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -4354,6 +4377,21 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         );
     }
 
+
+    @Test
+    public void debitNetworkInResponseForPinlessTransaction(){
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(Nonce.TransactablePinlessDebitVisa).
+            merchantAccountId(PINLESS_DEBIT);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+        assertNull(transaction.getDebitNetwork());
+    }
+
     @Test
     public void credit() {
         TransactionRequest request = new TransactionRequest().
@@ -6450,6 +6488,20 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void searchOnDebitNetworks() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(Nonce.TransactablePinlessDebitVisa).
+            merchantAccountId(PINLESS_DEBIT);
+
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+            id().is(transaction.getId()).
+            debitNetwork().is(CreditCard.DebitNetwork.STAR);
+        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    @Test
     public void refundTransaction() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -7543,6 +7595,26 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(transaction.getPayPalDetails().getTransactionFeeCurrencyIsoCode());
         assertNotNull(transaction.getPayPalDetails().getRefundFromTransactionFeeAmount());
         assertNotNull(transaction.getPayPalDetails().getRefundFromTransactionFeeCurrencyIsoCode());
+    }
+
+    @Test
+    public void exposesMacAndMacText()
+    {
+       TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.DECLINE.amount).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        assertEquals(Transaction.Status.PROCESSOR_DECLINED, transaction.getStatus());
+
+        assertEquals("01", transaction.getMerchantAdviceCode());
+        assertEquals("New account information available", transaction.getMerchantAdviceCodeText());
     }
 
     @Test

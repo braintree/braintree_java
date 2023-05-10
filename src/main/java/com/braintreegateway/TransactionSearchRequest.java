@@ -93,6 +93,10 @@ public class TransactionSearchRequest extends SearchRequest {
         return textNode("customer_website");
     }
 
+    public MultipleValueNode<TransactionSearchRequest, CreditCard.DebitNetwork> debitNetwork() {
+        return multiTypeNode("debit_network");
+    }
+
     public MultipleValueNode<TransactionSearchRequest, String> ids() {
         return multiTypeNode("ids");
     }

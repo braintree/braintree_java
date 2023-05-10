@@ -193,9 +193,13 @@ public class Transaction {
     private String channel;
     private String currencyIsoCode;
     private String cvvResponseCode;
+    private String debitNetwork;
+    private String duplicateOfTransactionId;
     private String graphqlId;
     private String id;
     private String merchantAccountId;
+    private String merchantAdviceCode;
+    private String merchantAdviceCodeText;
     private String networkResponseCode;
     private String networkResponseText;
     private String networkTransactionId;
@@ -236,8 +240,10 @@ public class Transaction {
         currencyIsoCode = node.findString("currency-iso-code");
         customFields = node.findMap("custom-fields/*");
         cvvResponseCode = node.findString("cvv-response-code");
+        debitNetwork = node.findString("debit-network");
         escrowStatus = EnumUtils.findByName(EscrowStatus.class, node.findString("escrow-status"), EscrowStatus.UNRECOGNIZED);
         gatewayRejectionReason = EnumUtils.findByName(GatewayRejectionReason.class, node.findString("gateway-rejection-reason"), GatewayRejectionReason.UNRECOGNIZED);
+        duplicateOfTransactionId = node.findString("duplicate-of-transaction-id");
         graphqlId = node.findString("global-id");
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
@@ -326,6 +332,8 @@ public class Transaction {
         processorAuthorizationCode = node.findString("processor-authorization-code");
         processorResponseCode = node.findString("processor-response-code");
         processorResponseText = node.findString("processor-response-text");
+        merchantAdviceCode = node.findString("merchant-advice-code");
+        merchantAdviceCodeText = node.findString("merchant-advice-code-text");
         processorResponseType = EnumUtils.findByName(ProcessorResponseType.class, node.findString("processor-response-type"), ProcessorResponseType.UNRECOGNIZED);
         processorSettlementResponseCode = node.findString("processor-settlement-response-code");
         processorSettlementResponseText = node.findString("processor-settlement-response-text");
@@ -500,6 +508,10 @@ public class Transaction {
         return cvvResponseCode;
     }
 
+    public String getDebitNetwork() {
+        return debitNetwork;
+    }
+
     public DisbursementDetails getDisbursementDetails() {
         return disbursementDetails;
     }
@@ -514,6 +526,10 @@ public class Transaction {
 
     public List<Discount> getDiscounts() {
         return discounts;
+    }
+
+    public String getDuplicateOfTransactionId() {
+        return duplicateOfTransactionId;
     }
 
     public EscrowStatus getEscrowStatus() {
@@ -644,6 +660,14 @@ public class Transaction {
 
     public String getAchReturnCode() {
         return achReturnCode;
+    }
+
+    public String getMerchantAdviceCode() {
+        return merchantAdviceCode;
+    }
+
+    public String getMerchantAdviceCodeText() {
+        return merchantAdviceCodeText;
     }
 
     public String getSepaDirectDebitReturnCode() {

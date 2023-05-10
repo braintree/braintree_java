@@ -1,158 +1,109 @@
 package com.braintreegateway;
 
-import com.braintreegateway.util.NodeWrapper;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.braintreegateway.util.NodeWrapper;
+
 // NEXT_MAJOR_VERSION - rename this to GooglePayCard
 public class AndroidPayCard implements PaymentMethod {
-    private String cardType;
-    private String last4;
-    private String sourceCardType;
-    private String sourceCardLast4;
-    private String sourceDescription;
-    private String virtualCardType;
-    private String virtualCardLast4;
-    private String expirationMonth;
-    private String expirationYear;
-    private String token;
-    private String googleTransactionId;
+    private Address billingAddress;
     private String bin;
-    private Boolean isDefault;
-    private Boolean isNetworkTokenized;
-    private String imageUrl;
-    private String customerId;
+    private String cardType;
+    private String commercial;
+    private String countryOfIssuance;
     private Calendar createdAt;
-    private Calendar updatedAt;
-    private List<Subscription> subscriptions;
-    private String prepaid;
-    private String healthcare;
+    private String customerId;
     private String debit;
     private String durbinRegulated;
-    private String commercial;
-    private String payroll;
+    private String expirationMonth;
+    private String expirationYear;
+    private String googleTransactionId;
+    private String healthcare;
+    private String imageUrl;
+    private Boolean isDefault;
+    private Boolean isNetworkTokenized;
     private String issuingBank;
-    private String countryOfIssuance;
+    private String last4;
+    private String payroll;
+    private String prepaid;
     private String productId;
+    private String sourceCardLast4;
+    private String sourceCardType;
+    private String sourceDescription;
+    private List<Subscription> subscriptions;
+    private String token;
+    private Calendar updatedAt;
+    private String virtualCardType;
+    private String virtualCardLast4;
 
     public AndroidPayCard(NodeWrapper node) {
-        this.sourceCardType = node.findString("source-card-type");
-        this.sourceCardLast4 = node.findString("source-card-last-4");
-        this.sourceDescription = node.findString("source-description");
-        this.virtualCardType = node.findString("virtual-card-type");
-        this.virtualCardLast4 = node.findString("virtual-card-last-4");
-        this.cardType = this.virtualCardType;
-        this.last4 = this.virtualCardLast4;
-        this.expirationMonth = node.findString("expiration-month");
-        this.expirationYear = node.findString("expiration-year");
-        this.token = node.findString("token");
-        this.googleTransactionId = node.findString("google-transaction-id");
         this.bin = node.findString("bin");
-        this.isDefault = node.findBoolean("default");
-        this.imageUrl = node.findString("image-url");
-        this.isNetworkTokenized = node.findBoolean("is-network-tokenized");
-        this.customerId = node.findString("customer-id");
+        this.commercial = node.findString("commercial");
+        this.countryOfIssuance = node.findString("country-of-issuance");
         this.createdAt = node.findDateTime("created-at");
-        this.updatedAt = node.findDateTime("updated-at");
-        this.subscriptions = new ArrayList<Subscription>();
-        this.prepaid = node.findString("prepaid");
-        this.healthcare = node.findString("healthcare");
+        this.customerId = node.findString("customer-id");
         this.debit = node.findString("debit");
         this.durbinRegulated = node.findString("durbin-regulated");
-        this.commercial = node.findString("commercial");
-        this.payroll = node.findString("payroll");
+        this.expirationMonth = node.findString("expiration-month");
+        this.expirationYear = node.findString("expiration-year");
+        this.googleTransactionId = node.findString("google-transaction-id");
+        this.healthcare = node.findString("healthcare");
+        this.imageUrl = node.findString("image-url");
+        this.isDefault = node.findBoolean("default");
+        this.isNetworkTokenized = node.findBoolean("is-network-tokenized");
         this.issuingBank = node.findString("issuing-bank");
-        this.countryOfIssuance = node.findString("country-of-issuance");
+        this.payroll = node.findString("payroll");
+        this.prepaid = node.findString("prepaid");
         this.productId = node.findString("product-id");
+        this.sourceCardType = node.findString("source-card-type");
+        this.sourceDescription = node.findString("source-description"); 
+        this.sourceCardLast4 = node.findString("source-card-last-4");
+        this.token = node.findString("token");
+        this.updatedAt = node.findDateTime("updated-at");
+        this.virtualCardLast4 = node.findString("virtual-card-last-4");
+        this.virtualCardType = node.findString("virtual-card-type");
+        this.subscriptions = new ArrayList<Subscription>();
         for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
             this.subscriptions.add(new Subscription(subscriptionResponse));
         }
+        NodeWrapper billingAddressResponse = node.findFirst("billing-address");
+        if (billingAddressResponse != null) {
+            this.billingAddress = new Address(billingAddressResponse);
+        }
+        // These setters are reliant on virtualCardType and virtualCardLast4 set above
+        this.cardType = this.virtualCardType;
+        this.last4 = this.virtualCardLast4;
 
     }
 
-    public String getCardType() {
-        return cardType;
-    }
-
-    public String getLast4() {
-        return last4;
-    }
-
-    public String getSourceCardType() {
-        return sourceCardType;
-    }
-
-    public String getSourceCardLast4() {
-        return sourceCardLast4;
-    }
-
-    public String getSourceDescription() {
-        return sourceDescription;
-    }
-
-    public String getVirtualCardType() {
-        return virtualCardType;
-    }
-
-    public String getVirtualCardLast4() {
-        return virtualCardLast4;
-    }
-
-    public String getExpirationMonth() {
-        return expirationMonth;
-    }
-
-    public String getExpirationYear() {
-        return expirationYear;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public String getGoogleTransactionId() {
-        return googleTransactionId;
+    public Address getBillingAddress() {
+        return billingAddress;
     }
 
     public String getBin() {
         return bin;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getCardType() {
+        return cardType;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    public String getCommercial() {
+        return commercial;
+    }
+
+    public String getCountryOfIssuance() {
+        return countryOfIssuance;
     }
 
     public Calendar getCreatedAt() {
         return createdAt;
     }
 
-    public Calendar getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public List<Subscription> getSubscriptions() {
-        return subscriptions;
-    }
-
-    public boolean isDefault() {
-        return isDefault;
-    }
-
-    public boolean isNetworkTokenized() {
-        return isNetworkTokenized;
-    }
-
-    public String getPrepaid() {
-        return prepaid;
-    }
-
-    public String getHealthcare() {
-        return healthcare;
+    public String getCustomerId() {
+        return customerId;
     }
 
     public String getDebit() {
@@ -163,23 +114,83 @@ public class AndroidPayCard implements PaymentMethod {
         return durbinRegulated;
     }
 
-    public String getCommercial() {
-        return commercial;
+    public String getExpirationMonth() {
+        return expirationMonth;
     }
 
-    public String getPayroll() {
-        return payroll;
+    public String getExpirationYear() {
+        return expirationYear;
+    }
+
+    public String getGoogleTransactionId() {
+        return googleTransactionId;
+    }
+
+    public String getHealthcare() {
+        return healthcare;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public String getIssuingBank() {
         return issuingBank;
     }
 
-    public String getCountryOfIssuance() {
-        return countryOfIssuance;
+    public String getLast4() {
+        return last4;
+    }
+
+    public String getPayroll() {
+        return payroll;
+    }
+
+    public String getPrepaid() {
+        return prepaid;
     }
 
     public String getProductId() {
         return productId;
+    }
+
+    public String getSourceCardLast4() {
+        return sourceCardLast4;
+    }
+
+    public String getSourceCardType() {
+        return sourceCardType;
+    }
+
+    public String getSourceDescription() {
+        return sourceDescription;
+    }
+
+    public List<Subscription> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public Calendar getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public String getVirtualCardLast4() {
+        return virtualCardLast4;
+    }
+
+    public String getVirtualCardType() {
+        return virtualCardType;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public boolean isNetworkTokenized() {
+        return isNetworkTokenized;
     }
 }
