@@ -37,6 +37,34 @@ public class TransactionTest {
 		assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
 	}
 
+
+    @Test
+    public void parseMerchantAdviceCodeDetails() {
+      String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+          "<transaction>\n" +
+          "  <id>recognized_transaction_id</id>\n" +
+          "  <status></status>\n" +
+          "  <type>sale</type>\n" +
+          "  <customer></customer>\n" +
+          "  <billing></billing>\n" +
+          "  <shipping></shipping>\n" +
+          "  <custom-fields/>\n" +
+          "  <credit-card></credit-card>\n" +
+          "  <status-history type=\"array\"></status-history>\n" +
+          "  <subscription></subscription>\n" +
+          "  <descriptor></descriptor>\n" +
+          "  <payment-instrument-type>sepa_debit_account</payment-instrument-type>\n" +
+          "  <merchant-advice-code>03</merchant-advice-code>\n" +
+          "  <merchant-advice-code-text>Do not retry this payment</merchant-advice-code-text>\n" +
+          "</transaction>\n";
+
+      SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+      Transaction transaction = new Transaction(transactionNode);
+
+      assertEquals("03", transaction.getMerchantAdviceCode());
+	  	assertEquals("Do not retry this payment", transaction.getMerchantAdviceCodeText());
+    }
+
 	@Test
 	public void recognizesExcessiveRetryGatewayRejectReason() {
 		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

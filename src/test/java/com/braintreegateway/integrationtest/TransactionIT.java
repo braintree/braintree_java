@@ -7598,6 +7598,26 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void exposesMacAndMacText()
+    {
+       TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.DECLINE.amount).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        Transaction transaction = result.getTransaction();
+
+        assertEquals(Transaction.Status.PROCESSOR_DECLINED, transaction.getStatus());
+
+        assertEquals("01", transaction.getMerchantAdviceCode());
+        assertEquals("New account information available", transaction.getMerchantAdviceCodeText());
+    }
+
+    @Test
     public void successfulPartialSettlementSale()
     {
         TransactionRequest request = new TransactionRequest().

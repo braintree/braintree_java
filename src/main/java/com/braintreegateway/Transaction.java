@@ -198,6 +198,8 @@ public class Transaction {
     private String graphqlId;
     private String id;
     private String merchantAccountId;
+    private String merchantAdviceCode;
+    private String merchantAdviceCodeText;
     private String networkResponseCode;
     private String networkResponseText;
     private String networkTransactionId;
@@ -330,6 +332,8 @@ public class Transaction {
         processorAuthorizationCode = node.findString("processor-authorization-code");
         processorResponseCode = node.findString("processor-response-code");
         processorResponseText = node.findString("processor-response-text");
+        merchantAdviceCode = node.findString("merchant-advice-code");
+        merchantAdviceCodeText = node.findString("merchant-advice-code-text");
         processorResponseType = EnumUtils.findByName(ProcessorResponseType.class, node.findString("processor-response-type"), ProcessorResponseType.UNRECOGNIZED);
         processorSettlementResponseCode = node.findString("processor-settlement-response-code");
         processorSettlementResponseText = node.findString("processor-settlement-response-text");
@@ -656,6 +660,14 @@ public class Transaction {
 
     public String getAchReturnCode() {
         return achReturnCode;
+    }
+
+    public String getMerchantAdviceCode() {
+        return merchantAdviceCode;
+    }
+
+    public String getMerchantAdviceCodeText() {
+        return merchantAdviceCodeText;
     }
 
     public String getSepaDirectDebitReturnCode() {
