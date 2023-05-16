@@ -72,6 +72,8 @@ public class TransactionRequest extends Request {
 
     private InstallmentRequest installments;
 
+    private Boolean foreignRetailer;
+
     public TransactionRequest() {
         this.customFields = new HashMap<String, String>();
         this.threeDSecureTransaction = false;
@@ -367,6 +369,11 @@ public class TransactionRequest extends Request {
         return this.installments;
     }
 
+    public TransactionRequest foreignRetailer(Boolean foreignRetailer) {
+        this.foreignRetailer = foreignRetailer;
+        return this;
+    }
+
     // NEXT_MAJOR_VERSION remove venmoSdkPaymentMethodCode
     // The old venmo SDK integration has been deprecated
     protected RequestBuilder buildRequest(String root) {
@@ -414,7 +421,8 @@ public class TransactionRequest extends Request {
             .addElement("riskData", riskDataTransactionRequest)
             .addElement("externalVault", externalVaultRequest)
             .addElement("currencyIsoCode", currencyIsoCode)
-            .addElement("installments", installments);
+            .addElement("installments", installments)
+            .addElement("foreignRetailer", foreignRetailer);
 
         if (!customFields.isEmpty()) {
             builder.addElement("customFields", customFields);

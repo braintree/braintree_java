@@ -92,4 +92,10 @@ public class TransactionRequestTest {
                 done();
 		    TestHelper.assertIncludes("<processDebitAsCredit>true</processDebitAsCredit>",request.toXML());
 		}
+
+    @Test
+    public void toXmlIncludesForeignRetailer() {
+        TransactionRequest request = new TransactionRequest().foreignRetailer(true);
+        TestHelper.assertIncludes("<foreignRetailer>true</foreignRetailer>", request.toXML());
+    }
 }

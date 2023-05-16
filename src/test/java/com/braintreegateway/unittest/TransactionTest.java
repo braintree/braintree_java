@@ -348,4 +348,20 @@ public class TransactionTest {
 
         assertEquals("STAR", transaction.getDebitNetwork());
     }
+
+	@Test
+	public void recognizesForeignRetailerTransaction() {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<transaction>\n" +
+				"  <id>recognized_transaction_id</id>\n" +
+				"  <type>sale</type>\n" +
+				"  <payment-instrument-type>credit_card</payment-instrument-type>\n" +
+				"  <foreign-retailer>true</foreign-retailer>\n" +
+				"</transaction>\n";
+
+		SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+		Transaction transaction = new Transaction(transactionNode);
+
+		assertTrue(transaction.isforeignRetailer());
+	}
 }

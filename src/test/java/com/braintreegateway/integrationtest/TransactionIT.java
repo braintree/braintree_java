@@ -8709,4 +8709,54 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                     done().
                 done();
     }
+
+    @Test
+    public void testforeignRetailerToBeTrueWhenTrueInRequest() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            orderId("123").
+            foreignRetailer(true).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2030").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertTrue(transaction.isforeignRetailer());
+    }
+
+    @Test
+    public void testforeignRetailerToBeFalseWhenFalseInRequest() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            orderId("123").
+            foreignRetailer(false).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2030").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertFalse(transaction.isforeignRetailer());
+    }
+
+    @Test
+    public void testforeignRetailerToBeFalseWhenNotPassedInRequest() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            orderId("123").
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2030").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertFalse(transaction.isforeignRetailer());
+    }
 }
