@@ -10,6 +10,7 @@
 * Create `AndroidPayCardAddressRequest`, `AndroidPayCardOptionsRequest`, and `AndroidPayCardRequest`, and add `AndroidPayCardRequest` to `CustomerRequest`
 * Add `billingAddress` to `AndroidPayCard`
 * Add `merchantAdviceCode` and `merchantAdviceCodeText` fields to `Transaction`
+* Add `cardAddChallengeRequested` to `ThreeDSecureLookupRequest`
 
 ## 3.22.0
 * Add subscriptions to `SepaDirectDebitAccount`
