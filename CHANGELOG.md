@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Add `cardAddChallengeRequested` to `ThreeDSecureLookupRequest`
+* Add `retriedTransactionId` and `retryIds` to transaction object
 
 ## 3.23.0
 * Add `debitNetwork` field to `Transaction` and `TransactionSearchRequest`
