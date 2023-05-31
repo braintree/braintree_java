@@ -1,6 +1,6 @@
 package com.braintreegateway;
 
-public class AndroidPayCardRequest extends Request {
+public class AndroidPayNetworkTokenRequest extends Request {
     private String cardholderName;
     private String cryptogram;
     private String customerId;
@@ -10,39 +10,38 @@ public class AndroidPayCardRequest extends Request {
     private String googleTransactionId;
     private String number;
     private String token;
-    private AndroidPayCardAddressRequest billingAddressRequest;
-    private AndroidPayCardOptionsRequest optionsRequest;
+    private AndroidPayNetworkTokenAddressRequest billingAddressRequest;
+    private AndroidPayNetworkTokenOptionsRequest optionsRequest;
     private CustomerRequest parent;
 
-    public AndroidPayCardRequest() {
+    public AndroidPayNetworkTokenRequest () {
     }
 
-    public AndroidPayCardRequest(CustomerRequest parent) {
+    public AndroidPayNetworkTokenRequest(CustomerRequest parent) {
         this.parent = parent;
     }
 
-    public AndroidPayCardAddressRequest billingAddress() {
-        billingAddressRequest = new AndroidPayCardAddressRequest(this);
+    public AndroidPayNetworkTokenAddressRequest billingAddress() {
+        billingAddressRequest = new AndroidPayNetworkTokenAddressRequest(this);
         return billingAddressRequest;
     }
 
-    public AndroidPayCardOptionsRequest options() {
-        this.optionsRequest = new AndroidPayCardOptionsRequest(this);
+    public AndroidPayNetworkTokenOptionsRequest options() {
+        this.optionsRequest = new AndroidPayNetworkTokenOptionsRequest(this);
         return optionsRequest;
     }
 
-    public AndroidPayCardRequest cardholderName(String cardholderName) {
+    public AndroidPayNetworkTokenRequest cardholderName(String cardholderName) {
         this.cardholderName = cardholderName;
         return this;
     }
 
-    @Deprecated
-    public AndroidPayCardRequest cryptogram(String cryptogram) {
+    public AndroidPayNetworkTokenRequest cryptogram(String cryptogram) {
         this.cryptogram = cryptogram;
         return this;
     }
 
-    public AndroidPayCardRequest customerId(String customerId) {
+    public AndroidPayNetworkTokenRequest customerId(String customerId) {
         this.customerId = customerId;
         return this;
     }
@@ -50,34 +49,33 @@ public class AndroidPayCardRequest extends Request {
     public CustomerRequest done() {
         return parent;
     }
-
-    @Deprecated
-    public AndroidPayCardRequest eciIndicator(String eciIndicator) {
+    
+    public AndroidPayNetworkTokenRequest eciIndicator(String eciIndicator) {
         this.eciIndicator = eciIndicator;
         return this;
     }
 
-    public AndroidPayCardRequest expirationMonth(String expirationMonth) {
+    public AndroidPayNetworkTokenRequest expirationMonth(String expirationMonth) {
         this.expirationMonth = expirationMonth;
         return this;
     }
 
-    public AndroidPayCardRequest expirationYear(String expirationYear) {
+    public AndroidPayNetworkTokenRequest expirationYear(String expirationYear) {
         this.expirationYear = expirationYear;
         return this;
     }
 
-    public AndroidPayCardRequest googleTransactionId(String googleTransactionId) {
+    public AndroidPayNetworkTokenRequest googleTransactionId(String googleTransactionId) {
         this.googleTransactionId = googleTransactionId;
         return this;
     }
 
-    public AndroidPayCardRequest number(String number) {
+    public AndroidPayNetworkTokenRequest number(String number) {
         this.number = number;
         return this;
     }
 
-    public AndroidPayCardRequest token(String token) {
+    public AndroidPayNetworkTokenRequest token(String token) {
         this.token = token;
         return this;
     }
@@ -92,12 +90,12 @@ public class AndroidPayCardRequest extends Request {
 
     @Override
     public String toXML() {
-        return buildRequest("androidPayCard").toXML();
+        return buildRequest("androidPayNetworkToken").toXML();
     }
 
     @Override
     public String toQueryString() {
-        return toQueryString("androidPayCard");
+        return toQueryString("androidPayNetworkToken");
     }
 
     protected RequestBuilder buildRequest(String root) {
