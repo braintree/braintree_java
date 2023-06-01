@@ -24,6 +24,7 @@ public class CustomerRequest extends Request {
     private String phone;
     private String website;
     private AndroidPayCardRequest androidPayCardRequest;
+    private AndroidPayNetworkTokenRequest androidPayNetworkTokenRequest;
     private ApplePayCardRequest applePayCardRequest;
     private CreditCardRequest creditCardRequest;
     private CustomerOptionsRequest optionsRequest;
@@ -45,6 +46,11 @@ public class CustomerRequest extends Request {
     public AndroidPayCardRequest androidPayCard() {
         androidPayCardRequest = new AndroidPayCardRequest(this);
         return this.androidPayCardRequest;
+    }
+
+    public AndroidPayNetworkTokenRequest androidPayNetworkToken() {
+        androidPayNetworkTokenRequest = new AndroidPayNetworkTokenRequest(this);
+        return this.androidPayNetworkTokenRequest;
     }
   
     public ApplePayCardRequest applePayCard() {
@@ -180,6 +186,7 @@ public class CustomerRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root)
             .addElement("androidPayCard", androidPayCardRequest)
+            .addElement("androidPayNetworkToken", androidPayNetworkTokenRequest)
             .addElement("applePayCard", applePayCardRequest)
             .addElement("company", company)
             .addElement("creditCard", creditCardRequest)

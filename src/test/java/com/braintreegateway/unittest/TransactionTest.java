@@ -120,6 +120,61 @@ public class TransactionTest {
 	}
 
 	@Test
+	public void recognizesRetriedTransactionId() {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<transaction>\n" +
+				"  <id>unrecognized_transaction_id</id>\n" +
+				"  <retried-transaction-id>retried_transaction_id</retried-transaction-id>\n" +
+				"  <status></status>\n" +
+				"  <type>sale</type>\n" +
+				"  <customer></customer>\n" +
+				"  <billing></billing>\n" +
+				"  <shipping></shipping>\n" +
+				"  <custom-fields/>\n" +
+				"  <credit-card></credit-card>\n" +
+				"  <status-history type=\"array\"></status-history>\n" +
+				"  <subscription></subscription>\n" +
+				"  <descriptor></descriptor>\n" +
+				"  <escrow-status></escrow-status>\n" +
+				"  <disbursement-details></disbursement-details>\n" +
+				"  <payment-instrument-type>credit_card</payment-instrument-type>\n" +
+				"</transaction>\n";
+
+		SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+		Transaction transaction = new Transaction(transactionNode);
+
+		assertEquals("retried_transaction_id", transaction.getRetriedTransactionId());
+	}
+
+	@Test
+	public void recognizesRetryIds() {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<transaction>\n" +
+				"  <id>unrecognized_transaction_id</id>\n" +
+				"  <retry-ids><id>first_id</id><id>second_id</id></retry-ids>\n" +
+				"  <status></status>\n" +
+				"  <type>sale</type>\n" +
+				"  <customer></customer>\n" +
+				"  <billing></billing>\n" +
+				"  <shipping></shipping>\n" +
+				"  <custom-fields/>\n" +
+				"  <credit-card></credit-card>\n" +
+				"  <status-history type=\"array\"></status-history>\n" +
+				"  <subscription></subscription>\n" +
+				"  <descriptor></descriptor>\n" +
+				"  <escrow-status></escrow-status>\n" +
+				"  <disbursement-details></disbursement-details>\n" +
+				"  <payment-instrument-type>credit_card</payment-instrument-type>\n" +
+				"</transaction>\n";
+
+		SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+		Transaction transaction = new Transaction(transactionNode);
+
+		assertEquals("first_id", transaction.getRetryIds().get(0));
+		assertEquals("second_id", transaction.getRetryIds().get(1));
+	}
+
+	@Test
 	public void recognizesDuplicateTransactionGatewayRejectReason() {
 		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 				"<transaction>\n" +

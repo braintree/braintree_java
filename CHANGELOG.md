@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.24.0
+* Allow vaulting of Android Pay network tokens via Customer.create/update
+  * Add `AndroidPayNetworkTokenRequest`
+  * Add `AndroidPayNetworkTokenAddressRequest`
+  * Add `AndroidPayNetworkTokenOptionsRequest`
+* Deprecate `cryptogram` and `eciIndicator` in `AndroidPayCardRequest`
+* Add `cardAddChallengeRequested` to `ThreeDSecureLookupRequest`
+* Add `retriedTransactionId` and `retryIds` to transaction object
+
 ## 3.23.0
 * Add `debitNetwork` field to `Transaction` and `TransactionSearchRequest`
 * Add `DebitNetwork` enum to `CreditCard`

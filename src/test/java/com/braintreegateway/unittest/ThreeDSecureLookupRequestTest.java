@@ -41,6 +41,7 @@ public class ThreeDSecureLookupRequestTest {
         assertTrue(outputJSON.matches("^.+\"df_reference_id\":\"ABC-123\".+$"));
         assertTrue(outputJSON.matches("^.+\"authorizationFingerprint\":\"auth-fingerprint\".+$"));
         assertTrue(outputJSON.matches("^.+\"braintreeLibraryVersion\":\"braintree/web/3.44.0\".+$"));
+        assertFalse(outputJSON.matches("^.+\"cardAddChallengeRequested\":.+$"));
         assertFalse(outputJSON.matches("^.+\"challengeRequested\":.+$"));
         assertFalse(outputJSON.matches("^.+\"requestedExemptionType\":.+$"));
     }
@@ -243,6 +244,32 @@ public class ThreeDSecureLookupRequestTest {
         } catch (IOException e) {
             fail(e.getMessage());
         }
+    }
+
+    @Test
+    public void serializesWithCardAddChallengeRequestedTrue() {
+        String clientData = "{\n" +
+                "  \"authorizationFingerprint\": \"auth-fingerprint\",\n" +
+                "  \"braintreeLibraryVersion\": \"braintree/web/3.44.0\",\n" +
+                "  \"dfReferenceId\": \"ABC-123\",\n" +
+                "  \"nonce\": \"FAKE-NONCE\",\n" +
+                "  \"clientMetadata\": {\n" +
+                "    \"cardinalDeviceDataCollectionTimeElapsed\": 40,\n" +
+                "    \"issuerDeviceDataCollectionResult\": true,\n" +
+                "    \"issuerDeviceDataCollectionTimeElapsed\": 413,\n" +
+                "    \"requestedThreeDSecureVersion\": \"2\",\n" +
+                "    \"sdkVersion\": \"web/3.42.0\"\n" +
+                "  }\n" +
+                "}";
+
+        ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
+        request.amount("10.00");
+        request.cardAddChallengeRequested(true);
+        request.clientData(clientData);
+
+        String outputJSON = request.toJSON();
+        assertTrue(outputJSON.matches("^\\{.+\\}$"));
+        assertTrue(outputJSON.matches("^.+\"cardAddChallengeRequested\":true.+$"));
     }
 
     @Test

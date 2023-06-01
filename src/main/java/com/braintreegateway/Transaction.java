@@ -229,6 +229,8 @@ public class Transaction {
     private VisaCheckoutCardDetails visaCheckoutCardDetails;
     private boolean processedWithNetworkToken;
     private boolean retried;
+    private String retriedTransactionId;
+    private List<String> retryIds;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -453,7 +455,15 @@ public class Transaction {
         for (NodeWrapper installmentsNode : node.findAll("refunded-installments/refunded-installment")) {
           refundedInstallments.add(new Installment(installmentsNode));
         }
+
         retried = node.findBoolean("retried");
+
+        retryIds = new ArrayList<String>();
+        for (NodeWrapper retryIdNode : node.findAll("retry-ids/*")) {
+            retryIds.add(retryIdNode.findString("."));
+        }
+
+        retriedTransactionId = node.findString("retried-transaction-id");
     }
 
     public List<AddOn> getAddOns() {
@@ -860,5 +870,13 @@ public class Transaction {
 
     public boolean isRetried() {
         return retried;
+    }
+
+    public String getRetriedTransactionId() {
+        return retriedTransactionId;
+    }
+
+    public List<String> getRetryIds() {
+        return retryIds;
     }
 }

@@ -8404,11 +8404,23 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
    public void testRetriedTransaction() {
        TransactionRequest request = new TransactionRequest().
        amount(new BigDecimal("2000")).
+       merchantAccountId("ma_transaction_multiple_retries").
        paymentMethodToken("network_tokenized_credit_card");
        Result<Transaction> result = gateway.transaction().sale(request);
        Transaction result_transaction = result.getTransaction();
        assertTrue(result_transaction.isRetried());
        assertFalse(result.isSuccess());
+       assertEquals(2, result_transaction.getRetryIds().size());
+       TransactionSearchRequest firstSearchRequest = new TransactionSearchRequest().
+           id().is(result_transaction.getRetryIds().get(0)).
+           amount().is(2000);
+       TransactionSearchRequest secondSearchRequest = new TransactionSearchRequest().
+           id().is(result_transaction.getRetryIds().get(1)).
+           amount().is(2000);
+       ResourceCollection<Transaction> firstCollection = gateway.transaction().search(firstSearchRequest);
+       ResourceCollection<Transaction> secondCollection = gateway.transaction().search(secondSearchRequest);
+       assertEquals(firstCollection.getFirst().getRetriedTransactionId(), result_transaction.getId());
+       assertEquals(secondCollection.getFirst().getRetriedTransactionId(), result_transaction.getId());
     }
 
    @Test
@@ -8420,6 +8432,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
        Transaction result_transaction = result.getTarget();
        assertFalse(result_transaction.isRetried());
        assertTrue(result.isSuccess());
+       assertEquals(result_transaction.getRetryIds().size(), 0);
     }
 
    @Test
@@ -8435,6 +8448,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
        Transaction result_transaction = result.getTarget();
        assertFalse(result_transaction.isRetried());
        assertTrue(result.isSuccess());
+       assertEquals(result_transaction.getRetryIds().size(), 0);
     }
 
   @Test

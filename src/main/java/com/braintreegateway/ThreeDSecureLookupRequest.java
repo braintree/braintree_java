@@ -13,6 +13,7 @@ public class ThreeDSecureLookupRequest extends Request {
     private String authorizationFingerprint;
     private ThreeDSecureLookupAddress billingAddress;
     private String braintreeLibraryVersion;
+    private Boolean cardAddChallengeRequested;
     private Boolean challengeRequested;
     private Map clientMetadata;
     private Boolean dataOnlyRequested;
@@ -63,6 +64,11 @@ public class ThreeDSecureLookupRequest extends Request {
         this.braintreeLibraryVersion = (String) jsonMap.get("braintreeLibraryVersion");
         this.dfReferenceId = (String) jsonMap.get("dfReferenceId");
         this.clientMetadata = (Map) jsonMap.get("clientMetadata");
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest cardAddChallengeRequested(Boolean cardAddChallengeRequested) {
+        this.cardAddChallengeRequested = cardAddChallengeRequested;
         return this;
     }
 
@@ -184,6 +190,9 @@ public class ThreeDSecureLookupRequest extends Request {
         return clientMetadata;
     }
 
+    private Boolean getCardAddChallengeRequested() {
+        return cardAddChallengeRequested;
+    }
     private Boolean getChallengeRequested() {
         return challengeRequested;
     }
@@ -275,6 +284,7 @@ public class ThreeDSecureLookupRequest extends Request {
             jsonMap.put("df_reference_id", getDfReferenceId());
             jsonMap.put("clientMetadata", getClientMetadata());
             jsonMap.put("_meta", metaMap);
+            jsonMap.put("cardAddChallengeRequested", getCardAddChallengeRequested());
             jsonMap.put("challengeRequested", getChallengeRequested());
             jsonMap.put("exemptionRequested", getExemptionRequested());
             jsonMap.put("requestedExemptionType", getRequestedExemptionType());
