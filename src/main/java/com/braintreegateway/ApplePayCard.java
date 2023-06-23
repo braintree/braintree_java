@@ -25,10 +25,12 @@ public class ApplePayCard implements PaymentMethod {
     private boolean isDefault;
     private String issuingBank;
     private String last4;
+    private String merchantTokenIdentifier;
     private String paymentInstrumentName;
     private String payroll;
     private String prepaid;
     private String productId;
+    private String sourceCardLast4;
     private String sourceDescription;
     private List<Subscription> subscriptions;
     private String token;
@@ -52,14 +54,17 @@ public class ApplePayCard implements PaymentMethod {
         this.isDefault = node.findBoolean("default");
         this.issuingBank = node.findString("issuing-bank");
         this.last4 = node.findString("last-4");
+        this.merchantTokenIdentifier = node.findString("merchant-token-identifier");
         this.paymentInstrumentName = node.findString("payment-instrument-name");
         this.payroll = node.findString("payroll");
         this.prepaid = node.findString("prepaid");
         this.productId = node.findString("product-id");
+        this.sourceCardLast4 = node.findString("source-card-last4");
         this.sourceDescription = node.findString("source-description");
         this.subscriptions = new ArrayList<Subscription>();
         this.token = node.findString("token");
         this.updatedAt = node.findDateTime("updated-at");
+
         for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
             this.subscriptions.add(new Subscription(subscriptionResponse));
         }
@@ -138,6 +143,10 @@ public class ApplePayCard implements PaymentMethod {
         return last4;
     }
 
+    public String getMerchantTokenIdentifier() {
+        return merchantTokenIdentifier;
+    }
+
     public String getPaymentInstrumentName() {
         return paymentInstrumentName;
     }
@@ -152,6 +161,10 @@ public class ApplePayCard implements PaymentMethod {
 
     public String getProductId() {
         return productId;
+    }
+
+    public String getSourceCardLast4() {
+        return sourceCardLast4;
     }
 
     public String getSourceDescription() {

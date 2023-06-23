@@ -1,5 +1,8 @@
 # Changelog
 
+## unreleased
+* Add `merchantTokenIdentifier`, `sourceCardLast4` to `ApplePayCard` and `ApplePayDetails`
+
 ## 3.24.0
 * Allow vaulting of Android Pay network tokens via Customer.create/update
   * Add `AndroidPayNetworkTokenRequest`

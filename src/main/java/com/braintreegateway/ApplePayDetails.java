@@ -3,26 +3,28 @@ package com.braintreegateway;
 import com.braintreegateway.util.NodeWrapper;
 
 public class ApplePayDetails {
-    private String cardType;
-    private String paymentInstrumentName;
-    private String sourceDescription;
+    private String bin;
     private String cardholderName;
-    private String expirationMonth;
-    private String expirationYear;
-    private String last4;
-    private String token;
-    private String imageUrl;
-    private String prepaid;
-    private String healthcare;
+    private String cardType;
+    private String commercial;
+    private String countryOfIssuance;
     private String debit;
     private String durbinRegulated;
-    private String commercial;
-    private String payroll;
-    private String issuingBank;
-    private String countryOfIssuance;
-    private String productId;
-    private String bin;
+    private String expirationMonth;
+    private String expirationYear;
     private String globalId;
+    private String healthcare;
+    private String imageUrl;
+    private String issuingBank;
+    private String last4;
+    private String merchantTokenIdentifier;
+    private String paymentInstrumentName;
+    private String payroll;
+    private String prepaid;
+    private String productId;
+    private String sourceCardLast4;
+    private String sourceDescription;
+    private String token;
 
     public ApplePayDetails(NodeWrapper node) {
         cardType = node.findString("card-type");
@@ -45,6 +47,8 @@ public class ApplePayDetails {
         productId = node.findString("product-id");
         bin = node.findString("bin");
         globalId = node.findString("global-id");
+        merchantTokenIdentifier = node.findString("merchant-token-identifier");
+        sourceCardLast4 = node.findString("source-card-last4");
     }
 
     public String getToken() {
@@ -125,5 +129,13 @@ public class ApplePayDetails {
 
     public String getGlobalId() {
         return globalId;
+    }
+
+    public String getMerchantTokenIdentifier() {
+        return merchantTokenIdentifier;
+    }
+
+    public String getSourceCardLast4() {
+        return sourceCardLast4;
     }
 }

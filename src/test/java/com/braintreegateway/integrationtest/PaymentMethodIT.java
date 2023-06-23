@@ -338,6 +338,75 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
+    public void createApplePayCardFromMpanNonce() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = Nonce.ApplePayMpan;
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+        assertNotNull(paymentMethod.getToken());
+        assertNotNull(paymentMethod.getImageUrl());
+
+        ApplePayCard applePayCard = (ApplePayCard) paymentMethod;
+        assertNotNull(applePayCard.getBin());
+        assertNotNull(applePayCard.getCardType());
+        assertNotNull(applePayCard.getPaymentInstrumentName());
+        assertNotNull(applePayCard.getCardholderName());
+        assertNotNull(applePayCard.getCreatedAt());
+        assertNotNull(applePayCard.getUpdatedAt());
+        assertNotNull(applePayCard.getExpirationMonth());
+        assertNotNull(applePayCard.getExpirationYear());
+        assertNotNull(applePayCard.getExpired());
+        assertNotNull(applePayCard.getSubscriptions());
+        assertNotNull(applePayCard.getLast4());
+        assertNotNull(applePayCard.getCustomerId());
+        assertNotNull(applePayCard.getCommercial());
+        assertNotNull(applePayCard.getDebit());
+        assertNotNull(applePayCard.getDurbinRegulated());
+        assertNotNull(applePayCard.getHealthcare());
+        assertNotNull(applePayCard.getPrepaid());
+        assertNotNull(applePayCard.getPayroll());
+        assertNotNull(applePayCard.getProductId());
+        assertNotNull(applePayCard.getCountryOfIssuance());
+        assertNotNull(applePayCard.getIssuingBank());
+        assertTrue(applePayCard.getSubscriptions().isEmpty());
+        assertNotNull(applePayCard.getMerchantTokenIdentifier());
+        assertNotNull(applePayCard.getSourceCardLast4());
+    }
+
+    @Test
+    public void findPaymentMethodWithGivenMpanToken() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+        String nonce = Nonce.ApplePayMpan;
+        int r = (int)(Math.random() * 100000);
+        String paymentMethodToken = "token-" + r;
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce).
+            token(paymentMethodToken);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        PaymentMethod paymentMethod = result.getTarget();
+        assertEquals(paymentMethod.getToken(), paymentMethodToken);
+
+        ApplePayCard applePayCard = (ApplePayCard) paymentMethod;
+        assertEquals(applePayCard.getMerchantTokenIdentifier(), "DNITHE302308980427388297");
+        assertEquals(applePayCard.getSourceCardLast4(), "2006");
+    }
+
+    @Test
     public void createApplePayCardFromNonceWithDefault() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
@@ -352,7 +421,6 @@ public class PaymentMethodIT extends IntegrationTest {
                 done();
 
         Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
-
         assertTrue(result.isSuccess());
         PaymentMethod paymentMethod = result.getTarget();
         assertNotNull(paymentMethod.getToken());
