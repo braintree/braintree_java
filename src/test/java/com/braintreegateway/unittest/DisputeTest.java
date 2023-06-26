@@ -74,6 +74,7 @@ public class DisputeTest {
         "</transaction>\n " +
         "<date-opened type=\"date\">2014-03-28</date-opened>\n " +
         "<date-won type=\"date\">2014-04-05</date-won>\n " +
+        "<evidence-submittable type=\"boolean\">true</evidence-submittable>\n" +
         "</dispute>";
 
     @Test
@@ -222,6 +223,7 @@ public class DisputeTest {
         assertEquals(dispute.getEvidence().get(1).getSentToProcessorAt().get(Calendar.MONTH)+1, 4);
         assertEquals(dispute.getEvidence().get(1).getSentToProcessorAt().get(Calendar.DAY_OF_MONTH), 11);
         assertNull(dispute.getEvidence().get(1).getUrl());
+        assertTrue(dispute.getEvidenceSubmittable());
         assertEquals(dispute.getPayPalMessages().get(0).getMessage(), "message");
         assertEquals(dispute.getPayPalMessages().get(0).getSender(), "seller");
         assertEquals(dispute.getPayPalMessages().get(0).getSentAt().get(Calendar.YEAR), 2013);
