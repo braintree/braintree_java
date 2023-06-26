@@ -3,6 +3,7 @@
 ## Unreleased
 * Add `evidenceSubmittable` to `Dispute`
 * Add `merchantTokenIdentifier`, `sourceCardLast4` to `ApplePayCard` and `ApplePayDetails`
+* Add `threeDSecureAuthenticationId` to `CustomerRequest` and `PaymentMethodRequest`
 
 ## 3.24.0
 * Allow vaulting of Android Pay network tokens via Customer.create/update

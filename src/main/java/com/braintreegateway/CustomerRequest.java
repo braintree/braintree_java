@@ -22,6 +22,7 @@ public class CustomerRequest extends Request {
     private String lastName;
     private String paymentMethodNonce;
     private String phone;
+    private String threeDSecureAuthenticationId;
     private String website;
     private AndroidPayCardRequest androidPayCardRequest;
     private AndroidPayNetworkTokenRequest androidPayNetworkTokenRequest;
@@ -156,6 +157,11 @@ public class CustomerRequest extends Request {
         return id;
     }
     
+    public CustomerRequest threeDSecureAuthenticationId(String threeDSecureAuthenticationId) {
+        this.threeDSecureAuthenticationId = threeDSecureAuthenticationId;
+        return this;
+    }
+
     public TaxIdentifierRequest taxIdentifier() {
         TaxIdentifierRequest taxIdentiferRequest = new TaxIdentifierRequest(this);
         taxIdentifierRequests.add(taxIdentiferRequest);
@@ -201,6 +207,7 @@ public class CustomerRequest extends Request {
             .addElement("paymentMethodNonce", paymentMethodNonce)
             .addElement("phone", phone)
             .addElement("riskData", riskDataCustomerRequest)
+            .addElement("threeDSecureAuthenticationId", threeDSecureAuthenticationId)
             .addElement("website", website);
 
         if (customFields.size() > 0) {

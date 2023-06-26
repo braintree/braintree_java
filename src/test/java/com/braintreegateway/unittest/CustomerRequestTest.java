@@ -28,6 +28,7 @@ public class CustomerRequestTest {
       .paymentMethodNonce("some-nonce")
       .phone("some-phone-number")
       .website("some-website")
+      .threeDSecureAuthenticationId("some-three-d-secure-authentication-id")
       .androidPayCard().number("12345").done()
       .applePayCard().number("12345").done()
       .creditCard().number("12345").done()
@@ -76,6 +77,7 @@ public class CustomerRequestTest {
       + "      <identifier>123</identifier>\n"
       + "    </taxIdentifier>\n"
       + "  </taxIdentifiers>\n"
+      + "  <threeDSecureAuthenticationId>some-three-d-secure-authentication-id</threeDSecureAuthenticationId>\n"
       + "  <website>some-website</website>\n"
       + "</customer>";
 

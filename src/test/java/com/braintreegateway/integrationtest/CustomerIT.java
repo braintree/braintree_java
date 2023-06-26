@@ -7,6 +7,7 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.Nonce;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
+import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -441,6 +442,47 @@ public class CustomerIT extends IntegrationTest {
         assertEquals("05", threeDSecureInfo.getECIFlag());
         assertEquals("xid_value", threeDSecureInfo.getXID());
         assertEquals("1.0.2", threeDSecureInfo.getThreeDSecureVersion());
+        assertEquals((String)null, threeDSecureInfo.getDsTransactionId());
+    }
+
+    @Test
+    public void createWithThreeDSecureAuthenticationId() {
+        CreditCardRequest card_request = new CreditCardRequest().
+            number("4111111111111111").
+            expirationMonth("05").
+            expirationYear("2026");
+
+        String nonceWithout3DS = TestHelper.generateNonceForCreditCard(gateway, card_request, null, false);
+
+        String threeDSecureAuthenticationId = TestHelper.createTest3DS(gateway, null, new ThreeDSecureRequestForTests().
+            number("4111111111111111").
+            expirationMonth("05").
+            expirationYear("2026")
+        );
+
+        CustomerRequest request = new CustomerRequest().
+            threeDSecureAuthenticationId(threeDSecureAuthenticationId).
+            paymentMethodNonce(nonceWithout3DS).
+            creditCard().
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        CreditCard creditCard = customer.getCreditCards().get(0);
+        ThreeDSecureInfo threeDSecureInfo = creditCard.getVerification().getThreeDSecureInfo();
+
+        assertEquals("authenticate_successful", threeDSecureInfo.getStatus());
+        assertEquals("Y", threeDSecureInfo.getEnrolled());
+        assertEquals(true, threeDSecureInfo.isLiabilityShifted());
+        assertEquals(true, threeDSecureInfo.isLiabilityShiftPossible());
+        assertEquals("test_cavv", threeDSecureInfo.getCAVV());
+        assertEquals("test_eci", threeDSecureInfo.getECIFlag());
+        assertEquals("test_xid", threeDSecureInfo.getXID());
         assertEquals((String)null, threeDSecureInfo.getDsTransactionId());
     }
 

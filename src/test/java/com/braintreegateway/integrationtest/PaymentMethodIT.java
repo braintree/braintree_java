@@ -10,6 +10,7 @@ import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.Nonce;
+import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,6 +45,49 @@ public class PaymentMethodIT extends IntegrationTest {
         assertEquals("05", threeDSecureInfo.getECIFlag());
         assertEquals("xid_value", threeDSecureInfo.getXID());
         assertEquals("1.0.2", threeDSecureInfo.getThreeDSecureVersion());
+        assertEquals((String)null, threeDSecureInfo.getDsTransactionId());
+    }
+
+    @Test
+    public void createWithThreeDSecureAuthenticationId() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest card_request = new CreditCardRequest().
+            number("4111111111111111").
+            expirationMonth("05").
+            expirationYear("2026");
+
+        String nonceWithout3DS = TestHelper.generateNonceForCreditCard(gateway, card_request, customer.getId(), false);
+
+        String threeDSecureAuthenticationId = TestHelper.createTest3DS(gateway, customer.getId(), new ThreeDSecureRequestForTests().
+            number("4111111111111111").
+            expirationMonth("05").
+            expirationYear("2026")
+        );
+
+        PaymentMethodRequest payment_request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonceWithout3DS).
+            threeDSecureAuthenticationId(threeDSecureAuthenticationId).
+            options().
+                verifyCard(true).
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(payment_request);
+        assertTrue(result.isSuccess());
+
+        CreditCard creditCard = (CreditCard)result.getTarget();
+        ThreeDSecureInfo threeDSecureInfo = creditCard.getVerification().getThreeDSecureInfo();
+
+        assertEquals("authenticate_successful", threeDSecureInfo.getStatus());
+        assertEquals("Y", threeDSecureInfo.getEnrolled());
+        assertEquals(true, threeDSecureInfo.isLiabilityShifted());
+        assertEquals(true, threeDSecureInfo.isLiabilityShiftPossible());
+        assertEquals("test_cavv", threeDSecureInfo.getCAVV());
+        assertEquals("test_eci", threeDSecureInfo.getECIFlag());
+        assertEquals("test_xid", threeDSecureInfo.getXID());
         assertEquals((String)null, threeDSecureInfo.getDsTransactionId());
     }
 
