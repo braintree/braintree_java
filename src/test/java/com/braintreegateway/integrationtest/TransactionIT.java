@@ -2199,6 +2199,19 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithTransactionSourceAsEstimated() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            transactionSource("estimated").
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2026").
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
     public void saleWithTransactionSourceAsMoto() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -8364,6 +8377,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(FAKE_FIRST_DATA_MERCHANT_ACCOUNT_ID).
             amount(initial_amount).
+            transactionSource("estimated").
             creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2012").
@@ -8385,6 +8399,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         TransactionRequest request = new TransactionRequest().
             merchantAccountId(FAKE_FIRST_DATA_MERCHANT_ACCOUNT_ID).
             amount(initial_amount).
+            transactionSource("estimated").
             creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2012").
