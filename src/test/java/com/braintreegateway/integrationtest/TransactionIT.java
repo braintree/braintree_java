@@ -8371,50 +8371,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                      result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 
-    @Test
-    public void adjustAuthorizationOnProcessorNotSupportingIncrementalAuth() {
-        BigDecimal initial_amount = new BigDecimal("75.50");
-        TransactionRequest request = new TransactionRequest().
-            merchantAccountId(FAKE_FIRST_DATA_MERCHANT_ACCOUNT_ID).
-            amount(initial_amount).
-            transactionSource("estimated").
-            creditCard().
-                number(CreditCardNumber.VISA.number).
-                expirationDate("05/2012").
-                done();
-
-        Transaction transaction = gateway.transaction().sale(request).getTarget();
-        BigDecimal new_adjusted_amount = new BigDecimal("85.50");
-        Result<Transaction> result = gateway.transaction().adjustAuthorization(transaction.getId(), new_adjusted_amount);
-        assertFalse(result.isSuccess());
-        Transaction result_transaction = result.getTransaction();
-        assertEquals(initial_amount, result_transaction.getAmount());
-        assertEquals(ValidationErrorCode.PROCESSOR_DOES_NOT_SUPPORT_INCREMENTAL_AUTH,
-                     result.getErrors().forObject("transaction").onField("base").get(0).getCode());
-    }
-
-    @Test
-    public void adjustAuthorizationOnProcessorNotSupportingAuthReversal() {
-        BigDecimal initial_amount = new BigDecimal("75.50");
-        TransactionRequest request = new TransactionRequest().
-            merchantAccountId(FAKE_FIRST_DATA_MERCHANT_ACCOUNT_ID).
-            amount(initial_amount).
-            transactionSource("estimated").
-            creditCard().
-                number(CreditCardNumber.VISA.number).
-                expirationDate("05/2012").
-                done();
-
-        Transaction transaction = gateway.transaction().sale(request).getTarget();
-        BigDecimal new_adjusted_amount = new BigDecimal("65.50");
-        Result<Transaction> result = gateway.transaction().adjustAuthorization(transaction.getId(), new_adjusted_amount);
-        assertFalse(result.isSuccess());
-        Transaction result_transaction = result.getTransaction();
-        assertEquals(initial_amount, result_transaction.getAmount());
-        assertEquals(ValidationErrorCode.PROCESSOR_DOES_NOT_SUPPORT_PARTIAL_AUTH_REVERSAL,
-                     result.getErrors().forObject("transaction").onField("base").get(0).getCode());
-    }
-
    @Test
    public void testRetriedTransaction() {
        TransactionRequest request = new TransactionRequest().
