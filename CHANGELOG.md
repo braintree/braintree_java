@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.25.0
+* Add `options` -> `processingOverrides`
+* Add the following fields to `processingOverrides`
+  * customerEmail
+  * customerFirstName
+  * customerLastName
+  * customerTaxIdentifier
+
 ## 3.24.0
 * Allow vaulting of Android Pay network tokens via Customer.create/update
   * Add `AndroidPayNetworkTokenRequest`
@@ -82,7 +90,7 @@
 * Add ExchangeRateQuote API
 * Add 'retried' to transaction object
 
-## 3.14.0 
+## 3.14.0
 * Add `PaymentMethodCustomerDataUpdated` webhook notification support
 * Add `phoneNumber` to `Address`
 
@@ -252,7 +260,7 @@
   * Remove `recurringCustomerConsent` and `recurringMaxAmount` parameters from `authenticationInsightOptions` in `PaymentMethodNonce.create()`
 
 ## 2.109.0
-* Add `threeDSecurePassThru` to `CreditCard.create()`, `CreditCard.update()`, `Customer.create()`, `Customer.update()`, `PaymentMethod.create()` and `PaymentMethod.update()` 
+* Add `threeDSecurePassThru` to `CreditCard.create()`, `CreditCard.update()`, `Customer.create()`, `Customer.update()`, `PaymentMethod.create()` and `PaymentMethod.update()`
 * Add missing `paymentMethodToken` search to `CreditCardVerificationSearchRequest`
 * Add `recurringCustomerConsent` and `recurringMaxAmount` parameters to `authenticationInsightOptions` in `PaymentMethodNonce.create()`
 * Add `DOCUMENT_UPLOAD_FILE_IS_EMPTY` error code

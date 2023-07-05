@@ -39,7 +39,7 @@ public class TransactionRequestTest {
         TestHelper.assertIncludes("mydsid", request.toXML());
         TestHelper.assertIncludes("myfmid", request.toXML());
     }
-    
+
     @Test
     public void toXmlIncludesAdvancedFraudCheckingFlag() {
         TransactionRequest request = new TransactionRequest().
@@ -63,5 +63,19 @@ public class TransactionRequestTest {
             .exchangeRateQuoteId("dummyExchangeRateQuoteId1234");
         TestHelper.assertIncludes("amount", request.toXML());
         TestHelper.assertIncludes("exchangeRateQuoteId", request.toXML());
+    }
+
+    @Test
+    public void toXmlIncludesProcessingOverrides() {
+        TransactionRequest request = new TransactionRequest().
+            options().
+                processingOverrides().
+                    customerEmail("tom@gmail.com").
+                    customerFirstName("tom").
+                    customerLastName("smith").
+                    customerTaxIdentifier("111111111111111").
+                    done().
+            done();
+        TestHelper.assertIncludes("<processingOverrides><customerEmail>tom@gmail.com</customerEmail><customerFirstName>tom</customerFirstName><customerLastName>smith</customerLastName><customerTaxIdentifier>111111111111111</customerTaxIdentifier></processingOverrides>", request.toXML());
     }
 }

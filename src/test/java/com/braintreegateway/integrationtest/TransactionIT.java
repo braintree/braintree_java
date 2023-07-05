@@ -1996,7 +1996,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().sale(request);
         Result<Transaction> duplicateResult = gateway.transaction().sale(request);
-        
+
         assertTrue(result.isSuccess());
         String transactionId = result.getTarget().getId();
 
@@ -8574,5 +8574,29 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
        Map<String, String> updatedExpected = new HashMap<String, String>();
 
        assertEquals(updatedExpected, transaction.getCustomFields());
+    }
+
+    @Test
+    public void saleWithProcessingOverrides () {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId(DEFAULT_MERCHANT_ACCOUNT_ID).
+            creditCard().
+                number(SandboxValues.CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            options().
+                creditCard().
+                    accountType("credit").
+                    done().
+                processingOverrides().
+                    customerEmail("tom@gmail.com").
+                    customerFirstName("tom").
+                    customerLastName("smith").
+                    customerTaxIdentifier("111111111111111").
+                    done().
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
     }
 }
