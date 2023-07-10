@@ -4,6 +4,12 @@
 * Add `evidenceSubmittable` to `Dispute`
 * Add `merchantTokenIdentifier`, `sourceCardLast4` to `ApplePayCard` and `ApplePayDetails`
 * Add `threeDSecureAuthenticationId` to `CustomerRequest` and `PaymentMethodRequest`
+* Add `processingOverrides` to `TransactionOptionsRequest`
+* Add the following fields to `processingOverrides`
+  * customerEmail
+  * customerFirstName
+  * customerLastName
+  * customerTaxIdentifier
 
 ## 3.24.0
 * Allow vaulting of Android Pay network tokens via Customer.create/update
