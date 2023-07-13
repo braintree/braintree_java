@@ -16,6 +16,7 @@ public class Nonce {
   public static final String AndroidPayVisa = "fake-android-pay-visa-nonce";
   public static final String AndroidPayMasterCard = "fake-android-pay-mastercard-nonce";
   public static final String AndroidPayAmEx = "fake-android-pay-amex-nonce";
+  public static final String ApplePayMpan = "fake-apple-pay-mpan-nonce";
   @Deprecated
   public static final String AmexExpressCheckout = "fake-amex-express-checkout-nonce";
   public static final String VenmoAccount = "fake-venmo-account-nonce";

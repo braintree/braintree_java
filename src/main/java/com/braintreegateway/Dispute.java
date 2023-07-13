@@ -101,13 +101,14 @@ public class Dispute {
     private final Kind kind;
     @Deprecated
     private final ChargebackProtectionLevel chargebackProtectionLevel; // Deprecated
-    private final ProtectionLevel protectionLevel;
-    private final PreDisputeProgram preDisputeProgram;
     private final BigDecimal amount;
     private final BigDecimal disputedAmount;
     private final BigDecimal wonAmount;
-    private final TransactionDetails transactionDetails;
+    private final Boolean evidenceSubmittable;
     private final DisputeTransaction transaction;
+    private final PreDisputeProgram preDisputeProgram;
+    private final ProtectionLevel protectionLevel;
+    private final TransactionDetails transactionDetails;
 
     public Dispute(NodeWrapper node) {
         createdAt = node.findDateTime("created-at");
@@ -147,6 +148,7 @@ public class Dispute {
         id = node.findString("id");
         transaction = new DisputeTransaction(node.findFirst("transaction"));
         transactionDetails = new TransactionDetails(node.findFirst("transaction"));
+        evidenceSubmittable = node.findBoolean("evidence-submittable");
 
         evidence = new ArrayList<DisputeEvidence>();
         for (NodeWrapper evidenceNode : node.findAll("evidence/evidence")) {
@@ -282,5 +284,9 @@ public class Dispute {
 
     public DisputeTransaction getTransaction() {
         return transaction;
+    }
+
+    public Boolean getEvidenceSubmittable(){
+        return evidenceSubmittable;
     }
 }

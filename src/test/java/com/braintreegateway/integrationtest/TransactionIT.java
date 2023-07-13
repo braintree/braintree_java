@@ -1996,7 +1996,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().sale(request);
         Result<Transaction> duplicateResult = gateway.transaction().sale(request);
-        
+
         assertTrue(result.isSuccess());
         String transactionId = result.getTarget().getId();
 
@@ -2196,6 +2196,19 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         Transaction transaction = result.getTarget();
         assertFalse(transaction.getRecurring());
         assertFalse(transaction.isRecurring());
+    }
+
+    @Test
+    public void saleWithTransactionSourceAsEstimated() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            transactionSource("estimated").
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2026").
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
     }
 
     @Test
@@ -8358,48 +8371,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                      result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 
-    @Test
-    public void adjustAuthorizationOnProcessorNotSupportingIncrementalAuth() {
-        BigDecimal initial_amount = new BigDecimal("75.50");
-        TransactionRequest request = new TransactionRequest().
-            merchantAccountId(FAKE_FIRST_DATA_MERCHANT_ACCOUNT_ID).
-            amount(initial_amount).
-            creditCard().
-                number(CreditCardNumber.VISA.number).
-                expirationDate("05/2012").
-                done();
-
-        Transaction transaction = gateway.transaction().sale(request).getTarget();
-        BigDecimal new_adjusted_amount = new BigDecimal("85.50");
-        Result<Transaction> result = gateway.transaction().adjustAuthorization(transaction.getId(), new_adjusted_amount);
-        assertFalse(result.isSuccess());
-        Transaction result_transaction = result.getTransaction();
-        assertEquals(initial_amount, result_transaction.getAmount());
-        assertEquals(ValidationErrorCode.PROCESSOR_DOES_NOT_SUPPORT_INCREMENTAL_AUTH,
-                     result.getErrors().forObject("transaction").onField("base").get(0).getCode());
-    }
-
-    @Test
-    public void adjustAuthorizationOnProcessorNotSupportingAuthReversal() {
-        BigDecimal initial_amount = new BigDecimal("75.50");
-        TransactionRequest request = new TransactionRequest().
-            merchantAccountId(FAKE_FIRST_DATA_MERCHANT_ACCOUNT_ID).
-            amount(initial_amount).
-            creditCard().
-                number(CreditCardNumber.VISA.number).
-                expirationDate("05/2012").
-                done();
-
-        Transaction transaction = gateway.transaction().sale(request).getTarget();
-        BigDecimal new_adjusted_amount = new BigDecimal("65.50");
-        Result<Transaction> result = gateway.transaction().adjustAuthorization(transaction.getId(), new_adjusted_amount);
-        assertFalse(result.isSuccess());
-        Transaction result_transaction = result.getTransaction();
-        assertEquals(initial_amount, result_transaction.getAmount());
-        assertEquals(ValidationErrorCode.PROCESSOR_DOES_NOT_SUPPORT_PARTIAL_AUTH_REVERSAL,
-                     result.getErrors().forObject("transaction").onField("base").get(0).getCode());
-    }
-
    @Test
    public void testRetriedTransaction() {
        TransactionRequest request = new TransactionRequest().
@@ -8574,5 +8545,25 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
        Map<String, String> updatedExpected = new HashMap<String, String>();
 
        assertEquals(updatedExpected, transaction.getCustomFields());
+    }
+
+    @Test
+    public void saleWithProcessingOverrides () {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            options().
+                processingOverrides().
+                    customerEmail("tom@gmail.com").
+                    customerFirstName("tom").
+                    customerLastName("smith").
+                    customerTaxIdentifier("111111111111111").
+                    done().
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
     }
 }

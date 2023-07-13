@@ -18,6 +18,7 @@ public class PaymentMethodRequest extends Request {
     private String number;
     private String paymentMethodToken;
     private String paypalRefreshToken;
+    private String threeDSecureAuthenticationId;
     private String venmoSdkPaymentMethodCode;
     private PaymentMethodThreeDSecurePassThruRequest threeDSecurePassThruRequest;
 
@@ -83,6 +84,11 @@ public class PaymentMethodRequest extends Request {
         return this;
     }
 
+    public PaymentMethodRequest threeDSecureAuthenticationId(String threeDSecureAuthenticationId) {
+        this.threeDSecureAuthenticationId = threeDSecureAuthenticationId;
+        return this;
+    }
+
     public PaymentMethodOptionsRequest options() {
         this.optionsRequest = new PaymentMethodOptionsRequest(this);
         return optionsRequest;
@@ -138,11 +144,9 @@ public class PaymentMethodRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root)
-            .addElement("customer-id", customerId)
             .addElement("token", token)
             .addElement("options", optionsRequest)
             .addElement("threeDSecurePassThru", threeDSecurePassThruRequest)
-            .addElement("payment-method-nonce", paymentMethodNonce)
             .addElement("billingAddress", billingAddressRequest)
             .addElement("billingAddressId", billingAddressId)
             .addElement("deviceData", deviceData)
@@ -157,6 +161,7 @@ public class PaymentMethodRequest extends Request {
             .addElement("expirationYear", expirationYear)
             .addElement("paymentMethodNonce", paymentMethodNonce)
             .addElement("paypalRefreshToken", paypalRefreshToken)
+            .addElement("threeDSecureAuthenticationId", threeDSecureAuthenticationId)
             .addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode);
 
         return builder;
