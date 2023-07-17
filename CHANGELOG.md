@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+* Add `evidenceSubmittable` to `DisputeSearchRequest`
+
 ## 3.25.0 
 * Add `evidenceSubmittable` to `Dispute`
 * Add `merchantTokenIdentifier`, `sourceCardLast4` to `ApplePayCard` and `ApplePayDetails`
