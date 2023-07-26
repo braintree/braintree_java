@@ -226,6 +226,19 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertNotNull(notification.getDispute().getOpenedDate());
     }
 
+    @Test
+    public void createsSampleDisputeEvidenceSubmittableNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_EVIDENCE_SUBMITTABLE, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.DISPUTE_EVIDENCE_SUBMITTABLE, notification.getKind());
+        assertEquals("my_id", notification.getDispute().getId());
+        assertEquals(Dispute.Status.OPEN, notification.getDispute().getStatus());
+        assertEquals(Dispute.Kind.CHARGEBACK, notification.getDispute().getKind());
+        assertNotNull(notification.getDispute().getOpenedDate());
+        assertTrue(notification.getDispute().getEvidenceSubmittable());
+    }
 
     @Test
     public void createsSampleNotificationWithSourceMerchantId() {

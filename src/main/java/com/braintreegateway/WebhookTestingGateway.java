@@ -66,6 +66,7 @@ public class WebhookTestingGateway {
             case DISPUTE_AUTO_ACCEPTED: return disputeAutoAcceptedXml(id);
             case DISPUTE_DISPUTED: return disputeDisputedXml(id);
             case DISPUTE_EXPIRED: return disputeExpiredXml(id);
+            case DISPUTE_EVIDENCE_SUBMITTABLE: return disputeEvidenceSubmittableXml(id);
             case DISBURSEMENT_EXCEPTION: return disbursementExceptionXml(id);
             case PARTNER_MERCHANT_CONNECTED: return partnerMerchantConnectedXml(id);
             case PARTNER_MERCHANT_DISCONNECTED: return partnerMerchantDisconnectedXml(id);
@@ -399,6 +400,27 @@ public class WebhookTestingGateway {
                     node("id", id),
                     node("amount", "250.00")
                 )
+        );
+    }
+
+    private String disputeEvidenceSubmittableXml(String id) {
+        return node("dispute",
+                node("id", id),
+                node("amount", "250.00"),
+                node("amount-dispuated", "250.00"),
+                node("amount-won", "245.00"),
+                node("received-date", TYPE_DATE, "2014-03-21"),
+                node("reply-by-date", TYPE_DATE, "2014-03-21"),
+                node("date-opened", TYPE_DATE, "2014-03-21"),
+                node("kind", "chargeback"),
+                node("currency-iso-code", "USD"),
+                node("status", "open"),
+                node("reason", "fraud"),
+                node("transaction",
+                    node("id", id),
+                    node("amount", "250.00")
+                ),
+                node("evidence-submittable", TYPE_BOOLEAN, "true")
         );
     }
 
