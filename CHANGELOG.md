@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Add `evidenceSubmittable` to `DisputeSearchRequest`
+* Add `dateOfBirth` and `countryCode` to `TransactionIndustryDataRequest`
 
 ## 3.25.0 
 * Add `evidenceSubmittable` to `Dispute`

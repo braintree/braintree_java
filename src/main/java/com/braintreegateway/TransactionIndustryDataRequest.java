@@ -36,6 +36,8 @@ public class TransactionIndustryDataRequest extends Request {
     private Boolean advancedDeposit;
     private Boolean fireSafe;
     private String propertyPhone;
+    private String dateOfBirth;
+    private String countryCode;
     private List<TransactionIndustryDataLegRequest> legRequests;
     private List<TransactionIndustryDataAdditionalChargeRequest> additionalChargeRequests;
 
@@ -190,6 +192,16 @@ public class TransactionIndustryDataRequest extends Request {
         return this;
     }
 
+    public TransactionIndustryDataRequest countryCode(String countryCode) {
+        this.countryCode = countryCode;
+        return this;
+    }
+
+    public TransactionIndustryDataRequest dateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+        return this;
+    }
+
     public TransactionIndustryDataLegRequest leg() {
         TransactionIndustryDataLegRequest legRequest = new TransactionIndustryDataLegRequest(this);
         legRequests.add(legRequest);
@@ -241,7 +253,9 @@ public class TransactionIndustryDataRequest extends Request {
                 .addElement("noShow", noShow)
                 .addElement("advancedDeposit", advancedDeposit)
                 .addElement("fireSafe", fireSafe)
-                .addElement("propertyPhone", propertyPhone);
+                .addElement("propertyPhone", propertyPhone)
+                .addElement("countryCode", countryCode)
+                .addElement("dateOfBirth", dateOfBirth);
 
         if (!legRequests.isEmpty()) {
             builder.addElement("legs", legRequests);
