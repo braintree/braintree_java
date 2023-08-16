@@ -86,8 +86,4 @@ public class DisputeSearchRequest extends SearchRequest {
     public MultipleValueNode<DisputeSearchRequest, String> transactionSource() {
         return new MultipleValueNode<DisputeSearchRequest, String>("transaction_source", this);
     }
-
-    public KeyValueNode<DisputeSearchRequest> evidenceSubmittable() {
-        return new KeyValueNode<DisputeSearchRequest>("evidence_submittable", this);
-    }
 }

@@ -683,41 +683,6 @@ public class DisputeIT extends IntegrationTest {
         assertEquals(history.getEffectiveDate().get(Calendar.DAY_OF_MONTH), 4);
     }
 
-
-    @Test
-    public void searchForEvidenceSubmittableDisputes() {
-        List<Dispute> disputes = new ArrayList<Dispute>();
-        DisputeSearchRequest request = new DisputeSearchRequest()
-                .evidenceSubmittable()
-                .is(true);
-
-        PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
-                .search(request);
-
-        for (Dispute dispute : disputeCollection) {
-            disputes.add(dispute);
-        }
-
-        assertEquals(disputes.get(0).getEvidenceSubmittable(), true);
-    }
-
-    @Test
-    public void searchForNonEvidenceSubmittableDisputes() {
-        List<Dispute> disputes = new ArrayList<Dispute>();
-        DisputeSearchRequest request = new DisputeSearchRequest()
-                .evidenceSubmittable()
-                .is(false);
-
-        PaginatedCollection<Dispute> disputeCollection = gateway.dispute()
-                .search(request);
-
-        for (Dispute dispute : disputeCollection) {
-            disputes.add(dispute);
-        }
-
-        assertEquals(disputes.get(0).getEvidenceSubmittable(), false);
-    }
-
     public Dispute createSampleDispute() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("100.00")).
