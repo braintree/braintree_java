@@ -4,7 +4,6 @@
 * Add `evidenceSubmittable` to `Dispute`
 * Add `merchantTokenIdentifier`, `sourceCardLast4` to `ApplePayCard` and `ApplePayDetails`
 * Add `threeDSecureAuthenticationId` to `CustomerRequest` and `PaymentMethodRequest`
-* Add `DisputeEvidenceSubmittable` webhook constants
 * Add `processingOverrides` to `TransactionOptionsRequest`
 * Add the following fields to `processingOverrides`
   * customerEmail
@@ -94,7 +93,7 @@
 * Add ExchangeRateQuote API
 * Add 'retried' to transaction object
 
-## 3.14.0
+## 3.14.0 
 * Add `PaymentMethodCustomerDataUpdated` webhook notification support
 * Add `phoneNumber` to `Address`
 
@@ -264,7 +263,7 @@
   * Remove `recurringCustomerConsent` and `recurringMaxAmount` parameters from `authenticationInsightOptions` in `PaymentMethodNonce.create()`
 
 ## 2.109.0
-* Add `threeDSecurePassThru` to `CreditCard.create()`, `CreditCard.update()`, `Customer.create()`, `Customer.update()`, `PaymentMethod.create()` and `PaymentMethod.update()`
+* Add `threeDSecurePassThru` to `CreditCard.create()`, `CreditCard.update()`, `Customer.create()`, `Customer.update()`, `PaymentMethod.create()` and `PaymentMethod.update()` 
 * Add missing `paymentMethodToken` search to `CreditCardVerificationSearchRequest`
 * Add `recurringCustomerConsent` and `recurringMaxAmount` parameters to `authenticationInsightOptions` in `PaymentMethodNonce.create()`
 * Add `DOCUMENT_UPLOAD_FILE_IS_EMPTY` error code
