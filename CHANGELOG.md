@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+* Add `arrivalDate`, `ticketIssuerAddress` to `TransactionIndustryRequest`
+
 ## 3.25.0 
 * Add `evidenceSubmittable` to `Dispute`
 * Add `merchantTokenIdentifier`, `sourceCardLast4` to `ApplePayCard` and `ApplePayDetails`
