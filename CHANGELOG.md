@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Add `arrivalDate`, `ticketIssuerAddress` to `TransactionIndustryRequest`
+* Deprecate `evidenceSubmittable` in `Dispute`
 
 ## 3.25.0 
 * Add `evidenceSubmittable` to `Dispute`

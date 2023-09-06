@@ -286,6 +286,10 @@ public class Dispute {
         return transaction;
     }
 
+    /**
+     * @deprecated - do not use this field
+     */
+    @Deprecated
     public Boolean getEvidenceSubmittable(){
         return evidenceSubmittable;
     }
