@@ -2738,6 +2738,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                         feeAmount(new BigDecimal("10.00")).
                         taxAmount(new BigDecimal("20.00")).
                         restrictedTicket(false).
+                        arrivalDate(legDate2).
+                        ticketIssuerAddress("ti-address").
                         leg().
                             conjunctionTicket("CJ0001").
                             exchangeTicket("ET0001").
@@ -2781,6 +2783,58 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void submitForSettlementWithIndustryData() {
+
+        Calendar date = Calendar.getInstance();
+        date.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
+        date.add(Calendar.MONTH, 1);
+        date.add(Calendar.DAY_OF_MONTH, 1);
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            merchantAccountId(FAKE_FIRST_DATA_MERCHANT_ACCOUNT_ID).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionRequest submitForSettlementRequest = new TransactionRequest().
+            industry().
+                industryType(Transaction.IndustryType.TRAVEL_FLIGHT).
+                data().
+                    passengerFirstName("John").
+                    passengerMiddleInitial("M").
+                    issuedDate(date).
+                    ticketNumber("ticket-number").
+                    issuingCarrierCode("AA").
+                    fareAmount(new BigDecimal("70.00")).
+                    restrictedTicket(false).
+                    arrivalDate(date).
+                    ticketIssuerAddress("ti-address").
+                    leg().
+                        serviceClass("Y").
+                        carrierCode("AA").
+                        fareBasisCode("W").
+                        flightNumber("AA100").
+                        departureDate(date).
+                        departureAirportCode("MDW").
+                        departureTime("08:00").
+                        arrivalAirportCode("ATX").
+                        arrivalTime("10:00").
+                        stopoverPermitted(false).
+                        fareAmount(new BigDecimal("35.00")).
+                        done().
+                    done().
+                done();
+
+        Result<Transaction> result = gateway.transaction().submitForSettlement(transaction.getId(), submitForSettlementRequest);
+
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
     }
 
     @Test

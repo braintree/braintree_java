@@ -8,36 +8,38 @@ import java.util.List;
 public class TransactionIndustryDataRequest extends Request {
 
     private final TransactionIndustryRequest parent;
-    private String folioNumber;
+    private Boolean advancedDeposit;
+    private Calendar arrivalDate;
     private String checkInDate;
     private String checkOutDate;
-    private String travelPackage;
+    private String countryCode;
+    private String customerCode;
+    private String dateOfBirth;
     private String departureDate;
+    private BigDecimal fareAmount;
+    private BigDecimal feeAmount;
+    private Boolean fireSafe;
+    private String folioNumber;
+    private Calendar issuedDate;
+    private String issuingCarrierCode;
     private String lodgingCheckInDate;
     private String lodgingCheckOutDate;
     private String lodgingName;
-    private String roomRate;
-    private BigDecimal roomTax;
+    private Boolean noShow;
     private String passengerFirstName;
     private String passengerLastName;
     private String passengerMiddleInitial;
     private String passengerTitle;
-    private Calendar issuedDate;
-    private String travelAgencyName;
-    private String travelAgencyCode;
-    private String ticketNumber;
-    private String issuingCarrierCode;
-    private String customerCode;
-    private BigDecimal fareAmount;
-    private BigDecimal feeAmount;
-    private BigDecimal taxAmount;
-    private Boolean restrictedTicket;
-    private Boolean noShow;
-    private Boolean advancedDeposit;
-    private Boolean fireSafe;
     private String propertyPhone;
-    private String dateOfBirth;
-    private String countryCode;
+    private Boolean restrictedTicket;
+    private String roomRate;
+    private BigDecimal roomTax;
+    private BigDecimal taxAmount;
+    private String ticketIssuerAddress;
+    private String ticketNumber;
+    private String travelAgencyCode;
+    private String travelAgencyName;
+    private String travelPackage;
     private List<TransactionIndustryDataLegRequest> legRequests;
     private List<TransactionIndustryDataAdditionalChargeRequest> additionalChargeRequests;
 
@@ -202,6 +204,16 @@ public class TransactionIndustryDataRequest extends Request {
         return this;
     }
 
+    public TransactionIndustryDataRequest arrivalDate(Calendar arrivalDate) {
+        this.arrivalDate = arrivalDate;
+        return this;
+    }
+
+    public TransactionIndustryDataRequest ticketIssuerAddress(String ticketIssuerAddress) {
+        this.ticketIssuerAddress = ticketIssuerAddress;
+        return this;
+    }
+
     public TransactionIndustryDataLegRequest leg() {
         TransactionIndustryDataLegRequest legRequest = new TransactionIndustryDataLegRequest(this);
         legRequests.add(legRequest);
@@ -254,6 +266,8 @@ public class TransactionIndustryDataRequest extends Request {
                 .addElement("advancedDeposit", advancedDeposit)
                 .addElement("fireSafe", fireSafe)
                 .addElement("propertyPhone", propertyPhone)
+                .addElement("arrivalDate", arrivalDate)
+                .addElement("ticketIssuerAddress", ticketIssuerAddress)
                 .addElement("countryCode", countryCode)
                 .addElement("dateOfBirth", dateOfBirth);
 
