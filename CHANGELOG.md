@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.27.0
+* Add validation error codes:
+  * `FAILED_AUTH_ADJUSTMENT_FOR_AMOUNT_SUBMITTED_HARD_DECLINE`
+  * `FAILED_AUTH_ADJUSTMENT_FOR_AMOUNT_SUBMITTED_ALLOW_RETRY`
+
 ## 3.26.0
 * Add `arrivalDate`, `ticketIssuerAddress` to `TransactionIndustryRequest`
 * Deprecate `evidenceSubmittable` in `Dispute`
