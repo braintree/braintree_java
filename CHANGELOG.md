@@ -1,5 +1,8 @@
 # Changelog
 
+## Unleased
+* Add `SubscriptionBillingSkipped` webhook notification
+
 ## 3.27.0
 * Add validation error codes:
   * `FAILED_AUTH_ADJUSTMENT_FOR_AMOUNT_SUBMITTED_HARD_DECLINE`
