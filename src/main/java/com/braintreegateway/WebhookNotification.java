@@ -34,6 +34,7 @@ public class WebhookNotification {
         RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD("recipient_updated_granted_payment_method"),
         SUB_MERCHANT_ACCOUNT_APPROVED("sub_merchant_account_approved"),
         SUB_MERCHANT_ACCOUNT_DECLINED("sub_merchant_account_declined"),
+        SUBSCRIPTION_BILLING_SKIPPED("subscription_billing_skipped"),
         SUBSCRIPTION_CANCELED("subscription_canceled"),
         SUBSCRIPTION_CHARGED_SUCCESSFULLY("subscription_charged_successfully"),
         SUBSCRIPTION_CHARGED_UNSUCCESSFULLY("subscription_charged_unsuccessfully"),

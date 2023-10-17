@@ -8,6 +8,8 @@ public class LocalPaymentDetails {
     private String debugId;
     private String description;
     private String fundingSource;
+    private String implicitlyVaultedPaymentMethodGlobalId;
+    private String implicitlyVaultedPaymentMethodToken;
     private String payerId;
     private String paymentId;
     private String refundFromTransactionFeeAmount;
@@ -22,6 +24,8 @@ public class LocalPaymentDetails {
         debugId = node.findString("debug-id");
         description = node.findString("description");
         fundingSource = node.findString("funding-source");
+        implicitlyVaultedPaymentMethodGlobalId = node.findString("implicitly-vaulted-payment-method-global-id");
+        implicitlyVaultedPaymentMethodToken = node.findString("implicitly-vaulted-payment-method-token");
         payerId = node.findString("payer-id");
         paymentId = node.findString("payment-id");
         refundFromTransactionFeeAmount = node.findString("refund-from-transaction-fee-amount");
@@ -49,6 +53,14 @@ public class LocalPaymentDetails {
 
     public String getFundingSource() {
       return fundingSource;
+    }
+
+    public String getImplicitlyVaultedPaymentMethodGlobalId() {
+      return implicitlyVaultedPaymentMethodGlobalId;
+    }
+
+    public String getImplicitlyVaultedPaymentMethodToken() {
+      return implicitlyVaultedPaymentMethodToken;
     }
 
     public String getPayerId() {

@@ -57,6 +57,20 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test
+    public void createsSampleSubscriptionBillingSkippedNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_BILLING_SKIPPED, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.SUBSCRIPTION_BILLING_SKIPPED, notification.getKind());
+        assertEquals("my_id", notification.getSubscription().getId());
+        assertEquals(0, notification.getSubscription().getTransactions().size());
+        assertEquals(0, notification.getSubscription().getDiscounts().size());
+        assertEquals(0, notification.getSubscription().getAddOns().size());
+        TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
+    }
+
+    @Test
     public void createsSampleSubscriptionChargedSuccessfullyNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUBSCRIPTION_CHARGED_SUCCESSFULLY, "my_id");
 
