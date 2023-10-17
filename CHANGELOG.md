@@ -7,6 +7,7 @@
 * Add validation error codes:
   * `FAILED_AUTH_ADJUSTMENT_FOR_AMOUNT_SUBMITTED_HARD_DECLINE`
   * `FAILED_AUTH_ADJUSTMENT_FOR_AMOUNT_SUBMITTED_ALLOW_RETRY`
+* Add `implicitlyVaultedPaymentMethodToken` and `implicitlyVaultedPaymentMethodGlobalId` to `LocalPaymentDetails`
 
 ## 3.26.0
 * Add `arrivalDate`, `ticketIssuerAddress` to `TransactionIndustryRequest`
