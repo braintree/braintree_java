@@ -4813,7 +4813,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void submitForSettlementWithIndustryData() {
+    public void submitForSettlementWithIndustryDataWithPayPal() {
         TransactionRequest request = new TransactionRequest().
                 amount(TransactionAmount.AUTHORIZE.amount).
                 paymentMethodNonce(Nonce.PayPalOneTimePayment);
