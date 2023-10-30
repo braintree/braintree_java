@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+* Add `dateOfBirth` and `countryCode` to `TransactionIndustryDataRequest`
 * Add `SubscriptionBillingSkipped` webhook notification
 * Add `billingAddress` and `shippingAddress` to `VenmoProfileData`
 
