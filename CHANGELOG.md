@@ -1,7 +1,8 @@
 # Changelog
 
-## Unleased
+## Unreleased
 * Add `SubscriptionBillingSkipped` webhook notification
+* Add `billingAddress` and `shippingAddress` to `VenmoProfileData`
 
 ## 3.27.0
 * Add validation error codes:

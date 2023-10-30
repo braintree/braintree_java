@@ -602,7 +602,21 @@ public class WebhookTestingGateway {
                           node("first-name", "John"),
                           node("last-name", "Doe"),
                           node("phone-number", "1231231234"),
-                          node("email", "john.doe@paypal.com")
+                          node("email", "john.doe@paypal.com"),
+                          node("billing-address",
+                              node("street-address", "billing-street-addr"),
+                              node("extended-address", "billing-extended-addr"),
+                              node("locality", "billing-locality"),
+                              node("region", "billing-region"),
+                              node("postal-code", "billing-code")
+                          ),
+                          node("shipping-address",
+                              node("street-address", "shipping-street-addr"),
+                              node("extended-address", "shipping-extended-addr"),
+                              node("locality", "shipping-locality"),
+                              node("region", "shipping-region"),
+                              node("postal-code", "shipping-code")
+                          )
                      )
                 )
         );
