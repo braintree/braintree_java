@@ -864,5 +864,19 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertEquals("venmo_username", profileData.getUsername());
         assertEquals("1231231234", profileData.getPhoneNumber());
         assertEquals("john.doe@paypal.com", profileData.getEmail());
+
+        assertNotNull(profileData.getBillingAddress());
+        assertEquals("billing-street-addr", profileData.getBillingAddress().getStreetAddress());
+        assertEquals("billing-extended-addr", profileData.getBillingAddress().getExtendedAddress());
+        assertEquals("billing-locality", profileData.getBillingAddress().getLocality());
+        assertEquals("billing-region", profileData.getBillingAddress().getRegion());
+        assertEquals("billing-code", profileData.getBillingAddress().getPostalCode());
+
+        assertNotNull(profileData.getShippingAddress());
+        assertEquals("shipping-street-addr", profileData.getShippingAddress().getStreetAddress());
+        assertEquals("shipping-extended-addr", profileData.getShippingAddress().getExtendedAddress());
+        assertEquals("shipping-locality", profileData.getShippingAddress().getLocality());
+        assertEquals("shipping-region", profileData.getShippingAddress().getRegion());
+        assertEquals("shipping-code", profileData.getShippingAddress().getPostalCode());
     }
 }
