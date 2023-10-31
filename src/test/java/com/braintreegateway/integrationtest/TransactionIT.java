@@ -1105,6 +1105,68 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithMetaCheckoutCardNonce() {
+        String nonce = Nonce.MetaCheckoutCard;
+
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(PaymentInstrumentType.META_CHECKOUT_CARD, transaction.getPaymentInstrumentType());
+        assertNotNull(transaction.getMetaCheckoutCardDetails());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getCardType());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getExpirationMonth());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getExpirationYear());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getCardholderName());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getLast4());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getImageUrl());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getBin());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getPrepaid());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getHealthcare());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getDebit());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getDurbinRegulated());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getCommercial());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getPayroll());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getProductId());
+    }
+
+    @Test
+    public void saleWithMetaCheckoutTokenNonce() {
+        String nonce = Nonce.MetaCheckoutToken;
+
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(PaymentInstrumentType.META_CHECKOUT_TOKEN, transaction.getPaymentInstrumentType());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCardType());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getExpirationMonth());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getExpirationYear());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCardholderName());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getLast4());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getImageUrl());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getBin());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getPrepaid());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getHealthcare());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getDebit());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getDurbinRegulated());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCommercial());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getPayroll());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getProductId());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCryptogram());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getEcommerceIndicator());
+    }
+
+    @Test
     public void saleWithAmexExpressCheckoutCardNonce() {
         String amexExpressCheckoutCardNonce = Nonce.AmexExpressCheckout;
 

@@ -7,6 +7,8 @@ public final class PaymentInstrumentType {
     public static final String CREDIT_CARD = "credit_card";
     public static final String LOCAL_PAYMENT = "local_payment";
     public static final String MASTERPASS_CARD = "masterpass_card";
+    public static final String META_CHECKOUT_CARD = "meta_checkout_card";
+    public static final String META_CHECKOUT_TOKEN = "meta_checkout_token";
     public static final String PAYPAL_ACCOUNT = "paypal_account";
     public static final String PAYPAL_HERE = "paypal_here";
     public static final String SAMSUNG_PAY_CARD = "samsung_pay_card";

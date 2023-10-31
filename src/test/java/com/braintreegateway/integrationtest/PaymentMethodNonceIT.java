@@ -10,6 +10,8 @@ import com.braintreegateway.CreditCard.Prepaid;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.test.Nonce;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -160,6 +162,40 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertEquals("Visa Apple Pay Cardholder", nonce.getDetails().getCardholderName());
         assertEquals("Visa 8886", nonce.getDetails().getPaymentInstrumentName());
         assertEquals("81", nonce.getDetails().getDpanLastTwo());
+    }
+
+    @Test
+    public void findMetaCheckoutCardNonceReturnsValidValues() {
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(Nonce.MetaCheckoutCard);
+        assertNotNull(nonce);
+        assertEquals(Nonce.MetaCheckoutCard, nonce.getNonce());
+        assertEquals(false, nonce.isConsumed());
+        assertEquals(false, nonce.isDefault());
+        assertNotNull(nonce.getDetails());
+        assertEquals("401288", nonce.getDetails().getBin());
+        assertEquals("Visa", nonce.getDetails().getCardType());
+        assertEquals("Meta Checkout Card Cardholder", nonce.getDetails().getCardholderName());
+        assertEquals("81", nonce.getDetails().getLastTwo());      
+        assertEquals("1881", nonce.getDetails().getLastFour());
+        assertEquals("12", nonce.getDetails().getExpirationMonth());        
+        assertEquals("2024", nonce.getDetails().getExpirationYear());
+    }
+
+    @Test
+    public void findMetaCheckoutTokenNonceReturnsValidValues() {
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(Nonce.MetaCheckoutToken);
+        assertNotNull(nonce);
+        assertEquals(Nonce.MetaCheckoutToken, nonce.getNonce());
+        assertEquals(false, nonce.isConsumed());
+        assertEquals(false, nonce.isDefault());
+        assertNotNull(nonce.getDetails());
+        assertEquals("401288", nonce.getDetails().getBin());
+        assertEquals("Visa", nonce.getDetails().getCardType());
+        assertEquals("Meta Checkout Token Cardholder", nonce.getDetails().getCardholderName());
+        assertEquals("81", nonce.getDetails().getLastTwo());      
+        assertEquals("1881", nonce.getDetails().getLastFour());
+        assertEquals("12", nonce.getDetails().getExpirationMonth());        
+        assertEquals("2024", nonce.getDetails().getExpirationYear());
     }
 
     @Test

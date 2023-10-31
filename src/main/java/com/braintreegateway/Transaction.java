@@ -175,6 +175,8 @@ public class Transaction {
     private LocalPaymentDetails localPaymentDetails;
     private Map<String, String> customFields;
     private MasterpassCardDetails masterpassCardDetails;
+    private MetaCheckoutCardDetails metaCheckoutCardDetails;
+    private MetaCheckoutTokenDetails metaCheckoutTokenDetails;
     private PayPalDetails paypalDetails;
     private PayPalHereDetails paypalHereDetails;
     private ProcessorResponseType processorResponseType;
@@ -310,6 +312,14 @@ public class Transaction {
         NodeWrapper localPaymentNode = node.findFirst("local-payment");
         if (localPaymentNode != null) {
             localPaymentDetails = new LocalPaymentDetails(localPaymentNode);
+        }
+        NodeWrapper metaCheckoutCardNode = node.findFirst("meta-checkout-card");
+        if (metaCheckoutCardNode != null) {
+            metaCheckoutCardDetails = new MetaCheckoutCardDetails(metaCheckoutCardNode);
+        }
+        NodeWrapper metaCheckoutTokenNode = node.findFirst("meta-checkout-token");
+        if (metaCheckoutTokenNode != null) {
+            metaCheckoutTokenDetails = new MetaCheckoutTokenDetails(metaCheckoutTokenNode);
         }
         NodeWrapper visaCheckoutCardNode = node.findFirst("visa-checkout-card");
         if (visaCheckoutCardNode != null) {
@@ -611,6 +621,14 @@ public class Transaction {
         return localPaymentDetails;
     }
 
+    public MetaCheckoutCardDetails getMetaCheckoutCardDetails() {
+        return metaCheckoutCardDetails;
+    }
+
+    public MetaCheckoutTokenDetails getMetaCheckoutTokenDetails() {
+        return metaCheckoutTokenDetails;
+    }
+    
     public VisaCheckoutCardDetails getVisaCheckoutCardDetails() {
         return visaCheckoutCardDetails;
     }

@@ -4,6 +4,8 @@
 * Add `dateOfBirth` and `countryCode` to `TransactionIndustryDataRequest`
 * Add `SubscriptionBillingSkipped` webhook notification
 * Add `billingAddress` and `shippingAddress` to `VenmoProfileData`
+* Add `MetaCheckoutCard`, `MetaCheckoutToken` payment methods
+* Add `MetaCheckoutCardDetails`, `MetaCheckoutTokenDetails` to `Transaction`
 
 ## 3.27.0
 * Add validation error codes:
