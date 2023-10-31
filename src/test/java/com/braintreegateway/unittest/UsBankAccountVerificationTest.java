@@ -17,8 +17,10 @@ public class UsBankAccountVerificationTest {
                      + "  <merchant-account-id>ygmxmpdxthqrrtfyisqahvclo</merchant-account-id>"
                      + "  <processor-response-code>1000</processor-response-code>"
                      + "  <processor-response-text>Approved</processor-response-text>"
+                     + "  <additional-processor-response>Invalid routing number</additional-processor-response>"
                      + "  <id>6f34vp3z</id>"
                      + "  <verification-method>independent_check</verification-method>"
+                     + "  <verification-add-ons>customer_verification</verification-add-ons>"
                      + "  <verification-determined-at type=\"datetime\">2018-11-16T23:22:48Z</verification-determined-at>"
                      + "  <us-bank-account>"
                      + "    <token>ch6byss</token>"
@@ -37,7 +39,9 @@ public class UsBankAccountVerificationTest {
 
         assertEquals(UsBankAccountVerification.Status.VERIFIED, verification.getStatus());
         assertEquals(UsBankAccountVerification.VerificationMethod.INDEPENDENT_CHECK, verification.getVerificationMethod());
+        assertEquals(UsBankAccountVerification.VerificationAddOns.CUSTOMER_VERIFICATION, verification.getVerificationAddOns());
         assertEquals("1000", verification.getProcessorResponseCode());
+        assertEquals("Invalid routing number", verification.getAdditionalProcessorResponse());
         assertEquals("6f34vp3z", verification.getId());
         assertEquals(2018, verification.getCreatedAt().get(Calendar.YEAR));
         assertEquals(4, verification.getCreatedAt().get(Calendar.MONTH)+1);

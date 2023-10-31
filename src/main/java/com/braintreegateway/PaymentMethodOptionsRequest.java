@@ -13,6 +13,7 @@ public class PaymentMethodOptionsRequest extends Request {
     private String verificationAmount;
     private String verificationCurrencyIsoCode;
     private String verificationMerchantAccountId;
+    private UsBankAccountVerification.VerificationAddOns verificationAddOns;
     private UsBankAccountVerification.VerificationMethod usBankAccountVerificationMethod;
 
     public PaymentMethodOptionsRequest() {
@@ -43,6 +44,11 @@ public class PaymentMethodOptionsRequest extends Request {
 
     public PaymentMethodOptionsRequest verificationAccountType(String verificationAccountType) {
         this.verificationAccountType = verificationAccountType;
+        return this;
+    }
+
+    public PaymentMethodOptionsRequest verificationAddOns(UsBankAccountVerification.VerificationAddOns addOn) {
+        this.verificationAddOns = addOn;
         return this;
     }
 

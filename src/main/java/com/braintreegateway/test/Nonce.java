@@ -85,4 +85,5 @@ public class Nonce {
   public static final String SamsungPayDiscover = "tokensam_fake_discover";
   public static final String SamsungPayMasterCard = "tokensam_fake_mastercard";
   public static final String SamsungPayVisa = "tokensam_fake_visa";
+  public static final String UsBankAccount = "fake-us-bank-account-nonce";
 }
