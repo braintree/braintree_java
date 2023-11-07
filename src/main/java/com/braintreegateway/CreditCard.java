@@ -162,6 +162,7 @@ public class CreditCard implements PaymentMethod {
 
     public enum DebitNetwork {
         ACCEL,
+        MAESTRO,
         NYCE,
         PULSE,
         STAR,

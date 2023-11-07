@@ -6,6 +6,7 @@
 * Add `billingAddress` and `shippingAddress` to `VenmoProfileData`
 * Add `MetaCheckoutCard`, `MetaCheckoutToken` payment methods
 * Add `MetaCheckoutCardDetails`, `MetaCheckoutTokenDetails` to `Transaction`
+* Add `MAESTRO` enum to `DebitNetwork`
 
 ## 3.27.0
 * Add validation error codes:
