@@ -7,12 +7,12 @@
 * Add `MetaCheckoutCard`, `MetaCheckoutToken` payment methods
 * Add `MetaCheckoutCardDetails`, `MetaCheckoutTokenDetails` to `Transaction`
 * Add `MAESTRO` to `DebitNetwork` enum
+* Add `implicitlyVaultedPaymentMethodToken` and `implicitlyVaultedPaymentMethodGlobalId` to `LocalPaymentDetails`
 
 ## 3.27.0
 * Add validation error codes:
   * `FAILED_AUTH_ADJUSTMENT_FOR_AMOUNT_SUBMITTED_HARD_DECLINE`
   * `FAILED_AUTH_ADJUSTMENT_FOR_AMOUNT_SUBMITTED_ALLOW_RETRY`
-* Add `implicitlyVaultedPaymentMethodToken` and `implicitlyVaultedPaymentMethodGlobalId` to `LocalPaymentDetails`
 
 ## 3.26.0
 * Add `arrivalDate`, `ticketIssuerAddress` to `TransactionIndustryRequest`
