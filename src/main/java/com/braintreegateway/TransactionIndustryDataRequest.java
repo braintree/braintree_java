@@ -12,7 +12,9 @@ public class TransactionIndustryDataRequest extends Request {
     private Calendar arrivalDate;
     private String checkInDate;
     private String checkOutDate;
+    private String countryCode;
     private String customerCode;
+    private String dateOfBirth;
     private String departureDate;
     private BigDecimal fareAmount;
     private BigDecimal feeAmount;
@@ -192,6 +194,16 @@ public class TransactionIndustryDataRequest extends Request {
         return this;
     }
 
+    public TransactionIndustryDataRequest countryCode(String countryCode) {
+        this.countryCode = countryCode;
+        return this;
+    }
+
+    public TransactionIndustryDataRequest dateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+        return this;
+    }
+
     public TransactionIndustryDataRequest arrivalDate(Calendar arrivalDate) {
         this.arrivalDate = arrivalDate;
         return this;
@@ -255,7 +267,9 @@ public class TransactionIndustryDataRequest extends Request {
                 .addElement("fireSafe", fireSafe)
                 .addElement("propertyPhone", propertyPhone)
                 .addElement("arrivalDate", arrivalDate)
-                .addElement("ticketIssuerAddress", ticketIssuerAddress);
+                .addElement("ticketIssuerAddress", ticketIssuerAddress)
+                .addElement("countryCode", countryCode)
+                .addElement("dateOfBirth", dateOfBirth);
 
         if (!legRequests.isEmpty()) {
             builder.addElement("legs", legRequests);

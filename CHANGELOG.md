@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.28.0
+* Add `dateOfBirth` and `countryCode` to `TransactionIndustryDataRequest`
+* Add `SubscriptionBillingSkipped` webhook notification
+* Add `billingAddress` and `shippingAddress` to `VenmoProfileData`
+* Add `MetaCheckoutCard`, `MetaCheckoutToken` payment methods
+* Add `MetaCheckoutCardDetails`, `MetaCheckoutTokenDetails` to `Transaction`
+* Add `MAESTRO` to `DebitNetwork` enum
+* Add `implicitlyVaultedPaymentMethodToken` and `implicitlyVaultedPaymentMethodGlobalId` to `LocalPaymentDetails`
+
 ## 3.27.0
 * Add validation error codes:
   * `FAILED_AUTH_ADJUSTMENT_FOR_AMOUNT_SUBMITTED_HARD_DECLINE`

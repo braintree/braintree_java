@@ -5,6 +5,7 @@ import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import java.util.regex.Pattern;
 import com.braintreegateway.*;
 import com.braintreegateway.testhelpers.TestHelper;
+import com.braintreegateway.test.Nonce;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -149,5 +150,126 @@ public class PaymentMethodWithUsBankAccountIT extends IntegrationTest {
 
         assertEquals(UsBankAccountVerification.VerificationMethod.MICRO_TRANSFERS, verification.getVerificationMethod());
         assertEquals(UsBankAccountVerification.Status.PENDING, verification.getStatus());
+    }
+
+    @Test
+    public void createsNetworkCheckVerification() {
+        BraintreeGateway gateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "integration2_merchant_id",
+            "integration2_public_key",
+            "integration2_private_key"
+        );
+
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+        String nonce = Nonce.UsBankAccount;
+        PaymentMethodRequest request = new PaymentMethodRequest()
+            .customerId(customer.getId())
+            .paymentMethodNonce(nonce)
+            .options()
+                .verificationMerchantAccountId(MerchantAccountTestConstants.ANOTHER_US_BANK_MERCHANT_ACCOUNT)
+                .usBankAccountVerificationMethod(UsBankAccountVerification.VerificationMethod.NETWORK_CHECK)
+            .done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+
+        UsBankAccount usBankAccount = (UsBankAccount) result.getTarget();
+
+        assertEquals("0000", usBankAccount.getLast4());
+        assertEquals("checking", usBankAccount.getAccountType());
+        assertEquals("Wells Fargo", usBankAccount.getBankName());
+        assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
+        assertEquals(1, usBankAccount.getVerifications().size());
+
+        UsBankAccountVerification verification = usBankAccount.getVerifications().get(0);
+
+        assertEquals(UsBankAccountVerification.VerificationMethod.NETWORK_CHECK, verification.getVerificationMethod());
+        assertEquals("1000", verification.getProcessorResponseCode());
+        assertEquals(UsBankAccountVerification.Status.VERIFIED, verification.getStatus());
+    }
+
+    @Test
+    public void createsNetworkCheckVerificationWithAddOns() {
+        BraintreeGateway gateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "integration2_merchant_id",
+            "integration2_public_key",
+            "integration2_private_key"
+        );
+
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = Nonce.UsBankAccount;
+        PaymentMethodRequest request = new PaymentMethodRequest()
+            .customerId(customer.getId())
+            .paymentMethodNonce(nonce)
+            .options()
+                .verificationMerchantAccountId(MerchantAccountTestConstants.ANOTHER_US_BANK_MERCHANT_ACCOUNT)
+                .usBankAccountVerificationMethod(UsBankAccountVerification.VerificationMethod.NETWORK_CHECK)
+                .verificationAddOns(UsBankAccountVerification.VerificationAddOns.CUSTOMER_VERIFICATION)
+            .done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+
+        UsBankAccount usBankAccount = (UsBankAccount) result.getTarget();
+
+        assertEquals("0000", usBankAccount.getLast4());
+        assertEquals("checking", usBankAccount.getAccountType());
+        assertEquals("Wells Fargo", usBankAccount.getBankName());
+        assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
+        assertEquals(1, usBankAccount.getVerifications().size());
+
+        UsBankAccountVerification verification = usBankAccount.getVerifications().get(0);
+
+        assertEquals(UsBankAccountVerification.VerificationMethod.NETWORK_CHECK, verification.getVerificationMethod());
+        assertEquals("1000", verification.getProcessorResponseCode());
+        assertEquals(UsBankAccountVerification.Status.VERIFIED, verification.getStatus());
+    }
+
+    @Test
+    public void returnsAdditionalProcessorResponseForNetworkCheck() {
+        BraintreeGateway gateway = new BraintreeGateway(
+            Environment.DEVELOPMENT,
+            "integration2_merchant_id",
+            "integration2_public_key",
+            "integration2_private_key"
+        );
+
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        String nonce = TestHelper.generateValidUsBankAccountNonce(gateway, "1000000005");
+        PaymentMethodRequest request = new PaymentMethodRequest()
+            .customerId(customer.getId())
+            .paymentMethodNonce(nonce)
+            .options()
+                .verificationMerchantAccountId(MerchantAccountTestConstants.ANOTHER_US_BANK_MERCHANT_ACCOUNT)
+                .usBankAccountVerificationMethod(UsBankAccountVerification.VerificationMethod.NETWORK_CHECK)
+            .done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+
+        UsBankAccount usBankAccount = (UsBankAccount) result.getTarget();
+
+        assertEquals("0005", usBankAccount.getLast4());
+        assertEquals("checking", usBankAccount.getAccountType());
+        assertEquals("JPMORGAN CHASE", usBankAccount.getBankName());
+        assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
+        assertEquals(1, usBankAccount.getVerifications().size());
+
+        UsBankAccountVerification verification = usBankAccount.getVerifications().get(0);
+
+        assertEquals(UsBankAccountVerification.VerificationMethod.NETWORK_CHECK, verification.getVerificationMethod());
+        assertEquals("2061", verification.getProcessorResponseCode());
+        assertEquals("Invalid routing number", verification.getAdditionalProcessorResponse());
+        assertEquals(UsBankAccountVerification.Status.PROCESSOR_DECLINED, verification.getStatus());
     }
 }

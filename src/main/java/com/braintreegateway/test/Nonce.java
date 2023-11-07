@@ -32,6 +32,8 @@ public class Nonce {
   public static final String MasterpassMasterCard = "fake-masterpass-mastercard-nonce";
   @Deprecated
   public static final String MasterpassVisa = "fake-masterpass-visa-nonce";
+  public static final String MetaCheckoutCard = "fake-meta-checkout-card-nonce";
+  public static final String MetaCheckoutToken = "fake-meta-checkout-token-nonce";
   public static final String VisaCheckoutAmEx = "fake-visa-checkout-amex-nonce";
   public static final String VisaCheckoutDiscover = "fake-visa-checkout-discover-nonce";
   public static final String VisaCheckoutMasterCard = "fake-visa-checkout-mastercard-nonce";
@@ -83,4 +85,5 @@ public class Nonce {
   public static final String SamsungPayDiscover = "tokensam_fake_discover";
   public static final String SamsungPayMasterCard = "tokensam_fake_mastercard";
   public static final String SamsungPayVisa = "tokensam_fake_visa";
+  public static final String UsBankAccount = "fake-us-bank-account-nonce";
 }

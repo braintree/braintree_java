@@ -73,6 +73,7 @@ public class WebhookTestingGateway {
             case OAUTH_ACCESS_REVOKED: return oauthAccessRevokedXml(id);
             case CONNECTED_MERCHANT_STATUS_TRANSITIONED: return connectedMerchantStatusTransitionedXml(id);
             case CONNECTED_MERCHANT_PAYPAL_STATUS_CHANGED: return connectedMerchantPayPalStatusChangedXml(id);
+            case SUBSCRIPTION_BILLING_SKIPPED: return subscriptionBillingSkippedXml(id);
             case SUBSCRIPTION_CHARGED_SUCCESSFULLY: return subscriptionChargedSuccessfullyXml(id);
             case SUBSCRIPTION_CHARGED_UNSUCCESSFULLY: return subscriptionChargedUnsuccessfullyXml(id);
             case ACCOUNT_UPDATER_DAILY_REPORT: return accountUpdaterDailyReportXml(id);
@@ -133,6 +134,15 @@ public class WebhookTestingGateway {
     }
 
     private String subscriptionXml(String id) {
+        return node("subscription",
+                node("id", id),
+                node("transactions", TYPE_ARRAY),
+                node("add_ons", TYPE_ARRAY),
+                node("discounts", TYPE_ARRAY)
+        );
+    }
+
+    private String subscriptionBillingSkippedXml(String id) {
         return node("subscription",
                 node("id", id),
                 node("transactions", TYPE_ARRAY),
@@ -592,7 +602,21 @@ public class WebhookTestingGateway {
                           node("first-name", "John"),
                           node("last-name", "Doe"),
                           node("phone-number", "1231231234"),
-                          node("email", "john.doe@paypal.com")
+                          node("email", "john.doe@paypal.com"),
+                          node("billing-address",
+                              node("street-address", "billing-street-addr"),
+                              node("extended-address", "billing-extended-addr"),
+                              node("locality", "billing-locality"),
+                              node("region", "billing-region"),
+                              node("postal-code", "billing-code")
+                          ),
+                          node("shipping-address",
+                              node("street-address", "shipping-street-addr"),
+                              node("extended-address", "shipping-extended-addr"),
+                              node("locality", "shipping-locality"),
+                              node("region", "shipping-region"),
+                              node("postal-code", "shipping-code")
+                          )
                      )
                 )
         );

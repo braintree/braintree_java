@@ -10,10 +10,10 @@ public class UsBankAccountVerification {
     public enum Status {
         FAILED("failed"),
         GATEWAY_REJECTED("gateway_rejected"),
+        PENDING("pending"),
         PROCESSOR_DECLINED("processor_declined"),
         UNRECOGNIZED("unrecognized"),
-        VERIFIED("verified"),
-        PENDING("pending");
+        VERIFIED("verified");
 
         private final String name;
 
@@ -28,11 +28,11 @@ public class UsBankAccountVerification {
     }
 
     public enum VerificationMethod {
-        TOKENIZED_CHECK("tokenized_check"),
-        NETWORK_CHECK("network_check"),
         INDEPENDENT_CHECK("independent_check"),
-        UNRECOGNIZED("unrecognized"),
-        MICRO_TRANSFERS("micro_transfers");
+        MICRO_TRANSFERS("micro_transfers"),
+        NETWORK_CHECK("network_check"),
+        TOKENIZED_CHECK("tokenized_check"),
+        UNRECOGNIZED("unrecognized");
 
         private final String name;
 
@@ -46,15 +46,34 @@ public class UsBankAccountVerification {
         }
     }
 
-    private String id;
+    public enum VerificationAddOns {
+        CUSTOMER_VERIFICATION("customer_verification"),
+        UNRECOGNIZED("unrecognized");
+
+        private final String name;
+
+        VerificationAddOns(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+
+    private Calendar createdAt;
+    private Calendar verificationDeterminedAt;
+    private GatewayRejectionReason gatewayRejectionReason;
     private Status status;
-    private VerificationMethod verificationMethod;
+    private String additionalProcessorResponse;
+    private String id;
     private String processorResponseCode;
     private String processorResponseText;
-    private Calendar verificationDeterminedAt;
-    private Calendar createdAt;
-    private GatewayRejectionReason gatewayRejectionReason;
     private UsBankAccount usBankAccount;
+    private VerificationAddOns verificationAddOns;
+    private VerificationMethod verificationMethod;
 
     public UsBankAccountVerification(NodeWrapper node) {
         this.id = node.findString("id");
@@ -63,8 +82,14 @@ public class UsBankAccountVerification {
             VerificationMethod.class,
             node.findString("verification-method"),
             VerificationMethod.UNRECOGNIZED
-        );
+            );
+        this.verificationAddOns = EnumUtils.findByName(
+            VerificationAddOns.class,
+            node.findString("verification-add-ons"),
+            VerificationAddOns.UNRECOGNIZED);
+
         this.processorResponseCode = node.findString("processor-response-code");
+        this.additionalProcessorResponse = node.findString("additional-processor-response");
         this.processorResponseText = node.findString("processor-response-text");
         this.createdAt = node.findDateTime("created-at");
         this.verificationDeterminedAt = node.findDateTime("verification-determined-at");
@@ -91,12 +116,20 @@ public class UsBankAccountVerification {
         return verificationMethod;
     }
 
+    public VerificationAddOns getVerificationAddOns() {
+        return verificationAddOns;
+    }
+
     public Calendar getVerificationDeterminedAt() {
         return verificationDeterminedAt;
     }
 
     public String getProcessorResponseCode() {
         return processorResponseCode;
+    }
+
+    public String getAdditionalProcessorResponse() {
+        return additionalProcessorResponse;
     }
 
     public String getProcessorResponseText() {

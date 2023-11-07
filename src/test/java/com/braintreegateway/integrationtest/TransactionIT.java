@@ -1105,6 +1105,68 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithMetaCheckoutCardNonce() {
+        String nonce = Nonce.MetaCheckoutCard;
+
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(PaymentInstrumentType.META_CHECKOUT_CARD, transaction.getPaymentInstrumentType());
+        assertNotNull(transaction.getMetaCheckoutCardDetails());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getCardType());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getExpirationMonth());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getExpirationYear());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getCardholderName());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getLast4());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getImageUrl());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getBin());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getPrepaid());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getHealthcare());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getDebit());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getDurbinRegulated());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getCommercial());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getPayroll());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getProductId());
+    }
+
+    @Test
+    public void saleWithMetaCheckoutTokenNonce() {
+        String nonce = Nonce.MetaCheckoutToken;
+
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(PaymentInstrumentType.META_CHECKOUT_TOKEN, transaction.getPaymentInstrumentType());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCardType());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getExpirationMonth());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getExpirationYear());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCardholderName());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getLast4());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getImageUrl());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getBin());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getPrepaid());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getHealthcare());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getDebit());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getDurbinRegulated());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCommercial());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getPayroll());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getProductId());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCryptogram());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getEcommerceIndicator());
+    }
+
+    @Test
     public void saleWithAmexExpressCheckoutCardNonce() {
         String amexExpressCheckoutCardNonce = Nonce.AmexExpressCheckout;
 
@@ -2727,6 +2789,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                         passengerMiddleInitial("M").
                         passengerTitle("Mr.").
                         issuedDate(issuedDate).
+                        dateOfBirth("2012-12-12").
+                        countryCode("US").
                         travelAgencyName("Expedia").
                         travelAgencyCode("12345678").
                         ticketNumber("ticket-number").
@@ -4808,6 +4872,61 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
         assertEquals(new BigDecimal("50.00"), result.getTarget().getAmount());
+    }
+
+    @Test
+    public void submitForSettlementWithIndustryDataWithPayPal() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                paymentMethodNonce(Nonce.PayPalOneTimePayment);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction authorizedTransaction = result.getTarget();
+
+        assertEquals(TransactionAmount.AUTHORIZE.amount, authorizedTransaction.getAmount());
+        assertEquals(Transaction.Type.SALE, authorizedTransaction.getType());
+        assertEquals(Transaction.Status.AUTHORIZED, authorizedTransaction.getStatus());
+
+        TransactionRequest settleRequest = getTransactionRequestWithIndustryData(TransactionAmount.AUTHORIZE.amount);
+        result = gateway.transaction().submitForSettlement(authorizedTransaction.getId(), settleRequest);
+        assertTrue(result.isSuccess());
+        assertEquals(TransactionAmount.AUTHORIZE.amount, result.getTarget().getAmount());
+        assertEquals(Transaction.Status.SETTLING, result.getTarget().getStatus());
+    }
+
+    @Test
+    public void submitForPartialSettlementWithIndustryData() {
+        TransactionRequest request = new TransactionRequest().
+                amount(TransactionAmount.AUTHORIZE.amount).
+                paymentMethodNonce(Nonce.PayPalOneTimePayment);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction authorizedTransaction = result.getTarget();
+
+        assertEquals(TransactionAmount.AUTHORIZE.amount, authorizedTransaction.getAmount());
+        assertEquals(Transaction.Type.SALE, authorizedTransaction.getType());
+        assertEquals(Transaction.Status.AUTHORIZED, authorizedTransaction.getStatus());
+
+        BigDecimal amount1 = new BigDecimal("400.00");
+        TransactionRequest settleRequest1 = getTransactionRequestWithIndustryData(amount1);
+        Result<Transaction> partialSettlementResult1 = gateway.transaction().submitForPartialSettlement(authorizedTransaction.getId(), settleRequest1);
+        Transaction partialSettlementTransaction1 = partialSettlementResult1.getTarget();
+        assertEquals(amount1, partialSettlementTransaction1.getAmount());
+        assertEquals(Transaction.Type.SALE, partialSettlementTransaction1.getType());
+        assertEquals(Transaction.Status.SETTLING, partialSettlementTransaction1.getStatus());
+
+        BigDecimal amount2 = new BigDecimal("600.00");
+        TransactionRequest settleRequest2 = getTransactionRequestWithIndustryData(amount2);
+        Result<Transaction> partialSettlementResult2 = gateway.transaction().submitForPartialSettlement(authorizedTransaction.getId(), settleRequest2);
+        Transaction partialSettlementTransaction2 = partialSettlementResult2.getTarget();
+        assertEquals(amount2, partialSettlementTransaction2.getAmount());
+        assertEquals(Transaction.Type.SALE, partialSettlementTransaction2.getType());
+        assertEquals(Transaction.Status.SETTLING, partialSettlementTransaction2.getStatus());
+
+        Transaction refreshedAuthorizedTransaction = gateway.transaction().find(authorizedTransaction.getId());
+        assertEquals(2, refreshedAuthorizedTransaction.getPartialSettlementTransactionIds().size());
     }
 
     @Test
@@ -8619,5 +8738,60 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done();
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
+    }
+
+    public TransactionRequest getTransactionRequestWithIndustryData(BigDecimal amount) {
+        Calendar issuedDate = Calendar.getInstance();
+        issuedDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
+        issuedDate.add(Calendar.MONTH, 1);
+        issuedDate.add(Calendar.DAY_OF_MONTH, 1);
+
+        Calendar legDate1 = Calendar.getInstance();
+        legDate1.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
+        legDate1.add(Calendar.MONTH, 1);
+        legDate1.add(Calendar.DAY_OF_MONTH, 2);
+
+        return new TransactionRequest().
+            amount(amount).
+            industry().
+                industryType(Transaction.IndustryType.TRAVEL_FLIGHT).
+                data().
+                    passengerFirstName("John").
+                    passengerLastName("Doe").
+                    passengerMiddleInitial("M").
+                    passengerTitle("Mr.").
+                    issuedDate(issuedDate).
+                    dateOfBirth("2012-12-12").
+                    countryCode("US").
+                    travelAgencyName("Expedia").
+                    travelAgencyCode("12345678").
+                    ticketNumber("ticket-number").
+                    issuingCarrierCode("AA").
+                    customerCode("customer-code").
+                    fareAmount(new BigDecimal("70.00")).
+                    feeAmount(new BigDecimal("10.00")).
+                    taxAmount(new BigDecimal("20.00")).
+                    restrictedTicket(false).
+                    leg().
+                        conjunctionTicket("CJ0001").
+                        exchangeTicket("ET0001").
+                        couponNumber("1").
+                        serviceClass("Y").
+                        carrierCode("AA").
+                        fareBasisCode("W").
+                        flightNumber("AA100").
+                        departureDate(legDate1).
+                        departureAirportCode("MDW").
+                        departureTime("08:00").
+                        arrivalAirportCode("ATX").
+                        arrivalTime("10:00").
+                        stopoverPermitted(false).
+                        fareAmount(new BigDecimal("35.00")).
+                        feeAmount(new BigDecimal("5.00")).
+                        taxAmount(new BigDecimal("10.00")).
+                        endorsementOrRestrictions("NOT REFUNDABLE").
+                        done().
+                    done().
+                done();
     }
 }
