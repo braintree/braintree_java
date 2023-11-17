@@ -455,6 +455,55 @@ public abstract class TestHelper {
         return paymentMethod.get("id");
     }
 
+    public static String generateValidUsBankAccountNonceForBusiness(BraintreeGateway gateway) {
+        return generateValidUsBankAccountNonceForBusiness(gateway,"567891234");
+    }
+
+    public static String generateValidUsBankAccountNonceForBusiness(BraintreeGateway gateway, String accountNumber) {
+        String mutation =
+            "mutation TokenizeUsBankAccount($input: TokenizeUsBankAccountInput!) {"
+            + "    tokenizeUsBankAccount(input: $input) {"
+            + "        paymentMethod {"
+            + "            id"
+            + "        }"
+            + "    }"
+            + "}";
+
+        String input =
+            "{\n"
+            + "  \"input\": {\n"
+            + "    \"usBankAccount\": {\n"
+            + "      \"accountNumber\": " + Integer.parseInt(accountNumber) + ",\n"
+            + "      \"routingNumber\": \"021000021\",\n"
+            + "      \"accountType\": \"CHECKING\",\n"
+            + "      \"businessOwner\": {\n"
+            + "        \"businessName\": \"Big Tech\"\n"
+            + "      },\n"
+            + "      \"billingAddress\": {\n"
+            + "        \"streetAddress\": \"123 Ave\",\n"
+            + "        \"state\": \"CA\",\n"
+            + "        \"city\": \"San Francisco\",\n"
+            + "        \"zipCode\": \"94112\"\n"
+            + "      },\n"
+            + "      \"achMandate\": \"cl mandate text\"\n"
+            + "    }\n"
+            + "  }\n"
+            + "}";
+
+        Map<String, Object> variables;
+        try {
+            variables = JSON.std.mapFrom(input);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        Map<String, Object> response = sendGraphQLRequest(gateway, GraphQLClient.formatGraphQLRequest(mutation, variables));
+        Map<String, Object> data = (Map) response.get("data");
+        Map<String, Object> tokenizeUsBankAccount = (Map) data.get("tokenizeUsBankAccount");
+        Map<String, String> paymentMethod = (Map) tokenizeUsBankAccount.get("paymentMethod");
+        return paymentMethod.get("id");
+    }
+
     public static String generatePlaidUsBankAccountNonce(BraintreeGateway gateway) {
         String mutation =
             "mutation TokenizeUsBankLogin($input: TokenizeUsBankLoginInput!) {"
