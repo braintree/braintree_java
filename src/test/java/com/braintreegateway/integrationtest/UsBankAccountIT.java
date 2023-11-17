@@ -1,5 +1,6 @@
 package com.braintreegateway.integrationtest;
 
+import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 
 import com.braintreegateway.*;
@@ -33,15 +34,75 @@ public class UsBankAccountIT extends IntegrationTest {
 
         UsBankAccount usBankAccount = gateway.usBankAccount().find(result.getTarget().getToken());
         assertNotNull(usBankAccount);
-        assertEquals("021000021", usBankAccount.getRoutingNumber());
-        assertEquals("1234", usBankAccount.getLast4());
-        assertEquals("checking", usBankAccount.getAccountType());
-        assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
-        assertTrue(Pattern.matches(".*CHASE.*", usBankAccount.getBankName()));
         AchMandate achMandate = usBankAccount.getAchMandate();
         assertEquals("cl mandate text", achMandate.getText());
         assertNotNull(achMandate.getAcceptedAt());
+        assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
+        assertEquals("checking", usBankAccount.getAccountType());
+        assertTrue(Pattern.matches(".*CHASE.*", usBankAccount.getBankName()));
+        assertNull(usBankAccount.getBusinessName());
+        assertNotNull(usBankAccount.getCreatedAt());
+        assertEquals(customer.getId(), usBankAccount.getCustomerId());
+        assertNull(usBankAccount.getDescription());
+        assertEquals("Dan", usBankAccount.getFirstName());
+        assertNotNull(usBankAccount.getImageUrl());
+        assertEquals("1234", usBankAccount.getLast4());
+        assertEquals("Schulman", usBankAccount.getLastName());
+        assertNull(usBankAccount.getOwnerId());
+        assertEquals("personal", usBankAccount.getOwnershipType());
+        assertNull(usBankAccount.getPlaidVerifiedAt());
+        assertEquals("021000021", usBankAccount.getRoutingNumber());
+        assertNotNull(usBankAccount.getSubscriptions());
+        assertNotNull(usBankAccount.getToken());
+        assertNotNull(usBankAccount.getUpdatedAt());
+        assertTrue(usBankAccount.getVerifications().size() >= 1);
         assertTrue(usBankAccount.isDefault());
+        assertFalse(usBankAccount.isVerifiable());
+        assertTrue(usBankAccount.isVerified());
+    }
+
+    @Test
+    public void findsUsBankAccountByTokenForBusiness() {
+        String nonce = TestHelper.generateValidUsBankAccountNonceForBusiness(gateway);
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce).
+            options().
+                verificationMerchantAccountId(MerchantAccountTestConstants.US_BANK_MERCHANT_ACCOUNT).
+            done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+
+        UsBankAccount usBankAccount = gateway.usBankAccount().find(result.getTarget().getToken());
+        assertNotNull(usBankAccount);
+        AchMandate achMandate = usBankAccount.getAchMandate();
+        assertEquals("cl mandate text", achMandate.getText());
+        assertNotNull(achMandate.getAcceptedAt());
+        assertEquals("Big Tech", usBankAccount.getAccountHolderName());
+        assertEquals("checking", usBankAccount.getAccountType());
+        assertTrue(Pattern.matches(".*CHASE.*", usBankAccount.getBankName()));
+        assertEquals("Big Tech", usBankAccount.getBusinessName());
+        assertNotNull(usBankAccount.getCreatedAt());
+        assertEquals(customer.getId(), usBankAccount.getCustomerId());
+        assertNull(usBankAccount.getDescription());
+        assertNotNull(usBankAccount.getImageUrl());
+        assertEquals("1234", usBankAccount.getLast4());
+        assertNull(usBankAccount.getOwnerId());
+        assertEquals("business", usBankAccount.getOwnershipType());
+        assertNull(usBankAccount.getPlaidVerifiedAt());
+        assertEquals("021000021", usBankAccount.getRoutingNumber());
+        assertNotNull(usBankAccount.getSubscriptions().size());
+        assertNotNull(usBankAccount.getToken());
+        assertNotNull(usBankAccount.getUpdatedAt());
+        assertTrue(usBankAccount.getVerifications().size() >= 1);
+        assertTrue(usBankAccount.isDefault());
+        assertFalse(usBankAccount.isVerifiable());
+        assertTrue(usBankAccount.isVerified());
     }
 
     @Test
@@ -85,13 +146,21 @@ public class UsBankAccountIT extends IntegrationTest {
         assertEquals(Transaction.Status.SETTLEMENT_PENDING, transaction.getStatus());
 
         UsBankAccountDetails usBankAccountDetails = transaction.getUsBankAccountDetails();
-        assertEquals("021000021", usBankAccountDetails.getRoutingNumber());
-        assertEquals("1234", usBankAccountDetails.getLast4());
-        assertEquals("checking", usBankAccountDetails.getAccountType());
-        assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
-        assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
         AchMandate achMandate = usBankAccountDetails.getAchMandate();
         assertEquals("cl mandate text", achMandate.getText());
         assertNotNull(achMandate.getAcceptedAt());
+        assertEquals("Dan Schulman", usBankAccountDetails.getAccountHolderName());
+        assertEquals("checking", usBankAccountDetails.getAccountType());
+        assertTrue(Pattern.matches(".*CHASE.*", usBankAccountDetails.getBankName()));
+        assertNull(usBankAccountDetails.getBusinessName());
+        assertEquals("Dan", usBankAccountDetails.getFirstName());
+        assertNotNull(usBankAccountDetails.getGlobalId());
+        assertNotNull(usBankAccountDetails.getImageUrl());
+        assertEquals("1234", usBankAccountDetails.getLast4());
+        assertEquals("Schulman", usBankAccountDetails.getLastName());
+        assertEquals("personal", usBankAccountDetails.getOwnershipType());
+        assertEquals("021000021", usBankAccountDetails.getRoutingNumber());
+        assertNotNull(usBankAccountDetails.getToken());
+        assertFalse(usBankAccountDetails.isVerified());
     }
 }

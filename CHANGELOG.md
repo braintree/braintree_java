@@ -1,5 +1,25 @@
 # Changelog
 
+## 3.29.0
+* Add methods to `UsBankAccount`
+  * `getBusinessName`
+  * `getCreatedAt`
+  * `getDescription`
+  * `getFirstName`
+  * `getLastName`
+  * `getOwnerId`
+  * `getOwnershipType`
+  * `getPlaidVerifiedAt`
+  * `getUpdatedAt`
+  * `isVerifiable`
+* Add methods to `UsBankAccountDetails`
+  * `getBusinessName`
+  * `getFirstName`
+  * `getGlobalId`
+  * `getLastName`
+  * `getOwnershipType`
+  * `isVerified`
+
 ## 3.28.0
 * Add `dateOfBirth` and `countryCode` to `TransactionIndustryDataRequest`
 * Add `SubscriptionBillingSkipped` webhook notification

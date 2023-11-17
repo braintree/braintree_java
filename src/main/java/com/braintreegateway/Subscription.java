@@ -13,6 +13,24 @@ public class Subscription {
         DAY, MONTH, UNRECOGNIZED
     }
 
+    public enum Source {
+        API("api"),
+        CONTROL_PANEL("control_panel"),
+        RECURRING("recurring"),
+        UNRECOGNIZED("unrecognized");
+
+        private final String name;
+
+        Source(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
     public enum Status {
         ACTIVE("Active"),
         CANCELED("Canceled"),
@@ -33,37 +51,18 @@ public class Subscription {
         }
     }
 
-    public enum Source {
-        API("api"),
-        CONTROL_PANEL("control_panel"),
-        RECURRING("recurring"),
-        UNRECOGNIZED("unrecognized");
-
-        private final String name;
-
-        Source(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
-
     private ArrayList<AddOn> addOns;
     private BigDecimal balance;
     private Integer billingDayOfMonth;
     private Calendar billingPeriodEndDate;
     private Calendar billingPeriodStartDate;
+    private Calendar createdAt;
     private Integer currentBillingCycle;
     private Integer daysPastDue;
-    private Descriptor descriptor;
     private String description;
+    private Descriptor descriptor;
     private ArrayList<Discount> discounts;
     private Integer failureCount;
-    private Calendar createdAt;
-    private Calendar updatedAt;
     private Calendar firstBillingDate;
     private Boolean hasTrialPeriod;
     private String id;
@@ -82,6 +81,7 @@ public class Subscription {
     private List<Transaction> transactions;
     private Integer trialDuration;
     private DurationUnit trialDurationUnit;
+    private Calendar updatedAt;
 
     public Subscription(NodeWrapper node) {
         addOns = new ArrayList<AddOn>();
@@ -92,25 +92,25 @@ public class Subscription {
         billingDayOfMonth = node.findInteger("billing-day-of-month");
         billingPeriodEndDate = node.findDate("billing-period-end-date");
         billingPeriodStartDate = node.findDate("billing-period-start-date");
+        createdAt = node.findDateTime("created-at");
         currentBillingCycle = node.findInteger("current-billing-cycle");
         daysPastDue = node.findInteger("days-past-due");
+        description = node.findString("description");
         if (node.findFirst("descriptor") != null) {
             descriptor = new Descriptor(node.findFirst("descriptor"));
         }
-        description = node.findString("description");
         discounts = new ArrayList<Discount>();
         for (NodeWrapper discountResponse : node.findAll("discounts/discount")) {
             discounts.add(new Discount(discountResponse));
         }
         failureCount = node.findInteger("failure-count");
         firstBillingDate = node.findDate("first-billing-date");
+        hasTrialPeriod = node.findBoolean("trial-period");
         id = node.findString("id");
         merchantAccountId = node.findString("merchant-account-id");
         neverExpires = node.findBoolean("never-expires");
         nextBillAmount = node.findBigDecimal("next-bill-amount");
         nextBillingDate = node.findDate("next-billing-date");
-        createdAt = node.findDateTime("created-at");
-        updatedAt = node.findDateTime("updated-at");
         nextBillingPeriodAmount = node.findBigDecimal("next-billing-period-amount");
         numberOfBillingCycles = node.findInteger("number-of-billing-cycles");
         paidThroughDate = node.findDate("paid-through-date");
@@ -122,13 +122,14 @@ public class Subscription {
         for (NodeWrapper statusNode : node.findAll("status-history/status-event")) {
             statusHistory.add(new SubscriptionStatusEvent(statusNode));
         }
-        hasTrialPeriod = node.findBoolean("trial-period");
-        trialDuration = node.findInteger("trial-duration");
-        trialDurationUnit = EnumUtils.findByName(DurationUnit.class, node.findString("trial-duration-unit"), DurationUnit.UNRECOGNIZED);
         transactions = new ArrayList<Transaction>();
         for (NodeWrapper transactionResponse : node.findAll("transactions/transaction")) {
             transactions.add(new Transaction(transactionResponse));
         }
+        trialDuration = node.findInteger("trial-duration");
+        trialDurationUnit = EnumUtils.findByName(DurationUnit.class, node.findString("trial-duration-unit"),
+                DurationUnit.UNRECOGNIZED);
+        updatedAt = node.findDateTime("updated-at");
     }
 
     public List<AddOn> getAddOns() {
@@ -151,6 +152,10 @@ public class Subscription {
         return billingPeriodStartDate;
     }
 
+    public Calendar getCreatedAt() {
+        return createdAt;
+    }
+
     public Integer getCurrentBillingCycle() {
         return currentBillingCycle;
     }
@@ -159,12 +164,12 @@ public class Subscription {
         return daysPastDue;
     }
 
-    public Descriptor getDescriptor() {
-        return descriptor;
-    }
-
     public String getDescription() {
         return description;
+    }
+
+    public Descriptor getDescriptor() {
+        return descriptor;
     }
 
     public List<Discount> getDiscounts() {
@@ -197,14 +202,6 @@ public class Subscription {
 
     public Integer getNumberOfBillingCycles() {
         return numberOfBillingCycles;
-    }
-
-    public Calendar getCreatedAt() {
-        return createdAt;
-    }
-
-    public Calendar getUpdatedAt() {
-        return updatedAt;
     }
 
     public Calendar getPaidThroughDate() {
@@ -241,6 +238,10 @@ public class Subscription {
 
     public DurationUnit getTrialDurationUnit() {
         return trialDurationUnit;
+    }
+
+    public Calendar getUpdatedAt() {
+        return updatedAt;
     }
 
     public Boolean hasTrialPeriod() {
