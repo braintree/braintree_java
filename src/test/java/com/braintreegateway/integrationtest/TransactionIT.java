@@ -1318,6 +1318,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
         assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        ThreeDSecureInfo threeDS = transaction.getThreeDSecureInfo();
+        assertEquals("test_cavv", threeDS.getCAVV());
+        assertEquals("test_eci", threeDS.getECIFlag());
+        assertTrue(threeDS.isLiabilityShifted());
+        assertTrue(threeDS.isLiabilityShiftPossible());
     }
 
     @Test
