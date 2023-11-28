@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+* Add `externalNetworkTokenizationEnrollmentId` to `PaymentMethodGrantRequest`
+
 ## 3.29.0
 * Add methods to `UsBankAccount`
   * `getBusinessName`

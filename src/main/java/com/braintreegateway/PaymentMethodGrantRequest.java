@@ -1,16 +1,22 @@
 package com.braintreegateway;
 
 public class PaymentMethodGrantRequest extends Request {
-    private String sharedPaymentMethodToken;
     private boolean allowVaulting;
+    private String externalNetworkTokenizationEnrollmentId;
     private boolean includeBillingPostalCode;
     private String revokeAfter;
+    private String sharedPaymentMethodToken;
 
     public PaymentMethodGrantRequest() {
     }
 
     protected PaymentMethodGrantRequest sharedPaymentMethodToken(String sharedPaymentMethodToken) {
         this.sharedPaymentMethodToken = sharedPaymentMethodToken;
+        return this;
+    }
+
+    public PaymentMethodGrantRequest externalNetworkTokenizationEnrollmentId(String externalNetworkTokenizationEnrollmentId) {
+        this.externalNetworkTokenizationEnrollmentId = externalNetworkTokenizationEnrollmentId;
         return this;
     }
 
@@ -37,6 +43,7 @@ public class PaymentMethodGrantRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root)
             .addElement("shared-payment-method-token", sharedPaymentMethodToken)
+            .addElement("external-network-tokenization-enrollment-id", externalNetworkTokenizationEnrollmentId)
             .addElement("allow-vaulting", allowVaulting)
             .addElement("include-billing-postal-code", includeBillingPostalCode)
             .addElement("revoke-after", revokeAfter);
