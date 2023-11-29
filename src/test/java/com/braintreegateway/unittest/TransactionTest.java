@@ -37,7 +37,6 @@ public class TransactionTest {
 		assertEquals(Transaction.Status.UNRECOGNIZED, transaction.getStatus());
 	}
 
-
     @Test
     public void parseMerchantAdviceCodeDetails() {
       String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

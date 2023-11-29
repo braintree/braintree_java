@@ -23,6 +23,9 @@ public class TransactionLineItemRequest extends Request {
         this.parent = parent;
     }
 
+    public TransactionLineItemRequest() {
+    }
+
     public TransactionLineItemRequest quantity(BigDecimal quantity) {
         this.quantity = quantity;
         return this;

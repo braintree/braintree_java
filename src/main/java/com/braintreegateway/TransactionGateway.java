@@ -261,4 +261,15 @@ public class TransactionGateway {
         NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/custom_fields", request);
         return new Result<Transaction>(response, Transaction.class);
     }
+
+    /**
+     * Supplement the transaction with package tracking details
+     * @param id of the transaction to supplement the package details for
+     * @param packageTrackingRequest the package tracking request related to the transaction
+     * @return {@link Result}
+     */
+    public Result<Transaction> packageTracking(String id, PackageTrackingRequest packageTrackingRequest) {
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/shipments", packageTrackingRequest);
+        return new Result<Transaction>(response, Transaction.class);
+    }
 }
