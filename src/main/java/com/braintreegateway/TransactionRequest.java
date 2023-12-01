@@ -52,6 +52,7 @@ public class TransactionRequest extends Request {
     private String productSku;
     private String currencyIsoCode;
 
+    @Deprecated
     private String threeDSecureToken;
     private Boolean threeDSecureTransaction;
     private String threeDSecureAuthenticationId;
@@ -264,6 +265,12 @@ public class TransactionRequest extends Request {
       return this;
     }
 
+    // NEXT_MAJOR_VERSION remove this method
+    // threeDSecureToken has been deprecated in favor of threeDSecureAuthenticationID
+    /**
+     * @deprecated use threeDSecureAuthenticationID instead
+     */
+    @Deprecated
     public TransactionRequest threeDSecureToken(String threeDSecureToken) {
       this.threeDSecureTransaction = true;
       this.threeDSecureToken = threeDSecureToken;
@@ -412,6 +419,8 @@ public class TransactionRequest extends Request {
             builder.addElement("scaExemption", scaExemption.toString());
         }
 
+        // NEXT_MAJOR_VERSION modify this check
+        // threeDSecureToken has been deprecated in favor of threeDSecureAuthenticationID
         if (threeDSecureTransaction) {
             if (threeDSecureAuthenticationId != null) {
                 builder.addElement("threeDSecureAuthenticationId", threeDSecureAuthenticationId);

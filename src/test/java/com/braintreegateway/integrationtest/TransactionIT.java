@@ -1432,6 +1432,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     }
 
+    // NEXT_MAJOR_VERSION remove this test
+    // threeDSecureToken has been deprecated in favor of threeDSecureAuthenticationID
     @Test
     public void saleWithThreeDSecureToken() {
         String threeDSecureToken = TestHelper.createTest3DS(gateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
@@ -1456,6 +1458,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
     }
 
+    // NEXT_MAJOR_VERSION modify this test to use threeDSecureAuthenticationID
+    // threeDSecureToken has been deprecated in favor of threeDSecureAuthenticationID
     @Test
     public void saleErrorWithNullThreeDSecureToken() {
         String threeDSecureToken = null;
@@ -1475,6 +1479,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 result.getErrors().forObject("transaction").onField("threeDSecureToken").get(0).getCode());
     }
 
+    // NEXT_MAJOR_VERSION remove this test
+    // threeDSecureToken has been deprecated in favor of threeDSecureAuthenticationID
     @Test
     public void saleErrorWithMismatchedThreeDSecureData() {
         String threeDSecureToken = TestHelper.createTest3DS(gateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().

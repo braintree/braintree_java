@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+* Deprecate `threeDSecureToken` in favor of `threeDSecureAuthenticationId`
 * Add `externalNetworkTokenizationEnrollmentId` to `PaymentMethodGrantRequest`
 
 ## 3.29.0

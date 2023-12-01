@@ -228,7 +228,8 @@ public class CreditCardVerificationIT extends IntegrationTest {
         assertTrue(result.isSuccess());
     }
 
-
+    // NEXT_MAJOR_VERSION remove this test
+    // threeDSecureToken has been deprecated in favor of threeDSecureAuthenticationID
     @Test
     public void createVerificationWithThreeDSecureToken() {
 
