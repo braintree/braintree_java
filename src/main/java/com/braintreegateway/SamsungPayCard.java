@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+// NEXT_MAJOR_VERSION remove isVenmoSDK
+// The old venmo SDK integration has been deprecated
 public class SamsungPayCard implements PaymentMethod {
 
   private Address billingAddress;
@@ -17,6 +19,7 @@ public class SamsungPayCard implements PaymentMethod {
   private String expirationMonth;
   private String expirationYear;
   private boolean isDefault;
+  @Deprecated
   private boolean isVenmoSdk;
   private boolean isExpired;
   private String imageUrl;
@@ -226,6 +229,11 @@ public class SamsungPayCard implements PaymentMethod {
     return isDefault;
   }
 
+  //NEXT_MAJOR_VERSION remove this method
+  /**
+   * @deprecated - The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead
+  */
+  @Deprecated
   public boolean isVenmoSdk() {
     return isVenmoSdk;
   }

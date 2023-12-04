@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+// NEXT_MAJOR_VERSION remove venmoSdkSession
+// The old venmo SDK integration has been deprecated
 public class TransactionOptionsRequest extends Request {
     private Boolean addBillingAddressToPaymentMethod;
     private Boolean holdInEscrow;
@@ -8,6 +10,7 @@ public class TransactionOptionsRequest extends Request {
     private Boolean storeInVaultOnSuccess;
     private Boolean storeShippingAddressInVault;
     private Boolean submitForSettlement;
+    @Deprecated
     private String venmoSdkSession;
     private String payeeId;
     private String payeeEmail;
@@ -60,6 +63,10 @@ public class TransactionOptionsRequest extends Request {
         return this;
     }
 
+    //NEXT_MAJOR_VERSION remove this method
+    /**
+     * @deprecated - The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead
+    */
     public TransactionOptionsRequest venmoSdkSession(String venmoSdkSession) {
         this.venmoSdkSession = venmoSdkSession;
         return this;
@@ -140,6 +147,8 @@ public class TransactionOptionsRequest extends Request {
         return buildRequest(root).toQueryString();
     }
 
+    // NEXT_MAJOR_VERSION remove venmoSdkSession
+    // The old venmo SDK integration has been deprecated
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root)
             .addElement("holdInEscrow", holdInEscrow)

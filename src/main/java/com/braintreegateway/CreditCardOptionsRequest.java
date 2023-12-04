@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+// NEXT_MAJOR_VERSION remove venmoSdkSession
+// The old venmo SDK integration has been deprecated
 public class CreditCardOptionsRequest extends Request {
     private Boolean failOnDuplicatePaymentMethod;
     private Boolean makeDefault;
@@ -7,6 +9,7 @@ public class CreditCardOptionsRequest extends Request {
     private Boolean verifyCard;
     private CreditCardRequest parent;
     private String updateExistingToken;
+    @Deprecated
     private String venmoSdkSession;
     private String verificationAccountType; // NEXT_MAJOR_VERSION - This should be enum with [credit, debit]
     private String verificationAmount;
@@ -61,6 +64,10 @@ public class CreditCardOptionsRequest extends Request {
         return this;
     }
 
+    //NEXT_MAJOR_VERSION remove this method
+    /**
+     * @deprecated - The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead
+    */
     public CreditCardOptionsRequest venmoSdkSession(String venmoSdkSession) {
         this.venmoSdkSession = venmoSdkSession;
         return this;
@@ -86,6 +93,8 @@ public class CreditCardOptionsRequest extends Request {
         return buildRequest(root).toQueryString();
     }
 
+    // NEXT_MAJOR_VERSION remove venmoSdkSession
+    // The old venmo SDK integration has been deprecated
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root);
 

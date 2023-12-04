@@ -13,6 +13,8 @@ import com.braintreegateway.testhelpers.TestHelper;
 
 public class PaymentMethodRequestTest {
   @Test
+  // NEXT_MAJOR_VERSION remove venmoSdkPaymentMethodCode
+  // The old venmo SDK integration has been deprecated
   public void toXmlIncludesAllElements() throws IOException, SAXException {
     PaymentMethodRequest request = new PaymentMethodRequest()
         .paymentMethodNonce("some-payment-method-nonce")
