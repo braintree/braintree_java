@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.30.0
 * Deprecate `threeDSecureToken` in favor of `threeDSecureAuthenticationId`
 * Add `externalNetworkTokenizationEnrollmentId` to `PaymentMethodGrantRequest`
 * Deprecate `isVenmoSdk`, `venmoSdkSession`, and `venmoSdkPaymentMethodCode`
