@@ -3,6 +3,8 @@ package com.braintreegateway;
 /**
  * Provides a fluent interface to build up requests around {@link CreditCard CreditCards}.
  */
+// NEXT_MAJOR_VERSION remove venmoSdkPaymentMethodCode
+// The old venmo SDK integration has been deprecated
 public class CreditCardRequest extends Request {
     private String billingAddressId;
     private String cardholderName;
@@ -18,6 +20,7 @@ public class CreditCardRequest extends Request {
     private String paymentMethodNonce;
     private String paymentMethodToken;
     private String token;
+    @Deprecated
     private String venmoSdkPaymentMethodCode;
     private CreditCardAddressRequest billingAddressRequest;
     private CreditCardOptionsRequest optionsRequest;
@@ -120,6 +123,10 @@ public class CreditCardRequest extends Request {
         return this;
     }
 
+    //NEXT_MAJOR_VERSION remove this method
+    /**
+     * @deprecated - The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead
+    */
     public CreditCardRequest venmoSdkPaymentMethodCode(String venmoSdkPaymentMethodCode) {
         this.venmoSdkPaymentMethodCode = venmoSdkPaymentMethodCode;
         return this;
@@ -160,6 +167,8 @@ public class CreditCardRequest extends Request {
             .toQueryString();
     }
 
+    // NEXT_MAJOR_VERSION remove venmoSdkPaymentMethodCode
+    // The old venmo SDK integration has been deprecated
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root)
             .addElement("billingAddress", billingAddressRequest)

@@ -779,6 +779,30 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void findWithThreeDSecure() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Fred").
+            creditCard().
+              paymentMethodNonce(Nonce.ThreeDSecureVisaFullAuthentication).
+              options().
+                  verifyCard(true).
+                  done().
+              done();
+
+        Result<Customer> createResult = gateway.customer().create(request);
+        assertTrue(createResult.isSuccess());
+        Customer customer = createResult.getTarget();
+
+        Customer foundCustomer = gateway.customer().find(customer.getId());
+        ThreeDSecureInfo threeDSecureInfo =
+            foundCustomer.getCreditCards().get(0).getVerification().getThreeDSecureInfo();
+        assertEquals("authenticate_successful", threeDSecureInfo.getStatus());
+        assertEquals(true, threeDSecureInfo.isLiabilityShifted());
+        assertEquals(true, threeDSecureInfo.isLiabilityShiftPossible());
+        assertEquals("cavv_value", threeDSecureInfo.getCAVV());
+    }
+
+    @Test
     public void createWithApplePayCard() {
         CustomerRequest request = new CustomerRequest().
             paymentMethodNonce(Nonce.ApplePayVisa);

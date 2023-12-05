@@ -1318,6 +1318,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
         assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+        ThreeDSecureInfo threeDS = transaction.getThreeDSecureInfo();
+        assertEquals("test_cavv", threeDS.getCAVV());
+        assertEquals("test_eci", threeDS.getECIFlag());
+        assertTrue(threeDS.isLiabilityShifted());
+        assertTrue(threeDS.isLiabilityShiftPossible());
     }
 
     @Test
@@ -1427,6 +1432,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     }
 
+    // NEXT_MAJOR_VERSION remove this test
+    // threeDSecureToken has been deprecated in favor of threeDSecureAuthenticationID
     @Test
     public void saleWithThreeDSecureToken() {
         String threeDSecureToken = TestHelper.createTest3DS(gateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
@@ -1451,6 +1458,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
     }
 
+    // NEXT_MAJOR_VERSION modify this test to use threeDSecureAuthenticationID
+    // threeDSecureToken has been deprecated in favor of threeDSecureAuthenticationID
     @Test
     public void saleErrorWithNullThreeDSecureToken() {
         String threeDSecureToken = null;
@@ -1470,6 +1479,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 result.getErrors().forObject("transaction").onField("threeDSecureToken").get(0).getCode());
     }
 
+    // NEXT_MAJOR_VERSION remove this test
+    // threeDSecureToken has been deprecated in favor of threeDSecureAuthenticationID
     @Test
     public void saleErrorWithMismatchedThreeDSecureData() {
         String threeDSecureToken = TestHelper.createTest3DS(gateway, THREE_D_SECURE_MERCHANT_ACCOUNT_ID, new ThreeDSecureRequestForTests().
@@ -8095,6 +8106,48 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(transaction.getFacilitatorDetails().getOauthApplicationClientId(), "client_id$development$integration_client_id");
         assertEquals(transaction.getFacilitatorDetails().getOauthApplicationName(), "PseudoShop");
         assertEquals(transaction.getFacilitatorDetails().getSourcePaymentMethodToken(), creditCard.getToken());
+    }
+
+    @Test
+    public void paymentMethodGrantIncludeEnrollmentId() {
+        BraintreeGateway partnerGateway = new BraintreeGateway(
+                Environment.DEVELOPMENT,
+                "integration_merchant_public_id",
+                "oauth_app_partner_user_public_key",
+                "oauth_app_partner_user_private_key"
+        );
+        Customer customer = partnerGateway.customer().create(new CustomerRequest().
+                creditCard().
+                number("5105105105105100").
+                expirationDate("05/19").
+                billingAddress().
+                    postalCode("94107").
+                    done().
+                done()
+        ).getTarget();
+        CreditCard creditCard = customer.getCreditCards().get(0);
+
+        BraintreeGateway oauthGateway = new BraintreeGateway(
+                "client_id$development$integration_client_id",
+                "client_secret$development$integration_client_secret"
+        );
+        String code = TestHelper.createOAuthGrant(oauthGateway, "integration_merchant_id", "grant_payment_method");
+
+        OAuthCredentialsRequest oauthRequest = new OAuthCredentialsRequest().
+             code(code).
+             scope("grant_payment_method");
+
+        Result<OAuthCredentials> accessTokenResult = oauthGateway.oauth().createTokenFromCode(oauthRequest);
+        BraintreeGateway grantGateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
+        PaymentMethodGrantRequest grantRequest = new PaymentMethodGrantRequest().allowVaulting(false).externalNetworkTokenizationEnrollmentId("enrollment_id");
+        Result<PaymentMethodNonce> grantResult = grantGateway.paymentMethod().grant(creditCard.getToken(), grantRequest);
+
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(grantResult.getTarget().getNonce());
+
+        Result<Transaction> transactionResult = gateway.transaction().sale(request);
+        assertTrue(transactionResult.isSuccess());
     }
 
     @Test

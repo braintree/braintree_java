@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+//NEXT_MAJOR_VERSION remove this class
 @Deprecated
 public class MasterpassCard implements PaymentMethod {
 

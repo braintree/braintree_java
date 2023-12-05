@@ -1,5 +1,8 @@
 package com.braintreegateway.test;
 
+// NEXT_MAJOR_VERSION remove this class
+// The old venmo SDK integration has been deprecated
+@Deprecated
 public class VenmoSdk {
     public enum PaymentMethodCode {
         Visa("4111111111111111"), Invalid("invalid-payment-method-code");

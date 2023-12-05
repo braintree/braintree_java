@@ -8,6 +8,7 @@ public class CreditCardVerificationRequest extends Request {
     private String intendedTransactionSource;
     private String paymentMethodNonce;
     private RiskDataVerificationRequest riskDataVerificationRequest;
+    @Deprecated
     private String threeDSecureToken;
     private String threeDSecureAuthenticationID;
     private VerificationThreeDSecurePassThruRequest verificationThreeDSecurePassThruRequest;
@@ -50,6 +51,12 @@ public class CreditCardVerificationRequest extends Request {
         return this;
     }
 
+    // NEXT_MAJOR_VERSION remove this method
+    // threeDSecureToken has been deprecated in favor of threeDSecureAuthenticationID
+    /**
+     * @deprecated use threeDSecureAuthenticationID instead
+     */
+    @Deprecated
     public CreditCardVerificationRequest threeDSecureToken(String threeDSecureToken) {
         this.threeDSecureToken = threeDSecureToken;
         return this;
@@ -74,7 +81,7 @@ public class CreditCardVerificationRequest extends Request {
             .addElement("intendedTransactionSource", intendedTransactionSource)
             .addElement("paymentMethodNonce", paymentMethodNonce)
             .addElement("threeDSecureAuthenticationID", threeDSecureAuthenticationID)
-            .addElement("threeDSecureToken", threeDSecureToken)
+            .addElement("threeDSecureToken", threeDSecureToken) // Deprecated
             .addElement("threeDSecurePassThru", verificationThreeDSecurePassThruRequest);
         return builder;
     }

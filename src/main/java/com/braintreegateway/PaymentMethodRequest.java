@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+// NEXT_MAJOR_VERSION remove venmoSdkPaymentMethodCode
+// The old venmo SDK integration has been deprecated
 public class PaymentMethodRequest extends Request {
     private String paymentMethodNonce;
     private String customerId;
@@ -19,6 +21,7 @@ public class PaymentMethodRequest extends Request {
     private String paymentMethodToken;
     private String paypalRefreshToken;
     private String threeDSecureAuthenticationId;
+    @Deprecated
     private String venmoSdkPaymentMethodCode;
     private PaymentMethodThreeDSecurePassThruRequest threeDSecurePassThruRequest;
 
@@ -79,6 +82,10 @@ public class PaymentMethodRequest extends Request {
         return this;
     }
 
+    //NEXT_MAJOR_VERSION remove this method
+    /**
+     * @deprecated - The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead
+    */
     public PaymentMethodRequest venmoSdkPaymentMethodCode(String venmoSdkPaymentMethodCode) {
         this.venmoSdkPaymentMethodCode = venmoSdkPaymentMethodCode;
         return this;
@@ -142,6 +149,8 @@ public class PaymentMethodRequest extends Request {
         return buildRequest("payment-method").toXML();
     }
 
+    // NEXT_MAJOR_VERSION remove venmoSdkPaymentMethodCode
+    // The old venmo SDK integration has been deprecated
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root)
             .addElement("token", token)
