@@ -74,18 +74,10 @@
             <version>5.7.2</version>
             <scope>test</scope>
         </dependency>
-        <!-- The junit-vintage-engine artifact allows existing tests on JUnit4 to execute.
-        TODO: This can be removed once all tests are converted to JUnit5. -->
         <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>5.7.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>xmlunit</groupId>
-          <artifactId>xmlunit</artifactId>
-          <version>1.6</version>
+          <groupId>org.xmlunit</groupId>
+          <artifactId>xmlunit-legacy</artifactId>
+          <version>2.9.1</version>
           <scope>test</scope>
         </dependency>
         <dependency>

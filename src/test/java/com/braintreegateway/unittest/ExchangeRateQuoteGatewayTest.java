@@ -10,7 +10,6 @@ import com.braintreegateway.util.GraphQLClient;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import com.fasterxml.jackson.jr.ob.JSON;
@@ -121,7 +120,7 @@ public class ExchangeRateQuoteGatewayTest {
     ExchangeRateQuoteGateway exchangeRateQuoteGateway = new ExchangeRateQuoteGateway(null,
         graphQLClient, null);
     Result<ExchangeRateQuotePayload> result = exchangeRateQuoteGateway.generate(request);
-    Assert.assertTrue(result.getErrors().getAllValidationErrors().get(0).getMessage().contains("'quoteCurrency'"));
+    assertTrue(result.getErrors().getAllValidationErrors().get(0).getMessage().contains("'quoteCurrency'"));
   }
 
 }

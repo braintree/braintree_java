@@ -1,15 +1,16 @@
 package com.braintreegateway.integrationtest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.braintreegateway.ExchangeRateQuote;
 import com.braintreegateway.ExchangeRateQuotePayload;
 import com.braintreegateway.ExchangeRateQuoteRequest;
 import com.braintreegateway.Result;
 import java.util.List;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 public class ExchangeRateQuoteIT extends IntegrationTest {
@@ -32,7 +33,7 @@ public class ExchangeRateQuoteIT extends IntegrationTest {
                 .done();
 
         Result<ExchangeRateQuotePayload> result = gateway.exchangeRateQuote().generate(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         List<ExchangeRateQuote> quotes = result.getTarget().getQuotes();
         assertNotNull(quotes);
         assertEquals(2, quotes.size());
@@ -77,8 +78,8 @@ public class ExchangeRateQuoteIT extends IntegrationTest {
                 .done();
 
         Result<ExchangeRateQuotePayload> result = gateway.exchangeRateQuote().generate(request);
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertTrue(result.getErrors().getAllValidationErrors().get(0).getMessage().contains("'quoteCurrency'"));
+        assertFalse(result.isSuccess());
+        assertTrue(result.getErrors().getAllValidationErrors().get(0).getMessage().contains("'quoteCurrency'"));
     }
 
     @Test
@@ -98,8 +99,8 @@ public class ExchangeRateQuoteIT extends IntegrationTest {
                 .done();
 
         Result<ExchangeRateQuotePayload> result = gateway.exchangeRateQuote().generate(request);
-        Assert.assertFalse(result.isSuccess());
-        Assert.assertTrue(result.getErrors().getAllValidationErrors().get(0).getMessage().contains("'baseCurrency'"));
+        assertFalse(result.isSuccess());
+        assertTrue(result.getErrors().getAllValidationErrors().get(0).getMessage().contains("'baseCurrency'"));
     }
 
     @Test
@@ -116,7 +117,7 @@ public class ExchangeRateQuoteIT extends IntegrationTest {
                 .done();
 
         Result<ExchangeRateQuotePayload> result = gateway.exchangeRateQuote().generate(request);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
     }
 
 }
