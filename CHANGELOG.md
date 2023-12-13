@@ -1,10 +1,12 @@
 # Changelog
 
+## Unreleased
+* Add `PICKUP_IN_STORE` to `ShippingMethod` enum
+
 ## 3.30.0
 * Deprecate `threeDSecureToken` in favor of `threeDSecureAuthenticationId`
 * Add `externalNetworkTokenizationEnrollmentId` to `PaymentMethodGrantRequest`
 * Deprecate `isVenmoSdk`, `venmoSdkSession`, and `venmoSdkPaymentMethodCode`
-* Add `PICKUP_IN_STORE` to `ShippingMethod` enum
 
 ## 3.29.0
 * Add methods to `UsBankAccount`
