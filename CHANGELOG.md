@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.31.0
 * Add `PICKUP_IN_STORE` to `ShippingMethod` enum
 * Add `phoneNumber` to `CreditCardAddressRequest` and `PaymentMethodAddressRequest`
 
