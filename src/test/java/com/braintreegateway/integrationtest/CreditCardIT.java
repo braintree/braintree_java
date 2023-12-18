@@ -111,6 +111,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
                 countryCodeAlpha2("US").
                 countryCodeAlpha3("USA").
                 countryCodeNumeric("840").
+                phoneNumber("312-123-4567").
                 done().
             cardholderName("John Doe").
             cvv("123").
@@ -130,6 +131,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertEquals("US", billingAddress.getCountryCodeAlpha2());
         assertEquals("USA", billingAddress.getCountryCodeAlpha3());
         assertEquals("840", billingAddress.getCountryCodeNumeric());
+        assertEquals("312-123-4567", billingAddress.getPhoneNumber());
     }
 
     @Test
