@@ -9,7 +9,6 @@ import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.Assert.fail;
 
 public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTestConstants {
 

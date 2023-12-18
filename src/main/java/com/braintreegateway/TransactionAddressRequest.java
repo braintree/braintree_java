@@ -7,7 +7,8 @@ public class TransactionAddressRequest extends AddressRequest {
         PRIORITY("priority"),
         GROUND("ground"),
         ELECTRONIC("electronic"),
-        SHIP_TO_STORE("ship_to_store");
+        SHIP_TO_STORE("ship_to_store"),
+        PICKUP_IN_STORE("pickup_in_store");
 
         private final String name;
 

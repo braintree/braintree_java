@@ -17,6 +17,12 @@ public class PaymentMethodAddressRequest extends AddressRequest {
     }
 
     @Override
+    public PaymentMethodAddressRequest phoneNumber(String phoneNumber) {
+        super.phoneNumber(phoneNumber);
+        return this;
+    }
+
+    @Override
     public PaymentMethodAddressRequest countryCodeAlpha2(String countryCodeAlpha2) {
         super.countryCodeAlpha2(countryCodeAlpha2);
         return this;

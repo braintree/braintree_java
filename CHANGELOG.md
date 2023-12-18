@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.31.0
+* Add `PICKUP_IN_STORE` to `ShippingMethod` enum
+* Add `phoneNumber` to `CreditCardAddressRequest` and `PaymentMethodAddressRequest`
+
 ## 3.30.0
 * Deprecate `threeDSecureToken` in favor of `threeDSecureAuthenticationId`
 * Add `externalNetworkTokenizationEnrollmentId` to `PaymentMethodGrantRequest`

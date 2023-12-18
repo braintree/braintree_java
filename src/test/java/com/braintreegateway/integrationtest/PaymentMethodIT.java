@@ -1463,6 +1463,7 @@ public class PaymentMethodIT extends IntegrationTest {
         PaymentMethodRequest updateCardRequest = new PaymentMethodRequest().
             billingAddress().
                 region("Illinois").
+                phoneNumber("312-123-4567").
                 options().
                     updateExisting(true).
                     done().
@@ -1475,6 +1476,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertTrue(result.getTarget() instanceof CreditCard);
         CreditCard creditCard = (CreditCard) result.getTarget();
         assertEquals(creditCard.getBillingAddress().getRegion(),"Illinois");
+        assertEquals(creditCard.getBillingAddress().getPhoneNumber(),"312-123-4567");
         assertEquals(creditCard.getBillingAddress().getStreetAddress(),"1 E Main St");
         assertEquals(creditCard.getBillingAddress().getId(), oldCreditCard.getBillingAddress().getId());
     }

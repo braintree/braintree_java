@@ -18,6 +18,12 @@ public class CreditCardAddressRequest extends AddressRequest {
     }
 
     @Override
+    public CreditCardAddressRequest phoneNumber(String phoneNumber) {
+        super.phoneNumber(phoneNumber);
+        return this;
+    }
+
+    @Override
     public CreditCardAddressRequest countryCodeAlpha2(String countryCodeAlpha2) {
         super.countryCodeAlpha2(countryCodeAlpha2);
         return this;

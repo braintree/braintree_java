@@ -7,13 +7,13 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-import com.braintreegateway.ApplePayCardAddressRequest;
-import com.braintreegateway.ApplePayCardRequest;
+import com.braintreegateway.PaymentMethodAddressRequest;
+import com.braintreegateway.PaymentMethodRequest;
 
-public class ApplePayCardAddressTest {
+public class PaymentMethodAddressRequestTest {
     @Test
     public void toXmlIncludesAllElements() throws IOException, SAXException {
-        ApplePayCardAddressRequest request = new ApplePayCardAddressRequest(new ApplePayCardRequest()).
+        PaymentMethodAddressRequest request = new PaymentMethodAddressRequest(new PaymentMethodRequest()).
             company("some-company").
             countryCodeAlpha2("country-code2").
             countryCodeAlpha3("country-code3").
