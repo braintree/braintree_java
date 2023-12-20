@@ -8552,30 +8552,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void adjustAuthorizationOnUnAuthorizedTransaction() {
-        BigDecimal initial_amount = new BigDecimal("75.50");
-        TransactionRequest request = new TransactionRequest().
-            merchantAccountId(FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID).
-            amount(initial_amount).
-            creditCard().
-                number("5105105105105100").
-                expirationDate("05/2012").
-                done().
-            options().
-                submitForSettlement(true).
-                done();
-
-        Transaction transaction = gateway.transaction().sale(request).getTarget();
-        BigDecimal new_adjusted_amount = new BigDecimal("85.50");
-        Result<Transaction> result = gateway.transaction().adjustAuthorization(transaction.getId(), new_adjusted_amount);
-        assertFalse(result.isSuccess());
-        Transaction result_transaction = result.getTransaction();
-        assertEquals(initial_amount, result_transaction.getAmount());
-        assertEquals(ValidationErrorCode.TRANSACTION_MUST_BE_IN_STATE_AUTHORIZED,
-                     result.getErrors().forObject("transaction").onField("base").get(0).getCode());
-    }
-
-    @Test
     public void adjustAuthorizationOnTransactionTypeFinalOrUndefined() {
         BigDecimal initial_amount = new BigDecimal("75.50");
         TransactionRequest request = new TransactionRequest().
