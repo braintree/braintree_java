@@ -184,6 +184,7 @@ public class Transaction {
     private SamsungPayCardDetails samsungPayCardDetails;
     private ScaExemption scaExemptionRequested;
     private SepaDirectDebitAccountDetails sepaDirectDebitAccountDetails;
+    private List<PackageDetails> packages;
     private Status status;
     private String achReturnCode;
     private String acquirerReferenceNumber;
@@ -337,6 +338,12 @@ public class Transaction {
         if (customActionsPaymentMethodNode != null) {
             customActionsPaymentMethodDetails = new CustomActionsPaymentMethodDetails(customActionsPaymentMethodNode);
         }
+
+        packages = new ArrayList<PackageDetails>();
+        for (NodeWrapper packageNode : node.findAll("shipments/shipment")) {
+            packages.add(new PackageDetails(packageNode));
+        }
+
         achReturnCode = node.findString("ach-return-code");
         sepaDirectDebitReturnCode = node.findString("sepa-direct-debit-return-code");
         planId = node.findString("plan-id");
@@ -644,6 +651,10 @@ public class Transaction {
 
     public CustomActionsPaymentMethodDetails getCustomActionsPaymentMethodDetails() {
         return customActionsPaymentMethodDetails;
+    }
+
+    public List<PackageDetails> getPackages() {
+        return packages;
     }
 
     public String getPlanId() {

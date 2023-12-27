@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+* Add `packageTracking` method to `TransactionGateway` to make request to add tracking information to transactions
+* Add `PackageDetails` and `PackageTrackingRequest` classes
+
 ## 3.31.0
 * Add `PICKUP_IN_STORE` to `ShippingMethod` enum
 * Add `phoneNumber` to `CreditCardAddressRequest` and `PaymentMethodAddressRequest`
