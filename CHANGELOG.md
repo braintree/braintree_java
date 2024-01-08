@@ -3,6 +3,7 @@
 ## Unreleased
 * Add `packageTracking` method to `TransactionGateway` to make request to add tracking information to transactions
 * Add `PackageDetails` and `PackageTrackingRequest` classes
+* Add `process_debit_as_credit` to `TransactionOptionsCreditCardRequest`
 
 ## 3.31.0
 * Add `PICKUP_IN_STORE` to `ShippingMethod` enum

@@ -6689,13 +6689,35 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             paymentMethodNonce(Nonce.TransactablePinlessDebitVisa).
+            options().
+                submitForSettlement(true).
+                done().
             merchantAccountId(PINLESS_DEBIT);
 
         Transaction transaction = gateway.transaction().sale(request).getTarget();
+        String debitNetwork= transaction.getDebitNetwork();
+        assertNotNull(debitNetwork);
+        CreditCard.DebitNetwork debitNetworkEnum = CreditCard.DebitNetwork.valueOf(debitNetwork);
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            debitNetwork().is(CreditCard.DebitNetwork.STAR);
-        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+            debitNetwork().is(debitNetworkEnum);
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    @Test
+    public void processDebitAsCreditFlag() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(Nonce.TransactablePinlessDebitVisa).
+            options().
+                creditCard().
+                    processDebitAsCredit(true).
+                    done().
+                done().
+            merchantAccountId(PINLESS_DEBIT);
+        
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        assertNull(transaction.getDebitNetwork());
     }
 
     @Test

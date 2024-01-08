@@ -4,6 +4,7 @@ package com.braintreegateway;
 public class TransactionOptionsCreditCardRequest extends Request {
     private TransactionOptionsRequest parent;
     private String accountType;
+    private Boolean processDebitAsCredit;
 
     public TransactionOptionsCreditCardRequest(TransactionOptionsRequest parent) {
         this.parent = parent;
@@ -15,6 +16,11 @@ public class TransactionOptionsCreditCardRequest extends Request {
 
     public TransactionOptionsCreditCardRequest accountType(String accountType) {
         this.accountType = accountType;
+        return this;
+    }
+
+    public TransactionOptionsCreditCardRequest processDebitAsCredit(Boolean processDebitAsCredit) {
+        this.processDebitAsCredit = processDebitAsCredit;
         return this;
     }
 
@@ -35,7 +41,8 @@ public class TransactionOptionsCreditCardRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root)
-            .addElement("accountType", accountType);
+            .addElement("accountType", accountType)
+            .addElement("processDebitAsCredit", processDebitAsCredit);
         return builder;
     }
 }
