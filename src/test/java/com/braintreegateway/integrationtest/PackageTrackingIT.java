@@ -32,13 +32,19 @@ public class PackageTrackingIT extends IntegrationTest {
                 .productCode("ABC 01")
                 .quantity(new BigDecimal(1))
                 .name("Best Product Ever")
-                .description("Best Description Ever");
+                .description("Best Description Ever")
+                .upcCode("93759A49")
+                .upcType("UPC-A")
+                .imageUrl("https://example.com/image.png");
 
         TransactionLineItemRequest packageLine2 = new TransactionLineItemRequest()
                 .productCode("ABC 02")
                 .quantity(new BigDecimal(1))
                 .name("Best Product Ever")
-                .description("Best Description Ever");
+                .description("Best Description Ever")
+                .upcCode("93486946")
+                .upcType("UPC-B")
+                .imageUrl("https://example.com/image2.png");
 
         // Create First package with 2 products
         PackageTrackingRequest firstPackage = new PackageTrackingRequest()
