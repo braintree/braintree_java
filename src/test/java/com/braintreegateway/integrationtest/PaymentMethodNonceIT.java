@@ -14,6 +14,7 @@ import com.braintreegateway.test.Nonce;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Calendar;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -178,7 +179,7 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertEquals("81", nonce.getDetails().getLastTwo());      
         assertEquals("1881", nonce.getDetails().getLastFour());
         assertEquals("12", nonce.getDetails().getExpirationMonth());        
-        assertEquals("2024", nonce.getDetails().getExpirationYear());
+        assertEquals(String.valueOf(Calendar.getInstance().get(Calendar.YEAR) + 1), nonce.getDetails().getExpirationYear());
     }
 
     @Test
@@ -195,7 +196,7 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertEquals("81", nonce.getDetails().getLastTwo());      
         assertEquals("1881", nonce.getDetails().getLastFour());
         assertEquals("12", nonce.getDetails().getExpirationMonth());        
-        assertEquals("2024", nonce.getDetails().getExpirationYear());
+        assertEquals(String.valueOf(Calendar.getInstance().get(Calendar.YEAR) + 1), nonce.getDetails().getExpirationYear());
     }
 
     @Test

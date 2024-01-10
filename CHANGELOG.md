@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.32.0
+* Add `packageTracking` method to `TransactionGateway` to make request to add tracking information to transactions
+* Add `PackageDetails` and `PackageTrackingRequest` classes
+* Add `process_debit_as_credit` to `TransactionOptionsCreditCardRequest`
+* Add `upcCode`, `upcType`, and `imageUrl` to `TransactionLineItem` and `TransactionLineItemRequest`
+
 ## 3.31.0
 * Add `PICKUP_IN_STORE` to `ShippingMethod` enum
 * Add `phoneNumber` to `CreditCardAddressRequest` and `PaymentMethodAddressRequest`

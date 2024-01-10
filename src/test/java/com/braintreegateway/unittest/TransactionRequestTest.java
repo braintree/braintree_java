@@ -1,5 +1,6 @@
 package com.braintreegateway.unittest;
 
+import com.braintreegateway.SandboxValues.TransactionAmount;
 import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.testhelpers.TestHelper;
 
@@ -78,4 +79,17 @@ public class TransactionRequestTest {
             done();
         TestHelper.assertIncludes("<processingOverrides><customerEmail>tom@gmail.com</customerEmail><customerFirstName>tom</customerFirstName><customerLastName>smith</customerLastName><customerTaxIdentifier>111111111111111</customerTaxIdentifier></processingOverrides>", request.toXML());
     }
+
+    @Test
+		public void toXmlIncludesProcessDebitAsCredit(){
+			TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+			merchantAccountId("processdebitascredit").
+            options().
+                creditCard().
+                    processDebitAsCredit(true).
+                    done().
+                done();
+		    TestHelper.assertIncludes("<processDebitAsCredit>true</processDebitAsCredit>",request.toXML());
+		}
 }

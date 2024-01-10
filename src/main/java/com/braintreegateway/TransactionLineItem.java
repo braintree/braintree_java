@@ -23,34 +23,40 @@ public class TransactionLineItem {
         }
     }
 
-    private BigDecimal quantity;
-    private String name;
-    private String description;
     private TransactionLineItem.Kind kind;
+    private BigDecimal discountAmount;
+    private BigDecimal quantity;
+    private BigDecimal taxAmount;
+    private BigDecimal totalAmount;
     private BigDecimal unitAmount;
     private BigDecimal unitTaxAmount;
-    private BigDecimal totalAmount;
-    private BigDecimal discountAmount;
-    private String unitOfMeasure;
-    private String productCode;
     private String commodityCode;
+    private String description;
+    private String imageUrl;
+    private String name;
+    private String productCode;
+    private String unitOfMeasure;
+    private String upcCode;
+    private String upcType;
     private String url;
-    private BigDecimal taxAmount;
 
     public TransactionLineItem(NodeWrapper node) {
-        quantity = node.findBigDecimal("quantity");
-        name = node.findString("name");
-        description = node.findString("description");
-        kind = EnumUtils.findByName(Kind.class, node.findString("kind"), Kind.UNRECOGNIZED);
-        unitAmount = node.findBigDecimal("unit-amount");
-        unitTaxAmount = node.findBigDecimal("unit-tax-amount");
-        totalAmount = node.findBigDecimal("total-amount");
-        discountAmount = node.findBigDecimal("discount-amount");
-        unitOfMeasure = node.findString("unit-of-measure");
-        productCode = node.findString("product-code");
         commodityCode = node.findString("commodity-code");
-        url = node.findString("url");
+        description = node.findString("description");
+        discountAmount = node.findBigDecimal("discount-amount");
+        imageUrl = node.findString("image-url");
+        kind = EnumUtils.findByName(Kind.class, node.findString("kind"), Kind.UNRECOGNIZED);
+        name = node.findString("name");
+        productCode = node.findString("product-code");
+        quantity = node.findBigDecimal("quantity");
         taxAmount = node.findBigDecimal("tax-amount");
+        totalAmount = node.findBigDecimal("total-amount");
+        unitAmount = node.findBigDecimal("unit-amount");
+        unitOfMeasure = node.findString("unit-of-measure");
+        unitTaxAmount = node.findBigDecimal("unit-tax-amount");
+        upcCode = node.findString("upc-code");
+        upcType = node.findString("upc-type");
+        url = node.findString("url");
     }
 
     public BigDecimal getQuantity() {
@@ -103,5 +109,17 @@ public class TransactionLineItem {
 
     public BigDecimal getTaxAmount() {
             return taxAmount;
+    }
+
+    public String getImageUrl() {
+            return imageUrl;
+    }
+
+    public String getUpcCode() {
+            return upcCode;
+    }
+
+    public String getUpcType() {
+            return upcType;
     }
 }

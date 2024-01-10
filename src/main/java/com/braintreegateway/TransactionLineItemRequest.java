@@ -5,22 +5,28 @@ import java.math.BigDecimal;
 public class TransactionLineItemRequest extends Request {
 
     private TransactionRequest parent;
-    private BigDecimal quantity;
-    private String name;
-    private String description;
     private TransactionLineItem.Kind kind;
+    private BigDecimal discountAmount;
+    private BigDecimal quantity;
+    private BigDecimal taxAmount;
+    private BigDecimal totalAmount;
     private BigDecimal unitAmount;
     private BigDecimal unitTaxAmount;
-    private BigDecimal totalAmount;
-    private BigDecimal discountAmount;
-    private String unitOfMeasure;
-    private String productCode;
     private String commodityCode;
+    private String description;
+    private String imageUrl;
+    private String name;
+    private String productCode;
+    private String unitOfMeasure;
+    private String upcCode;
+    private String upcType;
     private String url;
-    private BigDecimal taxAmount;
 
     public TransactionLineItemRequest(TransactionRequest parent) {
         this.parent = parent;
+    }
+
+    public TransactionLineItemRequest() {
     }
 
     public TransactionLineItemRequest quantity(BigDecimal quantity) {
@@ -88,6 +94,21 @@ public class TransactionLineItemRequest extends Request {
         return this;
     }
 
+    public TransactionLineItemRequest imageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+        return this;
+    }
+
+    public TransactionLineItemRequest upcCode(String upcCode) {
+        this.upcCode = upcCode;
+        return this;
+    }
+
+    public TransactionLineItemRequest upcType(String upcType) {
+        this.upcType = upcType;
+        return this;
+    }
+
     public TransactionRequest done() {
         return parent;
     }
@@ -109,18 +130,22 @@ public class TransactionLineItemRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root)
-            .addElement("quantity", quantity)
-            .addElement("name", name)
-            .addElement("description", description)
-            .addElement("kind", kind)
-            .addElement("unitAmount", unitAmount)
-            .addElement("unitTaxAmount", unitTaxAmount)
-            .addElement("totalAmount", totalAmount)
-            .addElement("discountAmount", discountAmount)
-            .addElement("taxAmount", taxAmount)
-            .addElement("unitOfMeasure", unitOfMeasure)
-            .addElement("productCode", productCode)
             .addElement("commodityCode", commodityCode)
-            .addElement("url", url);
+            .addElement("description", description)
+            .addElement("discountAmount", discountAmount)
+            .addElement("imageUrl", imageUrl)
+            .addElement("kind", kind)
+            .addElement("name", name)
+            .addElement("productCode", productCode)
+            .addElement("quantity", quantity)
+            .addElement("taxAmount", taxAmount)
+            .addElement("totalAmount", totalAmount)
+            .addElement("unitAmount", unitAmount)
+            .addElement("unitOfMeasure", unitOfMeasure)
+            .addElement("unitTaxAmount", unitTaxAmount)
+            .addElement("upcCode", upcCode)
+            .addElement("upcType", upcType)
+            .addElement("url", url)
+            ;
     }
 }

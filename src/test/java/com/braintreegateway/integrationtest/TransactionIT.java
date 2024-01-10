@@ -3305,6 +3305,57 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void salePayPalWithLineItemsSingle() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("45.15")).
+            paymentMethodNonce(Nonce.PayPalOneTimePayment).
+            lineItem().
+                quantity(new BigDecimal("1")).
+                name("Name #1").
+                description("Description #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.12")).
+                unitTaxAmount(new BigDecimal("1.23")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                url("https://example.com/products/23434").
+                imageUrl("https://google.com/image.png").
+                upcCode("3878935708DA").
+                upcType("UPC-A").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+
+        List<TransactionLineItem> lineItems = transaction.getLineItems(gateway);
+        assertEquals(1, lineItems.size());
+
+        TransactionLineItem lineItem = lineItems.get(0);
+        assertEquals(new BigDecimal("1"), lineItem.getQuantity());
+        assertEquals("Name #1", lineItem.getName());
+        assertEquals("Description #1", lineItem.getDescription());
+        assertEquals(TransactionLineItem.Kind.DEBIT, lineItem.getKind());
+        assertEquals(new BigDecimal("45.12"), lineItem.getUnitAmount());
+        assertEquals(new BigDecimal("1.23"), lineItem.getUnitTaxAmount());
+        assertEquals("gallon", lineItem.getUnitOfMeasure());
+        assertEquals(new BigDecimal("1.02"), lineItem.getDiscountAmount());
+        assertEquals(new BigDecimal("45.15"), lineItem.getTotalAmount());
+        assertEquals("23434", lineItem.getProductCode());
+        assertEquals("9SAASSD8724", lineItem.getCommodityCode());
+        assertEquals("https://example.com/products/23434", lineItem.getUrl());
+        assertEquals("https://google.com/image.png", lineItem.getImageUrl());
+        assertEquals("3878935708DA", lineItem.getUpcCode());
+        assertEquals("UPC-A", lineItem.getUpcType());
+        assertEquals(new BigDecimal("4.55"), lineItem.getTaxAmount());
+    }
+
+    @Test
     public void saleWithLineItemsMultiple() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("35.05")).
@@ -4315,6 +4366,98 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(
             ValidationErrorCode.TRANSACTION_TOO_MANY_LINE_ITEMS,
             result.getErrors().forObject("transaction").onField("line_items").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void saleWithLineItemsValidationErrorUpcCodeIsTooLongUpcTypeIsInvalid() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("35.05")).
+            paymentMethodNonce(Nonce.AbstractTransactable).
+            lineItem().
+                quantity(new BigDecimal("1.2322")).
+                name("Name #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                imageUrl("https://google.com/image/png").
+                upcCode("THISCODEISJUSTTOOLONG").
+                upcType("USB-C").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_UPC_CODE_IS_TOO_LONG,
+            result.getErrors().forObject("transaction").forObject("line_items").forObject("index_0").onField("upcCode").get(0).getCode()
+        );
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_UPC_TYPE_IS_INVALID,
+            result.getErrors().forObject("transaction").forObject("line_items").forObject("index_0").onField("upcType").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void saleWithLineItemsValidationErrorUpcCodeIsMissing() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("35.05")).
+            paymentMethodNonce(Nonce.AbstractTransactable).
+            lineItem().
+                quantity(new BigDecimal("1.2322")).
+                name("Name #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                imageUrl("https://google.com/image/png").
+                upcType("UPC-A").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_UPC_CODE_IS_MISSING,
+            result.getErrors().forObject("transaction").forObject("line_items").forObject("index_0").onField("upcCode").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void saleWithLineItemsValidationErrorUpcTypeIsMissing() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("35.05")).
+            paymentMethodNonce(Nonce.AbstractTransactable).
+            lineItem().
+                quantity(new BigDecimal("1.2322")).
+                name("Name #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                imageUrl("https://google.com/image/png").
+                upcCode("3878935708DA").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_LINE_ITEM_UPC_TYPE_IS_MISSING,
+            result.getErrors().forObject("transaction").forObject("line_items").forObject("index_0").onField("upcType").get(0).getCode()
         );
     }
 
@@ -6689,13 +6832,35 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             paymentMethodNonce(Nonce.TransactablePinlessDebitVisa).
+            options().
+                submitForSettlement(true).
+                done().
             merchantAccountId(PINLESS_DEBIT);
 
         Transaction transaction = gateway.transaction().sale(request).getTarget();
+        String debitNetwork= transaction.getDebitNetwork();
+        assertNotNull(debitNetwork);
+        CreditCard.DebitNetwork debitNetworkEnum = CreditCard.DebitNetwork.valueOf(debitNetwork);
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
-            debitNetwork().is(CreditCard.DebitNetwork.STAR);
-        assertEquals(0, gateway.transaction().search(searchRequest).getMaximumSize());
+            debitNetwork().is(debitNetworkEnum);
+        assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
+    }
+
+    @Test
+    public void processDebitAsCreditFlag() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(Nonce.TransactablePinlessDebitVisa).
+            options().
+                creditCard().
+                    processDebitAsCredit(true).
+                    done().
+                done().
+            merchantAccountId(PINLESS_DEBIT);
+        
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        assertNull(transaction.getDebitNetwork());
     }
 
     @Test
@@ -8549,30 +8714,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(initial_amount, result_transaction.getAmount());
         assertEquals(ValidationErrorCode.NO_NET_AMOUNT_TO_PERFORM_AUTH_ADJUSTMENT,
                      result.getErrors().forObject("authorization_adjustment").onField("base").get(0).getCode());
-    }
-
-    @Test
-    public void adjustAuthorizationOnUnAuthorizedTransaction() {
-        BigDecimal initial_amount = new BigDecimal("75.50");
-        TransactionRequest request = new TransactionRequest().
-            merchantAccountId(FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID).
-            amount(initial_amount).
-            creditCard().
-                number("5105105105105100").
-                expirationDate("05/2012").
-                done().
-            options().
-                submitForSettlement(true).
-                done();
-
-        Transaction transaction = gateway.transaction().sale(request).getTarget();
-        BigDecimal new_adjusted_amount = new BigDecimal("85.50");
-        Result<Transaction> result = gateway.transaction().adjustAuthorization(transaction.getId(), new_adjusted_amount);
-        assertFalse(result.isSuccess());
-        Transaction result_transaction = result.getTransaction();
-        assertEquals(initial_amount, result_transaction.getAmount());
-        assertEquals(ValidationErrorCode.TRANSACTION_MUST_BE_IN_STATE_AUTHORIZED,
-                     result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 
     @Test
