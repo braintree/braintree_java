@@ -1043,6 +1043,27 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
+    public void findsSepaDirectDebitAccountsByToken() {
+        String nonce = TestHelper.generateSepaDebitNonce(gateway);
+
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        Customer customer = customerResult.getTarget();
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce);
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+        PaymentMethod paymentMethod = result.getTarget();
+
+        PaymentMethod found = gateway.paymentMethod().find(paymentMethod.getToken());
+        assertNotNull(found);
+        assertTrue(found instanceof SepaDirectDebitAccount);
+    }
+
+    @Test
     public void paypalIgnoresPassedBillingAddressId() {
         String nonce = TestHelper.getNonceForPayPalAccount(gateway, "PAYPAL_CONSENT_CODE");
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());

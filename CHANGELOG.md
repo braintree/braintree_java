@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+* Add `SepaDirectDebitAccount` to `PaymentMethodParser`
+
 ## 3.32.0
 * Add `packageTracking` method to `TransactionGateway` to make request to add tracking information to transactions
 * Add `PackageDetails` and `PackageTrackingRequest` classes
