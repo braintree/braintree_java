@@ -8,7 +8,6 @@ public class CreditCardVerificationRequest extends Request {
     private String intendedTransactionSource;
     private String paymentMethodNonce;
     private RiskDataVerificationRequest riskDataVerificationRequest;
-    @Deprecated
     private String threeDSecureToken;
     private String threeDSecureAuthenticationID;
     private VerificationThreeDSecurePassThruRequest verificationThreeDSecurePassThruRequest;
@@ -72,6 +71,7 @@ public class CreditCardVerificationRequest extends Request {
         return buildRequest("verification").toXML();
     }
 
+    // NEXT_MAJOR_VERSION remove threeDSecureToken
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root)
             .addElement("creditCard", creditCardRequest)
@@ -81,7 +81,7 @@ public class CreditCardVerificationRequest extends Request {
             .addElement("intendedTransactionSource", intendedTransactionSource)
             .addElement("paymentMethodNonce", paymentMethodNonce)
             .addElement("threeDSecureAuthenticationID", threeDSecureAuthenticationID)
-            .addElement("threeDSecureToken", threeDSecureToken) // Deprecated
+            .addElement("threeDSecureToken", threeDSecureToken)
             .addElement("threeDSecurePassThru", verificationThreeDSecurePassThruRequest);
         return builder;
     }

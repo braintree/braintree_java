@@ -21,7 +21,6 @@ public class PaymentMethodRequest extends Request {
     private String paymentMethodToken;
     private String paypalRefreshToken;
     private String threeDSecureAuthenticationId;
-    @Deprecated
     private String venmoSdkPaymentMethodCode;
     private PaymentMethodThreeDSecurePassThruRequest threeDSecurePassThruRequest;
 
@@ -86,6 +85,7 @@ public class PaymentMethodRequest extends Request {
     /**
      * @deprecated - The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead
     */
+    @Deprecated
     public PaymentMethodRequest venmoSdkPaymentMethodCode(String venmoSdkPaymentMethodCode) {
         this.venmoSdkPaymentMethodCode = venmoSdkPaymentMethodCode;
         return this;

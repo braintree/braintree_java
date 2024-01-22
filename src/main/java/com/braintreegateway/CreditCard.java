@@ -181,7 +181,6 @@ public class CreditCard implements PaymentMethod {
     private String expirationMonth;
     private String expirationYear;
     private boolean isDefault;
-    @Deprecated
     private boolean isVenmoSdk;
     private boolean isExpired;
     private boolean isNetworkTokenized;

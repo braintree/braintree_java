@@ -10,7 +10,6 @@ public class TransactionOptionsRequest extends Request {
     private Boolean storeInVaultOnSuccess;
     private Boolean storeShippingAddressInVault;
     private Boolean submitForSettlement;
-    @Deprecated
     private String venmoSdkSession;
     private String payeeId;
     private String payeeEmail;
@@ -67,6 +66,7 @@ public class TransactionOptionsRequest extends Request {
     /**
      * @deprecated - The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead
     */
+    @Deprecated
     public TransactionOptionsRequest venmoSdkSession(String venmoSdkSession) {
         this.venmoSdkSession = venmoSdkSession;
         return this;
