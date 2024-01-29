@@ -2,6 +2,8 @@
 
 ## Unreleased
 * Add `SepaDirectDebitAccount` to `PaymentMethodParser`
+* Add `UNDER_REVIEW` Dispute Status
+* Add `DISPUTE_UNDER_REVIEW` WebhookNotification Kind
 
 ## 3.32.0
 * Add `packageTracking` method to `TransactionGateway` to make request to add tracking information to transactions

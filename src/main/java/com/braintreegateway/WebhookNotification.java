@@ -18,6 +18,7 @@ public class WebhookNotification {
         DISPUTE_EXPIRED("dispute_expired"),
         DISPUTE_LOST("dispute_lost"),
         DISPUTE_OPENED("dispute_opened"),
+        DISPUTE_UNDER_REVIEW("dispute_under_review"),
         DISPUTE_WON("dispute_won"),
         GRANTED_PAYMENT_METHOD_REVOKED("granted_payment_method_revoked"),
         GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD("grantor_updated_granted_payment_method"),
