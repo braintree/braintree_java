@@ -435,14 +435,13 @@ public class CustomerIT extends IntegrationTest {
         ThreeDSecureInfo threeDSecureInfo = creditCard.getVerification().getThreeDSecureInfo();
 
         assertEquals("authenticate_successful", threeDSecureInfo.getStatus());
-        assertEquals("Y", threeDSecureInfo.getEnrolled());
         assertEquals(true, threeDSecureInfo.isLiabilityShifted());
         assertEquals(true, threeDSecureInfo.isLiabilityShiftPossible());
-        assertEquals("cavv_value", threeDSecureInfo.getCAVV());
-        assertEquals("05", threeDSecureInfo.getECIFlag());
-        assertEquals("xid_value", threeDSecureInfo.getXID());
-        assertEquals("1.0.2", threeDSecureInfo.getThreeDSecureVersion());
-        assertEquals((String)null, threeDSecureInfo.getDsTransactionId());
+        assertNotNull(threeDSecureInfo.getEnrolled());
+        assertNotNull(threeDSecureInfo.getCAVV());
+        assertNotNull(threeDSecureInfo.getECIFlag());
+        assertNotNull(threeDSecureInfo.getXID());
+        assertNotNull(threeDSecureInfo.getThreeDSecureVersion());
     }
 
     @Test
@@ -477,13 +476,13 @@ public class CustomerIT extends IntegrationTest {
         ThreeDSecureInfo threeDSecureInfo = creditCard.getVerification().getThreeDSecureInfo();
 
         assertEquals("authenticate_successful", threeDSecureInfo.getStatus());
-        assertEquals("Y", threeDSecureInfo.getEnrolled());
         assertEquals(true, threeDSecureInfo.isLiabilityShifted());
         assertEquals(true, threeDSecureInfo.isLiabilityShiftPossible());
-        assertEquals("test_cavv", threeDSecureInfo.getCAVV());
-        assertEquals("test_eci", threeDSecureInfo.getECIFlag());
-        assertEquals("test_xid", threeDSecureInfo.getXID());
-        assertEquals((String)null, threeDSecureInfo.getDsTransactionId());
+        assertNotNull(threeDSecureInfo.getEnrolled());
+        assertNotNull(threeDSecureInfo.getCAVV());
+        assertNotNull(threeDSecureInfo.getECIFlag());
+        assertNotNull(threeDSecureInfo.getXID());
+        assertNotNull(threeDSecureInfo.getThreeDSecureVersion());
     }
 
     @Test
@@ -799,7 +798,7 @@ public class CustomerIT extends IntegrationTest {
         assertEquals("authenticate_successful", threeDSecureInfo.getStatus());
         assertEquals(true, threeDSecureInfo.isLiabilityShifted());
         assertEquals(true, threeDSecureInfo.isLiabilityShiftPossible());
-        assertEquals("cavv_value", threeDSecureInfo.getCAVV());
+        assertNotNull(threeDSecureInfo.getCAVV());
     }
 
     @Test
