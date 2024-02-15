@@ -31,4 +31,29 @@ public class CreditCardTest {
 
         assertEquals("932", card.getVerification().getId());
     }
+
+    @Test
+    public void testExtendedBinPopulatedWhenPresent() {
+        String xml = "<credit-card>"
+                     + "<bin>411111</bin>"
+                     + "<bin-extended>41111111</bin-extended>"
+                   + "</credit-card>";
+
+        SimpleNodeWrapper creditCardNode = SimpleNodeWrapper.parse(xml);
+        CreditCard card = new CreditCard(creditCardNode);
+
+        assertEquals("41111111", card.getBinExtended());
+    }
+
+    @Test
+    public void testExtendedBinNullWhenAbsent() {
+        String xml = "<credit-card>"
+                     + "<bin>411111</bin>"
+                   + "</credit-card>";
+
+        SimpleNodeWrapper creditCardNode = SimpleNodeWrapper.parse(xml);
+        CreditCard card = new CreditCard(creditCardNode);
+
+        assertEquals(null, card.getBinExtended());
+    }
 }

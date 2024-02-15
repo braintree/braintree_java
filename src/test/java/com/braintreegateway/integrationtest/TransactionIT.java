@@ -8634,6 +8634,21 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
     }
 
+    @Test
+    public void saleReturnsBinExtended() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+        assertEquals(CreditCardNumber.VISA.number.substring(0, 8), transaction.getCreditCard().getBinExtended());
+    }
+
     public TransactionRequest getTransactionRequestWithIndustryData(BigDecimal amount) {
         Calendar issuedDate = Calendar.getInstance();
         issuedDate.setTimeZone(TimeZone.getTimeZone("US/Mountain"));
