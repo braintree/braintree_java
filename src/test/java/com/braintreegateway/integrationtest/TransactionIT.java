@@ -4369,13 +4369,18 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             paymentMethodNonce(Nonce.TransactablePinlessDebitVisa).
+            options().
+                submitForSettlement(true).
+                done().
             merchantAccountId(PINLESS_DEBIT);
 
         Result<Transaction> result = gateway.transaction().sale(request);
         assertTrue(result.isSuccess());
 
         Transaction transaction = result.getTarget();
-        assertNull(transaction.getDebitNetwork());
+        assertNotNull(transaction.getDebitNetwork());
+        String debitNetwork= transaction.getDebitNetwork();
+        assertEquals(debitNetwork, CreditCard.DebitNetwork.valueOf(debitNetwork).toString());
     }
 
     @Test
@@ -6553,6 +6558,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             amount(TransactionAmount.AUTHORIZE.amount).
             paymentMethodNonce(Nonce.TransactablePinlessDebitVisa).
             options().
+                submitForSettlement(true).
                 creditCard().
                     processDebitAsCredit(true).
                     done().
