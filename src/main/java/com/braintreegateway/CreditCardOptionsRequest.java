@@ -9,7 +9,6 @@ public class CreditCardOptionsRequest extends Request {
     private Boolean verifyCard;
     private CreditCardRequest parent;
     private String updateExistingToken;
-    @Deprecated
     private String venmoSdkSession;
     private String verificationAccountType; // NEXT_MAJOR_VERSION - This should be enum with [credit, debit]
     private String verificationAmount;
@@ -68,6 +67,7 @@ public class CreditCardOptionsRequest extends Request {
     /**
      * @deprecated - The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead
     */
+    @Deprecated
     public CreditCardOptionsRequest venmoSdkSession(String venmoSdkSession) {
         this.venmoSdkSession = venmoSdkSession;
         return this;

@@ -48,14 +48,12 @@ public class TransactionRequest extends Request {
     private BigDecimal discountAmount;
     private String shipsFromPostalCode;
     private Type type;
-    @Deprecated
     private String venmoSdkPaymentMethodCode;
     private String paymentMethodNonce;
     private BigDecimal serviceFeeAmount;
     private String productSku;
     private String currencyIsoCode;
 
-    @Deprecated
     private String threeDSecureToken;
     private Boolean threeDSecureTransaction;
     private String threeDSecureAuthenticationId;
@@ -253,15 +251,16 @@ public class TransactionRequest extends Request {
         return this;
     }
 
-    //NEXT_MAJOR_VERSION remove this method
-    /**
-     * @deprecated - The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead
-    */
     public TransactionRequest shipsFromPostalCode(String shipsFromPostalCode) {
         this.shipsFromPostalCode = shipsFromPostalCode;
         return this;
     }
 
+    //NEXT_MAJOR_VERSION remove this method
+    /**
+     * @deprecated - The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead
+    */
+    @Deprecated
     public TransactionRequest venmoSdkPaymentMethodCode(String venmoSdkPaymentMethodCode) {
       this.venmoSdkPaymentMethodCode = venmoSdkPaymentMethodCode;
       return this;

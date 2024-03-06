@@ -9,15 +9,17 @@ import java.util.List;
 
 
 public class Dispute {
+    // UNRECOGNIZED Status is a fallback, we don't use it
     public enum Status {
-        OPEN,
-        LOST,
-        WON,
-        UNRECOGNIZED,
         ACCEPTED,
         AUTO_ACCEPTED,
         DISPUTED,
-        EXPIRED
+        EXPIRED,
+        LOST,
+        OPEN,
+        UNDER_REVIEW,
+        WON,
+        UNRECOGNIZED;
     }
 
     public enum Reason {

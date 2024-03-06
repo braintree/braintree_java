@@ -20,7 +20,6 @@ public class CreditCardRequest extends Request {
     private String paymentMethodNonce;
     private String paymentMethodToken;
     private String token;
-    @Deprecated
     private String venmoSdkPaymentMethodCode;
     private CreditCardAddressRequest billingAddressRequest;
     private CreditCardOptionsRequest optionsRequest;
@@ -127,6 +126,7 @@ public class CreditCardRequest extends Request {
     /**
      * @deprecated - The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead
     */
+    @Deprecated
     public CreditCardRequest venmoSdkPaymentMethodCode(String venmoSdkPaymentMethodCode) {
         this.venmoSdkPaymentMethodCode = venmoSdkPaymentMethodCode;
         return this;

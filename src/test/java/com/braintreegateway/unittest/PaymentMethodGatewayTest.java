@@ -26,6 +26,126 @@ public class PaymentMethodGatewayTest {
     }
 
     @Test
+    public void parseResultReturnsAmexExpressCheckoutCard() {
+        String xml = "<amex-express-checkout-card><token>foo</token></amex-express-checkout-card>";
+        NodeWrapper response = NodeWrapperFactory.instance.create(xml);
+        Result<? extends PaymentMethod> result = this.gateway.paymentMethod().parseResponse(response);
+
+        assertEquals("foo", result.getTarget().getToken());
+        assertTrue(result.getTarget() instanceof AmexExpressCheckoutCard);
+    }
+
+    @Test
+    public void parseResultReturnsAndroidPayCard() {
+        String xml = "<android-pay-card><token>foo</token></android-pay-card>";
+        NodeWrapper response = NodeWrapperFactory.instance.create(xml);
+        Result<? extends PaymentMethod> result = this.gateway.paymentMethod().parseResponse(response);
+
+        assertEquals("foo", result.getTarget().getToken());
+        assertTrue(result.getTarget() instanceof AndroidPayCard);
+    }
+
+    @Test
+    public void parseResultReturnsApplePayCard() {
+        String xml = "<apple-pay-card><token>foo</token></apple-pay-card>";
+        NodeWrapper response = NodeWrapperFactory.instance.create(xml);
+        Result<? extends PaymentMethod> result = this.gateway.paymentMethod().parseResponse(response);
+
+        assertEquals("foo", result.getTarget().getToken());
+        assertTrue(result.getTarget() instanceof ApplePayCard);
+    }
+
+    @Test
+    public void parseResultReturnsCreditCard() {
+        String xml = "<credit-card><token>foo</token></credit-card>";
+        NodeWrapper response = NodeWrapperFactory.instance.create(xml);
+        Result<? extends PaymentMethod> result = this.gateway.paymentMethod().parseResponse(response);
+
+        assertEquals("foo", result.getTarget().getToken());
+        assertTrue(result.getTarget() instanceof CreditCard);
+    }
+
+    @Test
+    public void parseResultReturnsCustomActions() {
+        String xml = "<custom-actions-payment-method><token>foo</token></custom-actions-payment-method>";
+        NodeWrapper response = NodeWrapperFactory.instance.create(xml);
+        Result<? extends PaymentMethod> result = this.gateway.paymentMethod().parseResponse(response);
+
+        assertEquals("foo", result.getTarget().getToken());
+        assertTrue(result.getTarget() instanceof CustomActionsPaymentMethod);
+    }
+
+    @Test
+    public void parseResultReturnsMasterpassCard() {
+        String xml = "<masterpass-card><token>foo</token></masterpass-card>";
+        NodeWrapper response = NodeWrapperFactory.instance.create(xml);
+        Result<? extends PaymentMethod> result = this.gateway.paymentMethod().parseResponse(response);
+
+        assertEquals("foo", result.getTarget().getToken());
+        assertTrue(result.getTarget() instanceof MasterpassCard);
+    }
+
+    @Test
+    public void parseResultReturnsPayPalAccount() {
+        String xml = "<paypal-account><token>foo</token></paypal-account>";
+        NodeWrapper response = NodeWrapperFactory.instance.create(xml);
+        Result<? extends PaymentMethod> result = this.gateway.paymentMethod().parseResponse(response);
+
+        assertEquals("foo", result.getTarget().getToken());
+        assertTrue(result.getTarget() instanceof PayPalAccount);
+    }
+
+    @Test
+    public void parseResultReturnsSamsungPayCard() {
+        String xml = "<samsung-pay-card><token>foo</token></samsung-pay-card>";
+        NodeWrapper response = NodeWrapperFactory.instance.create(xml);
+        Result<? extends PaymentMethod> result = this.gateway.paymentMethod().parseResponse(response);
+
+        assertEquals("foo", result.getTarget().getToken());
+        assertTrue(result.getTarget() instanceof SamsungPayCard);
+    }
+
+    @Test
+    public void parseResultReturnsSaepaDirectDebitAccount() {
+        String xml = "<sepa-debit-account><token>foo</token></sepa-debit-account>";
+        NodeWrapper response = NodeWrapperFactory.instance.create(xml);
+        Result<? extends PaymentMethod> result = this.gateway.paymentMethod().parseResponse(response);
+
+        assertEquals("foo", result.getTarget().getToken());
+        assertTrue(result.getTarget() instanceof SepaDirectDebitAccount);
+    }
+
+    @Test
+    public void parseResultReturnsUsBandAccount() {
+        String xml = "<us-bank-account><token>foo</token></us-bank-account>";
+        NodeWrapper response = NodeWrapperFactory.instance.create(xml);
+        Result<? extends PaymentMethod> result = this.gateway.paymentMethod().parseResponse(response);
+
+        assertEquals("foo", result.getTarget().getToken());
+        assertTrue(result.getTarget() instanceof UsBankAccount);
+    }
+
+    @Test
+    public void parseResultReturnsVenmoAccount() {
+        String xml = "<venmo-account><token>foo</token></venmo-account>";
+        NodeWrapper response = NodeWrapperFactory.instance.create(xml);
+        Result<? extends PaymentMethod> result = this.gateway.paymentMethod().parseResponse(response);
+
+        assertEquals("foo", result.getTarget().getToken());
+        assertTrue(result.getTarget() instanceof VenmoAccount);
+    }
+
+    @Test
+    public void parseResultReturnsVistCheckoutCard() {
+        String xml = "<visa-checkout-card><token>foo</token></visa-checkout-card>";
+        NodeWrapper response = NodeWrapperFactory.instance.create(xml);
+        Result<? extends PaymentMethod> result = this.gateway.paymentMethod().parseResponse(response);
+
+        assertEquals("foo", result.getTarget().getToken());
+        assertTrue(result.getTarget() instanceof VisaCheckoutCard);
+    }
+
+    @Test
     public void parseResultReturnsUnknownPaymentMethodInElseCase() {
         String xml = "<monopoly-money><token>foo</token></monopoly-money>";
         NodeWrapper response = NodeWrapperFactory.instance.create(xml);

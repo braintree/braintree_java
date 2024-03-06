@@ -10,7 +10,6 @@ public class PaymentMethodOptionsRequest extends Request {
     private PaymentMethodOptionsAdyenRequest paymentMethodOptionsAdyenRequest;
     private PaymentMethodOptionsPayPalRequest paymentMethodOptionsPayPalRequest;
     private PaymentMethodRequest parent;
-    @Deprecated
     private String venmoSdkSession;
     private String verificationAccountType; // NEXT_MAJOR_VERSION - This should be enum with [credit, debit]
     private String verificationAmount;
@@ -79,6 +78,7 @@ public class PaymentMethodOptionsRequest extends Request {
     /**
      * @deprecated - The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead
     */
+    @Deprecated
     public PaymentMethodOptionsRequest venmoSdkSession(String venmoSdkSession) {
         this.venmoSdkSession = venmoSdkSession;
         return this;

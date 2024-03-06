@@ -171,74 +171,79 @@ public class CreditCard implements PaymentMethod {
         STAR_ACCESS;
     }
 
+    private String accountType;
     private Address billingAddress;
     private String bin;
+    private String binExtended;
     private String cardholderName;
     private String cardType;
+    private String commercial;
+    private String countryOfIssuance;
     private Calendar createdAt;
     private String customerId;
     private String customerLocation;
-    private String expirationMonth;
-    private String expirationYear;
-    private boolean isDefault;
-    @Deprecated
-    private boolean isVenmoSdk;
-    private boolean isExpired;
-    private boolean isNetworkTokenized;
-    private String imageUrl;
-    private String last4;
-    private String commercial;
     private String debit;
     private String durbinRegulated;
+    private String expirationMonth;
+    private String expirationYear;
     private String healthcare;
+    private String imageUrl;
+    private boolean isDefault;
+    private boolean isExpired;
+    private boolean isNetworkTokenized;
+    private boolean isVenmoSdk;
+    private String issuingBank;
+    private String last4;
     private String payroll;
     private String prepaid;
     private String productId;
-    private String countryOfIssuance;
-    private String issuingBank;
-    private String uniqueNumberIdentifier;
     private List<Subscription> subscriptions;
     private String token;
+    private String uniqueNumberIdentifier;
     private Calendar updatedAt;
     private CreditCardVerification verification;
-    private String accountType;
 
     public CreditCard(NodeWrapper node) {
-        token = node.findString("token");
-        createdAt = node.findDateTime("created-at");
-        updatedAt = node.findDateTime("updated-at");
-        bin = node.findString("bin");
         accountType = node.findString("account-type");
-        cardType = node.findString("card-type");
-        cardholderName = node.findString("cardholder-name");
-        customerId = node.findString("customer-id");
-        customerLocation = node.findString("customer-location");
-        expirationMonth = node.findString("expiration-month");
-        expirationYear = node.findString("expiration-year");
-        imageUrl = node.findString("image-url");
-        isDefault = node.findBoolean("default");
-        isVenmoSdk = node.findBoolean("venmo-sdk");
-        isExpired = node.findBoolean("expired");
-        isNetworkTokenized = node.findBoolean("is-network-tokenized");
-        last4 = node.findString("last-4");
-        commercial = node.findString("commercial");
-        debit = node.findString("debit");
-        durbinRegulated = node.findString("durbin-regulated");
-        healthcare = node.findString("healthcare");
-        payroll = node.findString("payroll");
-        prepaid = node.findString("prepaid");
-        productId = node.findString("product-id");
-        countryOfIssuance = node.findString("country-of-issuance");
-        issuingBank = node.findString("issuing-bank");
-        uniqueNumberIdentifier = node.findString("unique-number-identifier");
+
         NodeWrapper billingAddressResponse = node.findFirst("billing-address");
         if (billingAddressResponse != null) {
             billingAddress = new Address(billingAddressResponse);
         }
+
+        bin = node.findString("bin");
+        binExtended = node.findString("bin-extended");
+        cardholderName = node.findString("cardholder-name");
+        cardType = node.findString("card-type");
+        commercial = node.findString("commercial");
+        countryOfIssuance = node.findString("country-of-issuance");
+        createdAt = node.findDateTime("created-at");
+        customerId = node.findString("customer-id");
+        customerLocation = node.findString("customer-location");
+        debit = node.findString("debit");
+        durbinRegulated = node.findString("durbin-regulated");
+        expirationMonth = node.findString("expiration-month");
+        expirationYear = node.findString("expiration-year");
+        healthcare = node.findString("healthcare");
+        imageUrl = node.findString("image-url");
+        isDefault = node.findBoolean("default");
+        isExpired = node.findBoolean("expired");
+        isNetworkTokenized = node.findBoolean("is-network-tokenized");
+        issuingBank = node.findString("issuing-bank");
+        isVenmoSdk = node.findBoolean("venmo-sdk");
+        last4 = node.findString("last-4");
+        payroll = node.findString("payroll");
+        prepaid = node.findString("prepaid");
+        productId = node.findString("product-id");
+
         subscriptions = new ArrayList<Subscription>();
         for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
             subscriptions.add(new Subscription(subscriptionResponse));
         }
+
+        token = node.findString("token");
+        uniqueNumberIdentifier = node.findString("unique-number-identifier");
+        updatedAt = node.findDateTime("updated-at");
 
         final List<NodeWrapper> verificationNodes = node.findAll("verifications/verification");
         verification = findNewestVerification(verificationNodes);
@@ -261,6 +266,10 @@ public class CreditCard implements PaymentMethod {
         return null;
     }
 
+    public String getAccountType() {
+        return accountType;
+    }
+
     public Address getBillingAddress() {
         return billingAddress;
     }
@@ -269,12 +278,28 @@ public class CreditCard implements PaymentMethod {
         return bin;
     }
 
+    public String getBinExtended() {
+        return binExtended;
+    }
+
     public String getCardholderName() {
         return cardholderName;
     }
 
     public String getCardType() {
         return cardType;
+    }
+
+    public Commercial getCommercial() {
+        return findByToString(Commercial.values(), commercial, Commercial.UNKNOWN);
+    }
+
+    public String getCountryOfIssuance() {
+        if ("".equals(countryOfIssuance)) {
+            return "Unknown";
+        } else {
+            return countryOfIssuance;
+        }
     }
 
     public Calendar getCreatedAt() {
@@ -289,6 +314,14 @@ public class CreditCard implements PaymentMethod {
         return customerLocation;
     }
 
+    public Debit getDebit() {
+        return findByToString(Debit.values(), debit, Debit.UNKNOWN);
+    }
+
+    public DurbinRegulated getDurbinRegulated() {
+        return findByToString(DurbinRegulated.values(), durbinRegulated, DurbinRegulated.UNKNOWN);
+    }
+
     public String getExpirationDate() {
         return expirationMonth + "/" + expirationYear;
     }
@@ -301,8 +334,20 @@ public class CreditCard implements PaymentMethod {
         return expirationYear;
     }
 
+    public Healthcare getHealthcare() {
+        return findByToString(Healthcare.values(), healthcare, Healthcare.UNKNOWN);
+    }
+
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public String getIssuingBank() {
+        if ("".equals(issuingBank)) {
+            return "Unknown";
+        } else {
+            return issuingBank;
+        }
     }
 
     public String getLast4() {
@@ -311,22 +356,6 @@ public class CreditCard implements PaymentMethod {
 
     public String getMaskedNumber() {
         return getBin() + "******" + getLast4();
-    }
-
-    public Commercial getCommercial() {
-        return findByToString(Commercial.values(), commercial, Commercial.UNKNOWN);
-    }
-
-    public Debit getDebit() {
-        return findByToString(Debit.values(), debit, Debit.UNKNOWN);
-    }
-
-    public DurbinRegulated getDurbinRegulated() {
-        return findByToString(DurbinRegulated.values(), durbinRegulated, DurbinRegulated.UNKNOWN);
-    }
-
-    public Healthcare getHealthcare() {
-        return findByToString(Healthcare.values(), healthcare, Healthcare.UNKNOWN);
     }
 
     public Payroll getPayroll() {
@@ -345,26 +374,6 @@ public class CreditCard implements PaymentMethod {
         }
     }
 
-    public String getCountryOfIssuance() {
-        if ("".equals(countryOfIssuance)) {
-            return "Unknown";
-        } else {
-            return countryOfIssuance;
-        }
-    }
-
-    public String getIssuingBank() {
-        if ("".equals(issuingBank)) {
-            return "Unknown";
-        } else {
-            return issuingBank;
-        }
-    }
-
-    public String getUniqueNumberIdentifier() {
-        return uniqueNumberIdentifier;
-    }
-
     public List<Subscription> getSubscriptions() {
         return subscriptions;
     }
@@ -373,21 +382,20 @@ public class CreditCard implements PaymentMethod {
         return token;
     }
 
+    public String getUniqueNumberIdentifier() {
+        return uniqueNumberIdentifier;
+    }
+
     public Calendar getUpdatedAt() {
         return updatedAt;
     }
 
-    public boolean isDefault() {
-        return isDefault;
+    public CreditCardVerification getVerification() {
+        return verification;
     }
 
-    //NEXT_MAJOR_VERSION remove this method
-    /**
-     * @deprecated - The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead
-    */
-    @Deprecated
-    public boolean isVenmoSdk() {
-      return isVenmoSdk;
+    public boolean isDefault() {
+        return isDefault;
     }
 
     public boolean isExpired() {
@@ -398,11 +406,12 @@ public class CreditCard implements PaymentMethod {
         return isNetworkTokenized;
     }
 
-    public CreditCardVerification getVerification() {
-        return verification;
-    }
-
-    public String getAccountType() {
-        return accountType;
+    //NEXT_MAJOR_VERSION remove this method
+    /**
+     * @deprecated - The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead
+    */
+    @Deprecated
+    public boolean isVenmoSdk() {
+      return isVenmoSdk;
     }
 }

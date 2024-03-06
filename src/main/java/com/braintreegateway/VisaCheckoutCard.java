@@ -22,7 +22,6 @@ public class VisaCheckoutCard implements PaymentMethod {
     private String expirationMonth;
     private String expirationYear;
     private boolean isDefault;
-    @Deprecated
     private boolean isVenmoSdk;
     private boolean isExpired;
     private String imageUrl;
@@ -262,6 +261,7 @@ public class VisaCheckoutCard implements PaymentMethod {
     /**
      * @deprecated - The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead
     */
+    @Deprecated
     public boolean isVenmoSdk() {
       return isVenmoSdk;
     }

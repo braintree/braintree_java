@@ -137,6 +137,18 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test
+        public void createsSampleDisputeUnderReviewNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_UNDER_REVIEW, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.DISPUTE_UNDER_REVIEW, notification.getKind());
+        assertEquals("my_id", notification.getDispute().getId());
+        assertEquals(Dispute.Status.UNDER_REVIEW, notification.getDispute().getStatus());
+        assertEquals(Dispute.Kind.CHARGEBACK, notification.getDispute().getKind());
+    }
+
+    @Test
     public void createsSampleDisputeOpenedNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_OPENED, "my_id");
 
