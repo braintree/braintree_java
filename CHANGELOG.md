@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.33.0
 * Add `SepaDirectDebitAccount` to `PaymentMethodParser`
 * Add `UNDER_REVIEW` Dispute Status
 * Add `DISPUTE_UNDER_REVIEW` WebhookNotification Kind
