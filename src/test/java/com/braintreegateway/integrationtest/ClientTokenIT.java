@@ -1,6 +1,7 @@
 package com.braintreegateway.integrationtest;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.braintreegateway.testhelpers.HttpHelper;
@@ -65,6 +66,20 @@ public class ClientTokenIT extends IntegrationTest {
           fail();
         }
         assertEquals(200, responseCode);
+    }
+
+    @Test
+    public void domainsOptionSupported() {
+        ArrayList<String> domains = new ArrayList<String>();
+        domains.add("example.com");
+
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest().domains(domains);
+        String clientToken = gateway.clientToken().generate(clientTokenRequest);
+        assertNotNull(clientToken);
+
+        String authorizationFingerprint = _getFingerprint(clientToken);
+        String decodedFingerprint = TestHelper.decodeClientToken(authorizationFingerprint);
+        assertTrue(decodedFingerprint.contains("example.com"));
     }
 
     @Test

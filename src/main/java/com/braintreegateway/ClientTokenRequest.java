@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+import java.util.ArrayList;
+
 /**
  * Provides a fluent interface to build up requests for client tokens, which are
  *   used to authenticate requests clients make directly on behalf of merchants
@@ -8,9 +10,10 @@ public class ClientTokenRequest extends Request {
     private static final int DEFAULT_VERSION = 2;
 
     private String customerId;
-    private int version;
+    private ArrayList<String> domains;
     private String merchantAccountId;
     private ClientTokenOptionsRequest optionsRequest;
+    private int version;
 
     public String getCustomerId() {
         return customerId;
@@ -29,8 +32,8 @@ public class ClientTokenRequest extends Request {
         return this;
     }
 
-    public ClientTokenRequest version(int version) {
-        this.version = version;
+    public ClientTokenRequest domains(ArrayList<String> domains) {
+        this.domains = domains;
         return this;
     }
 
@@ -41,6 +44,11 @@ public class ClientTokenRequest extends Request {
 
     public ClientTokenRequest options(ClientTokenOptionsRequest optionsRequest) {
         this.optionsRequest = optionsRequest;
+        return this;
+    }
+
+    public ClientTokenRequest version(int version) {
+        this.version = version;
         return this;
     }
 
@@ -56,10 +64,8 @@ public class ClientTokenRequest extends Request {
             builder.addElement("customerId", customerId);
         }
 
-        if (version != 0) {
-            builder.addElement("version", version);
-        } else {
-            builder.addElement("version", DEFAULT_VERSION);
+        if (domains != null) {
+            builder.addElement("domains", domains);
         }
 
         if (merchantAccountId != null) {
@@ -68,6 +74,12 @@ public class ClientTokenRequest extends Request {
 
         if (optionsRequest != null) {
             builder.addElement("options", optionsRequest);
+        }
+
+        if (version != 0) {
+            builder.addElement("version", version);
+        } else {
+            builder.addElement("version", DEFAULT_VERSION);
         }
 
         return builder;
