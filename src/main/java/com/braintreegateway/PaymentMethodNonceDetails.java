@@ -14,6 +14,7 @@ public class PaymentMethodNonceDetails {
     private String email;
     private String expirationMonth;
     private String expirationYear;
+    private Boolean isNetworkTokenized;
     private String lastFour;
     private String lastTwo;
     private String paymentInstrumentName;
@@ -28,6 +29,7 @@ public class PaymentMethodNonceDetails {
         email = node.findString("email");
         expirationMonth = node.findString("expiration-month");
         expirationYear = node.findString("expiration-year");
+        isNetworkTokenized = node.findBoolean("is-network-tokenized");
         lastFour = node.findString("last-four");
         lastTwo = node.findString("last-two");
         paymentInstrumentName = node.findString("payment-instrument-name");
@@ -52,6 +54,7 @@ public class PaymentMethodNonceDetails {
         email = (String) map.get("email");
         expirationMonth = (String) map.get("expiration-month");
         expirationYear = (String) map.get("expiration-year");
+        isNetworkTokenized = (Boolean)map.get("is-network-tokenized");
         lastFour = (String) map.get("last-four");
         lastTwo = (String) map.get("last-two");
         paymentInstrumentName = (String) map.get("payment-instrument-name");
@@ -94,6 +97,10 @@ public class PaymentMethodNonceDetails {
 
     public String getExpirationYear() {
         return expirationYear;
+    }
+
+    public Boolean isNetworkTokenized() {
+        return isNetworkTokenized;
     }
 
     public String getLastTwo() {

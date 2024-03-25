@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Add domains parameter support to `ClientTokenRequest`
+* Add `isNetworkTokenized` to `PaymentMethodNonceDetails`
 
 ## 3.33.0
 * Add `SepaDirectDebitAccount` to `PaymentMethodParser`
