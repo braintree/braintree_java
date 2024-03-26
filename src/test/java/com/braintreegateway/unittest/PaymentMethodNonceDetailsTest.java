@@ -30,4 +30,26 @@ public class PaymentMethodNonceDetailsTest {
         assertEquals("RECURRENT", paymentMethodNonceDetails.getSepaDirectDebit().getMandateType());
         assertEquals("a-mp-customer-id", paymentMethodNonceDetails.getSepaDirectDebit().getMerchantOrPartnerCustomerId());
     }
+
+    @Test
+    public void parsesGooglePayNonceDetailCorrectly() {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<payment-method-nonce-details>" +
+                "  <bin>882131</bin>" +
+                "  <card-type>Visa</card-type>" +
+                "  <is-network-tokenized>true</is-network-tokenized>" +
+                "  <last-four>5678</last-four>" +
+                "  <last-two>78</last-two>" +
+                "</payment-method-nonce-details>";
+
+        NodeWrapper nodeWrapper = NodeWrapperFactory.instance.create(xml);
+        PaymentMethodNonceDetails paymentMethodNonceDetails = new PaymentMethodNonceDetails(nodeWrapper);
+
+        assertNotNull(paymentMethodNonceDetails);
+        assertEquals("882131", paymentMethodNonceDetails.getBin());
+        assertEquals("Visa", paymentMethodNonceDetails.getCardType());
+        assertTrue(paymentMethodNonceDetails.isNetworkTokenized());
+        assertEquals("5678", paymentMethodNonceDetails.getLastFour());
+        assertEquals("78", paymentMethodNonceDetails.getLastTwo());
+    }
 }

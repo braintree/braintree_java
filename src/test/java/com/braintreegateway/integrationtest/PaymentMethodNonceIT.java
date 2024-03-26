@@ -166,6 +166,22 @@ public class PaymentMethodNonceIT extends IntegrationTest {
     }
 
     @Test
+    public void findGooglePayCardNonceReturnsValidValues() {
+        String nonceString = "fake-android-pay-visa-nonce";
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
+        assertNotNull(nonce);
+        assertEquals(nonceString, nonce.getNonce());
+        assertEquals(false, nonce.isConsumed());
+        assertEquals(false, nonce.isDefault());
+        assertNotNull(nonce.getDetails());
+        assertEquals("401288", nonce.getDetails().getBin());
+        assertEquals("Visa", nonce.getDetails().getCardType());
+        assertTrue(nonce.getDetails().isNetworkTokenized());
+        assertEquals("1111", nonce.getDetails().getLastFour());
+        assertEquals("11", nonce.getDetails().getLastTwo());
+    }
+
+    @Test
     public void findMetaCheckoutCardNonceReturnsValidValues() {
         PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(Nonce.MetaCheckoutCard);
         assertNotNull(nonce);

@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.34.0
+* Add domains parameter support to `ClientTokenRequest`
+* Add `isNetworkTokenized` to `PaymentMethodNonceDetails`
+
 ## 3.33.0
 * Add `SepaDirectDebitAccount` to `PaymentMethodParser`
 * Add `UNDER_REVIEW` Dispute Status
