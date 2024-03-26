@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.34.0
 * Add domains parameter support to `ClientTokenRequest`
 * Add `isNetworkTokenized` to `PaymentMethodNonceDetails`
 
