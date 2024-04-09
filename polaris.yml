@@ -46,4 +46,4 @@ analyze:
 install:
   coverity:
     version: default
-serverUrl: https://paypal.polaris.synopsys.com
+serverUrl: ${POLARIS_SERVER_URL}
