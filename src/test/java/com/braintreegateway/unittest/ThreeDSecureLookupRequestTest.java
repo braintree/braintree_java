@@ -44,6 +44,8 @@ public class ThreeDSecureLookupRequestTest {
         assertFalse(outputJSON.matches("^.+\"cardAddChallengeRequested\":.+$"));
         assertFalse(outputJSON.matches("^.+\"challengeRequested\":.+$"));
         assertFalse(outputJSON.matches("^.+\"requestedExemptionType\":.+$"));
+        assertFalse(outputJSON.matches("^.+\"merchantInitiatedRequestType\":.+$"));
+        assertFalse(outputJSON.matches("^.+\"priorAuthenticationId\":.+$"));
     }
 
     @Test
@@ -322,6 +324,58 @@ public class ThreeDSecureLookupRequestTest {
         String outputJSON = request.toJSON();
         assertTrue(outputJSON.matches("^\\{.+\\}$"));
         assertTrue(outputJSON.matches("^.+\"requestedExemptionType\":\"low_value\".+$"));
+    }
+
+    @Test
+    public void serializesWithMerchantInitiatedRequestType() {
+        String clientData = "{\n" +
+                "  \"authorizationFingerprint\": \"auth-fingerprint\",\n" +
+                "  \"braintreeLibraryVersion\": \"braintree/web/3.44.0\",\n" +
+                "  \"dfReferenceId\": \"ABC-123\",\n" +
+                "  \"nonce\": \"FAKE-NONCE\",\n" +
+                "  \"clientMetadata\": {\n" +
+                "    \"cardinalDeviceDataCollectionTimeElapsed\": 40,\n" +
+                "    \"issuerDeviceDataCollectionResult\": true,\n" +
+                "    \"issuerDeviceDataCollectionTimeElapsed\": 413,\n" +
+                "    \"requestedThreeDSecureVersion\": \"2\",\n" +
+                "    \"sdkVersion\": \"web/3.42.0\"\n" +
+                "  }\n" +
+                "}";
+
+        ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
+        request.amount("10.00");
+        request.merchantInitiatedRequestType("split_shipment");
+        request.clientData(clientData);
+
+        String outputJSON = request.toJSON();
+        assertTrue(outputJSON.matches("^\\{.+\\}$"));
+        assertTrue(outputJSON.matches("^.+\"merchantInitiatedRequestType\":\"split_shipment\".+$"));
+    }
+
+    @Test
+    public void serializesWithPriorAuthenticationId() {
+        String clientData = "{\n" +
+                "  \"authorizationFingerprint\": \"auth-fingerprint\",\n" +
+                "  \"braintreeLibraryVersion\": \"braintree/web/3.44.0\",\n" +
+                "  \"dfReferenceId\": \"ABC-123\",\n" +
+                "  \"nonce\": \"FAKE-NONCE\",\n" +
+                "  \"clientMetadata\": {\n" +
+                "    \"cardinalDeviceDataCollectionTimeElapsed\": 40,\n" +
+                "    \"issuerDeviceDataCollectionResult\": true,\n" +
+                "    \"issuerDeviceDataCollectionTimeElapsed\": 413,\n" +
+                "    \"requestedThreeDSecureVersion\": \"2\",\n" +
+                "    \"sdkVersion\": \"web/3.42.0\"\n" +
+                "  }\n" +
+                "}";
+
+        ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
+        request.amount("10.00");
+        request.priorAuthenticationId("threedsecureverification");
+        request.clientData(clientData);
+
+        String outputJSON = request.toJSON();
+        assertTrue(outputJSON.matches("^\\{.+\\}$"));
+        assertTrue(outputJSON.matches("^.+\"priorAuthenticationId\":\"threedsecureverification\".+$"));
     }
 
     @Test

@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+* Add `merchantInitiatedRequestType` and `priorAuthenticationId` to `ThreeDSecureLookupRequest`
+
 ## 3.34.0
 * Add domains parameter support to `ClientTokenRequest`
 * Add `isNetworkTokenized` to `PaymentMethodNonceDetails`
