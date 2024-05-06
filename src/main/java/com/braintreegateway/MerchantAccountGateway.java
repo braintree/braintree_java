@@ -37,7 +37,8 @@ public class MerchantAccountGateway {
     }
 
     public Result<MerchantAccount> update(String id, MerchantAccountRequest request) {
-        final NodeWrapper response = http.put(configuration.getMerchantPath() + "/merchant_accounts/" + id + "/update_via_api", request);
+        String updateUrl = "/merchant_accounts/" + id + "/update_via_api";
+        final NodeWrapper response = http.put(configuration.getMerchantPath() + updateUrl, request);
         return new Result<MerchantAccount>(response, MerchantAccount.class);
     }
 
