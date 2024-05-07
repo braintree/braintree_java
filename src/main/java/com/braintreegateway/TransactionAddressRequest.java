@@ -91,6 +91,12 @@ public class TransactionAddressRequest extends AddressRequest {
     }
 
     @Override
+    public TransactionAddressRequest internationalPhone(InternationalPhone internationalPhone) {
+        super.internationalPhone(internationalPhone);
+        return this;
+    }
+
+    @Override
     public TransactionAddressRequest postalCode(String postalCode) {
         super.postalCode(postalCode);
         return this;
