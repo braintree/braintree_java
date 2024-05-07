@@ -2,6 +2,7 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 import java.util.*;
+import com.braintreegateway.InternationalPhone;
 
 public class Customer {
 
@@ -15,6 +16,7 @@ public class Customer {
     private String id;
     private String lastName;
     private String phone;
+    private InternationalPhone internationalPhone;
     private String website;
     private List<Address> addresses;
     private List<AmexExpressCheckoutCard> amexExpressCheckoutCards;
@@ -42,6 +44,10 @@ public class Customer {
         id = node.findString("id");
         lastName = node.findString("last-name");
         phone = node.findString("phone");
+        NodeWrapper internationalPhoneNode = node.findFirst("international-phone");
+        if (internationalPhoneNode != null) {
+            internationalPhone = new InternationalPhone(internationalPhoneNode);
+        }
         updatedAt = node.findDateTime("updated-at");
         website = node.findString("website");
         creditCards = new ArrayList<CreditCard>();
@@ -140,6 +146,10 @@ public class Customer {
 
     public String getPhone() {
         return phone;
+    }
+
+    public InternationalPhone getInternationalPhone() {
+        return internationalPhone;
     }
 
     public String getWebsite() {

@@ -2,6 +2,7 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 import java.util.Calendar;
+import com.braintreegateway.InternationalPhone;
 
 /**
  * An address can belong to:
@@ -27,6 +28,7 @@ public class Address {
     private String lastName;
     private String locality;
     private String phoneNumber;
+    private InternationalPhone internationalPhone;
     private String postalCode;
     private String region;
     private String recipientName; // only for PayPal PayerInfo object
@@ -47,6 +49,10 @@ public class Address {
         lastName = node.findString("last-name");
         locality = node.findString("locality");
         phoneNumber = node.findString("phone-number");
+        NodeWrapper internationalPhoneNode = node.findFirst("international-phone");
+        if (internationalPhoneNode != null) {
+            internationalPhone = new InternationalPhone(internationalPhoneNode);
+        }
         postalCode = node.findString("postal-code");
         region = node.findString("region");
         streetAddress = node.findString("street-address");
@@ -118,6 +124,10 @@ public class Address {
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    public InternationalPhone getInternationalPhone() {
+        return internationalPhone;
     }
 
     public String getPostalCode() {

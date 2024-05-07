@@ -30,6 +30,7 @@ import com.braintreegateway.Discount;
 import com.braintreegateway.Dispute;
 import com.braintreegateway.Environment;
 import com.braintreegateway.Installment;
+import com.braintreegateway.InternationalPhone;
 import com.braintreegateway.LiabilityShift;
 import com.braintreegateway.Merchant;
 import com.braintreegateway.MerchantRequest;
@@ -476,6 +477,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
     @Test
     public void saleWithAllAttributes() {
+        InternationalPhone internationalPhone = new InternationalPhone("1", "3121234567");
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
             channel("MyShoppingCartProvider").
@@ -494,6 +496,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 company("Braintree Payment Solutions").
                 email("dan@example.com").
                 phone("419-555-1234").
+                internationalPhone(internationalPhone).
                 fax("419-555-1235").
                 website("http://braintreepayments.com").
                 done().
@@ -506,6 +509,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 locality("Chicago").
                 region("IL").
                 phoneNumber("122-555-1237").
+                internationalPhone(internationalPhone).
                 postalCode("60622").
                 countryName("United States of America").
                 countryCodeAlpha2("US").
@@ -521,6 +525,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 locality("Bartlett").
                 region("MA").
                 phoneNumber("122-555-1236").
+                internationalPhone(internationalPhone).
                 postalCode("60103").
                 countryName("Mexico").
                 countryCodeAlpha2("MX").
@@ -561,6 +566,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("Braintree Payment Solutions", customer.getCompany());
         assertEquals("dan@example.com", customer.getEmail());
         assertEquals("419-555-1234", customer.getPhone());
+        assertEquals("1", customer.getInternationalPhone().getCountryCode());
+        assertEquals("3121234567", customer.getInternationalPhone().getNationalNumber());
         assertEquals("419-555-1235", customer.getFax());
         assertEquals("http://braintreepayments.com", customer.getWebsite());
 
@@ -574,6 +581,9 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("Chicago", billing.getLocality());
         assertEquals("IL", billing.getRegion());
         assertEquals("60622", billing.getPostalCode());
+        assertEquals("122-555-1237", billing.getPhoneNumber());
+        assertEquals("1", billing.getInternationalPhone().getCountryCode());
+        assertEquals("3121234567", billing.getInternationalPhone().getNationalNumber());
         assertEquals("United States of America", billing.getCountryName());
         assertEquals("US", billing.getCountryCodeAlpha2());
         assertEquals("USA", billing.getCountryCodeAlpha3());
@@ -589,6 +599,9 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("Bartlett", shipping.getLocality());
         assertEquals("MA", shipping.getRegion());
         assertEquals("60103", shipping.getPostalCode());
+        assertEquals("122-555-1237", shipping.getPhoneNumber());
+        assertEquals("1", shipping.getInternationalPhone().getCountryCode());
+        assertEquals("3121234567", shipping.getInternationalPhone().getNationalNumber());
         assertEquals("Mexico", shipping.getCountryName());
         assertEquals("MX", shipping.getCountryCodeAlpha2());
         assertEquals("MEX", shipping.getCountryCodeAlpha3());

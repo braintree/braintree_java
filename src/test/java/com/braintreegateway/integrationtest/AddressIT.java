@@ -2,6 +2,7 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.NotFoundException;
+import com.braintreegateway.InternationalPhone;
 
 import java.util.Calendar;
 import java.util.Map;
@@ -14,6 +15,7 @@ public class AddressIT extends IntegrationTest {
     @Test
     public void create() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        InternationalPhone internationalPhone = new InternationalPhone("1", "3121234567");
         AddressRequest request = new AddressRequest().
             firstName("Joe").
             lastName("Smith").
@@ -23,6 +25,7 @@ public class AddressIT extends IntegrationTest {
             locality("Chicago").
             region("Illinois").
             phoneNumber("8675309").
+            internationalPhone(internationalPhone).
             postalCode("60607").
             countryName("United States of America").
             countryCodeAlpha2("US").
@@ -39,6 +42,8 @@ public class AddressIT extends IntegrationTest {
         assertEquals("Unit 2", address.getExtendedAddress());
         assertEquals("Chicago", address.getLocality());
         assertEquals("8675309", address.getPhoneNumber());
+        assertEquals("1", address.getInternationalPhone().getCountryCode());
+        assertEquals("3121234567", address.getInternationalPhone().getNationalNumber());
         assertEquals("Illinois", address.getRegion());
         assertEquals("60607", address.getPostalCode());
         assertEquals("United States of America", address.getCountryName());
@@ -52,6 +57,7 @@ public class AddressIT extends IntegrationTest {
     @Test
     public void update() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        InternationalPhone internationalPhone = new InternationalPhone("1", "3121234567");
         AddressRequest request = new AddressRequest().
             streetAddress("1 E Main St").
             extendedAddress("Unit 2").
@@ -70,6 +76,7 @@ public class AddressIT extends IntegrationTest {
             locality("Bartlett").
             region("Mass").
             postalCode("12345").
+            internationalPhone(internationalPhone).
             countryName("Mexico").
             countryCodeAlpha2("MX").
             countryCodeAlpha3("MEX").
@@ -84,6 +91,8 @@ public class AddressIT extends IntegrationTest {
         assertEquals("Bartlett", updatedAddress.getLocality());
         assertEquals("Mass", updatedAddress.getRegion());
         assertEquals("12345", updatedAddress.getPostalCode());
+        assertEquals("1", address.getInternationalPhone().getCountryCode());
+        assertEquals("3121234567", address.getInternationalPhone().getNationalNumber());
         assertEquals("Mexico", updatedAddress.getCountryName());
         assertEquals("MX", updatedAddress.getCountryCodeAlpha2());
         assertEquals("MEX", updatedAddress.getCountryCodeAlpha3());

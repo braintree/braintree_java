@@ -1,4 +1,5 @@
 package com.braintreegateway;
+import com.braintreegateway.InternationalPhone;
 
 /**
  * Provides a fluent interface to build up requests around {@link Address Addresses}.
@@ -13,6 +14,7 @@ public class AddressRequest extends Request {
     private String lastName;
     private String locality;
     private String phoneNumber;
+    private InternationalPhone internationalPhone;
     private String postalCode;
     private String region;
     private String streetAddress;
@@ -70,6 +72,11 @@ public class AddressRequest extends Request {
 
     public AddressRequest phoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+        return this;
+    }
+
+    public AddressRequest internationalPhone(InternationalPhone internationalPhone) {
+        this.internationalPhone = internationalPhone;
         return this;
     }
 

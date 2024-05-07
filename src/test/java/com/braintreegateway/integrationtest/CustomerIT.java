@@ -8,6 +8,7 @@ import com.braintreegateway.test.Nonce;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
+import com.braintreegateway.InternationalPhone;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -20,6 +21,7 @@ public class CustomerIT extends IntegrationTest {
 
     @Test
     public void create() {
+        InternationalPhone internationalPhone = new InternationalPhone("1", "3121234567");
         CustomerRequest request = new CustomerRequest().
             firstName("Mark").
             lastName("Jones").
@@ -27,6 +29,7 @@ public class CustomerIT extends IntegrationTest {
             email("mark.jones@example.com").
             fax("419-555-1234").
             phone("614-555-1234").
+            internationalPhone(internationalPhone).
             website("http://example.com");
         Result<Customer> result = gateway.customer().create(request);
         assertTrue(result.isSuccess());
@@ -38,6 +41,8 @@ public class CustomerIT extends IntegrationTest {
         assertEquals("mark.jones@example.com", customer.getEmail());
         assertEquals("419-555-1234", customer.getFax());
         assertEquals("614-555-1234", customer.getPhone());
+        assertEquals("1", customer.getInternationalPhone().getCountryCode());
+        assertEquals("3121234567", customer.getInternationalPhone().getNationalNumber());
         assertEquals("http://example.com", customer.getWebsite());
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), customer.getCreatedAt().get(Calendar.YEAR));
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), customer.getUpdatedAt().get(Calendar.YEAR));
@@ -1199,6 +1204,7 @@ public class CustomerIT extends IntegrationTest {
 
     @Test
     public void update() {
+        InternationalPhone internationalPhone = new InternationalPhone("1", "3121234567");
         CustomerRequest request = new CustomerRequest().
             firstName("Mark").
             lastName("Jones").
@@ -1216,6 +1222,7 @@ public class CustomerIT extends IntegrationTest {
             email("drew.olson@example.com").
             fax("555-555-5555").
             phone("555-555-5554").
+            internationalPhone(internationalPhone).
             website("http://getbraintree.com");
 
         Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
@@ -1227,6 +1234,8 @@ public class CustomerIT extends IntegrationTest {
         assertEquals("drew.olson@example.com", updatedCustomer.getEmail());
         assertEquals("555-555-5555", updatedCustomer.getFax());
         assertEquals("555-555-5554", updatedCustomer.getPhone());
+        assertEquals("1", updatedCustomer.getInternationalPhone().getCountryCode());
+        assertEquals("3121234567", updatedCustomer.getInternationalPhone().getNationalNumber());
         assertEquals("http://getbraintree.com", updatedCustomer.getWebsite());
     }
 
