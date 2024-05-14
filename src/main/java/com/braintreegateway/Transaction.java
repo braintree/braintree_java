@@ -234,6 +234,7 @@ public class Transaction {
     private boolean retried;
     private String retriedTransactionId;
     private List<String> retryIds;
+    private boolean foreignRetailer;
 
     public Transaction(NodeWrapper node) {
         amount = node.findBigDecimal("amount");
@@ -481,6 +482,7 @@ public class Transaction {
         }
 
         retriedTransactionId = node.findString("retried-transaction-id");
+        foreignRetailer = node.findBoolean("foreign-retailer");
     }
 
     public List<AddOn> getAddOns() {
@@ -907,5 +909,9 @@ public class Transaction {
 
     public List<String> getRetryIds() {
         return retryIds;
+    }
+
+    public boolean isforeignRetailer() {
+        return foreignRetailer;
     }
 }

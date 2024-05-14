@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Add `merchantInitiatedRequestType` and `priorAuthenticationId` to `ThreeDSecureLookupRequest`
+* Add `foreignRetailer` to `Transaction` and `TransactionRequest`
 
 ## 3.34.0
 * Add domains parameter support to `ClientTokenRequest`
