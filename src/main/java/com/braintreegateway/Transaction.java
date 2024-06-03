@@ -145,6 +145,7 @@ public class Transaction {
     private BigDecimal discountAmount;
     private BigDecimal serviceFeeAmount;
     private BigDecimal shippingAmount;
+    private BigDecimal shippingTaxAmount;
     private BigDecimal taxAmount;
     private Boolean recurring;
     private Boolean taxExempt;
@@ -395,6 +396,7 @@ public class Transaction {
         taxAmount = node.findBigDecimal("tax-amount");
         taxExempt = node.findBoolean("tax-exempt");
         shippingAmount = node.findBigDecimal("shipping-amount");
+        shippingTaxAmount = node.findBigDecimal("shipping-tax-amount");
         discountAmount = node.findBigDecimal("discount-amount");
         shipsFromPostalCode = node.findString("ships-from-postal-code");
         type = EnumUtils.findByName(Type.class, node.findString("type"), Type.UNRECOGNIZED);
@@ -789,6 +791,10 @@ public class Transaction {
 
     public BigDecimal getShippingAmount() {
         return shippingAmount;
+    }
+
+    public BigDecimal getShippingTaxAmount() {
+        return shippingTaxAmount;
     }
 
     public BigDecimal getDiscountAmount() {
