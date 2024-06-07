@@ -10,6 +10,7 @@ public class PayPalAccount implements PaymentMethod {
     private Calendar createdAt;
     private String customerId;
     private String email;
+    private String fundingSourceDescription;
     private String imageUrl;
     private boolean isDefault;
     private String payerId;
@@ -23,6 +24,7 @@ public class PayPalAccount implements PaymentMethod {
         this.createdAt = node.findDateTime("created-at");
         this.customerId = node.findString("customer-id");
         this.email = node.findString("email");
+        this.fundingSourceDescription = node.findString("funding-source-description");
         this.imageUrl = node.findString("image-url");
         this.isDefault = node.findBoolean("default");
         this.payerId = node.findString("payer-id");
@@ -49,6 +51,10 @@ public class PayPalAccount implements PaymentMethod {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getFundingSourceDescription() {
+        return fundingSourceDescription;
     }
     
     public String getImageUrl() {
