@@ -28,12 +28,12 @@ public class PayPalAccount implements PaymentMethod {
         this.imageUrl = node.findString("image-url");
         this.isDefault = node.findBoolean("default");
         this.payerId = node.findString("payer-id");
-        this.token = node.findString("token");
         this.revokedAt = node.findDateTime("revoked-at");
         this.subscriptions = new ArrayList<Subscription>();
         for (NodeWrapper subscriptionResponse : node.findAll("subscriptions/subscription")) {
             this.subscriptions.add(new Subscription(subscriptionResponse));
         }
+        this.token = node.findString("token");
         this.updatedAt = node.findDateTime("updated-at");
     }
 
