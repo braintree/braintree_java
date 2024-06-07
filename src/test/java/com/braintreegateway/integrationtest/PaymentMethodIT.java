@@ -235,6 +235,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(paypalAccount.getImageUrl());
         assertNotNull(paypalAccount.getCustomerId());
         assertNotNull(paypalAccount.getSubscriptions());
+        assertNotNull(paypalAccount.getFundingSourceDescription());
     }
 
     @Test
