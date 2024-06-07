@@ -1,5 +1,7 @@
 package com.braintreegateway.unittest;
 
+import java.util.Calendar;
+
 import com.braintreegateway.PayPalAccount;
 import com.braintreegateway.util.SimpleNodeWrapper;
 
@@ -22,7 +24,7 @@ public class PayPalAccountTest {
                  "<subscriptions type=\"array\">" +
                  "</subscriptions>" +
                  "<token>token</token>" +
-                 "<updated-attype=\"datetime\">2018-04-12T19:54:16Z</updated-at>" +
+                 "<updated-at type=\"datetime\">2018-04-12T19:54:16Z</updated-at>" +
                  "</paypal-account>";
     SimpleNodeWrapper node = SimpleNodeWrapper.parse(xml);
 
@@ -50,7 +52,7 @@ public class PayPalAccountTest {
     assertEquals(55, account.getRevokedAt().get(Calendar.MINUTE));
     assertEquals(17, account.getRevokedAt().get(Calendar.SECOND));
 
-    assertEquals(0, usBankAccount.getSubscriptions().size());
+    assertEquals(0, account.getSubscriptions().size());
     assertEquals("token", account.getToken());
 
     assertEquals(2018, account.getUpdatedAt().get(Calendar.YEAR));
