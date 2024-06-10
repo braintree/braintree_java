@@ -14,9 +14,9 @@ public class Customer {
     private String firstName;
     private String graphqlId;
     private String id;
+    private InternationalPhone internationalPhone;
     private String lastName;
     private String phone;
-    private InternationalPhone internationalPhone;
     private String website;
     private List<Address> addresses;
     private List<AmexExpressCheckoutCard> amexExpressCheckoutCards;
@@ -42,12 +42,12 @@ public class Customer {
         firstName = node.findString("first-name");
         graphqlId = node.findString("global-id");
         id = node.findString("id");
-        lastName = node.findString("last-name");
-        phone = node.findString("phone");
         NodeWrapper internationalPhoneNode = node.findFirst("international-phone");
         if (internationalPhoneNode != null) {
             internationalPhone = new InternationalPhone(internationalPhoneNode);
         }
+        lastName = node.findString("last-name");
+        phone = node.findString("phone");
         updatedAt = node.findDateTime("updated-at");
         website = node.findString("website");
         creditCards = new ArrayList<CreditCard>();

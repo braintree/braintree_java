@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.braintreegateway.InternationalPhone;
 
 /**
  * Provides a fluent interface to build up requests around {@link Customer Customers}.
@@ -20,10 +19,10 @@ public class CustomerRequest extends Request {
     private String firstName;
     private String fraudMerchantId;
     private String id;
+    private CustomerInternationalPhoneRequest internationalPhoneRequest;
     private String lastName;
     private String paymentMethodNonce;
     private String phone;
-    private InternationalPhone internationalPhone;
     private String threeDSecureAuthenticationId;
     private String website;
     private AndroidPayCardRequest androidPayCardRequest;
@@ -125,6 +124,11 @@ public class CustomerRequest extends Request {
         return this;
     }
 
+    public CustomerInternationalPhoneRequest internationalPhoneRequest() {
+        internationalPhoneRequest = new CustomerInternationalPhoneRequest(this);
+        return this.internationalPhoneRequest;
+    }
+
     public CustomerRequest lastName(String lastName) {
         this.lastName = lastName;
         return this;
@@ -140,11 +144,6 @@ public class CustomerRequest extends Request {
         return this;
     }
     
-    public CustomerRequest internationalPhone(InternationalPhone internationalPhone) {
-        this.internationalPhone = internationalPhone;
-        return this;
-    }
-
     public CustomerRequest website(String website) {
         this.website = website;
         return this;
@@ -209,6 +208,7 @@ public class CustomerRequest extends Request {
             .addElement("fax", fax)
             .addElement("firstName", firstName)
             .addElement("id", id)
+            .addElement("internationalPhone", internationalPhoneRequest)
             .addElement("lastName", lastName)
             .addElement("options", optionsRequest)
             .addElement("paymentMethodNonce", paymentMethodNonce)

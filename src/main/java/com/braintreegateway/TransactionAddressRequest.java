@@ -22,6 +22,7 @@ public class TransactionAddressRequest extends AddressRequest {
         }
     }
 
+    private TransactionAddressInternationalPhoneRequest internationalPhoneRequest;
     private TransactionRequest parent;
     private ShippingMethod shippingMethod;
 
@@ -73,6 +74,12 @@ public class TransactionAddressRequest extends AddressRequest {
     }
 
     @Override
+    public TransactionAddressInternationalPhoneRequest internationalPhoneRequest() {
+        internationalPhoneRequest = new TransactionAddressInternationalPhoneRequest(this);
+        return this.internationalPhoneRequest;
+    }
+
+    @Override
     public TransactionAddressRequest lastName(String lastName) {
         super.lastName(lastName);
         return this;
@@ -87,12 +94,6 @@ public class TransactionAddressRequest extends AddressRequest {
     @Override
     public TransactionAddressRequest phoneNumber(String phoneNumber) {
         super.phoneNumber(phoneNumber);
-        return this;
-    }
-
-    @Override
-    public TransactionAddressRequest internationalPhone(InternationalPhone internationalPhone) {
-        super.internationalPhone(internationalPhone);
         return this;
     }
 
@@ -128,6 +129,9 @@ public class TransactionAddressRequest extends AddressRequest {
         RequestBuilder requestBuilder = super.buildRequest(root);
         if (shippingMethod != null) {
             requestBuilder = requestBuilder.addElement("shippingMethod", shippingMethod);
+        }
+        if (internationalPhoneRequest != null) {
+            requestBuilder = requestBuilder.addElement("internationalPhone", internationalPhoneRequest);
         }
         return requestBuilder;
     }

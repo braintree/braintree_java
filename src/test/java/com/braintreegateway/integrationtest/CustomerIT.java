@@ -8,7 +8,6 @@ import com.braintreegateway.test.Nonce;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.SandboxValues.CreditCardNumber;
 import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
-import com.braintreegateway.InternationalPhone;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -21,7 +20,6 @@ public class CustomerIT extends IntegrationTest {
 
     @Test
     public void create() {
-        InternationalPhone internationalPhone = new InternationalPhone("1", "3121234567");
         CustomerRequest request = new CustomerRequest().
             firstName("Mark").
             lastName("Jones").
@@ -29,7 +27,10 @@ public class CustomerIT extends IntegrationTest {
             email("mark.jones@example.com").
             fax("419-555-1234").
             phone("614-555-1234").
-            internationalPhone(internationalPhone).
+            internationalPhoneRequest().
+                countryCode("1").
+                nationalNumber("3121234567").
+                done().
             website("http://example.com");
         Result<Customer> result = gateway.customer().create(request);
         assertTrue(result.isSuccess());
@@ -1204,7 +1205,6 @@ public class CustomerIT extends IntegrationTest {
 
     @Test
     public void update() {
-        InternationalPhone internationalPhone = new InternationalPhone("1", "3121234567");
         CustomerRequest request = new CustomerRequest().
             firstName("Mark").
             lastName("Jones").
@@ -1222,7 +1222,10 @@ public class CustomerIT extends IntegrationTest {
             email("drew.olson@example.com").
             fax("555-555-5555").
             phone("555-555-5554").
-            internationalPhone(internationalPhone).
+            internationalPhoneRequest().
+                countryCode("1").
+                nationalNumber("3121234567").
+                done().
             website("http://getbraintree.com");
 
         Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);

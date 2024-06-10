@@ -7,8 +7,8 @@ public class InternationalPhone {
     private String nationalNumber;
 
     public InternationalPhone(NodeWrapper node) {
-        countryCode = node.findString("countryCode");
-        nationalNumber = node.findString("nationalNumber");
+        countryCode = node.findString("country-code");
+        nationalNumber = node.findString("national-number");
     }
 
     public InternationalPhone(String countryCode, String nationalNumber) {
