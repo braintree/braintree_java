@@ -23,7 +23,7 @@ public class AddressIT extends IntegrationTest {
             locality("Chicago").
             region("Illinois").
             phoneNumber("8675309").
-            internationalPhoneRequest().
+            internationalPhone().
                 countryCode("1").
                 nationalNumber("3121234567").
                 done().
@@ -76,7 +76,7 @@ public class AddressIT extends IntegrationTest {
             locality("Bartlett").
             region("Mass").
             postalCode("12345").
-            internationalPhoneRequest().
+            internationalPhone().
                 countryCode("1").
                 nationalNumber("3121234567").
                 done().

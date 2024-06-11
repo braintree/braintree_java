@@ -505,7 +505,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 locality("Chicago").
                 region("IL").
                 phoneNumber("122-555-1237").
-                internationalPhoneRequest().
+                internationalPhone().
                     countryCode("1").
                     nationalNumber("3121234567").
                     done().
@@ -524,7 +524,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 locality("Bartlett").
                 region("MA").
                 phoneNumber("122-555-1236").
-                internationalPhoneRequest().
+                internationalPhone().
                     countryCode("1").
                     nationalNumber("3121234567").
                     done().

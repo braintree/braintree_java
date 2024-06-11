@@ -5,9 +5,7 @@ public class AddressInternationalPhoneRequest extends Request {
     private String countryCode;
     private String nationalNumber;
 
-    public AddressInternationalPhoneRequest() {
-        //left blank
-    }
+    public AddressInternationalPhoneRequest() {}
 
     public AddressInternationalPhoneRequest(AddressRequest parent) {
         this.parent = parent;

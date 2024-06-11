@@ -59,7 +59,7 @@ public class AddressRequest extends Request {
         return this;
     }
 
-    public AddressInternationalPhoneRequest internationalPhoneRequest() {
+    public AddressInternationalPhoneRequest internationalPhone() {
         internationalPhoneRequest = new AddressInternationalPhoneRequest(this);
         return this.internationalPhoneRequest;
     }

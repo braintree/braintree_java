@@ -97,4 +97,10 @@ public class CustomerRequestTest {
     TestHelper.assertIncludes("devicesession123", request.toXML());
     TestHelper.assertIncludes("fraudmerchant456", request.toXML());
   }
+
+  @Test
+  public void toXmlIncludesInternationalPhone() {
+      CustomerRequest request = new CustomerRequest().internationalPhone().countryCode("1").nationalNumber("3121234567").done();
+      TestHelper.assertIncludes("<internationalPhone><countryCode>1</countryCode><nationalNumber>3121234567</nationalNumber></internationalPhone>", request.toXML());
+  }
 }

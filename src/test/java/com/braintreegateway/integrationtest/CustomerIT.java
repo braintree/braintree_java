@@ -27,7 +27,7 @@ public class CustomerIT extends IntegrationTest {
             email("mark.jones@example.com").
             fax("419-555-1234").
             phone("614-555-1234").
-            internationalPhoneRequest().
+            internationalPhone().
                 countryCode("1").
                 nationalNumber("3121234567").
                 done().
@@ -1222,7 +1222,7 @@ public class CustomerIT extends IntegrationTest {
             email("drew.olson@example.com").
             fax("555-555-5555").
             phone("555-555-5554").
-            internationalPhoneRequest().
+            internationalPhone().
                 countryCode("1").
                 nationalNumber("3121234567").
                 done().

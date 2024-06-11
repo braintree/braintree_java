@@ -124,7 +124,7 @@ public class CustomerRequest extends Request {
         return this;
     }
 
-    public CustomerInternationalPhoneRequest internationalPhoneRequest() {
+    public CustomerInternationalPhoneRequest internationalPhone() {
         internationalPhoneRequest = new CustomerInternationalPhoneRequest(this);
         return this.internationalPhoneRequest;
     }

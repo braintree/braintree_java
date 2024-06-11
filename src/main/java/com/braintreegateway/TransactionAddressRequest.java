@@ -74,7 +74,7 @@ public class TransactionAddressRequest extends AddressRequest {
     }
 
     @Override
-    public TransactionAddressInternationalPhoneRequest internationalPhoneRequest() {
+    public TransactionAddressInternationalPhoneRequest internationalPhone() {
         internationalPhoneRequest = new TransactionAddressInternationalPhoneRequest(this);
         return this.internationalPhoneRequest;
     }
