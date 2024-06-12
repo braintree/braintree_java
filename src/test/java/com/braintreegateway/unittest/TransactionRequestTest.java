@@ -102,6 +102,6 @@ public class TransactionRequestTest {
     @Test
     public void toXmlIncludesInternationalPhone() {
         TransactionRequest request = new TransactionRequest().billingAddress().internationalPhone().countryCode("1").nationalNumber("3121234567").done().done();
-        TestHelper.assertIncludes("<internationalPhone><countryCode>1</countryCode><nationalNumber>3121234567</nationalNumber></internationalPhone>", request.toXML());
+        TestHelper.assertIncludes("<billing><internationalPhone><countryCode>1</countryCode><nationalNumber>3121234567</nationalNumber></internationalPhone></billing>", request.toXML());
     }
 }

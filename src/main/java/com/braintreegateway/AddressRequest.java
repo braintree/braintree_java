@@ -106,23 +106,21 @@ public class AddressRequest extends Request {
     
     @Override
     public String toXML() {
-        RequestBuilder requestBuilder = buildRequest(this.tagName);
-        if (internationalPhoneRequest != null) {
-            requestBuilder = requestBuilder.addElement("internationalPhone", internationalPhoneRequest);
-        }
-        return requestBuilder.toXML();
+        return buildRequest(this.tagName).toXML();
     }
+
     
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root)
-            .addElement("firstName", firstName)
-            .addElement("lastName", lastName)
             .addElement("company", company)
-            .addElement("countryName", countryName)
             .addElement("countryCodeAlpha2", countryCodeAlpha2)
             .addElement("countryCodeAlpha3", countryCodeAlpha3)
             .addElement("countryCodeNumeric", countryCodeNumeric)
+            .addElement("countryName", countryName)
             .addElement("extendedAddress", extendedAddress)
+            .addElement("firstName", firstName)
+            .addElement("internationalPhone", internationalPhoneRequest)
+            .addElement("lastName", lastName)
             .addElement("locality", locality)
             .addElement("phoneNumber", phoneNumber)
             .addElement("postalCode", postalCode)
