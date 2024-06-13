@@ -3,6 +3,7 @@
 ## Unreleased
 * Add `merchantInitiatedRequestType` and `priorAuthenticationId` to `ThreeDSecureLookupRequest`
 * Add `foreignRetailer` to `Transaction` and `TransactionRequest`
+* Add missing `AndroidPayCard` error code
 
 ## 3.34.0
 * Add domains parameter support to `ClientTokenRequest`
