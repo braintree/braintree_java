@@ -10,6 +10,7 @@ public class AddressRequest extends Request {
     private String countryName;
     private String extendedAddress;
     private String firstName;
+    private AddressInternationalPhoneRequest internationalPhoneRequest;
     private String lastName;
     private String locality;
     private String phoneNumber;
@@ -58,6 +59,11 @@ public class AddressRequest extends Request {
         return this;
     }
 
+    public AddressInternationalPhoneRequest internationalPhone() {
+        internationalPhoneRequest = new AddressInternationalPhoneRequest(this);
+        return this.internationalPhoneRequest;
+    }
+
     public AddressRequest lastName(String lastName) {
         this.lastName = lastName;
         return this;
@@ -102,17 +108,19 @@ public class AddressRequest extends Request {
     public String toXML() {
         return buildRequest(this.tagName).toXML();
     }
+
     
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root)
-            .addElement("firstName", firstName)
-            .addElement("lastName", lastName)
             .addElement("company", company)
-            .addElement("countryName", countryName)
             .addElement("countryCodeAlpha2", countryCodeAlpha2)
             .addElement("countryCodeAlpha3", countryCodeAlpha3)
             .addElement("countryCodeNumeric", countryCodeNumeric)
+            .addElement("countryName", countryName)
             .addElement("extendedAddress", extendedAddress)
+            .addElement("firstName", firstName)
+            .addElement("internationalPhone", internationalPhoneRequest)
+            .addElement("lastName", lastName)
             .addElement("locality", locality)
             .addElement("phoneNumber", phoneNumber)
             .addElement("postalCode", postalCode)
