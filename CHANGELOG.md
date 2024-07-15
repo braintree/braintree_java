@@ -4,6 +4,7 @@
 * Add `merchantInitiatedRequestType` and `priorAuthenticationId` to `ThreeDSecureLookupRequest`
 * Add `foreignRetailer` to `Transaction` and `TransactionRequest`
 * Add `internationalPhone` to `Address` and `Customer`
+* Add `fundingSourceDescription` to `PayPalAccount`
 
 ## 3.34.0
 * Add domains parameter support to `ClientTokenRequest`
