@@ -1,7 +1,11 @@
 # Changelog
 
 ## Unreleased
-* Add `merchantInitiatedRequestType`, `priorAuthenticationId` and `priorAuthenticationDetails` to `ThreeDSecureLookupRequest`
+* Add attributes to `ThreeDSecureLookupRequest`
+  * `merchantInitiatedRequestType`
+  * `priorAuthenticationId`
+  * `merchantOnRecordName`
+  * `priorAuthenticationDetails`
 * Add `foreignRetailer` to `Transaction` and `TransactionRequest`
 * Add `internationalPhone` to `Address` and `Customer`
 * Add `fundingSourceDescription` to `PayPalAccount`

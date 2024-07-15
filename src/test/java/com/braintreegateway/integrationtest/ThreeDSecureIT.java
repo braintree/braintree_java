@@ -402,7 +402,64 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
     }
 
     @Test
-    public void valid3RIPriorAuthenticationId() {
+    public void merchantOnRecordNameNotPassedForPaymentWithMultipleMerchants() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest cardRequest = new CreditCardRequest().
+            number("4000000000001091").
+            expirationMonth("12").
+            expirationYear("2030");
+
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, cardRequest, customer.getId(), false);
+        String authorizationFingerprint = TestHelper.generateAuthorizationFingerprint(gateway, customer.getId());
+
+        String clientData = getClientDataString(nonce, authorizationFingerprint);
+
+        ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
+        request.amount("10.00");
+        request.clientData(clientData);
+        request.email("first.last@example.com");
+        request.merchantInitiatedRequestType("payment_with_multiple_merchants");
+        request.priorAuthenticationId("threedsecureverification");
+
+        setDeviceDataFields(request);
+
+        Result<ThreeDSecureLookupResponse> outerResult = gateway.threeDSecure().lookup(request);
+        assertEquals("Merchant on record name is needed for 3RI payment with multiple merchants.", outerResult.getErrors().getAllValidationErrors().get(0).getMessage());
+    }
+
+    @Test
+    public void valid3RIPaymentWithMultipleMerchants() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest cardRequest = new CreditCardRequest().
+            number("4000000000001091").
+            expirationMonth("12").
+            expirationYear("2030");
+
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, cardRequest, customer.getId(), false);
+        String authorizationFingerprint = TestHelper.generateAuthorizationFingerprint(gateway, customer.getId());
+
+        String clientData = getClientDataString(nonce, authorizationFingerprint);
+
+        ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
+        request.amount("10.00");
+        request.clientData(clientData);
+        request.email("first.last@example.com");
+        request.merchantInitiatedRequestType("payment_with_multiple_merchants");
+        request.priorAuthenticationId("threedsecureverification");
+        request.merchantOnRecordName("merchant123");
+
+        setDeviceDataFields(request);
+
+        Result<ThreeDSecureLookupResponse> outerResult = gateway.threeDSecure().lookup(request);
+        assertNull(outerResult.getErrors());
+    }
+
+    @Test
+    public void valid3RIFields() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         Customer customer = customerResult.getTarget();
 
