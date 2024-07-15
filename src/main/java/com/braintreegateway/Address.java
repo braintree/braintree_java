@@ -24,6 +24,7 @@ public class Address {
     private String extendedAddress;
     private String firstName;
     private String id;
+    private InternationalPhone internationalPhone;
     private String lastName;
     private String locality;
     private String phoneNumber;
@@ -44,6 +45,10 @@ public class Address {
         extendedAddress = node.findString("extended-address");
         firstName = node.findString("first-name");
         id = node.findString("id");
+        NodeWrapper internationalPhoneNode = node.findFirst("international-phone");
+        if (internationalPhoneNode != null) {
+            internationalPhone = new InternationalPhone(internationalPhoneNode);
+        }
         lastName = node.findString("last-name");
         locality = node.findString("locality");
         phoneNumber = node.findString("phone-number");
@@ -106,6 +111,10 @@ public class Address {
 
     public String getId() {
         return id;
+    }
+
+    public InternationalPhone getInternationalPhone() {
+        return internationalPhone;
     }
 
     public String getLastName() {

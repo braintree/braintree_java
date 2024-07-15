@@ -30,7 +30,6 @@ import com.braintreegateway.Discount;
 import com.braintreegateway.Dispute;
 import com.braintreegateway.Environment;
 import com.braintreegateway.Installment;
-import com.braintreegateway.LiabilityShift;
 import com.braintreegateway.Merchant;
 import com.braintreegateway.MerchantRequest;
 import com.braintreegateway.OAuthCredentials;
@@ -506,6 +505,10 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 locality("Chicago").
                 region("IL").
                 phoneNumber("122-555-1237").
+                internationalPhone().
+                    countryCode("1").
+                    nationalNumber("3121234567").
+                    done().
                 postalCode("60622").
                 countryName("United States of America").
                 countryCodeAlpha2("US").
@@ -521,6 +524,10 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 locality("Bartlett").
                 region("MA").
                 phoneNumber("122-555-1236").
+                internationalPhone().
+                    countryCode("1").
+                    nationalNumber("3121234567").
+                    done().
                 postalCode("60103").
                 countryName("Mexico").
                 countryCodeAlpha2("MX").
@@ -574,6 +581,9 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("Chicago", billing.getLocality());
         assertEquals("IL", billing.getRegion());
         assertEquals("60622", billing.getPostalCode());
+        assertEquals("122-555-1237", billing.getPhoneNumber());
+        assertEquals("1", billing.getInternationalPhone().getCountryCode());
+        assertEquals("3121234567", billing.getInternationalPhone().getNationalNumber());
         assertEquals("United States of America", billing.getCountryName());
         assertEquals("US", billing.getCountryCodeAlpha2());
         assertEquals("USA", billing.getCountryCodeAlpha3());
@@ -589,6 +599,9 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals("Bartlett", shipping.getLocality());
         assertEquals("MA", shipping.getRegion());
         assertEquals("60103", shipping.getPostalCode());
+        assertEquals("122-555-1236", shipping.getPhoneNumber());
+        assertEquals("1", shipping.getInternationalPhone().getCountryCode());
+        assertEquals("3121234567", shipping.getInternationalPhone().getNationalNumber());
         assertEquals("Mexico", shipping.getCountryName());
         assertEquals("MX", shipping.getCountryCodeAlpha2());
         assertEquals("MEX", shipping.getCountryCodeAlpha3());

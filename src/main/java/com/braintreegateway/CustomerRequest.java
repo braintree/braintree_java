@@ -19,6 +19,7 @@ public class CustomerRequest extends Request {
     private String firstName;
     private String fraudMerchantId;
     private String id;
+    private CustomerInternationalPhoneRequest internationalPhoneRequest;
     private String lastName;
     private String paymentMethodNonce;
     private String phone;
@@ -123,6 +124,11 @@ public class CustomerRequest extends Request {
         return this;
     }
 
+    public CustomerInternationalPhoneRequest internationalPhone() {
+        internationalPhoneRequest = new CustomerInternationalPhoneRequest(this);
+        return this.internationalPhoneRequest;
+    }
+
     public CustomerRequest lastName(String lastName) {
         this.lastName = lastName;
         return this;
@@ -202,6 +208,7 @@ public class CustomerRequest extends Request {
             .addElement("fax", fax)
             .addElement("firstName", firstName)
             .addElement("id", id)
+            .addElement("internationalPhone", internationalPhoneRequest)
             .addElement("lastName", lastName)
             .addElement("options", optionsRequest)
             .addElement("paymentMethodNonce", paymentMethodNonce)
