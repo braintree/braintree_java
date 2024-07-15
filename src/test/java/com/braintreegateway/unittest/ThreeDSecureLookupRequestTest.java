@@ -5,9 +5,11 @@ import java.io.IOException;
 import com.braintreegateway.ThreeDSecureLookupRequest;
 import com.braintreegateway.ThreeDSecureLookupAddress;
 import com.braintreegateway.ThreeDSecureLookupAdditionalInformation;
+import com.braintreegateway.ThreeDSecureLookupPriorAuthenticationDetails;
 
 import java.util.Map;
 import com.fasterxml.jackson.jr.ob.JSON;
+import java.util.Calendar;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -193,6 +195,45 @@ public class ThreeDSecureLookupRequestTest {
         assertTrue(outputJSON.matches("^.+\"purchase_date\":\"11/5/1955\".+$"));
         assertTrue(outputJSON.matches("^.+\"recurring_end\":\"11/12/1955\".+$"));
         assertTrue(outputJSON.matches("^.+\"recurring_frequency\":\"1\".+$"));
+    }
+
+    @Test
+    public void serializesPriorAuthenticationDetails() {
+        String clientData = "{\n" +
+            "  \"authorizationFingerprint\": \"auth-fingerprint\",\n" +
+            "  \"braintreeLibraryVersion\": \"braintree/web/3.44.0\",\n" +
+            "  \"dfReferenceId\": \"ABC-123\",\n" +
+            "  \"nonce\": \"FAKE-NONCE\",\n" +
+            "  \"clientMetadata\": {\n" +
+            "    \"cardinalDeviceDataCollectionTimeElapsed\": 40,\n" +
+            "    \"issuerDeviceDataCollectionResult\": true,\n" +
+            "    \"issuerDeviceDataCollectionTimeElapsed\": 413,\n" +
+            "    \"requestedThreeDSecureVersion\": \"2\",\n" +
+            "    \"sdkVersion\": \"web/3.42.0\"\n" +
+            "  }\n" +
+            "}";
+
+        Calendar authTime = Calendar.getInstance();
+        authTime.set(2024, Calendar.FEBRUARY, 10, 22, 45, 30);
+
+        ThreeDSecureLookupPriorAuthenticationDetails priorAuthenticationDetails = new ThreeDSecureLookupPriorAuthenticationDetails()
+            .acsTransactionId("acs-transaction-id")
+            .authenticationMethod("01")
+            .authenticationTime(authTime)
+            .dsTransactionId("ds-transaction-id");
+
+        ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
+        request.amount("10.00");
+        request.clientData(clientData);
+        request.priorAuthenticationDetails(priorAuthenticationDetails);
+
+        String outputJSON = request.toJSON();
+        assertTrue(outputJSON.matches("^\\{.+\\}$"));
+        assertTrue(outputJSON.matches("^.+\"amount\":\"10.00\".+$"));
+        assertTrue(outputJSON.matches("^.+\"acs_transaction_id\":\"acs-transaction-id\".+$"));
+        assertTrue(outputJSON.matches("^.+\"authentication_method\":\"01\".+$"));
+        assertTrue(outputJSON.matches("^.+\"authentication_time\":\"2024-02-10T22:45:30Z\".+$"));
+        assertTrue(outputJSON.matches("^.+\"ds_transaction_id\":\"ds-transaction-id\".+$"));
     }
 
     @Test

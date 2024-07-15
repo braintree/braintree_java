@@ -9,6 +9,7 @@ import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.Calendar;
 
 public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTestConstants {
 
@@ -401,7 +402,7 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
     }
 
     @Test
-    public void valid3RIFields() {
+    public void valid3RIPriorAuthenticationId() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         Customer customer = customerResult.getTarget();
 
@@ -421,6 +422,43 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         request.email("first.last@example.com");
         request.merchantInitiatedRequestType("split_shipment");
         request.priorAuthenticationId("threedsecureverification");
+
+        setDeviceDataFields(request);
+
+        Result<ThreeDSecureLookupResponse> outerResult = gateway.threeDSecure().lookup(request);
+        assertNull(outerResult.getErrors());
+    }
+
+    @Test
+    public void valid3RIPriorAuthenticationDetails() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest cardRequest = new CreditCardRequest().
+            number("4000000000001091").
+            expirationMonth("12").
+            expirationYear("2030");
+
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, cardRequest, customer.getId(), false);
+        String authorizationFingerprint = TestHelper.generateAuthorizationFingerprint(gateway, customer.getId());
+
+        String clientData = getClientDataString(nonce, authorizationFingerprint);
+
+        Calendar authTime = Calendar.getInstance();
+        authTime.set(2024, Calendar.FEBRUARY, 10, 22, 45, 30);
+
+        ThreeDSecureLookupPriorAuthenticationDetails priorAuthenticationDetails = new ThreeDSecureLookupPriorAuthenticationDetails()
+            .acsTransactionId("acs-transaction-id")
+            .authenticationMethod("01")
+            .authenticationTime(authTime)
+            .dsTransactionId("ds-transaction-id");
+
+        ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
+        request.clientData(clientData);
+        request.email("first.last@example.com");
+        request.merchantInitiatedRequestType("split_shipment");
+        request.amount("10.00");
+        request.priorAuthenticationDetails(priorAuthenticationDetails);
 
         setDeviceDataFields(request);
 

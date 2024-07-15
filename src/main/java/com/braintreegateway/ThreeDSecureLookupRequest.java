@@ -23,6 +23,7 @@ public class ThreeDSecureLookupRequest extends Request {
     private String merchantAccountId;
     private String merchantInitiatedRequestType;
     private String nonce;
+    private ThreeDSecureLookupPriorAuthenticationDetails priorAuthenticationDetails;
     private String priorAuthenticationId;
     private String requestedExemptionType;
 
@@ -109,6 +110,11 @@ public class ThreeDSecureLookupRequest extends Request {
         return this;
     }
 
+    public ThreeDSecureLookupRequest priorAuthenticationDetails(ThreeDSecureLookupPriorAuthenticationDetails priorAuthenticationDetails) {
+        this.priorAuthenticationDetails = priorAuthenticationDetails;
+        return this;
+    }
+
     public ThreeDSecureLookupRequest priorAuthenticationId(String priorAuthenticationId) {
         this.priorAuthenticationId = priorAuthenticationId;
         return this;
@@ -172,10 +178,6 @@ public class ThreeDSecureLookupRequest extends Request {
     public ThreeDSecureLookupRequest userAgent(String agent) {
         this.userAgent = agent;
         return this;
-    }
-
-    private ThreeDSecureLookupAdditionalInformation getAdditionalInformation() {
-        return additionalInformation;
     }
 
     public String getAmount() {
@@ -284,6 +286,8 @@ public class ThreeDSecureLookupRequest extends Request {
 
     public String toJSON() {
         Map<String, Object> additionalInfo;
+        Map<String, Object> priorAuthenticationDetails;
+
         Map<String, Object> jsonMap = new HashMap<>();
         Map<String, Object> metaMap = new HashMap<>();
 
@@ -291,6 +295,12 @@ public class ThreeDSecureLookupRequest extends Request {
             additionalInfo = this.additionalInformation.toMap();
         } else {
             additionalInfo = new HashMap<>();
+        }
+
+        if (this.priorAuthenticationDetails != null) {
+            priorAuthenticationDetails = this.priorAuthenticationDetails.toMap();
+        } else {
+            priorAuthenticationDetails = new HashMap<>();
         }
 
         try {
@@ -324,6 +334,7 @@ public class ThreeDSecureLookupRequest extends Request {
             jsonMap.put("exemptionRequested", getExemptionRequested());
             jsonMap.put("merchantAccountId", getMerchantAccountId());
             jsonMap.put("merchantInitiatedRequestType", getMerchantInitiatedRequestType());
+            jsonMap.put("prior_authentication_details", priorAuthenticationDetails);
             jsonMap.put("priorAuthenticationId", getPriorAuthenticationId());
             jsonMap.put("requestedExemptionType", getRequestedExemptionType());
 
