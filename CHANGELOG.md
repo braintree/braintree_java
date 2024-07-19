@@ -10,6 +10,7 @@
 * Add `internationalPhone` to `Address` and `Customer`
 * Add `fundingSourceDescription` to `PayPalAccount`
 * Add missing `AndroidPayCard` error code
+* Add `REFUND_FAILED` to WebhookNotification Kind
 
 ## 3.34.0
 * Add domains parameter support to `ClientTokenRequest`

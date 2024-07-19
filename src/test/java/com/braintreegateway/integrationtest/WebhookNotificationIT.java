@@ -891,4 +891,13 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertEquals("shipping-region", profileData.getShippingAddress().getRegion());
         assertEquals("shipping-code", profileData.getShippingAddress().getPostalCode());
     }
+
+    @Test
+    public void createsSampleRefundFailedWebhookNotification() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.REFUND_FAILED, "my_id");
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.REFUND_FAILED, notification.getKind());
+        assertEquals("my_id", notification.getTransaction().getId());
+    }
 }
