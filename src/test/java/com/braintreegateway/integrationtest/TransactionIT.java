@@ -4905,6 +4905,42 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void submitForPartialSettlementWithFinalCapture()
+    {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done();
+
+        Transaction authorizedTransaction = gateway.transaction().sale(request).getTarget();
+
+        BigDecimal amount1 = new BigDecimal("400.00");
+        Result<Transaction> partialSettlementResult1 = gateway.transaction().submitForPartialSettlement(authorizedTransaction.getId(), amount1);
+        Transaction partialSettlementTransaction1 = partialSettlementResult1.getTarget();
+        assertEquals(amount1, partialSettlementTransaction1.getAmount());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, partialSettlementTransaction1.getStatus());
+        assertEquals(authorizedTransaction.getId(), partialSettlementTransaction1.getAuthorizedTransactionId());
+
+        BigDecimal amount2 = new BigDecimal("400.00");
+        TransactionRequest submitForPartialSettlementRequest = new TransactionRequest().
+            amount(amount2).
+            finalCapture(true);
+
+        Result<Transaction> partialSettlementResult2 = gateway.transaction().submitForPartialSettlement(authorizedTransaction.getId(), submitForPartialSettlementRequest);
+
+        assertTrue(partialSettlementResult2.isSuccess());
+        Transaction partialSettlementTransaction2 = partialSettlementResult2.getTarget();
+        assertEquals(amount2, partialSettlementTransaction2.getAmount());
+        assertEquals(Transaction.Type.SALE, partialSettlementTransaction2.getType());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, partialSettlementTransaction2.getStatus());
+        assertEquals(authorizedTransaction.getId(), partialSettlementTransaction2.getAuthorizedTransactionId());
+
+        assertEquals(Transaction.Status.SETTLEMENT_PENDING, gateway.transaction().find(authorizedTransaction.getId()).getStatus());
+    }
+
+    @Test
     public void submitForSettlementWithBadStatus() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
