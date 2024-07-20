@@ -3,6 +3,7 @@ package com.braintreegateway.integrationtest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
@@ -15,6 +16,7 @@ import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionLineItemRequest;
 import com.braintreegateway.TransactionRequest;
 
+// NEXT_MAJOR_VERSION remove paypalTrackingId assertions.
 public class PackageTrackingIT extends IntegrationTest {
     @Test
     public void testPackageTracking() {
@@ -60,6 +62,8 @@ public class PackageTrackingIT extends IntegrationTest {
         assertNotNull(txnWithFirstPackageTracking.getPackages().get(0).getId());
         assertEquals("UPS", txnWithFirstPackageTracking.getPackages().get(0).getCarrier());
         assertEquals("tracking_number_1", txnWithFirstPackageTracking.getPackages().get(0).getTrackingNumber());
+        assertNull(txnWithFirstPackageTracking.getPackages().get(0).getPayPalTrackerId());
+        assertNull(txnWithFirstPackageTracking.getPackages().get(0).getPayPalTrackingId());
 
         // Create second package with 1 product
         PackageTrackingRequest secondPackage = new PackageTrackingRequest()
@@ -84,10 +88,35 @@ public class PackageTrackingIT extends IntegrationTest {
         assertEquals("FEDEX", txnWithSecondPackageTracking.getPackages().get(1).getCarrier());
         assertEquals("tracking_number_2",
                 txnWithSecondPackageTracking.getPackages().get(1).getTrackingNumber());
+        assertNull(txnWithSecondPackageTracking.getPackages().get(1).getPayPalTrackerId());
+        assertNull(txnWithSecondPackageTracking.getPackages().get(1).getPayPalTrackingId());
 
         // Find transaction gives both packages
         Transaction findTransaction = gateway.transaction().find(transaction.getId());
         assertEquals(2, findTransaction.getPackages().size());
+        assertNotNull(findTransaction.getPackages().get(0).getId());
+        assertEquals("UPS", findTransaction.getPackages().get(0).getCarrier());
+        assertEquals("tracking_number_1", findTransaction.getPackages().get(0).getTrackingNumber());
+        assertNull(findTransaction.getPackages().get(0).getPayPalTrackerId());
+        assertNull(findTransaction.getPackages().get(0).getPayPalTrackingId());
+        assertNotNull(findTransaction.getPackages().get(1).getId());
+        assertEquals("FEDEX", findTransaction.getPackages().get(1).getCarrier());
+        assertEquals("tracking_number_2", findTransaction.getPackages().get(1).getTrackingNumber());
+        assertNull(findTransaction.getPackages().get(1).getPayPalTrackerId());
+        assertNull(findTransaction.getPackages().get(1).getPayPalTrackingId());
+    }
+
+    @Test
+    public void testpackagetrackingRetrievingTrackers() {
+        // Retrieve existing transaction trackers
+        Transaction findTransaction = gateway.transaction().find("package_tracking_tx");
+        assertEquals(2, findTransaction.getPackages().size());
+        assertNotNull(findTransaction.getPackages().get(0).getId());
+        assertNull(findTransaction.getPackages().get(0).getPayPalTrackingId());
+        assertEquals("paypal_tracker_id_1", findTransaction.getPackages().get(0).getPayPalTrackerId());
+        assertNotNull(findTransaction.getPackages().get(1).getId());
+        assertNull(findTransaction.getPackages().get(1).getPayPalTrackingId());
+        assertEquals("paypal_tracker_id_2", findTransaction.getPackages().get(1).getPayPalTrackerId());
     }
 
     @Test

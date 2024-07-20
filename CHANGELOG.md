@@ -12,6 +12,7 @@
 * Add missing `AndroidPayCard` error code
 * Add `REFUND_FAILED` to WebhookNotification Kind
 * Add `finalCapture` to `TransactionRequest`
+* Deprecate `getPayPalTrackingId` in favor of `getPayPalTrackerId` in PackageDetails
 
 ## 3.34.0
 * Add domains parameter support to `ClientTokenRequest`

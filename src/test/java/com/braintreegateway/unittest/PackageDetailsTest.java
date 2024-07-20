@@ -16,6 +16,7 @@ public class PackageDetailsTest {
                 "  <shipments><shipment>\n" +
                 "  <id>track_id</id><tracking-number>tracking_number_1</tracking-number>\n" +
                 "  <carrier>UPS</carrier><paypal-tracking-id>pp_tracking_number_1</paypal-tracking-id>" +
+                "  <paypal-tracker-id>pp_tracker_id_1</paypal-tracker-id>" +
                 "  </shipment></shipments>\n" +
                 "</transaction>\n";
 
@@ -24,7 +25,9 @@ public class PackageDetailsTest {
         assertEquals("track_id", transaction.getPackages().get(0).getId());
         assertEquals("tracking_number_1", transaction.getPackages().get(0).getTrackingNumber());
         assertEquals("UPS", transaction.getPackages().get(0).getCarrier());
+        // NEXT_MAJOR_VERSION remove paypalTrackingId assertions.
         assertEquals("pp_tracking_number_1", transaction.getPackages().get(0).getPayPalTrackingId());
+        assertEquals("pp_tracker_id_1", transaction.getPackages().get(0).getPayPalTrackerId());
     }
 
     @Test
