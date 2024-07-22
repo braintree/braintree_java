@@ -621,7 +621,8 @@ public class CustomerIT extends IntegrationTest {
 
         Result<Customer> result = gateway.customer().create(request);
         assertTrue(result.isSuccess());
-        assertEquals(1, result.getTarget().getUsBankAccounts().size());
+        Customer customer = result.getTarget();
+        assertEquals(1, customer.getUsBankAccounts().size());
 
         UsBankAccount usBankAccount = result.getTarget().getUsBankAccounts().get(0);
         assertEquals("021000021", usBankAccount.getRoutingNumber());
@@ -629,6 +630,7 @@ public class CustomerIT extends IntegrationTest {
         assertEquals("checking", usBankAccount.getAccountType());
         assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
         assertTrue(Pattern.matches(".*CHASE.*", usBankAccount.getBankName()));
+        assertTrue(customer.getPaymentMethods().contains(usBankAccount));
     }
 
     @Test
@@ -1851,7 +1853,7 @@ public class CustomerIT extends IntegrationTest {
         Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
         assertTrue(updateResult.isSuccess());
     }
-  
+
     @Test
     public void updateWithAndroidPayCardRequest() {
         CustomerRequest createRequest = new CustomerRequest().
@@ -1946,7 +1948,7 @@ public class CustomerIT extends IntegrationTest {
         assertNotNull(androidPayCard.getToken());
         assertTrue(androidPayCard.isDefault());
     }
-  
+
     @Test
     public void updateWithApplePayCardRequest() {
         CustomerRequest createRequest = new CustomerRequest().

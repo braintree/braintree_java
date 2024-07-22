@@ -213,6 +213,7 @@ public class Customer {
         paymentMethods.addAll(getSamsungPayCards());
         paymentMethods.addAll(getSepaDirectDebitAccounts());
         paymentMethods.addAll(getCustomActionsPaymentMethods());
+        paymentMethods.addAll(getUsBankAccounts());
         return Collections.unmodifiableList(paymentMethods);
     }
 
