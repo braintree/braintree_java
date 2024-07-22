@@ -1,5 +1,8 @@
 # Changelog
 
+## unreleased
+* Include UsBankAccount Accounts in `Customer#getPaymentMethods`
+
 ## 3.34.0
 * Add domains parameter support to `ClientTokenRequest`
 * Add `isNetworkTokenized` to `PaymentMethodNonceDetails`
