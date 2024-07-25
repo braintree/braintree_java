@@ -33,6 +33,7 @@ public class WebhookNotification {
         PAYMENT_METHOD_CUSTOMER_DATA_UPDATED("payment_method_customer_data_updated"),
         PAYMENT_METHOD_REVOKED_BY_CUSTOMER("payment_method_revoked_by_customer"),
         RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD("recipient_updated_granted_payment_method"),
+        REFUND_FAILED("refund_failed"),
         SUB_MERCHANT_ACCOUNT_APPROVED("sub_merchant_account_approved"),
         SUB_MERCHANT_ACCOUNT_DECLINED("sub_merchant_account_declined"),
         SUBSCRIPTION_BILLING_SKIPPED("subscription_billing_skipped"),

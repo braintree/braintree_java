@@ -21,7 +21,11 @@ public class ThreeDSecureLookupRequest extends Request {
     private String email;
     private Boolean exemptionRequested;
     private String merchantAccountId;
+    private String merchantInitiatedRequestType;
+    private String merchantOnRecordName;
     private String nonce;
+    private ThreeDSecureLookupPriorAuthenticationDetails priorAuthenticationDetails;
+    private String priorAuthenticationId;
     private String requestedExemptionType;
 
     private String browserAcceptHeader;
@@ -50,6 +54,21 @@ public class ThreeDSecureLookupRequest extends Request {
         return this;
     }
 
+    public ThreeDSecureLookupRequest billingAddress(ThreeDSecureLookupAddress billingAddress) {
+        this.billingAddress = billingAddress;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest cardAddChallengeRequested(Boolean cardAddChallengeRequested) {
+        this.cardAddChallengeRequested = cardAddChallengeRequested;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest challengeRequested(Boolean challengeRequested) {
+        this.challengeRequested = challengeRequested;
+        return this;
+    }
+
     public ThreeDSecureLookupRequest clientData(String clientData) {
         Map<String, Object> jsonMap;
 
@@ -67,16 +86,6 @@ public class ThreeDSecureLookupRequest extends Request {
         return this;
     }
 
-    public ThreeDSecureLookupRequest cardAddChallengeRequested(Boolean cardAddChallengeRequested) {
-        this.cardAddChallengeRequested = cardAddChallengeRequested;
-        return this;
-    }
-
-    public ThreeDSecureLookupRequest challengeRequested(Boolean challengeRequested) {
-        this.challengeRequested = challengeRequested;
-        return this;
-    }
-
     public ThreeDSecureLookupRequest dataOnlyRequested(Boolean dataOnlyRequested) {
         this.dataOnlyRequested = dataOnlyRequested;
         return this;
@@ -87,23 +96,38 @@ public class ThreeDSecureLookupRequest extends Request {
         return this;
     }
 
-    public ThreeDSecureLookupRequest requestedExemptionType(String requestedExemptionType) {
-        this.requestedExemptionType = requestedExemptionType;
-        return this;
-    }
-
     public ThreeDSecureLookupRequest email(String email) {
         this.email = email;
         return this;
     }
 
-    public ThreeDSecureLookupRequest billingAddress(ThreeDSecureLookupAddress billingAddress) {
-        this.billingAddress = billingAddress;
+    public ThreeDSecureLookupRequest merchantAccountId(String merchantAccountId) {
+        this.merchantAccountId = merchantAccountId;
         return this;
     }
 
-    public ThreeDSecureLookupRequest merchantAccountId(String merchantAccountId) {
-        this.merchantAccountId = merchantAccountId;
+    public ThreeDSecureLookupRequest merchantInitiatedRequestType(String merchantInitiatedRequestType) {
+        this.merchantInitiatedRequestType = merchantInitiatedRequestType;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest merchantOnRecordName(String merchantOnRecordName) {
+        this.merchantOnRecordName = merchantOnRecordName;
+        return this;
+    }
+  
+    public ThreeDSecureLookupRequest priorAuthenticationDetails(ThreeDSecureLookupPriorAuthenticationDetails priorAuthenticationDetails) {
+        this.priorAuthenticationDetails = priorAuthenticationDetails;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest priorAuthenticationId(String priorAuthenticationId) {
+        this.priorAuthenticationId = priorAuthenticationId;
+        return this;
+    }
+
+    public ThreeDSecureLookupRequest requestedExemptionType(String requestedExemptionType) {
+        this.requestedExemptionType = requestedExemptionType;
         return this;
     }
 
@@ -127,6 +151,11 @@ public class ThreeDSecureLookupRequest extends Request {
         return this;
     }
 
+    public ThreeDSecureLookupRequest browserJavascriptEnabled(Boolean enabled) {
+        this.browserJavascriptEnabled = enabled;
+        return this;
+    }
+
     public ThreeDSecureLookupRequest browserScreenHeight(String height) {
         this.browserScreenHeight = height;
         return this;
@@ -142,8 +171,8 @@ public class ThreeDSecureLookupRequest extends Request {
         return this;
     }
 
-    public ThreeDSecureLookupRequest userAgent(String agent) {
-        this.userAgent = agent;
+    public ThreeDSecureLookupRequest deviceChannel(String channel) {
+        this.deviceChannel = channel;
         return this;
     }
 
@@ -152,22 +181,13 @@ public class ThreeDSecureLookupRequest extends Request {
         return this;
     }
 
-    public ThreeDSecureLookupRequest deviceChannel(String channel) {
-        this.deviceChannel = channel;
+    public ThreeDSecureLookupRequest userAgent(String agent) {
+        this.userAgent = agent;
         return this;
     }
 
-    public ThreeDSecureLookupRequest browserJavascriptEnabled(Boolean enabled) {
-        this.browserJavascriptEnabled = enabled;
-        return this;
-    }
-
-    private ThreeDSecureLookupAdditionalInformation getAdditionalInformation() {
-        return additionalInformation;
-    }
-
-    public String getNonce() {
-        return nonce;
+    public String getAmount() {
+        return amount;
     }
 
     private String getAuthorizationFingerprint() {
@@ -178,59 +198,76 @@ public class ThreeDSecureLookupRequest extends Request {
         return braintreeLibraryVersion;
     }
 
-    private String getDfReferenceId() {
-        return dfReferenceId;
+    private Boolean getCardAddChallengeRequested() {
+        return cardAddChallengeRequested;
     }
 
-    public String getAmount() {
-        return amount;
+    private Boolean getChallengeRequested() {
+        return challengeRequested;
     }
 
     private Map getClientMetadata() {
         return clientMetadata;
     }
 
-    private Boolean getCardAddChallengeRequested() {
-        return cardAddChallengeRequested;
-    }
-    private Boolean getChallengeRequested() {
-        return challengeRequested;
-    }
-
-    private Boolean getExemptionRequested() {
-        return exemptionRequested;
-    }
-
-    private String getRequestedExemptionType() {
-        return requestedExemptionType;
-    }
-
     private Boolean getDataOnlyRequested() {
         return dataOnlyRequested;
+    }
+
+    private String getDfReferenceId() {
+        return dfReferenceId;
     }
 
     private String getEmail() {
         return email;
     }
 
+    private Boolean getExemptionRequested() {
+        return exemptionRequested;
+    }
+
     private String getMerchantAccountId() {
         return merchantAccountId;
     }
 
-    private Boolean getBrowserJavaEnabled() {
-        return browserJavaEnabled;
+    private String getMerchantInitiatedRequestType() {
+        return merchantInitiatedRequestType;
+    }
+
+    private String getMerchantOnRecordName() {
+        return merchantOnRecordName;
+    }
+
+    public String getNonce() {
+        return nonce;
+    }
+
+    private String getPriorAuthenticationId() {
+        return priorAuthenticationId;
+    }
+
+    private String getRequestedExemptionType() {
+        return requestedExemptionType;
     }
 
     private String getBrowserAcceptHeader() {
         return browserAcceptHeader;
     }
 
-    private String getBrowserLanguage() {
-        return browserLanguage;
-    }
-
     private String getBrowserColorDepth() {
         return browserColorDepth;
+    }
+
+    private Boolean getBrowserJavaEnabled() {
+        return browserJavaEnabled;
+    }
+
+    private Boolean getBrowserJavascriptEnabled() {
+        return browserJavascriptEnabled;
+    }
+
+    private String getBrowserLanguage() {
+        return browserLanguage;
     }
 
     private String getBrowserScreenHeight() {
@@ -245,24 +282,22 @@ public class ThreeDSecureLookupRequest extends Request {
         return browserTimeZone;
     }
 
-    private String getUserAgent() {
-        return userAgent;
+    private String getDeviceChannel() {
+        return deviceChannel;
     }
 
     private String getIpAddress() {
         return ipAddress;
     }
 
-    private String getDeviceChannel() {
-        return deviceChannel;
-    }
-
-    private Boolean getBrowserJavascriptEnabled() {
-        return browserJavascriptEnabled;
+    private String getUserAgent() {
+        return userAgent;
     }
 
     public String toJSON() {
         Map<String, Object> additionalInfo;
+        Map<String, Object> priorAuthenticationDetails;
+
         Map<String, Object> jsonMap = new HashMap<>();
         Map<String, Object> metaMap = new HashMap<>();
 
@@ -272,49 +307,59 @@ public class ThreeDSecureLookupRequest extends Request {
             additionalInfo = new HashMap<>();
         }
 
+        if (this.priorAuthenticationDetails != null) {
+            priorAuthenticationDetails = this.priorAuthenticationDetails.toMap();
+        } else {
+            priorAuthenticationDetails = new HashMap<>();
+        }
+
         try {
             metaMap.put("platform", "java");
             metaMap.put("sdkVersion", Configuration.VERSION);
             metaMap.put("source", "http");
 
+            if (billingAddress != null) {
+                additionalInfo.put("billingCity", billingAddress.getLocality());
+                additionalInfo.put("billingCountryCode", billingAddress.getCountryCodeAlpha2());
+                additionalInfo.put("billingGivenName", billingAddress.getGivenName());
+                additionalInfo.put("billingLine1", billingAddress.getStreetAddress());
+                additionalInfo.put("billingLine2", billingAddress.getExtendedAddress());
+                additionalInfo.put("billingPhoneNumber", billingAddress.getPhoneNumber());
+                additionalInfo.put("billingPostalCode", billingAddress.getPostalCode());
+                additionalInfo.put("billingState", billingAddress.getRegion());
+                additionalInfo.put("billingSurname", billingAddress.getSurname());
+            }
+
+            jsonMap.put("_meta", metaMap);
+            jsonMap.put("additional_info", additionalInfo);
             jsonMap.put("authorizationFingerprint", getAuthorizationFingerprint());
-            jsonMap.put("email", getEmail());
             jsonMap.put("amount", getAmount());
             jsonMap.put("braintreeLibraryVersion", getBraintreeLibraryVersion());
-            jsonMap.put("df_reference_id", getDfReferenceId());
-            jsonMap.put("clientMetadata", getClientMetadata());
-            jsonMap.put("_meta", metaMap);
             jsonMap.put("cardAddChallengeRequested", getCardAddChallengeRequested());
             jsonMap.put("challengeRequested", getChallengeRequested());
-            jsonMap.put("exemptionRequested", getExemptionRequested());
-            jsonMap.put("requestedExemptionType", getRequestedExemptionType());
+            jsonMap.put("clientMetadata", getClientMetadata());
             jsonMap.put("dataOnlyRequested", getDataOnlyRequested());
+            jsonMap.put("df_reference_id", getDfReferenceId());
+            jsonMap.put("email", getEmail());
+            jsonMap.put("exemptionRequested", getExemptionRequested());
             jsonMap.put("merchantAccountId", getMerchantAccountId());
+            jsonMap.put("merchantInitiatedRequestType", getMerchantInitiatedRequestType());
+            jsonMap.put("merchantOnRecordName", getMerchantOnRecordName());
+            jsonMap.put("prior_authentication_details", priorAuthenticationDetails);
+            jsonMap.put("priorAuthenticationId", getPriorAuthenticationId());
+            jsonMap.put("requestedExemptionType", getRequestedExemptionType());
+
             jsonMap.put("browserColorDepth", getBrowserColorDepth());
             jsonMap.put("browserHeader", getBrowserAcceptHeader());
-            jsonMap.put("browserLanguage", getBrowserLanguage());
             jsonMap.put("browserJavaEnabled", getBrowserJavaEnabled());
             jsonMap.put("browserJavascriptEnabled", getBrowserJavascriptEnabled());
+            jsonMap.put("browserLanguage", getBrowserLanguage());
             jsonMap.put("browserScreenHeight", getBrowserScreenHeight());
             jsonMap.put("browserScreenWidth", getBrowserScreenWidth());
             jsonMap.put("browserTimeZone", getBrowserTimeZone());
             jsonMap.put("deviceChannel", getDeviceChannel());
             jsonMap.put("ipAddress", getIpAddress());
             jsonMap.put("userAgent", getUserAgent());
-
-            if (billingAddress != null) {
-                additionalInfo.put("billingGivenName", billingAddress.getGivenName());
-                additionalInfo.put("billingSurname", billingAddress.getSurname());
-                additionalInfo.put("billingPhoneNumber", billingAddress.getPhoneNumber());
-                additionalInfo.put("billingCity", billingAddress.getLocality());
-                additionalInfo.put("billingCountryCode", billingAddress.getCountryCodeAlpha2());
-                additionalInfo.put("billingLine1", billingAddress.getStreetAddress());
-                additionalInfo.put("billingLine2", billingAddress.getExtendedAddress());
-                additionalInfo.put("billingPostalCode", billingAddress.getPostalCode());
-                additionalInfo.put("billingState", billingAddress.getRegion());
-            }
-
-            jsonMap.put("additional_info", additionalInfo);
 
             return JSON.std.asString(jsonMap);
         } catch (IOException e) {

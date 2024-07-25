@@ -348,4 +348,49 @@ public class TransactionTest {
 
         assertEquals("STAR", transaction.getDebitNetwork());
     }
+
+	@Test
+	public void recognizesForeignRetailerTransaction() {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<transaction>\n" +
+				"  <id>recognized_transaction_id</id>\n" +
+				"  <type>sale</type>\n" +
+				"  <payment-instrument-type>credit_card</payment-instrument-type>\n" +
+				"  <foreign-retailer>true</foreign-retailer>\n" +
+				"</transaction>\n";
+
+		SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+		Transaction transaction = new Transaction(transactionNode);
+
+		assertTrue(transaction.isforeignRetailer());
+	}
+
+    @Test
+	public void parseInternationalPhoneTransaction() {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<transaction>\n" +
+				"  <type>sale</type>\n" +
+				"  <customer></customer>\n" +
+				"  <billing>\n" +
+                "    <international-phone>\n" +
+                "      <country-code>1</country-code>\n" +
+                "      <national-number>3121234567</national-number>\n" +
+                "    </international-phone>\n" +
+                "  </billing>\n" +
+				"  <shipping>\n" +
+                "    <international-phone>\n" +
+                "      <country-code>2</country-code>\n" +
+                "      <national-number>3121234568</national-number>\n" +
+                "    </international-phone>\n" +
+                "  </shipping>\n" +
+				"</transaction>\n";
+
+		SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+		Transaction transaction = new Transaction(transactionNode);
+
+		assertEquals("1", transaction.getBillingAddress().getInternationalPhone().getCountryCode());
+		assertEquals("3121234567", transaction.getBillingAddress().getInternationalPhone().getNationalNumber());
+		assertEquals("2", transaction.getShippingAddress().getInternationalPhone().getCountryCode());
+		assertEquals("3121234568", transaction.getShippingAddress().getInternationalPhone().getNationalNumber());
+	}
 }

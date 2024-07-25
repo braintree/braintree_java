@@ -92,4 +92,22 @@ public class TransactionRequestTest {
                 done();
 		    TestHelper.assertIncludes("<processDebitAsCredit>true</processDebitAsCredit>",request.toXML());
 		}
+
+    @Test
+    public void toXmlIncludesForeignRetailer() {
+        TransactionRequest request = new TransactionRequest().foreignRetailer(true);
+        TestHelper.assertIncludes("<foreignRetailer>true</foreignRetailer>", request.toXML());
+    }
+
+    @Test
+    public void toXmlIncludesInternationalPhone() {
+        TransactionRequest request = new TransactionRequest().billingAddress().internationalPhone().countryCode("1").nationalNumber("3121234567").done().done();
+        TestHelper.assertIncludes("<billing><internationalPhone><countryCode>1</countryCode><nationalNumber>3121234567</nationalNumber></internationalPhone></billing>", request.toXML());
+    }
+  
+    @Test
+    public void toXmlIncludeFinalCapture() {
+        TransactionRequest request = new TransactionRequest().finalCapture(true);
+        TestHelper.assertIncludes("<finalCapture>true</finalCapture>", request.toXML());
+    }
 }
