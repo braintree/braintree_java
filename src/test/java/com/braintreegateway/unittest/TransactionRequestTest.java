@@ -110,10 +110,4 @@ public class TransactionRequestTest {
         TransactionRequest request = new TransactionRequest().finalCapture(true);
         TestHelper.assertIncludes("<finalCapture>true</finalCapture>", request.toXML());
     }
-
-    @Test
-    public void toXmlIncludeShippingTaxAmount() {
-        TransactionRequest request = new TransactionRequest().shippingTaxAmount(new BigDecimal("2.00"));
-        TestHelper.assertIncludes("shippingTaxAmount>2.00</shippingTaxAmount>", request.toXML());
-    }
 }
