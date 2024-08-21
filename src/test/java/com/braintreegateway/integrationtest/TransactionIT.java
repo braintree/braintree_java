@@ -4333,15 +4333,14 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     @Test
     public void saleWithExternalVaultValidationErrorInvalidPaymentInstrumentWithExternalVault() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest creditCardRequest = new CreditCardRequest().
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
             customerId(customer.getId()).
-            cvv("123").
-            number("5105105105105100").
-            expirationDate("05/12");
-        CreditCard creditCard = gateway.creditCard().create(creditCardRequest).getTarget();
+            paymentMethodNonce(Nonce.PayPalBillingAgreement);
+        PaymentMethod paymentMethodResult = gateway.paymentMethod().create(paymentMethodRequest).getTarget();
+
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
-            paymentMethodToken(creditCard.getToken()).
+            paymentMethodToken(paymentMethodResult.getToken()).
             externalVault().
                 vaulted().
                 previousNetworkTransactionId("123456789012345").
