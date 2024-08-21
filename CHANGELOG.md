@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+* Add `aniFirstNameResponseCode` and `aniLastNameResponseCode` to `CreditCardVerification`
+
 ## 3.35.0
 * Add attributes to `ThreeDSecureLookupRequest`
   * `merchantInitiatedRequestType`
