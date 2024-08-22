@@ -55,6 +55,7 @@ public class TransactionRequest extends Request {
     private String shippingAddressId;
     private TransactionAddressRequest shippingAddressRequest;
     private BigDecimal shippingAmount;
+    private BigDecimal shippingTaxAmount;
     private String shipsFromPostalCode;
     private String source;
     private BigDecimal taxAmount;
@@ -310,6 +311,11 @@ public class TransactionRequest extends Request {
         return this;
     }
 
+    public TransactionRequest shippingTaxAmount(BigDecimal shippingTaxAmount) {
+        this.shippingTaxAmount = shippingTaxAmount;
+        return this;
+    }
+
     public TransactionRequest taxExempt(Boolean taxExempt) {
         this.taxExempt = taxExempt;
         return this;
@@ -417,6 +423,7 @@ public class TransactionRequest extends Request {
             .addElement("shipping", shippingAddressRequest)
             .addElement("shippingAddressId", shippingAddressId)
             .addElement("shippingAmount", shippingAmount)
+            .addElement("shippingTaxAmount", shippingTaxAmount)
             .addElement("shipsFromPostalCode", shipsFromPostalCode)
             .addElement("transactionSource", source)
             .addElement("taxAmount", taxAmount)
