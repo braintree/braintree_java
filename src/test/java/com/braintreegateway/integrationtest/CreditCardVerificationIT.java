@@ -1,5 +1,4 @@
 package com.braintreegateway.integrationtest;
-
 import com.braintreegateway.*;
 import com.braintreegateway.test.Nonce;
 import com.braintreegateway.testhelpers.TestHelper;
@@ -53,6 +52,26 @@ public class CreditCardVerificationIT extends IntegrationTest {
         assertEquals(verification.getBillingAddress().getPostalCode(), "60606");
         assertEquals("1000", verification.getProcessorResponseCode());
         assertEquals("Approved", verification.getProcessorResponseText());
+        assertEquals(ProcessorResponseType.APPROVED, verification.getProcessorResponseType());
+        assertNotNull(verification.getGraphQLId());
+    }
+
+    @Test
+    public void createVerificationforAni() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+            number("4012000033330026").
+            expirationDate("05/2029").
+            cvv("123").
+            done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+        CreditCardVerification verification = result.getTarget();
+        assertEquals("1000", verification.getProcessorResponseCode());
+        assertEquals("Approved", verification.getProcessorResponseText());
+        assertEquals("I", verification.getAniFirstNameResponseCode());
+        assertEquals("I", verification.getAniLastNameResponseCode());
         assertEquals(ProcessorResponseType.APPROVED, verification.getProcessorResponseType());
         assertNotNull(verification.getGraphQLId());
     }

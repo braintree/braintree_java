@@ -3,6 +3,8 @@
 ## Unreleased
 
 * Add `editPaypalVaultId` to `PayPalAccount`
+* Add `aniFirstNameResponseCode` and `aniLastNameResponseCode` to `CreditCardVerification`
+* Add `shippingTaxAmount` to `Transaction` and `TransactionRequest`
 
 ## 3.35.0
 * Add attributes to `ThreeDSecureLookupRequest`
