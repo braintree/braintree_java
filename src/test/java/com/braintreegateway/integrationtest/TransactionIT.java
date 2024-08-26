@@ -2830,6 +2830,29 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithShippingTaxAmount() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            shippingAmount(new BigDecimal("1.00")).
+            shippingTaxAmount(new BigDecimal("3.00")).
+            discountAmount(new BigDecimal("2.00")).
+            shipsFromPostalCode("12345");
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(new BigDecimal("1.00"), transaction.getShippingAmount());
+        assertEquals(new BigDecimal("2.00"), transaction.getDiscountAmount());
+        assertEquals(new BigDecimal("3.00"), transaction.getShippingTaxAmount());
+        assertEquals("12345", transaction.getShipsFromPostalCode());
+    }
+
+    @Test
     public void saleWithAdvancedFraudCheckingSkipped() {
         createAdvancedFraudKountMerchantGateway();
         TransactionRequest request = new TransactionRequest().
@@ -4333,15 +4356,14 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     @Test
     public void saleWithExternalVaultValidationErrorInvalidPaymentInstrumentWithExternalVault() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        CreditCardRequest creditCardRequest = new CreditCardRequest().
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
             customerId(customer.getId()).
-            cvv("123").
-            number("5105105105105100").
-            expirationDate("05/12");
-        CreditCard creditCard = gateway.creditCard().create(creditCardRequest).getTarget();
+            paymentMethodNonce(Nonce.PayPalBillingAgreement);
+        PaymentMethod paymentMethodResult = gateway.paymentMethod().create(paymentMethodRequest).getTarget();
+
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
-            paymentMethodToken(creditCard.getToken()).
+            paymentMethodToken(paymentMethodResult.getToken()).
             externalVault().
                 vaulted().
                 previousNetworkTransactionId("123456789012345").
@@ -4875,6 +4897,44 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         Result<Transaction> result = gateway.transaction().submitForSettlement(transaction.getId(), submitForSettlementRequest);
 
         assertTrue(result.isSuccess());
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
+    }
+
+    @Test
+    public void submitForSettlementWithShippingTaxAmount() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionRequest submitForSettlementRequest = new TransactionRequest().
+            discountAmount(new BigDecimal("12.34")).
+            shippingAmount(new BigDecimal("12.34")).
+            shippingTaxAmount(new BigDecimal("12.34")).
+            shipsFromPostalCode("90210").
+            lineItem().
+                quantity(new BigDecimal("1.0232")).
+                name("Name #1").
+                description("Description #1").
+                kind(TransactionLineItem.Kind.DEBIT).
+                unitAmount(new BigDecimal("45.1232")).
+                unitTaxAmount(new BigDecimal("1.23")).
+                unitOfMeasure("gallon").
+                discountAmount(new BigDecimal("1.02")).
+                taxAmount(new BigDecimal("4.55")).
+                totalAmount(new BigDecimal("45.15")).
+                productCode("23434").
+                commodityCode("9SAASSD8724").
+                url("https://example.com/products/23434").
+                done();
+
+        Result<Transaction> result = gateway.transaction().submitForSettlement(transaction.getId(), submitForSettlementRequest);
+
+        assertTrue(result.isSuccess());
+        assertEquals(new BigDecimal("12.34"), result.getTarget().getShippingTaxAmount());
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, result.getTarget().getStatus());
     }
 
