@@ -15,6 +15,7 @@ public class PayPalAccountTest {
                  "<billing-agreement-id>billingagreementid</billing-agreement-id>" +
                  "<created-at type=\"datetime\">2018-04-12T19:54:16Z</created-at>" +
                  "<customer-id>1396526238</customer-id>" +
+                 "<edit-paypal-vault-id>ENCR-BA-ID1</edit-paypal-vault-id>" +
                  "<email>some-email</email>" +
                  "<funding-source-description>VISA 1234</funding-source-description>" +
                  "<image-url>https://google.com/image.png</image-url>" +
@@ -40,6 +41,7 @@ public class PayPalAccountTest {
     assertEquals(16, account.getCreatedAt().get(Calendar.SECOND));
 
     assertEquals("1396526238", account.getCustomerId());
+    assertEquals("ENCR-BA-ID1", account.getEditPaypalVaultId());
     assertEquals("some-email", account.getEmail());
     assertEquals("VISA 1234", account.getFundingSourceDescription());
     assertEquals("https://google.com/image.png", account.getImageUrl());

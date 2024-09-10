@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+* Add `editPaypalVaultId` to `PayPalAccount`
 * Add `aniFirstNameResponseCode` and `aniLastNameResponseCode` to `CreditCardVerification`
 * Add `shippingTaxAmount` to `Transaction` and `TransactionRequest`
 
