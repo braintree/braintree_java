@@ -283,7 +283,10 @@ public class MerchantAccountIT extends IntegrationTest {
 
     @Test
     public void createMerchantAccountForCurrency() {
-        this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
+        this.gateway = new BraintreeGateway(
+            "client_id$development$integration_client_id",
+            "client_secret$development$integration_client_secret"
+        );
 
         MerchantRequest merchantRequest = new MerchantRequest().
             email("name@email.com").
@@ -308,7 +311,10 @@ public class MerchantAccountIT extends IntegrationTest {
 
     @Test
     public void createMerchantAccountForCurrencyHandlesMerchantAccountExistsForCurrency() {
-        this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
+        this.gateway = new BraintreeGateway(
+            "client_id$development$integration_client_id",
+            "client_secret$development$integration_client_secret"
+        );
 
         MerchantRequest merchantRequest = new MerchantRequest().
             email("name@email.com").
@@ -334,7 +340,10 @@ public class MerchantAccountIT extends IntegrationTest {
 
     @Test
     public void createMerchantAccountForCurrencyHandlesCurrencyIsInvalid() {
-        this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
+        this.gateway = new BraintreeGateway(
+            "client_id$development$integration_client_id",
+            "client_secret$development$integration_client_secret"
+        );
 
         MerchantRequest merchantRequest = new MerchantRequest().
             email("name@email.com").
@@ -359,7 +368,10 @@ public class MerchantAccountIT extends IntegrationTest {
 
     @Test
     public void createMerchantAccountForCurrencyHandlesCurrencyIsRequired() {
-        this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
+        this.gateway = new BraintreeGateway(
+            "client_id$development$integration_client_id",
+            "client_secret$development$integration_client_secret"
+        );
 
         MerchantRequest merchantRequest = new MerchantRequest().
             email("name@email.com").
@@ -385,7 +397,10 @@ public class MerchantAccountIT extends IntegrationTest {
 
     @Test
     public void createMerchantAccountForCurrencyHandlesMerchantAccountExistsForToken() {
-        this.gateway = new BraintreeGateway("client_id$development$signup_client_id", "client_secret$development$signup_client_secret");
+        this.gateway = new BraintreeGateway(
+            "client_id$development$integration_client_id",
+            "client_secret$development$integration_client_secret"
+        );
 
         MerchantRequest merchantRequest = new MerchantRequest().
             email("name@email.com").
@@ -438,7 +453,7 @@ public class MerchantAccountIT extends IntegrationTest {
         this.gateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
         MerchantRequest request = new MerchantRequest().
             email("name@email.com").
-            countryCodeAlpha3("USA").
+            countryCodeAlpha3("GBR").
             paymentMethods(Arrays.asList("credit_card", "paypal")).
             scope("read_write,shared_vault_transactions");
 
@@ -455,7 +470,7 @@ public class MerchantAccountIT extends IntegrationTest {
         assertEquals(merchantAccounts.size(), 1);
 
         MerchantAccount merchantAccount = merchantAccounts.get(0);
-        assertTrue(merchantAccount.getCurrencyIsoCode().equals("USD"));
+        assertTrue(merchantAccount.getCurrencyIsoCode().equals("GBP"));
         assertEquals(MerchantAccount.Status.ACTIVE, merchantAccount.getStatus());
         assertTrue(merchantAccount.isDefault());
     }
