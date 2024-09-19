@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+* Add `payerName`, `bic` and `iban_last_chars` for LocalPaymentCompleted webhook
 * Add `editPaypalVaultId` to `PayPalAccount`
 * Add `aniFirstNameResponseCode` and `aniLastNameResponseCode` to `CreditCardVerification`
 * Add `shippingTaxAmount` to `Transaction` and `TransactionRequest`

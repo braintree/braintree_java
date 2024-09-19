@@ -803,8 +803,11 @@ public class WebhookNotificationIT extends IntegrationTest {
 
         LocalPaymentCompleted payment = notification.getLocalPaymentCompleted();
 
-        assertEquals("a-payment-id", payment.getPaymentId());
+        assertEquals("a-bic", payment.getBic());
+        assertEquals("1234", payment.getIbanLastChars());
         assertEquals("a-payer-id", payment.getPayerId());
+        assertEquals("a-payer-name", payment.getPayerName());
+        assertEquals("a-payment-id", payment.getPaymentId());
         assertEquals("ee257d98-de40-47e8-96b3-a6954ea7a9a4", payment.getPaymentMethodNonce());
         assertNotNull(payment.getTransaction());
     }
