@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.36.0
+* Add `payerName`, `bic` and `iban_last_chars` for LocalPaymentCompleted webhook
+* Add `editPaypalVaultId` to `PayPalAccount`
+* Add `aniFirstNameResponseCode` and `aniLastNameResponseCode` to `CreditCardVerification`
+* Add `shippingTaxAmount` to `Transaction` and `TransactionRequest`
+
 ## 3.35.0
 * Add attributes to `ThreeDSecureLookupRequest`
   * `merchantInitiatedRequestType`

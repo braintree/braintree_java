@@ -9,6 +9,7 @@ public class PayPalAccount implements PaymentMethod {
     private String billingAgreementId;
     private Calendar createdAt;
     private String customerId;
+    private String editPaypalVaultId;
     private String email;
     private String fundingSourceDescription;
     private String imageUrl;
@@ -23,6 +24,7 @@ public class PayPalAccount implements PaymentMethod {
         this.billingAgreementId = node.findString("billing-agreement-id");
         this.createdAt = node.findDateTime("created-at");
         this.customerId = node.findString("customer-id");
+        this.editPaypalVaultId = node.findString("edit-paypal-vault-id");
         this.email = node.findString("email");
         this.fundingSourceDescription = node.findString("funding-source-description");
         this.imageUrl = node.findString("image-url");
@@ -47,6 +49,10 @@ public class PayPalAccount implements PaymentMethod {
     
     public String getCustomerId() {
         return customerId;
+    }
+
+    public String getEditPaypalVaultId() {
+        return editPaypalVaultId;
     }
 
     public String getEmail() {

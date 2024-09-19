@@ -13,30 +13,34 @@ public class CreditCardVerification {
     }
 
     private BigDecimal amount;
+    private String aniFirstNameResponseCode;
+    private String aniLastNameResponseCode;
     private String avsErrorResponseCode;
     private String avsPostalCodeResponseCode;
     private String avsStreetAddressResponseCode;
+    private Address billingAddress;
+    private Calendar createdAt;
+    private CreditCard creditCard;
     private String currencyIsoCode;
     private String cvvResponseCode;
     private GatewayRejectionReason gatewayRejectionReason;
-    private String processorResponseCode;
-    private String processorResponseText;
-    private ProcessorResponseType processorResponseType;
+    private String graphqlId;
+    private String id;
+    private String merchantAccountId;
     private String networkResponseCode;
     private String networkResponseText;
     private String networkTransactionId;
-    private String merchantAccountId;
-    private Status status;
-    private String graphqlId;
-    private String id;
-    private CreditCard creditCard;
-    private Address billingAddress;
-    private Calendar createdAt;
+    private String processorResponseCode;
+    private String processorResponseText;
+    private ProcessorResponseType processorResponseType;
     private RiskData riskData;
+    private Status status;
     private ThreeDSecureInfo threeDSecureInfo;
-
+    
     public CreditCardVerification(NodeWrapper node) {
         this.amount = node.findBigDecimal("amount");
+        this.aniFirstNameResponseCode = node.findString("ani-first-name-response-code");
+        this.aniLastNameResponseCode = node.findString("ani-last-name-response-code");
         this.avsErrorResponseCode = node.findString("avs-error-response-code");
         this.avsPostalCodeResponseCode = node.findString("avs-postal-code-response-code");
         this.avsStreetAddressResponseCode = node.findString("avs-street-address-response-code");
@@ -80,6 +84,14 @@ public class CreditCardVerification {
 
     public BigDecimal getAmount() {
         return amount;
+    }
+
+    public String getAniFirstNameResponseCode() {
+        return aniFirstNameResponseCode;
+    }
+
+    public String getAniLastNameResponseCode() {
+        return aniLastNameResponseCode;
     }
 
     public String getAvsErrorResponseCode() {

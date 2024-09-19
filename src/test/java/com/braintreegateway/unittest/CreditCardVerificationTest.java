@@ -53,4 +53,18 @@ public class CreditCardVerificationTest {
 
     assertEquals("ABC1234", verification.getNetworkTransactionId());
   }
+
+  @Test
+  public void testVerificationForVisaAni() {
+      String xml = "<verification>"
+          + "    <ani-first-name-response-code>M</ani-first-name-response-code>"
+          + "    <ani-last-name-response-code>M</ani-last-name-response-code>"
+          + "  </verification>";
+
+    SimpleNodeWrapper verificationNode = SimpleNodeWrapper.parse(xml);
+    CreditCardVerification verification = new CreditCardVerification(verificationNode);
+
+    assertEquals("M", verification.getAniFirstNameResponseCode());
+    assertEquals("M", verification.getAniLastNameResponseCode());
+  }
 }
