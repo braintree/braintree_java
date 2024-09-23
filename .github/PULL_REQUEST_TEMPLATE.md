@@ -5,7 +5,6 @@
 - [ ] Added changelog entry
 - [ ] Ran unit tests (`rake test:unit`)
 - [ ] I alphabetized all attributes, parameters, and methods by name in any class file I changed
-- [ ] Any necessary comments are provided
 - [ ] I have linked the JIRA ticket in the summary section
 - [ ] I have reviewed the JIRA ticket to ensure all AC's are met
 - [ ] I understand that unless this is a Draft PR or has a DO NOT MERGE label, this PR is considered to be in a deploy ready state and can be deployed if merged to main
