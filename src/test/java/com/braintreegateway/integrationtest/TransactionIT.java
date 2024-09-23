@@ -6928,7 +6928,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         MerchantRequest request = new MerchantRequest().
             email("name@email.com").
-            countryCodeAlpha3("USA").
+            countryCodeAlpha3("GBR").
             paymentMethods(Arrays.asList("credit_card", "paypal"));
 
         Result<Merchant> merchantResult = gateway.merchant().create(request);
