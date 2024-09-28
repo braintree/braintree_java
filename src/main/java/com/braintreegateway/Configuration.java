@@ -155,4 +155,10 @@ public class Configuration {
     public void setConnectTimeout(Integer timeout) {
         this.connectTimeout = timeout;
     }
+
+    public String connectUrl(OAuthConnectUrlRequest request) {
+        request.clientId(getClientId());
+        String queryString = request.toQueryString();
+        return getBaseURL() + "/oauth/connect?" + queryString;
+    }
 }
