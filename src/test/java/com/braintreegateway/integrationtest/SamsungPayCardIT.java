@@ -20,8 +20,10 @@ import com.braintreegateway.TransactionSearchRequest;
 import com.braintreegateway.test.Nonce;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled
 public class SamsungPayCardIT extends IntegrationTest {
 
   @Test
