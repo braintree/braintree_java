@@ -1,8 +1,12 @@
 package com.braintreegateway;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.braintreegateway.util.NodeWrapper;
 
 public class LocalPaymentDetails {
+    private List<BlikAlias> blikAliases;
     private String captureId;
     private String customField;
     private String debugId;
@@ -33,6 +37,11 @@ public class LocalPaymentDetails {
         refundId = node.findString("refund-id");
         transactionFeeAmount = node.findString("transaction-fee-amount");
         transactionFeeCurrencyIsoCode = node.findString("transaction-fee-currency-iso-code");
+
+        this.blikAliases = new ArrayList<BlikAlias>();
+        for (NodeWrapper blikAliasNode : node.findAll("blik-aliases/blik-alias")) {
+            blikAliases.add(new BlikAlias(blikAliasNode));
+        }
     }
 
     public String getCaptureId() {
@@ -91,4 +100,7 @@ public class LocalPaymentDetails {
       return transactionFeeCurrencyIsoCode;
     }
 
+    public List<BlikAlias> getBlikAlias() {
+        return blikAliases;
+    }
 }

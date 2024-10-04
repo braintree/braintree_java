@@ -67,7 +67,7 @@ public class WebhookTestingGateway {
             case DISPUTE_WON: return disputeWonXml(id);
             case GRANTED_PAYMENT_METHOD_REVOKED: return grantedPaymentMethodRevokedXml(id);
             case GRANTOR_UPDATED_GRANTED_PAYMENT_METHOD: return grantedPaymentInstrumentUpdateXml();
-            case LOCAL_PAYMENT_COMPLETED: return localPaymentCompletedXml();
+            case LOCAL_PAYMENT_COMPLETED: return localPaymentCompletedXml(id);
             case LOCAL_PAYMENT_EXPIRED: return localPaymentExpiredXml();
             case LOCAL_PAYMENT_FUNDED: return localPaymentFundedXml();
             case LOCAL_PAYMENT_REVERSED: return localPaymentReversedXml();
@@ -580,10 +580,41 @@ public class WebhookTestingGateway {
         );
     }
 
-    private String localPaymentCompletedXml() {
+    private String localPaymentCompletedXml(String id) {
+        if(id == "blik_one_click_id") {
+            return blikOneClickLocalPaymentCompletedXml();
+        } else {
+            return defaultLocalPaymentCompletedXml();
+        }
+    }
+
+    private String defaultLocalPaymentCompletedXml() {
         return node("local-payment",
                 node("bic", "a-bic"),
                 node("iban-last-chars", "1234"),
+                node("payer-id", "a-payer-id"),
+                node("payer-name", "a-payer-name"),
+                node("payment-id", "a-payment-id"),
+                node("payment-method-nonce", "ee257d98-de40-47e8-96b3-a6954ea7a9a4"),
+                node("transaction",
+                     node("id", "1"),
+                     node("status", "authorizing"),
+                     node("amount", "10.00"),
+                     node("order-id", "order1234")
+                    )
+                );
+    }
+
+    private String blikOneClickLocalPaymentCompletedXml() {
+        return node("local-payment",
+                node("bic", "a-bic"),
+                node("iban-last-chars", "1234"),
+                node("blik-aliases", TYPE_ARRAY,
+                    node("blik-alias",
+                         node("key", "unique-key-1"),
+                         node("label", "unique-label-1")
+                        )
+                    ),
                 node("payer-id", "a-payer-id"),
                 node("payer-name", "a-payer-name"),
                 node("payment-id", "a-payment-id"),

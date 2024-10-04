@@ -8,6 +8,7 @@ import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -810,6 +811,31 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertEquals("a-payment-id", payment.getPaymentId());
         assertEquals("ee257d98-de40-47e8-96b3-a6954ea7a9a4", payment.getPaymentMethodNonce());
         assertNotNull(payment.getTransaction());
+        assertTrue(payment.getBlikAlias().isEmpty());
+
+    }
+
+    @Test
+    public void createsLocalPaymentCompletedForBlikOneClick() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.LOCAL_PAYMENT_COMPLETED, "blik_one_click_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.LOCAL_PAYMENT_COMPLETED, notification.getKind());
+
+        LocalPaymentCompleted payment = notification.getLocalPaymentCompleted();
+
+        assertEquals("a-bic", payment.getBic());
+        assertEquals("1234", payment.getIbanLastChars());
+        assertEquals("a-payer-id", payment.getPayerId());
+        assertEquals("a-payer-name", payment.getPayerName());
+        assertEquals("a-payment-id", payment.getPaymentId());
+        assertEquals("ee257d98-de40-47e8-96b3-a6954ea7a9a4", payment.getPaymentMethodNonce());
+        assertNotNull(payment.getTransaction());
+
+        assertTrue(payment.getBlikAlias() instanceof ArrayList);
+        assertEquals("unique-key-1", payment.getBlikAlias().get(0).getKey());
+        assertEquals("unique-label-1", payment.getBlikAlias().get(0).getLabel());
     }
 
     @Test

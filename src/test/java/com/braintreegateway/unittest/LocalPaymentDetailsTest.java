@@ -1,5 +1,7 @@
 package com.braintreegateway.unittest;
 
+import java.util.ArrayList;
+
 import com.braintreegateway.LocalPaymentDetails;
 import com.braintreegateway.util.SimpleNodeWrapper;
 
@@ -10,6 +12,12 @@ public class LocalPaymentDetailsTest {
   @Test
   public void includesFields() {
     String xml = "<local-payment-details>" +
+                 "<blik-aliases type='array'>"+
+                 "  <blik-alias>"+
+                 "    <key>unique-key-1</key>"+
+                 "    <label>unique-label-1</label>"+
+                 "  </blik-alias>"+
+                 "</blik-aliases>"+
                  "<capture-id>CAT-1234</capture-id>" +
                  "<custom-field>whatever</custom-field>" +
                  "<debug-id>DEB-1234</debug-id>" +
@@ -43,5 +51,9 @@ public class LocalPaymentDetailsTest {
     assertEquals("REF-1234", details.getRefundId());
     assertEquals("10.00", details.getTransactionFeeAmount());
     assertEquals("EUR", details.getTransactionFeeCurrencyIsoCode());
+
+    assertTrue(details.getBlikAlias() instanceof ArrayList);
+    assertEquals("unique-key-1", details.getBlikAlias().get(0).getKey());
+    assertEquals("unique-label-1", details.getBlikAlias().get(0).getLabel());
   }
 }
