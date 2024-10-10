@@ -1,5 +1,7 @@
 package com.braintreegateway.test;
 
+// NEXT_MAJOR_VERSION - Remove all SamsungPay references
+// SamsungPay has been deprecated
 public class Nonce {
   public static final String Transactable = "fake-valid-nonce";
   public static final String Consumed = "fake-consumed-nonce";
@@ -81,9 +83,13 @@ public class Nonce {
   public static final String PayPalFuturePaymentRefreshToken = "fake-paypal-future-refresh-token-nonce";
   public static final String GatewayRejectedFraud = "fake-gateway-rejected-fraud-nonce";
   public static final String GatewayRejectedTokenIssuance = "fake-token-issuance-error-venmo-account-nonce";
+  @Deprecated
   public static final String SamsungPayAmEx = "tokensam_fake_american_express";
+  @Deprecated
   public static final String SamsungPayDiscover = "tokensam_fake_discover";
+  @Deprecated
   public static final String SamsungPayMasterCard = "tokensam_fake_mastercard";
+  @Deprecated
   public static final String SamsungPayVisa = "tokensam_fake_visa";
   public static final String UsBankAccount = "fake-us-bank-account-nonce";
 }

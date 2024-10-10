@@ -16,6 +16,8 @@ import com.braintreegateway.UsBankAccount;
 import com.braintreegateway.VenmoAccount;
 import com.braintreegateway.VisaCheckoutCard;
 
+// NEXT_MAJOR_VERSION - Remove all SamsungPay references
+// SamsungPay has been deprecated
 public class PaymentMethodParser {
 
     public static Result<? extends PaymentMethod> parsePaymentMethod(NodeWrapper node) {

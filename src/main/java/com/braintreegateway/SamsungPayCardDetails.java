@@ -2,6 +2,9 @@ package com.braintreegateway;
 
 import com.braintreegateway.util.NodeWrapper;
 
+// NEXT_MAJOR_VERSION remove this class
+// SamsungPay has been deprecated
+@Deprecated
 public class SamsungPayCardDetails {
     private String bin;
     private String cardType;

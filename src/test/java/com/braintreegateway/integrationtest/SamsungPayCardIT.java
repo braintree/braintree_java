@@ -23,6 +23,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Disabled;
 import static org.junit.jupiter.api.Assertions.*;
 
+// NEXT_MAJOR_VERSION remove this class
+// SamsungPay has been deprecated
 @Disabled
 public class SamsungPayCardIT extends IntegrationTest {
 

@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Add `blikAliases` to LocalPaymentCompleted webhook and LocalPaymentDetails
+* Deprecate `SamsungPayCard`
 
 ## 3.36.0
 * Add `payerName`, `bic` and `iban_last_chars` for LocalPaymentCompleted webhook
