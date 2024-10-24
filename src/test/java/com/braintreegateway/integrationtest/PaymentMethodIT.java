@@ -886,7 +886,7 @@ public class PaymentMethodIT extends IntegrationTest {
             paymentMethodNonce(nonce).
             options().
                 verifyCard(true).
-                verificationMerchantAccountId("hiper_brl").
+                verificationMerchantAccountId("card_processor_brl").
                 verificationAccountType("debit").
                 done();
 

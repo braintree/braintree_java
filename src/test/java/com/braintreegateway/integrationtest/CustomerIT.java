@@ -1046,7 +1046,7 @@ public class CustomerIT extends IntegrationTest {
                 expirationDate("05/12").
                 options().
                     verifyCard(true).
-                    verificationMerchantAccountId("hiper_brl").
+                    verificationMerchantAccountId("card_processor_brl").
                     verificationAccountType("debit").
                     done().
                 done().

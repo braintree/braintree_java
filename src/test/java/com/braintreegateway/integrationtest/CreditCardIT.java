@@ -667,7 +667,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
             expirationDate("01/20").
             options().
                 verifyCard(true).
-                verificationMerchantAccountId("hiper_brl").
+                verificationMerchantAccountId("card_processor_brl").
                 verificationAccountType("debit").
                 done();
 
@@ -1074,7 +1074,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
             expirationDate("05/12").
             options().
                 verifyCard(true).
-                verificationMerchantAccountId("hiper_brl").
+                verificationMerchantAccountId("card_processor_brl").
                 verificationAccountType("debit").
                 done();
 

@@ -639,7 +639,7 @@ public class CreditCardVerificationIT extends IntegrationTest {
                 done().
             options().
                 amount("5.00").
-                merchantAccountId("hiper_brl").
+                merchantAccountId("card_processor_brl").
                 accountType("debit").
                 done();
 

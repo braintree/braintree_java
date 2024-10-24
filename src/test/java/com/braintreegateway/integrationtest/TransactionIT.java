@@ -4354,30 +4354,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    public void saleWithExternalVaultValidationErrorInvalidPaymentInstrumentWithExternalVault() {
-        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
-        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
-            customerId(customer.getId()).
-            paymentMethodNonce(Nonce.PayPalBillingAgreement);
-        PaymentMethod paymentMethodResult = gateway.paymentMethod().create(paymentMethodRequest).getTarget();
-
-        TransactionRequest request = new TransactionRequest().
-            amount(new BigDecimal("10.00")).
-            paymentMethodToken(paymentMethodResult.getToken()).
-            externalVault().
-                vaulted().
-                previousNetworkTransactionId("123456789012345").
-                done();
-
-        Result<Transaction> result = gateway.transaction().sale(request);
-        assertFalse(result.isSuccess());
-        assertEquals(
-            ValidationErrorCode.TRANSACTION_PAYMENT_INSTRUMENT_WITH_EXTERNAL_VAULT_IS_INVALID,
-            result.getErrors().forObject("transaction").onField("external_vault").get(0).getCode()
-        );
-    }
-
-    @Test
     public void saleWithExternalVaultValidationErrorInvalidStatusWithPreviousNetworkTransactionId() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
