@@ -1,9 +1,10 @@
 package com.braintreegateway;
 
 public class ClientTokenOptionsRequest extends Request {
+    private Boolean failOnDuplicatePaymentMethod;
+    private Boolean failOnDuplicatePaymentMethodForCustomer;
     private Boolean makeDefault;
     private Boolean verifyCard;
-    private Boolean failOnDuplicatePaymentMethod;
     private ClientTokenRequest parent;
 
     public ClientTokenOptionsRequest() {
@@ -45,6 +46,15 @@ public class ClientTokenOptionsRequest extends Request {
         return this;
     }
 
+    public Boolean getFailOnDuplicatePaymentMethodForCustomer() {
+        return failOnDuplicatePaymentMethodForCustomer;
+    }
+
+    public ClientTokenOptionsRequest failOnDuplicatePaymentMethodForCustomer(Boolean failOnDuplicatePaymentMethodForCustomer) {
+        this.failOnDuplicatePaymentMethodForCustomer = failOnDuplicatePaymentMethodForCustomer;
+        return this;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("options").toXML();
@@ -52,8 +62,9 @@ public class ClientTokenOptionsRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root)
+            .addElement("failOnDuplicatePaymentMethod", failOnDuplicatePaymentMethod)
+            .addElement("failOnDuplicatePaymentMethodForCustomer", failOnDuplicatePaymentMethodForCustomer)
             .addElement("makeDefault", makeDefault)
-            .addElement("verifyCard", verifyCard)
-            .addElement("failOnDuplicatePaymentMethod", failOnDuplicatePaymentMethod);
+            .addElement("verifyCard", verifyCard);
     }
 }

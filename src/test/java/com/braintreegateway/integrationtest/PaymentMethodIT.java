@@ -1182,6 +1182,7 @@ public class PaymentMethodIT extends IntegrationTest {
             options().
                 verifyCard(true).
                 failOnDuplicatePaymentMethod(true).
+                failOnDuplicatePaymentMethodForCustomer(true).
                 verificationMerchantAccountId("not_a_real_merchant_account_id").
                 done();
 
@@ -1868,6 +1869,7 @@ public class PaymentMethodIT extends IntegrationTest {
             options().
                 verifyCard(true).
                 failOnDuplicatePaymentMethod(true).
+                failOnDuplicatePaymentMethodForCustomer(true).
                 verificationMerchantAccountId("not_a_real_merchant_account_id").
                 done();
         Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);

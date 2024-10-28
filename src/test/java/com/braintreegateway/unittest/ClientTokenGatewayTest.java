@@ -60,4 +60,17 @@ public class ClientTokenGatewayTest {
         assertTrue(e.getMessage().contains("failOnDuplicatePaymentMethod"),
                 "exception message should mention failOnDuplicatePaymentMethod");
     }
+
+    @Test
+    public void generateRaisesExceptionIfFailOnDuplicatePaymentMethodForCustomerIsIncludedWithoutCustomerId() {
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
+                .options(new ClientTokenOptionsRequest().failOnDuplicatePaymentMethodForCustomer(true));
+
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+            gateway.clientToken().generate(clientTokenRequest);
+        });
+
+        assertTrue(e.getMessage().contains("failOnDuplicatePaymentMethodForCustomer"),
+                "exception message should mention failOnDuplicatePaymentMethodForCustomer");
+    }
 }

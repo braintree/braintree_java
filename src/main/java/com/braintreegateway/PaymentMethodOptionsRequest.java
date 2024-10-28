@@ -4,6 +4,7 @@ package com.braintreegateway;
 // The old venmo SDK integration has been deprecated
 public class PaymentMethodOptionsRequest extends Request {
     private Boolean failOnDuplicatePaymentMethod;
+    private Boolean failOnDuplicatePaymentMethodForCustomer;
     private Boolean makeDefault;
     private Boolean skipAdvancedFraudChecking;
     private Boolean verifyCard;
@@ -56,6 +57,11 @@ public class PaymentMethodOptionsRequest extends Request {
 
     public PaymentMethodOptionsRequest failOnDuplicatePaymentMethod(Boolean failOnDuplicatePaymentMethod) {
         this.failOnDuplicatePaymentMethod = failOnDuplicatePaymentMethod;
+        return this;
+    }
+
+    public PaymentMethodOptionsRequest failOnDuplicatePaymentMethodForCustomer(Boolean failOnDuplicatePaymentMethodForCustomer) {
+        this.failOnDuplicatePaymentMethodForCustomer = failOnDuplicatePaymentMethodForCustomer;
         return this;
     }
 
@@ -117,6 +123,7 @@ public class PaymentMethodOptionsRequest extends Request {
 
         builder.addElement("adyen", paymentMethodOptionsAdyenRequest);
         builder.addElement("failOnDuplicatePaymentMethod", failOnDuplicatePaymentMethod);
+        builder.addElement("failOnDuplicatePaymentMethodForCustomer", failOnDuplicatePaymentMethod);
         builder.addElement("paypal", paymentMethodOptionsPayPalRequest);
         builder.addElement("skipAdvancedFraudChecking", skipAdvancedFraudChecking);
         builder.addElement("usBankAccountVerificationMethod", usBankAccountVerificationMethod);

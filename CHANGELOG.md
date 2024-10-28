@@ -1,6 +1,10 @@
 # Changelog
 
 ## Unreleased
+* Add `fail_on_duplicate_payment_method_for_customer` option to 
+  * `ClientToken`
+  * `PaymentMethod`
+  * `CreditCard`
 * Add `blikAliases` to LocalPaymentCompleted webhook and LocalPaymentDetails
 * Deprecate `SamsungPayCard`
 * Updated expiring pinned vendor SSL certificates

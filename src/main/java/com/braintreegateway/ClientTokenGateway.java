@@ -61,6 +61,9 @@ public class ClientTokenGateway {
         if (request.getOptions().getFailOnDuplicatePaymentMethod() != null) {
             invalidOptions.add("failOnDuplicatePaymentMethod");
         }
+        if (request.getOptions().getFailOnDuplicatePaymentMethodForCustomer() != null) {
+            invalidOptions.add("failOnDuplicatePaymentMethodForCustomer");
+        }
 
         if (invalidOptions.size() != 0) {
           String message = "Following arguments are invalid without customerId:";

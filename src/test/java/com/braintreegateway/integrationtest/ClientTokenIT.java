@@ -266,4 +266,53 @@ public class ClientTokenIT extends IntegrationTest {
         int new_card_count = gateway.customer().find(customer.getId()).getCreditCards().size();
         assertEquals(1, new_card_count);
     }
+
+    public void gatewayRespectsFailOnDuplicatePaymentMethodForCustomer() {
+        CustomerRequest customerRequest = new CustomerRequest();
+        Result<Customer> result = gateway.customer().create(customerRequest);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
+            .customerId(customer.getId())
+            .options(new ClientTokenOptionsRequest().failOnDuplicatePaymentMethodForCustomer(false));
+        String clientToken = gateway.clientToken().generate(clientTokenRequest);
+
+        String authorizationFingerprint = _getFingerprint(clientToken);
+
+        Configuration configuration = gateway.getConfiguration();
+        String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods/credit_cards";
+        QueryString payload = new QueryString();
+        payload.append("authorization_fingerprint", authorizationFingerprint).
+            append("shared_customer_identifier_type", "testing").
+            append("shared_customer_identifier", "test-identifier").
+            append("credit_card[number]", "4111111111111111").
+            append("credit_card[expiration_month]", "11").
+            append("credit_card[expiration_year]", "2099");
+
+        int responseCode = postResponseCode(url, payload);
+        assertEquals(201, responseCode);
+
+        clientTokenRequest = new ClientTokenRequest()
+            .customerId(customer.getId())
+            .options(new ClientTokenOptionsRequest().failOnDuplicatePaymentMethodForCustomer(true));
+        clientToken = gateway.clientToken().generate(clientTokenRequest);
+
+        authorizationFingerprint = _getFingerprint(clientToken);
+
+        url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods/credit_cards";
+        payload = new QueryString();
+        payload.append("authorization_fingerprint", authorizationFingerprint).
+            append("shared_customer_identifier_type", "testing").
+            append("shared_customer_identifier", "test-identifier").
+            append("credit_card[number]", "4111111111111111").
+            append("credit_card[expiration_month]", "11").
+            append("credit_card[expiration_year]", "2099");
+
+        responseCode = postResponseCode(url, payload);
+        assertEquals(422, responseCode);
+
+        int new_card_count = gateway.customer().find(customer.getId()).getCreditCards().size();
+        assertEquals(1, new_card_count);
+    }
 }

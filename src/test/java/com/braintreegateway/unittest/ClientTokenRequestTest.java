@@ -23,7 +23,8 @@ public class ClientTokenRequestTest {
             options(new ClientTokenOptionsRequest().
                 makeDefault(true).
                 verifyCard(false).
-                failOnDuplicatePaymentMethod(true)).
+                failOnDuplicatePaymentMethod(true).
+                failOnDuplicatePaymentMethodForCustomer(true)).
             version(2);
 
         String expectedXML = 
@@ -35,6 +36,7 @@ public class ClientTokenRequestTest {
             + "    <makeDefault>true</makeDefault>\n"
             + "    <verifyCard>false</verifyCard>\n"
             + "    <failOnDuplicatePaymentMethod>true</failOnDuplicatePaymentMethod>\n"
+            + "    <failOnDuplicatePaymentMethodForCustomer>true</failOnDuplicatePaymentMethodForCustomer>\n"
             + "  </options>\n"
             + "  <version>2</version>\n"
             + "</clientToken>";
