@@ -1,9 +1,13 @@
 package com.braintreegateway;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.braintreegateway.util.NodeWrapper;
 
 public class LocalPaymentCompleted {
     private String bic;
+    private List<BlikAlias> blikAliases;
     private String ibanLastChars;
     private String payerId;
     private String payerName;
@@ -23,10 +27,19 @@ public class LocalPaymentCompleted {
         if (transactionNode != null) {
             this.transaction = new Transaction(transactionNode);
         }
+
+        blikAliases = new ArrayList<BlikAlias>();
+        for (NodeWrapper blikAliasNode : node.findAll("blik-aliases/blik-alias")) {
+            blikAliases.add(new BlikAlias(blikAliasNode));
+        }
     }
 
     public String getBic() {
         return bic;
+    }
+
+    public List<BlikAlias> getBlikAlias() {
+        return blikAliases;
     }
 
     public String getIbanLastChars() {
@@ -52,4 +65,4 @@ public class LocalPaymentCompleted {
     public Transaction getTransaction() {
         return transaction;
     }
- }
+}

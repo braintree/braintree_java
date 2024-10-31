@@ -1046,7 +1046,7 @@ public class CustomerIT extends IntegrationTest {
                 expirationDate("05/12").
                 options().
                     verifyCard(true).
-                    verificationMerchantAccountId("hiper_brl").
+                    verificationMerchantAccountId("card_processor_brl").
                     verificationAccountType("debit").
                     done().
                 done().
@@ -1540,6 +1540,38 @@ public class CustomerIT extends IntegrationTest {
         );
     }
 
+    @Test
+    public void updateWithExistingCreditCardFailsOnDuplicatePaymentMethodForCustomer() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Mark").
+            lastName("Jones").
+            creditCard().
+                number("4111111111111111").
+                expirationDate("12/12").
+                done();
+
+        Customer customer = gateway.customer().create(request).getTarget();
+        CreditCard creditCard = customer.getCreditCards().get(0);
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            firstName("Jane").
+            lastName("Doe").
+            creditCard().
+                number("4111111111111111").
+                expirationDate("12/12").
+                options().
+                    updateExistingToken(creditCard.getToken()).
+                    failOnDuplicatePaymentMethodForCustomer(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().update(customer.getId(), updateRequest);
+        assertFalse(result.isSuccess());
+        assertEquals(
+                ValidationErrorCode.CREDIT_CARD_DUPLICATE_CARD_EXISTS_FOR_CUSTOMER,
+                result.getErrors().forObject("customer").forObject("creditCard").onField("number").get(0).getCode()
+        );
+    }
     @Test
     public void updateWithNewCreditCardAndExistingAddress() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();

@@ -8,6 +8,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+// NEXT_MAJOR_VERSION - Remove all SamsungPay references
+// SamsungPay has been deprecated
 public class Transaction {
 
     public boolean isDisbursed() {
@@ -649,6 +651,7 @@ public class Transaction {
         return masterpassCardDetails;
     }
 
+    @Deprecated
     public SamsungPayCardDetails getSamsungPayCardDetails() {
         return samsungPayCardDetails;
     }

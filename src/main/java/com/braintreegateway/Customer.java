@@ -4,6 +4,8 @@ import com.braintreegateway.util.NodeWrapper;
 import java.util.*;
 import com.braintreegateway.InternationalPhone;
 
+// NEXT_MAJOR_VERSION - Remove all SamsungPay references
+// SamsungPay has been deprecated
 public class Customer {
 
     private Calendar createdAt;
@@ -202,6 +204,7 @@ public class Customer {
         return Collections.unmodifiableList(sepaDirectDebitAccounts);
     }
 
+    @Deprecated
     public List<SamsungPayCard> getSamsungPayCards() {
         return Collections.unmodifiableList(samsungPayCards);
     }

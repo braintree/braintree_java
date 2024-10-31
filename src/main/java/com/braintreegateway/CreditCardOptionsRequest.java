@@ -4,6 +4,7 @@ package com.braintreegateway;
 // The old venmo SDK integration has been deprecated
 public class CreditCardOptionsRequest extends Request {
     private Boolean failOnDuplicatePaymentMethod;
+    private Boolean failOnDuplicatePaymentMethodForCustomer;
     private Boolean makeDefault;
     private Boolean skipAdvancedFraudChecking;
     private Boolean verifyCard;
@@ -23,18 +24,33 @@ public class CreditCardOptionsRequest extends Request {
         return parent;
     }
 
-    public CreditCardOptionsRequest verificationMerchantAccountId(String verificationMerchantAccountId) {
-        this.verificationMerchantAccountId = verificationMerchantAccountId;
+    public CreditCardOptionsRequest failOnDuplicatePaymentMethod(Boolean failOnDuplicatePaymentMethod) {
+        this.failOnDuplicatePaymentMethod = failOnDuplicatePaymentMethod;
+        return this;
+    }
+
+    public CreditCardOptionsRequest failOnDuplicatePaymentMethodForCustomer(Boolean failOnDuplicatePaymentMethodForCustomer) {
+        this.failOnDuplicatePaymentMethodForCustomer = failOnDuplicatePaymentMethodForCustomer;
+        return this;
+    }
+
+    public CreditCardOptionsRequest makeDefault(Boolean makeDefault) {
+        this.makeDefault = makeDefault;
+        return this;
+    }
+
+    public CreditCardOptionsRequest skipAdvancedFraudChecking(Boolean skipAdvancedFraudChecking) {
+        this.skipAdvancedFraudChecking = skipAdvancedFraudChecking;
+        return this;
+    }
+
+    public CreditCardOptionsRequest updateExistingToken(String token) {
+        this.updateExistingToken = token;
         return this;
     }
 
     public CreditCardOptionsRequest verificationAccountType(String verificationAccountType) {
         this.verificationAccountType = verificationAccountType;
-        return this;
-    }
-
-    public CreditCardOptionsRequest failOnDuplicatePaymentMethod(Boolean failOnDuplicatePaymentMethod) {
-        this.failOnDuplicatePaymentMethod = failOnDuplicatePaymentMethod;
         return this;
     }
 
@@ -48,18 +64,8 @@ public class CreditCardOptionsRequest extends Request {
         return this;
     }
 
-    public CreditCardOptionsRequest skipAdvancedFraudChecking(Boolean skipAdvancedFraudChecking) {
-        this.skipAdvancedFraudChecking = skipAdvancedFraudChecking;
-        return this;
-    }
-
-    public CreditCardOptionsRequest makeDefault(Boolean makeDefault) {
-        this.makeDefault = makeDefault;
-        return this;
-    }
-
-    public CreditCardOptionsRequest updateExistingToken(String token) {
-        this.updateExistingToken = token;
+    public CreditCardOptionsRequest verificationMerchantAccountId(String verificationMerchantAccountId) {
+        this.verificationMerchantAccountId = verificationMerchantAccountId;
         return this;
     }
 
@@ -99,6 +105,7 @@ public class CreditCardOptionsRequest extends Request {
         RequestBuilder builder = new RequestBuilder(root);
 
         builder.addElement("failOnDuplicatePaymentMethod", failOnDuplicatePaymentMethod);
+        builder.addElement("failOnDuplicatePaymentMethodForCustomer", failOnDuplicatePaymentMethodForCustomer);
         builder.addElement("skipAdvancedFraudChecking", skipAdvancedFraudChecking);
         builder.addElement("updateExistingToken", updateExistingToken);
         builder.addElement("venmoSdkSession", venmoSdkSession);

@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.37.0
+* Add `fail_on_duplicate_payment_method_for_customer` option to 
+  * `ClientToken`
+  * `PaymentMethod`
+  * `CreditCard`
+* Add `blikAliases` to LocalPaymentCompleted webhook and LocalPaymentDetails
+* Deprecate `SamsungPayCard`
+* Updated expiring pinned vendor SSL certificates
+
 ## 3.36.0
 * Add `payerName`, `bic` and `iban_last_chars` for LocalPaymentCompleted webhook
 * Add `editPaypalVaultId` to `PayPalAccount`

@@ -95,6 +95,8 @@ public class PaymentMethodGatewayTest {
         assertTrue(result.getTarget() instanceof PayPalAccount);
     }
 
+    // NEXT_MAJOR_VERSION remove this test
+    // SamsungPay has been deprecated
     @Test
     public void parseResultReturnsSamsungPayCard() {
         String xml = "<samsung-pay-card><token>foo</token></samsung-pay-card>";
