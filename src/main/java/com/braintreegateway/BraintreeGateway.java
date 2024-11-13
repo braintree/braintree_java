@@ -1,6 +1,7 @@
 package com.braintreegateway;
 
 import com.braintreegateway.test.TestingGateway;
+import com.braintreegateway.customersession.CustomerSessionGateway;
 import com.braintreegateway.util.GraphQLClient;
 import com.braintreegateway.util.Http;
 
@@ -146,6 +147,16 @@ public class BraintreeGateway {
      */
     public CustomerGateway customer() {
         return new CustomerGateway(http, configuration);
+    }
+
+    /**
+     * Returns a {@link CustomerSessionGateway} for interacting with {@link CustomerSession}
+     * objects.
+     *
+     * @return an {@link CustomerSessionGateway}.
+     */
+    public CustomerSessionGateway customerSession() {
+        return new CustomerSessionGateway(graphQLClient);
     }
 
     /**
