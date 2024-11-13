@@ -24,60 +24,73 @@ import static org.mockito.Mockito.*;
 
 public class GetCustomerInsightsGatewayTest {
 
-    @Mock
-    private GraphQLClient graphQLClient;
+  @Mock private GraphQLClient graphQLClient;
 
-    @InjectMocks
-    private CustomerSessionGateway customerSessionGateway;
+  @InjectMocks private CustomerSessionGateway customerSessionGateway;
 
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
+  @BeforeEach
+  public void setup() {
+    MockitoAnnotations.initMocks(this);
+  }
 
-    @Test
-    public void testGetCustomerInsights_invokes_GraphQLClient() throws IOException {
-        Map<String, Object> successResponse = TestHelper.readResponseFromJsonResource("unittest/customer_session/customer_insights_successful_response.json");
-        ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
-        when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(successResponse);
-        CustomerInsightsInput customerInsightsInput = getMockCustomerInsightsInput();
+  @Test
+  public void testGetCustomerInsights_invokes_GraphQLClient() throws IOException {
+    Map<String, Object> successResponse =
+        TestHelper.readResponseFromJsonResource(
+            "unittest/customer_session/customer_insights_successful_response.json");
+    ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
+    when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(successResponse);
+    CustomerInsightsInput customerInsightsInput = getMockCustomerInsightsInput();
 
-        customerSessionGateway.getCustomerInsights(customerInsightsInput);
+    customerSessionGateway.getCustomerInsights(customerInsightsInput);
 
-        verify(graphQLClient, times(1)).query(anyString(), captor.capture());
-        assertEquals(customerInsightsInput.toGraphQLVariables(), captor.getValue().get("input"));
-    }
+    verify(graphQLClient, times(1)).query(anyString(), captor.capture());
+    assertEquals(customerInsightsInput.toGraphQLVariables(), captor.getValue().get("input"));
+  }
 
-    @Test
-    public void testGetCustomerInsights_OnSuccess() throws IOException {
-        Map<String, Object> successResponse = TestHelper.readResponseFromJsonResource("unittest/customer_session/customer_insights_successful_response.json");
-        when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(successResponse);
+  @Test
+  public void testGetCustomerInsights_OnSuccess() throws IOException {
+    Map<String, Object> successResponse =
+        TestHelper.readResponseFromJsonResource(
+            "unittest/customer_session/customer_insights_successful_response.json");
+    when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(successResponse);
 
-        Result<CustomerInsightsPayload> result = customerSessionGateway.getCustomerInsights(getMockCustomerInsightsInput());
+    Result<CustomerInsightsPayload> result =
+        customerSessionGateway.getCustomerInsights(getMockCustomerInsightsInput());
 
-        CustomerInsightsPayload actualPayload = result.getTarget();
-        assertEquals(InsightPaymentOption.PAYPAL, actualPayload.getInsights().getPaymentRecommendations().get(0).getPaymentOption());
-    }
+    CustomerInsightsPayload actualPayload = result.getTarget();
+    assertEquals(
+        InsightPaymentOption.PAYPAL,
+        actualPayload.getInsights().getPaymentRecommendations().get(0).getPaymentOption());
+  }
 
-    private static CustomerInsightsInput getMockCustomerInsightsInput() {
-        return new CustomerInsightsInput("session-id", Arrays.asList(Insights.PAYMENT_INSIGHTS));
-    }
+  private static CustomerInsightsInput getMockCustomerInsightsInput() {
+    return new CustomerInsightsInput("session-id", Arrays.asList(Insights.PAYMENT_INSIGHTS));
+  }
 
-    @Test
-    public void testGetCustomerInsights_OnValidationErrors() throws IOException {
-        Map<String, Object> errorResponse = TestHelper.readResponseFromJsonResource("unittest/customer_session/customer_insights_with_errors.json");
-        when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(errorResponse);
+  @Test
+  public void testGetCustomerInsights_OnValidationErrors() throws IOException {
+    Map<String, Object> errorResponse =
+        TestHelper.readResponseFromJsonResource(
+            "unittest/customer_session/customer_insights_with_errors.json");
+    when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(errorResponse);
 
-        Result<CustomerInsightsPayload> result = customerSessionGateway.getCustomerInsights(getMockCustomerInsightsInput());
-        assertEquals("validation error", result.getErrors().getAllValidationErrors().get(0).getMessage());
-    }
+    Result<CustomerInsightsPayload> result =
+        customerSessionGateway.getCustomerInsights(getMockCustomerInsightsInput());
+    assertEquals(
+        "validation error", result.getErrors().getAllValidationErrors().get(0).getMessage());
+  }
 
-    @Test
-    public void testGetCustomerInsights_OnParsingError() throws IOException {
-        Map<String, Object> errorResponse = TestHelper.readResponseFromJsonResource("unittest/customer_session/customer_insights_unparseable_response.json");
-        when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(errorResponse);
-        assertThrows(UnexpectedException.class, () -> {
-            customerSessionGateway.getCustomerInsights(getMockCustomerInsightsInput());
+  @Test
+  public void testGetCustomerInsights_OnParsingError() throws IOException {
+    Map<String, Object> errorResponse =
+        TestHelper.readResponseFromJsonResource(
+            "unittest/customer_session/customer_insights_unparseable_response.json");
+    when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(errorResponse);
+    assertThrows(
+        UnexpectedException.class,
+        () -> {
+          customerSessionGateway.getCustomerInsights(getMockCustomerInsightsInput());
         });
-    }
+  }
 }

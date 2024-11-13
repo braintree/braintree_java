@@ -24,56 +24,69 @@ import static org.mockito.Mockito.*;
 
 public class UpdateCustomerSessionGatewayTest {
 
-    @Mock
-    private GraphQLClient graphQLClient;
+  @Mock private GraphQLClient graphQLClient;
 
-    @InjectMocks
-    private CustomerSessionGateway customerSessionGateway;
+  @InjectMocks private CustomerSessionGateway customerSessionGateway;
 
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
+  @BeforeEach
+  public void setup() {
+    MockitoAnnotations.initMocks(this);
+  }
 
-    @Test
-    public void testUpdateCustomerSession_invokes_GraphQLClient() throws IOException {
-        Map<String, Object> successResponse = TestHelper.readResponseFromJsonResource("unittest/customer_session/update_session_successful_response.json");
-        ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
-        when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(successResponse);
-        UpdateCustomerSessionInput updateCustomerSessionInput = new UpdateCustomerSessionInput("session-id");
-        
-        customerSessionGateway.updateCustomerSession(updateCustomerSessionInput);
+  @Test
+  public void testUpdateCustomerSession_invokes_GraphQLClient() throws IOException {
+    Map<String, Object> successResponse =
+        TestHelper.readResponseFromJsonResource(
+            "unittest/customer_session/update_session_successful_response.json");
+    ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
+    when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(successResponse);
+    UpdateCustomerSessionInput updateCustomerSessionInput =
+        new UpdateCustomerSessionInput("session-id");
 
-        verify(graphQLClient, times(1)).query(anyString(), captor.capture());
-        assertEquals(updateCustomerSessionInput.toGraphQLVariables(), captor.getValue().get("input"));
-    }
+    customerSessionGateway.updateCustomerSession(updateCustomerSessionInput);
 
-    @Test
-    public void testUpdateCustomerSession_OnSuccess() throws IOException {
-        Map<String, Object> successResponse = TestHelper.readResponseFromJsonResource("unittest/customer_session/update_session_successful_response.json");
-        when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(successResponse);
+    verify(graphQLClient, times(1)).query(anyString(), captor.capture());
+    assertEquals(updateCustomerSessionInput.toGraphQLVariables(), captor.getValue().get("input"));
+  }
 
-        Result<String> result = customerSessionGateway.updateCustomerSession(new UpdateCustomerSessionInput("session-id"));
+  @Test
+  public void testUpdateCustomerSession_OnSuccess() throws IOException {
+    Map<String, Object> successResponse =
+        TestHelper.readResponseFromJsonResource(
+            "unittest/customer_session/update_session_successful_response.json");
+    when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(successResponse);
 
-        assertEquals("customer-session-id", result.getTarget());
-    }
+    Result<String> result =
+        customerSessionGateway.updateCustomerSession(new UpdateCustomerSessionInput("session-id"));
 
-    @Test
-    public void testUpdateCustomerSession_OnValidationErrors() throws IOException {
-        Map<String, Object> errorResponse = TestHelper.readResponseFromJsonResource("unittest/customer_session/update_session_with_errors.json");
-        when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(errorResponse);
+    assertEquals("customer-session-id", result.getTarget());
+  }
 
-        Result<String> result = customerSessionGateway.updateCustomerSession(new UpdateCustomerSessionInput("session-id"));
-        
-        assertEquals("validation error", result.getErrors().getAllValidationErrors().get(0).getMessage());
-    }
+  @Test
+  public void testUpdateCustomerSession_OnValidationErrors() throws IOException {
+    Map<String, Object> errorResponse =
+        TestHelper.readResponseFromJsonResource(
+            "unittest/customer_session/update_session_with_errors.json");
+    when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(errorResponse);
 
-    @Test
-    public void testUpdateCustomerSession_OnParsingError() throws IOException {
-        Map<String, Object> errorResponse = TestHelper.readResponseFromJsonResource("unittest/customer_session/update_session_unparseable_response.json");
-        when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(errorResponse);
-        assertThrows(UnexpectedException.class, () -> {
-            customerSessionGateway.updateCustomerSession(new UpdateCustomerSessionInput("session-id"));
+    Result<String> result =
+        customerSessionGateway.updateCustomerSession(new UpdateCustomerSessionInput("session-id"));
+
+    assertEquals(
+        "validation error", result.getErrors().getAllValidationErrors().get(0).getMessage());
+  }
+
+  @Test
+  public void testUpdateCustomerSession_OnParsingError() throws IOException {
+    Map<String, Object> errorResponse =
+        TestHelper.readResponseFromJsonResource(
+            "unittest/customer_session/update_session_unparseable_response.json");
+    when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(errorResponse);
+    assertThrows(
+        UnexpectedException.class,
+        () -> {
+          customerSessionGateway.updateCustomerSession(
+              new UpdateCustomerSessionInput("session-id"));
         });
-    }
+  }
 }

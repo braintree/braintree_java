@@ -23,17 +23,21 @@ import static org.mockito.Mockito.*;
 
 public class CustomerInsightsPayloadTest {
 
-    @Test
-    public void testCustomerInsightsPayload() throws IOException {
-        Map<String, Object> payloadResponse = TestHelper.readResponseFromJsonResource("unittest/customer_session/customer_insights_successful_response.json");
+  @Test
+  public void testCustomerInsightsPayload() throws IOException {
+    Map<String, Object> payloadResponse =
+        TestHelper.readResponseFromJsonResource(
+            "unittest/customer_session/customer_insights_successful_response.json");
 
-        CustomerInsightsPayload payload = new CustomerInsightsPayload((Map<String, Object>) payloadResponse.get("data"));
+    CustomerInsightsPayload payload =
+        new CustomerInsightsPayload((Map<String, Object>) payloadResponse.get("data"));
 
-        assertEquals(true, payload.isInPayPalNetwork());
-        List<PaymentRecommendation> paymentRecommendations = payload.getInsights().getPaymentRecommendations();
-        assertEquals(InsightPaymentOption.PAYPAL, paymentRecommendations.get(0).getPaymentOption());
-        assertEquals(1, paymentRecommendations.get(0).getRecommendedPriority());
-        assertEquals(InsightPaymentOption.VENMO, paymentRecommendations.get(1).getPaymentOption());
-        assertEquals(2, paymentRecommendations.get(1).getRecommendedPriority());
-    }
+    assertEquals(true, payload.isInPayPalNetwork());
+    List<PaymentRecommendation> paymentRecommendations =
+        payload.getInsights().getPaymentRecommendations();
+    assertEquals(InsightPaymentOption.PAYPAL, paymentRecommendations.get(0).getPaymentOption());
+    assertEquals(1, paymentRecommendations.get(0).getRecommendedPriority());
+    assertEquals(InsightPaymentOption.VENMO, paymentRecommendations.get(1).getPaymentOption());
+    assertEquals(2, paymentRecommendations.get(1).getRecommendedPriority());
+  }
 }
