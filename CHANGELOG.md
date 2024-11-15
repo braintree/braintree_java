@@ -1,4 +1,7 @@
 # Changelog
+## Unreleased
+* Extract HTTP client logic to `HttpClient` and `JavaHttpClient`
+* Make `HttpClient` configurable.
 
 ## 3.37.0
 * Add `fail_on_duplicate_payment_method_for_customer` option to 
