@@ -34,11 +34,12 @@ public class CustomerSessionIT extends IntegrationTest {
 
     @Test
     public void createCustomerSessionWithMerchantProvidedSessionId() {
-      String merchantSessionId = "thirty-five-character-string-no-less";
+      String merchantSessionId = "11EF-A1E7-A5F5EE5C-A2E5-AFD2801469FC";
       CreateCustomerSessionInput input =
           new CreateCustomerSessionInput().sessionId(merchantSessionId);
 
       Result<String> result = pwppGateway().customerSession().createCustomerSession(input);
+      
       assertEquals(merchantSessionId, result.getTarget());
     }
 
@@ -69,7 +70,7 @@ public class CustomerSessionIT extends IntegrationTest {
   public class UpdateCustomerSession {
     @Test
     public void updateCustomerSession() {
-      String sessionId = "thirty-five-character-string-no-less";
+      String sessionId = "11EF-A1E7-A5F5EE5C-A2E5-AFD2801469FC";
       CreateCustomerSessionInput createInput =
           new CreateCustomerSessionInput()
               .sessionId(sessionId)
@@ -116,7 +117,7 @@ public class CustomerSessionIT extends IntegrationTest {
           buildCustomerSessionInput("PR5_test@example.com", "4085005005");
       CustomerInsightsInput customerInsightsInput =
           new CustomerInsightsInput(
-                  "11EF-34BC-2702904B-9026-C3ECF4BAC765", Arrays.asList(Insights.PAYMENT_INSIGHTS))
+                  "11EF-A1E7-A5F5EE5C-A2E5-AFD2801469FC", Arrays.asList(Insights.PAYMENT_INSIGHTS))
               .customer(customer);
 
       Result<CustomerInsightsPayload> result =
