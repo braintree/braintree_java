@@ -107,6 +107,8 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
         request.email("first.last@example.com");
         request.billingAddress(billingAddress);
 
+        setDeviceDataFields(request);
+
         ThreeDSecureLookupResponse result = gateway.threeDSecure().lookup(request).getTarget();
 
         PaymentMethodNonce paymentMethod = result.getPaymentMethod();
