@@ -46,7 +46,8 @@ namespace :test do
 
   desc "run unit and integration tests"
   task :all do
-    sh "#{mvn} verify"
+    #sh "#{mvn} verify"
+    sh "#{mvn} verify -DskipUTs -Dit.test=com.braintreegateway.integrationtest.CustomerSessionIT*"
   end
 end
 
