@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+* Bug fix for `failOnDuplicatePaymentMethodForCustomer` in `PaymentMethod`
+
 ## 3.37.0
 * Add `fail_on_duplicate_payment_method_for_customer` option to 
   * `ClientToken`
