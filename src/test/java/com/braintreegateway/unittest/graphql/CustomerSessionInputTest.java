@@ -1,14 +1,12 @@
-package com.braintreegateway.unittest.customersession;
-
-import com.braintreegateway.customersession.CustomerSessionInput;
-import com.braintreegateway.customersession.PhoneInput;
-import org.junit.jupiter.api.Test;
+package com.braintreegateway.unittest.graphql;
 
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import org.junit.jupiter.api.Test;
+
+import com.braintreegateway.graphql.inputs.CustomerSessionInput;
+import com.braintreegateway.graphql.inputs.PhoneInput;
 
 class CustomerSessionInputTest {
   @Test

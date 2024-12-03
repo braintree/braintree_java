@@ -1,25 +1,16 @@
-package com.braintreegateway.unittest.customersession;
-
-import com.braintreegateway.Result;
-import com.braintreegateway.customersession.*;
-import com.braintreegateway.exceptions.UnexpectedException;
-import com.braintreegateway.testhelpers.TestHelper;
-import com.braintreegateway.util.GraphQLClient;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+package com.braintreegateway.unittest.graphql;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.Test;
+
+import com.braintreegateway.graphql.enums.InsightPaymentOption;
+import com.braintreegateway.graphql.types.CustomerInsightsPayload;
+import com.braintreegateway.graphql.types.PaymentRecommendation;
+import com.braintreegateway.testhelpers.TestHelper;
 
 public class CustomerInsightsPayloadTest {
 

@@ -1,10 +1,11 @@
-package com.braintreegateway.customersession;
-
-import com.braintreegateway.Request;
+package com.braintreegateway.graphql.inputs;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.braintreegateway.Request;
+import com.braintreegateway.graphql.enums.Insights;
 
 public class CustomerInsightsInput extends Request {
   private String merchantAccountId;

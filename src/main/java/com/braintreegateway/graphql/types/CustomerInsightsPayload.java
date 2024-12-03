@@ -1,10 +1,11 @@
-package com.braintreegateway.customersession;
+package com.braintreegateway.graphql.types;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.braintreegateway.graphql.enums.InsightPaymentOption;
+import com.braintreegateway.graphql.unions.CustomerInsights;
 
 public class CustomerInsightsPayload {
   private Boolean isInPayPalNetwork;

@@ -1,4 +1,6 @@
-package com.braintreegateway.customersession;
+package com.braintreegateway.graphql.types;
+
+import com.braintreegateway.graphql.enums.InsightPaymentOption;
 
 public class PaymentRecommendation {
 

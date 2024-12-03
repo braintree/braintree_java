@@ -1,7 +1,6 @@
 package com.braintreegateway;
 
 import com.braintreegateway.test.TestingGateway;
-import com.braintreegateway.customersession.CustomerSessionGateway;
 import com.braintreegateway.util.GraphQLClient;
 import com.braintreegateway.util.Http;
 

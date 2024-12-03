@@ -1,6 +1,8 @@
-package com.braintreegateway.customersession;
+package com.braintreegateway.graphql.unions;
 
 import java.util.List;
+
+import com.braintreegateway.graphql.types.PaymentRecommendation;
 
 public class CustomerInsights {
 

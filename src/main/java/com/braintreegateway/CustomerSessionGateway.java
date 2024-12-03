@@ -1,13 +1,14 @@
-package com.braintreegateway.customersession;
+package com.braintreegateway;
 
 import java.util.HashMap;
 import java.util.Map;
-import com.braintreegateway.Result;
-import com.braintreegateway.ValidationErrors;
-import com.braintreegateway.exceptions.UnexpectedException;
-import com.braintreegateway.util.GraphQLClient;
 
-import java.util.Map;
+import com.braintreegateway.exceptions.UnexpectedException;
+import com.braintreegateway.graphql.inputs.CreateCustomerSessionInput;
+import com.braintreegateway.graphql.inputs.CustomerInsightsInput;
+import com.braintreegateway.graphql.inputs.UpdateCustomerSessionInput;
+import com.braintreegateway.graphql.types.CustomerInsightsPayload;
+import com.braintreegateway.util.GraphQLClient;
 
 public class CustomerSessionGateway {
 

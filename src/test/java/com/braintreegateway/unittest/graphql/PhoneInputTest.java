@@ -1,11 +1,11 @@
-package com.braintreegateway.unittest.customersession;
-
-import com.braintreegateway.customersession.PhoneInput;
-import org.junit.jupiter.api.Test;
+package com.braintreegateway.unittest.graphql;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
+import com.braintreegateway.graphql.inputs.PhoneInput;
 
 class PhoneInputTest {
 

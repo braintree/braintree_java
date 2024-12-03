@@ -1,9 +1,9 @@
-package com.braintreegateway.customersession;
-
-import com.braintreegateway.Request;
+package com.braintreegateway.graphql.inputs;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.braintreegateway.Request;
 
 public class CreateCustomerSessionInput extends Request {
   private String merchantAccountId;
