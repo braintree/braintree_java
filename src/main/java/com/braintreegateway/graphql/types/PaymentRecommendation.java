@@ -4,17 +4,12 @@ import com.braintreegateway.graphql.enums.InsightPaymentOption;
 
 public class PaymentRecommendation {
 
-  private InsightPaymentOption paymentOption;
-  private Integer recommendedPriority;
+  private final InsightPaymentOption paymentOption;
+  private final Integer recommendedPriority;
 
-  public PaymentRecommendation paymentOption(InsightPaymentOption paymentOption) {
+  public PaymentRecommendation(InsightPaymentOption paymentOption, Integer recommendedPriority) {
     this.paymentOption = paymentOption;
-    return this;
-  }
-
-  public PaymentRecommendation recommendedPriority(Integer recommendedPriority) {
     this.recommendedPriority = recommendedPriority;
-    return this;
   }
 
   public InsightPaymentOption getPaymentOption() {

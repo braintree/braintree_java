@@ -6,12 +6,11 @@ import com.braintreegateway.graphql.types.PaymentRecommendation;
 
 public class CustomerInsights {
 
-  private List<PaymentRecommendation> paymentRecommendations;
+  private final List<PaymentRecommendation> paymentRecommendations;
 
-  public CustomerInsights paymentRecommendations(
-      List<PaymentRecommendation> paymentRecommendations) {
+  public CustomerInsights(
+      java.util.List<PaymentRecommendation> paymentRecommendations) {
     this.paymentRecommendations = paymentRecommendations;
-    return this;
   }
 
   public List<PaymentRecommendation> getPaymentRecommendations() {

@@ -12,7 +12,7 @@ class PhoneInputTest {
   @Test
   void testToGraphQLVariables() {
     PhoneInput input =
-        new PhoneInput().countryPhoneCode("1").phoneNumber("5555555555").extensionNumber("5555");
+        PhoneInput.builder().countryPhoneCode("1").phoneNumber("5555555555").extensionNumber("5555").build();
 
     Map<String, Object> map = input.toGraphQLVariables();
 

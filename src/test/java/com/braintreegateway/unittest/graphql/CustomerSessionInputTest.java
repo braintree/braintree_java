@@ -11,14 +11,15 @@ import com.braintreegateway.graphql.inputs.PhoneInput;
 class CustomerSessionInputTest {
   @Test
   void testToGraphQLVariables() {
-    PhoneInput phoneInput = new PhoneInput();
+    PhoneInput phoneInput = PhoneInput.builder().build();
     CustomerSessionInput input =
-        new CustomerSessionInput()
+        CustomerSessionInput.builder()
             .deviceFingerprintId("device-fingerprint-id")
             .email("nobody@nowehwere.com")
             .phone(phoneInput)
             .paypalAppInstalled(true)
-            .venmoAppInstalled(false);
+            .venmoAppInstalled(false)
+            .build();
 
     Map<String, Object> map = input.toGraphQLVariables();
 

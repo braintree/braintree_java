@@ -25,8 +25,9 @@ public class CustomerSessionIT extends IntegrationTest {
 
   @Test
   public void createCustomerSessionWithoutEmailAndPhone() {
-    CreateCustomerSessionInput input = new CreateCustomerSessionInput()
-        .merchantAccountId("usd_pwpp_multi_account_merchant_account");
+    CreateCustomerSessionInput input = CreateCustomerSessionInput.builder()
+        .merchantAccountId("usd_pwpp_multi_account_merchant_account")
+        .build();
 
     Result<String> result = pwppGateway().customerSession().createCustomerSession(input);
     assertNotNull(result.getTarget());
@@ -35,7 +36,7 @@ public class CustomerSessionIT extends IntegrationTest {
   @Test
   public void createCustomerSessionWithMerchantProvidedSessionId() {
     String merchantSessionId = "11EF-A1E7-A5F5EE5C-A2E5-AFD2801469FC";
-    CreateCustomerSessionInput input = new CreateCustomerSessionInput().sessionId(merchantSessionId);
+    CreateCustomerSessionInput input = CreateCustomerSessionInput.builder().sessionId(merchantSessionId).build();
 
     Result<String> result = pwppGateway().customerSession().createCustomerSession(input);
 
@@ -67,14 +68,15 @@ public class CustomerSessionIT extends IntegrationTest {
   @Test
   public void updateCustomerSession() {
     String sessionId = "11EF-A1E7-A5F5EE5C-A2E5-AFD2801469FC";
-    CreateCustomerSessionInput createInput = new CreateCustomerSessionInput()
+    CreateCustomerSessionInput createInput = CreateCustomerSessionInput.builder()
         .sessionId(sessionId)
-        .merchantAccountId("usd_pwpp_multi_account_merchant_account");
+        .merchantAccountId("usd_pwpp_multi_account_merchant_account")
+        .build();
 
     pwppGateway().customerSession().createCustomerSession(createInput);
 
     CustomerSessionInput customer = buildCustomerSessionInput("PR5_test@example.com", "4085005005");
-    UpdateCustomerSessionInput input = new UpdateCustomerSessionInput(sessionId).customer(customer);
+    UpdateCustomerSessionInput input = UpdateCustomerSessionInput.builder(sessionId).customer(customer).build();
 
     Result<String> result = pwppGateway().customerSession().updateCustomerSession(input);
 
@@ -86,7 +88,7 @@ public class CustomerSessionIT extends IntegrationTest {
   public void doesNotUpdateNonExistentSession() {
     String sessionId = "11EF-34BC-2702904B-9026-C3ECF4BAC765";
     CustomerSessionInput customer = buildCustomerSessionInput("PR9_test@example.com", "4085005009");
-    UpdateCustomerSessionInput input = new UpdateCustomerSessionInput(sessionId).customer(customer);
+    UpdateCustomerSessionInput input = UpdateCustomerSessionInput.builder(sessionId).customer(customer).build();
 
     Result<String> result = pwppGateway().customerSession().updateCustomerSession(input);
     assertFalse(result.isSuccess());
@@ -102,9 +104,10 @@ public class CustomerSessionIT extends IntegrationTest {
   @Test
   public void getCustomerInsights() {
     CustomerSessionInput customer = buildCustomerSessionInput("PR5_test@example.com", "4085005005");
-    CustomerInsightsInput customerInsightsInput = new CustomerInsightsInput(
+    CustomerInsightsInput customerInsightsInput = CustomerInsightsInput.builder(
         "11EF-A1E7-A5F5EE5C-A2E5-AFD2801469FC", Arrays.asList(Insights.PAYMENT_INSIGHTS))
-        .customer(customer);
+        .customer(customer)
+        .build();
 
     Result<CustomerInsightsPayload> result = pwppGateway().customerSession().getCustomerInsights(customerInsightsInput);
 
@@ -120,9 +123,10 @@ public class CustomerSessionIT extends IntegrationTest {
   @Test
   public void doesNotGetInsightsForNonExistentSessionId() {
     CustomerSessionInput customer = buildCustomerSessionInput("PR9_test@example.com", "4085005009");
-    CustomerInsightsInput customerInsightsInput = new CustomerInsightsInput(
+    CustomerInsightsInput customerInsightsInput = CustomerInsightsInput.builder(
         "11EF-34BC-2702904B-9026-C3ECF4BAC765", Arrays.asList(Insights.PAYMENT_INSIGHTS))
-        .customer(customer);
+        .customer(customer)
+        .build();
 
     Result<CustomerInsightsPayload> result = pwppGateway().customerSession().getCustomerInsights(customerInsightsInput);
 
@@ -146,21 +150,23 @@ public class CustomerSessionIT extends IntegrationTest {
 
   private Result<String> buildCustomerSession(String sessionId) {
     CustomerSessionInput customer = buildCustomerSessionInput("PR1_test@example.com", "4085005002");
-    CreateCustomerSessionInput input = new CreateCustomerSessionInput().customer(customer);
-    if (sessionId != null) {
-      input = input.sessionId(sessionId);
-    }
+
+    CreateCustomerSessionInput.Builder inputBuilder = CreateCustomerSessionInput.builder().customer(customer);
+    CreateCustomerSessionInput input = (sessionId != null) ? inputBuilder.sessionId(sessionId).build()
+        : inputBuilder.build();
+
     return pwppGateway().customerSession().createCustomerSession(input);
   }
 
   private CustomerSessionInput buildCustomerSessionInput(String email, String phoneNumber) {
-    PhoneInput phoneInput = new PhoneInput().countryPhoneCode("1").phoneNumber(phoneNumber);
+    PhoneInput phoneInput = PhoneInput.builder().countryPhoneCode("1").phoneNumber(phoneNumber).build();
 
-    return new CustomerSessionInput()
+    return CustomerSessionInput.builder()
         .email(email)
         .deviceFingerprintId("test")
         .phone(phoneInput)
         .paypalAppInstalled(true)
-        .venmoAppInstalled(true);
+        .venmoAppInstalled(true)
+        .build();
   }
 }

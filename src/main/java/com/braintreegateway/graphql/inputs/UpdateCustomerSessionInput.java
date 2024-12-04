@@ -6,22 +6,42 @@ import java.util.Map;
 import com.braintreegateway.Request;
 
 public class UpdateCustomerSessionInput extends Request {
-  private String merchantAccountId;
-  private String sessionId;
-  private CustomerSessionInput customer;
+  private final String merchantAccountId;
+  private final String sessionId;
+  private final CustomerSessionInput customer;
 
-  public UpdateCustomerSessionInput(String sessionId) {
-    this.sessionId = sessionId;
+  public static class Builder {
+    private String merchantAccountId;
+    private String sessionId;
+    private CustomerSessionInput customer;
+
+    public Builder(String sessionId) {
+      this.sessionId = sessionId;
+    }
+
+    public Builder merchantAccountId(String merchantAccountId) {
+      this.merchantAccountId = merchantAccountId;
+      return this;
+    }
+
+    public Builder customer(CustomerSessionInput customer) {
+      this.customer = customer;
+      return this;
+    }
+
+    public UpdateCustomerSessionInput build() {
+      return new UpdateCustomerSessionInput(this);
+    }
   }
 
-  public UpdateCustomerSessionInput merchantAccountId(String merchantAccountId) {
-    this.merchantAccountId = merchantAccountId;
-    return this;
+  private UpdateCustomerSessionInput(Builder builder) {
+    this.merchantAccountId = builder.merchantAccountId;
+    this.sessionId = builder.sessionId;
+    this.customer = builder.customer;
   }
 
-  public UpdateCustomerSessionInput customer(CustomerSessionInput customer) {
-    this.customer = customer;
-    return this;
+  public static Builder builder(String sessionId) {
+    return new Builder(sessionId);
   }
 
   @Override

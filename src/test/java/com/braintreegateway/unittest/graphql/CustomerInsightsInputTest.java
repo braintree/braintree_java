@@ -14,11 +14,12 @@ import com.braintreegateway.graphql.inputs.CustomerSessionInput;
 class CustomerInsightsInputTest {
   @Test
   void testToGraphQLVariables() {
-    CustomerSessionInput customerSessionInput = new CustomerSessionInput();
+    CustomerSessionInput customerSessionInput = CustomerSessionInput.builder().build();
     CustomerInsightsInput input =
-        new CustomerInsightsInput("session-id", Arrays.asList(Insights.PAYMENT_INSIGHTS))
+        CustomerInsightsInput.builder("session-id", Arrays.asList(Insights.PAYMENT_INSIGHTS))
             .merchantAccountId("merchant-account-id")
-            .customer(customerSessionInput);
+            .customer(customerSessionInput)
+            .build();
 
     Map<String, Object> map = input.toGraphQLVariables();
 
