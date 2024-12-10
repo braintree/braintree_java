@@ -8844,4 +8844,34 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         Transaction transaction = result.getTarget();
         assertFalse(transaction.isforeignRetailer());
     }
+
+    @Test
+    public void createPayPalTransactionWithContactDetails() {
+        String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            paymentMethodNonce(nonce).
+            paypalAccount().
+              done().
+            options().
+              paypal().
+                recipientEmail("test@paypal.com"). 
+                recipientPhone().
+                    countryCode("US").
+                    nationalNumber("4082222222").
+                done().
+              done();
+
+        Result<Transaction> saleResult = gateway.transaction().sale(request);
+
+        assertTrue(saleResult.isSuccess());
+        assertNotNull(saleResult.getTarget().getPayPalDetails());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getPaymentId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getAuthorizationId());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getImageUrl());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
+        assertNull(saleResult.getTarget().getPayPalDetails().getToken());
+        assertNull(saleResult.getTarget().getPayPalDetails().getRecipientPhone());
+        assertEquals("test@paypal.com", saleResult.getTarget().getPayPalDetails().getRecipientEmail()); 
+    }
 }
