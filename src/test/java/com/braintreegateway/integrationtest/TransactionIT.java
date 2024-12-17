@@ -8857,19 +8857,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
               paypal().
                 done().
               done();
-            // amount(new BigDecimal("100.00")).
-            // paymentMethodNonce(nonce).
-            // paypalAccount().
-            //   done().
-            // options().
-            //   paypal().
-            //     recipientEmail("test@paypal.com"). 
-            //     recipientPhone().
-            //         countryCode("US").
-            //         nationalNumber("4082222222").
-            //         done().
-            //     done().
-            //   done();
 
         Result<Transaction> saleResult = gateway.transaction().sale(request);
 
@@ -8880,7 +8867,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(saleResult.getTarget().getPayPalDetails().getImageUrl());
         assertNotNull(saleResult.getTarget().getPayPalDetails().getDebugId());
         assertNull(saleResult.getTarget().getPayPalDetails().getToken());
-        // assertNull(saleResult.getTarget().getPayPalDetails().getRecipientPhone());
+        assertNotNull(saleResult.getTarget().getPayPalDetails().getRecipientPhone());
         assertEquals("test@paypal.com", saleResult.getTarget().getPayPalDetails().getRecipientEmail()); 
     }
 }
