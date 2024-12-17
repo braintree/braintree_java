@@ -9,7 +9,7 @@ public class TransactionOptionsPayPalRequest extends Request {
     private String description;
     private String payeeId;
     private String payeeEmail;
-    private String recipentEmail; 
+    private String recipientEmail; 
     private TransactionOptionsRecipientPhoneRequest recipientPhone;   
     private Map<String, String> supplementaryData;
 
@@ -79,7 +79,7 @@ public class TransactionOptionsPayPalRequest extends Request {
             .addElement("payeeId", payeeId)
             .addElement("payeeEmail", payeeEmail)
             .addElement("recipientEmail", recipientEmail)
-            .addElement("recipientPhone", transactionOptionsRecipientPhoneRequest);
+            .addElement("recipientPhone", recipientPhone);
 
         if (!supplementaryData.isEmpty()) {
             builder.addElement("supplementaryData", supplementaryData);
