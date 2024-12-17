@@ -2,15 +2,15 @@ package com.braintreegateway;
 
 
 public class TransactionOptionsRecipientPhoneRequest extends Request {
-    private TransactionOptionsRequest parent;
+    private TransactionOptionsPayPalRequest parent;
     private String countryCode;
     private String nationalNumber;
 
-    public TransactionOptionsRecipientPhoneRequest(TransactionOptionsRequest parent) {
+    public TransactionOptionsRecipientPhoneRequest(TransactionOptionsPayPalRequest parent) {
         this.parent = parent;
     }
 
-    public TransactionOptionsRequest done() {
+    public TransactionOptionsPayPalRequest done() {
         return parent;
     }
 

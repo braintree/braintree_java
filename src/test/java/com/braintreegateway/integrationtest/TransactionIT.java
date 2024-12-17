@@ -8859,6 +8859,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 recipientPhone().
                     countryCode("US").
                     nationalNumber("4082222222").
+                    done().
                 done().
               done();
 

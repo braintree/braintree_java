@@ -42,14 +42,14 @@ public class TransactionOptionsPayPalRequest extends Request {
         return this;
     } 
 
-    public TransactionOptionsPayPalRequest recipentEmail(String recipientEmail) {
+    public TransactionOptionsPayPalRequest recipientEmail(String recipientEmail) {
         this.recipientEmail = recipientEmail;
         return this;
     } 
     
-    public TransactionOptionsPayPalRequest recipentPhone() {
-        transactionOptionsRecipientPhoneRequest = new TransactionOptionsRecipientPhoneRequest(this);
-        return transactionOptionsRecipientPhoneRequest; 
+    public TransactionOptionsRecipientPhoneRequest recipientPhone() {
+        this.recipientPhone = new TransactionOptionsRecipientPhoneRequest(this);
+        return recipientPhone; 
     }  
 
     public TransactionOptionsPayPalRequest supplementaryData(String key, String value) {

@@ -21,6 +21,7 @@ public class PayPalDetails {
     private String payerLastName;
     private String payerStatus;
     private String recipientEmail; 
+    private RecipientPhone recipientPhone; 
     private String refundFromTransactionFeeAmount;
     private String refundFromTransactionFeeCurrencyIsoCode;
     private String refundId;
@@ -49,7 +50,11 @@ public class PayPalDetails {
         payerFirstName = node.findString("payer-first-name");
         payerLastName = node.findString("payer-last-name");
         payerStatus = node.findString("payer-status");
-        recipientEmail = node.findString("recipient-email");
+        recipientEmail = node.findString("recipient-email"); 
+        NodeWrapper recipientPhoneNode = node.findFirst("recipient-phone");
+        if (recipientPhoneNode != null) {
+            recipientPhone = new RecipientPhone(recipientPhoneNode);
+        }
         refundFromTransactionFeeAmount = node.findString("refund-from-transaction-fee-amount");
         refundFromTransactionFeeCurrencyIsoCode = node.findString("refund-from-transaction-fee-currency-iso-code");
         refundId = node.findString("refund-id");
@@ -130,7 +135,11 @@ public class PayPalDetails {
     }
 
     public String getRecipientEmail(){
-      return recipentEmail; 
+      return recipientEmail; 
+    }
+
+    public RecipientPhone getRecipientPhone(){
+      return recipientPhone; 
     }
 
     public String getRefundFromTransactionFeeAmount() {
