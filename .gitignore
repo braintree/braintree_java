@@ -3,6 +3,7 @@
 .settings
 .settings/*
 /.idea
+/.vscode
 *.iml
 /*.jar
 /*.gz
