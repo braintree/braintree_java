@@ -15,6 +15,9 @@ import com.braintreegateway.graphql.types.PaymentRecommendation;
 import com.braintreegateway.graphql.unions.CustomerInsights;
 import com.braintreegateway.util.GraphQLClient;
 
+/**
+ * Creates and manages PayPal customer sessions.
+ */
 public class CustomerSessionGateway {
 
   private static final String CREATE_CUSTOMER_SESSION = "mutation CreateCustomerSession($input: CreateCustomerSessionInput!) { "
@@ -49,14 +52,47 @@ public class CustomerSessionGateway {
     this.graphQLClient = graphQLClient;
   }
 
+  /**
+   * Creates a new customer session.
+   *
+   * @param input The input parameters for creating a customer session.
+   * 
+   * @return a {@link Result} object with session id and a success flag if
+   *         successful, or errors otherwise.
+   * 
+   * @throws UnexpectedException If there is an unexpected error during the
+   *                             process.
+   */
   public Result<String> createCustomerSession(CreateCustomerSessionInput input) {
     return executeMutation(CREATE_CUSTOMER_SESSION, input, "createCustomerSession", "sessionId");
   }
 
+  /**
+   * Updates an existing customer session.
+   *
+   * @param input The input parameters for updating a customer session.
+   * 
+   * @return a {@link Result} object with session id and a success flag if
+   *         successful, or errors otherwise.
+   * 
+   * @throws UnexpectedException If there is an unexpected error during the
+   *                             process.
+   */
   public Result<String> updateCustomerSession(UpdateCustomerSessionInput input) {
     return executeMutation(UPDATE_CUSTOMER_SESSION, input, "updateCustomerSession", "sessionId");
   }
 
+  /**
+   * Retrieves customer insights associated with a customer session.
+   *
+   * @param input The input parameters for retrieving customer insights.
+   * 
+   * @return a {@link Result} object with containing a CustomerInsightsPayload and
+   *         a success flag if successful, or errors otherwise.
+   * 
+   * @throws UnexpectedException If there is an unexpected error during the
+   *                             process.
+   */
   public Result<CustomerInsightsPayload> getCustomerInsights(
       CustomerInsightsInput customerInsightsInput) {
     Map<String, Object> variables = new HashMap<>();
