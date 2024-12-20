@@ -5,6 +5,11 @@ import java.util.Map;
 
 import com.braintreegateway.Request;
 
+/**
+ * Customer identifying information for a PayPal customer session.
+ *
+ * See our {@link https://graphql.braintreepayments.com/reference/#input_object--customersessioninput graphql reference docs} for information on attributes.
+ */
 public class CustomerSessionInput extends Request {
   private final String email;
   private final PhoneInput phone;

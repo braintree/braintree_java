@@ -5,7 +5,7 @@ import com.braintreegateway.graphql.enums.InsightPaymentOption;
 /**
  * Represents the payment method and priority associated with a PayPal customer session.
  *
- * See our {@link https://graphql.braintreepayments.com/reference/#object--paymentrecommendation graphql reference docs} for information on attributes
+ * See our {@link https://graphql.braintreepayments.com/reference/#object--paymentrecommendation graphql reference docs} for information on attributes.
  */
 public class PaymentRecommendation {
 

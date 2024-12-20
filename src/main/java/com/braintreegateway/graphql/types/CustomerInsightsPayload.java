@@ -8,7 +8,7 @@ import com.braintreegateway.graphql.unions.CustomerInsights;
  *
  * See our
  * {@link https://graphql.braintreepayments.com/reference/#object--customerinsightspayload
- * graphql reference docs} for information on attributes
+ * graphql reference docs} for information on attributes.
  */
 public class CustomerInsightsPayload {
   private final Boolean isInPayPalNetwork;

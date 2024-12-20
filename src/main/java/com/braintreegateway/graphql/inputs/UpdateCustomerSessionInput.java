@@ -5,6 +5,13 @@ import java.util.Map;
 
 import com.braintreegateway.Request;
 
+/**
+ * Represents the input to request an update to a PayPal customer session.
+ *
+ * See our
+ * {@link https://graphql.braintreepayments.com/reference/#input_object--updatecustomersessioninput
+ * graphql reference docs} for information on attributes.
+ */
 public class UpdateCustomerSessionInput extends Request {
   private final String merchantAccountId;
   private final String sessionId;
@@ -74,8 +81,9 @@ public class UpdateCustomerSessionInput extends Request {
      * Sets the input object representing customer information relevant to the
      * customer session.
      *
-     * @param customer The input object representing the customer information relevant to the
-     *            customer session.
+     * @param customer The input object representing the customer information
+     *                 relevant to the
+     *                 customer session.
      *
      * @return this
      */

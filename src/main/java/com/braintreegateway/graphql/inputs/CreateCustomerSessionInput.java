@@ -10,7 +10,7 @@ import com.braintreegateway.Request;
  *
  * See our
  * {@link https://graphql.braintreepayments.com/reference/#input_object--createcustomersessioninput
- * graphql reference docs} for information on attributes
+ * graphql reference docs} for information on attributes.
  */
 public class CreateCustomerSessionInput extends Request {
   private final String merchantAccountId;

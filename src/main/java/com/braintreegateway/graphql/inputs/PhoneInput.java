@@ -5,6 +5,11 @@ import java.util.Map;
 
 import com.braintreegateway.Request;
 
+/**
+ * Phone number input for PayPal customer session.
+ *
+ * See our {@link https://graphql.braintreepayments.com/reference/#input_object--phoneinput graphql reference docs} for information on attributes.
+ */
 public class PhoneInput extends Request {
   private final String countryPhoneCode;
   private final String phoneNumber;

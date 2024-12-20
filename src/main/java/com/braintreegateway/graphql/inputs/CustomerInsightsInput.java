@@ -7,6 +7,13 @@ import java.util.Map;
 import com.braintreegateway.Request;
 import com.braintreegateway.graphql.enums.Insights;
 
+/**
+ * Represents the input to request PayPal customer session insights.
+ *
+ * See our
+ * {@link https://graphql.braintreepayments.com/reference/#input_object--customerinsightsinput
+ * graphql reference docs} for information on attributes.
+ */
 public class CustomerInsightsInput extends Request {
   private final String merchantAccountId;
   private final String sessionId;
@@ -42,7 +49,7 @@ public class CustomerInsightsInput extends Request {
    * objects.
    * 
    * @param sessionId The customer session id
-   * @param insights The types of insights to be requested
+   * @param insights  The types of insights to be requested
    *
    * @return CustomerInsightsInput.Builder
    */
@@ -78,9 +85,11 @@ public class CustomerInsightsInput extends Request {
     }
 
     /**
-     * Sets the input object representing customer information relevant to the customer session.
+     * Sets the input object representing customer information relevant to the
+     * customer session.
      *
-     * @param customer The input object representing the customer information relevant to the customer session.
+     * @param customer The input object representing the customer information
+     *                 relevant to the customer session.
      *
      * @return this
      */
