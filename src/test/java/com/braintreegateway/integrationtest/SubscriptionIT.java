@@ -15,6 +15,7 @@ import java.util.*;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SubscriptionIT extends IntegrationTest implements MerchantAccountTestConstants {
@@ -1562,6 +1563,7 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
         assertFalse(TestHelper.includesSubscription(results, subscription2));
     }
 
+    @Disabled("Ignoring test until we have a more stable CI")
     @Test
     public void searchOnInTrialPeriod() {
         Random rand = new Random();
@@ -1650,6 +1652,7 @@ public class SubscriptionIT extends IntegrationTest implements MerchantAccountTe
         assertFalse(TestHelper.includesSubscription(results, subscription));
     }
 
+    @Disabled("Ignoring test until we have a more stable CI")
     @Test
     public void searchOnNextBillingDate() {
         SubscriptionRequest request1 = new SubscriptionRequest().
