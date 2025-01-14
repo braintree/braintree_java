@@ -9,8 +9,6 @@ public class TransactionOptionsPayPalRequest extends Request {
     private String description;
     private String payeeId;
     private String payeeEmail;
-    private String recipientEmail; 
-    private TransactionOptionsRecipientPhoneRequest recipientPhone;   
     private Map<String, String> supplementaryData;
 
     public TransactionOptionsPayPalRequest(TransactionOptionsRequest parent) {
@@ -42,16 +40,6 @@ public class TransactionOptionsPayPalRequest extends Request {
         return this;
     } 
 
-    public TransactionOptionsPayPalRequest recipientEmail(String recipientEmail) {
-        this.recipientEmail = recipientEmail;
-        return this;
-    } 
-    
-    public TransactionOptionsRecipientPhoneRequest recipientPhone() {
-        this.recipientPhone = new TransactionOptionsRecipientPhoneRequest(this);
-        return recipientPhone; 
-    }  
-
     public TransactionOptionsPayPalRequest supplementaryData(String key, String value) {
         this.supplementaryData.put(key, value);
         return this;
@@ -77,9 +65,7 @@ public class TransactionOptionsPayPalRequest extends Request {
             .addElement("customField", customField)
             .addElement("description", description)
             .addElement("payeeId", payeeId)
-            .addElement("payeeEmail", payeeEmail)
-            .addElement("recipientEmail", recipientEmail)
-            .addElement("recipientPhone", recipientPhone);
+            .addElement("payeeEmail", payeeEmail);
 
         if (!supplementaryData.isEmpty()) {
             builder.addElement("supplementaryData", supplementaryData);
