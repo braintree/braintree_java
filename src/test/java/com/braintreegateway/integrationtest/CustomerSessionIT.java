@@ -167,6 +167,7 @@ public class CustomerSessionIT extends IntegrationTest {
         .phone(phoneInput)
         .paypalAppInstalled(true)
         .venmoAppInstalled(true)
+        .userAgent("Mozilla")
         .build();
   }
 }

@@ -14,7 +14,7 @@ public class CustomerInsights {
   private final List<PaymentRecommendation> paymentRecommendations;
 
   public CustomerInsights(
-      java.util.List<PaymentRecommendation> paymentRecommendations) {
+      List<PaymentRecommendation> paymentRecommendations) {
     this.paymentRecommendations = paymentRecommendations;
   }
 

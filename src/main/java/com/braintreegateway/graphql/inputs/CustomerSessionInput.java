@@ -16,6 +16,7 @@ public class CustomerSessionInput extends Request {
   private final String deviceFingerprintId;
   private final Boolean paypalAppInstalled;
   private final Boolean venmoAppInstalled;
+  private final String userAgent;
 
   @Override
   /**
@@ -26,13 +27,20 @@ public class CustomerSessionInput extends Request {
 
   public Map<String, Object> toGraphQLVariables() {
     Map<String, Object> variables = new HashMap<>();
-    variables.put("email", email);
+    if (email != null) {
+      variables.put("email", email);
+    }
     if (phone != null) {
       variables.put("phone", phone.toGraphQLVariables());
     }
-    variables.put("deviceFingerprintId", deviceFingerprintId);
+    if (deviceFingerprintId != null) {
+      variables.put("deviceFingerprintId", deviceFingerprintId);
+    }
     variables.put("paypalAppInstalled", paypalAppInstalled);
     variables.put("venmoAppInstalled", venmoAppInstalled);
+    if (userAgent != null) {
+      variables.put("userAgent", userAgent);
+    }
     return variables;
   }
 
@@ -42,6 +50,7 @@ public class CustomerSessionInput extends Request {
     this.deviceFingerprintId = builder.deviceFingerprintId;
     this.paypalAppInstalled = builder.paypalAppInstalled;
     this.venmoAppInstalled = builder.venmoAppInstalled;
+    this.userAgent = builder.userAgent;
   }
 
   /**
@@ -64,6 +73,7 @@ public class CustomerSessionInput extends Request {
     private String deviceFingerprintId;
     private Boolean paypalAppInstalled;
     private Boolean venmoAppInstalled;
+    private String userAgent;
 
     /**
      * Sets the customer email address.
@@ -125,6 +135,19 @@ public class CustomerSessionInput extends Request {
       return this;
     }
 
+    /**
+     * Sets the user agent from the request originating from the customer's device.
+     * This will be used to identify the customer's operating system and browser versions.
+     *
+     * @param userAgent The user agent
+     *
+     * @return this
+     */
+    public Builder userAgent(String userAgent) {
+      this.userAgent = userAgent;
+      return this;
+    }
+    
     public CustomerSessionInput build() {
       return new CustomerSessionInput(this);
     }

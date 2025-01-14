@@ -1,4 +1,4 @@
-package com.braintreegateway;
+  package com.braintreegateway;
 
 import java.util.HashMap;
 import java.util.List;
@@ -193,9 +193,9 @@ public class CustomerSessionGateway {
       if (errors != null) {
         return new Result<>(errors);
       }
-      Map<String, Object> data = getOrThrow(response, "data");
-      Map<String, Object> result = getOrThrow(data, operationName);
-      String sessionId = getOrThrow(result, targetName);
+      Map<String, Object> responseData = getOrThrow(response, "data");
+      Map<String, Object> operationResult = getOrThrow(responseData, operationName);
+      String sessionId = getOrThrow(operationResult, targetName);
       return new Result<>(sessionId);
     } catch (Throwable e) {
       throw new UnexpectedException(e.getMessage(), e);

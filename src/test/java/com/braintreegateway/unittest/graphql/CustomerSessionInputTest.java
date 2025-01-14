@@ -19,6 +19,7 @@ class CustomerSessionInputTest {
             .phone(phoneInput)
             .paypalAppInstalled(true)
             .venmoAppInstalled(false)
+            .userAgent("Mozilla")
             .build();
 
     Map<String, Object> map = input.toGraphQLVariables();
@@ -28,5 +29,6 @@ class CustomerSessionInputTest {
     assertEquals(phoneInput.toGraphQLVariables(), map.get("phone"));
     assertEquals(true, map.get("paypalAppInstalled"));
     assertEquals(false, map.get("venmoAppInstalled"));
+    assertEquals("Mozilla", map.get("userAgent"));
   }
 }
