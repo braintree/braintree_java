@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+* Add support for creating and updating PayPal customer session
+* Add support for getting PayPal customer insights
 * Bug fix for `failOnDuplicatePaymentMethodForCustomer` in `PaymentMethod`
 * Add recipient/contact info: `recipient_email`and `recipient_phone` to `Transaction` 
 
