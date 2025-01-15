@@ -1,0 +1,19 @@
+{
+  "data": {
+    "causesParsingError": {
+      "isInPayPalNetwork": true,
+      "insights": {
+        "sourceRecommendations": [
+          {
+            "source": "PAYPAL",
+            "priority": 1
+          },
+          {
+            "source": "VENMO",
+            "priority": 2
+          }
+        ]
+      }
+    }
+  }
+}

@@ -15,6 +15,7 @@ import com.braintreegateway.util.*;
 import com.fasterxml.jackson.jr.ob.JSON;
 
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -595,5 +596,11 @@ public abstract class TestHelper {
             throw new RuntimeException(e);
         }
         return response;
+    }
+
+    public static Map<String, Object> readResponseFromJsonResource(String resourcePath) throws IOException {
+        InputStream stream = TestHelper.class.getClassLoader().getResourceAsStream(resourcePath);
+        String rawResponse = StringUtils.inputStreamToString(stream);
+        return JSON.std.mapFrom(rawResponse);
     }
 }
