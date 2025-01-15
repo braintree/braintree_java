@@ -48,6 +48,45 @@ public class PaymentMethodIT extends IntegrationTest {
     }
 
     @Test
+    public void createFailsOnDuplicatePaymentMethodForCustomer() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        assertTrue(customerResult.isSuccess());
+        String customerId = customerResult.getTarget().getId();
+
+        CreditCardRequest cardRequest = new CreditCardRequest().
+            number("4111111111111111").
+            expirationMonth("05").
+            expirationYear("2026");
+
+        String nonce1 = TestHelper.generateNonceForCreditCard(gateway, cardRequest, customerId, false);
+
+        PaymentMethodRequest request = new PaymentMethodRequest().
+            customerId(customerId).
+            paymentMethodNonce(nonce1).
+            options().
+                failOnDuplicatePaymentMethodForCustomer(true).
+                done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(request);
+        assertTrue(result.isSuccess());
+
+        String nonce2 = TestHelper.generateNonceForCreditCard(gateway, cardRequest, customerId, false);
+
+        PaymentMethodRequest request2 = new PaymentMethodRequest().
+            customerId(customerId).
+            paymentMethodNonce(nonce2).
+            options().
+                failOnDuplicatePaymentMethodForCustomer(true).
+                done();
+        
+        Result<? extends PaymentMethod> result2 = gateway.paymentMethod().create(request2);
+        assertFalse(result2.isSuccess());
+        assertEquals(
+                ValidationErrorCode.CREDIT_CARD_DUPLICATE_CARD_EXISTS_FOR_CUSTOMER,
+                result2.getErrors().getAllDeepValidationErrors().get(0).getCode());
+    }
+
+    @Test
     public void createWithThreeDSecureAuthenticationId() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         assertTrue(customerResult.isSuccess());
@@ -1279,6 +1318,35 @@ public class PaymentMethodIT extends IntegrationTest {
         assertEquals(creditCard.getCardholderName(), "New Holder");
         assertEquals(creditCard.getBin(), SandboxValues.CreditCardNumber.VISA.number.substring(0, 6));
         assertEquals(creditCard.getExpirationDate(), "06/2013");
+    }
+
+    @Test
+    public void updateFailsOnDuplicatePaymentMethodForCustomer() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest creditCardRequest = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("5105105105105100").
+            expirationDate("05/12");
+        Result<CreditCard> creditCardResult = gateway.creditCard().create(creditCardRequest);
+        
+        assertTrue(creditCardResult.isSuccess());
+
+        PaymentMethodRequest updateCardRequest = new PaymentMethodRequest().
+            number("5105105105105100").
+            options().
+                failOnDuplicatePaymentMethodForCustomer(true).
+                done();
+        String token = creditCardResult.getTarget().getToken();
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().update(token, updateCardRequest);
+
+        assertFalse(result.isSuccess());
+        assertEquals(
+                ValidationErrorCode.CREDIT_CARD_DUPLICATE_CARD_EXISTS_FOR_CUSTOMER,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode());
     }
 
     @Test
