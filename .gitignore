@@ -3,7 +3,6 @@
 .settings
 .settings/*
 /.idea
-/.vscode
 *.iml
 /*.jar
 /*.gz
@@ -18,4 +17,3 @@ out/
 target/
 large_file.png
 empty_file.png
-.vscode/
