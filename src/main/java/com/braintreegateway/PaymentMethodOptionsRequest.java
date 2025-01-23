@@ -123,7 +123,7 @@ public class PaymentMethodOptionsRequest extends Request {
 
         builder.addElement("adyen", paymentMethodOptionsAdyenRequest);
         builder.addElement("failOnDuplicatePaymentMethod", failOnDuplicatePaymentMethod);
-        builder.addElement("failOnDuplicatePaymentMethodForCustomer", failOnDuplicatePaymentMethod);
+        builder.addElement("failOnDuplicatePaymentMethodForCustomer", failOnDuplicatePaymentMethodForCustomer);
         builder.addElement("paypal", paymentMethodOptionsPayPalRequest);
         builder.addElement("skipAdvancedFraudChecking", skipAdvancedFraudChecking);
         builder.addElement("usBankAccountVerificationMethod", usBankAccountVerificationMethod);
