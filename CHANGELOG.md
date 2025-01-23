@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.38.0
 * Bug fix for `failOnDuplicatePaymentMethodForCustomer` in `PaymentMethod`
 * Add recipient/contact info: `recipient_email`and `recipient_phone` to `Transaction` 
 
