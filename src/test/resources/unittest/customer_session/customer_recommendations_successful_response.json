@@ -1,0 +1,19 @@
+{
+  "data": {
+    "customerRecommendations": {
+      "isInPayPalNetwork": true,
+      "recommendations": {
+        "paymentOptions": [
+          {
+            "paymentOption": "PAYPAL",
+            "recommendedPriority": 1
+          },
+          {
+            "paymentOption": "VENMO",
+            "recommendedPriority": 2
+          }
+        ]
+      }
+    }
+  }
+}
