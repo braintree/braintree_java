@@ -12,6 +12,7 @@ The Braintree Java library provides integration access to the Braintree Gateway.
 Java version >= 8 is required. The Braintree Java SDK is tested against Java versions 8 and 11.
 
 ## Versions
+> :warning: **The SSL certificates for Java SDK versions older than 3.37.0 are set to expire by June 31, 2025. If you do not update your SDK to the latest version with the updated certificates by June 31, 2025, 100% of your impacted traffic will fail**
 
 Braintree employs a deprecation policy for our SDKs. For more information on the statuses of an SDK check our [developer docs](https://developer.paypal.com/braintree/docs/reference/general/server-sdk-deprecation-policy).
 
