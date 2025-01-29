@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.39.0
+* Add support for creating and updating PayPal customer session
+* Add support for getting PayPal customer recommendations
+
 ## 3.38.0
 * Bug fix for `failOnDuplicatePaymentMethodForCustomer` in `PaymentMethod`
 * Add recipient/contact info: `recipient_email`and `recipient_phone` to `Transaction` 
