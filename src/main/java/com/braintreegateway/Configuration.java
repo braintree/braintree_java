@@ -2,6 +2,9 @@ package com.braintreegateway;
 
 import com.braintreegateway.exceptions.ConfigurationException;
 import com.braintreegateway.util.ClientLibraryProperties;
+import com.braintreegateway.util.HttpClient;
+import com.braintreegateway.util.JavaHttpClient;
+
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.logging.Level;
@@ -18,6 +21,7 @@ public class Configuration {
     private String merchantId;
     private String privateKey;
     private String publicKey;
+    private HttpClient httpClient;
     private static Logger logger;
 
     static {
@@ -154,5 +158,17 @@ public class Configuration {
 
     public void setConnectTimeout(Integer timeout) {
         this.connectTimeout = timeout;
+    }
+
+    public HttpClient getHttpClient() {
+        if (httpClient == null) {
+            this.httpClient = new JavaHttpClient(this);
+        }
+
+        return httpClient;
+    }
+
+    public void setHttpClient(HttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 }

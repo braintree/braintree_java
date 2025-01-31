@@ -15,11 +15,13 @@ import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.exceptions.UpgradeRequiredException;
 import com.fasterxml.jackson.jr.ob.JSON;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import static com.braintreegateway.util.HttpClient.Payload;
+import static com.braintreegateway.util.HttpClient.RequestMethod;
 
 public class GraphQLClient extends Http {
     private Configuration configuration;
@@ -52,22 +54,14 @@ public class GraphQLClient extends Http {
     // little difference to the consumer of the SDK, but should make developing
     // it a little easier
     public Map<String, Object> query(String definition, Map<String, Object> variables) {
-        HttpURLConnection connection = null;
         Map<String, Object> jsonMap = null;
 
         String requestString = formatGraphQLRequest(definition, variables);
-        String contentType = "application/json";
 
-        Map<String, String> headers = constructHeaders(contentType, contentType);
+        Map<String, String> headers = constructHeaders("application/json");
         headers.put("Braintree-Version", Configuration.GRAPHQL_API_VERSION);
 
-        try {
-            connection = buildConnection(Http.RequestMethod.POST, configuration.getGraphQLURL(), headers);
-        } catch (IOException e) {
-            throw new UnexpectedException(e.getMessage(), e);
-        }
-
-        String jsonString = httpDo(Http.RequestMethod.POST, "/graphql", requestString, null, connection, headers, null);
+        String jsonString = httpDo(RequestMethod.POST, configuration.getGraphQLURL(), "/graphql", Payload.json(headers, requestString));
 
         try {
             jsonMap = JSON.std.mapFrom(jsonString);

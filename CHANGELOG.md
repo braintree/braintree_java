@@ -1,4 +1,7 @@
 # Changelog
+## Unreleased
+* Extract HTTP client logic to `HttpClient` and `JavaHttpClient`
+* Make `HttpClient` configurable.
 
 ## 3.39.0
 * Add support for creating and updating PayPal customer session
