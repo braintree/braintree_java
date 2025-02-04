@@ -188,6 +188,10 @@ public class BraintreeGateway {
         return new PayPalAccountGateway(http, configuration);
     }
 
+    public PayPalPaymentResourceGateway payPalPaymentResource() {
+        return new PayPalPaymentResourceGateway(http, configuration);
+    }
+
     public SepaDirectDebitAccountGateway sepaDirectDebitAccount() {
         return new SepaDirectDebitAccountGateway(http, configuration);
     }
