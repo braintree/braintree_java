@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.braintreepayments.gateway</groupId>
     <artifactId>braintree-java</artifactId>
-    <version>3.37.1-SNAPSHOT</version>
+    <version>3.39.1-SNAPSHOT</version>
     <description>Java Client Library for Braintree Payments Gateway</description>
     <packaging>bundle</packaging>
     <name>Braintree Gateway Java Client Library</name>
@@ -37,7 +37,7 @@
       <developerConnection>
         ${scmConnection}
       </developerConnection>
-      <tag>3.37.0</tag>
+      <tag>3.39.0</tag>
     </scm>
 
     <distributionManagement>
@@ -279,6 +279,8 @@
                         <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
                         <Export-Package>
                             com.braintreegateway;-noimport:=true,
+                            com.braintreegateway.graphql;-noimport:=true,
+                            com.braintreegateway.graphql.*;-noimport:=true,
                             com.braintreegateway.exceptions;-noimport:=true,,
                             com.braintreegateway.util;-noimport:=true,,
                             com.braintreegateway.test;-noimport:=true

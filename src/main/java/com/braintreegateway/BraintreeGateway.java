@@ -149,6 +149,16 @@ public class BraintreeGateway {
     }
 
     /**
+     * Returns a {@link CustomerSessionGateway} for interacting with {@link CustomerSession}
+     * objects.
+     *
+     * @return an {@link CustomerSessionGateway}.
+     */
+    public CustomerSessionGateway customerSession() {
+        return new CustomerSessionGateway(graphQLClient);
+    }
+
+    /**
      * Returns an {@link DiscountGateway} for interacting with {@link Discount}
      * objects.
      *
