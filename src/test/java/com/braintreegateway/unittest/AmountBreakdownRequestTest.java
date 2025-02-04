@@ -1,19 +1,20 @@
 package com.braintreegateway.unittest;
 
-import com.braintreegateway.AmountBreakdownRequest;
-import com.braintreegateway.util.SimpleNodeWrapper;
-
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
+import com.braintreegateway.AmountBreakdownRequest;
+import com.braintreegateway.util.SimpleNodeWrapper;
+
 public class AmountBreakdownRequestTest {
 
   @Test
-  public void testAmountBreakdownFields() throws ParseException {
+  public void testAmountBreakdownFields() throws IOException, SAXException {
     AmountBreakdownRequest request = new AmountBreakdownRequest().
         discount(new BigDecimal("15.00")).
         handling(new BigDecimal("0.00")).
@@ -23,7 +24,7 @@ public class AmountBreakdownRequestTest {
         shippingDiscount(new BigDecimal("0.00")).
         taxTotal(new BigDecimal("10.00"));
 
-    String xml = 
+    String expectedXML = 
         "<amount_breakdown>"
         + " <discount>15.00</discount>"
         + " <handling>0.00</handling>"

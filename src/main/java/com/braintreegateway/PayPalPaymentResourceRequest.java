@@ -2,9 +2,10 @@ package com.braintreegateway;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.math.BigDecimal;
 
 public class PayPalPaymentResourceRequest extends Request {
-    private String amount;
+    private BigDecimal amount;
     AmountBreakdownRequest amountBreakdown;
     private String currencyIsoCode;
     private String customField;
@@ -21,14 +22,14 @@ public class PayPalPaymentResourceRequest extends Request {
         this.shippingOptions = new ArrayList<ShippingOptionRequest>();
     }
 
-    public PayPalPaymentResourceRequest amount(String amount) {
+    public PayPalPaymentResourceRequest amount(BigDecimal amount) {
         this.amount = amount;
         return this;
     }
 
-    public PayPalPaymentResourceRequest amountBreakdown(AmountBreakdownRequest amountBreakdown) {
-        this.amountBreakdown = amountBreakdown;
-        return this;
+    public AmountBreakdownRequest amountBreakdown() {
+        amountBreakdown = new AmountBreakdownRequest(this);
+        return amountBreakdown;
     }
 
     public PayPalPaymentResourceRequest currencyIsoCode(String currencyIsoCode) {
@@ -46,11 +47,11 @@ public class PayPalPaymentResourceRequest extends Request {
         return this;
     }
 
-    public TransactionLineItemRequest lineItem() {
-        TransactionLineItemRequest transactionLineItemRequest = new TransactionLineItemRequest(this);
-        transactionLineItemRequest.add(transactionLineItemRequest);
-        return transactionLineItemRequest;
-    }
+    // public TransactionLineItemRequest lineItem() {
+    //     TransactionLineItemRequest transactionLineItemRequest = new TransactionLineItemRequest(this);
+    //     lineItems.add(transactionLineItemRequest);
+    //     return transactionLineItemRequest;
+    // }
 
     public PayPalPaymentResourceRequest orderId(String orderId) {
         this.orderId = orderId;
@@ -67,14 +68,14 @@ public class PayPalPaymentResourceRequest extends Request {
         return this;
     }
 
-    public PayPalPaymentResourceRequest shipping(CustomerOptionsPayPalShippingRequest shipping) {
-        this.shipping = shipping;
-        return this;
-    }
+    // public CustomerOptionsPayPalShippingRequest shipping() {
+    //     shipping = new CustomerOptionsPayPalShippingRequest(this);
+    //     return shipping;
+    // }
 
     public ShippingOptionRequest shippingOption() {
         ShippingOptionRequest shippingOptionRequest = new ShippingOptionRequest(this);
-        shippingOptionRequest.add(shippingOptionRequest);
+        shippingOptions.add(shippingOptionRequest);
         return shippingOptionRequest;
     }
 
@@ -90,7 +91,7 @@ public class PayPalPaymentResourceRequest extends Request {
             .addElement("currencyIsoCode", currencyIsoCode)
             .addElement("customField", customField)
             .addElement("description", description)
-            .addElement("orderId", amount)
+            .addElement("orderId", orderId)
             .addElement("payeeEmail", payeeEmail)
             .addElement("paymentMethodNonce", paymentMethodNonce)
             .addElement("shipping", shipping);
