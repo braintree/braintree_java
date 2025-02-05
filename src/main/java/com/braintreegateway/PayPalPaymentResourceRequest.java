@@ -14,7 +14,7 @@ public class PayPalPaymentResourceRequest extends Request {
     private String orderId;
     private String payeeEmail;
     private String paymentMethodNonce;
-    private PayPalPaymentResourceShippingRequest shipping;
+    private PayPalPaymentResourceShippingRequest shippingRequest;
     private List<ShippingOptionRequest> shippingOptions;
 
     public PayPalPaymentResourceRequest() {
@@ -68,7 +68,7 @@ public class PayPalPaymentResourceRequest extends Request {
     }
 
     public PayPalPaymentResourceShippingRequest shipping() {
-        PayPalPaymentResourceShippingRequest shippingRequest = new PayPalPaymentResourceShippingRequest(this);
+        shippingRequest = new PayPalPaymentResourceShippingRequest(this);
         return shippingRequest;
     }
 
@@ -78,7 +78,7 @@ public class PayPalPaymentResourceRequest extends Request {
         return shippingOptionRequest;
     }
     
-     @Override
+    @Override
     public String toXML() {
         return buildRequest("paypalPaymentResource").toXML();
     }
@@ -93,7 +93,7 @@ public class PayPalPaymentResourceRequest extends Request {
             .addElement("orderId", orderId)
             .addElement("payeeEmail", payeeEmail)
             .addElement("paymentMethodNonce", paymentMethodNonce)
-            .addElement("shipping", shipping);
+            .addElement("shipping", shippingRequest);
 
         if (!lineItems.isEmpty()) {
             builder.addElement("lineItems", lineItems);

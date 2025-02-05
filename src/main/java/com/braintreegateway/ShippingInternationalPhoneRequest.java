@@ -1,13 +1,12 @@
 package com.braintreegateway;
 
-public class ShippingInternationalPhoneRequest extends Request {
+public class ShippingInternationalPhoneRequest extends AddressInternationalPhoneRequest {
     private PayPalPaymentResourceShippingRequest parent;
     private String countryCode;
     private String nationalNumber;
 
-    public ShippingInternationalPhoneRequest() {}
-
-    public ShippingInternationalPhoneRequest(AddressRequest parent) {
+    public ShippingInternationalPhoneRequest(PayPalPaymentResourceShippingRequest parent) {
+        super();
         this.parent = parent;
     }
 

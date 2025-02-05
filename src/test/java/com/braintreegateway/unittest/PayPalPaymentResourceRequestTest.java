@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import com.braintreegateway.AmountBreakdownRequest;
+import com.braintreegateway.PayPalPaymentResourceRequest;
+import com.braintreegateway.TransactionLineItemRequest;
 import com.braintreegateway.util.SimpleNodeWrapper;
 
 public class PayPalPaymentResourceRequestTest {
@@ -48,7 +50,6 @@ public class PayPalPaymentResourceRequestTest {
         shipping().
             firstName("Andrew").
             lastName("Mason").
-            company("Braintree Shipping").
             streetAddress("456 W Main St").
             extendedAddress("Apt 2F").
             locality("Bartlett").
@@ -58,6 +59,10 @@ public class PayPalPaymentResourceRequestTest {
             countryCodeAlpha2("MX").
             countryCodeAlpha3("MEX").
             countryCodeNumeric("484").
+            internationalPhone().
+              countryCode("1").
+              nationalNumber("4081111111").
+              done().
             done().
         shippingOption().
             amount(new BigDecimal("10.00")).
@@ -82,7 +87,27 @@ public class PayPalPaymentResourceRequestTest {
         + " <currencyIsoCode>USD</currencyIsoCode>\n"
         + " <customField>0437</customField>\n"
         + " <description>This is a test</description>\n"
-        + " <lineItems type=\"array\">"
+        + " <orderId>order-123456789</orderId>\n"
+        + " <payeeEmail>usd_merchant@example.com</payeeEmail>\n"
+        + " <paymentMethodNonce>someNonce</paymentMethodNonce>\n"
+        + " <shipping>\n"
+        + "   <countryCodeAlpha2>MX</countryCodeAlpha2>\n"
+        + "   <countryCodeAlpha3>MEX</countryCodeAlpha3>\n"
+        + "   <countryCodeNumeric>484</countryCodeNumeric>\n"
+        + "   <countryName>Mexico</countryName>\n"
+        + "   <extendedAddress>Apt 2F</extendedAddress>\n"
+        + "   <firstName>Andrew</firstName>\n"
+        + "   <lastName>Mason</lastName>\n"
+        + "   <locality>Bartlett</locality>\n"
+        + "   <postalCode>60103</postalCode>\n"
+        + "   <region>MA</region>\n"
+        + "   <streetAddress>456 W Main St</streetAddress>\n"
+        + "   <internationalPhone>\n"
+        + "       <countryCode>1</countryCode>\n"
+        + "       <nationalNumber>4081111111</nationalNumber>\n"
+        + "   </internationalPhone>"
+        + " </shipping>\n"
+        + " <lineItems type=\"array\">\n"
         + "     <item>\n"
         + "         <description>Shoes</description>\n"
         + "         <imageUrl>https://example.com/products/23434/pic.png</imageUrl>\n"
@@ -96,17 +121,15 @@ public class PayPalPaymentResourceRequestTest {
         + "         <url>https://example.com/products/23434</url>\n"
         + "     </item>\n"
         + " </lineItems>\n"
-        + " <orderId>order-123456789</orderId>\n"
-        + " <payeeEmail>usd_merchant@example.com</payeeEmail>\n"
-        + " <paymentMethodNonce>someNonce</paymentMethodNonce>\n"
-        // ......
-        + " <shippingOption>\n"
-        + "     <amount>10.00</amount>\n"
-        + "     <id>abc123</id>\n"
-        + "     <label>fastShip</label>\n"
-        + "     <selected>true</selected>\n"
-        + "     <type>quick</type>\n"
-        + " </shippingOption>"
+        + " <shippingOptions type=\"array\">\n"
+        + "   <shippingOption>\n"
+        + "       <amount>10.00</amount>\n"
+        + "       <id>option1</id>\n"
+        + "       <label>fast</label>\n"
+        + "       <selected>true</selected>\n"
+        + "       <type>SHIPPING</type>\n"
+        + "   </shippingOption>\n"
+        + " </shippingOptions>\n"
         + "</paypalPaymentResource>\n";
 
     XMLUnit.setIgnoreWhitespace(true);

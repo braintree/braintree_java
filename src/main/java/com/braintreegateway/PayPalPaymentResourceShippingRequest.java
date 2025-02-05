@@ -1,9 +1,9 @@
 package com.braintreegateway;
 
-public class PayPalPaymentResourceShippingRequest extends Address {
+public class PayPalPaymentResourceShippingRequest extends AddressRequest {
 
     private PayPalPaymentResourceRequest parent;
-    private ShippingInternationalPhoneRequest internationalPhone;
+    private ShippingInternationalPhoneRequest internationalPhoneRequest;
 
     public PayPalPaymentResourceShippingRequest(PayPalPaymentResourceRequest parent) {
         this.parent = parent;
@@ -52,6 +52,7 @@ public class PayPalPaymentResourceShippingRequest extends Address {
         return this;
     }
 
+    @Override
     public ShippingInternationalPhoneRequest internationalPhone() {
         internationalPhoneRequest = new ShippingInternationalPhoneRequest(this);
         return this.internationalPhoneRequest;
@@ -89,6 +90,15 @@ public class PayPalPaymentResourceShippingRequest extends Address {
 
     public PayPalPaymentResourceRequest done() {
         return parent;
+    }
+
+    @Override
+    protected RequestBuilder buildRequest(String root) {
+        RequestBuilder requestBuilder = super.buildRequest(root);
+        if (internationalPhoneRequest != null) {
+            requestBuilder = requestBuilder.addElement("internationalPhone", internationalPhoneRequest);
+        }
+        return requestBuilder;
     }
 
 }
