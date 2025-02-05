@@ -49,16 +49,6 @@ public class ShippingOptionRequest extends Request {
     }
 
     @Override
-    public String toXML() {
-        return buildRequest("shippingOption").toXML();
-    }
-
-    @Override
-    public String toQueryString() {
-        return toQueryString("shippingOption");
-    }
-
-    @Override
     public String toQueryString(String root) {
         return buildRequest(root).toQueryString();
     }

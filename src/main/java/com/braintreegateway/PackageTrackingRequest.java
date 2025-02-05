@@ -39,16 +39,6 @@ public class PackageTrackingRequest extends Request {
     }
 
     @Override
-    public String toQueryString() {
-        return toQueryString("shipment");
-    }
-
-    @Override
-    public String toQueryString(String root) {
-        return buildRequest(root).toQueryString();
-    }
-
-    @Override
     public String toXML() {
         return buildRequest("shipment").toXML();
     }

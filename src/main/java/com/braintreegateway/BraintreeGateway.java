@@ -198,7 +198,7 @@ public class BraintreeGateway {
         return new PayPalAccountGateway(http, configuration);
     }
 
-    public PayPalPaymentResourceGateway payPalPaymentResource() {
+    public PayPalPaymentResourceGateway paypalPaymentResource() {
         return new PayPalPaymentResourceGateway(http, configuration);
     }
 
