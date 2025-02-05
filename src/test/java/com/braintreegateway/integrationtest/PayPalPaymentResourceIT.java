@@ -1,6 +1,6 @@
 package com.braintreegateway.integrationtest;
 
-import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
+import com.braintreegateway.testhelpers.TestHelper;
 
 import com.braintreegateway.*;
 
@@ -15,6 +15,8 @@ public class PayPalPaymentResourceIT extends IntegrationTest {
 
     @Test
     public void updatePaymentResource() {
+        String nonce = TestHelper.generateOrderPaymentPayPalNonce(gateway);
+
         PayPalPaymentResourceRequest request = new PayPalPaymentResourceRequest().
             amount(new BigDecimal("100.00")).
             amountBreakdown().
@@ -43,7 +45,7 @@ public class PayPalPaymentResourceIT extends IntegrationTest {
             //     done().
             orderId("order-123456789").
             payeeEmail("usd_merchant@example.com").
-            paymentMethodNonce("somenonce").
+            paymentMethodNonce(nonce).
             // shipping().
             //     firstName("Andrew").
             //     lastName("Mason").
@@ -66,7 +68,14 @@ public class PayPalPaymentResourceIT extends IntegrationTest {
                 type("SHIPPING").
                 done();
 
-        Result<PaymentMethodNonce> result = gateway.payPalPaymentResource().update(request);
+        Result<PaymentMethodNonce> result = gateway.paypalPaymentResource().update(request);
+        ValidationError error = result.getErrors()
+            .forObject("paypalPaymentResource")
+            .getAllValidationErrors()
+            .get(0);
+        System.out.println("********************************");
+        System.out.println(error.getMessage());
+        System.out.println("********************************");
         assertTrue(result.isSuccess());
     }
 }

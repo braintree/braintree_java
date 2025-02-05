@@ -25,15 +25,15 @@ public class AmountBreakdownRequestTest {
         taxTotal(new BigDecimal("10.00"));
 
     String expectedXML = 
-        "<amount_breakdown>"
-        + " <discount>15.00</discount>"
-        + " <handling>0.00</handling>"
-        + " <insurance>5.00</insurance>"
-        + " <item_total>100.00</item_total>"
-        + " <shipping>10.00</shipping>"
-        + " <shipping_discount>0.00</shipping_discount>"
-        + " <tax_total>10.00</tax_total>"
-        + "</amount_breakdown>";
+        "<amountBreakdown>\n"
+        + " <discount>15.00</discount>\n"
+        + " <handling>0.00</handling>\n"
+        + " <insurance>5.00</insurance>\n"
+        + " <itemTotal>100.00</itemTotal>\n"
+        + " <shipping>10.00</shipping>\n"
+        + " <shippingDiscount>0.00</shippingDiscount>\n"
+        + " <taxTotal>10.00</taxTotal>\n"
+        + "</amountBreakdown>";
 
     XMLUnit.setIgnoreWhitespace(true);
 
