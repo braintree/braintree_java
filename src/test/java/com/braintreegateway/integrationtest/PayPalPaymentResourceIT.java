@@ -17,13 +17,27 @@ public class PayPalPaymentResourceIT extends IntegrationTest {
     public void updatePaymentResource() {
         String nonce = TestHelper.generateOrderPaymentPayPalNonce(gateway);
 
+        TransactionLineItemRequest lineItem = new TransactionLineItemRequest().
+            description("Shoes").
+            imageUrl("https://example.com/products/23434/pic.png").
+            kind(TransactionLineItem.Kind.DEBIT).
+            name("Name #1").
+            productCode("23434").
+            quantity(new BigDecimal("1")).
+            totalAmount(new BigDecimal("45.00")).
+            unitAmount(new BigDecimal("45.00")).
+            unitTaxAmount(new BigDecimal("10.00")).
+            upcCode("3878935708DA").
+            upcType("UPC-A").
+            url("https://example.com/products/23434");
+
         PayPalPaymentResourceRequest request = new PayPalPaymentResourceRequest().
             amount(new BigDecimal("100.00")).
             amountBreakdown().
                 discount(new BigDecimal("15.00")).
                 handling(new BigDecimal("0.00")).
                 insurance(new BigDecimal("5.00")).
-                itemTotal(new BigDecimal("100.00")).
+                itemTotal(new BigDecimal("45.00")).
                 shipping(new BigDecimal("10.00")).
                 shippingDiscount(new BigDecimal("0.00")).
                 taxTotal(new BigDecimal("10.00")).
@@ -31,35 +45,27 @@ public class PayPalPaymentResourceIT extends IntegrationTest {
             currencyIsoCode("USD").
             customField("0437").
             description("This is a test").
-            // lineItem().
-            //     description("Shoes").
-            //     imageUrl().
-            //     name().
-            //     productCode().
-            //     quantity(new BigDecimal("1.0232")).
-            //     totalAmount(new BigDecimal("45.00")).
-            //     unitAmount(new BigDecimal("45.00")).
-            //     upcCode().
-            //     upcType().
-            //     url().
-            //     done().
+            addLineItem(lineItem).
             orderId("order-123456789").
-            payeeEmail("usd_merchant@example.com").
+            payeeEmail("bt_buyer_us@paypal.com").
             paymentMethodNonce(nonce).
-            // shipping().
-            //     firstName("Andrew").
-            //     lastName("Mason").
-            //     company("Braintree Shipping").
-            //     streetAddress("456 W Main St").
-            //     extendedAddress("Apt 2F").
-            //     locality("Bartlett").
-            //     region("MA").
-            //     postalCode("60103").
-            //     countryName("Mexico").
-            //     countryCodeAlpha2("MX").
-            //     countryCodeAlpha3("MEX").
-            //     countryCodeNumeric("484").
-            //     done().
+            shipping().
+                firstName("John").
+                lastName("Doe").
+                streetAddress("123 Division Street").
+                extendedAddress("Apt. #1").
+                locality("Chicago").
+                region("IL").
+                postalCode("60618").
+                countryName("United States").
+                countryCodeAlpha2("US").
+                countryCodeAlpha3("USA").
+                countryCodeNumeric("484").
+                internationalPhone().
+                countryCode("1").
+                nationalNumber("4081111111").
+                done().
+                done().
             shippingOption().
                 amount(new BigDecimal("10.00")).
                 id("option1").
