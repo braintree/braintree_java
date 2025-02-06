@@ -24,7 +24,7 @@ pipeline {
           }
 
           steps {
-            codeQL("java": true, "maven": true)
+            codeQL(maven: true)
           }
 
           post {
