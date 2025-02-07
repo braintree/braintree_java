@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 public class PayPalPaymentResourceRequest extends Request {
     private BigDecimal amount;
-    AmountBreakdownRequest amountBreakdown;
+    private AmountBreakdownRequest amountBreakdown;
     private String currencyIsoCode;
     private String customField;
     private String description;

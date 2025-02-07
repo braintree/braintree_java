@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PayPalPaymentResourceIT extends IntegrationTest {
 
     @Test
-    public void updatePaymentResource() {
+    public void canUpdatePaymentResource() {
         String nonce = TestHelper.generateOrderPaymentPayPalNonce(gateway);
 
         TransactionLineItemRequest lineItem = new TransactionLineItemRequest().
@@ -27,12 +27,10 @@ public class PayPalPaymentResourceIT extends IntegrationTest {
             totalAmount(new BigDecimal("45.00")).
             unitAmount(new BigDecimal("45.00")).
             unitTaxAmount(new BigDecimal("10.00")).
-            upcCode("3878935708DA").
-            upcType("UPC-A").
             url("https://example.com/products/23434");
 
         PayPalPaymentResourceRequest request = new PayPalPaymentResourceRequest().
-            amount(new BigDecimal("100.00")).
+            amount(new BigDecimal("55.00")).
             amountBreakdown().
                 discount(new BigDecimal("15.00")).
                 handling(new BigDecimal("0.00")).
@@ -62,9 +60,9 @@ public class PayPalPaymentResourceIT extends IntegrationTest {
                 countryCodeAlpha3("USA").
                 countryCodeNumeric("484").
                 internationalPhone().
-                countryCode("1").
-                nationalNumber("4081111111").
-                done().
+                    countryCode("1").
+                    nationalNumber("4081111111").
+                    done().
                 done().
             shippingOption().
                 amount(new BigDecimal("10.00")).
@@ -75,13 +73,36 @@ public class PayPalPaymentResourceIT extends IntegrationTest {
                 done();
 
         Result<PaymentMethodNonce> result = gateway.paypalPaymentResource().update(request);
-        ValidationError error = result.getErrors()
-            .forObject("paypalPaymentResource")
-            .getAllValidationErrors()
-            .get(0);
-        System.out.println("********************************");
-        System.out.println(error.getMessage());
-        System.out.println("********************************");
         assertTrue(result.isSuccess());
+
+        PaymentMethodNonce newNonce = result.getTarget();
+        assertNotNull(newNonce);
+        assertNotNull(newNonce.getNonce());
+    }
+
+    @Test
+    public void updatePaymentResourceReturnsValidError() {
+        String nonce = TestHelper.generateOrderPaymentPayPalNonce(gateway);
+        PayPalPaymentResourceRequest request = new PayPalPaymentResourceRequest().
+            amount(new BigDecimal("55.00")).
+            currencyIsoCode("USD").
+            customField("0437").
+            description("This is a test").
+            orderId("order-123456789").
+            payeeEmail("bt_buyer_us@paypal").
+            paymentMethodNonce(nonce).
+            shippingOption().
+                amount(new BigDecimal("10.00")).
+                id("option1").
+                label("fast").
+                selected(true).
+                type("SHIPPING").
+                done();
+
+        Result<PaymentMethodNonce> result = gateway.paypalPaymentResource().update(request);
+        assertFalse(result.isSuccess());
+        ValidationErrors errors = result.getErrors().forObject("paypal-payment-resource");
+        assertEquals(ValidationErrorCode.PAYPAL_PAYMENT_RESOURCE_INVALID_EMAIL,
+            errors.onField("payee-email").get(0).getCode());
     }
 }
