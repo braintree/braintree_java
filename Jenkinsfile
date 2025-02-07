@@ -1,5 +1,4 @@
 #!groovy
-@Library("jenkinsfile_shared_libraries@addMultiLangSupport") _
 
 def FAILED_STAGE
 
