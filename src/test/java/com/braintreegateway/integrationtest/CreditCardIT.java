@@ -1,6 +1,7 @@
 package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
+import com.braintreegateway.enums.PrepaidReloadable;
 import com.braintreegateway.test.Nonce;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.CreditCardDefaults;
@@ -1084,6 +1085,24 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
     }
 
     @Test
+    public void verifyPrepaidReloadableInVerification() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number(CreditCardNumbers.CardTypeIndicators.PrepaidReloadable.getValue()).
+            expirationDate("05/29").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+        assertEquals(PrepaidReloadable.YES, result.getTarget().getVerification().getCreditCard().getPrepaidReloadable());
+    }
+
+    @Test
     public void verifyCreditCardWithErrorAccountTypeIsInvalid() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
@@ -1270,6 +1289,24 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
     }
 
     @Test
+    public void prepaidReloadableCard() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number(CreditCardNumbers.CardTypeIndicators.PrepaidReloadable.getValue()).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        CreditCard card = result.getTarget();
+
+        assertEquals(PrepaidReloadable.YES, card.getPrepaidReloadable());
+    }
+
+    @Test
     public void issuingBank() {
         BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
         Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
@@ -1326,6 +1363,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertEquals(CreditCard.Healthcare.NO, card.getHealthcare());
         assertEquals(CreditCard.Payroll.NO, card.getPayroll());
         assertEquals(CreditCard.Prepaid.NO, card.getPrepaid());
+        assertEquals(PrepaidReloadable.NO, card.getPrepaidReloadable());
         assertEquals("MSB", card.getProductId());
     }
 
@@ -1351,6 +1389,7 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertEquals(CreditCard.Healthcare.UNKNOWN, card.getHealthcare());
         assertEquals(CreditCard.Payroll.UNKNOWN, card.getPayroll());
         assertEquals(CreditCard.Prepaid.UNKNOWN, card.getPrepaid());
+        assertEquals(PrepaidReloadable.UNKNOWN, card.getPrepaidReloadable());
         assertEquals("Unknown", card.getCountryOfIssuance());
         assertEquals("Unknown", card.getIssuingBank());
         assertEquals("Unknown", card.getProductId());

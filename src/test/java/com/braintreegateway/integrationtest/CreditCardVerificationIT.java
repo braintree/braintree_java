@@ -1,5 +1,6 @@
 package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
+import com.braintreegateway.enums.PrepaidReloadable;
 import com.braintreegateway.test.Nonce;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
@@ -378,6 +379,7 @@ public class CreditCardVerificationIT extends IntegrationTest {
         builder.append("      <number>4111111111111111</number>");
         builder.append("      <expiration-date>12/2012</expiration-date>");
         builder.append("      <prepaid>Unknown</prepaid>");
+        builder.append("      <prepaid-reloadable>Unknown</prepaid-reloadable>");
         builder.append("    </credit-card>");
         builder.append("    <billing>");
         builder.append("      <postal-code>60601</postal-code>");
@@ -400,6 +402,7 @@ public class CreditCardVerificationIT extends IntegrationTest {
         assertEquals("Do Not Honor", verification.getProcessorResponseText());
         assertEquals("M", verification.getCvvResponseCode());
         assertEquals(CreditCard.Prepaid.UNKNOWN, verification.getCreditCard().getPrepaid());
+        assertEquals(PrepaidReloadable.UNKNOWN, verification.getCreditCard().getPrepaidReloadable());
     }
 
     @Test
@@ -602,6 +605,7 @@ public class CreditCardVerificationIT extends IntegrationTest {
         assertEquals(CreditCard.Healthcare.UNKNOWN, verification.getCreditCard().getHealthcare());
         assertEquals(CreditCard.Payroll.UNKNOWN, verification.getCreditCard().getPayroll());
         assertEquals(CreditCard.Prepaid.UNKNOWN, verification.getCreditCard().getPrepaid());
+        assertEquals(PrepaidReloadable.UNKNOWN, verification.getCreditCard().getPrepaidReloadable());
         assertEquals("Unknown", verification.getCreditCard().getCountryOfIssuance());
         assertEquals("Unknown", verification.getCreditCard().getIssuingBank());
         assertEquals("Unknown", verification.getCreditCard().getProductId());

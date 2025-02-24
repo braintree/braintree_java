@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import com.braintreegateway.enums.PrepaidReloadable;
 
 // NEXT_MAJOR_VERSION remove isVenmoSDK
 // The old venmo SDK integration has been deprecated
@@ -196,6 +197,7 @@ public class CreditCard implements PaymentMethod {
     private String last4;
     private String payroll;
     private String prepaid;
+    private String prepaidReloadable;
     private String productId;
     private List<Subscription> subscriptions;
     private String token;
@@ -234,6 +236,7 @@ public class CreditCard implements PaymentMethod {
         last4 = node.findString("last-4");
         payroll = node.findString("payroll");
         prepaid = node.findString("prepaid");
+        prepaidReloadable = node.findString("prepaid-reloadable");
         productId = node.findString("product-id");
 
         subscriptions = new ArrayList<Subscription>();
@@ -364,6 +367,10 @@ public class CreditCard implements PaymentMethod {
 
     public Prepaid getPrepaid() {
         return findByToString(Prepaid.values(), prepaid, Prepaid.UNKNOWN);
+    }
+
+    public PrepaidReloadable getPrepaidReloadable() {
+        return findByToString(PrepaidReloadable.values(), prepaidReloadable, PrepaidReloadable.UNKNOWN);
     }
 
     public String getProductId() {

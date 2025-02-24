@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.braintreegateway.util.EnumUtils.findByToString;
+
+import com.braintreegateway.enums.PrepaidReloadable;
 import com.braintreegateway.util.NodeWrapper;
 
 // NEXT_MAJOR_VERSION - rename this to GooglePayCard
@@ -28,6 +31,7 @@ public class AndroidPayCard implements PaymentMethod {
     private String last4;
     private String payroll;
     private String prepaid;
+    private String prepaidReloadable;
     private String productId;
     private String sourceCardLast4;
     private String sourceCardType;
@@ -56,6 +60,7 @@ public class AndroidPayCard implements PaymentMethod {
         this.issuingBank = node.findString("issuing-bank");
         this.payroll = node.findString("payroll");
         this.prepaid = node.findString("prepaid");
+        this.prepaidReloadable = node.findString("prepaid-reloadable");
         this.productId = node.findString("product-id");
         this.sourceCardType = node.findString("source-card-type");
         this.sourceDescription = node.findString("source-description"); 
@@ -148,6 +153,10 @@ public class AndroidPayCard implements PaymentMethod {
 
     public String getPrepaid() {
         return prepaid;
+    }
+
+    public PrepaidReloadable getPrepaidReloadable() {
+        return findByToString(PrepaidReloadable.values(), prepaidReloadable, PrepaidReloadable.UNKNOWN);
     }
 
     public String getProductId() {

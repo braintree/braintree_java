@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+import com.braintreegateway.enums.PrepaidReloadable;
+import static com.braintreegateway.util.EnumUtils.findByToString;
 import com.braintreegateway.util.NodeWrapper;
 
 public class ApplePayDetails {
@@ -21,34 +23,36 @@ public class ApplePayDetails {
     private String paymentInstrumentName;
     private String payroll;
     private String prepaid;
+    private String prepaidReloadable;
     private String productId;
     private String sourceCardLast4;
     private String sourceDescription;
     private String token;
 
     public ApplePayDetails(NodeWrapper node) {
+        bin = node.findString("bin");
         cardType = node.findString("card-type");
-        paymentInstrumentName = node.findString("payment-instrument-name");
-        sourceDescription = node.findString("source-description");
         cardholderName = node.findString("cardholder-name");
-        expirationMonth = node.findString("expiration-month");
-        expirationYear = node.findString("expiration-year");
-        last4 = node.findString("last-4");
-        token = node.findString("token");
-        imageUrl = node.findString("image-url");
-        prepaid = node.findString("prepaid");
-        healthcare = node.findString("healthcare");
+        commercial = node.findString("commercial");
+        countryOfIssuance = node.findString("country-of-issuance");
         debit = node.findString("debit");
         durbinRegulated = node.findString("durbin-regulated");
-        commercial = node.findString("commercial");
-        payroll = node.findString("payroll");
-        issuingBank = node.findString("issuing-bank");
-        countryOfIssuance = node.findString("country-of-issuance");
-        productId = node.findString("product-id");
-        bin = node.findString("bin");
+        expirationMonth = node.findString("expiration-month");
+        expirationYear = node.findString("expiration-year");
         globalId = node.findString("global-id");
+        healthcare = node.findString("healthcare");
+        imageUrl = node.findString("image-url");
+        issuingBank = node.findString("issuing-bank");
+        last4 = node.findString("last-4");
         merchantTokenIdentifier = node.findString("merchant-token-identifier");
+        paymentInstrumentName = node.findString("payment-instrument-name");
+        payroll = node.findString("payroll");
+        prepaid = node.findString("prepaid");
+        prepaidReloadable = node.findString("prepaid-reloadable");
+        productId = node.findString("product-id");
         sourceCardLast4 = node.findString("source-card-last4");
+        sourceDescription = node.findString("source-description");
+        token = node.findString("token");
     }
 
     public String getToken() {
@@ -89,6 +93,10 @@ public class ApplePayDetails {
 
     public String getPrepaid() {
         return prepaid;
+    }
+
+    public PrepaidReloadable getPrepaidReloadable() {
+        return findByToString(PrepaidReloadable.values(), prepaidReloadable, PrepaidReloadable.UNKNOWN);
     }
 
     public String getHealthcare() {
