@@ -279,6 +279,7 @@
                         <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
                         <Export-Package>
                             com.braintreegateway;-noimport:=true,
+                            com.braintreegateway.enums;-noimport:=true,
                             com.braintreegateway.graphql;-noimport:=true,
                             com.braintreegateway.graphql.*;-noimport:=true,
                             com.braintreegateway.exceptions;-noimport:=true,,

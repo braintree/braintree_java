@@ -1,4 +1,6 @@
 # Changelog
+## Unreleased
+* Add prepaid_reloadable from bin data in credit card responses
 
 ## Unreleased
 * Add support for `PayPalPaymentResource` requests

@@ -7,6 +7,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import com.braintreegateway.enums.PrepaidReloadable;
+import static com.braintreegateway.util.EnumUtils.findByToString;
 
 public class MetaCheckoutCard implements PaymentMethod {
 
@@ -29,6 +31,7 @@ public class MetaCheckoutCard implements PaymentMethod {
   private String last4;
   private String payroll;
   private String prepaid;
+  private String prepaidReloadable;
   private String productId;
   private String token;
   private String uniqueNumberIdentifier;
@@ -56,6 +59,7 @@ public class MetaCheckoutCard implements PaymentMethod {
     last4 = node.findString("last-4");
     payroll = node.findString("payroll");
     prepaid = node.findString("prepaid");
+    prepaidReloadable = node.findString("prepaid-reloadable");
     productId = node.findString("product-id");
     token = node.findString("token");
     updatedAt = node.findDateTime("updated-at");
@@ -191,6 +195,10 @@ public class MetaCheckoutCard implements PaymentMethod {
     } else {
       return CreditCard.Prepaid.UNKNOWN;
     }
+  }
+
+  public PrepaidReloadable getPrepaidReloadable() {
+    return findByToString(PrepaidReloadable.values(), prepaidReloadable, PrepaidReloadable.UNKNOWN);
   }
 
   public String getProductId() {

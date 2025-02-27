@@ -971,22 +971,23 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertEquals(PaymentInstrumentType.APPLE_PAY_CARD, transaction.getPaymentInstrumentType());
         assertNotNull(transaction.getApplePayDetails());
-        assertNotNull(transaction.getApplePayDetails().getCardType());
-        assertNotNull(transaction.getApplePayDetails().getPaymentInstrumentName());
-        assertNotNull(transaction.getApplePayDetails().getSourceDescription());
-        assertNotNull(transaction.getApplePayDetails().getExpirationMonth());
-        assertNotNull(transaction.getApplePayDetails().getExpirationYear());
-        assertNotNull(transaction.getApplePayDetails().getCardholderName());
-        assertNotNull(transaction.getApplePayDetails().getLast4());
-        assertNotNull(transaction.getApplePayDetails().getImageUrl());
         assertNotNull(transaction.getApplePayDetails().getBin());
-        assertNotNull(transaction.getApplePayDetails().getPrepaid());
-        assertNotNull(transaction.getApplePayDetails().getHealthcare());
+        assertNotNull(transaction.getApplePayDetails().getCardType());
+        assertNotNull(transaction.getApplePayDetails().getCardholderName());
+        assertNotNull(transaction.getApplePayDetails().getCommercial());
         assertNotNull(transaction.getApplePayDetails().getDebit());
         assertNotNull(transaction.getApplePayDetails().getDurbinRegulated());
-        assertNotNull(transaction.getApplePayDetails().getCommercial());
+        assertNotNull(transaction.getApplePayDetails().getExpirationMonth());
+        assertNotNull(transaction.getApplePayDetails().getExpirationYear());
+        assertNotNull(transaction.getApplePayDetails().getHealthcare());
+        assertNotNull(transaction.getApplePayDetails().getImageUrl());
+        assertNotNull(transaction.getApplePayDetails().getLast4());
+        assertNotNull(transaction.getApplePayDetails().getPaymentInstrumentName());
         assertNotNull(transaction.getApplePayDetails().getPayroll());
+        assertNotNull(transaction.getApplePayDetails().getPrepaid());
+        assertNotNull(transaction.getApplePayDetails().getPrepaidReloadable());
         assertNotNull(transaction.getApplePayDetails().getProductId());
+        assertNotNull(transaction.getApplePayDetails().getSourceDescription());
     }
 
     @Test
@@ -1061,27 +1062,28 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(transaction.getAndroidPayDetails());
         AndroidPayDetails androidPayDetails = transaction.getAndroidPayDetails();
 
-        assertNull(androidPayDetails.getToken());
+        assertFalse(androidPayDetails.isNetworkTokenized());
         assertNotNull(androidPayDetails.getBin());
-        assertNotNull(androidPayDetails.getImageUrl());
-        assertNotNull(androidPayDetails.getSourceCardType());
-        assertNotNull(androidPayDetails.getSourceCardLast4());
-        assertNotNull(androidPayDetails.getSourceDescription());
-        assertNotNull(androidPayDetails.getVirtualCardType());
-        assertNotNull(androidPayDetails.getVirtualCardLast4());
-        assertNotNull(androidPayDetails.getGoogleTransactionId());
         assertNotNull(androidPayDetails.getCardType());
-        assertNotNull(androidPayDetails.getLast4());
-        assertNotNull(androidPayDetails.getExpirationMonth());
-        assertNotNull(androidPayDetails.getExpirationYear());
-        assertNotNull(androidPayDetails.getPrepaid());
-        assertNotNull(androidPayDetails.getHealthcare());
+        assertNotNull(androidPayDetails.getCommercial());
         assertNotNull(androidPayDetails.getDebit());
         assertNotNull(androidPayDetails.getDurbinRegulated());
-        assertNotNull(androidPayDetails.getCommercial());
+        assertNotNull(androidPayDetails.getExpirationMonth());
+        assertNotNull(androidPayDetails.getExpirationYear());
+        assertNotNull(androidPayDetails.getGoogleTransactionId());
+        assertNotNull(androidPayDetails.getHealthcare());
+        assertNotNull(androidPayDetails.getImageUrl());
+        assertNotNull(androidPayDetails.getLast4());
         assertNotNull(androidPayDetails.getPayroll());
+        assertNotNull(androidPayDetails.getPrepaid());
+        assertNotNull(androidPayDetails.getPrepaidReloadable());
         assertNotNull(androidPayDetails.getProductId());
-        assertFalse(androidPayDetails.isNetworkTokenized());
+        assertNotNull(androidPayDetails.getSourceCardLast4());
+        assertNotNull(androidPayDetails.getSourceCardType());
+        assertNotNull(androidPayDetails.getSourceDescription());
+        assertNotNull(androidPayDetails.getVirtualCardLast4());
+        assertNotNull(androidPayDetails.getVirtualCardType());
+        assertNull(androidPayDetails.getToken());
     }
 
     @Test
@@ -1131,19 +1133,20 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertEquals(PaymentInstrumentType.META_CHECKOUT_CARD, transaction.getPaymentInstrumentType());
         assertNotNull(transaction.getMetaCheckoutCardDetails());
-        assertNotNull(transaction.getMetaCheckoutCardDetails().getCardType());
-        assertNotNull(transaction.getMetaCheckoutCardDetails().getExpirationMonth());
-        assertNotNull(transaction.getMetaCheckoutCardDetails().getExpirationYear());
-        assertNotNull(transaction.getMetaCheckoutCardDetails().getCardholderName());
-        assertNotNull(transaction.getMetaCheckoutCardDetails().getLast4());
-        assertNotNull(transaction.getMetaCheckoutCardDetails().getImageUrl());
         assertNotNull(transaction.getMetaCheckoutCardDetails().getBin());
-        assertNotNull(transaction.getMetaCheckoutCardDetails().getPrepaid());
-        assertNotNull(transaction.getMetaCheckoutCardDetails().getHealthcare());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getCardType());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getCardholderName());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getCommercial());
         assertNotNull(transaction.getMetaCheckoutCardDetails().getDebit());
         assertNotNull(transaction.getMetaCheckoutCardDetails().getDurbinRegulated());
-        assertNotNull(transaction.getMetaCheckoutCardDetails().getCommercial());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getExpirationMonth());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getExpirationYear());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getHealthcare());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getImageUrl());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getLast4());
         assertNotNull(transaction.getMetaCheckoutCardDetails().getPayroll());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getPrepaid());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getPrepaidReloadable());
         assertNotNull(transaction.getMetaCheckoutCardDetails().getProductId());
     }
 
@@ -1161,22 +1164,53 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertEquals(PaymentInstrumentType.META_CHECKOUT_TOKEN, transaction.getPaymentInstrumentType());
         assertNotNull(transaction.getMetaCheckoutTokenDetails());
-        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCardType());
-        assertNotNull(transaction.getMetaCheckoutTokenDetails().getExpirationMonth());
-        assertNotNull(transaction.getMetaCheckoutTokenDetails().getExpirationYear());
-        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCardholderName());
-        assertNotNull(transaction.getMetaCheckoutTokenDetails().getLast4());
-        assertNotNull(transaction.getMetaCheckoutTokenDetails().getImageUrl());
         assertNotNull(transaction.getMetaCheckoutTokenDetails().getBin());
-        assertNotNull(transaction.getMetaCheckoutTokenDetails().getPrepaid());
-        assertNotNull(transaction.getMetaCheckoutTokenDetails().getHealthcare());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCardType());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCardholderName());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCommercial());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCryptogram());
         assertNotNull(transaction.getMetaCheckoutTokenDetails().getDebit());
         assertNotNull(transaction.getMetaCheckoutTokenDetails().getDurbinRegulated());
-        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCommercial());
-        assertNotNull(transaction.getMetaCheckoutTokenDetails().getPayroll());
-        assertNotNull(transaction.getMetaCheckoutTokenDetails().getProductId());
-        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCryptogram());
         assertNotNull(transaction.getMetaCheckoutTokenDetails().getEcommerceIndicator());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getExpirationMonth());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getExpirationYear());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getHealthcare());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getImageUrl());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getLast4());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getPayroll());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getPrepaid());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getPrepaidReloadable());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getProductId());
+    }
+
+    @Test
+    public void saleWithMasterpassCardNonce() {
+        String nonce = Nonce.MasterpassVisa;
+
+        TransactionRequest request = new TransactionRequest().
+            amount(SandboxValues.TransactionAmount.AUTHORIZE.amount).
+            paymentMethodNonce(nonce);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(PaymentInstrumentType.MASTERPASS_CARD, transaction.getPaymentInstrumentType());
+        assertNotNull(transaction.getMasterpassCardDetails());
+        assertNotNull(transaction.getMasterpassCardDetails().getBin());
+        assertNotNull(transaction.getMasterpassCardDetails().getCardType());
+        assertNotNull(transaction.getMasterpassCardDetails().getCardholderName());
+        assertNotNull(transaction.getMasterpassCardDetails().getCommercial());
+        assertNotNull(transaction.getMasterpassCardDetails().getDebit());
+        assertNotNull(transaction.getMasterpassCardDetails().getDurbinRegulated());
+        assertNotNull(transaction.getMasterpassCardDetails().getExpirationMonth());
+        assertNotNull(transaction.getMasterpassCardDetails().getExpirationYear());
+        assertNotNull(transaction.getMasterpassCardDetails().getHealthcare());
+        assertNotNull(transaction.getMasterpassCardDetails().getImageUrl());
+        assertNotNull(transaction.getMasterpassCardDetails().getLast4());
+        assertNotNull(transaction.getMasterpassCardDetails().getPayroll());
+        assertNotNull(transaction.getMasterpassCardDetails().getPrepaid());
+        assertNotNull(transaction.getMasterpassCardDetails().getProductId());
     }
 
     @Test

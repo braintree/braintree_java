@@ -63,6 +63,7 @@ public class Nonce {
   public static final String TransactableMaestro = "fake-valid-maestro-nonce";
   public static final String TransactableDinersClub = "fake-valid-dinersclub-nonce";
   public static final String TransactablePrepaid = "fake-valid-prepaid-nonce";
+  public static final String TransactablePrepaidReloadable = "fake-valid-prepaid-reloadable-nonce";
   public static final String TransactableCommercial = "fake-valid-commercial-nonce";
   public static final String TransactableDurbinRegulated = "fake-valid-durbin-regulated-nonce";
   public static final String TransactableHealthcare = "fake-valid-healthcare-nonce";
