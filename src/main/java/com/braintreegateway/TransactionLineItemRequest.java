@@ -5,19 +5,20 @@ import java.math.BigDecimal;
 public class TransactionLineItemRequest extends Request {
 
     private TransactionRequest parent;
-    private TransactionLineItem.Kind kind;
+    
+    private String commodityCode;
+    private String description;
     private BigDecimal discountAmount;
+    private String imageUrl;
+    private TransactionLineItem.Kind kind;
+    private String name;
+    private String productCode;
     private BigDecimal quantity;
     private BigDecimal taxAmount;
     private BigDecimal totalAmount;
     private BigDecimal unitAmount;
-    private BigDecimal unitTaxAmount;
-    private String commodityCode;
-    private String description;
-    private String imageUrl;
-    private String name;
-    private String productCode;
     private String unitOfMeasure;
+    private BigDecimal unitTaxAmount;
     private String upcCode;
     private String upcType;
     private String url;
@@ -29,13 +30,8 @@ public class TransactionLineItemRequest extends Request {
     public TransactionLineItemRequest() {
     }
 
-    public TransactionLineItemRequest quantity(BigDecimal quantity) {
-        this.quantity = quantity;
-        return this;
-    }
-
-    public TransactionLineItemRequest name(String name) {
-        this.name = name;
+    public TransactionLineItemRequest commodityCode(String commodityCode) {
+        this.commodityCode = commodityCode;
         return this;
     }
 
@@ -43,9 +39,44 @@ public class TransactionLineItemRequest extends Request {
         this.description = description;
         return this;
     }
-
+    
+    public TransactionLineItemRequest discountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
+        return this;
+    }
+    
+    public TransactionLineItemRequest imageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+        return this;
+    }
+    
     public TransactionLineItemRequest kind(TransactionLineItem.Kind kind) {
         this.kind = kind;
+        return this;
+    }
+    
+    public TransactionLineItemRequest name(String name) {
+        this.name = name;
+        return this;
+    }
+    
+    public TransactionLineItemRequest productCode(String productCode) {
+        this.productCode = productCode;
+        return this;
+    }
+
+    public TransactionLineItemRequest quantity(BigDecimal quantity) {
+        this.quantity = quantity;
+        return this;
+    }
+    
+    public TransactionLineItemRequest taxAmount(BigDecimal taxAmount) {
+        this.taxAmount = taxAmount;
+        return this;
+    }
+    
+    public TransactionLineItemRequest totalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
         return this;
     }
 
@@ -53,49 +84,14 @@ public class TransactionLineItemRequest extends Request {
         this.unitAmount = unitAmount;
         return this;
     }
-
-    public TransactionLineItemRequest unitTaxAmount(BigDecimal unitTaxAmount) {
-        this.unitTaxAmount = unitTaxAmount;
-        return this;
-    }
-
-    public TransactionLineItemRequest totalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-        return this;
-    }
-
-    public TransactionLineItemRequest discountAmount(BigDecimal discountAmount) {
-        this.discountAmount = discountAmount;
-        return this;
-    }
-
+    
     public TransactionLineItemRequest unitOfMeasure(String unitOfMeasure) {
         this.unitOfMeasure = unitOfMeasure;
         return this;
     }
 
-    public TransactionLineItemRequest productCode(String productCode) {
-        this.productCode = productCode;
-        return this;
-    }
-
-    public TransactionLineItemRequest commodityCode(String commodityCode) {
-        this.commodityCode = commodityCode;
-        return this;
-    }
-
-    public TransactionLineItemRequest url(String url) {
-        this.url = url;
-        return this;
-    }
-
-    public TransactionLineItemRequest taxAmount(BigDecimal taxAmount) {
-        this.taxAmount = taxAmount;
-        return this;
-    }
-
-    public TransactionLineItemRequest imageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public TransactionLineItemRequest unitTaxAmount(BigDecimal unitTaxAmount) {
+        this.unitTaxAmount = unitTaxAmount;
         return this;
     }
 
@@ -106,6 +102,11 @@ public class TransactionLineItemRequest extends Request {
 
     public TransactionLineItemRequest upcType(String upcType) {
         this.upcType = upcType;
+        return this;
+    }
+
+    public TransactionLineItemRequest url(String url) {
+        this.url = url;
         return this;
     }
 

@@ -1,33 +1,36 @@
 package com.braintreegateway;
 
+import com.braintreegateway.enums.PrepaidReloadable;
+import static com.braintreegateway.util.EnumUtils.findByToString;
 import com.braintreegateway.util.NodeWrapper;
 
 // NEXT_MAJOR_VERSION - rename this to GooglePayDetails
 public class AndroidPayDetails {
-    private String cardType;
-    private String last4;
-    private String sourceCardType;
-    private String sourceCardLast4;
-    private String sourceDescription;
-    private String virtualCardType;
-    private String virtualCardLast4;
-    private String expirationMonth;
-    private String expirationYear;
-    private String token;
-    private String googleTransactionId;
     private String bin;
-    private String imageUrl;
-    private Boolean isNetworkTokenized;
-    private String prepaid;
-    private String healthcare;
+    private String cardType;
+    private String commercial;
+    private String countryOfIssuance;
     private String debit;
     private String durbinRegulated;
-    private String commercial;
-    private String payroll;
-    private String issuingBank;
-    private String countryOfIssuance;
-    private String productId;
+    private String expirationMonth;
+    private String expirationYear;
     private String globalId;
+    private String googleTransactionId;
+    private String healthcare;
+    private String imageUrl;
+    private Boolean isNetworkTokenized;
+    private String issuingBank;
+    private String last4;
+    private String payroll;
+    private String prepaid;
+    private String prepaidReloadable;
+    private String productId;
+    private String sourceCardLast4;
+    private String sourceCardType;
+    private String sourceDescription;
+    private String token;
+    private String virtualCardLast4;
+    private String virtualCardType;
 
     public AndroidPayDetails(NodeWrapper node) {
         this.sourceCardType = node.findString("source-card-type");
@@ -45,6 +48,7 @@ public class AndroidPayDetails {
         this.imageUrl = node.findString("image-url");
         this.isNetworkTokenized = node.findBoolean("is-network-tokenized");
         this.prepaid = node.findString("prepaid");
+        this.prepaidReloadable = node.findString("prepaid-reloadable");
         this.healthcare = node.findString("healthcare");
         this.debit = node.findString("debit");
         this.durbinRegulated = node.findString("durbin-regulated");
@@ -114,6 +118,10 @@ public class AndroidPayDetails {
 
     public String getPrepaid() {
         return prepaid;
+    }
+
+    public PrepaidReloadable getPrepaidReloadable() {
+        return findByToString(PrepaidReloadable.values(), prepaidReloadable, PrepaidReloadable.UNKNOWN);
     }
 
     public String getHealthcare() {

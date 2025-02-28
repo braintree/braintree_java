@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.braintreegateway.enums.PrepaidReloadable;
+import static com.braintreegateway.util.EnumUtils.findByToString;
 import com.braintreegateway.util.NodeWrapper;
 
 public class ApplePayCard implements PaymentMethod {
@@ -29,6 +31,7 @@ public class ApplePayCard implements PaymentMethod {
     private String paymentInstrumentName;
     private String payroll;
     private String prepaid;
+    private String prepaidReloadable;
     private String productId;
     private String sourceCardLast4;
     private String sourceDescription;
@@ -58,6 +61,7 @@ public class ApplePayCard implements PaymentMethod {
         this.paymentInstrumentName = node.findString("payment-instrument-name");
         this.payroll = node.findString("payroll");
         this.prepaid = node.findString("prepaid");
+        this.prepaidReloadable = node.findString("prepaid-reloadable");
         this.productId = node.findString("product-id");
         this.sourceCardLast4 = node.findString("source-card-last4");
         this.sourceDescription = node.findString("source-description");
@@ -157,6 +161,10 @@ public class ApplePayCard implements PaymentMethod {
 
     public String getPrepaid() {
         return prepaid;
+    }
+
+    public PrepaidReloadable getPrepaidReloadable() {
+        return findByToString(PrepaidReloadable.values(), prepaidReloadable, PrepaidReloadable.UNKNOWN);
     }
 
     public String getProductId() {

@@ -1,6 +1,8 @@
 package com.braintreegateway;
 
+import com.braintreegateway.enums.PrepaidReloadable;
 import com.braintreegateway.util.NodeWrapper;
+import static com.braintreegateway.util.EnumUtils.findByToString;
 
 public class VisaCheckoutCardDetails {
     private String bin;
@@ -20,6 +22,7 @@ public class VisaCheckoutCardDetails {
     private String healthcare;
     private String payroll;
     private String prepaid;
+    private String prepaidReloadable;
     private String productId;
     private String countryOfIssuance;
     private String issuingBank;
@@ -41,6 +44,7 @@ public class VisaCheckoutCardDetails {
         healthcare = node.findString("healthcare");
         payroll = node.findString("payroll");
         prepaid = node.findString("prepaid");
+        prepaidReloadable = node.findString("prepaid-reloadable");
         productId = node.findString("product-id");
         countryOfIssuance = node.findString("country-of-issuance");
         issuingBank = node.findString("issuing-bank");
@@ -148,6 +152,10 @@ public class VisaCheckoutCardDetails {
       } else {
         return CreditCard.Prepaid.UNKNOWN;
       }
+    }
+
+    public PrepaidReloadable getPrepaidReloadable() {
+      return findByToString(PrepaidReloadable.values(), prepaidReloadable, PrepaidReloadable.UNKNOWN);
     }
 
     public String getProductId() {

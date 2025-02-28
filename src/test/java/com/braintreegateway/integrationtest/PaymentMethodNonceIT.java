@@ -2,11 +2,12 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
 import com.braintreegateway.CreditCard.Commercial;
-import com.braintreegateway.CreditCard.DurbinRegulated;
 import com.braintreegateway.CreditCard.Debit;
+import com.braintreegateway.CreditCard.DurbinRegulated;
 import com.braintreegateway.CreditCard.Healthcare;
 import com.braintreegateway.CreditCard.Payroll;
 import com.braintreegateway.CreditCard.Prepaid;
+import com.braintreegateway.enums.PrepaidReloadable;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.exceptions.NotFoundException;
@@ -281,6 +282,15 @@ public class PaymentMethodNonceIT extends IntegrationTest {
     }
 
     @Test
+    public void findCreditCardNonceReturnsValidBinDataPrepaidReloadableValue() {
+        String nonceString = "fake-valid-prepaid-reloadable-nonce";
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
+        assertNotNull(nonce);
+        assertEquals(nonceString, nonce.getNonce());
+        assertEquals(PrepaidReloadable.YES, nonce.getBinData().getPrepaidReloadable());
+    }
+
+    @Test
     public void findCreditCardNonceReturnsValidBinDataCommercialValue() {
         String nonceString = "fake-valid-commercial-nonce";
         PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
@@ -357,6 +367,7 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertEquals(Healthcare.UNKNOWN, nonce.getBinData().getHealthcare());
         assertEquals(Payroll.UNKNOWN, nonce.getBinData().getPayroll());
         assertEquals(Prepaid.UNKNOWN, nonce.getBinData().getPrepaid());
+        assertEquals(PrepaidReloadable.UNKNOWN, nonce.getBinData().getPrepaidReloadable());
         assertEquals("Unknown", nonce.getBinData().getProductId());
         assertEquals("Unknown", nonce.getBinData().getCountryOfIssuance());
         assertEquals("Unknown", nonce.getBinData().getIssuingBank());
