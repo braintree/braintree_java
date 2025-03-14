@@ -40,6 +40,9 @@
 * Add `finalCapture` to `TransactionRequest`
 * Deprecate `getPayPalTrackingId` in favor of `getPayPalTrackerId` in PackageDetails
 
+## unreleased
+* Include UsBankAccount Accounts in `Customer#getPaymentMethods`
+
 ## 3.34.0
 * Add domains parameter support to `ClientTokenRequest`
 * Add `isNetworkTokenized` to `PaymentMethodNonceDetails`
