@@ -3,15 +3,16 @@ package com.braintreegateway;
 import com.braintreegateway.exceptions.BraintreeException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Http;
-import com.braintreegateway.util.StringUtils;
+import com.braintreegateway.util.HttpClient;
 import com.fasterxml.jackson.jr.ob.JSON;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.GZIPInputStream;
+
+import static com.braintreegateway.util.HttpClient.HttpResponse;
+import static com.braintreegateway.util.HttpClient.Payload;
+import static com.braintreegateway.util.HttpClient.RequestMethod;
 
 public class ThreeDSecureGateway {
     private final Configuration configuration;
@@ -28,27 +29,19 @@ public class ThreeDSecureGateway {
         }
 
         try {
-            URL url = new URL(configuration.getBaseURL() + configuration.getMerchantPath() +
-                    "/client_api/v1/payment_methods/" + request.getNonce() + "/three_d_secure/lookup");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.addRequestProperty("X-ApiVersion", Configuration.apiVersion());
-            connection.addRequestProperty("Content-Type", "application/json");
-            connection.setDoOutput(true);
-            connection.getOutputStream().write(request.toJSON().getBytes(StandardCharsets.UTF_8));
-            connection.getOutputStream().close();
+            Map<String, String> headers = new HashMap<>();
+            headers.put("X-ApiVersion", Configuration.apiVersion());
 
-            boolean isError = connection.getResponseCode() != 201;
-            InputStream responseStream = isError ? connection.getErrorStream() : connection.getInputStream();
-            if ("gzip".equalsIgnoreCase(connection.getContentEncoding())) {
-                responseStream = new GZIPInputStream(responseStream);
-            }
+            String url = configuration.getBaseURL() + configuration.getMerchantPath() + "/client_api/v1/payment_methods/" + request.getNonce()
+                + "/three_d_secure/lookup";
 
-            String rawResponse = StringUtils.inputStreamToString(responseStream);
-            responseStream.close();
+            HttpClient httpClient = configuration.getHttpClient();
+            HttpResponse httpResponse = httpClient.request(RequestMethod.POST, url, Payload.json(headers, request.toJSON()));
 
-            if (isError) {
-                Http.throwExceptionIfErrorStatusCode(connection.getResponseCode(), rawResponse);
+            int responseCode = httpResponse.getResponseCode();
+            String rawResponse = httpResponse.getResponseBody();
+            if (responseCode != 201) {
+                Http.throwExceptionIfErrorStatusCode(responseCode, rawResponse);
             }
 
             Map<String, Object> jsonResponse = JSON.std.mapFrom(rawResponse);

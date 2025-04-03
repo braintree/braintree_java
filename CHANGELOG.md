@@ -1,4 +1,8 @@
 # Changelog
+## Unreleased
+* Extract HTTP client logic to `HttpClient` and `JavaHttpClient`
+* Make `HttpClient` configurable.
+
 ## 3.40.0
 * Add prepaid_reloadable from bin data in credit card responses
 * Add support for `PayPalPaymentResource` requests
