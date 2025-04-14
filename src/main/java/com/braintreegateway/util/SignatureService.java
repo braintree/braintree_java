@@ -4,9 +4,12 @@ public class SignatureService {
     private final String key;
     private final Hasher hasher;
 
-    public SignatureService(String key, Hasher hasher) {
+    private final String shaAlgorithm;
+
+    public SignatureService(String key, Hasher hasher, String shaAlgorithm) {
         this.key = key;
         this.hasher = hasher;
+        this.shaAlgorithm = shaAlgorithm;
     }
 
     public String sign(String query) {
@@ -14,6 +17,6 @@ public class SignatureService {
     }
 
     private String hash(String string) {
-        return hasher.hmacHash(key, string);
+        return hasher.hmacHash(key, string, shaAlgorithm);
     }
 }

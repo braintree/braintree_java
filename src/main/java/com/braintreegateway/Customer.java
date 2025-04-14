@@ -36,6 +36,11 @@ public class Customer {
     private Map<String, String> customFields;
 
     public Customer(NodeWrapper node) {
+        setCustomerNodeWrapperStrings(node);
+        setCustomerNodeWrapperResponses(node);
+    }
+
+    private void setCustomerNodeWrapperStrings(NodeWrapper node) {
         company = node.findString("company");
         createdAt = node.findDateTime("created-at");
         customFields = node.findMap("custom-fields/*");
@@ -52,6 +57,9 @@ public class Customer {
         phone = node.findString("phone");
         updatedAt = node.findDateTime("updated-at");
         website = node.findString("website");
+    }
+
+    private void setCustomerNodeWrapperResponses(NodeWrapper node) {
         creditCards = new ArrayList<CreditCard>();
         for (NodeWrapper creditCardResponse : node.findAll("credit-cards/credit-card")) {
             creditCards.add(new CreditCard(creditCardResponse));
