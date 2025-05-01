@@ -1,7 +1,7 @@
 # Changelog
 
 ## 3.41.0 
-* Remove marketplace features
+* Remove marketplace features 
 * Add support for capturing payment facilitator and sub-merchant details with transactions 
 
 ## 3.40.0
