@@ -11,7 +11,6 @@ public class WebhookNotification {
         CONNECTED_MERCHANT_STATUS_TRANSITIONED("connected_merchant_status_transitioned"),
         CONNECTED_MERCHANT_PAYPAL_STATUS_CHANGED("connected_merchant_paypal_status_changed"),
         DISBURSEMENT("disbursement"),
-        DISBURSEMENT_EXCEPTION("disbursement_exception"),
         DISPUTE_ACCEPTED("dispute_accepted"),
         DISPUTE_AUTO_ACCEPTED("dispute_auto_accepted"),
         DISPUTE_DISPUTED("dispute_disputed"),

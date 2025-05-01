@@ -155,17 +155,6 @@ public class TransactionGateway {
     }
 
     /**
-     * Holds the transaction with the given id for escrow.
-     * @param id of the transaction to hold for escrow.
-     * @return a {@link Result}.
-     */
-    public Result<Transaction> holdInEscrow(String id) {
-        TransactionRequest request = new TransactionRequest();
-        NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/hold_in_escrow", request);
-        return new Result<Transaction>(response, Transaction.class);
-    }
-
-    /**
      * Submits the transaction with the given id for release.
      * @param id of the transaction to submit for release.
      * @return a {@link Result}.

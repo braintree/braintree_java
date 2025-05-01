@@ -19,11 +19,6 @@ public class MerchantAccountGateway {
         this.configuration = configuration;
     }
 
-    public Result<MerchantAccount> create(MerchantAccountRequest request) {
-        final NodeWrapper response = http.post(configuration.getMerchantPath() + CREATE_URL, request);
-        return new Result<MerchantAccount>(response, MerchantAccount.class);
-    }
-
     public Result<MerchantAccount> createForCurrency(MerchantAccountCreateForCurrencyRequest request) {
         final NodeWrapper response = http.post(configuration.getMerchantPath() + CREATE_FOR_CURRENCY_URL, request);
         return new Result<MerchantAccount>(response, MerchantAccount.class);
@@ -34,11 +29,6 @@ public class MerchantAccountGateway {
             throw new NotFoundException();
         }
         return new MerchantAccount(http.get(configuration.getMerchantPath() + "/merchant_accounts/" + id));
-    }
-
-    public Result<MerchantAccount> update(String id, MerchantAccountRequest request) {
-        final NodeWrapper response = http.put(configuration.getMerchantPath() + "/merchant_accounts/" + id + "/update_via_api", request);
-        return new Result<MerchantAccount>(response, MerchantAccount.class);
     }
 
     public PaginatedCollection<MerchantAccount> all() {

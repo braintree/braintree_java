@@ -18,7 +18,6 @@ public class DisbursementTest {
             "       <id>merchant_account_token</id>\n" +
             "       <currency-iso-code>USD</currency-iso-code>\n" +
             "       <default type=\"boolean\">false</default>\n" +
-            "       <sub-merchant-account type=\"boolean\">false</sub-merchant-account>\n" +
             "   </merchant-account>\n" +
             "   <exception-message nil=\"true\"/>\n" +
             "   <amount>100.00</amount>\n" +
@@ -47,7 +46,6 @@ public class DisbursementTest {
             "       <id>merchant_account_token</id>\n" +
             "       <currency-iso-code>USD</currency-iso-code>\n" +
             "       <default type=\"boolean\">false</default>\n" +
-            "       <sub-merchant-account type=\"boolean\">false</sub-merchant-account>\n" +
             "   </merchant-account>\n" +
             "   <exception-message nil=\"true\"/>\n" +
             "   <amount>100.00</amount>\n" +

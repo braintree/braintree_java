@@ -102,42 +102,6 @@ public class WebhookNotificationIT extends IntegrationTest {
     }
 
     @Test
-    public void createsSampleMerchantAccountApprovedNotification() {
-        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_APPROVED, "my_id");
-
-        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
-
-        assertEquals(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_APPROVED, notification.getKind());
-        assertEquals("my_id", notification.getMerchantAccount().getId());
-        assertEquals(MerchantAccount.Status.ACTIVE, notification.getMerchantAccount().getStatus());
-        TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
-    }
-
-    @Test
-    public void createsSampleMerchantAccountDeclinedNotification() {
-        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED, "my_id");
-
-        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
-
-        assertEquals(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED, notification.getKind());
-        assertEquals("my_id", notification.getMerchantAccount().getId());
-        assertEquals(MerchantAccount.Status.SUSPENDED, notification.getMerchantAccount().getStatus());
-        TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
-    }
-
-    @Test
-    public void createsSampleMerchantAccountDeclinedNotificationWithErrorCodes() {
-        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED, "my_id");
-
-        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
-
-        assertEquals(WebhookNotification.Kind.SUB_MERCHANT_ACCOUNT_DECLINED, notification.getKind());
-        assertEquals("my_id", notification.getMerchantAccount().getId());
-        TestHelper.assertDatesEqual(Calendar.getInstance(), notification.getTimestamp());
-        assertEquals(ValidationErrorCode.MERCHANT_ACCOUNT_DECLINED_OFAC, notification.getErrors().forObject("merchantAccount").onField("base").get(0).getCode());
-    }
-
-    @Test
         public void createsSampleDisputeUnderReviewNotification() {
         HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISPUTE_UNDER_REVIEW, "my_id");
 
@@ -456,21 +420,6 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertEquals(Calendar.FEBRUARY, notification.getDisbursement().getDisbursementDate().get(Calendar.MONTH));
         assertEquals(10, notification.getDisbursement().getDisbursementDate().get(Calendar.DAY_OF_MONTH));
         assertEquals(null, notification.getDisbursement().getFollowUpAction());
-    }
-
-    @Test
-    public void createsSampleDisbursementExceptionNotification() {
-        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.DISBURSEMENT_EXCEPTION, "my_id");
-
-        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
-
-        assertEquals(WebhookNotification.Kind.DISBURSEMENT_EXCEPTION, notification.getKind());
-        assertEquals("my_id", notification.getDisbursement().getId());
-        assertEquals("bank_rejected", notification.getDisbursement().getExceptionMessage());
-        assertEquals(2014, notification.getDisbursement().getDisbursementDate().get(Calendar.YEAR));
-        assertEquals(Calendar.FEBRUARY, notification.getDisbursement().getDisbursementDate().get(Calendar.MONTH));
-        assertEquals(10, notification.getDisbursement().getDisbursementDate().get(Calendar.DAY_OF_MONTH));
-        assertEquals("update_account_information", notification.getDisbursement().getFollowUpAction());
     }
 
     @Test

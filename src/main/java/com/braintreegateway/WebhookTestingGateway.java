@@ -56,7 +56,6 @@ public class WebhookTestingGateway {
             case CONNECTED_MERCHANT_PAYPAL_STATUS_CHANGED: return connectedMerchantPayPalStatusChangedXml(id);
             case CONNECTED_MERCHANT_STATUS_TRANSITIONED: return connectedMerchantStatusTransitionedXml(id);
             case DISBURSEMENT: return disbursementXml(id);
-            case DISBURSEMENT_EXCEPTION: return disbursementExceptionXml(id);
             case DISPUTE_ACCEPTED: return disputeAcceptedXml(id);
             case DISPUTE_AUTO_ACCEPTED: return disputeAutoAcceptedXml(id);
             case DISPUTE_DISPUTED: return disputeDisputedXml(id);
@@ -79,8 +78,6 @@ public class WebhookTestingGateway {
             case PAYMENT_METHOD_REVOKED_BY_CUSTOMER: return paymentMethodRevokedByCustomerXml(id);
             case RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD: return grantedPaymentInstrumentUpdateXml();
             case REFUND_FAILED: return refundFailedXml(id);
-            case SUB_MERCHANT_ACCOUNT_APPROVED: return merchantAccountXmlActive(id);
-            case SUB_MERCHANT_ACCOUNT_DECLINED: return merchantAccountXmlDeclined(id);
             case SUBSCRIPTION_BILLING_SKIPPED: return subscriptionBillingSkippedXml(id);
             case SUBSCRIPTION_CHARGED_SUCCESSFULLY: return subscriptionChargedSuccessfullyXml(id);
             case SUBSCRIPTION_CHARGED_UNSUCCESSFULLY: return subscriptionChargedUnsuccessfullyXml(id);
@@ -98,42 +95,6 @@ public class WebhookTestingGateway {
     private String[][] TYPE_SYMBOL = {{"type", "symbol"}};
     private String[][] TYPE_BOOLEAN = {{"type", "boolean"}};
     private String[][] NIL_TRUE = {{"nil", "true"}};
-
-    private String merchantAccountXmlDeclined(String id) {
-        return node("api-error-response",
-                node("message", "Credit score is too low"),
-                node("errors", TYPE_ARRAY,
-                    node("merchant-account",
-                        node("errors", TYPE_ARRAY,
-                            node("error",
-                                node("code", "82621"),
-                                node("message", "Credit score is too low"),
-                                node("attribute", TYPE_SYMBOL, "base")
-                            )
-                        )
-                    )
-                ),
-                node("merchant-account",
-                    node("id", id),
-                    node("status", "suspended"),
-                    node("master-merchant-account",
-                        node("id", "master_ma_for_" + id),
-                        node("status", "suspended")
-                    )
-                )
-        );
-    }
-
-    private String merchantAccountXmlActive(String id) {
-          return node("merchant-account",
-                  node("id", id),
-                  node("master-merchant-account",
-                      node("id", id),
-                      node("status", "active")
-                  ),
-                  node("status", "active")
-        );
-    }
 
     private String subscriptionXml(String id) {
         return node("subscription",
@@ -450,29 +411,6 @@ public class WebhookTestingGateway {
                 node("merchant-account",
                     node("id", "merchant_account_token"),
                     node("currency-iso-code", "USD"),
-                    node("sub-merchant-account", TYPE_BOOLEAN, "false"),
-                    node("status", "active")
-                )
-        );
-    }
-
-    private String disbursementExceptionXml(String id) {
-        return node("disbursement",
-                node("id", id),
-                node("transaction-ids", TYPE_ARRAY,
-                    node("item", "asdf"),
-                    node("item", "qwer")
-                ),
-                node("success", TYPE_BOOLEAN, "false"),
-                node("retry", TYPE_BOOLEAN, "false"),
-                node("exception-message", "bank_rejected"),
-                node("amount", "100.00"),
-                node("disbursement-date", TYPE_DATE, "2014-02-10"),
-                node("follow-up-action", "update_account_information"),
-                node("merchant-account",
-                    node("id", "merchant_account_token"),
-                    node("currency-iso-code", "USD"),
-                    node("sub-merchant-account", TYPE_BOOLEAN, "false"),
                     node("status", "active")
                 )
         );

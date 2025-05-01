@@ -25,7 +25,6 @@ public class DisbursementIT extends IntegrationTest {
                      "<merchant-account>" +
                      "<id>sandbox_sub_merchant_account</id>" +
                      "<currency-iso-code>USD</currency-iso-code>" +
-                     "<sub-merchant-account type=\"boolean\">true</sub-merchant-account>" +
                      "<status>active</status>" +
                      "</merchant-account>" +
                      "<amount>100.00</amount>" +
@@ -63,7 +62,6 @@ public class DisbursementIT extends IntegrationTest {
                    "<merchant-account>" +
                    "<id>sandbox_sub_merchant_account</id>" +
                    "<currency-iso-code>USD</currency-iso-code>" +
-                   "<sub-merchant-account type=\"boolean\">true</sub-merchant-account>" +
                    "<status>active</status>" +
                    "</merchant-account>" +
                    "<amount>100.00</amount>" +

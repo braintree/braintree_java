@@ -38,6 +38,7 @@ public class TransactionRequest extends Request {
     private InstallmentRequest installments;
     private String merchantAccountId;
     private String orderId;
+    private PaymentFacilitatorRequest paymentFacilitatorRequest;
     private String paymentMethodNonce;
     private String paymentMethodToken;
     private TransactionPayPalRequest paypalRequest;
@@ -210,6 +211,11 @@ public class TransactionRequest extends Request {
     public TransactionRequest orderId(String orderId) {
         this.orderId = orderId;
         return this;
+    }
+
+    public PaymentFacilitatorRequest paymentFacilitator() { 
+        paymentFacilitatorRequest = new PaymentFacilitatorRequest(this); 
+        return paymentFacilitatorRequest; 
     }
 
     public TransactionRequest paymentMethodNonce(String paymentMethodNonce) {
@@ -409,6 +415,7 @@ public class TransactionRequest extends Request {
             .addElement("orderId", orderId)
             .addElement("paymentMethodNonce", paymentMethodNonce)
             .addElement("paymentMethodToken", paymentMethodToken)
+            .addElement("paymentFacilitator", paymentFacilitatorRequest)
             .addElement("paypalAccount", paypalRequest)
             .addElement("productSku", productSku)
             .addElement("purchaseOrderNumber", purchaseOrderNumber)

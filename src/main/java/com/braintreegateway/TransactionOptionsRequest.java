@@ -4,7 +4,6 @@ package com.braintreegateway;
 // The old venmo SDK integration has been deprecated
 public class TransactionOptionsRequest extends Request {
     private Boolean addBillingAddressToPaymentMethod;
-    private Boolean holdInEscrow;
     private TransactionRequest parent;
     private Boolean storeInVault;
     private Boolean storeInVaultOnSuccess;
@@ -35,11 +34,6 @@ public class TransactionOptionsRequest extends Request {
 
     public TransactionRequest done() {
         return parent;
-    }
-
-    public TransactionOptionsRequest holdInEscrow(Boolean holdInEscrow) {
-        this.holdInEscrow = holdInEscrow;
-        return this;
     }
 
     public TransactionOptionsRequest storeInVault(Boolean storeInVault) {
@@ -151,7 +145,6 @@ public class TransactionOptionsRequest extends Request {
     // The old venmo SDK integration has been deprecated
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root)
-            .addElement("holdInEscrow", holdInEscrow)
             .addElement("storeInVault", storeInVault)
             .addElement("storeInVaultOnSuccess", storeInVaultOnSuccess)
             .addElement("addBillingAddressToPaymentMethod", addBillingAddressToPaymentMethod)
