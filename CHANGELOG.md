@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.42.0
+* Add `accountInformationInquiry` to
+  * `CreditCardVerificationOptionsRequest`
+  * `CreditCardOptionsRequest`
+  * `PaymentMethodOptionsRequest`
+* Enhancements to PayPal customer recommendations
+  * Create a session and get recommendations in one call
+  * Hash customer email and phone number
+* Add business, consumer, corporate, and purchase from bin data in credit card response
+
 ## 3.41.0 
 * Remove marketplace features 
 * Add support for capturing payment facilitator and sub-merchant details with transactions 

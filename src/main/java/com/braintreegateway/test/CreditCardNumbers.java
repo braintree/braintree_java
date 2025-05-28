@@ -3,7 +3,10 @@ package com.braintreegateway.test;
 public class CreditCardNumbers {
 
     public enum CardTypeIndicators {
+        Business("4229989800000003"),
         Commercial("4111111111131010"),
+        Consumer("4229989700000004"),
+        Corporate("4229989100000000"),
         CountryOfIssuance("4111111111121102"),
         Debit("4117101010101010"),
         DurbinRegulated("4111161010101010"),
@@ -12,7 +15,7 @@ public class CreditCardNumbers {
         Payroll("4111111114101010"),
         Prepaid("4111111111111210"),
         PrepaidReloadable("4229989900000002"),
-
+        Purchase("4229989500000006"),
         No("4111111111310101"),
         Unknown("4111111111112101");
 

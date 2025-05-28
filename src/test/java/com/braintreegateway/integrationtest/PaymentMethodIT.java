@@ -397,9 +397,12 @@ public class PaymentMethodIT extends IntegrationTest {
 
         ApplePayCard applePayCard = (ApplePayCard) paymentMethod;
         assertNotNull(applePayCard.getBin());
+        assertNotNull(applePayCard.getBusiness());
         assertNotNull(applePayCard.getCardType());
         assertNotNull(applePayCard.getCardholderName());
         assertNotNull(applePayCard.getCommercial());
+        assertNotNull(applePayCard.getConsumer());
+        assertNotNull(applePayCard.getCorporate());
         assertNotNull(applePayCard.getCountryOfIssuance());
         assertNotNull(applePayCard.getCreatedAt());
         assertNotNull(applePayCard.getCustomerId());
@@ -416,6 +419,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(applePayCard.getPrepaid());
         assertNotNull(applePayCard.getPrepaidReloadable());
         assertNotNull(applePayCard.getProductId());
+        assertNotNull(applePayCard.getPurchase());
         assertNotNull(applePayCard.getSubscriptions());
         assertNotNull(applePayCard.getUpdatedAt());
         assertTrue(applePayCard.getSubscriptions().isEmpty());
@@ -441,9 +445,12 @@ public class PaymentMethodIT extends IntegrationTest {
 
         ApplePayCard applePayCard = (ApplePayCard) paymentMethod;
         assertNotNull(applePayCard.getBin());
+        assertNotNull(applePayCard.getBusiness());
         assertNotNull(applePayCard.getCardType());
         assertNotNull(applePayCard.getCardholderName());
         assertNotNull(applePayCard.getCommercial());
+        assertNotNull(applePayCard.getConsumer());
+        assertNotNull(applePayCard.getCorporate());
         assertNotNull(applePayCard.getCountryOfIssuance());
         assertNotNull(applePayCard.getCreatedAt());
         assertNotNull(applePayCard.getCustomerId());
@@ -461,6 +468,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(applePayCard.getPrepaid());
         assertNotNull(applePayCard.getPrepaidReloadable());
         assertNotNull(applePayCard.getProductId());
+        assertNotNull(applePayCard.getPurchase());
         assertNotNull(applePayCard.getSourceCardLast4());
         assertNotNull(applePayCard.getSubscriptions());
         assertNotNull(applePayCard.getUpdatedAt());
@@ -582,8 +590,11 @@ public class PaymentMethodIT extends IntegrationTest {
         AndroidPayCard androidPayCard = (AndroidPayCard) paymentMethod;
         assertFalse(androidPayCard.isNetworkTokenized());
         assertNotNull(androidPayCard.getBin());
+        assertNotNull(androidPayCard.getBusiness());
         assertNotNull(androidPayCard.getCardType());
         assertNotNull(androidPayCard.getCommercial());
+        assertNotNull(androidPayCard.getConsumer());
+        assertNotNull(androidPayCard.getCorporate());
         assertNotNull(androidPayCard.getCountryOfIssuance());
         assertNotNull(androidPayCard.getCreatedAt());
         assertNotNull(androidPayCard.getCustomerId());
@@ -600,6 +611,7 @@ public class PaymentMethodIT extends IntegrationTest {
         assertNotNull(androidPayCard.getPrepaid());
         assertNotNull(androidPayCard.getPrepaidReloadable());
         assertNotNull(androidPayCard.getProductId());
+        assertNotNull(androidPayCard.getPurchase());
         assertNotNull(androidPayCard.getSourceCardLast4());
         assertNotNull(androidPayCard.getSourceCardType());
         assertNotNull(androidPayCard.getSubscriptions());
@@ -2221,5 +2233,65 @@ public class PaymentMethodIT extends IntegrationTest {
         Result<OAuthCredentials> accessTokenResult = oauthGateway.oauth().createTokenFromCode(oauthRequest);
 
         return new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
+    }
+
+    @Test
+    public void createIncludesAniInVerificationWhenAccountInformationInquiryIsPresent() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            number("4111111111111111").
+            expirationMonth("12").
+            expirationYear("2030");
+        String nonce = TestHelper.generateNonceForCreditCard(gateway, request, customer.getId(), false);
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().
+            customerId(customer.getId()).
+            paymentMethodNonce(nonce).
+            options().
+            verifyCard(true).
+            accountInformationInquiry("send_data").
+            done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().create(paymentMethodRequest);
+
+        assertTrue(result.isSuccess());
+        assertTrue(result.getTarget() instanceof CreditCard);
+        CreditCard card = (CreditCard) result.getTarget();
+
+        CreditCardVerification verification = card.getVerification();
+        assertNotNull(verification);
+        assertNotNull(verification.getAniFirstNameResponseCode());
+        assertNotNull(verification.getAniLastNameResponseCode());
+    }
+
+    @Test
+    public void updateIncludesAniInVerificationWhenAccountInformationInquiryIsPresent() {
+        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
+        Customer customer = customerResult.getTarget();
+
+        CreditCardRequest createRequest = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("4111111111111111").
+            expirationDate("05/32");
+
+        CreditCard originalCard = gateway.creditCard().create(createRequest).getTarget();
+
+        PaymentMethodRequest updateRequest = new PaymentMethodRequest().
+            options().
+            verifyCard(true).
+            accountInformationInquiry("send_data").
+            done();
+
+        Result<? extends PaymentMethod> result = gateway.paymentMethod().update(originalCard.getToken(), updateRequest);
+        assertTrue(result.isSuccess());
+
+        CreditCard card = (CreditCard) result.getTarget();
+
+        CreditCardVerification verification = card.getVerification();
+        assertNotNull(verification);
+        assertNotNull(verification.getAniFirstNameResponseCode());
+        assertNotNull(verification.getAniLastNameResponseCode());
     }
 }

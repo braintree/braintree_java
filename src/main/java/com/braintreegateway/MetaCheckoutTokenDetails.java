@@ -1,15 +1,22 @@
 package com.braintreegateway;
 
+import com.braintreegateway.enums.Business;
+import com.braintreegateway.enums.Consumer;
+import com.braintreegateway.enums.Corporate;
 import com.braintreegateway.enums.PrepaidReloadable;
+import com.braintreegateway.enums.Purchase;
 import com.braintreegateway.util.NodeWrapper;
 import static com.braintreegateway.util.EnumUtils.findByToString;
 
 public class MetaCheckoutTokenDetails {
     private String bin;
+    private String business;
     private String cardholderName;
     private String cardType;
     private String commercial;
+    private String consumer;
     private String containerId;   
+    private String corporate;
     private String countryOfIssuance;
     private String cryptogram;
     private String debit;
@@ -25,13 +32,17 @@ public class MetaCheckoutTokenDetails {
     private String prepaid;
     private String prepaidReloadable;
     private String productId;
+    private String purchase;
     private String token;
 
     public MetaCheckoutTokenDetails(NodeWrapper node) {
         bin = node.findString("bin");
+        business = node.findString("business");
         cardType = node.findString("card-type");
         cardholderName = node.findString("cardholder-name");
+        consumer = node.findString("consumer");
         containerId = node.findString("container-id");
+        corporate = node.findString("corporate");
         cryptogram = node.findString("cryptogram");
         ecommerceIndicator = node.findString("ecommerce-indicator");
         expirationMonth = node.findString("expiration-month");
@@ -47,6 +58,7 @@ public class MetaCheckoutTokenDetails {
         prepaid = node.findString("prepaid");
         prepaidReloadable = node.findString("prepaid-reloadable");
         productId = node.findString("product-id");
+        purchase = node.findString("purchase");
         countryOfIssuance = node.findString("country-of-issuance");
         issuingBank = node.findString("issuing-bank");
     }
@@ -168,6 +180,23 @@ public class MetaCheckoutTokenDetails {
 
     public PrepaidReloadable getPrepaidReloadable() {
       return findByToString(PrepaidReloadable.values(), prepaidReloadable, PrepaidReloadable.UNKNOWN);
+    }
+
+
+    public Business getBusiness() {
+        return findByToString(Business.values(), business, Business.UNKNOWN);
+    }
+
+    public Consumer getConsumer() {
+        return findByToString(Consumer.values(), consumer, Consumer.UNKNOWN);
+    }
+
+    public Corporate getCorporate() {
+        return findByToString(Corporate.values(), corporate, Corporate.UNKNOWN);
+    }
+
+    public Purchase getPurchase() {
+        return findByToString(Purchase.values(), purchase, Purchase.UNKNOWN);
     }
 
     public String getProductId() {

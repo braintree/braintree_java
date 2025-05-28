@@ -16,6 +16,8 @@ class CustomerSessionInputTest {
         CustomerSessionInput.builder()
             .deviceFingerprintId("device-fingerprint-id")
             .email("nobody@nowehwere.com")
+            .hashedEmail("hashed@paypal.com")
+            .hashedPhoneNumber("000-000-0000")
             .phone(phoneInput)
             .paypalAppInstalled(true)
             .venmoAppInstalled(false)
@@ -27,7 +29,9 @@ class CustomerSessionInputTest {
     assertEquals("device-fingerprint-id", map.get("deviceFingerprintId"));
     assertEquals("nobody@nowehwere.com", map.get("email"));
     assertEquals(phoneInput.toGraphQLVariables(), map.get("phone"));
-    assertEquals(true, map.get("paypalAppInstalled"));
+    assertEquals(true, map.get("paypalAppInstalled")); 
+    assertEquals("hashed@paypal.com", map.get("hashedEmail")); 
+    assertEquals("000-000-0000", map.get("hashedPhoneNumber"));
     assertEquals(false, map.get("venmoAppInstalled"));
     assertEquals("Mozilla", map.get("userAgent"));
   }

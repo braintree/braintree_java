@@ -1,14 +1,21 @@
 package com.braintreegateway;
 
+import com.braintreegateway.enums.Business;
+import com.braintreegateway.enums.Consumer;
+import com.braintreegateway.enums.Corporate;
 import com.braintreegateway.enums.PrepaidReloadable;
+import com.braintreegateway.enums.Purchase;
 import com.braintreegateway.util.NodeWrapper;
 import static com.braintreegateway.util.EnumUtils.findByToString;
 
 public class VisaCheckoutCardDetails {
     private String bin;
+    private String business;
     private String callId;
     private String cardType;
     private String cardholderName;
+    private String consumer;
+    private String corporate;
     private String expirationMonth;
     private String expirationYear;
     private String imageUrl;
@@ -24,14 +31,18 @@ public class VisaCheckoutCardDetails {
     private String prepaid;
     private String prepaidReloadable;
     private String productId;
+    private String purchase;
     private String countryOfIssuance;
     private String issuingBank;
 
     public VisaCheckoutCardDetails(NodeWrapper node) {
         bin = node.findString("bin");
+        business = node.findString("business");
         callId = node.findString("call-id");
         cardType = node.findString("card-type");
         cardholderName = node.findString("cardholder-name");
+        consumer = node.findString("consumer");
+        corporate = node.findString("corporate");
         expirationMonth = node.findString("expiration-month");
         expirationYear = node.findString("expiration-year");
         imageUrl = node.findString("image-url");
@@ -46,12 +57,17 @@ public class VisaCheckoutCardDetails {
         prepaid = node.findString("prepaid");
         prepaidReloadable = node.findString("prepaid-reloadable");
         productId = node.findString("product-id");
+        purchase = node.findString("purchase");
         countryOfIssuance = node.findString("country-of-issuance");
         issuingBank = node.findString("issuing-bank");
     }
 
     public String getBin() {
         return bin;
+    }
+
+    public Business getBusiness() {
+        return findByToString(Business.values(), business, Business.UNKNOWN);
     }
 
     public String getCallId() {
@@ -64,6 +80,14 @@ public class VisaCheckoutCardDetails {
 
     public String getCardholderName() {
         return cardholderName;
+    }
+
+    public Consumer getConsumer() {
+        return findByToString(Consumer.values(), consumer, Consumer.UNKNOWN);
+    }
+
+    public Corporate getCorporate() {
+        return findByToString(Corporate.values(), corporate, Corporate.UNKNOWN);
     }
 
     public String getExpirationDate() {
@@ -164,6 +188,10 @@ public class VisaCheckoutCardDetails {
         } else {
             return productId;
         }
+    }
+
+    public Purchase getPurchase() {
+        return findByToString(Purchase.values(), purchase, Purchase.UNKNOWN);
     }
 
     public String getCountryOfIssuance() {

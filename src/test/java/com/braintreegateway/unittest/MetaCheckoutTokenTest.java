@@ -5,7 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.jupiter.api.Test;
 
+import com.braintreegateway.enums.Business;
+import com.braintreegateway.enums.Consumer;
+import com.braintreegateway.enums.Corporate;
 import com.braintreegateway.enums.PrepaidReloadable;
+import com.braintreegateway.enums.Purchase;
 import com.braintreegateway.MetaCheckoutToken;
 import com.braintreegateway.util.SimpleNodeWrapper;
 
@@ -16,10 +20,13 @@ public class MetaCheckoutTokenTest {
         builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         builder.append("<payment-method>");
         builder.append("<bin>a-bin</bin>");
+        builder.append("<business>No</business>");
         builder.append("<card-type>Visa</card-type>");
         builder.append("<cardholder-name>Cardholder</cardholder-name>");
         builder.append("<commercial>No</commercial>");
+        builder.append("<consumer>No</consumer>");
         builder.append("<container-id>a-container-id</container-id>" );
+        builder.append("<corporate>No</corporate>");
         builder.append("<created-at>2023-05-05T21:28:37Z</created-at>");
         builder.append("<cryptogram>AlhlvxmN2ZKuAAESNFZ4GoABFA==</cryptogram>");
         builder.append("<customer-location>US</customer-location>");
@@ -33,6 +40,7 @@ public class MetaCheckoutTokenTest {
         builder.append("<payroll>No</payroll>");
         builder.append("<prepaid>No</prepaid>");
         builder.append("<prepaid-reloadable>No</prepaid-reloadable>");
+        builder.append("<purchase>No</purchase>");
         builder.append("<token>token1</token>");
         builder.append("<unique-number-identifier>1234</unique-number-identifier>");
         builder.append("<updated-at>2023-05-05T21:28:37Z</updated-at>");

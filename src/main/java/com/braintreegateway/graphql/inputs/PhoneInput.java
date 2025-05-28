@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.braintreegateway.Request;
+import com.braintreegateway.util.Experimental;
 
 /**
  * Phone number input for PayPal customer session.
  */
+@Experimental("This class is experimental and may change in future releases.")
 public class PhoneInput extends Request {
   private final String countryPhoneCode;
   private final String phoneNumber;

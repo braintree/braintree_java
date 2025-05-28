@@ -3,8 +3,10 @@ package com.braintreegateway;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.HashMap;
+import com.braintreegateway.util.Experimental;
 
-public class MonetaryAmount {
+@Experimental("This class is experimental and may change in future releases.")
+public class MonetaryAmountInput {
 
   private BigDecimal value;
 
@@ -25,4 +27,14 @@ public class MonetaryAmount {
   public void setCurrencyCode(String currencyCode) {
     this.currencyCode = currencyCode;
   }
+
+  public Map<String, Object> toGraphQLVariables() {
+    Map<String, Object> variables = new HashMap<>();
+    variables.put("value", value);
+    if (currencyCode != null) {
+      variables.put("currencyCode", currencyCode);
+    }
+    return variables;
+  }
+
 }

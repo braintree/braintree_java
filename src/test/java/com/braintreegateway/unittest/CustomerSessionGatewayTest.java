@@ -2,6 +2,7 @@ package com.braintreegateway.unittest;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,9 +22,9 @@ import org.mockito.MockitoAnnotations;
 
 import com.braintreegateway.CustomerSessionGateway;
 import com.braintreegateway.Result;
-import com.braintreegateway.exceptions.UnexpectedException;
-import com.braintreegateway.graphql.enums.Recommendations;
+import com.braintreegateway.exceptions.ServerException;
 import com.braintreegateway.graphql.enums.RecommendedPaymentOption;
+import com.braintreegateway.graphql.enums.Recommendations;
 import com.braintreegateway.graphql.inputs.CreateCustomerSessionInput;
 import com.braintreegateway.graphql.inputs.CustomerRecommendationsInput;
 import com.braintreegateway.graphql.inputs.UpdateCustomerSessionInput;
@@ -96,7 +97,7 @@ public class CustomerSessionGatewayTest {
                         when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(errorResponse);
 
                         assertThrows(
-                                        UnexpectedException.class,
+                                        ServerException.class,
                                         () -> {
                                                 customerSessionGateway.createCustomerSession(
                                                                 CreateCustomerSessionInput.builder().build());
@@ -167,7 +168,7 @@ public class CustomerSessionGatewayTest {
                                         "unittest/customer_session/update_session_unparseable_response.json");
                         when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(errorResponse);
                         assertThrows(
-                                        UnexpectedException.class,
+                                        ServerException.class,
                                         () -> {
                                                 customerSessionGateway.updateCustomerSession(
                                                                 UpdateCustomerSessionInput.builder("session-id")
@@ -212,7 +213,6 @@ public class CustomerSessionGatewayTest {
 
                         Result<CustomerRecommendationsPayload> result = customerSessionGateway
                                         .getCustomerRecommendations(getMockCustomerRecommendationsInput());
-
                         CustomerRecommendationsPayload actualPayload = result.getTarget();
                         assertEquals(
                                         RecommendedPaymentOption.PAYPAL,
@@ -239,7 +239,7 @@ public class CustomerSessionGatewayTest {
                                         "unittest/customer_session/customer_recommendations_unparseable_response.json");
                         when(graphQLClient.query(anyString(), any(Map.class))).thenReturn(errorResponse);
                         assertThrows(
-                                        UnexpectedException.class,
+                                        ServerException.class,
                                         () -> {
                                                 customerSessionGateway
                                                                 .getCustomerRecommendations(getMockCustomerRecommendationsInput());
@@ -248,6 +248,6 @@ public class CustomerSessionGatewayTest {
         }
 
         private static CustomerRecommendationsInput getMockCustomerRecommendationsInput() {
-                return CustomerRecommendationsInput.builder("session-id", Arrays.asList(Recommendations.PAYMENT_RECOMMENDATIONS)).build();
+                return CustomerRecommendationsInput.builder().sessionId("sessionId").build();
         }
 }

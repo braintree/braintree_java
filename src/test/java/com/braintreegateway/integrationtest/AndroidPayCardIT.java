@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AndroidPayCardIT extends IntegrationTest  {
 
     @Test
-    public void testPrepaidReloadable() {
+    public void testBinFields() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         PaymentMethodRequest request = new PaymentMethodRequest().
             customerId(customer.getId()).
@@ -23,6 +23,10 @@ public class AndroidPayCardIT extends IntegrationTest  {
         AndroidPayCard androidPayCard = (AndroidPayCard) result.getTarget();
         assertNotNull(androidPayCard.getPrepaid());
         assertNotNull(androidPayCard.getPrepaidReloadable());
+        assertNotNull(androidPayCard.getBusiness());
+        assertNotNull(androidPayCard.getConsumer());
+        assertNotNull(androidPayCard.getCorporate());
+        assertNotNull(androidPayCard.getPurchase());
 
         AndroidPayCard foundAndroidPayCard = (AndroidPayCard) gateway.paymentMethod().find(androidPayCard.getToken());
         assertEquals(androidPayCard.getToken(), foundAndroidPayCard.getToken());

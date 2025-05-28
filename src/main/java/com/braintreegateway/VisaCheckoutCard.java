@@ -6,7 +6,11 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import com.braintreegateway.enums.Business;
+import com.braintreegateway.enums.Consumer;
+import com.braintreegateway.enums.Corporate;
 import com.braintreegateway.enums.PrepaidReloadable;
+import com.braintreegateway.enums.Purchase;
 import static com.braintreegateway.util.EnumUtils.findByToString;
 
 // NEXT_MAJOR_VERSION remove isVenmoSDK
@@ -15,29 +19,33 @@ public class VisaCheckoutCard implements PaymentMethod {
 
     private Address billingAddress;
     private String bin;
+    private String business;
     private String callId;
     private String cardholderName;
     private String cardType;
+    private String commercial;
+    private String consumer;
+    private String corporate;
     private Calendar createdAt;
     private String customerId;
     private String customerLocation;
-    private String expirationMonth;
-    private String expirationYear;
+    private String debit;
     private boolean isDefault;
     private boolean isVenmoSdk;
     private boolean isExpired;
-    private String imageUrl;
-    private String last4;
-    private String commercial;
-    private String debit;
     private String durbinRegulated;
+    private String expirationMonth;
+    private String expirationYear;
     private String healthcare;
+    private String imageUrl;
+    private String issuingBank;
+    private String last4;
     private String payroll;
     private String prepaid;
     private String prepaidReloadable;
     private String productId;
     private String countryOfIssuance;
-    private String issuingBank;
+    private String purchase;
     private String uniqueNumberIdentifier;
     private List<Subscription> subscriptions;
     private String token;
@@ -49,27 +57,31 @@ public class VisaCheckoutCard implements PaymentMethod {
         createdAt = node.findDateTime("created-at");
         updatedAt = node.findDateTime("updated-at");
         bin = node.findString("bin");
+        business = node.findString("business");
         callId = node.findString("call-id");
         cardType = node.findString("card-type");
         cardholderName = node.findString("cardholder-name");
+        commercial = node.findString("commercial");
+        consumer = node.findString("consumer");
+        corporate = node.findString("corporate");
         customerId = node.findString("customer-id");
         customerLocation = node.findString("customer-location");
+        debit = node.findString("debit");
+        durbinRegulated = node.findString("durbin-regulated");
         expirationMonth = node.findString("expiration-month");
         expirationYear = node.findString("expiration-year");
+        healthcare = node.findString("healthcare");
         imageUrl = node.findString("image-url");
         isDefault = node.findBoolean("default");
         isExpired = node.findBoolean("expired");
+        issuingBank = node.findString("issuing-bank");
         last4 = node.findString("last-4");
-        commercial = node.findString("commercial");
-        debit = node.findString("debit");
-        durbinRegulated = node.findString("durbin-regulated");
-        healthcare = node.findString("healthcare");
         payroll = node.findString("payroll");
         prepaid = node.findString("prepaid");
         prepaidReloadable = node.findString("prepaid-reloadable");
         productId = node.findString("product-id");
         countryOfIssuance = node.findString("country-of-issuance");
-        issuingBank = node.findString("issuing-bank");
+        purchase = node.findString("purchase");
         uniqueNumberIdentifier = node.findString("unique-number-identifier");
         NodeWrapper billingAddressResponse = node.findFirst("billing-address");
         if (billingAddressResponse != null) {
@@ -109,6 +121,10 @@ public class VisaCheckoutCard implements PaymentMethod {
         return bin;
     }
 
+    public Business getBusiness() {
+        return findByToString(Business.values(), business, Business.UNKNOWN);
+    }
+
     public String getCallId() {
         return callId;
     }
@@ -123,6 +139,14 @@ public class VisaCheckoutCard implements PaymentMethod {
 
     public Calendar getCreatedAt() {
         return createdAt;
+    }
+
+    public Consumer getConsumer() {
+        return findByToString(Consumer.values(), consumer, Consumer.UNKNOWN);
+    }
+
+    public Corporate getCorporate() {
+        return findByToString(Corporate.values(), corporate, Corporate.UNKNOWN);
     }
 
     public String getCustomerId() {
@@ -243,6 +267,10 @@ public class VisaCheckoutCard implements PaymentMethod {
         } else {
             return issuingBank;
         }
+    }
+
+    public Purchase getPurchase() {
+        return findByToString(Purchase.values(), purchase, Purchase.UNKNOWN);
     }
 
     public String getUniqueNumberIdentifier() {

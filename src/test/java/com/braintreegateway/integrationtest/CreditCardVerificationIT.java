@@ -1,6 +1,10 @@
 package com.braintreegateway.integrationtest;
 import com.braintreegateway.*;
 import com.braintreegateway.enums.PrepaidReloadable;
+import com.braintreegateway.enums.Business;
+import com.braintreegateway.enums.Consumer;
+import com.braintreegateway.enums.Corporate;
+import com.braintreegateway.enums.Purchase;
 import com.braintreegateway.test.Nonce;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
@@ -64,6 +68,29 @@ public class CreditCardVerificationIT extends IntegrationTest {
             number("4012000033330026").
             expirationDate("05/2029").
             cvv("123").
+            done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+        CreditCardVerification verification = result.getTarget();
+        assertEquals("1000", verification.getProcessorResponseCode());
+        assertEquals("Approved", verification.getProcessorResponseText());
+        assertEquals("I", verification.getAniFirstNameResponseCode());
+        assertEquals("I", verification.getAniLastNameResponseCode());
+        assertEquals(ProcessorResponseType.APPROVED, verification.getProcessorResponseType());
+        assertNotNull(verification.getGraphQLId());
+    }
+
+    @Test
+    public void createVerificationforAniWhenAccountInformationInquiryIsSentInOptions() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+            number("4012000033330026").
+            expirationDate("05/2029").
+            cvv("123").
+            done().
+            options().
+              accountInformationInquiry("send_data").
             done();
 
         Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
@@ -380,6 +407,10 @@ public class CreditCardVerificationIT extends IntegrationTest {
         builder.append("      <expiration-date>12/2012</expiration-date>");
         builder.append("      <prepaid>Unknown</prepaid>");
         builder.append("      <prepaid-reloadable>Unknown</prepaid-reloadable>");
+        builder.append("      <business>Unknown</business>");
+        builder.append("      <consumer>Unknown</consumer>");
+        builder.append("      <corporate>Unknown</corporate>");
+        builder.append("      <purchase>Unknown</purchase>");
         builder.append("    </credit-card>");
         builder.append("    <billing>");
         builder.append("      <postal-code>60601</postal-code>");
@@ -403,6 +434,11 @@ public class CreditCardVerificationIT extends IntegrationTest {
         assertEquals("M", verification.getCvvResponseCode());
         assertEquals(CreditCard.Prepaid.UNKNOWN, verification.getCreditCard().getPrepaid());
         assertEquals(PrepaidReloadable.UNKNOWN, verification.getCreditCard().getPrepaidReloadable());
+        assertEquals(Business.UNKNOWN, verification.getCreditCard().getBusiness());
+        assertEquals(Consumer.UNKNOWN, verification.getCreditCard().getConsumer());
+        assertEquals(Corporate.UNKNOWN, verification.getCreditCard().getCorporate());
+        assertEquals(Purchase.UNKNOWN, verification.getCreditCard().getPurchase());
+
     }
 
     @Test

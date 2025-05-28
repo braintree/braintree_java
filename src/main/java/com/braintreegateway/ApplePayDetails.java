@@ -1,14 +1,21 @@
 package com.braintreegateway;
 
+import com.braintreegateway.enums.Business;
+import com.braintreegateway.enums.Consumer;
+import com.braintreegateway.enums.Corporate;
 import com.braintreegateway.enums.PrepaidReloadable;
+import com.braintreegateway.enums.Purchase;
 import static com.braintreegateway.util.EnumUtils.findByToString;
 import com.braintreegateway.util.NodeWrapper;
 
 public class ApplePayDetails {
     private String bin;
+    private String business;
     private String cardholderName;
     private String cardType;
     private String commercial;
+    private String consumer;
+    private String corporate;
     private String countryOfIssuance;
     private String debit;
     private String durbinRegulated;
@@ -25,15 +32,19 @@ public class ApplePayDetails {
     private String prepaid;
     private String prepaidReloadable;
     private String productId;
+    private String purchase;
     private String sourceCardLast4;
     private String sourceDescription;
     private String token;
 
     public ApplePayDetails(NodeWrapper node) {
         bin = node.findString("bin");
+        business = node.findString("business");
         cardType = node.findString("card-type");
         cardholderName = node.findString("cardholder-name");
         commercial = node.findString("commercial");
+        consumer = node.findString("consumer");
+        corporate = node.findString("corporate");
         countryOfIssuance = node.findString("country-of-issuance");
         debit = node.findString("debit");
         durbinRegulated = node.findString("durbin-regulated");
@@ -50,6 +61,7 @@ public class ApplePayDetails {
         prepaid = node.findString("prepaid");
         prepaidReloadable = node.findString("prepaid-reloadable");
         productId = node.findString("product-id");
+        purchase = node.findString("purchase");
         sourceCardLast4 = node.findString("source-card-last4");
         sourceDescription = node.findString("source-description");
         token = node.findString("token");
@@ -145,5 +157,21 @@ public class ApplePayDetails {
 
     public String getSourceCardLast4() {
         return sourceCardLast4;
+    }
+
+    public Business getBusiness() {
+        return findByToString(Business.values(), business, Business.UNKNOWN);
+    }
+
+    public Consumer getConsumer() {
+        return findByToString(Consumer.values(), consumer, Consumer.UNKNOWN);
+    }
+
+    public Corporate getCorporate() {
+        return findByToString(Corporate.values(), corporate, Corporate.UNKNOWN);
+    }
+
+    public Purchase getPurchase() {
+        return findByToString(Purchase.values(), purchase, Purchase.UNKNOWN);
     }
 }

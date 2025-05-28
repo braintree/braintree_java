@@ -2,6 +2,10 @@ package com.braintreegateway.integrationtest;
 
 import com.braintreegateway.*;
 import com.braintreegateway.enums.PrepaidReloadable;
+import com.braintreegateway.enums.Business;
+import com.braintreegateway.enums.Consumer;
+import com.braintreegateway.enums.Corporate;
+import com.braintreegateway.enums.Purchase;
 import com.braintreegateway.test.Nonce;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.CreditCardDefaults;
@@ -1103,6 +1107,78 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
     }
 
     @Test
+    public void verifyBusinessInVerification() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number(CreditCardNumbers.CardTypeIndicators.Business.getValue()).
+            expirationDate("05/29").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+        assertEquals(Business.YES, result.getTarget().getVerification().getCreditCard().getBusiness());
+    }
+
+    @Test
+    public void verifyConsumerInVerification() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number(CreditCardNumbers.CardTypeIndicators.Consumer.getValue()).
+            expirationDate("05/29").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+        assertEquals(Consumer.YES, result.getTarget().getVerification().getCreditCard().getConsumer());
+    }
+
+    @Test
+    public void verifyCorporateInVerification() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number(CreditCardNumbers.CardTypeIndicators.Corporate.getValue()).
+            expirationDate("05/29").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+        assertEquals(Corporate.YES, result.getTarget().getVerification().getCreditCard().getCorporate());
+    }
+
+    @Test
+    public void verifyPurchaseInVerification() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number(CreditCardNumbers.CardTypeIndicators.Purchase.getValue()).
+            expirationDate("05/29").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+        assertEquals(Purchase.YES, result.getTarget().getVerification().getCreditCard().getPurchase());
+    }
+
+    @Test
     public void verifyCreditCardWithErrorAccountTypeIsInvalid() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         CreditCardRequest request = new CreditCardRequest().
@@ -1179,6 +1255,24 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
     }
 
     @Test
+    public void businessCard() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number(CreditCardNumbers.CardTypeIndicators.Business.getValue()).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        CreditCard card = result.getTarget();
+
+        assertEquals(Business.YES, card.getBusiness());
+    }
+
+    @Test
     public void commercialCard() {
         BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
         Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
@@ -1194,6 +1288,42 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         CreditCard card = result.getTarget();
 
         assertEquals(CreditCard.Commercial.YES, card.getCommercial());
+    }
+
+    @Test
+    public void consumerCard() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number(CreditCardNumbers.CardTypeIndicators.Consumer.getValue()).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        CreditCard card = result.getTarget();
+
+        assertEquals(Consumer.YES, card.getConsumer());
+    }
+
+    @Test
+    public void corporateCard() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number(CreditCardNumbers.CardTypeIndicators.Corporate.getValue()).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        CreditCard card = result.getTarget();
+
+        assertEquals(Corporate.YES, card.getCorporate());
     }
 
     @Test
@@ -1307,6 +1437,24 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
     }
 
     @Test
+    public void purchaseCard() {
+        BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
+        Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number(CreditCardNumbers.CardTypeIndicators.Purchase.getValue()).
+            expirationDate("05/12").
+            options().
+                verifyCard(true).
+                done();
+
+        Result<CreditCard> result = processingRulesGateway.creditCard().create(request);
+        CreditCard card = result.getTarget();
+
+        assertEquals(Purchase.YES, card.getPurchase());
+    }
+
+    @Test
     public void issuingBank() {
         BraintreeGateway processingRulesGateway = new BraintreeGateway(Environment.DEVELOPMENT, "processing_rules_merchant_id", "processing_rules_public_key", "processing_rules_private_key");
         Customer customer = processingRulesGateway.customer().create(new CustomerRequest()).getTarget();
@@ -1364,6 +1512,10 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertEquals(CreditCard.Payroll.NO, card.getPayroll());
         assertEquals(CreditCard.Prepaid.NO, card.getPrepaid());
         assertEquals(PrepaidReloadable.NO, card.getPrepaidReloadable());
+        assertEquals(Business.NO, card.getBusiness());
+        assertEquals(Consumer.NO, card.getConsumer());
+        assertEquals(Corporate.NO, card.getCorporate());
+        assertEquals(Purchase.NO, card.getPurchase());
         assertEquals("MSB", card.getProductId());
     }
 
@@ -1390,6 +1542,10 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertEquals(CreditCard.Payroll.UNKNOWN, card.getPayroll());
         assertEquals(CreditCard.Prepaid.UNKNOWN, card.getPrepaid());
         assertEquals(PrepaidReloadable.UNKNOWN, card.getPrepaidReloadable());
+        assertEquals(Business.UNKNOWN, card.getBusiness());
+        assertEquals(Consumer.UNKNOWN, card.getConsumer());
+        assertEquals(Corporate.UNKNOWN, card.getCorporate());
+        assertEquals(Purchase.UNKNOWN, card.getPurchase());
         assertEquals("Unknown", card.getCountryOfIssuance());
         assertEquals("Unknown", card.getIssuingBank());
         assertEquals("Unknown", card.getProductId());
@@ -1512,5 +1668,74 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
         assertEquals(
                 ValidationErrorCode.CREDIT_CARD_OPTIONS_VERIFICATION_INVALID_PRESENTMENT_CURRENCY,
                 updateResult.getErrors().getAllDeepValidationErrors().get(0).getCode());
+    }
+
+    @Test
+    public void createIncludesAniInVerificationWhenAccountInformationInquiryIsPresent() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("4111111111111111").
+            expirationDate("05/12").
+            billingAddress().
+            firstName("John").
+            lastName("Doe").
+            done().
+            options().
+            verifyCard(true).
+            accountInformationInquiry("send_data").
+            done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+
+        CreditCard card = result.getTarget();
+        assertNotNull(card);
+
+        CreditCardVerification verification = card.getVerification();
+        assertNotNull(verification);
+        assertNotNull(verification.getAniFirstNameResponseCode());
+        assertNotNull(verification.getAniLastNameResponseCode());
+    }
+
+    @Test
+    public void updateIncludesAniInVerificationWhenAccountInformationInquiryIsPresent() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CreditCardRequest createRequest = new CreditCardRequest().
+            customerId(customer.getId()).
+            cardholderName("John Doe").
+            cvv("123").
+            number("4111111111111111").
+            expirationDate("05/32").
+            billingAddress().
+            firstName("John").
+            lastName("Doe").
+            done().
+            options().
+            done();
+
+        Result<CreditCard> createResult = gateway.creditCard().create(createRequest);
+        assertTrue(createResult.isSuccess());
+
+        CreditCard originalCard = createResult.getTarget();
+        assertNotNull(originalCard);
+
+        CreditCardRequest updateRequest = new CreditCardRequest().
+            options().
+            verifyCard(true).
+            accountInformationInquiry("send_data").
+            done();
+
+        Result<CreditCard> updateResult = gateway.creditCard().update(originalCard.getToken(), updateRequest);
+
+        CreditCard updatedCard = updateResult.getTarget();
+        assertNotNull(updatedCard);
+
+        CreditCardVerification verification = updatedCard.getVerification();
+        assertNotNull(verification);
+        assertNotNull(verification.getAniFirstNameResponseCode());
+        assertNotNull(verification.getAniLastNameResponseCode());
     }
 }

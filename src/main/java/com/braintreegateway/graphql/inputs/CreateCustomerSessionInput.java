@@ -1,19 +1,24 @@
 package com.braintreegateway.graphql.inputs;
 
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.braintreegateway.Request;
+import com.braintreegateway.graphql.inputs.PayPalPurchaseUnitInput; 
+import com.braintreegateway.util.Experimental;
 
 /**
  * Represents the input to request the creation of a PayPal customer session.
  */
+@Experimental("This class is experimental and may change in future releases.")
 public class CreateCustomerSessionInput extends Request {
   private final String merchantAccountId;
   private final String sessionId;
-  private final CustomerSessionInput customer;
   private final String domain;
-
+  private final CustomerSessionInput customer;
+  private final List<PayPalPurchaseUnitInput> purchaseUnits;
   /**
    * 
    * @return A map representing the input object, to pass as variables to a
@@ -24,10 +29,21 @@ public class CreateCustomerSessionInput extends Request {
     Map<String, Object> variables = new HashMap<>();
     variables.put("merchantAccountId", merchantAccountId);
     variables.put("sessionId", sessionId);
+
+    if (purchaseUnits != null && !purchaseUnits.isEmpty()) {
+      List<Map<String, Object>> formattedPurchaseUnits = new ArrayList<>();
+      for (PayPalPurchaseUnitInput purchaseUnit : purchaseUnits) {
+        formattedPurchaseUnits.add(purchaseUnit.toGraphQLVariables());
+      }
+      variables.put("purchaseUnits", formattedPurchaseUnits);
+    }
+
     if (customer != null) {
       variables.put("customer", customer.toGraphQLVariables());
     }
+
     variables.put("domain", domain);
+    
     return variables;
   }
 
@@ -36,6 +52,7 @@ public class CreateCustomerSessionInput extends Request {
     this.sessionId = builder.sessionId;
     this.customer = builder.customer;
     this.domain = builder.domain;
+    this.purchaseUnits = builder.purchaseUnits;
   }
 
   /**
@@ -55,8 +72,9 @@ public class CreateCustomerSessionInput extends Request {
   public static class Builder {
     private String merchantAccountId;
     private String sessionId;
-    private CustomerSessionInput customer;
+    private CustomerSessionInput customer; 
     private String domain;
+    private List<PayPalPurchaseUnitInput> purchaseUnits;
 
     /**
      * Sets the merchant account ID.
@@ -73,7 +91,7 @@ public class CreateCustomerSessionInput extends Request {
     /**
      * Sets the customer session ID.
      *
-     * @param sessionId The customer session ID.
+     * @param sessionId The customer session identifier. Will create a new session if not set.
      *
      * @return this
      */
@@ -85,7 +103,7 @@ public class CreateCustomerSessionInput extends Request {
     /**
      * Sets the input object representing customer information relevant to the customer session.
      *
-     * @param  customer The input object representing the customer information relevant to the customer session.
+     * @param customer Customer identifying information.
      *
      * @return this
      */
@@ -97,12 +115,24 @@ public class CreateCustomerSessionInput extends Request {
     /**
      * Sets the customer domain.
      *
-     * @param domain The customer domain.
+     * @param domain The domain name of the users browser.
      *
      * @return this
      */
     public Builder domain(String domain) {
       this.domain = domain;
+      return this;
+    }
+
+    /**
+     * Sets the purchase units
+     *
+     * @param purchaseUnits Amount of the items purchased.
+     *
+     * @return this
+     */
+    public Builder purchaseUnits(List<PayPalPurchaseUnitInput> purchaseUnits) {
+      this.purchaseUnits = purchaseUnits;
       return this;
     }
 

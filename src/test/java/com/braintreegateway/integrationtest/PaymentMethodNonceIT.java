@@ -8,6 +8,10 @@ import com.braintreegateway.CreditCard.Healthcare;
 import com.braintreegateway.CreditCard.Payroll;
 import com.braintreegateway.CreditCard.Prepaid;
 import com.braintreegateway.enums.PrepaidReloadable;
+import com.braintreegateway.enums.Business;
+import com.braintreegateway.enums.Consumer;
+import com.braintreegateway.enums.Corporate;
+import com.braintreegateway.enums.Purchase;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 import com.braintreegateway.exceptions.NotFoundException;
@@ -291,12 +295,39 @@ public class PaymentMethodNonceIT extends IntegrationTest {
     }
 
     @Test
+    public void findCreditCardNonceReturnsValidBinDataBusinessValue() {
+        String nonceString = "fake-valid-business-nonce";
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
+        assertNotNull(nonce);
+        assertEquals(nonceString, nonce.getNonce());
+        assertEquals(Business.YES, nonce.getBinData().getBusiness());
+    }
+
+    @Test
     public void findCreditCardNonceReturnsValidBinDataCommercialValue() {
         String nonceString = "fake-valid-commercial-nonce";
         PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
         assertNotNull(nonce);
         assertEquals(nonceString, nonce.getNonce());
         assertEquals(Commercial.YES, nonce.getBinData().getCommercial());
+    }
+
+    @Test
+    public void findCreditCardNonceReturnsValidBinDataConsumerValue() {
+        String nonceString = "fake-valid-consumer-nonce";
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
+        assertNotNull(nonce);
+        assertEquals(nonceString, nonce.getNonce());
+        assertEquals(Consumer.YES, nonce.getBinData().getConsumer());
+    }
+
+    @Test
+    public void findCreditCardNonceReturnsValidBinDataCorporateValue() {
+        String nonceString = "fake-valid-corporate-nonce";
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
+        assertNotNull(nonce);
+        assertEquals(nonceString, nonce.getNonce());
+        assertEquals(Corporate.YES, nonce.getBinData().getCorporate());
     }
 
     @Test
@@ -335,6 +366,15 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertEquals(nonceString, nonce.getNonce());
         assertEquals(Payroll.YES, nonce.getBinData().getPayroll());
         assertEquals("MSA", nonce.getBinData().getProductId());
+    }
+
+    @Test
+    public void findCreditCardNonceReturnsValidBinDataPurchaseValue() {
+        String nonceString = "fake-valid-purchase-nonce";
+        PaymentMethodNonce nonce = gateway.paymentMethodNonce().find(nonceString);
+        assertNotNull(nonce);
+        assertEquals(nonceString, nonce.getNonce());
+        assertEquals(Purchase.YES, nonce.getBinData().getPurchase());
     }
 
     @Test

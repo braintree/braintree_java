@@ -24,9 +24,12 @@ public class VisaCheckoutCardIT extends IntegrationTest {
         assertEquals("abc123", visaCheckoutCard.getCallId());
         assertNotNull(visaCheckoutCard.getBillingAddress());
         assertNotNull(visaCheckoutCard.getBin());
+        assertNotNull(visaCheckoutCard.getBusiness());
         assertNotNull(visaCheckoutCard.getCardType());
         assertNotNull(visaCheckoutCard.getCardholderName());
         assertNotNull(visaCheckoutCard.getCommercial());
+        assertNotNull(visaCheckoutCard.getConsumer());
+        assertNotNull(visaCheckoutCard.getCorporate());
         assertNotNull(visaCheckoutCard.getCountryOfIssuance());
         assertNotNull(visaCheckoutCard.getCreatedAt());
         assertNotNull(visaCheckoutCard.getCustomerId());
@@ -47,6 +50,7 @@ public class VisaCheckoutCardIT extends IntegrationTest {
         assertNotNull(visaCheckoutCard.getPrepaid());
         assertNotNull(visaCheckoutCard.getPrepaidReloadable());
         assertNotNull(visaCheckoutCard.getProductId());
+        assertNotNull(visaCheckoutCard.getPurchase());
         assertNotNull(visaCheckoutCard.getSubscriptions());
         assertNotNull(visaCheckoutCard.getToken());
         assertNotNull(visaCheckoutCard.getUniqueNumberIdentifier());
@@ -135,9 +139,12 @@ public class VisaCheckoutCardIT extends IntegrationTest {
 
         assertEquals("abc123", visaCheckoutCardDetails.getCallId());
         assertNotNull(visaCheckoutCardDetails.getBin());
+        assertNotNull(visaCheckoutCardDetails.getBusiness());
         assertNotNull(visaCheckoutCardDetails.getCardType());
         assertNotNull(visaCheckoutCardDetails.getCardholderName());
         assertNotNull(visaCheckoutCardDetails.getCommercial());
+        assertNotNull(visaCheckoutCardDetails.getConsumer());
+        assertNotNull(visaCheckoutCardDetails.getCorporate());
         assertNotNull(visaCheckoutCardDetails.getCountryOfIssuance());
         assertNotNull(visaCheckoutCardDetails.getDebit());
         assertNotNull(visaCheckoutCardDetails.getDurbinRegulated());
@@ -153,6 +160,7 @@ public class VisaCheckoutCardIT extends IntegrationTest {
         assertNotNull(visaCheckoutCardDetails.getPrepaid());
         assertNotNull(visaCheckoutCardDetails.getPrepaidReloadable());
         assertNotNull(visaCheckoutCardDetails.getProductId());
+        assertNotNull(visaCheckoutCardDetails.getPurchase());
         assertNotNull(visaCheckoutCardDetails.getToken());
     }
 }

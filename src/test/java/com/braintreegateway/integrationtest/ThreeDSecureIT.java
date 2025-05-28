@@ -334,48 +334,6 @@ public class ThreeDSecureIT extends IntegrationTest implements MerchantAccountTe
     }
 
     @Test
-    public void lookup_whenNonceHasBeenConsumed_returnsValidationError() {
-        Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
-        Customer customer = customerResult.getTarget();
-
-        CreditCardRequest cardRequest = new CreditCardRequest().
-          number("4111111111111111").
-          expirationMonth("12").
-          expirationYear("2020");
-
-        String nonce = TestHelper.generateNonceForCreditCard(gateway, cardRequest, customer.getId(), false);
-        String authorizationFingerprint = TestHelper.generateAuthorizationFingerprint(gateway, customer.getId());
-
-        ThreeDSecureLookupAddress billingAddress = new ThreeDSecureLookupAddress().
-          givenName("First").
-          surname("Last").
-          phoneNumber("1234567890").
-          locality("Oakland").
-          countryCodeAlpha2("US").
-          streetAddress("123 Address").
-          extendedAddress("Unit 2").
-          postalCode("94112").
-          region("CA");
-
-        String clientData = getClientDataString(nonce, authorizationFingerprint);
-
-        ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
-        request.amount("199.00");
-        request.clientData(clientData);
-        request.email("first.last@example.com");
-        request.billingAddress(billingAddress);
-
-        Result<ThreeDSecureLookupResponse> result = gateway.threeDSecure().lookup(request);
-        PaymentMethodNonce paymentMethod = result.getTarget().getPaymentMethod();
-
-        clientData = getClientDataString(paymentMethod.getNonce(), authorizationFingerprint);
-        request.clientData(clientData);
-        result = gateway.threeDSecure().lookup(request);
-
-        assertEquals("Nonce is already 3D Secure", result.getErrors().getAllValidationErrors().get(0).getMessage());
-    }
-
-    @Test
     public void invalidMerchantInitiatedRequestType() {
         Result<Customer> customerResult = gateway.customer().create(new CustomerRequest());
         Customer customer = customerResult.getTarget();

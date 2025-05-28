@@ -7,12 +7,12 @@ import com.braintreegateway.util.Experimental;
  * Represents the payment method and priority associated with a PayPal customer session.
  */
 @Experimental("This class is experimental and may change in future releases.")
-public class PaymentOptions {
+public class PaymentRecommendation {
 
   private final RecommendedPaymentOption paymentOption;
   private final Integer recommendedPriority;
 
-  public PaymentOptions(RecommendedPaymentOption paymentOption, Integer recommendedPriority) {
+  public PaymentRecommendation(RecommendedPaymentOption paymentOption, Integer recommendedPriority) {
     this.paymentOption = paymentOption;
     this.recommendedPriority = recommendedPriority;
   }

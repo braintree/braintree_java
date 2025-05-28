@@ -4,12 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.braintreegateway.Request;
+import com.braintreegateway.util.Experimental;
 
 /**
  * Customer identifying information for a PayPal customer session.
  */
+@Experimental("This class is experimental and may change in future releases.")
 public class CustomerSessionInput extends Request {
   private final String email;
+  private final String hashedEmail; 
+  private final String hashedPhoneNumber; 
   private final PhoneInput phone;
   private final String deviceFingerprintId;
   private final Boolean paypalAppInstalled;
@@ -21,13 +25,18 @@ public class CustomerSessionInput extends Request {
    * 
    * @return A map representing the input object, to pass as variables to a
    *         GraphQL mutation
-   */
-
+   */  
   public Map<String, Object> toGraphQLVariables() {
     Map<String, Object> variables = new HashMap<>();
     if (email != null) {
       variables.put("email", email);
-    }
+    } 
+    if (hashedEmail != null) {
+      variables.put("hashedEmail", hashedEmail);
+    } 
+    if (hashedPhoneNumber != null) {
+      variables.put("hashedPhoneNumber", hashedPhoneNumber);
+    } 
     if (phone != null) {
       variables.put("phone", phone.toGraphQLVariables());
     }
@@ -44,6 +53,8 @@ public class CustomerSessionInput extends Request {
 
   private CustomerSessionInput(Builder builder) {
     this.email = builder.email;
+    this.hashedEmail = builder.hashedEmail; 
+    this.hashedPhoneNumber = builder.hashedPhoneNumber; 
     this.phone = builder.phone;
     this.deviceFingerprintId = builder.deviceFingerprintId;
     this.paypalAppInstalled = builder.paypalAppInstalled;
@@ -67,6 +78,8 @@ public class CustomerSessionInput extends Request {
    */
   public static class Builder {
     private String email;
+    private String hashedEmail; 
+    private String hashedPhoneNumber;
     private PhoneInput phone;
     private String deviceFingerprintId;
     private Boolean paypalAppInstalled;
@@ -82,6 +95,30 @@ public class CustomerSessionInput extends Request {
      */
     public Builder email(String email) {
       this.email = email;
+      return this;
+    }
+    
+    /**
+     * Sets the hashed customer email address.
+     *
+     * @param hashedEmail Customer email address hashed via SHA256.
+     *
+     * @return this
+     */
+    public Builder hashedEmail(String hashedEmail) {
+      this.hashedEmail = hashedEmail;
+      return this;
+    }
+
+    /**
+     * Sets the hashed customer phone number.
+     *
+     * @param hashedPhone Customer phone number hashed via SHA256.
+     *
+     * @return this
+     */
+    public Builder hashedPhoneNumber(String hashedPhoneNumber) {
+      this.hashedPhoneNumber = hashedPhoneNumber;
       return this;
     }
 

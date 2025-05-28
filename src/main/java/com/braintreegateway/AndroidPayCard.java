@@ -6,15 +6,22 @@ import java.util.List;
 
 import static com.braintreegateway.util.EnumUtils.findByToString;
 
+import com.braintreegateway.enums.Business;
+import com.braintreegateway.enums.Consumer;
+import com.braintreegateway.enums.Corporate;
 import com.braintreegateway.enums.PrepaidReloadable;
+import com.braintreegateway.enums.Purchase;
 import com.braintreegateway.util.NodeWrapper;
 
 // NEXT_MAJOR_VERSION - rename this to GooglePayCard
 public class AndroidPayCard implements PaymentMethod {
     private Address billingAddress;
     private String bin;
+    private String business;
     private String cardType;
     private String commercial;
+    private String consumer;
+    private String corporate;
     private String countryOfIssuance;
     private Calendar createdAt;
     private String customerId;
@@ -33,6 +40,7 @@ public class AndroidPayCard implements PaymentMethod {
     private String prepaid;
     private String prepaidReloadable;
     private String productId;
+    private String purchase;
     private String sourceCardLast4;
     private String sourceCardType;
     private String sourceDescription;
@@ -44,7 +52,10 @@ public class AndroidPayCard implements PaymentMethod {
 
     public AndroidPayCard(NodeWrapper node) {
         this.bin = node.findString("bin");
+        this.business = node.findString("business");
         this.commercial = node.findString("commercial");
+        this.consumer = node.findString("consumer");
+        this.corporate = node.findString("corporate");
         this.countryOfIssuance = node.findString("country-of-issuance");
         this.createdAt = node.findDateTime("created-at");
         this.customerId = node.findString("customer-id");
@@ -62,6 +73,7 @@ public class AndroidPayCard implements PaymentMethod {
         this.prepaid = node.findString("prepaid");
         this.prepaidReloadable = node.findString("prepaid-reloadable");
         this.productId = node.findString("product-id");
+        this.purchase = node.findString("purchase");
         this.sourceCardType = node.findString("source-card-type");
         this.sourceDescription = node.findString("source-description"); 
         this.sourceCardLast4 = node.findString("source-card-last-4");
@@ -91,12 +103,24 @@ public class AndroidPayCard implements PaymentMethod {
         return bin;
     }
 
+    public Business getBusiness() {
+        return findByToString(Business.values(), business, Business.UNKNOWN);
+    }
+
     public String getCardType() {
         return cardType;
     }
 
     public String getCommercial() {
         return commercial;
+    }
+
+    public Consumer getConsumer() {
+        return findByToString(Consumer.values(), consumer, Consumer.UNKNOWN);
+    }
+
+    public Corporate getCorporate() {
+        return findByToString(Corporate.values(), corporate, Corporate.UNKNOWN);
     }
 
     public String getCountryOfIssuance() {
@@ -161,6 +185,10 @@ public class AndroidPayCard implements PaymentMethod {
 
     public String getProductId() {
         return productId;
+    }
+
+    public Purchase getPurchase() {
+        return findByToString(Purchase.values(), purchase, Purchase.UNKNOWN);
     }
 
     public String getSourceCardLast4() {

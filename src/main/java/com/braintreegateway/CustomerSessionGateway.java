@@ -6,15 +6,19 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.braintreegateway.exceptions.UnexpectedException;
+import com.braintreegateway.exceptions.ServerException;
 import com.braintreegateway.graphql.enums.RecommendedPaymentOption;
 import com.braintreegateway.graphql.inputs.CreateCustomerSessionInput;
 import com.braintreegateway.graphql.inputs.CustomerRecommendationsInput;
 import com.braintreegateway.graphql.inputs.UpdateCustomerSessionInput;
 import com.braintreegateway.graphql.types.CustomerRecommendationsPayload;
 import com.braintreegateway.graphql.types.PaymentOptions;
+import com.braintreegateway.graphql.types.PaymentRecommendation;
 import com.braintreegateway.graphql.unions.CustomerRecommendations;
 import com.braintreegateway.util.GraphQLClient;
-
+import com.braintreegateway.exceptions.AuthenticationException;
+import com.braintreegateway.exceptions.AuthorizationException;
+import com.braintreegateway.exceptions.NotFoundException;
 /**
  * Creates and manages PayPal customer sessions.
  *
@@ -32,20 +36,17 @@ public class CustomerSessionGateway {
       + "    sessionId"
       + "  }"
       + "}";
-
-  private static final String GET_CUSTOMER_RECOMMENDATIONS = "query CustomerRecommendations($input: CustomerRecommendationsInput!) {\n"
-      + "            customerRecommendations(input: $input) {\n"
-      + "              isInPayPalNetwork\n"
-      + "              recommendations {\n"
-      + "                ... on PaymentRecommendations {\n"
-      + "                  paymentOptions {\n"
-      + "                    paymentOption\n"
-      + "                    recommendedPriority\n"
-      + "                  }\n"
-      + "                }\n"
-      + "              }\n"
-      + "            }\n"
-      + "          }";
+  
+  private static final String GET_CUSTOMER_RECOMMENDATIONS = "mutation GenerateCustomerRecommendations($input: GenerateCustomerRecommendationsInput!) {\n"
+      + "generateCustomerRecommendations(input: $input) {\n "
+      + "    sessionId \n"
+      + "    paymentRecommendations{\n"
+      + "        paymentOption\n"
+      + "        recommendedPriority\n" 
+      + "    }\n"
+      + "    isInPayPalNetwork\n" 
+      + "  }\n"
+      + "}";
 
   private final GraphQLClient graphQLClient;
 
@@ -83,7 +84,7 @@ public class CustomerSessionGateway {
    * 
    * @return a {@link Result} object with session ID if successful, or errors otherwise.
    * 
-   * @throws UnexpectedException If there is an unexpected error during the process.
+   * @throws ServerException If there is an unexpected error during the process.
    */
   public Result<String> createCustomerSession(CreateCustomerSessionInput input) {
     return executeMutation(CREATE_CUSTOMER_SESSION, input, "data.createCustomerSession.sessionId");
@@ -111,7 +112,7 @@ public class CustomerSessionGateway {
    * 
    * @return a {@link Result} object with session ID if successful, or errors otherwise.
    * 
-   * @throws UnexpectedException If there is an unexpected error during the process.
+   * @throws ServerException If there is an unexpected error during the process.
    */
   public Result<String> updateCustomerSession(UpdateCustomerSessionInput input) {
     return executeMutation(UPDATE_CUSTOMER_SESSION, input, "data.updateCustomerSession.sessionId");
@@ -122,21 +123,18 @@ public class CustomerSessionGateway {
    *
    * Example:
    * <pre>
-   * List<Recommendations> requestedRecommendations = Arrays.asList(Recommendations.PAYMENT_RECOMMENDATIONS);
    * 
    * CustomerRecommendationsInput input = CustomerRecommendationsInput
-   *   .builder(
-   *     sessionId,
-   *     requestedRecommendations
-   *   )
+   *   .builder()
+   * . .sessionId(sessionId)
    *   .build()
    * 
    * Result<String> result = gateway.customer_session().getCustomerRecommendations(input);
    * 
    * if (result.isSuccess()) {
    *   CustomerRecommendationssPayload payload = result.getTarget();
-   *   List<PaymentOptions> paymentOptionss =
-   *     payload.getRecommendations().getPaymentOptions();
+   *   List<PaymentRecommendations> paymentRecommendations =
+   *     payload.getRecommendations().getPaymentRecommendations();
    * }
    * </pre>
    * 
@@ -145,12 +143,12 @@ public class CustomerSessionGateway {
    * @return a {@link Result} object containing customer recommendations 
    *         if successful, or errors otherwise.
    * 
-   * @throws UnexpectedException If there is an unexpected error during the process.
+   * @throws ServerException If there is an unexpected error during the process.
    */
   public Result<CustomerRecommendationsPayload> getCustomerRecommendations(
-      CustomerRecommendationsInput CustomerRecommendationsInput) {
+      CustomerRecommendationsInput customerRecommendationsInput) {
     Map<String, Object> variables = new HashMap<>();
-    variables.put("input", CustomerRecommendationsInput.toGraphQLVariables());
+    variables.put("input", customerRecommendationsInput.toGraphQLVariables());
 
     try {
       Map<String, Object> response = graphQLClient.query(GET_CUSTOMER_RECOMMENDATIONS, variables);
@@ -158,11 +156,18 @@ public class CustomerSessionGateway {
       if (errors != null) {
         return new Result<>(errors);
       }
+      Object dataObj = response.get("data");
+      if (!(dataObj instanceof Map)) {
+        throw new ServerException("Response data is not a map");
+      }
       return new Result<>(
-        extractCustomerRecommendationsPayload(response)
+        new CustomerRecommendationsPayload((Map<String, Object>) dataObj)
       );
+      }catch (AuthorizationException | AuthenticationException | NotFoundException e) {
+        throw e;
     } catch (Throwable e) {
-      throw new UnexpectedException(e.getMessage(), e);
+      // throw new UnexpectedException("Unexpected error: ");
+      throw new ServerException(e.getMessage());
     }
   }
 
@@ -179,31 +184,8 @@ public class CustomerSessionGateway {
       String sessionId = getValue(response, sessionIdKey);
       return new Result<>(sessionId);
     } catch (Throwable e) {
-      throw new UnexpectedException(e.getMessage(), e);
+      throw new ServerException(e.getMessage());
     }
-  }
-
-  private static CustomerRecommendationsPayload extractCustomerRecommendationsPayload(Map<String, Object> response) {
-    boolean isInPayPalNetwork = getValue(response, "data.customerRecommendations.isInPayPalNetwork");
-    CustomerRecommendations recommendations =  extractRecommendations(response);
-    return new CustomerRecommendationsPayload(isInPayPalNetwork, recommendations);
-  }
-  
-  private static CustomerRecommendations extractRecommendations(Map<String, Object> response) {
-    List<Map<String, Object>> paymentOptionsObjs = getValue(response, "data.customerRecommendations.recommendations.paymentOptions");
-
-    List<PaymentOptions> paymentOptionsList = paymentOptionsObjs.stream()
-    .map(
-        paymentOptionsObj -> {
-          Integer recommendedPriority = getValue(paymentOptionsObj, "recommendedPriority");
-          String paymentOptionString = getValue(paymentOptionsObj, "paymentOption");
-          RecommendedPaymentOption paymentOption = RecommendedPaymentOption
-              .valueOf(paymentOptionString);
-          return new PaymentOptions(paymentOption, recommendedPriority);
-        })
-    .collect(Collectors.toList());
-
-    return new CustomerRecommendations(paymentOptionsList);
   }
 
   private static <T> T getValue(Map<String, Object> response, String key) {
@@ -219,7 +201,7 @@ public class CustomerSessionGateway {
 
   private static <T> T popValue(Map<String, Object> response, String key) {
     if (!response.containsKey(key)) {
-      throw new UnexpectedException("Couldn't parse response");
+      throw new ServerException("Couldn't parse response");
     }
     return (T) response.get(key);
   }

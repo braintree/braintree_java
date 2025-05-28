@@ -2064,4 +2064,62 @@ public class CustomerIT extends IntegrationTest {
         assertTrue(resourceCollection.getMaximumSize() > 0);
         assertNotNull(resourceCollection.getFirst());
     }
+
+    @Test
+    public void createIncludesAniInVerificationWhenAccountInformationInquiryIsPresent() {
+        CustomerRequest request = new CustomerRequest().
+            creditCard().
+            cardholderName("John Doe").
+            cvv("123").
+            number("4111111111111111").
+            expirationDate("05/32").
+            billingAddress().
+            firstName("John").
+            lastName("Doe").
+            done().
+            options().
+            verifyCard(true).
+            accountInformationInquiry("send_data").
+            done().
+            done();
+
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        assertNotNull(customer);
+
+        CreditCardVerification verification = customer.getCreditCards().get(0).getVerification();
+        assertNotNull(verification);
+        assertNotNull(verification.getAniFirstNameResponseCode());
+        assertNotNull(verification.getAniLastNameResponseCode());
+    }
+
+    @Test
+    public void updateIncludesAniInVerificationWhenAccountInformationInquiryIsPresent() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+        CustomerRequest updateRequest = new CustomerRequest().
+            creditCard().
+            cardholderName("John Doe").
+            cvv("123").
+            number("4111111111111111").
+            expirationDate("05/32").
+            options().
+            verifyCard(true).
+            accountInformationInquiry("send_data").
+            done().
+            done();
+
+        Result<Customer> result = gateway.customer().update(customer.getId(), updateRequest);
+        assertTrue(result.isSuccess());
+
+        Customer updatedCustomer = result.getTarget();
+        assertNotNull(updatedCustomer);
+
+        CreditCardVerification verification = updatedCustomer.getCreditCards().get(0).getVerification();
+        assertNotNull(verification);
+        assertNotNull(verification.getAniFirstNameResponseCode());
+        assertNotNull(verification.getAniLastNameResponseCode());
+    }
 }

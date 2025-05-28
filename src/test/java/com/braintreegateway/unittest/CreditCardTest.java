@@ -1,7 +1,11 @@
 package com.braintreegateway.unittest;
 
 import com.braintreegateway.CreditCard;
+import com.braintreegateway.enums.Business;
+import com.braintreegateway.enums.Consumer;
+import com.braintreegateway.enums.Corporate;
 import com.braintreegateway.enums.PrepaidReloadable;
+import com.braintreegateway.enums.Purchase;
 import com.braintreegateway.util.SimpleNodeWrapper;
 
 import org.junit.jupiter.api.Test;
@@ -59,12 +63,16 @@ public class CreditCardTest {
     }
 
     @Test
-    public void testPrepaidReloadableFromBinResponse() {
+    public void testBinFieldsFromBinResponse() {
         String xml = "<credit-card>"
                    + "</credit-card>";
 
         SimpleNodeWrapper creditCardNode = SimpleNodeWrapper.parse(xml);
         CreditCard card = new CreditCard(creditCardNode);
         assertEquals(PrepaidReloadable.UNKNOWN, card.getPrepaidReloadable());
+        assertEquals(Business.UNKNOWN, card.getBusiness());
+        assertEquals(Consumer.UNKNOWN, card.getConsumer());
+        assertEquals(Corporate.UNKNOWN, card.getCorporate());
+        assertEquals(Purchase.UNKNOWN, card.getPurchase());
     }
 }

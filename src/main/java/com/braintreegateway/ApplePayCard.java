@@ -4,16 +4,23 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.braintreegateway.enums.Business;
+import com.braintreegateway.enums.Consumer;
+import com.braintreegateway.enums.Corporate;
 import com.braintreegateway.enums.PrepaidReloadable;
+import com.braintreegateway.enums.Purchase;
 import static com.braintreegateway.util.EnumUtils.findByToString;
 import com.braintreegateway.util.NodeWrapper;
 
 public class ApplePayCard implements PaymentMethod {
     private Address billingAddress;
     private String bin;
+    private String business;
     private String cardholderName;
     private String cardType;
     private String commercial;
+    private String consumer;
+    private String corporate;
     private String countryOfIssuance;
     private Calendar createdAt;
     private String customerId;
@@ -33,6 +40,7 @@ public class ApplePayCard implements PaymentMethod {
     private String prepaid;
     private String prepaidReloadable;
     private String productId;
+    private String purchase;
     private String sourceCardLast4;
     private String sourceDescription;
     private List<Subscription> subscriptions;
@@ -41,9 +49,12 @@ public class ApplePayCard implements PaymentMethod {
 
     public ApplePayCard(NodeWrapper node) {
         this.bin = node.findString("bin");
+        this.business = node.findString("business");
         this.cardholderName = node.findString("cardholder-name");
         this.cardType = node.findString("card-type");
         this.commercial = node.findString("commercial");
+        this.consumer = node.findString("consumer");
+        this.corporate = node.findString("corporate");
         this.countryOfIssuance = node.findString("country-of-issuance");
         this.createdAt = node.findDateTime("created-at");
         this.customerId = node.findString("customer-id");
@@ -63,6 +74,7 @@ public class ApplePayCard implements PaymentMethod {
         this.prepaid = node.findString("prepaid");
         this.prepaidReloadable = node.findString("prepaid-reloadable");
         this.productId = node.findString("product-id");
+        this.purchase = node.findString("purchase");
         this.sourceCardLast4 = node.findString("source-card-last4");
         this.sourceDescription = node.findString("source-description");
         this.subscriptions = new ArrayList<Subscription>();
@@ -87,6 +99,10 @@ public class ApplePayCard implements PaymentMethod {
         return bin;
     }
 
+    public Business getBusiness() {
+        return findByToString(Business.values(), business, Business.UNKNOWN);
+    }
+
     public String getCardholderName() {
         return cardholderName;
     }
@@ -97,6 +113,14 @@ public class ApplePayCard implements PaymentMethod {
 
     public String getCommercial() {
         return commercial;
+    }
+
+    public Consumer getConsumer() {
+        return findByToString(Consumer.values(), consumer, Consumer.UNKNOWN);
+    }
+
+    public Corporate getCorporate() {
+        return findByToString(Corporate.values(), corporate, Corporate.UNKNOWN);
     }
 
     public String getCountryOfIssuance() {
@@ -169,6 +193,10 @@ public class ApplePayCard implements PaymentMethod {
 
     public String getProductId() {
         return productId;
+    }
+
+    public Purchase getPurchase() {
+        return findByToString(Purchase.values(), purchase, Purchase.UNKNOWN);
     }
 
     public String getSourceCardLast4() {

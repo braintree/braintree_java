@@ -103,4 +103,16 @@ public class CustomerRequestTest {
       CustomerRequest request = new CustomerRequest().internationalPhone().countryCode("1").nationalNumber("3121234567").done();
       TestHelper.assertIncludes("<internationalPhone><countryCode>1</countryCode><nationalNumber>3121234567</nationalNumber></internationalPhone>", request.toXML());
   }
+
+  @Test
+  public void toXmlIncludesAccountInformationInquiryInOptions() {
+      CustomerRequest request = new CustomerRequest().
+          creditCard().
+          options().
+          accountInformationInquiry("send_data").
+          done().
+          done();
+
+      TestHelper.assertIncludes("send_data", request.toXML());
+  }
 }

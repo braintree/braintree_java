@@ -972,9 +972,12 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(PaymentInstrumentType.APPLE_PAY_CARD, transaction.getPaymentInstrumentType());
         assertNotNull(transaction.getApplePayDetails());
         assertNotNull(transaction.getApplePayDetails().getBin());
+        assertNotNull(transaction.getApplePayDetails().getBusiness());
         assertNotNull(transaction.getApplePayDetails().getCardType());
         assertNotNull(transaction.getApplePayDetails().getCardholderName());
         assertNotNull(transaction.getApplePayDetails().getCommercial());
+        assertNotNull(transaction.getApplePayDetails().getConsumer());
+        assertNotNull(transaction.getApplePayDetails().getCorporate());
         assertNotNull(transaction.getApplePayDetails().getDebit());
         assertNotNull(transaction.getApplePayDetails().getDurbinRegulated());
         assertNotNull(transaction.getApplePayDetails().getExpirationMonth());
@@ -987,6 +990,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(transaction.getApplePayDetails().getPrepaid());
         assertNotNull(transaction.getApplePayDetails().getPrepaidReloadable());
         assertNotNull(transaction.getApplePayDetails().getProductId());
+        assertNotNull(transaction.getApplePayDetails().getPurchase());
         assertNotNull(transaction.getApplePayDetails().getSourceDescription());
     }
 
@@ -1064,8 +1068,11 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertFalse(androidPayDetails.isNetworkTokenized());
         assertNotNull(androidPayDetails.getBin());
+        assertNotNull(androidPayDetails.getBusiness());
         assertNotNull(androidPayDetails.getCardType());
         assertNotNull(androidPayDetails.getCommercial());
+        assertNotNull(androidPayDetails.getConsumer());
+        assertNotNull(androidPayDetails.getCorporate());
         assertNotNull(androidPayDetails.getDebit());
         assertNotNull(androidPayDetails.getDurbinRegulated());
         assertNotNull(androidPayDetails.getExpirationMonth());
@@ -1077,6 +1084,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(androidPayDetails.getPayroll());
         assertNotNull(androidPayDetails.getPrepaid());
         assertNotNull(androidPayDetails.getPrepaidReloadable());
+        assertNotNull(androidPayDetails.getPurchase());
         assertNotNull(androidPayDetails.getProductId());
         assertNotNull(androidPayDetails.getSourceCardLast4());
         assertNotNull(androidPayDetails.getSourceCardType());
@@ -1134,9 +1142,12 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(PaymentInstrumentType.META_CHECKOUT_CARD, transaction.getPaymentInstrumentType());
         assertNotNull(transaction.getMetaCheckoutCardDetails());
         assertNotNull(transaction.getMetaCheckoutCardDetails().getBin());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getBusiness());
         assertNotNull(transaction.getMetaCheckoutCardDetails().getCardType());
         assertNotNull(transaction.getMetaCheckoutCardDetails().getCardholderName());
         assertNotNull(transaction.getMetaCheckoutCardDetails().getCommercial());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getConsumer());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getCorporate());
         assertNotNull(transaction.getMetaCheckoutCardDetails().getDebit());
         assertNotNull(transaction.getMetaCheckoutCardDetails().getDurbinRegulated());
         assertNotNull(transaction.getMetaCheckoutCardDetails().getExpirationMonth());
@@ -1148,6 +1159,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(transaction.getMetaCheckoutCardDetails().getPrepaid());
         assertNotNull(transaction.getMetaCheckoutCardDetails().getPrepaidReloadable());
         assertNotNull(transaction.getMetaCheckoutCardDetails().getProductId());
+        assertNotNull(transaction.getMetaCheckoutCardDetails().getPurchase());
     }
 
     @Test
@@ -1165,9 +1177,12 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(PaymentInstrumentType.META_CHECKOUT_TOKEN, transaction.getPaymentInstrumentType());
         assertNotNull(transaction.getMetaCheckoutTokenDetails());
         assertNotNull(transaction.getMetaCheckoutTokenDetails().getBin());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getBusiness());
         assertNotNull(transaction.getMetaCheckoutTokenDetails().getCardType());
         assertNotNull(transaction.getMetaCheckoutTokenDetails().getCardholderName());
         assertNotNull(transaction.getMetaCheckoutTokenDetails().getCommercial());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getConsumer());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getCorporate());
         assertNotNull(transaction.getMetaCheckoutTokenDetails().getCryptogram());
         assertNotNull(transaction.getMetaCheckoutTokenDetails().getDebit());
         assertNotNull(transaction.getMetaCheckoutTokenDetails().getDurbinRegulated());
@@ -1181,6 +1196,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertNotNull(transaction.getMetaCheckoutTokenDetails().getPrepaid());
         assertNotNull(transaction.getMetaCheckoutTokenDetails().getPrepaidReloadable());
         assertNotNull(transaction.getMetaCheckoutTokenDetails().getProductId());
+        assertNotNull(transaction.getMetaCheckoutTokenDetails().getPurchase());
     }
 
     @Test

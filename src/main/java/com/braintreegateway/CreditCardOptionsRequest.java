@@ -3,6 +3,7 @@ package com.braintreegateway;
 // NEXT_MAJOR_VERSION remove venmoSdkSession
 // The old venmo SDK integration has been deprecated
 public class CreditCardOptionsRequest extends Request {
+    private String accountInformationInquiry;
     private Boolean failOnDuplicatePaymentMethod;
     private Boolean failOnDuplicatePaymentMethodForCustomer;
     private Boolean makeDefault;
@@ -22,6 +23,11 @@ public class CreditCardOptionsRequest extends Request {
 
     public CreditCardRequest done() {
         return parent;
+    }
+
+    public CreditCardOptionsRequest accountInformationInquiry(String accountInformationInquiry) {
+        this.accountInformationInquiry = accountInformationInquiry;
+        return this;
     }
 
     public CreditCardOptionsRequest failOnDuplicatePaymentMethod(Boolean failOnDuplicatePaymentMethod) {
@@ -104,6 +110,7 @@ public class CreditCardOptionsRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root);
 
+        builder.addElement("accountInformationInquiry", accountInformationInquiry);
         builder.addElement("failOnDuplicatePaymentMethod", failOnDuplicatePaymentMethod);
         builder.addElement("failOnDuplicatePaymentMethodForCustomer", failOnDuplicatePaymentMethodForCustomer);
         builder.addElement("skipAdvancedFraudChecking", skipAdvancedFraudChecking);

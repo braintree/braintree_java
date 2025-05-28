@@ -4,6 +4,10 @@ import com.braintreegateway.BinData;
 import com.braintreegateway.CreditCard;
 import com.braintreegateway.PaymentMethodNonce;
 import com.braintreegateway.enums.PrepaidReloadable;
+import com.braintreegateway.enums.Business;
+import com.braintreegateway.enums.Consumer;
+import com.braintreegateway.enums.Corporate;
+import com.braintreegateway.enums.Purchase;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 
@@ -30,7 +34,10 @@ public class PaymentMethodNonceTest {
                 "    <expiration-year>2028</expiration-year>" +
                 "  </details>" +
                 "  <bin-data>" +
+                "    <business>Yes</business>" +
                 "    <commercial>Unknown</commercial>" +
+                "    <consumer>Yes</consumer>" +
+                "    <corporate>Yes</corporate>" +
                 "    <country-of-issuance>Something</country-of-issuance>" +
                 "    <debit>No</debit>" +
                 "    <durbin-regulated>Unknown</durbin-regulated>" +
@@ -40,6 +47,7 @@ public class PaymentMethodNonceTest {
                 "    <prepaid>Yes</prepaid>" +
                 "    <prepaid-reloadable>Yes</prepaid-reloadable>" +
                 "    <product-id>123</product-id>" +
+                "    <purchase>Yes</purchase>" +
                 "  </bin-data>" +
                 "</payment-method-nonce>";
 
@@ -60,14 +68,18 @@ public class PaymentMethodNonceTest {
         assertEquals("422222", paymentMethodNonce.getDetails().getBin());
         assertEquals("Something", binData.getCountryOfIssuance());
         assertEquals("Unknown", binData.getIssuingBank());
+        assertEquals(Business.YES, binData.getBusiness());
         assertEquals("Visa", paymentMethodNonce.getDetails().getCardType());
         assertEquals(CreditCard.Commercial.UNKNOWN, binData.getCommercial());
+        assertEquals(Consumer.YES, binData.getConsumer());
+        assertEquals(Corporate.YES, binData.getCorporate());
         assertEquals(CreditCard.Debit.NO, binData.getDebit());
         assertEquals(CreditCard.DurbinRegulated.UNKNOWN, binData.getDurbinRegulated());
         assertEquals(CreditCard.Healthcare.YES, binData.getHealthcare());
         assertEquals(CreditCard.Payroll.UNKNOWN, binData.getPayroll());
         assertEquals(CreditCard.Prepaid.YES, binData.getPrepaid());
         assertEquals(PrepaidReloadable.YES, binData.getPrepaidReloadable());
+        assertEquals(Purchase.YES, binData.getPurchase());
         assertNotNull(paymentMethodNonce.getDetails());
     }
 

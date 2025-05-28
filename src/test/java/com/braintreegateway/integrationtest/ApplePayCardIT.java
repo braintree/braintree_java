@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ApplePayCardIT extends IntegrationTest {
     
     @Test
-    public void testPrepaidReloadable() {
+    public void testBinFields() {
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
         PaymentMethodRequest request = new PaymentMethodRequest().
             customerId(customer.getId()).
@@ -22,6 +22,10 @@ public class ApplePayCardIT extends IntegrationTest {
         
         assertNotNull(applePayCard.getPrepaid());
         assertNotNull(applePayCard.getPrepaidReloadable());
+        assertNotNull(applePayCard.getBusiness());
+        assertNotNull(applePayCard.getConsumer());
+        assertNotNull(applePayCard.getCorporate());
+        assertNotNull(applePayCard.getPurchase());
 
         ApplePayCard foundApplePayCard = (ApplePayCard) gateway.paymentMethod().find(applePayCard.getToken());
         assertEquals(applePayCard.getToken(), foundApplePayCard.getToken());

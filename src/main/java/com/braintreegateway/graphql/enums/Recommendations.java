@@ -1,8 +1,8 @@
 package com.braintreegateway.graphql.enums;
 
-/**
- * Represents available recommendation categories that can be retrieved using a PayPal customer session.
- */
+import com.braintreegateway.util.Experimental;
+
+@Experimental("This class is experimental and may change in future releases.")
 public enum Recommendations {
-  PAYMENT_RECOMMENDATIONS
+    PAYMENT_RECOMMENDATIONS
 }

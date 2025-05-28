@@ -3,6 +3,7 @@ package com.braintreegateway;
 // NEXT_MAJOR_VERSION remove venmoSdkSession
 // The old venmo SDK integration has been deprecated
 public class PaymentMethodOptionsRequest extends Request {
+    private String accountInformationInquiry;
     private Boolean failOnDuplicatePaymentMethod;
     private Boolean failOnDuplicatePaymentMethodForCustomer;
     private Boolean makeDefault;
@@ -33,6 +34,11 @@ public class PaymentMethodOptionsRequest extends Request {
 
     public Boolean getMakeDefault() {
         return makeDefault;
+    }
+
+    public PaymentMethodOptionsRequest accountInformationInquiry(String accountInformationInquiry) {
+        this.accountInformationInquiry = accountInformationInquiry;
+        return this;
     }
 
     public PaymentMethodOptionsRequest makeDefault(Boolean makeDefault) {
@@ -121,6 +127,7 @@ public class PaymentMethodOptionsRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root);
 
+        builder.addElement("accountInformationInquiry", accountInformationInquiry);
         builder.addElement("adyen", paymentMethodOptionsAdyenRequest);
         builder.addElement("failOnDuplicatePaymentMethod", failOnDuplicatePaymentMethod);
         builder.addElement("failOnDuplicatePaymentMethodForCustomer", failOnDuplicatePaymentMethodForCustomer);

@@ -5,16 +5,23 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import com.braintreegateway.enums.Business;
+import com.braintreegateway.enums.Consumer;
+import com.braintreegateway.enums.Corporate;
 import com.braintreegateway.enums.PrepaidReloadable;
+import com.braintreegateway.enums.Purchase;
 import static com.braintreegateway.util.EnumUtils.findByToString;
 
 public class MetaCheckoutToken implements PaymentMethod {
 
     private String bin;
+    private String business;
     private String cardType;
     private String cardholderName;
     private String commercial;
+    private String consumer;
     private String containerId;
+    private String corporate;
     private String countryOfIssuance;
     private Calendar createdAt;
     private String cryptogram;
@@ -33,6 +40,7 @@ public class MetaCheckoutToken implements PaymentMethod {
     private String prepaid;
     private String prepaidReloadable;
     private String productId;
+    private String purchase;
     private String token;
     private String uniqueNumberIdentifier;
     private Calendar updatedAt;
@@ -43,6 +51,7 @@ public class MetaCheckoutToken implements PaymentMethod {
         createdAt = node.findDateTime("created-at");
         updatedAt = node.findDateTime("updated-at");
         bin = node.findString("bin");
+        business = node.findString("business");
         cardType = node.findString("card-type");
         containerId = node.findString("container-id");
         cardholderName = node.findString("cardholder-name");
@@ -55,6 +64,8 @@ public class MetaCheckoutToken implements PaymentMethod {
         isExpired = node.findBoolean("expired");
         last4 = node.findString("last-4");
         commercial = node.findString("commercial");
+        consumer = node.findString("consumer");
+        corporate = node.findString("corporate");
         debit = node.findString("debit");
         durbinRegulated = node.findString("durbin-regulated");
         healthcare = node.findString("healthcare");
@@ -62,6 +73,7 @@ public class MetaCheckoutToken implements PaymentMethod {
         prepaid = node.findString("prepaid");
         prepaidReloadable = node.findString("prepaid-reloadable");
         productId = node.findString("product-id");
+        purchase = node.findString("purchase");
         countryOfIssuance = node.findString("country-of-issuance");
         issuingBank = node.findString("issuing-bank");
         uniqueNumberIdentifier = node.findString("unique-number-identifier");
@@ -208,6 +220,22 @@ public class MetaCheckoutToken implements PaymentMethod {
 
     public PrepaidReloadable getPrepaidReloadable() {
       return findByToString(PrepaidReloadable.values(), prepaidReloadable, PrepaidReloadable.UNKNOWN);
+    }
+
+    public Business getBusiness() {
+        return findByToString(Business.values(), business, Business.UNKNOWN);
+    }
+
+    public Consumer getConsumer() {
+        return findByToString(Consumer.values(), consumer, Consumer.UNKNOWN);
+    }
+
+    public Corporate getCorporate() {
+        return findByToString(Corporate.values(), corporate, Corporate.UNKNOWN);
+    }
+
+    public Purchase getPurchase() {
+        return findByToString(Purchase.values(), purchase, Purchase.UNKNOWN);
     }
 
     public String getProductId() {

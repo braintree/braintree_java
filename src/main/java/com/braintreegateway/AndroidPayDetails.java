@@ -1,14 +1,21 @@
 package com.braintreegateway;
 
 import com.braintreegateway.enums.PrepaidReloadable;
+import com.braintreegateway.enums.Business;
+import com.braintreegateway.enums.Consumer;
+import com.braintreegateway.enums.Corporate;
+import com.braintreegateway.enums.Purchase;
 import static com.braintreegateway.util.EnumUtils.findByToString;
 import com.braintreegateway.util.NodeWrapper;
 
 // NEXT_MAJOR_VERSION - rename this to GooglePayDetails
 public class AndroidPayDetails {
     private String bin;
+    private String business;
     private String cardType;
     private String commercial;
+    private String consumer;
+    private String corporate;
     private String countryOfIssuance;
     private String debit;
     private String durbinRegulated;
@@ -25,6 +32,7 @@ public class AndroidPayDetails {
     private String prepaid;
     private String prepaidReloadable;
     private String productId;
+    private String purchase;
     private String sourceCardLast4;
     private String sourceCardType;
     private String sourceDescription;
@@ -58,6 +66,10 @@ public class AndroidPayDetails {
         this.countryOfIssuance = node.findString("country-of-issuance");
         this.productId = node.findString("product-id");
         this.globalId = node.findString("global-id");
+        this.business = node.findString("business");
+        this.consumer = node.findString("consumer");
+        this.corporate = node.findString("corporate");
+        this.purchase = node.findString("purchase");
     }
 
     public String getCardType() {
@@ -158,5 +170,21 @@ public class AndroidPayDetails {
 
     public String getGlobalId() {
         return globalId;
+    }
+
+    public Business getBusiness() {
+        return findByToString(Business.values(), business, Business.UNKNOWN);
+    }
+
+    public Consumer getConsumer() {
+        return findByToString(Consumer.values(), consumer, Consumer.UNKNOWN);
+    }
+
+    public Corporate getCorporate() {
+        return findByToString(Corporate.values(), corporate, Corporate.UNKNOWN);
+    }
+
+    public Purchase getPurchase() {
+        return findByToString(Purchase.values(), purchase, Purchase.UNKNOWN);
     }
 }

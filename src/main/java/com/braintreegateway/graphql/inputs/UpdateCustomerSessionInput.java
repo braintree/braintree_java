@@ -2,21 +2,29 @@ package com.braintreegateway.graphql.inputs;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.braintreegateway.Request;
+import com.braintreegateway.graphql.inputs.PayPalPurchaseUnitInput; 
+import com.braintreegateway.graphql.inputs.CustomerSessionInput;
+import com.braintreegateway.util.Experimental;
 
 /**
  * Represents the input to request an update to a PayPal customer session.
  */
+@Experimental("This class is experimental and may change in future releases.")
 public class UpdateCustomerSessionInput extends Request {
   private final String merchantAccountId;
   private final String sessionId;
   private final CustomerSessionInput customer;
+  private final List<PayPalPurchaseUnitInput> purchaseUnits;
 
   private UpdateCustomerSessionInput(Builder builder) {
     this.merchantAccountId = builder.merchantAccountId;
     this.sessionId = builder.sessionId;
     this.customer = builder.customer;
+    this.purchaseUnits = builder.purchaseUnits;
   }
 
   @Override
@@ -28,10 +36,18 @@ public class UpdateCustomerSessionInput extends Request {
   public Map<String, Object> toGraphQLVariables() {
     Map<String, Object> variables = new HashMap<>();
     variables.put("merchantAccountId", merchantAccountId);
+    if (purchaseUnits != null && !purchaseUnits.isEmpty()) {
+      List<Map<String, Object>> formattedPurchaseUnits = new ArrayList<>();
+      for (PayPalPurchaseUnitInput purchaseUnit : purchaseUnits) {
+        formattedPurchaseUnits.add(purchaseUnit.toGraphQLVariables());
+      }
+      variables.put("purchaseUnits", formattedPurchaseUnits);
+    }
     variables.put("sessionId", sessionId);
     if (customer != null) {
       variables.put("customer", customer.toGraphQLVariables());
     }
+
     return variables;
   }
 
@@ -56,6 +72,7 @@ public class UpdateCustomerSessionInput extends Request {
     private String merchantAccountId;
     private String sessionId;
     private CustomerSessionInput customer;
+    private List<PayPalPurchaseUnitInput> purchaseUnits;
 
     public Builder(String sessionId) {
       this.sessionId = sessionId;
@@ -85,6 +102,19 @@ public class UpdateCustomerSessionInput extends Request {
      */
     public Builder customer(CustomerSessionInput customer) {
       this.customer = customer;
+      return this;
+    } 
+
+    /**
+     * Sets the amount of items purchased
+     *
+     * @param purchaseUnits Array of purchase unit. Each includes required 
+     * information for the payment contract.
+     *
+     * @return this
+     */
+    public Builder purchaseUnits(List<PayPalPurchaseUnitInput> purchaseUnits) {
+      this.purchaseUnits = purchaseUnits;
       return this;
     }
 
