@@ -3,6 +3,7 @@ package com.braintreegateway.unittest.graphql;
 import com.braintreegateway.graphql.enums.RecommendedPaymentOption;
 import com.braintreegateway.graphql.types.CustomerRecommendationsPayload;
 import com.braintreegateway.graphql.types.PaymentOptions;
+import com.braintreegateway.testhelpers.TestHelper;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,7 +13,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-// TODO: Test based on actual object and not json string
 public class CustomerRecommendationsPayloadTest {
 
     private String readResourceAsString(String resourcePath) throws IOException {
@@ -24,13 +24,30 @@ public class CustomerRecommendationsPayloadTest {
 
     @Test
     public void testCustomerRecommendationsPayload() throws IOException {
-        String json = readResourceAsString("/unittest/customer_session/customer_recommendations_successful_response.json");
+        Map<String, Object> successResponse = TestHelper.readResponseFromJsonResource(
+                        "unittest/customer_session/customer_recommendations_successful_response.json");
 
-        // Very basic parsing for this specific structure
-        assertTrue(json.contains("\"isInPayPalNetwork\": true"));
-        assertTrue(json.contains("\"paymentOption\": \"PAYPAL\""));
-        assertTrue(json.contains("\"recommendedPriority\": 1"));
-        assertTrue(json.contains("\"paymentOption\": \"VENMO\""));
-        assertTrue(json.contains("\"recommendedPriority\": 2"));
+        CustomerRecommendationsPayload payload = new CustomerRecommendationsPayload((Map<String, Object> )successResponse.get("data"));
+
+        assertEquals("a-customer-session-id", payload.getSessionId());
+        assertTrue(payload.isInPayPalNetwork());
+
+        List<PaymentOptions> paymentOptions = payload.getRecommendations().getPaymentOptions();
+        assertNotNull(paymentOptions);
+        assertEquals(2, paymentOptions.size());
+
+        PaymentOptions paypalOption = paymentOptions.stream()
+            .filter(po -> po.getPaymentOption() == RecommendedPaymentOption.PAYPAL)
+            .findFirst()
+            .orElse(null);
+        assertNotNull(paypalOption);
+        assertEquals(1, paypalOption.getRecommendedPriority());
+
+        PaymentOptions venmoOption = paymentOptions.stream()
+            .filter(po -> po.getPaymentOption() == RecommendedPaymentOption.VENMO)
+            .findFirst()
+            .orElse(null);
+        assertNotNull(venmoOption);
+        assertEquals(2, venmoOption.getRecommendedPriority());
     }
 }

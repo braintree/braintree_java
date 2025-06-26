@@ -218,6 +218,8 @@ public class CustomerSessionGatewayTest {
                                         RecommendedPaymentOption.PAYPAL,
                                         actualPayload.getRecommendations().getPaymentOptions().get(0)
                                                         .getPaymentOption());
+
+                        assertEquals("a-customer-session-id", actualPayload.getSessionId());
                 }
 
                 @Test

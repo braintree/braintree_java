@@ -1,6 +1,7 @@
 {
   "data": {
     "generateCustomerRecommendations": {
+      "sessionId": "a-customer-session-id",
       "isInPayPalNetwork": true,
       "paymentRecommendations": [
         {

@@ -15,8 +15,13 @@ import com.braintreegateway.util.Experimental;
  */
 @Experimental("This class is experimental and may change in future releases.")
 public class CustomerRecommendationsPayload {
+  private final String sessionId;
   private final boolean isInPayPalNetwork;
   private final CustomerRecommendations recommendations;
+
+  public String getSessionId() {
+    return sessionId;
+  }
 
   public boolean isInPayPalNetwork() {
       return isInPayPalNetwork;
@@ -28,6 +33,7 @@ public class CustomerRecommendationsPayload {
 
   // Constructor for Map response
   public CustomerRecommendationsPayload(Map<String, Object> response) {
+    this.sessionId = getValue(response, "generateCustomerRecommendations.sessionId");
     this.isInPayPalNetwork = getValue(response, "generateCustomerRecommendations.isInPayPalNetwork");
     this.recommendations = extractRecommendations(response);
   }

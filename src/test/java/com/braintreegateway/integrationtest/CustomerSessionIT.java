@@ -173,6 +173,7 @@ public class CustomerSessionIT extends IntegrationTest {
     assertTrue(result.isSuccess());
 
     assertEquals(true, payload.isInPayPalNetwork());
+    assertEquals("94f0b2db-5323-4d86-add3-paypal000000", payload.getSessionId());
 
     PaymentRecommendation recommendation = 
       payload

@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.43.0
+* Add Session Id to Customer Recommendations Payload
+
 ## 3.42.0
 * Add `accountInformationInquiry` to
   * `CreditCardVerificationOptionsRequest`
