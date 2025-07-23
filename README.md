@@ -7,6 +7,7 @@ The Braintree Java library provides integration access to the Braintree Gateway.
 
 ## Dependencies
 
+
 * none
 
 Java version >= 8 is required. The Braintree Java SDK is tested against Java versions 8 and 11.
