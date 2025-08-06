@@ -2,6 +2,7 @@ package com.braintreegateway.integrationtest;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -4701,6 +4702,18 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         Transaction foundTransaction = gateway.transaction().find("settledtransaction");
 
         assertNull(foundTransaction.getThreeDSecureInfo());
+    }
+
+    @Test
+    public void findWithUpcomingRetryDate() throws Exception {
+        Transaction foundTransaction = gateway.transaction().find("first_attempted_ach_transaction");
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.add(Calendar.DAY_OF_MONTH, 1);
+        String expectedDate = dateFormat.format(tomorrow.getTime());
+
+        assertEquals(expectedDate, foundTransaction.getUpcomingRetryDate());
     }
 
     @Test

@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.44.0
+* Add `upcomingRetryDate` to `Transaction`
+* Add `remainingFileEvidenceStorage` to Dispute
+* Add `transaction_retried` webhook
+* Add `transfer` to `Transaction`
+
 ## 3.43.0
 * Add Session Id to Customer Recommendations Payload
 

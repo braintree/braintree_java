@@ -138,6 +138,7 @@ public class Transaction {
         }
     }
 
+    private boolean accountFundingTransaction;
     private String achReturnCode;
     private List<AchReturnResponse> achReturnResponses;
     private String acquirerReferenceNumber;
@@ -233,6 +234,7 @@ public class Transaction {
     private Boolean taxExempt;
     private ThreeDSecureInfo threeDSecureInfo;
     private Type type;
+    private String upcomingRetryDate;
     private Calendar updatedAt;
     private UsBankAccountDetails usBankAccountDetails;
     private VenmoAccountDetails venmoAccountDetails;
@@ -240,6 +242,7 @@ public class Transaction {
     private String voiceReferralNumber;
 
     public Transaction(NodeWrapper node) {
+        accountFundingTransaction = node.findBoolean("account-funding-transaction");
         amount = node.findBigDecimal("amount");
         avsErrorResponseCode = node.findString("avs-error-response-code");
         avsPostalCodeResponseCode = node.findString("avs-postal-code-response-code");
@@ -484,6 +487,8 @@ public class Transaction {
         for (NodeWrapper retryIdNode : node.findAll("retry-ids/*")) {
             retryIds.add(retryIdNode.findString("."));
         }
+
+        upcomingRetryDate = node.findString("upcoming-retry-date");
 
         retriedTransactionId = node.findString("retried-transaction-id");
         foreignRetailer = node.findBoolean("foreign-retailer");
@@ -812,6 +817,10 @@ public class Transaction {
         return type;
     }
 
+    public String getUpcomingRetryDate() {
+        return upcomingRetryDate;
+    }
+
     /* @deprecated
      * use isRecurring() instead
      */
@@ -922,5 +931,9 @@ public class Transaction {
 
     public boolean isforeignRetailer() {
         return foreignRetailer;
+    }
+
+    public boolean isAccountFundingTransaction() {
+        return accountFundingTransaction;
     }
 }

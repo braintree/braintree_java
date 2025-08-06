@@ -174,6 +174,19 @@ public class TransactionTest {
 	}
 
 	@Test
+	public void recognizesUpcomingRetryDate() {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<transaction>\n" +
+				"  <upcoming-retry-date>2024-12-15</upcoming-retry-date>\n" +
+				"</transaction>\n";
+
+		SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+		Transaction transaction = new Transaction(transactionNode);
+
+		assertEquals("2024-12-15", transaction.getUpcomingRetryDate());
+	}
+
+	@Test
 	public void recognizesDuplicateTransactionGatewayRejectReason() {
 		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 				"<transaction>\n" +

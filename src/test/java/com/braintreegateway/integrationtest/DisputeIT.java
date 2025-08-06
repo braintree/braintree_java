@@ -114,6 +114,21 @@ public class DisputeIT extends IntegrationTest {
     }
 
     @Test
+    public void addFileEvidenceUpdatesRemainingFileEvidenceStorage() {
+        Dispute dispute = createSampleDispute();
+        BigDecimal initialStorage = dispute.getRemainingFileEvidenceStorage();
+        assertNotNull(initialStorage);
+
+        String disputeId = dispute.getId();
+        String documentId = createSampleDocument().getId();
+        gateway.dispute().addFileEvidence(disputeId, documentId);
+
+        Dispute updatedDispute = gateway.dispute().find(disputeId);
+        BigDecimal updatedStorage = updatedDispute.getRemainingFileEvidenceStorage();
+        assertEquals(updatedStorage.compareTo(initialStorage), -1);
+    }
+
+    @Test
     public void addFileEvidenceAddsEvidenceWithCategory() {
         String disputeId = createSampleDispute().getId();
         String documentId = createSampleDocument().getId();

@@ -44,6 +44,7 @@ public class WebhookNotification {
         SUBSCRIPTION_WENT_ACTIVE("subscription_went_active"),
         SUBSCRIPTION_WENT_PAST_DUE("subscription_went_past_due"),
         TRANSACTION_DISBURSED("transaction_disbursed"),
+        TRANSACTION_RETRIED("transaction_retried"),
         TRANSACTION_REVIEWED("transaction_reviewed"),
         TRANSACTION_SETTLED("transaction_settled"),
         TRANSACTION_SETTLEMENT_DECLINED("transaction_settlement_declined"),

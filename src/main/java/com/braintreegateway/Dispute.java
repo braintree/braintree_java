@@ -105,6 +105,7 @@ public class Dispute {
     private final ChargebackProtectionLevel chargebackProtectionLevel; // Deprecated
     private final BigDecimal amount;
     private final BigDecimal disputedAmount;
+    private final BigDecimal remainingFileEvidenceStorage;
     private final BigDecimal wonAmount;
     private final Boolean evidenceSubmittable;
     private final DisputeTransaction transaction;
@@ -144,6 +145,7 @@ public class Dispute {
         preDisputeProgram = EnumUtils.findByName(PreDisputeProgram.class, node.findString("pre-dispute-program"), PreDisputeProgram.UNRECOGNIZED);
 
         amount = node.findBigDecimal("amount");
+        remainingFileEvidenceStorage = node.findBigDecimal("remaining-file-evidence-storage");
         disputedAmount = node.findBigDecimal("amount-disputed");
         wonAmount = node.findBigDecimal("amount-won");
         graphqlId = node.findString("global-id");
@@ -262,6 +264,10 @@ public class Dispute {
 
     public BigDecimal getAmount() {
         return amount;
+    }
+
+    public BigDecimal getRemainingFileEvidenceStorage() {
+        return remainingFileEvidenceStorage;
     }
 
     public BigDecimal getDisputedAmount() {

@@ -85,6 +85,7 @@ public class DisputeTest {
             "<date-opened type=\"date\">2017-01-02</date-opened>" +
             "<date-won type=\"date\">2017-01-03</date-won>" +
             "<currency-iso-code>GBP</currency-iso-code>" +
+            "<remaining-file-evidence-storage>219862</remaining-file-evidence-storage>\n " +
             "<reason>fraud</reason>" +
             "<status>won</status>" +
             "<kind>chargeback</kind>" +
@@ -107,6 +108,7 @@ public class DisputeTest {
         assertEquals(Dispute.Status.WON, dispute.getStatus());
         assertEquals(Dispute.Kind.CHARGEBACK, dispute.getKind());
         assertEquals(new BigDecimal("100.00"), dispute.getAmount());
+        assertEquals(new BigDecimal("219862"), dispute.getRemainingFileEvidenceStorage());
         assertEquals("GBP", dispute.getCurrencyIsoCode());
         assertEquals("dispute_id", dispute.getId());
         assertEquals("transaction_id", dispute.getTransaction().getId());

@@ -82,6 +82,7 @@ public class WebhookTestingGateway {
             case SUBSCRIPTION_CHARGED_SUCCESSFULLY: return subscriptionChargedSuccessfullyXml(id);
             case SUBSCRIPTION_CHARGED_UNSUCCESSFULLY: return subscriptionChargedUnsuccessfullyXml(id);
             case TRANSACTION_DISBURSED: return transactionXml(id);
+            case TRANSACTION_RETRIED: return transactionRetriedXml(id);
             case TRANSACTION_REVIEWED: return transactionReviewXml(id);
             case TRANSACTION_SETTLED: return transactionSettledXml(id);
             case TRANSACTION_SETTLEMENT_DECLINED: return transactionSettlementDeclinedXml(id);
@@ -171,6 +172,16 @@ public class WebhookTestingGateway {
                 node("descriptor"),
                 node("shipping"),
                 node("subscription")
+        );
+    }
+
+    private String transactionRetriedXml(String id) {
+        return node("transaction",
+                node("id", id),
+                node("amount", "100"),
+                node("status", "submitted_for_settlement"),
+                node("type", "sale"),
+                node("retried-transaction-id", "original_txn_id")
         );
     }
 

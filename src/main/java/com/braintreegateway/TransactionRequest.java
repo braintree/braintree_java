@@ -67,6 +67,7 @@ public class TransactionRequest extends Request {
     private Boolean threeDSecureTransaction;
     private List<TransactionLineItemRequest> transactionLineItemRequests;
     private TransactionOptionsRequest transactionOptionsRequest;
+    private TransferRequest transferRequest;
     private Type type;
     private String venmoSdkPaymentMethodCode;
 
@@ -206,6 +207,11 @@ public class TransactionRequest extends Request {
     public TransactionOptionsRequest options() {
         transactionOptionsRequest = new TransactionOptionsRequest(this);
         return transactionOptionsRequest;
+    }
+
+    public TransferRequest transfer() {
+        transferRequest = new TransferRequest(this);
+        return transferRequest;
     }
 
     public TransactionRequest orderId(String orderId) {
@@ -436,6 +442,7 @@ public class TransactionRequest extends Request {
             .addElement("taxAmount", taxAmount)
             .addElement("taxExempt", taxExempt)
             .addElement("threeDSecurePassThru", threeDSecurePassThruRequest)
+            .addElement("transfer", transferRequest)
             .addElement("venmoSdkPaymentMethodCode", venmoSdkPaymentMethodCode);
 
         if (!customFields.isEmpty()) {
