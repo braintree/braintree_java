@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.braintreepayments.gateway</groupId>
     <artifactId>braintree-java</artifactId>
-    <version>3.44.1-SNAPSHOT</version>
+    <version>3.44.0-SNAPSHOT</version>
     <description>Java Client Library for Braintree Payments Gateway</description>
     <packaging>bundle</packaging>
     <name>Braintree Gateway Java Client Library</name>
@@ -108,15 +108,6 @@
             </activation>
             <build>
                 <plugins>
-                    <plugin>
-                      <groupId>org.sonatype.central</groupId>
-                      <artifactId>central-publishing-maven-plugin</artifactId>
-                      <version>0.8.0</version>
-                      <extensions>true</extensions>
-                      <configuration>
-                        <publishingServerId>sonatype-nexus-staging</publishingServerId>
-                      </configuration>
-                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -279,7 +270,15 @@
                   </checkModificationExcludes>
                 </configuration>
             </plugin>
-
+            <plugin>
+              <groupId>org.sonatype.central</groupId>
+              <artifactId>central-publishing-maven-plugin</artifactId>
+              <version>0.8.0</version>
+              <extensions>true</extensions>
+              <configuration>
+                <publishingServerId>sonatype-nexus-staging</publishingServerId>
+            </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
