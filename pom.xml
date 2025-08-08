@@ -110,9 +110,9 @@
             </activation>
             <build>
               <plugins>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
                     <plugin>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-gpg-plugin</artifactId>
                       <version>3.0.1</version>
                       <executions>
                         <execution>
