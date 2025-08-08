@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.braintreepayments.gateway</groupId>
     <artifactId>braintree-java</artifactId>
-    <version>3.44.1-SNAPSHOT</version>
+    <version>3.44.0-SNAPSHOT</version>
     <description>Java Client Library for Braintree Payments Gateway</description>
     <packaging>bundle</packaging>
     <name>Braintree Gateway Java Client Library</name>
@@ -40,19 +40,6 @@
       <tag>3.44.0</tag>
     </scm>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Development Snapshots</name>
-            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>sonatype-nexus-staging</id>
-            <name>Releases</name>
-            <url>https://central.sonatype.com/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
     <developers>
       <developer>
         <id>devs</id>
@@ -60,6 +47,21 @@
         <timezone>-5</timezone>
       </developer>
     </developers>
+
+
+    <repositories>
+      <repository>
+        <name>Central Portal Snapshots</name>
+        <id>central-portal-snapshots</id>
+        <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        <releases>
+          <enabled>false</enabled>
+        </releases>
+        <snapshots>
+          <enabled>true</enabled>
+        </snapshots>
+      </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -107,27 +109,23 @@
                 </property>
             </activation>
             <build>
-                <plugins>
+              <plugins>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                          <execution>
-                            <id>sign-artifacts</id>
-                            <phase>verify</phase>
-                            <goals>
-                              <goal>sign</goal>
-                            </goals>
-                          </execution>
-                        </executions>
-                        <configuration>
-                          <gpgArguments>
-                            <arg>--pinentry-mode</arg>
-                            <arg>loopback</arg>
-                          </gpgArguments>
-                          <excludeAttachedArtifacts>true</excludeAttachedArtifacts>
-                        </configuration>
+                      <version>3.0.1</version>
+                      <executions>
+                        <execution>
+                          <id>sign-artifacts</id>
+                          <phase>verify</phase>
+                          <goals>
+                            <goal>sign</goal>
+                          </goals>
+                        </execution>
+                      </executions>
+                      <configuration>
+                         <attach>true</attach>
+                      </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -143,13 +141,6 @@
                                 <phase>package</phase>
                             </execution>
                         </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <version>2.7</version>
-                        <configuration>
-                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -272,15 +263,6 @@
                 </configuration>
             </plugin>
             <plugin>
-              <groupId>org.sonatype.central</groupId>
-              <artifactId>central-publishing-maven-plugin</artifactId>
-              <version>0.8.0</version>
-              <extensions>true</extensions>
-              <configuration>
-                <publishingServerId>sonatype-nexus-staging</publishingServerId>
-            </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>2.5.4</version>
@@ -309,13 +291,24 @@
                     <!--
                       This execution makes sure that the manifest is available when the tests are executed
                     -->
-                    <execution>
+                  <execution>
+                        <id> default-deploy</id>
+                        <phase>none</phase>
                         <goals>
                             <goal>manifest</goal>
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+              </plugin>
+              <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.8.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                  <publishingServerId>central</publishingServerId>
+                </configuration>
+              </plugin>
         </plugins>
     </build>
 
