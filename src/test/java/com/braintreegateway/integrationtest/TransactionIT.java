@@ -7034,18 +7034,18 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     @Test
     public void gatewayRejectedOnApplicationIncomplete() {
         gateway = new BraintreeGateway("client_id$development$integration_client_id", "client_secret$development$integration_client_secret");
+        String code = TestHelper.createOAuthGrant(gateway, "partner_merchant_id", "read_write"); 
 
-        MerchantRequest request = new MerchantRequest().
-            email("name@email.com").
-            countryCodeAlpha3("GBR").
-            paymentMethods(Arrays.asList("credit_card", "paypal"));
-
-        Result<Merchant> merchantResult = gateway.merchant().create(request);
-
-        gateway = new BraintreeGateway(merchantResult.getTarget().getCredentials().getAccessToken());
+        OAuthCredentialsRequest oauthRequest = new OAuthCredentialsRequest().
+            code(code).
+            scope("read_write"); 
+        
+        Result<OAuthCredentials> oauthResult = gateway.oauth().createTokenFromCode(oauthRequest); 
+        
+        gateway = new BraintreeGateway(oauthResult.getTarget().getAccessToken());   
 
         TransactionRequest transactionRequest = new TransactionRequest().
-            amount(new BigDecimal(4000.00)).
+            amount(new BigDecimal(5001.00)).
             creditCard().
                 number(CreditCardNumber.VISA.number).
                 expirationDate("05/2020").
@@ -8440,8 +8440,8 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertFalse(result.isSuccess());
         Transaction result_transaction = result.getTransaction();
         assertEquals(initial_amount, result_transaction.getAmount());
-        assertEquals(ValidationErrorCode.ADJUSTMENT_AMOUNT_MUST_BE_GREATER_THAN_ZERO,
-                     result.getErrors().forObject("authorization_adjustment").onField("amount").get(0).getCode());
+        assertEquals(ValidationErrorCode.TRANSACTION_AMOUNT_MUST_BE_GREATER_THAN_ZERO,
+                     result.getErrors().forObject("transaction").onField("amount").get(0).getCode());
     }
 
     @Test
@@ -8593,7 +8593,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 done();
        Result<Transaction> transaction = gateway.transaction().sale(request);
        String id = transaction.getTarget().getId();
-       System.out.println("THIS IS THE ID: " + id);
 
        TransactionRequest customFieldsRequest = new TransactionRequest().
            customField("storeMe", "foo");

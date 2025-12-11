@@ -1,10 +1,14 @@
 package com.braintreegateway;
 
+import java.util.Calendar;
+
 public class PartyRequest extends Request {
     private String accountReferenceNumber;
     private PartyAddressRequest address;
+    private Calendar dateOfBirth;
     private String firstName;
     private String lastName;
+    private String middleName;
     private String taxId;
     private TransferRequest parent;
     private String tagName = "party";
@@ -17,34 +21,44 @@ public class PartyRequest extends Request {
     public PartyRequest(TransferRequest parent) {
         this.parent = parent;
     }
-    
+
     public PartyRequest accountReferenceNumber(String accountReferenceNumber) {
-       this.accountReferenceNumber = accountReferenceNumber; 
-       return this; 
+       this.accountReferenceNumber = accountReferenceNumber;
+       return this;
     }
 
     public PartyAddressRequest address() {
-       address = new PartyAddressRequest(this); 
-       return address; 
+       address = new PartyAddressRequest(this);
+       return address;
+    }
+
+    public PartyRequest dateOfBirth(Calendar dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+        return this;
     }
 
     public PartyRequest firstName(String firstName) {
-       this.firstName = firstName; 
-       return this; 
+       this.firstName = firstName;
+       return this;
     }
-    
+
     public PartyRequest lastName(String lastName) { 
-      this.lastName = lastName; 
-      return this; 
+       this.lastName = lastName;
+       return this;
+    }
+
+    public PartyRequest middleName(String middleName) {
+       this.middleName = middleName;
+       return this;
     }
 
     public PartyRequest taxId(String taxId) {
-       this.taxId = taxId; 
-       return this; 
+       this.taxId = taxId;
+       return this;
     }
-    
+
     public TransferRequest done() { 
-      return parent; 
+       return parent;
     }
 
     @Override
@@ -52,11 +66,11 @@ public class PartyRequest extends Request {
         return buildRequest(tagName).toXML();
     }
 
-     @Override
+    @Override
     public String toQueryString() {
         return toQueryString(tagName);
     }
-    
+
     @Override
     public String toQueryString(String root) {
         return buildRequest(root).toQueryString();
@@ -70,11 +84,17 @@ public class PartyRequest extends Request {
         if (address != null) {
             builder.addElement("address", address);
         }
+        if (dateOfBirth != null) {
+            builder.addElement("dateOfBirth", dateOfBirth);
+        }
         if (firstName != null) {
             builder.addElement("firstName", firstName);
         }
         if (lastName != null) {
             builder.addElement("lastName", lastName);
+        }
+        if (middleName != null) {
+            builder.addElement("middleName", middleName);
         }
         if (taxId != null) {
             builder.addElement("taxId", taxId);

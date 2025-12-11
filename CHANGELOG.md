@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.47.0
+* Add `middleName` to sender and receiver, and `dateOfBirth` to sender in transfer on `Transaction`
+
 ## 3.46.0
 * Add `paymentAccountReference` to `CreditCard`, `ApplePayDetails`, `AndroidPayDetails` and `CreditCardVerification`
 * Bug fix for `MonetaryAmountInput`

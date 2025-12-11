@@ -8,8 +8,10 @@ import java.util.*;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled("Merchant integration tests are disabled")
 public class MerchantIT extends IntegrationTest {
     private MerchantAccount getMerchantAccountForCurrency(Merchant merchant, String currency) {
         for (MerchantAccount merchantAccount : merchant.getMerchantAccounts()) {

@@ -390,7 +390,53 @@ public abstract class TestHelper {
         return node.findString("code");
     }
 
-    /* http://stackoverflow.com/questions/13592236/parse-the-uri-string-into-name-value-collection-in-java */
+    public static class MerchantResult {
+        private OAuthCredentials credentials;
+        private List<MerchantAccount> merchantAccounts;
+
+        public MerchantResult(OAuthCredentials credentials, List<MerchantAccount> merchantAccounts) {
+            this.credentials = credentials;
+            this.merchantAccounts = merchantAccounts;
+        }
+
+        public OAuthCredentials getCredentials() {
+            return credentials;
+        }
+
+        public List<MerchantAccount> getMerchantAccounts() {
+            return merchantAccounts;
+        }
+    }
+
+    public static MerchantResult getMerchant() {
+        return getMerchant("partner_merchant_id");
+    }
+
+    public static MerchantResult getMerchant(String merchantId) {
+        BraintreeGateway gateway = new BraintreeGateway(
+            "client_id$development$integration_client_id",
+            "client_secret$development$integration_client_secret"
+        );
+
+        String code = createOAuthGrant(gateway, merchantId, "read_write");
+
+        OAuthCredentialsRequest request = new OAuthCredentialsRequest().
+            code(code).
+            scope("read_write");
+
+        Result<OAuthCredentials> accessTokenResult = gateway.oauth().createTokenFromCode(request);
+
+        BraintreeGateway merchantGateway = new BraintreeGateway(accessTokenResult.getTarget().getAccessToken());
+        PaginatedCollection<MerchantAccount> merchantAccountResults = merchantGateway.merchantAccount().all();
+
+        List<MerchantAccount> merchantAccounts = new ArrayList<MerchantAccount>();
+        for (MerchantAccount merchantAccount : merchantAccountResults) {
+            merchantAccounts.add(merchantAccount);
+        }
+
+        return new MerchantResult(accessTokenResult.getTarget(), merchantAccounts);
+    }
+
     public static Map<String, String> splitQuery(URL url) throws UnsupportedEncodingException {
         Map<String, String> queryPairs = new LinkedHashMap<String, String>();
         String query = url.getQuery();
