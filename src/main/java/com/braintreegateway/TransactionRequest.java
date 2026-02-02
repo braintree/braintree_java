@@ -14,6 +14,7 @@ import java.util.Map;
 // NEXT_MAJOR_VERSION remove venmoSdkPaymentMethodCode
 // The old venmo SDK integration has been deprecated
 public class TransactionRequest extends Request {
+    private Boolean acceptPartialAuthorization;
     private BigDecimal amount;
     private TransactionAndroidPayCardRequest androidPayCardRequest;
     private TransactionApplePayCardRequest applePayCardRequest;
@@ -77,6 +78,11 @@ public class TransactionRequest extends Request {
         this.customFields = new HashMap<String, String>();
         this.threeDSecureTransaction = false;
         this.transactionLineItemRequests = new ArrayList<TransactionLineItemRequest>();
+    }
+
+    public TransactionRequest acceptPartialAuthorization(Boolean acceptPartialAuthorization) {
+        this.acceptPartialAuthorization = acceptPartialAuthorization;
+        return this;
     }
 
     public TransactionRequest amount(BigDecimal amount) {
@@ -412,6 +418,7 @@ public class TransactionRequest extends Request {
     // The old venmo SDK integration has been deprecated
     protected RequestBuilder buildRequest(String root) {
         RequestBuilder builder = new RequestBuilder(root)
+            .addElement("acceptPartialAuthorization", acceptPartialAuthorization)
             .addElement("amount", amount)
             .addElement("androidPayCard", androidPayCardRequest)
             .addElement("applePayCard", applePayCardRequest)

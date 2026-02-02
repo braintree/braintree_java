@@ -22,6 +22,7 @@ public class TransactionOptionsRequest extends Request {
     private TransactionOptionsVenmoRequest transactionOptionsVenmoRequest;
     private TransactionOptionsCreditCardRequest transactionOptionsCreditCardRequest;
     private TransactionOptionsProcessingOverridesRequest transactionOptionsProcessingOverridesRequest;
+    private TransactionOptionsUsBankAccountRequest transactionOptionsUsBankAccountRequest;
 
     public TransactionOptionsRequest(TransactionRequest parent) {
         this.parent = parent;
@@ -126,6 +127,11 @@ public class TransactionOptionsRequest extends Request {
         return transactionOptionsProcessingOverridesRequest;
     }
 
+    public TransactionOptionsUsBankAccountRequest usBankAccount() {
+        transactionOptionsUsBankAccountRequest = new TransactionOptionsUsBankAccountRequest(this);
+        return transactionOptionsUsBankAccountRequest;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("options").toXML();
@@ -162,6 +168,7 @@ public class TransactionOptionsRequest extends Request {
             .addElement("paypal", transactionOptionsPayPalRequest)
             .addElement("payWithAmexRewards", transactionOptionsAmexRewardsRequest)
             .addElement("creditCard", transactionOptionsCreditCardRequest)
-            .addElement("processingOverrides", transactionOptionsProcessingOverridesRequest);
+            .addElement("processingOverrides", transactionOptionsProcessingOverridesRequest)
+            .addElement("usBankAccount", transactionOptionsUsBankAccountRequest);
     }
 }

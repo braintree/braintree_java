@@ -8,6 +8,10 @@ import com.braintreegateway.enums.Purchase;
 import com.braintreegateway.util.NodeWrapper;
 import static com.braintreegateway.util.EnumUtils.findByToString;
 
+/**
+ * DEPRECATED: Visa Checkout is no longer supported for creating new transactions.
+ * This class is retained for search functionality and historical transaction data only.
+ */
 public class VisaCheckoutCardDetails {
     private String bin;
     private String business;

@@ -15,6 +15,10 @@ import static com.braintreegateway.util.EnumUtils.findByToString;
 
 // NEXT_MAJOR_VERSION remove isVenmoSDK
 // The old venmo SDK integration has been deprecated
+/**
+ * DEPRECATED: Visa Checkout is no longer supported for creating new transactions.
+ * This class is retained for search functionality and historical transaction data only.
+ */
 public class VisaCheckoutCard implements PaymentMethod {
 
     private Address billingAddress;

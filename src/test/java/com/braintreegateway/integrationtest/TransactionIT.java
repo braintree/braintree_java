@@ -8921,4 +8921,22 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(ValidationErrorCode.TRANSACTION_PROCESSING_MERCHANT_CATEGORY_CODE_IS_INVALID,
                 result.getErrors().forObject("transaction").onField("processing_merchant_category_code").get(0).getCode());
     }
+
+    @Test
+     public void testPartiallyAuthorizedSet() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.PARTIALLY_AUTHORIZED.amount).
+            acceptPartialAuthorization(true).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2035").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertTrue(transaction.isPartiallyAuthorized());
+        assertEquals("1004", transaction.getProcessorResponseCode());
+    }
 }

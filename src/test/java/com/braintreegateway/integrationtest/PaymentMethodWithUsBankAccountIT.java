@@ -181,7 +181,7 @@ public class PaymentMethodWithUsBankAccountIT extends IntegrationTest {
         assertEquals("0000", usBankAccount.getLast4());
         assertEquals("checking", usBankAccount.getAccountType());
         assertEquals("Wells Fargo", usBankAccount.getBankName());
-        assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
+        assertEquals("Marty McFly", usBankAccount.getAccountHolderName());
         assertEquals(1, usBankAccount.getVerifications().size());
 
         UsBankAccountVerification verification = usBankAccount.getVerifications().get(0);
@@ -222,7 +222,7 @@ public class PaymentMethodWithUsBankAccountIT extends IntegrationTest {
         assertEquals("0000", usBankAccount.getLast4());
         assertEquals("checking", usBankAccount.getAccountType());
         assertEquals("Wells Fargo", usBankAccount.getBankName());
-        assertEquals("Dan Schulman", usBankAccount.getAccountHolderName());
+        assertEquals("Marty McFly", usBankAccount.getAccountHolderName());
         assertEquals(1, usBankAccount.getVerifications().size());
 
         UsBankAccountVerification verification = usBankAccount.getVerifications().get(0);

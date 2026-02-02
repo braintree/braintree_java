@@ -503,4 +503,49 @@ public class TransactionTest {
 
         assertEquals("V0010013019339005665779448477", transaction.getCreditCard().getPaymentAccountReference());
     }
+
+
+	@Test
+	public void testPartiallyAuthorizedSet() {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<transaction>\n" +
+				"  <type>sale</type>\n" +
+				"  <processor-response-code>1004</processor-response-code>\n" +
+				"</transaction>\n";
+
+		SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+		Transaction transaction = new Transaction(transactionNode);
+
+		assertEquals("1004", transaction.getProcessorResponseCode());
+        assertTrue(transaction.isPartiallyAuthorized());
+	}
+
+    @Test
+    public void parseAchTypeFields() {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<transaction>\n" +
+                "  <id>recognized_transaction_id</id>\n" +
+                "  <status></status>\n" +
+                "  <type>sale</type>\n" +
+                "  <customer></customer>\n" +
+                "  <billing></billing>\n" +
+                "  <shipping></shipping>\n" +
+                "  <custom-fields/>\n" +
+                "  <credit-card></credit-card>\n" +
+                "  <status-history type=\"array\"></status-history>\n" +
+                "  <subscription></subscription>\n" +
+                "  <descriptor></descriptor>\n" +
+                "  <escrow-status></escrow-status>\n" +
+                "  <disbursement-details></disbursement-details>\n" +
+                "  <payment-instrument-type>us_bank_account</payment-instrument-type>\n" +
+                "  <ach-type>same_day</ach-type>\n" +
+                "  <requested-ach-type>same_day</requested-ach-type>\n" +
+                "</transaction>\n";
+
+        SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+        Transaction transaction = new Transaction(transactionNode);
+
+        assertEquals("same_day", transaction.getAchType());
+        assertEquals("same_day", transaction.getRequestedAchType());
+    }
 }

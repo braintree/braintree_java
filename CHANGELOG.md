@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.48.0
+* Add `acceptPartialAuthorization` in `TransactionRequest` and `partiallyAuthorized` in `Transaction`
+* Deprecate transactions for `visa_checkout_card` and maintain search functionality
+* Add `achType` to `TransactionOptionsRequest` for US Bank Account transactions
+* Add `achType` and `requestedAchType` to `Transaction`
+
 ## 3.47.0
 * Add `middleName` to sender and receiver, and `dateOfBirth` to sender in transfer on `Transaction`
 

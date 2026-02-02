@@ -141,6 +141,7 @@ public class Transaction {
     private boolean accountFundingTransaction;
     private String achRejectReason;
     private String achReturnCode;
+    private String achType;
     private List<AchReturnResponse> achReturnResponses;
     private String acquirerReferenceNumber;
     private String additionalProcessorResponse;
@@ -192,6 +193,7 @@ public class Transaction {
     private String networkTransactionId;
     private String orderId;
     private List<PackageDetails> packages;
+    private boolean partiallyAuthorized;
     private List<String> partialSettlementTransactionIds;
     private String paymentInstrumentType;
     private PayPalDetails paypalDetails;
@@ -210,6 +212,7 @@ public class Transaction {
     private String refundedTransactionId;
     private String refundId;
     private List<String> refundIds;
+    private String requestedAchType;
     private boolean retried;
     private String retriedTransactionId;
     private String retrievalReferenceNumber;
@@ -354,6 +357,8 @@ public class Transaction {
 
         achRejectReason = node.findString("ach-reject-reason");
         achReturnCode = node.findString("ach-return-code");
+        achType = node.findString("ach-type");
+        requestedAchType = node.findString("requested-ach-type");
         sepaDirectDebitReturnCode = node.findString("sepa-direct-debit-return-code");
         planId = node.findString("plan-id");
         processedWithNetworkToken = node.findBoolean("processed-with-network-token");
@@ -373,6 +378,10 @@ public class Transaction {
         recurring = node.findBoolean("recurring");
         refundedTransactionId = node.findString("refunded-transaction-id");
         refundId = node.findString("refund-id");
+
+        if (processorResponseCode != null) {
+            partiallyAuthorized = node.findString("processor-response-code").equals("1004");
+        }
 
         NodeWrapper riskDataNode = node.findFirst("risk-data");
         if (riskDataNode != null) {
@@ -671,6 +680,10 @@ public class Transaction {
         return packages;
     }
 
+    public boolean isPartiallyAuthorized() {
+        return partiallyAuthorized;
+    }
+
     public String getPlanId() {
         return planId;
     }
@@ -717,6 +730,14 @@ public class Transaction {
 
     public String getAchReturnCode() {
         return achReturnCode;
+    }
+
+    public String getAchType() {
+        return achType;
+    }
+
+    public String getRequestedAchType() {
+        return requestedAchType;
     }
 
     public String getMerchantAdviceCode() {

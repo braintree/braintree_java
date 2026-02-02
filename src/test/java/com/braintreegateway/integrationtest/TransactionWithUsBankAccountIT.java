@@ -245,4 +245,58 @@ public class TransactionWithUsBankAccountIT extends IntegrationTest implements M
         assertEquals(ValidationErrorCode.TRANSACTION_US_BANK_ACCOUNT_NOT_VERIFIED,
                 result.getErrors().forObject("transaction").onField("paymentMethodToken").get(0).getCode());
     }
+
+    @Test
+    public void saleWithUsBankAccountNonceAndAchType() {
+        TransactionRequest request = new TransactionRequest()
+            .merchantAccountId(MerchantAccountTestConstants.US_BANK_MERCHANT_ACCOUNT)
+            .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
+            .paymentMethodNonce(TestHelper.generateValidUsBankAccountNonce(gateway))
+            .options()
+                .submitForSettlement(true)
+                .storeInVault(true)
+                .usBankAccount()
+                    .achType("standard")
+                    .done()
+                .done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+
+        assertEquals(new BigDecimal("1000.00"), transaction.getAmount());
+        assertEquals(Transaction.Type.SALE, transaction.getType());
+        assertNotNull(transaction.getUsBankAccountDetails());
+
+        assertEquals("standard", transaction.getAchType());
+        assertEquals("standard", transaction.getRequestedAchType());
+
+        Transaction foundTransaction = gateway.transaction().find(transaction.getId());
+        assertEquals("standard", foundTransaction.getAchType());
+        assertEquals("standard", foundTransaction.getRequestedAchType());
+    }
+
+    @Test
+    public void findReturnsAchTypeAndRequestedAchTypeForSameDayAchWithSameDayRequested() {
+        Transaction transaction = gateway.transaction().find("sameday_ach_sameday_requested");
+
+        assertEquals("same_day", transaction.getAchType());
+        assertEquals("same_day", transaction.getRequestedAchType());
+    }
+
+    @Test
+    public void findReturnsAchTypeAndRequestedAchTypeForStandardAchWithSameDayRequested() {
+        Transaction transaction = gateway.transaction().find("standard_ach_sameday_requested");
+
+        assertEquals("standard", transaction.getAchType());
+        assertEquals("same_day", transaction.getRequestedAchType());
+    }
+
+    @Test
+    public void findReturnsAchTypeAndRequestedAchTypeForStandardAchWithStandardRequested() {
+        Transaction transaction = gateway.transaction().find("standard_ach_standard_requested");
+
+        assertEquals("standard", transaction.getAchType());
+        assertEquals("standard", transaction.getRequestedAchType());
+    }
 }

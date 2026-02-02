@@ -122,4 +122,21 @@ public class TransactionRequestTest {
         TransactionRequest request = new TransactionRequest().processingMerchantCategoryCode("5411");
         TestHelper.assertIncludes("<processingMerchantCategoryCode>5411</processingMerchantCategoryCode>", request.toXML());
     }
+
+    @Test
+    public void toXmlIncludesAcceptPartialAuthorization() {
+        TransactionRequest request = new TransactionRequest().acceptPartialAuthorization(true);
+        TestHelper.assertIncludes("<acceptPartialAuthorization>true</acceptPartialAuthorization>", request.toXML());
+    }
+
+    @Test
+    public void toXmlIncludesUsBankAccountOptionsAchType() {
+        TransactionRequest request = new TransactionRequest()
+            .options()
+                .usBankAccount()
+                    .achType("same_day")
+                    .done()
+                .done();
+        TestHelper.assertIncludes("<usBankAccount><achType>same_day</achType></usBankAccount>", request.toXML());
+    }
 }
