@@ -1,5 +1,8 @@
 # Changelog
 
+## unreleased
+* Add support to search by 'venmoUsername' in advanced search for transactions
+
 ## 3.48.0
 * Add `acceptPartialAuthorization` in `TransactionRequest` and `partiallyAuthorized` in `Transaction`
 * Deprecate transactions for `visa_checkout_card` and maintain search functionality

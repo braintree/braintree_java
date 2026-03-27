@@ -5355,6 +5355,36 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void searchOnVenmoUsername() {
+        TransactionRequest request = new TransactionRequest()
+            .merchantAccountId(FAKE_VENMO_ACCOUNT_MERCHANT_ACCOUNT_ID)
+            .amount(SandboxValues.TransactionAmount.AUTHORIZE.amount)
+            .paymentMethodNonce(Nonce.VenmoAccount);
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+        String venmoUsername = transaction.getVenmoAccountDetails().getUsername();
+        assertNotNull(venmoUsername);
+
+        TransactionSearchRequest matchingSearchRequest = new TransactionSearchRequest()
+            .id().is(transaction.getId())
+            .venmoUsername().is(venmoUsername);
+
+        ResourceCollection<Transaction> matchingCollection = gateway.transaction().search(matchingSearchRequest);
+        assertEquals(1, matchingCollection.getMaximumSize());
+        assertEquals(transaction.getId(), matchingCollection.getFirst().getId());
+
+        TransactionSearchRequest nonMatchingSearchRequest = new TransactionSearchRequest()
+            .id().is(transaction.getId())
+            .venmoUsername().is(venmoUsername + "-does-not-match");
+
+        ResourceCollection<Transaction> nonMatchingCollection = gateway.transaction().search(nonMatchingSearchRequest);
+        assertEquals(0, nonMatchingCollection.getMaximumSize());
+    }
+
+    @Test
     public void searchWithCreditCardNumberStartsWithEndsWith() {
         String creditCardToken = String.valueOf(new Random().nextInt());
 

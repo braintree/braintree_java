@@ -173,6 +173,10 @@ public class TransactionSearchRequest extends SearchRequest {
         return textNode("shipping_street_address");
     }
 
+    public TextNode<TransactionSearchRequest> venmoUsername() {
+        return textNode("venmo_username");
+    }
+
     public MultipleValueNode<TransactionSearchRequest, String> paymentInstrumentType() {
         return multiTypeNode("payment_instrument_type");
     }
