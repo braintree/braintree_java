@@ -125,10 +125,6 @@ public class TransactionSearchRequest extends SearchRequest {
         return textNode("paypal_authorization_id");
     }
 
-    public TextNode<TransactionSearchRequest> venmoUsername() {
-        return textNode("venmo_username");
-    }
-
     public TextNode<TransactionSearchRequest> processorAuthorizationCode() {
         return textNode("processor_authorization_code");
     }
@@ -175,6 +171,10 @@ public class TransactionSearchRequest extends SearchRequest {
 
     public TextNode<TransactionSearchRequest> shippingStreetAddress() {
         return textNode("shipping_street_address");
+    }
+
+    public TextNode<TransactionSearchRequest> venmoUsername() {
+        return textNode("venmo_username");
     }
 
     public MultipleValueNode<TransactionSearchRequest, String> paymentInstrumentType() {
