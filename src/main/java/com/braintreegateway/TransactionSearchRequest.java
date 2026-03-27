@@ -125,6 +125,10 @@ public class TransactionSearchRequest extends SearchRequest {
         return textNode("paypal_authorization_id");
     }
 
+    public TextNode<TransactionSearchRequest> venmoUsername() {
+        return textNode("venmo_username");
+    }
+
     public TextNode<TransactionSearchRequest> processorAuthorizationCode() {
         return textNode("processor_authorization_code");
     }
