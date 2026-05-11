@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.49.0
+* Add Local Payment Context support with `LocalPaymentContextGateway.create` and `LocalPaymentContextGateway.find` methods
+* Add support for MBWAY and CRYPTO payment types
+* Deprecate merchant create functionality
+* Add `acquirerReferenceNumber` to transaction search object
+* Add `apiRequestKey` (idempotency) in `TransactionRequest` and `TransactionRefundRequest` in `Transaction`
+* Add `surchargeAmount` to transaction object
+* Add support for apple pay card verifications
+
 ## 3.48.0
 * Add `acceptPartialAuthorization` in `TransactionRequest` and `partiallyAuthorized` in `Transaction`
 * Deprecate transactions for `visa_checkout_card` and maintain search functionality

@@ -610,8 +610,89 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithCustomerInternationalPhone() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number("5105105105105100").
+                expirationDate("05/2011").
+                done().
+            customer().
+                firstName("Dan").
+                lastName("Smith").
+                internationalPhone().
+                    countryCode("1").
+                    nationalNumber("3121234567").
+                    done().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        Customer customer = transaction.getCustomer();
+        assertEquals("Dan", customer.getFirstName());
+        assertEquals("Smith", customer.getLastName());
+        assertEquals("1", customer.getInternationalPhone().getCountryCode());
+        assertEquals("3121234567", customer.getInternationalPhone().getNationalNumber());
+    } 
+
+    @Test
+    public void saleWithInvalidCustomerNationalNumberReturnsError() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number("5105105105105100").
+                expirationDate("05/2011").
+                done().
+            customer().
+                firstName("Dan").
+                lastName("Smith").
+                internationalPhone().
+                    countryCode("1").
+                    nationalNumber("abc123").
+                    done().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess()); 
+        assertEquals(
+            ValidationErrorCode.CUSTOMER_INTERNATIONAL_PHONE_IS_INVALID,
+            result.getErrors().getAllDeepValidationErrors().get(0).getCode()
+        );
+
+    } 
+
+
+    @Test
+    public void saleWithInvalidCustomerInternationalCountryCodeReturnsError() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("100.00")).
+            creditCard().
+                number("5105105105105100").
+                expirationDate("05/2011").
+                done().
+            customer().
+                firstName("Dan").
+                lastName("Smith").
+                internationalPhone().
+                    countryCode("abc").
+                    nationalNumber("3121234567").
+                    done().
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess()); 
+        assertEquals(
+            ValidationErrorCode.CUSTOMER_INTERNATIONAL_COUNTRY_CODE_IS_INVALID,
+            result.getErrors().getAllDeepValidationErrors().get(0).getCode()
+        );
+
+    }
+
+    @Test
     public void saleWithExchangeRateQuoteId() {
         TransactionRequest request = new TransactionRequest().
+
             amount(TransactionAmount.AUTHORIZE.amount).
             exchangeRateQuoteId("dummyExchangeRateQuoteId-Brainree-Java").
             creditCard().
@@ -5313,6 +5394,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
             id().is(transaction.getId()).
+            acquirerReferenceNumber().is(transaction.getAcquirerReferenceNumber()).
             billingCompany().is("Braintree").
             billingCountryName().is("United States of America").
             billingExtendedAddress().is("Suite 123").
@@ -5418,9 +5500,9 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             }
             assertNotNull(first);
             assertEquals("RJCT", first.getAchReturnCode());
-            assertEquals("Bank accounts located outside of the U.S. are not supported.", first.getAchRejectReason());
+            assertEquals("Bank accounts located outside of the U.S. are not supported", first.getAchRejectReason());
             assertEquals("RJCT", first.getAchReturnResponses().get(0).getReasonCode());
-            assertEquals("Bank accounts located outside of the U.S. are not supported.", first.getAchReturnResponses().get(0).getRejectReason());
+            assertEquals("Bank accounts located outside of the U.S. are not supported", first.getAchReturnResponses().get(0).getRejectReason());
     }
 
     public void searchOnReasonAllReasonCodes() {
@@ -8938,5 +9020,21 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         assertTrue(transaction.isPartiallyAuthorized());
         assertEquals("1004", transaction.getProcessorResponseCode());
+    }
+
+    @Test
+    public void saleWithSurchargeAmount() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            surchargeAmount(new BigDecimal("1.00"));
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertEquals(new BigDecimal("1.00"), transaction.getSurchargeAmount());
     }
 }

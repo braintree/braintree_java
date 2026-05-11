@@ -7,6 +7,7 @@ import java.math.BigDecimal;
  */
 public class TransactionRefundRequest extends Request {
     private BigDecimal amount;
+    private String apiRequestKey;
     private String merchantAccountId;
     private String orderId;
 
@@ -15,6 +16,11 @@ public class TransactionRefundRequest extends Request {
 
     public TransactionRefundRequest amount(BigDecimal amount) {
         this.amount = amount;
+        return this;
+    }
+
+    public TransactionRefundRequest apiRequestKey(String apiRequestKey) {
+        this.apiRequestKey = apiRequestKey;
         return this;
     }
 
@@ -44,11 +50,10 @@ public class TransactionRefundRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        RequestBuilder builder = new RequestBuilder(root)
+        return new RequestBuilder(root)
             .addElement("amount", amount)
+            .addElement("api-request-key", apiRequestKey)
             .addElement("merchantAccountId", merchantAccountId)
             .addElement("orderId", orderId);
-
-        return builder;
     }
 }

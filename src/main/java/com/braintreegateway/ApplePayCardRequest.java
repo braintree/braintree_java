@@ -7,6 +7,7 @@ public class ApplePayCardRequest extends Request {
     private String eciIndicator;
     private String expirationMonth;
     private String expirationYear;
+    private String networkTransactionId;
     private String number;
     private String token;
     private ApplePayCardAddressRequest billingAddressRequest;
@@ -64,6 +65,11 @@ public class ApplePayCardRequest extends Request {
         return this;
     }
 
+    public ApplePayCardRequest networkTransactionId(String networkTransactionId) {
+        this.networkTransactionId = networkTransactionId;
+        return this;
+    }
+
     public ApplePayCardRequest number(String number) {
         this.number = number;
         return this;
@@ -101,6 +107,7 @@ public class ApplePayCardRequest extends Request {
             .addElement("eciIndicator", eciIndicator)
             .addElement("expirationMonth", expirationMonth)
             .addElement("expirationYear", expirationYear)
+            .addElement("networkTransactionId", networkTransactionId)
             .addElement("number", number)
             .addElement("options", optionsRequest)
             .addElement("token", token);

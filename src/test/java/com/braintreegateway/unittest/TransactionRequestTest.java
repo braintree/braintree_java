@@ -139,4 +139,22 @@ public class TransactionRequestTest {
                 .done();
         TestHelper.assertIncludes("<usBankAccount><achType>same_day</achType></usBankAccount>", request.toXML());
     }
+
+    @Test
+    public void toXmlIncludesApiRequestKey() {
+        TransactionRequest request = new TransactionRequest().apiRequestKey("test-api-key-123");
+        TestHelper.assertIncludes("<api-request-key>test-api-key-123</api-request-key>", request.toXML());
+    }
+
+    @Test
+    public void toXmlExcludesApiRequestKeyWhenNull() {
+        TransactionRequest request = new TransactionRequest().apiRequestKey(null);
+        assertFalse(request.toXML().contains("api-request-key"));
+    }
+
+    @Test
+    public void toXmlIncludeSurchargeAmount() {
+        TransactionRequest request = new TransactionRequest().surchargeAmount(new BigDecimal("1.00"));
+        TestHelper.assertIncludes("<surchargeAmount>1.00</surchargeAmount>", request.toXML());
+    }
 }

@@ -1,0 +1,22 @@
+{
+  "data": {
+    "node": {
+      "id": "payment-context-id",
+      "legacyId": "legacy-123",
+      "type": "MBWAY",
+      "amount": {
+        "value": "10.00",
+        "currencyIsoCode": "EUR"
+      },
+      "approvalUrl": "https://example.com/approve",
+      "merchantAccountId": "merchant-account-id",
+      "transactedAt": null,
+      "approvedAt": null,
+      "createdAt": "2025-12-31T00:00:00Z",
+      "updatedAt": "2025-12-31T01:00:00Z",
+      "expiredAt": null,
+      "paymentId": "payment-123",
+      "orderId": "order-456"
+    }
+  }
+}

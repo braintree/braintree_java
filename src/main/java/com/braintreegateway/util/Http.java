@@ -82,11 +82,11 @@ public class Http {
     }
 
     public NodeWrapper post(String url) {
-        return xmlHttpRequest(RequestMethod.POST, url, null, null);
+        return post(url, (String) null);
     }
 
     public NodeWrapper post(String url, Request request) {
-        return xmlHttpRequest(RequestMethod.POST, url, request.toXML(), null);
+        return post(url, request != null ? request.toXML() : null);
     }
 
     public NodeWrapper post(String url, String request) {
@@ -98,11 +98,15 @@ public class Http {
     }
 
     public NodeWrapper put(String url) {
-        return xmlHttpRequest(RequestMethod.PUT, url, null, null);
+        return put(url, (String) null);
     }
 
     public NodeWrapper put(String url, Request request) {
-        return xmlHttpRequest(RequestMethod.PUT, url, request.toXML(), null);
+        return put(url, request != null ? request.toXML() : null);
+    }
+
+    public NodeWrapper put(String url, String request) {
+        return xmlHttpRequest(RequestMethod.PUT, url, request, null);
     }
 
     private NodeWrapper xmlHttpRequest(RequestMethod requestMethod, String url) {

@@ -230,6 +230,7 @@ public class Transaction {
     private String shipsFromPostalCode;
     private Status status;
     private List<StatusEvent> statusHistory;
+    private BigDecimal surchargeAmount;
     private Map<String, String> customFields;
     private Subscription subscription;
     private SubscriptionDetails subscriptionDetails;
@@ -265,6 +266,7 @@ public class Transaction {
         merchantAccountId = node.findString("merchant-account-id");
         orderId = node.findString("order-id");
         scaExemptionRequested = EnumUtils.findByName(ScaExemption.class, node.findString("sca-exemption-requested"), null);
+        surchargeAmount = node.findBigDecimal("surcharge-amount");        
         NodeWrapper billingAddressNode = node.findFirst("billing");
         if (billingAddressNode != null) {
             billingAddress = new Address(billingAddressNode);
@@ -962,5 +964,9 @@ public class Transaction {
 
     public boolean isAccountFundingTransaction() {
         return accountFundingTransaction;
+    }
+
+    public BigDecimal getSurchargeAmount() {
+        return surchargeAmount;
     }
 }

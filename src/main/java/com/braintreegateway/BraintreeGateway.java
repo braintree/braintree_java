@@ -159,6 +159,15 @@ public class BraintreeGateway {
     }
 
     /**
+     * Returns a {@link LocalPaymentContextGateway} for creating and managing local payment contexts.
+     *
+     * @return a {@link LocalPaymentContextGateway}.
+     */
+    public LocalPaymentContextGateway localPaymentContext() {
+        return new LocalPaymentContextGateway(graphQLClient);
+    }
+
+    /**
      * Returns an {@link DiscountGateway} for interacting with {@link Discount}
      * objects.
      *
@@ -280,6 +289,11 @@ public class BraintreeGateway {
         return new MerchantAccountGateway(http, configuration);
     }
 
+    /**
+     * @deprecated MerchantGateway has been deprecated and will be removed in a future version.
+     */
+    // NEXT_MAJOR_VERSION remove this method
+    @Deprecated
     public MerchantGateway merchant() {
         return new MerchantGateway(http, configuration);
     }

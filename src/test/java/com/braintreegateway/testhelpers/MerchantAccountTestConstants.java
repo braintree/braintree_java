@@ -1,10 +1,12 @@
 package com.braintreegateway.testhelpers;
 
 public interface MerchantAccountTestConstants {
+    public static final String CARD_PROCESSOR_BRL_MERCHANT_ACCOUNT_ID = "card_processor_brl";
     public static final String DEFAULT_MERCHANT_ACCOUNT_ID = "sandbox_credit_card";
     public static final String NON_DEFAULT_MERCHANT_ACCOUNT_ID = "sandbox_credit_card_non_default";
     public static final String NON_DEFAULT_SUB_MERCHANT_ACCOUNT_ID = "sandbox_sub_merchant_account";
     public static final String SANDBOX_MASTER_MERCHANT_ACCOUNT = "sandbox_master_merchant_account";
+    public static final String SUSPENDED_MERCHANT_ACCOUNT_ID = "suspended_account";
     public static final String THREE_D_SECURE_MERCHANT_ACCOUNT_ID = "three_d_secure_merchant_account";
     public static final String INDIA_THREE_D_SECURE_MERCHANT_ACCOUNT_ID = "india_three_d_secure_merchant_account";
     public static final String PINLESS_DEBIT = "pinless_debit";

@@ -3,6 +3,10 @@ package com.braintreegateway;
 public class ApplePayCardOptionsRequest extends Request {
     private Boolean makeDefault;
     private ApplePayCardRequest parent;
+    private Boolean verifyCard;
+    private String verificationAccountType; // NEXT_MAJOR_VERSION - This should be enum with [credit, debit]
+    private String verificationAmount;
+    private String verificationMerchantAccountId;
 
     public ApplePayCardOptionsRequest() {}
 
@@ -22,6 +26,26 @@ public class ApplePayCardOptionsRequest extends Request {
         this.makeDefault = makeDefault;
         return this;
     }
+    
+    public ApplePayCardOptionsRequest verifyCard(Boolean verifyCard) {
+        this.verifyCard = verifyCard;
+        return this;
+    }
+
+    public ApplePayCardOptionsRequest verificationAccountType(String verificationAccountType) {
+        this.verificationAccountType = verificationAccountType;
+        return this;
+    }
+
+    public ApplePayCardOptionsRequest verificationAmount(String verificationAmount) {
+        this.verificationAmount = verificationAmount;
+        return this;
+    }
+
+    public ApplePayCardOptionsRequest verificationMerchantAccountId(String verificationMerchantAccountId) {
+        this.verificationMerchantAccountId = verificationMerchantAccountId;
+        return this;
+    }
 
     @Override
     public String toXML() {
@@ -29,6 +53,14 @@ public class ApplePayCardOptionsRequest extends Request {
     }
 
     protected RequestBuilder buildRequest(String root) {
-        return new RequestBuilder(root).addElement("makeDefault", makeDefault);
+        RequestBuilder builder = new RequestBuilder(root);
+
+        builder.addElement("makeDefault", makeDefault);
+        builder.addElement("verifyCard", verifyCard);
+        builder.addElement("verificationAccountType", verificationAccountType);
+        builder.addElement("verificationAmount", verificationAmount);
+        builder.addElement("verificationMerchantAccountId", verificationMerchantAccountId);
+
+        return builder;
     }
 }

@@ -1,13 +1,14 @@
 package com.braintreegateway;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.braintreegateway.Transaction.Type;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Provides methods to interact with {@link Transaction Transactions}.
@@ -214,7 +215,17 @@ public class TransactionGateway {
      * @return {@link Result}.
      */
     public Result<Transaction> voidTransaction(String id) {
-        NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/void");
+        return voidTransaction(id, null);
+    }
+
+    /**
+     * Voids the transaction with the given id.
+     * @param id of the transaction to void.
+     * @param request the request. Request can be null. Request is used to support idempotency.
+     * @return {@link Result}.
+     */
+    public Result<Transaction> voidTransaction(String id, TransactionVoidRequest request) {
+        NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/void", request);
         return new Result<Transaction>(response, Transaction.class);
     }
 

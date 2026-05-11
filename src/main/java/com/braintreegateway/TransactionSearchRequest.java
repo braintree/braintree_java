@@ -5,6 +5,10 @@ public class TransactionSearchRequest extends SearchRequest {
         return textNode("id");
     }
 
+    public TextNode<TransactionSearchRequest> acquirerReferenceNumber() {
+        return textNode("acquirer_reference_number");
+    }
+
     public TextNode<TransactionSearchRequest> billingCompany() {
         return textNode("billing_company");
     }

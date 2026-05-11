@@ -2,6 +2,8 @@ package com.braintreegateway;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.braintreegateway.enums.Business;
@@ -47,6 +49,7 @@ public class ApplePayCard implements PaymentMethod {
     private List<Subscription> subscriptions;
     private String token;
     private Calendar updatedAt;
+    private CreditCardVerification verification;
 
     public ApplePayCard(NodeWrapper node) {
         this.bin = node.findString("bin");
@@ -91,6 +94,26 @@ public class ApplePayCard implements PaymentMethod {
             this.billingAddress = new Address(billingAddressResponse);
         }
 
+        final List<NodeWrapper> verificationNodes = node.findAll("verifications/verification");
+        verification = findNewestVerification(verificationNodes);
+
+    }
+
+    private CreditCardVerification findNewestVerification(List<NodeWrapper> verificationNodes) {
+        if (verificationNodes.size() > 0) {
+            Collections.sort(verificationNodes, new Comparator<NodeWrapper>() {
+                public int compare(NodeWrapper node1, NodeWrapper node2) {
+                    Calendar createdAt1 = node1.findDateTime("created-at");
+                    Calendar createdAt2 = node2.findDateTime("created-at");
+
+                    return createdAt2.compareTo(createdAt1);
+                }
+            });
+
+            return new CreditCardVerification(verificationNodes.get(0));
+        }
+
+        return null;
     }
 
     public Address getBillingAddress() {
@@ -223,6 +246,10 @@ public class ApplePayCard implements PaymentMethod {
 
     public Calendar getUpdatedAt() {
         return updatedAt;
+    }
+
+    public CreditCardVerification getVerification() {
+        return verification;
     }
 
     public boolean isDefault() {

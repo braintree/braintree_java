@@ -1,0 +1,11 @@
+{
+  "errors": [
+    {
+      "message": "Invalid merchant account",
+      "extensions": {
+        "errorClass": "VALIDATION",
+        "legacyCode": "91503"
+      }
+    }
+  ]
+}

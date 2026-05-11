@@ -39,6 +39,31 @@ pipeline {
             }
           }
         }
+
+        stage("SonarQube") {
+          agent {
+            node {
+              label ""
+              customWorkspace "workspace/${REPO_NAME}-sonar"
+            }
+          }
+
+          steps {
+            script {
+              sh "docker build -t braintree-java ."
+              sh "docker run --rm -v \"\$(pwd):\$(pwd)\" -w \"\$(pwd)\" braintree-java /bin/bash -l -c 'mvn test'"
+              executeSonarQubeScan()
+            }
+          }
+
+          post {
+            failure {
+              script {
+                FAILED_STAGE = env.STAGE_NAME
+              }
+            }
+          }
+        }
       }
     }
 
@@ -48,7 +73,7 @@ pipeline {
       }
 
       parallel {
-        stage("Java 8 Stretch") {
+        stage("Java 8 Bookworm") {
           agent {
             node {
               label ""
@@ -57,7 +82,7 @@ pipeline {
           }
 
           steps {
-            build job: 'java_clientlibrary-8-stretch_server_sdk_master', wait: true
+            build job: 'java_8-bookworm_server_sdk_master', wait: true
           }
 
           post {
@@ -69,7 +94,7 @@ pipeline {
           }
         }
 
-        stage("Java 11 Stretch") {
+        stage("Java 11 Bullseye") {
           agent {
             node {
               label ""
@@ -78,7 +103,7 @@ pipeline {
           }
 
           steps {
-            build job: 'java_clientlibrary-11-stretch_server_sdk_master', wait: true
+            build job: 'java_maven_11-bullseye_server_sdk_master', wait: true
           }
 
           post {

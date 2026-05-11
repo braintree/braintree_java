@@ -17,6 +17,7 @@ public class TransactionRequest extends Request {
     private Boolean acceptPartialAuthorization;
     private BigDecimal amount;
     private TransactionAndroidPayCardRequest androidPayCardRequest;
+    private String apiRequestKey;
     private TransactionApplePayCardRequest applePayCardRequest;
     private String billingAddressId;
     private TransactionAddressRequest billingAddressRequest;
@@ -61,6 +62,7 @@ public class TransactionRequest extends Request {
     private BigDecimal shippingTaxAmount;
     private String shipsFromPostalCode;
     private String source;
+    private BigDecimal surchargeAmount;
     private BigDecimal taxAmount;
     private Boolean taxExempt;
     private String threeDSecureAuthenticationId;
@@ -93,6 +95,11 @@ public class TransactionRequest extends Request {
     public TransactionAndroidPayCardRequest androidPayCardRequest() {
         androidPayCardRequest = new TransactionAndroidPayCardRequest(this);
         return androidPayCardRequest;
+    }
+
+    public TransactionRequest apiRequestKey(String apiRequestKey) {
+        this.apiRequestKey = apiRequestKey;
+        return this;
     }
 
     public TransactionApplePayCardRequest applePayCardRequest() {
@@ -331,6 +338,11 @@ public class TransactionRequest extends Request {
         return this;
     }
 
+    public TransactionRequest surchargeAmount(BigDecimal surchargeAmount) {
+        this.surchargeAmount = surchargeAmount;
+        return this;
+    }
+
     public TransactionRequest taxAmount(BigDecimal taxAmount) {
         this.taxAmount = taxAmount;
         return this;
@@ -421,6 +433,7 @@ public class TransactionRequest extends Request {
             .addElement("acceptPartialAuthorization", acceptPartialAuthorization)
             .addElement("amount", amount)
             .addElement("androidPayCard", androidPayCardRequest)
+            .addElement("api-request-key", apiRequestKey)
             .addElement("applePayCard", applePayCardRequest)
             .addElement("billing", billingAddressRequest)
             .addElement("billingAddressId", billingAddressId)
@@ -463,6 +476,7 @@ public class TransactionRequest extends Request {
             .addElement("shippingAmount", shippingAmount)
             .addElement("shippingTaxAmount", shippingTaxAmount)
             .addElement("shipsFromPostalCode", shipsFromPostalCode)
+            .addElement("surchargeAmount", surchargeAmount)
             .addElement("transactionSource", source)
             .addElement("taxAmount", taxAmount)
             .addElement("taxExempt", taxExempt)

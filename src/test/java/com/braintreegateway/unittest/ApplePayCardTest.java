@@ -53,4 +53,29 @@ public class ApplePayCardTest {
         assertEquals(Corporate.NO, card.getCorporate());
         assertEquals(Purchase.NO, card.getPurchase());
     }
+
+    @Test
+    public void testVerificationIsTheLatestVerification() {
+        String xml = "<apple-pay-card>"
+                     + "<verifications>"
+                     + "    <verification>"
+                     + "        <created-at type=\"datetime\">2014-11-20T17:27:15Z</created-at>"
+                     + "        <id>123</id>"
+                     + "    </verification>"
+                     + "    <verification>"
+                     + "        <created-at type=\"datetime\">2014-11-20T17:27:18Z</created-at>"
+                     + "        <id>932</id>"
+                     + "    </verification>"
+                     + "    <verification>"
+                     + "        <created-at type=\"datetime\">2014-11-20T17:27:17Z</created-at>"
+                     + "        <id>456</id>"
+                     + "    </verification>"
+                     + "</verifications>"
+                   + "</apple-pay-card>";
+
+        SimpleNodeWrapper applePayCardNode = SimpleNodeWrapper.parse(xml);
+        ApplePayCard card = new ApplePayCard(applePayCardNode);
+
+        assertEquals("932", card.getVerification().getId());
+    }
 }

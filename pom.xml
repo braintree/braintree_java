@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.braintreepayments.gateway</groupId>
     <artifactId>braintree-java</artifactId>
-    <version>3.48.1-SNAPSHOT</version>
+    <version>3.49.0-SNAPSHOT</version>
     <description>Java Client Library for Braintree Payments Gateway</description>
     <packaging>bundle</packaging>
     <name>Braintree Gateway Java Client Library</name>
@@ -37,7 +37,7 @@
       <developerConnection>
         ${scmConnection}
       </developerConnection>
-      <tag>3.48.0</tag>
+      <tag>3.49.0</tag>
     </scm>
 
     <developers>
@@ -261,6 +261,25 @@
                       <checkModificationExclude>pom.xml</checkModificationExclude>
                   </checkModificationExcludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.11</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>

@@ -15,6 +15,7 @@ public class CreditCardVerification {
     private BigDecimal amount;
     private String aniFirstNameResponseCode;
     private String aniLastNameResponseCode;
+    private ApplePayDetails applePayDetails;
     private String avsErrorResponseCode;
     private String avsPostalCodeResponseCode;
     private String avsStreetAddressResponseCode;
@@ -74,6 +75,11 @@ public class CreditCardVerification {
             this.creditCard = new CreditCard(creditCardNode);
         }
 
+        NodeWrapper applePayDetailsNode = node.findFirst("apple-pay");
+        if (applePayDetailsNode != null) {
+            this.applePayDetails = new ApplePayDetails(applePayDetailsNode);
+        }
+
         NodeWrapper billingAddressNode = node.findFirst("billing");
         if (billingAddressNode != null) {
             this.billingAddress = new Address(billingAddressNode);
@@ -84,6 +90,10 @@ public class CreditCardVerification {
 
     public BigDecimal getAmount() {
         return amount;
+    }
+
+    public ApplePayDetails getApplePayDetails() {
+        return applePayDetails;
     }
 
     public String getAniFirstNameResponseCode() {

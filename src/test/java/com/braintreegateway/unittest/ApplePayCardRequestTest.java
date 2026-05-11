@@ -22,6 +22,7 @@ public class ApplePayCardRequestTest {
             eciIndicator("eci-indicator").
             expirationMonth("expiration-month").
             expirationYear("expiration-year").
+            networkTransactionId("network-transaction-id").
             number("number").
             options().
                 makeDefault(true).
@@ -39,6 +40,7 @@ public class ApplePayCardRequestTest {
             + "  <eciIndicator>eci-indicator</eciIndicator>\n"
             + "  <expirationMonth>expiration-month</expirationMonth>\n"
             + "  <expirationYear>expiration-year</expirationYear>\n"
+            + "  <networkTransactionId>network-transaction-id</networkTransactionId>\n"
             + "  <number>number</number>\n"
             + "  <options>\n"
             + "    <makeDefault>true</makeDefault>\n"

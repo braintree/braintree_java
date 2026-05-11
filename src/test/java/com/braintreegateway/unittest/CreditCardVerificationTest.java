@@ -81,4 +81,18 @@ public class CreditCardVerificationTest {
 
     assertEquals("V0010013019339005665779448477", verification.getCreditCard().getPaymentAccountReference());
   }
+
+  @Test
+  public void testVerificationPaymentAccountReferenceFromApplePay() {
+    String xml = "<verification>"
+                 + "    <apple-pay>"
+                 + "        <payment-account-reference>V0010013019339005665779448477</payment-account-reference>"
+                 + "    </apple-pay>"
+                 + "</verification>";
+
+    SimpleNodeWrapper verificationNode = SimpleNodeWrapper.parse(xml);
+    CreditCardVerification verification = new CreditCardVerification(verificationNode);
+
+    assertEquals("V0010013019339005665779448477", verification.getApplePayDetails().getPaymentAccountReference());
+  }
 }

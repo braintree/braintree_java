@@ -1,0 +1,22 @@
+{
+  "data": {
+    "createLocalPaymentContext": {
+      "paymentContext": {
+        "id": "payment-context-id",
+        "legacyId": "legacy-123",
+        "type": "MBWAY",
+        "paymentId": "payment-123",
+        "approvalUrl": "https://example.com/approve",
+        "merchantAccountId": "merchant-account-id",
+        "orderId": null,
+        "createdAt": "2025-12-31T00:00:00Z",
+        "transactedAt": null,
+        "approvedAt": null,
+        "amount": {
+          "value": "10.00",
+          "currencyCode": "EUR"
+        }
+      }
+    }
+  }
+}

@@ -826,6 +826,233 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void createVerificationWithApplePayCard() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.ApplePayVisa).
+            applePayCard().
+                options().
+                    verifyCard(true).
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    verificationAmount("10.00").
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        CreditCardVerification verification = customer.getApplePayCards().get(0).getVerification();
+        assertNotNull(verification);
+        assertEquals(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID, verification.getMerchantAccountId());
+        assertEquals(new BigDecimal("10.00"), verification.getAmount());
+    }
+
+    @Test
+    public void createVerificationWithApplePayCardWithOnlyVerifyCardSetToTrue() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.ApplePayVisa).
+            applePayCard().
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        CreditCardVerification verification = customer.getApplePayCards().get(0).getVerification();
+        assertNotNull(verification);
+    }
+
+    @Test
+    public void doesNotCreateVerificationWithApplePayCardWithVerifyCardSetToFalse() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.ApplePayVisa).
+            applePayCard().
+                options().
+                    verifyCard(false).
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    verificationAmount("10.00").
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        CreditCardVerification verification = customer.getApplePayCards().get(0).getVerification();
+        assertNull(verification);
+    }
+
+    @Test
+    public void errorsOnNegativeVerificationAmountCreateWithApplePayCard() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.ApplePayVisa).
+            applePayCard().
+                options().
+                    verifyCard(true).
+                    verificationAmount("-10.00").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_AMOUNT_CANNOT_BE_NEGATIVE,
+                result.getErrors().forObject("apple-pay").forObject("options").onField("verification-amount").get(0).getCode());
+    }
+
+    @Test
+    public void errorsWhenVerificationAmountFormatIsInvalidForApplePay() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.ApplePayVisa).
+            applePayCard().
+                options().
+                    verifyCard(true).
+                    verificationAmount("0.001").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_AMOUNT_FORMAT_IS_INVALID,
+                result.getErrors().forObject("apple-pay").forObject("options").onField("verification-amount").get(0).getCode());
+    }
+
+    @Test
+    public void errorsWhenVerificationAmountIsNotSupportedByProcessorOnApplePay() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.ApplePayVisa).
+            applePayCard().
+                options().
+                    verifyCard(true).
+                    verificationAmount("0.01").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.CARD_PROCESSOR_BRL_MERCHANT_ACCOUNT_ID).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_AMOUNT_NOT_SUPPORTED_BY_PROCESSOR,
+                result.getErrors().forObject("apple-pay").forObject("options").onField("verification-amount").get(0).getCode());
+    }
+
+    @Test
+    public void errorsWhenVerificationAmountIsTooLargeOnApplePay() {
+        int tooLargeAmount = (int) (Math.pow(2,31) / 100 + 1);
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.ApplePayVisa).
+            applePayCard().
+                options().
+                    verifyCard(true).
+                    verificationAmount(String.valueOf(tooLargeAmount)).
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_AMOUNT_IS_TOO_LARGE,
+                result.getErrors().forObject("apple-pay").forObject("options").onField("verification-amount").get(0).getCode());
+    }
+
+    @Test
+    public void errorsWhenVerificationMerchantAccountIsInvalidOnApplePay() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.ApplePayVisa).
+            applePayCard().
+                options().
+                    verifyCard(true).
+                    verificationAmount("10.00").
+                    verificationMerchantAccountId("BAD_MERCHANT_ACCOUNT").
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_MERCHANT_ACCOUNT_ID_IS_INVALID,
+                result.getErrors().forObject("apple-pay").forObject("options").onField("verification-merchant-account-id").get(0).getCode());
+    }
+
+    @Test
+    public void errorsWhenVerificationMerchantAccountIsSuspendedOnApplePay() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.ApplePayVisa).
+            applePayCard().
+                options().
+                    verifyCard(true).
+                    verificationAmount("10.00").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.SUSPENDED_MERCHANT_ACCOUNT_ID).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_MERCHANT_ACCOUNT_IS_SUSPENDED,
+                result.getErrors().forObject("apple-pay").forObject("options").onField("verification-merchant-account-id").get(1).getCode());
+    }
+
+    @Test
+    public void errorsWhenNetworkTransactionIdIsPresentForApplePayVerification() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.ApplePayVisa).
+            applePayCard().
+                networkTransactionId("test123").
+                options().
+                    verifyCard(true).
+                    verificationAmount("10.00").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_NETWORK_TRANSACTION_ID_NOT_ALLOWED,
+                result.getErrors().forObject("apple-pay").onField("network-transaction-id-not-allowed").get(0).getCode());
+    }
+
+    @Test
+    public void errorsForInvalidVerificationAccountTypeForApplePay() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.ApplePayVisa).
+            applePayCard().
+                options().
+                    verifyCard(true).
+                    verificationAmount("10.00").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    verificationAccountType("ach").
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_ACCOUNT_TYPE_IS_INVALID,
+                result.getErrors().forObject("apple-pay").onField("verification-account-type").get(0).getCode());
+    }
+
+
+    @Test
+    public void errorsForUnsupportedVerificationAccountTypeForApplePay() {
+        CustomerRequest request = new CustomerRequest().
+            paymentMethodNonce(Nonce.ApplePayVisa).
+            applePayCard().
+                options().
+                    verifyCard(true).
+                    verificationAmount("10.00").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    verificationAccountType("credit").
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_ACCOUNT_TYPE_NOT_SUPPORTED,
+                result.getErrors().forObject("apple-pay").forObject("options").onField("verification-account-type").get(0).getCode());
+    }
+
+    @Test
     public void createWithApplePayCardRequest() {
         CustomerRequest request = new CustomerRequest().
             firstName("Jane").
@@ -864,6 +1091,40 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void createVerificationWithApplePayCardRequest() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Jane").
+            lastName("Doe").
+            applePayCard().
+                billingAddress().
+                    postalCode("98126").
+                    done().
+                cryptogram("01010101010101010101").
+                cardholderName("Jane Doe").
+                eciIndicator("5").
+                expirationMonth("10").
+                expirationYear("2024").
+                number("4111111111111111").
+                options().
+                    makeDefault(true).
+                    verifyCard(true).
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    verificationAmount("15.00").
+                    done().
+                token(String.valueOf(new Random().nextInt())).
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        CreditCardVerification verification = customer.getApplePayCards().get(0).getVerification();
+        assertNotNull(verification);
+        assertEquals(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID, verification.getMerchantAccountId());
+        assertEquals(new BigDecimal("15.00"), verification.getAmount());
+    }
+
+    @Test
     public void createWithAndroidPayProxyCard() {
         CustomerRequest request = new CustomerRequest().
             paymentMethodNonce(Nonce.AndroidPayDiscover);
@@ -888,7 +1149,6 @@ public class CustomerIT extends IntegrationTest {
                 billingAddress().
                     postalCode("98126").
                     done().
-                cryptogram("01010101010101010101").
                 cardholderName("John Doe").
                 expirationMonth("05").
                 expirationYear("2024").
@@ -1907,7 +2167,6 @@ public class CustomerIT extends IntegrationTest {
             billingAddress().
                 postalCode("98126").
                 done().
-            cryptogram("01010101010101010101").
             cardholderName("Billy Bob").
             expirationMonth("10").
             expirationYear("2024").
@@ -2034,6 +2293,376 @@ public class CustomerIT extends IntegrationTest {
         assertEquals("10", applePayCard.getExpirationMonth());
         assertEquals("2024", applePayCard.getExpirationYear());
         assertTrue(applePayCard.isDefault());
+    }
+
+    @Test
+    public void updateWithApplePayCardRequestWithVerification() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Billy").
+            lastName("Bob");
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            applePayCard().
+                billingAddress().
+                    postalCode("98126").
+                    done().
+                cryptogram("01010101010101010101").
+                cardholderName("Billy Bob").
+                eciIndicator("5").
+                expirationMonth("10").
+                expirationYear("2024").
+                number("4111111111111111").
+                options().
+                    makeDefault(true).
+                    verifyCard(true).
+                    verificationAmount("3.50").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    done().
+                token(String.valueOf(new Random().nextInt())).
+                done();
+
+        Result<Customer> result = gateway.customer().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+        assertTrue(updateResult.isSuccess());
+
+        Customer updatedCustomer = updateResult.getTarget();
+        CreditCardVerification verification = updatedCustomer.getApplePayCards().get(0).getVerification();
+        assertNotNull(verification);
+        assertEquals(new BigDecimal("3.50"), verification.getAmount());
+        assertEquals(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID, verification.getMerchantAccountId());
+    }
+
+    @Test
+    public void updateWithApplePayCardRequestWithVerificationOnlyWithVerifyCardTrue() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Joe");
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            applePayCard().
+                cryptogram("01010101010101010101").
+                expirationMonth("10").
+                expirationYear("2024").
+                number("4111111111111111").
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+        assertTrue(updateResult.isSuccess());
+
+        Customer updatedCustomer = updateResult.getTarget();
+        CreditCardVerification verification = updatedCustomer.getApplePayCards().get(0).getVerification();
+        assertNotNull(verification);
+    }
+
+    @Test
+    public void updateWithApplePayCardRequestDoesNotCreateVerificationWithVerifyCardFalse() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Joe");
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            applePayCard().
+                cryptogram("01010101010101010101").
+                expirationMonth("10").
+                expirationYear("2024").
+                number("4111111111111111").
+                options().
+                    verifyCard(false).
+                    verificationAmount("10.00").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+        assertTrue(updateResult.isSuccess());
+
+        Customer updatedCustomer = updateResult.getTarget();
+        CreditCardVerification verification = updatedCustomer.getApplePayCards().get(0).getVerification();
+        assertNull(verification);
+    }
+
+    @Test
+    public void errorOnNegativeVerificationAmountUpdateWithApplePayCardRequest() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Billy").
+            lastName("Bob");
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            applePayCard().
+                billingAddress().
+                    postalCode("98126").
+                    done().
+                cryptogram("01010101010101010101").
+                cardholderName("Billy Bob").
+                eciIndicator("5").
+                expirationMonth("10").
+                expirationYear("2024").
+                number("4111111111111111").
+                options().
+                    makeDefault(true).
+                    verifyCard(true).
+                    verificationAmount("-10.00").
+                    done().
+                token(String.valueOf(new Random().nextInt())).
+                done();
+
+        Result<Customer> result = gateway.customer().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+
+        assertFalse(updateResult.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_AMOUNT_CANNOT_BE_NEGATIVE,
+                updateResult.getErrors().forObject("apple-pay").forObject("options").onField("verification-amount").get(0).getCode());
+    }
+
+    @Test
+    public void errorOnVerificationAmountFormatIsInvalidForUpdateApplePayCardRequest() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Joe");
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            applePayCard().
+                cryptogram("01010101010101010101").
+                expirationMonth("10").
+                expirationYear("2024").
+                number("4111111111111111").
+                options().
+                    verifyCard(true).
+                    verificationAmount("0.001").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+
+        assertFalse(updateResult.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_AMOUNT_FORMAT_IS_INVALID,
+                updateResult.getErrors().forObject("apple-pay").forObject("options").onField("verification-amount").get(0).getCode());
+    }
+
+    @Test
+    public void errorOnVerificationAmountFormatNotSupportedByProcessorForUpdateApplePayCardRequest() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Joe");
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            applePayCard().
+                cryptogram("01010101010101010101").
+                expirationMonth("10").
+                expirationYear("2024").
+                number("4111111111111111").
+                options().
+                    verifyCard(true).
+                    verificationAmount("0.01").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.CARD_PROCESSOR_BRL_MERCHANT_ACCOUNT_ID).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+
+        assertFalse(updateResult.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_AMOUNT_NOT_SUPPORTED_BY_PROCESSOR,
+                updateResult.getErrors().forObject("apple-pay").forObject("options").onField("verification-amount").get(0).getCode());
+    }
+
+    @Test
+    public void errorOnVerificationAmountIsTooLargeForUpdateApplePayCardRequest() {
+        int tooLargeAmount = (int) (Math.pow(2,31) / 100 + 1);
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Joe");
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            applePayCard().
+                cryptogram("01010101010101010101").
+                expirationMonth("10").
+                expirationYear("2024").
+                number("4111111111111111").
+                options().
+                    verifyCard(true).
+                    verificationAmount(String.valueOf(tooLargeAmount)).
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+
+        assertFalse(updateResult.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_AMOUNT_IS_TOO_LARGE,
+                updateResult.getErrors().forObject("apple-pay").forObject("options").onField("verification-amount").get(0).getCode());
+    }
+
+    @Test
+    public void errorOnVerificationMerchantAccountIdIsInvalidForUpdateApplePayCardRequest() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Joe");
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            applePayCard().
+                cryptogram("01010101010101010101").
+                expirationMonth("10").
+                expirationYear("2024").
+                number("4111111111111111").
+                options().
+                    verifyCard(true).
+                    verificationAmount("10.00").
+                    verificationMerchantAccountId("BAD_MERCHANT_ACCOUNT").
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+
+        assertFalse(updateResult.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_MERCHANT_ACCOUNT_ID_IS_INVALID,
+                updateResult.getErrors().forObject("apple-pay").forObject("options").onField("verification-merchant-account-id").get(0).getCode());
+    }
+
+    @Test
+    public void errorOnVerificationMerchantAccountIsSuspendedForUpdateApplePayCardRequest() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Joe");
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            applePayCard().
+                cryptogram("01010101010101010101").
+                expirationMonth("10").
+                expirationYear("2024").
+                number("4111111111111111").
+                options().
+                    verifyCard(true).
+                    verificationAmount("10.00").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.SUSPENDED_MERCHANT_ACCOUNT_ID).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+
+        assertFalse(updateResult.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_MERCHANT_ACCOUNT_IS_SUSPENDED,
+                updateResult.getErrors().forObject("apple-pay").forObject("options").onField("verification-merchant-account-id").get(1).getCode());
+    }
+
+    @Test
+    public void errorOnNetworkTransactionIdPresentForUpdateApplePayCardRequest() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Joe");
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            applePayCard().
+                cryptogram("01010101010101010101").
+                expirationMonth("10").
+                expirationYear("2024").
+                number("4111111111111111").
+                networkTransactionId("test123").
+                options().
+                    verifyCard(true).
+                    verificationAmount("10.00").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+
+        assertFalse(updateResult.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_NETWORK_TRANSACTION_ID_NOT_ALLOWED,
+                updateResult.getErrors().forObject("apple-pay").onField("network-transaction-id-not-allowed").get(0).getCode());
+    }
+
+    @Test
+    public void errorOnInvalidVerificationAccountTypeForUpdateApplePayCardRequest() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Joe");
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            applePayCard().
+                cryptogram("01010101010101010101").
+                expirationMonth("10").
+                expirationYear("2024").
+                number("4111111111111111").
+                options().
+                    verifyCard(true).
+                    verificationAmount("10.00").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    verificationAccountType("ach").
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+
+        assertFalse(updateResult.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_ACCOUNT_TYPE_IS_INVALID,
+                updateResult.getErrors().forObject("apple-pay").onField("verification-account-type").get(0).getCode());
+    }
+
+    @Test
+    public void errorOnVerificationAccountTypeNotSupportedForUpdateApplePayCardRequest() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Joe");
+
+        CustomerRequest updateRequest = new CustomerRequest().
+            applePayCard().
+                cryptogram("01010101010101010101").
+                expirationMonth("10").
+                expirationYear("2024").
+                number("4111111111111111").
+                options().
+                    verifyCard(true).
+                    verificationAmount("10.00").
+                    verificationMerchantAccountId(MerchantAccountTestConstants.NON_DEFAULT_MERCHANT_ACCOUNT_ID).
+                    verificationAccountType("credit").
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(createRequest);
+        assertTrue(result.isSuccess());
+
+        Customer customer = result.getTarget();
+        Result<Customer> updateResult = gateway.customer().update(customer.getId(), updateRequest);
+
+        assertFalse(updateResult.isSuccess());
+        assertEquals(ValidationErrorCode.APPLE_PAY_OPTIONS_VERIFICATION_ACCOUNT_TYPE_NOT_SUPPORTED,
+                updateResult.getErrors().forObject("apple-pay").forObject("options").onField("verification-account-type").get(0).getCode());
     }
 
     @Test
