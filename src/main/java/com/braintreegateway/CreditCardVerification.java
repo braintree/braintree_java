@@ -27,6 +27,7 @@ public class CreditCardVerification {
     private GatewayRejectionReason gatewayRejectionReason;
     private String graphqlId;
     private String id;
+    private String mastercardTransactionLinkId;
     private String merchantAccountId;
     private String networkResponseCode;
     private String networkResponseText;
@@ -40,6 +41,7 @@ public class CreditCardVerification {
     
     public CreditCardVerification(NodeWrapper node) {
         this.amount = node.findBigDecimal("amount");
+        this.mastercardTransactionLinkId = node.findString("mastercard-transaction-link-id");
         this.aniFirstNameResponseCode = node.findString("ani-first-name-response-code");
         this.aniLastNameResponseCode = node.findString("ani-last-name-response-code");
         this.avsErrorResponseCode = node.findString("avs-error-response-code");
@@ -94,6 +96,10 @@ public class CreditCardVerification {
 
     public ApplePayDetails getApplePayDetails() {
         return applePayDetails;
+    }
+   
+    public String getMastercardTransactionLinkId() {
+        return mastercardTransactionLinkId;
     }
 
     public String getAniFirstNameResponseCode() {

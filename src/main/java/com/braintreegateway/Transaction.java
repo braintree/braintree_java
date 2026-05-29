@@ -181,6 +181,7 @@ public class Transaction {
     private Integer installmentCount;
     private List<Installment> installments;
     private LocalPaymentDetails localPaymentDetails;
+    private String mastercardTransactionLinkId;
     private MasterpassCardDetails masterpassCardDetails;
     private String merchantAccountId;
     private String merchantAdviceCode;
@@ -249,6 +250,7 @@ public class Transaction {
     public Transaction(NodeWrapper node) {
         accountFundingTransaction = node.findBoolean("account-funding-transaction");
         amount = node.findBigDecimal("amount");
+        mastercardTransactionLinkId = node.findString("mastercard-transaction-link-id");
         avsErrorResponseCode = node.findString("avs-error-response-code");
         avsPostalCodeResponseCode = node.findString("avs-postal-code-response-code");
         avsStreetAddressResponseCode = node.findString("avs-street-address-response-code");
@@ -513,6 +515,10 @@ public class Transaction {
 
     public BigDecimal getAmount() {
         return amount;
+    }
+
+    public String getMastercardTransactionLinkId() {
+        return mastercardTransactionLinkId;
     }
 
     public String getAvsErrorResponseCode() {

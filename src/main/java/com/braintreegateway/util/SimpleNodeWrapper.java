@@ -13,7 +13,23 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class SimpleNodeWrapper extends NodeWrapper {
 
-    private static SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+    private static final SAXParserFactory saxParserFactory;
+    private static final Exception saxParserFactoryInitError;
+
+    static {
+        SAXParserFactory factory = null;
+        Exception initError = null;
+        try {
+            factory = SAXParserFactory.newInstance();
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        } catch (Exception e) {
+            initError = e;
+        }
+        saxParserFactory = factory;
+        saxParserFactoryInitError = initError;
+    }
 
     private String name;
     private Map<String, String> attributes = new HashMap<String, String>();
@@ -24,6 +40,9 @@ public class SimpleNodeWrapper extends NodeWrapper {
     }
 
     public static SimpleNodeWrapper parse(String xml) {
+        if (saxParserFactoryInitError != null) {
+            throw new IllegalArgumentException("Failed to configure SAXParserFactory securely", saxParserFactoryInitError);
+        }
         try {
             InputSource source = new InputSource(new StringReader(xml));
             SAXParser parser = saxParserFactory.newSAXParser();

@@ -783,4 +783,49 @@ public class CreditCardVerificationIT extends IntegrationTest {
         assertNotNull(verification.getCreditCard());
         assertNull(verification.getCreditCard().getPaymentAccountReference());
     }
+
+    @Test
+    public void testVerificationHasMastercardTransactionLinkId() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2032").
+                done().
+            options().
+                amount("5.00").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+        CreditCardVerification verification = result.getTarget();
+        assertEquals(CreditCardVerification.Status.VERIFIED, verification.getStatus());
+        assertEquals("1000", verification.getProcessorResponseCode());
+        assertEquals("Approved", verification.getProcessorResponseText());
+        assertEquals(ProcessorResponseType.APPROVED, verification.getProcessorResponseType());
+
+        String linkId = verification.getMastercardTransactionLinkId();
+        assertNotNull(linkId);
+        assertTrue(linkId.matches("^[a-zA-Z0-9]{22}$"));
+    }
+
+    @Test
+    public void testVerificationDoesnotContainMastercardTransactionLinkIdForNonMasterCard() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2032").
+                done().
+            options().
+                amount("5.00").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+        CreditCardVerification verification = result.getTarget();
+        assertEquals(CreditCardVerification.Status.VERIFIED, verification.getStatus());
+        assertEquals("1000", verification.getProcessorResponseCode());
+        assertEquals("Approved", verification.getProcessorResponseText());
+        assertEquals(ProcessorResponseType.APPROVED, verification.getProcessorResponseType());
+        assertNull(verification.getMastercardTransactionLinkId());
+    }
 }

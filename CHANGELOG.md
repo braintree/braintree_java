@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.50.0
+* Add `mastercardTransactionLinkId` to Transaction and CreditCardVerification objects
+* Fix XXE vulnerability in `SimpleNodeWrapper` by hardening `SAXParserFactory` to disallow DOCTYPE declarations and external entity resolution
+
 ## 3.49.0
 * Add Local Payment Context support with `LocalPaymentContextGateway.create` and `LocalPaymentContextGateway.find` methods
 * Add support for MBWAY and CRYPTO payment types

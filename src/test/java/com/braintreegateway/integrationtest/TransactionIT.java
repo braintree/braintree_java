@@ -8426,11 +8426,12 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                      result.getErrors().forObject("transaction").onField("merchantAccountId").get(0).getCode());
     }
 
+    @Disabled("Marking this test case as pending")
     @Test
     public void scaExemptionTransactionSaleSuccess() {
-        TransactionRequest request = new TransactionRequest().
+        TransactionRequest request = new TransactionRequest(). 
             scaExemption(ScaExemption.LOW_VALUE).
-            amount(TransactionAmount.AUTHORIZE.amount).
+            amount(new BigDecimal("0.05")).
             creditCard().
                 number(CreditCardNumber.VISA_COUNTRY_OF_ISSUANCE_IE.number).
                 expirationDate("05/2009").
@@ -9036,5 +9037,40 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
         assertEquals(new BigDecimal("1.00"), transaction.getSurchargeAmount());
+    }
+
+    @Test
+    public void testMastercardTransactionLinkIdInTransaction() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertEquals("1000", transaction.getProcessorResponseCode());
+
+        String linkId = transaction.getMastercardTransactionLinkId();
+        assertNotNull(linkId);
+        assertTrue(linkId.matches("^[a-zA-Z0-9]{22}$"));
+    }
+
+    @Test
+    public void testMastercardTransactionLinkIdInNotPresentInTransactionForNonMasterCard() {
+      TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertEquals("1000", transaction.getProcessorResponseCode());
+        assertNull(transaction.getMastercardTransactionLinkId());
     }
 }

@@ -548,4 +548,19 @@ public class TransactionTest {
         assertEquals("same_day", transaction.getAchType());
         assertEquals("same_day", transaction.getRequestedAchType());
     }
+
+	@Test
+	public void testMastercardTransactionLinkId() {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<transaction>\n" +
+				"  <id>transaction_id</id>\n" +
+				"  <type>sale</type>\n" +
+				"  <mastercard-transaction-link-id>ZairABg6CIFekPMsnK0cJ2</mastercard-transaction-link-id>\n" +
+				"</transaction>\n";
+
+		SimpleNodeWrapper transactionNode = SimpleNodeWrapper.parse(xml);
+		Transaction transaction = new Transaction(transactionNode);
+
+		assertEquals("ZairABg6CIFekPMsnK0cJ2", transaction.getMastercardTransactionLinkId());
+	}
 }

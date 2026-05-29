@@ -330,4 +330,12 @@ public class SimpleNodeWrapperTest {
         NodeWrapper node = SimpleNodeWrapper.parse(xml).findFirst("foo");
         assertFalse(node.isBlank());
     }
+
+    @Test
+    public void rejectsXmlWithDoctype() {
+        String xxeXml = "<?xml version=\"1.0\"?>" +
+                "<!DOCTYPE foo [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]>" +
+                "<foo>&xxe;</foo>";
+        assertThrows(IllegalArgumentException.class, () -> SimpleNodeWrapper.parse(xxeXml));
+    }
 }

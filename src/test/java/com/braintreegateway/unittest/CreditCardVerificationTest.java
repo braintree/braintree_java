@@ -95,4 +95,16 @@ public class CreditCardVerificationTest {
 
     assertEquals("V0010013019339005665779448477", verification.getApplePayDetails().getPaymentAccountReference());
   }
+ 
+  @Test
+  public void testVerificationMastercardTransactionLinkId() {
+    String xml = "<verification>"
+      + "    <mastercard-transaction-link-id>ZairABg6CIFekPMsnK0cJ2</mastercard-transaction-link-id>"
+      + "</verification>";
+
+    SimpleNodeWrapper verificationNode = SimpleNodeWrapper.parse(xml);
+    CreditCardVerification verification = new CreditCardVerification(verificationNode);
+
+    assertEquals("ZairABg6CIFekPMsnK0cJ2", verification.getMastercardTransactionLinkId());
+  }
 }
