@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.51.0
+* Deprecate `getDebugId()` on `PayPalDetails`, `LocalPaymentDetails`, and `SepaDirectDebitAccountDetails`
+* Add `CannotCloneThirdPartyCofNetworkTokenTransaction (915274)` transaction validation error code
+* Add `accountReferenceNumberType` to sender and receiver in transfer on `TransactionRequest`
+
 ## 3.50.0
 * Add `mastercardTransactionLinkId` to Transaction and CreditCardVerification objects
 * Fix XXE vulnerability in `SimpleNodeWrapper` by hardening `SAXParserFactory` to disallow DOCTYPE declarations and external entity resolution

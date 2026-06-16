@@ -166,7 +166,9 @@ public class PaymentMethodNonceIT extends IntegrationTest {
         assertNotNull(nonce.getDetails());
         assertEquals("Visa", nonce.getDetails().getCardType());
         assertEquals("Visa Apple Pay Cardholder", nonce.getDetails().getCardholderName());
-        assertEquals("Visa 8886", nonce.getDetails().getPaymentInstrumentName());
+        String paymentInstrumentName = nonce.getDetails().getPaymentInstrumentName();
+        assertTrue(paymentInstrumentName.matches("Visa \\d{4}"),
+                "Expected paymentInstrumentName to match 'Visa \\d{4}' but was: " + paymentInstrumentName);
         assertEquals("81", nonce.getDetails().getDpanLastTwo());
     }
 

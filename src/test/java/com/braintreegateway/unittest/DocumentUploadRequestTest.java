@@ -9,6 +9,8 @@ import java.io.File;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DocumentUploadRequestTest {
   @Test
@@ -30,5 +32,16 @@ public class DocumentUploadRequestTest {
       });
 
       assertEquals("File must not be null", e.getMessage());
+  }
+
+  @Test
+  public void getRequestAndGetFileReturnCorrectValues() throws Exception {
+      URL fileUrl = getClass().getClassLoader().getResource("fixtures/bt_logo.png");
+      File file = new File(fileUrl.getFile());
+      DocumentUploadRequest request = new DocumentUploadRequest(DocumentUpload.Kind.EVIDENCE_DOCUMENT, file);
+
+      assertAll("document upload request fields",
+              () -> assertEquals("{\"document_upload[kind]\": \"evidence_document\"}", request.getRequest()),
+              () -> assertEquals(file, request.getFile()));
   }
 }

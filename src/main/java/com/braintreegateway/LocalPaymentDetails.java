@@ -52,6 +52,8 @@ public class LocalPaymentDetails {
       return customField;
     }
 
+    /** @deprecated DebugId is deprecated. */
+    @Deprecated
     public String getDebugId() {
       return debugId;
     }

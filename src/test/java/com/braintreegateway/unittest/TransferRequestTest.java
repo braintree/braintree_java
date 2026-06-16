@@ -26,6 +26,7 @@ public class TransferRequestTest {
                     .lastName("Silva")
                     .middleName("A")
                     .accountReferenceNumber("1000012345")
+                    .accountReferenceNumberType("IBAN")
                     .address()
                         .streetAddress("1st Main Road")
                         .locality("Los Angeles")
@@ -38,6 +39,8 @@ public class TransferRequestTest {
                     .firstName("Bob")
                     .lastName("Souza")
                     .middleName("A")
+                    .accountReferenceNumber("9876543210")
+                    .accountReferenceNumberType("PHONE_NUMBER")
                     .address()
                         .streetAddress("2nd Main Road")
                         .locality("Los Angeles")
@@ -54,6 +57,7 @@ public class TransferRequestTest {
                         "<lastName>Silva</lastName>" +
                         "<middleName>A</middleName>" +
                         "<accountReferenceNumber>1000012345</accountReferenceNumber>" +
+                        "<accountReferenceNumberType>IBAN</accountReferenceNumberType>" +
                         "<address>" +
                             "<countryCodeAlpha2>US</countryCodeAlpha2>" +
                             "<locality>Los Angeles</locality>" +
@@ -66,6 +70,8 @@ public class TransferRequestTest {
                         "<firstName>Bob</firstName>" +
                         "<lastName>Souza</lastName>" +
                         "<middleName>A</middleName>" +
+                        "<accountReferenceNumber>9876543210</accountReferenceNumber>" +
+                        "<accountReferenceNumberType>PHONE_NUMBER</accountReferenceNumberType>" +
                         "<address>" +
                             "<countryCodeAlpha2>US</countryCodeAlpha2>" +
                             "<locality>Los Angeles</locality>" +

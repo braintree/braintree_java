@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 public class PartyRequest extends Request {
     private String accountReferenceNumber;
+    private String accountReferenceNumberType;
     private PartyAddressRequest address;
     private Calendar dateOfBirth;
     private String firstName;
@@ -24,6 +25,11 @@ public class PartyRequest extends Request {
 
     public PartyRequest accountReferenceNumber(String accountReferenceNumber) {
        this.accountReferenceNumber = accountReferenceNumber;
+       return this;
+    }
+
+    public PartyRequest accountReferenceNumberType(String accountReferenceNumberType) {
+       this.accountReferenceNumberType = accountReferenceNumberType;
        return this;
     }
 
@@ -80,6 +86,9 @@ public class PartyRequest extends Request {
         RequestBuilder builder = new RequestBuilder(root);
         if (accountReferenceNumber != null) {
             builder.addElement("accountReferenceNumber", accountReferenceNumber);
+        }
+        if (accountReferenceNumberType != null) {
+            builder.addElement("accountReferenceNumberType", accountReferenceNumberType);
         }
         if (address != null) {
             builder.addElement("address", address);

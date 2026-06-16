@@ -9,6 +9,7 @@ import com.braintreegateway.ValidationErrorCode;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 
+import com.braintreegateway.util.SimpleNodeWrapper;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -218,4 +219,26 @@ public class DocumentUploadTest {
                                               + "  </params>\n"
                                               + "  <message>PDF page length is limited to 50 pages</message>\n"
                                               + "</api-error-response>";
+
+  @Test
+  public void parsesAllFieldsFromNode() {
+      SimpleNodeWrapper node = SimpleNodeWrapper.parse(
+              "<document-upload>" +
+              "<id>doc-id</id>" +
+              "<kind>EVIDENCE_DOCUMENT</kind>" +
+              "<content-type>application/pdf</content-type>" +
+              "<name>evidence.pdf</name>" +
+              "<size type=\"integer\">1024</size>" +
+              "</document-upload>");
+
+      DocumentUpload doc = new DocumentUpload(node);
+
+      assertAll("document upload fields",
+              () -> assertEquals("doc-id", doc.getId()),
+              () -> assertEquals(DocumentUpload.Kind.EVIDENCE_DOCUMENT, doc.getKind()),
+              () -> assertEquals("evidence_document", doc.getKind().toString()),
+              () -> assertEquals("application/pdf", doc.getContentType()),
+              () -> assertEquals("evidence.pdf", doc.getName()),
+              () -> assertEquals(1024, doc.getSize()));
+  }
 }

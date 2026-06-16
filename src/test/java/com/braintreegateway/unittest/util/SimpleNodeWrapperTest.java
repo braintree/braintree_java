@@ -203,6 +203,25 @@ public class SimpleNodeWrapperTest {
     }
 
     @Test
+    public void findAllWithDotReturnsSelf() {
+        String xml = "<toplevel><foo>bar</foo></toplevel>";
+        NodeWrapper node = SimpleNodeWrapper.parse(xml);
+        List<NodeWrapper> nodes = node.findAll(".");
+        assertEquals(1, nodes.size());
+        assertEquals("toplevel", nodes.get(0).getElementName());
+    }
+
+    @Test
+    public void findAllWithLeadingDot() {
+        String xml = "<toplevel><foo type='array'><bar><greeting>hi</greeting></bar><bar><greeting>hello</greeting></bar></foo></toplevel>";
+        NodeWrapper node = SimpleNodeWrapper.parse(xml);
+        List<NodeWrapper> nodes = node.findAll("./foo/bar");
+        assertEquals(2, nodes.size());
+        assertEquals("hi", nodes.get(0).findString("greeting"));
+        assertEquals("hello", nodes.get(1).findString("greeting"));
+    }
+
+    @Test
     public void findAllWithNoMatchingElement() {
         String xml = "<toplevel></toplevel>";
         assertTrue(SimpleNodeWrapper.parse(xml).findAll("foo/bar").isEmpty());

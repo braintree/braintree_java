@@ -88,6 +88,8 @@ public class SepaDirectDebitAccountDetails {
        return last4;
     }
 
+    /** @deprecated DebugId is deprecated. */
+    @Deprecated
     public String getDebugId() {
         return debugId;
     }

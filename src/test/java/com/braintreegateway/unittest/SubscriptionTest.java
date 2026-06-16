@@ -13,9 +13,6 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class SubscriptionTest {
     @Test
     public void testSubscriptionsAttributes() throws ParseException {
@@ -91,5 +88,86 @@ public class SubscriptionTest {
         assertEquals(5, subscription.getTrialDuration());
         assertEquals(Subscription.DurationUnit.MONTH, subscription.getTrialDurationUnit());
         assertEquals(CalendarTestUtils.dateTime(date), subscription.getUpdatedAt());
+    }
+
+    @Test
+    public void parsesAddOnsDiscountsAndStatusHistory() {
+        SimpleNodeWrapper node = SimpleNodeWrapper.parse(
+                "<subscription>" +
+                "<id>sub-id</id><status>Active</status>" +
+                "<add-ons type=\"array\"><add-on><id>add-on-id</id><amount>5.00</amount></add-on></add-ons>" +
+                "<discounts type=\"array\"><discount><id>discount-id</id><amount>2.00</amount></discount></discounts>" +
+                "<status-history type=\"array\"><status-event>" +
+                "<status>Active</status><subscription-source>api</subscription-source>" +
+                "</status-event></status-history>" +
+                "<transactions type=\"array\"/>" +
+                "</subscription>");
+        Subscription sub = new Subscription(node);
+        assertAll("nested collections",
+                () -> assertEquals(1, sub.getAddOns().size()),
+                () -> assertEquals(1, sub.getDiscounts().size()),
+                () -> assertEquals(1, sub.getStatusHistory().size()),
+                () -> assertEquals(Subscription.Status.ACTIVE, sub.getStatusHistory().get(0).getStatus()));
+    }
+
+    @Test
+    public void durationUnitEnumToString() {
+        assertAll("duration unit toString",
+                () -> assertEquals("DAY", Subscription.DurationUnit.DAY.toString()),
+                () -> assertEquals("MONTH", Subscription.DurationUnit.MONTH.toString()));
+    }
+
+    @Test
+    public void sourceEnumToString() {
+        assertEquals("api", Subscription.Source.API.toString());
+    }
+
+    @Test
+    public void parsesTransactionsAndRemainingGetters() {
+        SimpleNodeWrapper node = SimpleNodeWrapper.parse(
+                "<subscription><id>sub-id</id><status>Active</status>" +
+                "<next-billing-date type=\"date\">2024-02-01</next-billing-date>" +
+                "<next-billing-period-amount>9.99</next-billing-period-amount>" +
+                "<trial-period type=\"boolean\">true</trial-period>" +
+                "<never-expires type=\"boolean\">false</never-expires>" +
+                "<descriptor><name>company*product</name><phone>3125551234</phone></descriptor>" +
+                "<transactions type=\"array\">" +
+                "<transaction><id>txn-id</id><type>sale</type><amount>9.99</amount></transaction>" +
+                "</transactions>" +
+                "<add-ons type=\"array\"/><discounts type=\"array\"/>" +
+                "<status-history type=\"array\"/></subscription>");
+        Subscription sub = new Subscription(node);
+        assertAll("remaining getters",
+                () -> assertNotNull(sub.getNextBillingDate()),
+                () -> assertNotNull(sub.getNextBillingPeriodAmount()),
+                () -> assertNotNull(sub.getDescriptor()),
+                () -> assertEquals(1, sub.getTransactions().size()),
+                () -> assertTrue(sub.hasTrialPeriod()),
+                () -> assertFalse(sub.neverExpires()));
+    }
+
+    @Test
+    public void equalsReturnsTrueForSameId() {
+        SimpleNodeWrapper node = SimpleNodeWrapper.parse(
+                "<subscription><id>sub-id</id><status>Active</status>" +
+                "<transactions type=\"array\"/><add-ons type=\"array\"/>" +
+                "<discounts type=\"array\"/><status-history type=\"array\"/></subscription>");
+        Subscription a = new Subscription(node);
+        Subscription b = new Subscription(node);
+        assertTrue(a.equals(b));
+    }
+
+    @Test
+    public void equalsReturnsFalseForDifferentIdAndNonSubscription() {
+        Subscription a = new Subscription(SimpleNodeWrapper.parse(
+                "<subscription><id>sub-1</id><status>Active</status>" +
+                "<transactions type=\"array\"/><add-ons type=\"array\"/>" +
+                "<discounts type=\"array\"/><status-history type=\"array\"/></subscription>"));
+        Subscription b = new Subscription(SimpleNodeWrapper.parse(
+                "<subscription><id>sub-2</id><status>Active</status>" +
+                "<transactions type=\"array\"/><add-ons type=\"array\"/>" +
+                "<discounts type=\"array\"/><status-history type=\"array\"/></subscription>"));
+        assertFalse(a.equals(b));
+        assertFalse(a.equals("not-a-subscription"));
     }
 }

@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.braintreegateway.Adjustment;
 import com.braintreegateway.Installment;
 import com.braintreegateway.testhelpers.CalendarTestUtils;
 import com.braintreegateway.util.SimpleNodeWrapper;
@@ -32,5 +33,27 @@ public class InstallmentTest {
     assertEquals("test_id", installment.getId());
     assertEquals(CalendarTestUtils.dateTime(date), installment.getActualDisbursementDate());
     assertEquals(CalendarTestUtils.dateTime(date), installment.getProjectedDisbursementDate());
+  }
+
+  @Test
+  public void parsesAdjustments() {
+    SimpleNodeWrapper node = SimpleNodeWrapper.parse(
+            "<installment>" +
+            "<id>inst-id</id>" +
+            "<amount>10.00</amount>" +
+            "<projected_disbursement_date type=\"datetime\">2024-01-15T00:00:00Z</projected_disbursement_date>" +
+            "<actual_disbursement_date type=\"datetime\">2024-01-16T00:00:00Z</actual_disbursement_date>" +
+            "<adjustments type=\"array\">" +
+            "<adjustment><amount>2.00</amount><kind>REFUND</kind></adjustment>" +
+            "</adjustments>" +
+            "</installment>");
+
+    Installment installment = new Installment(node);
+    Adjustment adjustment = installment.getAdjustments().get(0);
+
+    assertAll("adjustment fields",
+            () -> assertEquals(1, installment.getAdjustments().size()),
+            () -> assertEquals(new BigDecimal("2.00"), adjustment.getAmount()),
+            () -> assertEquals(Adjustment.KIND.REFUND, adjustment.getKind()));
   }
 }
