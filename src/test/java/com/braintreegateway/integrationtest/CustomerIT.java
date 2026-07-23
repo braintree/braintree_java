@@ -3,6 +3,7 @@ package com.braintreegateway.integrationtest;
 import com.braintreegateway.testhelpers.MerchantAccountTestConstants;
 
 import com.braintreegateway.*;
+import com.braintreegateway.enums.ThreeDSecurePassThruNetwork;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.test.Nonce;
 import com.braintreegateway.testhelpers.TestHelper;
@@ -540,6 +541,63 @@ public class CustomerIT extends IntegrationTest {
         assertFalse(result.isSuccess());
         assertEquals(
                 ValidationErrorCode.VERIFICATION_THREE_D_SECURE_PASS_THRU_ECI_FLAG_IS_REQUIRED,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode());
+    }
+
+    @Test
+    public void createWithThreeDSecurePassThruWithNetwork() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Fred").
+            creditCard().
+                paymentMethodNonce(Nonce.TransactableVisa).
+                threeDSecurePassThruRequest().
+                    eciFlag("05").
+                    cavv("some-cavv").
+                    xid("some-xid").
+                    threeDSecureVersion("2.2.0").
+                    dsTransactionId("some-ds-transaction-id").
+                    authenticationResponse("some-auth-response").
+                    directoryResponse("some-directory-response").
+                    cavvAlgorithm("algorithm").
+                    network(ThreeDSecurePassThruNetwork.VISA).
+                    done().
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void createWithThreeDSecurePassThruWithNetworkThatDoesNotMatchPaymentInstrument() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Fred").
+            creditCard().
+                paymentMethodNonce(Nonce.TransactableVisa).
+                threeDSecurePassThruRequest().
+                    eciFlag("05").
+                    cavv("some-cavv").
+                    xid("some-xid").
+                    threeDSecureVersion("2.2.0").
+                    dsTransactionId("some-ds-transaction-id").
+                    authenticationResponse("some-auth-response").
+                    directoryResponse("some-directory-response").
+                    cavvAlgorithm("algorithm").
+                    network(ThreeDSecurePassThruNetwork.MASTER_CARD).
+                    done().
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+
+        assertFalse(result.isSuccess());
+        assertEquals(
+                ValidationErrorCode.VERIFICATION_THREE_D_SECURE_PASS_THRU_NETWORK_DOES_NOT_MATCH_PAYMENT_INSTRUMENT,
                 result.getErrors().getAllDeepValidationErrors().get(0).getCode());
     }
 
@@ -1704,6 +1762,79 @@ public class CustomerIT extends IntegrationTest {
         assertFalse(result.isSuccess());
         assertEquals(
                 ValidationErrorCode.VERIFICATION_THREE_D_SECURE_PASS_THRU_ECI_FLAG_IS_REQUIRED,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode());
+    }
+
+    @Test
+    public void updateWithThreeDSecurePassThruWithNetwork() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Fred").
+            creditCard().
+                paymentMethodNonce(Nonce.TransactableVisa).
+                done();
+
+        Customer customer = gateway.customer().create(createRequest).getTarget();
+        CustomerRequest updateRequest = new CustomerRequest().
+            firstName("Jane").
+            lastName("Doe").
+            creditCard().
+                paymentMethodNonce(Nonce.TransactableVisa).
+                threeDSecurePassThruRequest().
+                    eciFlag("05").
+                    cavv("some-cavv").
+                    xid("some-xid").
+                    threeDSecureVersion("2.2.0").
+                    dsTransactionId("some-ds-transaction-id").
+                    authenticationResponse("some-auth-response").
+                    directoryResponse("some-directory-response").
+                    cavvAlgorithm("algorithm").
+                    network(ThreeDSecurePassThruNetwork.VISA).
+                    done().
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().update(customer.getId(), updateRequest);
+        assertTrue(result.isSuccess());
+        assertEquals("Jane", result.getTarget().getFirstName());
+        assertEquals("Doe", result.getTarget().getLastName());
+    }
+
+    @Test
+    public void updateWithThreeDSecurePassThruWithNetworkThatDoesNotMatchPaymentInstrument() {
+        CustomerRequest createRequest = new CustomerRequest().
+            firstName("Fred").
+            creditCard().
+                paymentMethodNonce(Nonce.TransactableVisa).
+                done();
+
+        Customer customer = gateway.customer().create(createRequest).getTarget();
+        CustomerRequest updateRequest = new CustomerRequest().
+            firstName("Jane").
+            lastName("Doe").
+            creditCard().
+                paymentMethodNonce(Nonce.TransactableVisa).
+                threeDSecurePassThruRequest().
+                    eciFlag("05").
+                    cavv("some-cavv").
+                    xid("some-xid").
+                    threeDSecureVersion("2.2.0").
+                    dsTransactionId("some-ds-transaction-id").
+                    authenticationResponse("some-auth-response").
+                    directoryResponse("some-directory-response").
+                    cavvAlgorithm("algorithm").
+                    network(ThreeDSecurePassThruNetwork.MASTER_CARD).
+                    done().
+                options().
+                    verifyCard(true).
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().update(customer.getId(), updateRequest);
+        assertFalse(result.isSuccess());
+        assertEquals(
+                ValidationErrorCode.VERIFICATION_THREE_D_SECURE_PASS_THRU_NETWORK_DOES_NOT_MATCH_PAYMENT_INSTRUMENT,
                 result.getErrors().getAllDeepValidationErrors().get(0).getCode());
     }
 

@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+import com.braintreegateway.enums.ThreeDSecurePassThruNetwork;
+
 public class CreditCardThreeDSecurePassThruRequest extends ThreeDSecurePassThruRequest {
     private CreditCardRequest parent;
 
@@ -56,6 +58,12 @@ public class CreditCardThreeDSecurePassThruRequest extends ThreeDSecurePassThruR
     @Override
     public CreditCardThreeDSecurePassThruRequest cavvAlgorithm(String cavvAlgorithm) {
         super.cavvAlgorithm(cavvAlgorithm);
+        return this;
+    }
+
+    @Override
+    public CreditCardThreeDSecurePassThruRequest network(ThreeDSecurePassThruNetwork network) {
+        super.network(network);
         return this;
     }
 }

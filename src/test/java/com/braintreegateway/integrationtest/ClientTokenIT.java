@@ -1,7 +1,9 @@
 package com.braintreegateway.integrationtest;
 
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import com.braintreegateway.testhelpers.HttpHelper;
@@ -265,6 +267,28 @@ public class ClientTokenIT extends IntegrationTest {
 
         int new_card_count = gateway.customer().find(customer.getId()).getCreditCards().size();
         assertEquals(1, new_card_count);
+    }
+
+    @Test
+    public void canPassPreferredPaymentMethodToken() {
+        CustomerRequest customerRequest = new CustomerRequest();
+        Result<Customer> result = gateway.customer().create(customerRequest);
+        assertTrue(result.isSuccess());
+        Customer customer = result.getTarget();
+
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
+            .customerId(customer.getId())
+            .preferredPaymentMethodToken("a-pmt");
+        String encodedClientToken = gateway.clientToken().generate(clientTokenRequest);
+        String clientToken = TestHelper.decodeClientToken(encodedClientToken);
+
+        String paymentMethodIdJwt = TestHelper.extractParamFromJson("paymentMethodIdJwt", clientToken);
+        assertFalse(paymentMethodIdJwt.isEmpty());
+
+        String jwtPayloadEncoded = paymentMethodIdJwt.split("\\.")[1];
+        byte[] jwtPayloadBytes = Base64.getUrlDecoder().decode(jwtPayloadEncoded);
+        String jwtPayload = new String(jwtPayloadBytes, StandardCharsets.UTF_8);
+        assertEquals("a-pmt", TestHelper.extractParamFromJson("pmid", jwtPayload));
     }
 
     public void gatewayRespectsFailOnDuplicatePaymentMethodForCustomer() {

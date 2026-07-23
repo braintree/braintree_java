@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.52.0
+* Add `preferredPaymentMethodToken` parameter to `ClientTokenRequest`
+* Add `network` to `ThreeDSecurePassThruRequest`, `TransactionThreeDSecurePassThruRequest`, `CreditCardThreeDSecurePassThruRequest`, `PaymentMethodThreeDSecurePassThruRequest`, and `VerificationThreeDSecurePassThruRequest`
+
 ## 3.51.0
 * Deprecate `getDebugId()` on `PayPalDetails`, `LocalPaymentDetails`, and `SepaDirectDebitAccountDetails`
 * Add `CannotCloneThirdPartyCofNetworkTokenTransaction (915274)` transaction validation error code

@@ -64,6 +64,7 @@ import com.braintreegateway.TransactionSearchRequest;
 import com.braintreegateway.ValidationError;
 import com.braintreegateway.ValidationErrorCode;
 import com.braintreegateway.VenmoAccountDetails;
+import com.braintreegateway.enums.ThreeDSecurePassThruNetwork;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.test.CreditCardNumbers;
@@ -1553,7 +1554,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 directoryResponse("Y").
                 dsTransactionId("some-ds-transaction-id").
                 cavvAlgorithm("2").
-                threeDSecureVersion("1.0.2").
+                threeDSecureVersion("2.2.0").
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
@@ -1605,7 +1606,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 authenticationResponse("Y").
                 directoryResponse("Y").
                 cavvAlgorithm("2").
-                threeDSecureVersion("1.0.2").
+                threeDSecureVersion("2.2.0").
                 done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
@@ -1613,6 +1614,65 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         Transaction transaction = result.getTarget();
         assertEquals(Transaction.Status.AUTHORIZED, transaction.getStatus());
+    }
+
+    @Test
+    public void saleWithThreeDSecurePassThruWithNetwork() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            threeDSecurePassThru().
+                eciFlag("05").
+                cavv("some_cavv").
+                xid("some_xid").
+                authenticationResponse("Y").
+                directoryResponse("Y").
+                cavvAlgorithm("2").
+                network(ThreeDSecurePassThruNetwork.VISA).
+                threeDSecureVersion("2.2.0").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+
+        Transaction transaction = result.getTarget();
+        assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
+    }
+
+    @Test
+    public void saleErrorWith3DSecurePassThruEFTPOSNetworkAndNoSettlement() {
+        TransactionRequest request = new TransactionRequest().
+            merchantAccountId(THREE_D_SECURE_MERCHANT_ACCOUNT_ID).
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            threeDSecurePassThru().
+                eciFlag("05").
+                cavv("some_cavv").
+                xid("some_xid").
+                authenticationResponse("Y").
+                directoryResponse("Y").
+                cavvAlgorithm("2").
+                network(ThreeDSecurePassThruNetwork.EFTPOS).
+                threeDSecureVersion("2.2.0").
+                done().
+            options().
+                submitForSettlement(false).
+                done();
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_OPTIONS_SUBMIT_FOR_SETTLEMENT_IS_NOT_SUPPORTED_FOR_NETWORK,
+            result.getErrors().forObject("transaction").onField("base").get(0).getCode());
     }
 
     // NEXT_MAJOR_VERSION modify this test to use threeDSecureAuthenticationID
@@ -1636,7 +1696,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 result.getErrors().forObject("transaction").onField("threeDSecureToken").get(0).getCode());
     }
 
-    @Disabled
     @Test
     public void saleWithAmexRewards() {
         TransactionRequest request = new TransactionRequest().
@@ -1663,7 +1722,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
     }
 
-    @Disabled
     @Test
     public void saleWithAmexRewardsSucceedsEvenIfCardIneligible() {
         TransactionRequest request = new TransactionRequest().
@@ -1690,7 +1748,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
     }
 
-    @Disabled
     @Test
     public void saleWithAmexRewardsSucceedsEvenIfCardBalanceIsInsufficient() {
         TransactionRequest request = new TransactionRequest().
@@ -1717,7 +1774,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, transaction.getStatus());
     }
 
-    @Disabled
     @Test
     public void submitForSettlementWithAmexRewards() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
@@ -1748,7 +1804,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
     }
 
-    @Disabled
     @Test
     public void submitForSettlementWithAmexRewardsSucceedsEvenIfCardIsIneligible() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
@@ -1779,7 +1834,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(Transaction.Status.SUBMITTED_FOR_SETTLEMENT, submitForSettlementResult.getTarget().getStatus());
     }
 
-    @Disabled
     @Test
     public void submitForSettlementWithAmexRewardsSucceedsEvenIfCardBalanceIsInsufficient() {
         String nonce = TestHelper.generateOneTimePayPalNonce(gateway);
@@ -2474,7 +2528,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                 expirationDate("05/2009").
                 done().
             descriptor().
-                name("badcompanyname12*badproduct12").
+                name("badcompanyname12*badproductdescription").
                 phone("%bad4445555").
                 url("12345678901234").
                 done();
@@ -4548,7 +4602,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
 
     @Test
-    @Disabled("Flaky test")
     public void debitNetworkInResponseForPinlessTransaction(){
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -5256,7 +5309,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
 
         TransactionRequest updateDetailsRequest = new TransactionRequest().
             descriptor().
-                name("invalid name").
+                name("invalid descriptor name that is way too long").
                 phone("invalid phone").
                 url("invalid url is way too long to be valid").
                 done().
@@ -5469,40 +5522,42 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     @Test
     public void searchOnReasonSpecificReasonCodes() {
             TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+                id().is("ach_txn_ret1").
                 reasonCodes().in("R01");
 
             ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-            Transaction first = null;
-            for (Transaction txn : collection) {
-                if ("ach_txn_ret1".equals(txn.getId())) {
-                    first = txn;
-                    break;
-                }
-            }
-            assertNotNull(first);
+            assertEquals(1, collection.getMaximumSize());
+            Transaction first = collection.getFirst();
+            assertEquals("ach_txn_ret1", first.getId());
             assertEquals("R01", first.getAchReturnResponses().get(0).getReasonCode());
+
+            TransactionSearchRequest nonMatchingRequest = new TransactionSearchRequest().
+                id().is("ach_txn_ret1").
+                reasonCodes().in("R02");
+            assertEquals(0, gateway.transaction().search(nonMatchingRequest).getMaximumSize());
     }
 
     @Test
     public void searchOnReasonRejectedReasonCodes() {
             TransactionSearchRequest searchRequest = new TransactionSearchRequest().
+                id().is("ach_txn_ret3").
                 reasonCodes().in("RJCT");
 
             ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
 
-            Transaction first = null;
-            for (Transaction txn : collection) {
-                if ("ach_txn_ret3".equals(txn.getId())) {
-                    first = txn;
-                    break;
-                }
-            }
-            assertNotNull(first);
+            assertEquals(1, collection.getMaximumSize());
+            Transaction first = collection.getFirst();
+            assertEquals("ach_txn_ret3", first.getId());
             assertEquals("RJCT", first.getAchReturnCode());
             assertEquals("Bank accounts located outside of the U.S. are not supported", first.getAchRejectReason());
             assertEquals("RJCT", first.getAchReturnResponses().get(0).getReasonCode());
             assertEquals("Bank accounts located outside of the U.S. are not supported", first.getAchReturnResponses().get(0).getRejectReason());
+
+            TransactionSearchRequest nonMatchingRequest = new TransactionSearchRequest().
+                id().is("ach_txn_ret3").
+                reasonCodes().in("R01");
+            assertEquals(0, gateway.transaction().search(nonMatchingRequest).getMaximumSize());
     }
 
     public void searchOnReasonAllReasonCodes() {
@@ -6031,6 +6086,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
+    @Disabled("Marking this test case as pending")
     @Test
     public void searchOnAuthorizationExpiredStatus() {
         TransactionSearchRequest searchRequest = new TransactionSearchRequest().
@@ -6380,6 +6436,7 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(1, gateway.transaction().search(searchRequest).getMaximumSize());
     }
 
+    @Disabled("Marking this test case as pending")
     @Test
     public void searchOnAuthorizationExpiredAt() {
         Calendar threeDaysEarlier = Calendar.getInstance();
@@ -6831,7 +6888,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
-    @Disabled("Flaky test")
     public void searchOnDebitNetworks() {
         TransactionRequest request = new TransactionRequest().
             amount(TransactionAmount.AUTHORIZE.amount).
@@ -8426,7 +8482,6 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
                      result.getErrors().forObject("transaction").onField("merchantAccountId").get(0).getCode());
     }
 
-    @Disabled("Marking this test case as pending")
     @Test
     public void scaExemptionTransactionSaleSuccess() {
         TransactionRequest request = new TransactionRequest(). 

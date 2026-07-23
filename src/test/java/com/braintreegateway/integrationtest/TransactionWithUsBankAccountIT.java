@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Disabled;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TransactionWithUsBankAccountIT extends IntegrationTest implements MerchantAccountTestConstants {
@@ -168,8 +167,6 @@ public class TransactionWithUsBankAccountIT extends IntegrationTest implements M
                 result.getErrors().forObject("transaction").onField("paymentMethodNonce").get(0).getCode());
     }
 
-    // Ignoring this test until we have a more stable CI env
-    @Disabled("Ignoring test due to unstable CI")
     @Test
     public void compliantMerchantChargePlaidNonce() {
         BraintreeGateway gateway = new BraintreeGateway(

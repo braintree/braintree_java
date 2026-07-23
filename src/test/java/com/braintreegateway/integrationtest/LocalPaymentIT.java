@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Disabled;
 
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Environment;
@@ -21,7 +20,6 @@ import com.braintreegateway.graphql.inputs.CreateLocalPaymentContextInput;
 import com.braintreegateway.graphql.inputs.MonetaryAmountInput;
 import com.braintreegateway.graphql.inputs.PayerInfoInput;
 
-@Disabled("Pending until we have a more stable CI")
 public class LocalPaymentIT extends IntegrationTest {
 
     @Test

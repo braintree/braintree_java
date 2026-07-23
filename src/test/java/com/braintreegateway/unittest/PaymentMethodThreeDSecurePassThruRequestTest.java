@@ -5,18 +5,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import com.braintreegateway.CreditCardRequest;
-import com.braintreegateway.CreditCardThreeDSecurePassThruRequest;
+import com.braintreegateway.PaymentMethodRequest;
+import com.braintreegateway.PaymentMethodThreeDSecurePassThruRequest;
 import com.braintreegateway.enums.ThreeDSecurePassThruNetwork;
 
-public class CreditCardThreeDSecurePassThruRequestTest {
+public class PaymentMethodThreeDSecurePassThruRequestTest {
 
     @Test
     public void buildsXmlForAllFieldsAndChainsBackToParent() {
-        CreditCardRequest parent = new CreditCardRequest();
-        CreditCardThreeDSecurePassThruRequest request = new CreditCardThreeDSecurePassThruRequest(parent);
+        PaymentMethodRequest parent = new PaymentMethodRequest();
+        PaymentMethodThreeDSecurePassThruRequest request = new PaymentMethodThreeDSecurePassThruRequest(parent);
 
-        CreditCardRequest returned = request
+        PaymentMethodRequest returned = request
                 .cavv("cavv-value")
                 .dsTransactionId("ds-transaction-id")
                 .eciFlag("05")
@@ -25,7 +25,7 @@ public class CreditCardThreeDSecurePassThruRequestTest {
                 .authenticationResponse("auth-response")
                 .directoryResponse("directory-response")
                 .cavvAlgorithm("algorithm")
-                .network(ThreeDSecurePassThruNetwork.MASTER_CARD)
+                .network(ThreeDSecurePassThruNetwork.EFTPOS)
                 .done();
 
         assertSame(parent, returned);
@@ -39,6 +39,6 @@ public class CreditCardThreeDSecurePassThruRequestTest {
         assertTrue(xml.contains("<authenticationResponse>auth-response</authenticationResponse>"), xml);
         assertTrue(xml.contains("<directoryResponse>directory-response</directoryResponse>"), xml);
         assertTrue(xml.contains("<cavvAlgorithm>algorithm</cavvAlgorithm>"), xml);
-        assertTrue(xml.contains("<network>Mastercard</network>"), xml);
+        assertTrue(xml.contains("<network>eftpos</network>"), xml);
     }
 }

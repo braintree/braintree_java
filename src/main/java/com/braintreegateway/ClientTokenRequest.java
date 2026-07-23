@@ -13,6 +13,7 @@ public class ClientTokenRequest extends Request {
     private ArrayList<String> domains;
     private String merchantAccountId;
     private ClientTokenOptionsRequest optionsRequest;
+    private String preferredPaymentMethodToken;
     private int version;
 
     public String getCustomerId() {
@@ -25,6 +26,10 @@ public class ClientTokenRequest extends Request {
 
     public ClientTokenOptionsRequest getOptions() {
         return optionsRequest;
+    }
+
+    public String getPreferredPaymentMethodToken() {
+        return preferredPaymentMethodToken;
     }
 
     public ClientTokenRequest customerId(String customerId) {
@@ -44,6 +49,11 @@ public class ClientTokenRequest extends Request {
 
     public ClientTokenRequest options(ClientTokenOptionsRequest optionsRequest) {
         this.optionsRequest = optionsRequest;
+        return this;
+    }
+
+    public ClientTokenRequest preferredPaymentMethodToken(String preferredPaymentMethodToken) {
+        this.preferredPaymentMethodToken = preferredPaymentMethodToken;
         return this;
     }
 
@@ -76,6 +86,10 @@ public class ClientTokenRequest extends Request {
             builder.addElement("options", optionsRequest);
         }
 
+        if (preferredPaymentMethodToken != null) {
+            builder.addElement("paymentMethodId", preferredPaymentMethodToken);
+        }
+
         if (version != 0) {
             builder.addElement("version", version);
         } else {
@@ -85,3 +99,4 @@ public class ClientTokenRequest extends Request {
         return builder;
     }
 }
+

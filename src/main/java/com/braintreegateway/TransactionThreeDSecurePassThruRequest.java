@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+import com.braintreegateway.enums.ThreeDSecurePassThruNetwork;
+
 public class TransactionThreeDSecurePassThruRequest extends ThreeDSecurePassThruRequest {
     private TransactionRequest parent;
 
@@ -52,6 +54,12 @@ public class TransactionThreeDSecurePassThruRequest extends ThreeDSecurePassThru
     @Override
     public TransactionThreeDSecurePassThruRequest cavvAlgorithm(String cavvAlgorithm) {
         super.cavvAlgorithm(cavvAlgorithm);
+        return this;
+    }
+
+    @Override
+    public TransactionThreeDSecurePassThruRequest network(ThreeDSecurePassThruNetwork network) {
+        super.network(network);
         return this;
     }
 

@@ -1,5 +1,7 @@
 package com.braintreegateway;
 
+import com.braintreegateway.enums.ThreeDSecurePassThruNetwork;
+
 public class ThreeDSecurePassThruRequest extends Request {
     private String eciFlag;
     private String cavv;
@@ -9,6 +11,7 @@ public class ThreeDSecurePassThruRequest extends Request {
     private String directoryResponse;
     private String cavvAlgorithm;
     private String dsTransactionId;
+    private ThreeDSecurePassThruNetwork network;
 
     public ThreeDSecurePassThruRequest eciFlag(String eciFlag) {
         this.eciFlag = eciFlag;
@@ -50,6 +53,11 @@ public class ThreeDSecurePassThruRequest extends Request {
         return this;
     }
 
+    public ThreeDSecurePassThruRequest network(ThreeDSecurePassThruNetwork network) {
+        this.network = network;
+        return this;
+    }
+
     @Override
     public String toXML() {
         return buildRequest("threeDSecurePassThru").toXML();
@@ -74,6 +82,7 @@ public class ThreeDSecurePassThruRequest extends Request {
             .addElement("authenticationResponse", authenticationResponse)
             .addElement("directoryResponse", directoryResponse)
             .addElement("cavvAlgorithm", cavvAlgorithm)
-            .addElement("dsTransactionId", dsTransactionId);
+            .addElement("dsTransactionId", dsTransactionId)
+            .addElement("network", network);
     }
 }

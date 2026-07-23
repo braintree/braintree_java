@@ -5,6 +5,7 @@ import com.braintreegateway.enums.Business;
 import com.braintreegateway.enums.Consumer;
 import com.braintreegateway.enums.Corporate;
 import com.braintreegateway.enums.Purchase;
+import com.braintreegateway.enums.ThreeDSecurePassThruNetwork;
 import com.braintreegateway.test.Nonce;
 import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.testhelpers.ThreeDSecureRequestForTests;
@@ -354,6 +355,61 @@ public class CreditCardVerificationIT extends IntegrationTest {
 
         Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
         assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void createVerificationWithThreeDSecurePassThruRequestWithNetwork() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            options().
+                merchantAccountId("three_d_secure_merchant_account").
+                done().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2029").
+                done().
+            verificationThreeDSecurePassThruRequest().
+                eciFlag("05").
+                cavv("some-cavv").
+                xid("some-xid").
+                threeDSecureVersion("2.2.0").
+                dsTransactionId("some-ds-transaction-id").
+                authenticationResponse("some-auth-response").
+                directoryResponse("some-directory-response").
+                cavvAlgorithm("algorithm").
+                network(ThreeDSecurePassThruNetwork.VISA).
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void createVerificationWithThreeDSecurePassThruRequestWithNetworkThatDoesNotMatchPaymentInstrument() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            options().
+                merchantAccountId("three_d_secure_merchant_account").
+                done().
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2029").
+                done().
+            verificationThreeDSecurePassThruRequest().
+                eciFlag("05").
+                cavv("some-cavv").
+                xid("some-xid").
+                threeDSecureVersion("2.2.0").
+                dsTransactionId("some-ds-transaction-id").
+                authenticationResponse("some-auth-response").
+                directoryResponse("some-directory-response").
+                cavvAlgorithm("algorithm").
+                network(ThreeDSecurePassThruNetwork.MASTER_CARD).
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+                ValidationErrorCode.VERIFICATION_THREE_D_SECURE_PASS_THRU_NETWORK_DOES_NOT_MATCH_PAYMENT_INSTRUMENT,
+                result.getErrors().getAllDeepValidationErrors().get(0).getCode());
     }
 
     @Test

@@ -25,6 +25,7 @@ public class ClientTokenRequestTest {
                 verifyCard(false).
                 failOnDuplicatePaymentMethod(true).
                 failOnDuplicatePaymentMethodForCustomer(true)).
+            preferredPaymentMethodToken("a-pmt").
             version(2);
 
         String expectedXML = 
@@ -38,6 +39,7 @@ public class ClientTokenRequestTest {
             + "    <failOnDuplicatePaymentMethod>true</failOnDuplicatePaymentMethod>\n"
             + "    <failOnDuplicatePaymentMethodForCustomer>true</failOnDuplicatePaymentMethodForCustomer>\n"
             + "  </options>\n"
+            + "  <paymentMethodId>a-pmt</paymentMethodId>\n"
             + "  <version>2</version>\n"
             + "</clientToken>";
 

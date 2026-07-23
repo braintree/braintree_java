@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.braintreegateway.enums.ThreeDSecurePassThruNetwork;
 import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.TransactionThreeDSecurePassThruRequest;
 
@@ -25,6 +26,7 @@ public class TransactionThreeDSecurePassThruRequestTest {
                 .authenticationResponse("auth-response")
                 .directoryResponse("directory-response")
                 .cavvAlgorithm("algorithm")
+                .network(ThreeDSecurePassThruNetwork.VISA)
                 .done();
 
         assertSame(parent, returned);
@@ -38,6 +40,7 @@ public class TransactionThreeDSecurePassThruRequestTest {
                 () -> assertTrue(xml.contains("<xid>xid-value</xid>"), xml),
                 () -> assertTrue(xml.contains("<authenticationResponse>auth-response</authenticationResponse>"), xml),
                 () -> assertTrue(xml.contains("<directoryResponse>directory-response</directoryResponse>"), xml),
-                () -> assertTrue(xml.contains("<cavvAlgorithm>algorithm</cavvAlgorithm>"), xml));
+                () -> assertTrue(xml.contains("<cavvAlgorithm>algorithm</cavvAlgorithm>"), xml),
+                () -> assertTrue(xml.contains("<network>Visa</network>"), xml));
     }
 }
