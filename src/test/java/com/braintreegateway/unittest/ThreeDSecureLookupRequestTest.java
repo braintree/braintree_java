@@ -213,7 +213,7 @@ public class ThreeDSecureLookupRequestTest {
             "  }\n" +
             "}";
 
-        Calendar authTime = Calendar.getInstance();
+        Calendar authTime = Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"));
         authTime.set(2024, Calendar.FEBRUARY, 10, 22, 45, 30);
 
         ThreeDSecureLookupPriorAuthenticationDetails priorAuthenticationDetails = new ThreeDSecureLookupPriorAuthenticationDetails()

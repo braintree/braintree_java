@@ -13,8 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TransactionLevelFeeReportTest {
     @Test
     public void interchangeReportIsParsed() throws IOException, ParseException {
-        String url = "file://"
-                     + new File("src/test/resources/fixtures/transaction_level_interchange_fee_report.csv").getAbsolutePath();
+        String url = new File("src/test/resources/fixtures/transaction_level_interchange_fee_report.csv").toURI().toURL().toString();
         TransactionLevelFeeReport report = new TransactionLevelFeeReport(url);
         assertEquals(9, report.getCSVRecords().size());
 
@@ -55,8 +54,7 @@ public class TransactionLevelFeeReportTest {
 
     @Test
     public void flatFeeReportIsParsed() throws IOException, ParseException {
-        String url =
-            "file://" + new File("src/test/resources/fixtures/transaction_level_fee_report.csv").getAbsolutePath();
+        String url = new File("src/test/resources/fixtures/transaction_level_fee_report.csv").toURI().toURL().toString();
         TransactionLevelFeeReport report = new TransactionLevelFeeReport(url);
         assertEquals(9, report.getCSVRecords().size());
 
