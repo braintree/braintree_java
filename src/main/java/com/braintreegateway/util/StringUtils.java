@@ -10,6 +10,8 @@ public class StringUtils {
     
     private static final Pattern CONTIGUOUS_UPPERCASE = Pattern.compile("([A-Z]+)([A-Z][a-z])");
     private static final Pattern CAMEL_CASE = Pattern.compile("([a-z])([A-Z])");
+    // Allowlist of the characters that make up a Braintree id/token.
+    private static final Pattern VALID_PATH_SEGMENT = Pattern.compile("^[A-Za-z0-9_-]+$");
     
     public static <T> String classToXMLName(Class<T> klass) {
         return dasherize(klass.getSimpleName()).toLowerCase();
@@ -49,6 +51,13 @@ public class StringUtils {
 
     public static String nullIfEmpty(String str) {
         return str == null || str.length() == 0 ? null : str;
+    }
+
+    public static boolean isInvalidPathSegment(String value) {
+        if (value == null) {
+            return true;
+        }
+        return !VALID_PATH_SEGMENT.matcher(value).matches();
     }
 
     public static String underscore(String str) {

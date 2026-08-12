@@ -6,6 +6,7 @@ import com.braintreegateway.ThreeDSecureLookupRequest;
 import com.braintreegateway.ThreeDSecureLookupAddress;
 import com.braintreegateway.ThreeDSecureLookupAdditionalInformation;
 import com.braintreegateway.ThreeDSecureLookupPriorAuthenticationDetails;
+import com.braintreegateway.exceptions.UnexpectedException;
 
 import java.util.Map;
 import com.fasterxml.jackson.jr.ob.JSON;
@@ -498,5 +499,17 @@ public class ThreeDSecureLookupRequestTest {
         assertTrue(outputJSON.matches("^.+\"ipAddress\":\"2001:0db8:0000:0000:0000:ff00:0042:8329\".+$"));
         assertTrue(outputJSON.matches("^.+\"deviceChannel\":\"Browser\".+$"));
         assertTrue(outputJSON.matches("^.+\"browserJavascriptEnabled\":true.+$"));
+    }
+
+    @Test
+    public void clientDataWithDeeplyNestedJsonFailsSafely() {
+        int depth = 5000;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < depth; i++) sb.append("{\"a\":");
+        sb.append("1");
+        for (int i = 0; i < depth; i++) sb.append("}");
+
+        ThreeDSecureLookupRequest request = new ThreeDSecureLookupRequest();
+        assertThrows(UnexpectedException.class, () -> request.clientData(sb.toString()));
     }
 }

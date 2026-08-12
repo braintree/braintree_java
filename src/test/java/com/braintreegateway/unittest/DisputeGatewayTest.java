@@ -216,4 +216,67 @@ public class DisputeGatewayTest {
 
         assertEquals(e.getMessage(), "evidence with id \" \" for dispute with id \"disputeId\" not found");
     }
+
+    @Test
+    public void removeEvidenceTraversalDisputeIdRaisesNotFoundException() {
+        Exception e = assertThrows(NotFoundException.class, () -> {
+            new DisputeGateway(null, null).removeEvidence("../../foo", "evidenceId");
+        });
+
+        assertEquals(e.getMessage(), "evidence with id \"evidenceId\" for dispute with id \"../../foo\" not found");
+    }
+
+    @Test
+    public void removeEvidenceTraversalEvidenceIdRaisesNotFoundException() {
+        Exception e = assertThrows(NotFoundException.class, () -> {
+            new DisputeGateway(null, null).removeEvidence("disputeId", "../../foo");
+        });
+
+        assertEquals(e.getMessage(), "evidence with id \"../../foo\" for dispute with id \"disputeId\" not found");
+    }
+
+    @Test
+    public void acceptTraversalIdRaisesNotFoundException() {
+        Exception e = assertThrows(NotFoundException.class, () -> {
+            new DisputeGateway(null, null).accept("../../foo");
+        });
+
+        assertEquals(e.getMessage(), "dispute with id \"../../foo\" not found");
+    }
+
+    @Test
+    public void finalizeTraversalIdRaisesNotFoundException() {
+        Exception e = assertThrows(NotFoundException.class, () -> {
+            new DisputeGateway(null, null).finalize("../../foo");
+        });
+
+        assertEquals(e.getMessage(), "dispute with id \"../../foo\" not found");
+    }
+
+    @Test
+    public void findTraversalIdRaisesNotFoundException() {
+        Exception e = assertThrows(NotFoundException.class, () -> {
+            new DisputeGateway(null, null).find("../../foo");
+        });
+
+        assertEquals(e.getMessage(), "dispute with id \"../../foo\" not found");
+    }
+
+    @Test
+    public void addFileEvidenceTraversalDisputeIdRaisesNotFoundException() {
+        Exception e = assertThrows(NotFoundException.class, () -> {
+            new DisputeGateway(null, null).addFileEvidence("../../foo", "documentId");
+        });
+
+        assertEquals(e.getMessage(), "dispute with id \"../../foo\" not found");
+    }
+
+    @Test
+    public void addTextEvidenceTraversalIdRaisesNotFoundException() {
+        Exception e = assertThrows(NotFoundException.class, () -> {
+            new DisputeGateway(null, null).addTextEvidence("../../foo", "content");
+        });
+
+        assertEquals(e.getMessage(), "Dispute ID is required");
+    }
 }

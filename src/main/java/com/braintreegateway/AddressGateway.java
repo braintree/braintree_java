@@ -3,6 +3,7 @@ package com.braintreegateway;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.StringUtils;
 
 /**
  * Provides methods to create, delete, find, and update {@link Address} objects.
@@ -31,6 +32,10 @@ public class AddressGateway {
      * @return a {@link Result} object.
      */
     public Result<Address> create(String customerId, AddressRequest request) {
+        if (StringUtils.isInvalidPathSegment(customerId)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper node = http.post(configuration.getMerchantPath() + "/customers/" + customerId + "/addresses", request);
         return new Result<Address>(node, Address.class);
     }
@@ -42,6 +47,10 @@ public class AddressGateway {
      * @return a {@link Result} object.
      */
     public Result<Address> delete(String customerId, String id) {
+        if (StringUtils.isInvalidPathSegment(customerId) || StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         http.delete(configuration.getMerchantPath() + "/customers/" + customerId + "/addresses/" + id);
         return new Result<Address>();
     }
@@ -53,7 +62,7 @@ public class AddressGateway {
      * @return the {@link Address} or raises a {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Address find(String customerId, String id) {
-        if (customerId == null || customerId.trim().equals("") || id == null || id.trim().equals("")) {
+        if (StringUtils.isInvalidPathSegment(customerId) || StringUtils.isInvalidPathSegment(id)) {
             throw new NotFoundException();
         }
 
@@ -69,6 +78,10 @@ public class AddressGateway {
      * @return the {@link Address} or raises a {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Result<Address> update(String customerId, String id, AddressRequest request) {
+        if (StringUtils.isInvalidPathSegment(customerId) || StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper node = http.put(configuration.getMerchantPath() + "/customers/" + customerId + "/addresses/" + id, request);
         return new Result<Address>(node, Address.class);
     }

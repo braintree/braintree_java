@@ -120,4 +120,40 @@ public class StringUtilsTest {
         assertEquals("one", result);
     }
 
+    @Test
+    public void isInvalidPathSegmentReturnsTrueForNull() {
+        assertTrue(StringUtils.isInvalidPathSegment(null));
+    }
+
+    @Test
+    public void isInvalidPathSegmentReturnsTrueForEmptyOrBlank() {
+        assertTrue(StringUtils.isInvalidPathSegment(""));
+        assertTrue(StringUtils.isInvalidPathSegment("   "));
+    }
+
+    @Test
+    public void isInvalidPathSegmentReturnsTrueForTraversalAndSeparators() {
+        assertTrue(StringUtils.isInvalidPathSegment("."));
+        assertTrue(StringUtils.isInvalidPathSegment(".."));
+        assertTrue(StringUtils.isInvalidPathSegment("../../foo"));
+        assertTrue(StringUtils.isInvalidPathSegment("foo/bar"));
+        assertTrue(StringUtils.isInvalidPathSegment("foo\\bar"));
+        assertTrue(StringUtils.isInvalidPathSegment("foo%2e%2e"));
+        // Characters outside the allowlist that a blocklist of / \ % would miss.
+        assertTrue(StringUtils.isInvalidPathSegment("evidence#x"));
+        assertTrue(StringUtils.isInvalidPathSegment("evidence?x=1"));
+        assertTrue(StringUtils.isInvalidPathSegment("evidence;x"));
+        assertTrue(StringUtils.isInvalidPathSegment("evidence x"));
+        // Dots are outside the allowlist, so any dotted segment is rejected.
+        assertTrue(StringUtils.isInvalidPathSegment("abc..def"));
+        assertTrue(StringUtils.isInvalidPathSegment("file.png"));
+    }
+
+    @Test
+    public void isInvalidPathSegmentReturnsFalseForValidIds() {
+        assertFalse(StringUtils.isInvalidPathSegment("abc123"));
+        assertFalse(StringUtils.isInvalidPathSegment("customer_id-123"));
+        assertFalse(StringUtils.isInvalidPathSegment("ZGlzcHV0ZV9pZA"));
+    }
+
 }

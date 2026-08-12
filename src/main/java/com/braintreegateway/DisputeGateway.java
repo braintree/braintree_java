@@ -3,6 +3,7 @@ package com.braintreegateway;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class DisputeGateway {
      */
     public Result<Dispute> accept(String id) {
         try {
-            if (id == null || id.trim().equals("")) {
+            if (StringUtils.isInvalidPathSegment(id)) {
                 throw new NotFoundException();
             }
 
@@ -78,7 +79,7 @@ public class DisputeGateway {
      * @throws NotFoundException if the Dispute ID or Document ID cannot be found.
      */
     public Result<DisputeEvidence> addFileEvidence(String disputeId, FileEvidenceRequest fileEvidenceRequest) {
-        if (disputeId == null || disputeId.trim().equals("")) {
+        if (StringUtils.isInvalidPathSegment(disputeId)) {
             throw new NotFoundException("dispute with id \"" + disputeId + "\" not found");
         }
 
@@ -131,7 +132,7 @@ public class DisputeGateway {
 
     private Result<DisputeEvidence> addTextEvidenceRequest(String id, TextEvidenceRequest textEvidenceRequest) {
         String content = textEvidenceRequest.getContent();
-        if (id == null || id.trim().equals("")) {
+        if (StringUtils.isInvalidPathSegment(id)) {
             throw new NotFoundException("Dispute ID is required");
         } else if (content == null || content.trim().equals("")) {
             throw new IllegalArgumentException("Content cannot be empty");
@@ -156,7 +157,7 @@ public class DisputeGateway {
      */
     public Result<Dispute> finalize(String id) {
         try {
-            if (id == null || id.trim().equals("")) {
+            if (StringUtils.isInvalidPathSegment(id)) {
                 throw new NotFoundException();
             }
 
@@ -183,7 +184,7 @@ public class DisputeGateway {
      */
     public Dispute find(String id) {
         try {
-            if (id == null || id.trim().equals("")) {
+            if (StringUtils.isInvalidPathSegment(id)) {
                 throw new NotFoundException();
             }
 
@@ -205,7 +206,7 @@ public class DisputeGateway {
      */
     public Result<Dispute> removeEvidence(String disputeId, String evidenceId) {
         try {
-            if (disputeId == null || disputeId.trim().equals("") || evidenceId == null || evidenceId.trim().equals("")) {
+            if (StringUtils.isInvalidPathSegment(disputeId) || StringUtils.isInvalidPathSegment(evidenceId)) {
                 throw new NotFoundException();
             }
 
