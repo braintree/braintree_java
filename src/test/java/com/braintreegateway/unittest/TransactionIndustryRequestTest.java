@@ -20,7 +20,7 @@ public class TransactionIndustryRequestTest {
         TransactionRequest txnRequest = new TransactionRequest();
         TransactionIndustryRequest request = new TransactionIndustryRequest(txnRequest);
 
-        Calendar arrivalDate = Calendar.getInstance();
+        Calendar arrivalDate = Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"));
         arrivalDate.set(2023, Calendar.FEBRUARY, 10, 22, 45, 30);
 
         request.industryType(Transaction.IndustryType.TRAVEL_FLIGHT)
