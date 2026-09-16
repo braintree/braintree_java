@@ -86,4 +86,10 @@ public class TransactionLineItemGatewayTest {
         Exception e = assertThrows(UnexpectedException.class, () -> gateway.findAll("a_transaction_id"));
         assertEquals("No line items found.", e.getMessage());
     }
+
+    @Test
+    public void findAllThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.findAll("../../foo"));
+    }
+
 }

@@ -3,6 +3,7 @@ package com.braintreegateway;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.StringUtils;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,6 +58,10 @@ public class CreditCardGateway {
      * @return a {@link Result}.
      */
     public Result<CreditCard> delete(String token) {
+        if (StringUtils.isInvalidPathSegment(token)) {
+            throw new NotFoundException();
+        }
+
         http.delete(configuration.getMerchantPath() + "/payment_methods/credit_card/" + token);
         return new Result<CreditCard>();
     }
@@ -70,7 +75,7 @@ public class CreditCardGateway {
      *         {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public CreditCard find(String token) {
-        if (token == null || token.trim().equals("")) {
+        if (StringUtils.isInvalidPathSegment(token)) {
             throw new NotFoundException();
         }
 
@@ -86,7 +91,7 @@ public class CreditCardGateway {
      *         {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public CreditCard fromNonce(String nonce) {
-        if (nonce == null || nonce.trim().equals("")) {
+        if (StringUtils.isInvalidPathSegment(nonce)) {
             throw new NotFoundException();
         }
 
@@ -107,6 +112,10 @@ public class CreditCardGateway {
      * @return a {@link Result}.
      */
     public Result<CreditCard> update(String token, CreditCardRequest request) {
+        if (StringUtils.isInvalidPathSegment(token)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper node = http.put(configuration.getMerchantPath() + "/payment_methods/credit_card/" + token, request);
         return new Result<CreditCard>(node, CreditCard.class);
     }

@@ -3,6 +3,7 @@ package com.braintreegateway;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.StringUtils;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,10 @@ public class SubscriptionGateway {
      * @return a {@link Result}.
      */
     public Result<Subscription> cancel(String id) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper node = http.put(configuration.getMerchantPath() + "/subscriptions/" + id + "/cancel");
         return new Result<Subscription>(node, Subscription.class);
     }
@@ -51,6 +56,10 @@ public class SubscriptionGateway {
     }
 
     public Result<Subscription> delete(String customerId, String id) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         http.delete(configuration.getMerchantPath() + "/subscriptions/" + id);
         return new Result<Subscription>();
     }
@@ -61,7 +70,7 @@ public class SubscriptionGateway {
      * @return the {@link Subscription} or raises a {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Subscription find(String id) {
-        if (id == null || id.trim().equals("")) {
+        if (StringUtils.isInvalidPathSegment(id)) {
             throw new NotFoundException();
         }
         return new Subscription(http.get(configuration.getMerchantPath() + "/subscriptions/" + id));
@@ -74,6 +83,10 @@ public class SubscriptionGateway {
      * @return a {@link Result}.
      */
     public Result<Subscription> update(String id, SubscriptionRequest request) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper node = http.put(configuration.getMerchantPath() + "/subscriptions/" + id, request);
         return new Result<Subscription>(node, Subscription.class);
     }

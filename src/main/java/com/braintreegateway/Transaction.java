@@ -16,6 +16,22 @@ public class Transaction {
         return getDisbursementDetails().isValid();
     }
 
+    public enum AchType {
+        SAME_DAY("same_day"),
+        STANDARD("standard");
+
+        private final String name;
+
+        AchType(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
     public enum CreatedUsing {
         FULL_INFORMATION("full_information"),
         TOKEN("token"),

@@ -39,17 +39,25 @@ public class TransactionRefundRequestTest {
     }
 
     @Test
+    public void toXmlIncludesSurchargeAmount() {
+        TransactionRefundRequest request = new TransactionRefundRequest().surchargeAmount(new BigDecimal("1.00"));
+        TestHelper.assertIncludes("<surchargeAmount>1.00</surchargeAmount>", request.toXML());
+    }
+
+    @Test
     public void toXmlIncludesAllFields() {
         TransactionRefundRequest request = new TransactionRefundRequest()
             .amount(new BigDecimal("25.50"))
             .apiRequestKey("refund-key-789")
             .orderId("order-abc")
-            .merchantAccountId("merchant-xyz");
+            .merchantAccountId("merchant-xyz")
+            .surchargeAmount(new BigDecimal("1.00"));
 
         String xml = request.toXML();
         TestHelper.assertIncludes("<amount>25.50</amount>", xml);
         TestHelper.assertIncludes("<api-request-key>refund-key-789</api-request-key>", xml);
         TestHelper.assertIncludes("<orderId>order-abc</orderId>", xml);
         TestHelper.assertIncludes("<merchantAccountId>merchant-xyz</merchantAccountId>", xml);
+        TestHelper.assertIncludes("<surchargeAmount>1.00</surchargeAmount>", xml);
     }
 }

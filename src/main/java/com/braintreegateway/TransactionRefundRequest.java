@@ -10,6 +10,7 @@ public class TransactionRefundRequest extends Request {
     private String apiRequestKey;
     private String merchantAccountId;
     private String orderId;
+    private BigDecimal surchargeAmount;
 
     public TransactionRefundRequest() {
     }
@@ -34,6 +35,11 @@ public class TransactionRefundRequest extends Request {
         return this;
     }
 
+    public TransactionRefundRequest surchargeAmount(BigDecimal surchargeAmount) {
+        this.surchargeAmount = surchargeAmount;
+        return this;
+    }
+
     @Override
     public String toQueryString() {
         return toQueryString("transaction");
@@ -54,6 +60,7 @@ public class TransactionRefundRequest extends Request {
             .addElement("amount", amount)
             .addElement("api-request-key", apiRequestKey)
             .addElement("merchantAccountId", merchantAccountId)
-            .addElement("orderId", orderId);
+            .addElement("orderId", orderId)
+            .addElement("surchargeAmount", surchargeAmount);
     }
 }

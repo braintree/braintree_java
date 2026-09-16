@@ -112,6 +112,11 @@ public class TransactionGatewayTest {
     }
 
     @Test
+    public void refundWithSurchargeAmount() {
+        assertSuccess(gateway.refund("an_id", new TransactionRefundRequest().surchargeAmount(new BigDecimal("1.00"))));
+    }
+
+    @Test
     public void sale() {
         assertSuccess(gateway.sale(new TransactionRequest().amount(new BigDecimal("10.00"))));
     }
@@ -221,4 +226,75 @@ public class TransactionGatewayTest {
     public void packageTracking() {
         assertSuccess(gateway.packageTracking("an_id", new PackageTrackingRequest()));
     }
+
+    @Test
+    public void adjustAuthorizationThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.adjustAuthorization("../../foo", new BigDecimal("10.00")));
+    }
+
+    @Test
+    public void cloneTransactionThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.cloneTransaction("../../foo", new TransactionCloneRequest()));
+    }
+
+    @Test
+    public void findThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.find("../../foo"));
+    }
+
+    @Test
+    public void refundThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.refund("../../foo"));
+    }
+
+    @Test
+    public void refundWithAmountThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.refund("../../foo", new BigDecimal("5.00")));
+    }
+
+    @Test
+    public void refundWithRequestThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.refund("../../foo", new TransactionRefundRequest()));
+    }
+
+    @Test
+    public void cancelReleaseThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.cancelRelease("../../foo"));
+    }
+
+    @Test
+    public void releaseFromEscrowThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.releaseFromEscrow("../../foo"));
+    }
+
+    @Test
+    public void submitForSettlementThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.submitForSettlement("../../foo"));
+    }
+
+    @Test
+    public void updateDetailsThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.updateDetails("../../foo", new TransactionRequest()));
+    }
+
+    @Test
+    public void voidTransactionThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.voidTransaction("../../foo"));
+    }
+
+    @Test
+    public void submitForPartialSettlementThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.submitForPartialSettlement("../../foo", new BigDecimal("5.00")));
+    }
+
+    @Test
+    public void updateCustomFieldsThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.updateCustomFields("../../foo", new TransactionRequest()));
+    }
+
+    @Test
+    public void packageTrackingThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.packageTracking("../../foo", new PackageTrackingRequest()));
+    }
+
 }

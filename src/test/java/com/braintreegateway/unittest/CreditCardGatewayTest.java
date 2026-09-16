@@ -37,4 +37,37 @@ public class CreditCardGatewayTest {
             creditCardGateway.fromNonce(null);
         });
     }
+
+    @Test
+    public void deleteThrowsNotFoundExceptionOnTraversalToken() {
+        CreditCardGateway creditCardGateway = this.gateway.creditCard();
+        assertThrows(NotFoundException.class, () -> {
+            creditCardGateway.delete("../../foo");
+        });
+    }
+
+    @Test
+    public void findThrowsNotFoundExceptionOnTraversalToken() {
+        CreditCardGateway creditCardGateway = this.gateway.creditCard();
+        assertThrows(NotFoundException.class, () -> {
+            creditCardGateway.find("../../foo");
+        });
+    }
+
+    @Test
+    public void fromNonceThrowsNotFoundExceptionOnTraversalNonce() {
+        CreditCardGateway creditCardGateway = this.gateway.creditCard();
+        assertThrows(NotFoundException.class, () -> {
+            creditCardGateway.fromNonce("../../foo");
+        });
+    }
+
+    @Test
+    public void updateThrowsNotFoundExceptionOnTraversalToken() {
+        CreditCardGateway creditCardGateway = this.gateway.creditCard();
+        assertThrows(NotFoundException.class, () -> {
+            creditCardGateway.update("../../foo", new com.braintreegateway.CreditCardRequest());
+        });
+    }
+
 }

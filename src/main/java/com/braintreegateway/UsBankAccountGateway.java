@@ -1,6 +1,8 @@
 package com.braintreegateway;
 
+import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
+import com.braintreegateway.util.StringUtils;
 
 public class UsBankAccountGateway {
     private BraintreeGateway gateway;
@@ -14,6 +16,10 @@ public class UsBankAccountGateway {
     }
 
     public UsBankAccount find(String token) {
+        if (StringUtils.isInvalidPathSegment(token)) {
+            throw new NotFoundException();
+        }
+
         return new UsBankAccount(http.get(configuration.getMerchantPath() + "/payment_methods/us_bank_account/" + token));
     }
 

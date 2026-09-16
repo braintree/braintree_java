@@ -1,7 +1,9 @@
 package com.braintreegateway;
 
+import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.StringUtils;
 
 public class PaymentMethodNonceGateway {
     private Http http;
@@ -13,16 +15,28 @@ public class PaymentMethodNonceGateway {
     }
 
     public Result<PaymentMethodNonce> create(String paymentMethodToken) {
+        if (StringUtils.isInvalidPathSegment(paymentMethodToken)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper response = http.post(configuration.getMerchantPath() + "/payment_methods/" + paymentMethodToken + "/nonces");
         return parseResponse(response);
     }
 
     public Result<PaymentMethodNonce> create(PaymentMethodNonceRequest request) {
-      NodeWrapper response = http.post(configuration.getMerchantPath() + "/payment_methods/" + request.getPaymentMethodToken() + "/nonces", request);
-      return parseResponse(response);
+        if (StringUtils.isInvalidPathSegment(request.getPaymentMethodToken())) {
+            throw new NotFoundException();
+        }
+
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/payment_methods/" + request.getPaymentMethodToken() + "/nonces", request);
+        return parseResponse(response);
     }
 
     public PaymentMethodNonce find(String paymentMethodNonce) {
+        if (StringUtils.isInvalidPathSegment(paymentMethodNonce)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper response = http.get(configuration.getMerchantPath() + "/payment_method_nonces/" + paymentMethodNonce);
         return new PaymentMethodNonce(response);
     }

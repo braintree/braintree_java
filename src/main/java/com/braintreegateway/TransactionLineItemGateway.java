@@ -4,6 +4,7 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class TransactionLineItemGateway {
      * @return the List&lt;TransactionLineItem&gt; or raises a com.braintreegateway.exceptions.NotFoundException.
      */
     public List<TransactionLineItem> findAll(String transactionId) {
-        if (transactionId == null || transactionId.trim().equals("")) {
+        if (StringUtils.isInvalidPathSegment(transactionId)) {
             throw new NotFoundException();
         }
 

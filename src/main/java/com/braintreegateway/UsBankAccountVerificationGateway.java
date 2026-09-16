@@ -3,6 +3,7 @@ package com.braintreegateway;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class UsBankAccountVerificationGateway {
     }
 
     public UsBankAccountVerification find(String id) {
-        if (id == null || id.trim().equals("")) {
+        if (StringUtils.isInvalidPathSegment(id)) {
             throw new NotFoundException();
         }
 
@@ -29,6 +30,10 @@ public class UsBankAccountVerificationGateway {
     }
 
     public Result<UsBankAccountVerification> confirmMicroTransferAmounts(String id, UsBankAccountVerificationConfirmRequest request) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper nodeWrapper = http.put(configuration.getMerchantPath() + "/us_bank_account_verifications/" + id + "/confirm_micro_transfer_amounts", request);
         return new Result<UsBankAccountVerification>(nodeWrapper, UsBankAccountVerification.class);
     }

@@ -7018,6 +7018,78 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void refundTransactionWithSurchargeAmount() {
+        TransactionRequest request = new TransactionRequest().
+        amount(TransactionAmount.AUTHORIZE.amount).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done().
+        surchargeAmount(new BigDecimal("1.00")).
+        options().
+            submitForSettlement(true).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+
+        TransactionRefundRequest refundRequest = new TransactionRefundRequest().
+            surchargeAmount(new BigDecimal("1.00"));
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), refundRequest);
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
+        assertEquals(new BigDecimal("1.00"), result.getTarget().getSurchargeAmount());
+    }
+
+    @Test
+    public void refundTransactionWithPartialAmountAndSurchargeAmount() {
+        TransactionRequest request = new TransactionRequest().
+        amount(TransactionAmount.AUTHORIZE.amount).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done().
+        surchargeAmount(new BigDecimal("1.00")).
+        options().
+            submitForSettlement(true).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+
+        TransactionRefundRequest refundRequest = new TransactionRefundRequest().
+            amount(TransactionAmount.AUTHORIZE.amount.divide(new BigDecimal("2"))).
+            surchargeAmount(new BigDecimal("0.50"));
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), refundRequest);
+        assertTrue(result.isSuccess());
+        assertEquals(Transaction.Type.CREDIT, result.getTarget().getType());
+        assertEquals(new BigDecimal("0.50"), result.getTarget().getSurchargeAmount());
+    }
+
+    @Test
+    public void refundTransactionWithSurchargeAmountWhenOriginalSaleWasNotSurcharged() {
+        TransactionRequest request = new TransactionRequest().
+        amount(TransactionAmount.AUTHORIZE.amount).
+        creditCard().
+            number(CreditCardNumber.VISA.number).
+            expirationDate("05/2008").
+            done().
+        options().
+            submitForSettlement(true).
+            done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+        TestHelper.settle(gateway, transaction.getId());
+
+        TransactionRefundRequest refundRequest = new TransactionRefundRequest().
+            surchargeAmount(new BigDecimal("1.00"));
+
+        Result<Transaction> result = gateway.transaction().refund(transaction.getId(), refundRequest);
+        assertFalse(result.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_ORIGINAL_SALE_TRANSACTION_WAS_NOT_SURCHARGED,
+            result.getErrors().getAllDeepValidationErrors().get(0).getCode());
+    }
+
+    @Test
     public void refundTransactionWithHardDecline() {
         TransactionRequest request = new TransactionRequest().
         amount(new BigDecimal(9000.00)).
@@ -7075,14 +7147,14 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     @Test
     public void refundTransactionWithPartialAmount() {
         TransactionRequest request = new TransactionRequest().
-        amount(TransactionAmount.AUTHORIZE.amount).
-        creditCard().
-            number(CreditCardNumber.VISA.number).
-            expirationDate("05/2008").
-            done().
-        options().
-            submitForSettlement(true).
-            done();
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
         Transaction transaction = gateway.transaction().sale(request).getTarget();
         TestHelper.settle(gateway, transaction.getId());
 
@@ -9089,6 +9161,22 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
             surchargeAmount(new BigDecimal("1.00"));
 
         Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertEquals(new BigDecimal("1.00"), transaction.getSurchargeAmount());
+    }
+
+    @Test
+    public void creditWithSurchargeAmount() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2009").
+                done().
+            surchargeAmount(new BigDecimal("1.00"));
+
+        Result<Transaction> result = gateway.transaction().credit(request);
         assertTrue(result.isSuccess());
         Transaction transaction = result.getTarget();
         assertEquals(new BigDecimal("1.00"), transaction.getSurchargeAmount());

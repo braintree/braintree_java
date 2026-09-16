@@ -9,6 +9,7 @@ import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.exceptions.UnexpectedException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.StringUtils;
 
 /**
  * Provides methods to interact with {@link Transaction Transactions}.
@@ -51,11 +52,19 @@ public class TransactionGateway {
      * @return {@link Result}.
      */
     public Result<Transaction> adjustAuthorization(String id, TransactionRequest request) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/adjust_authorization", request);
         return new Result<Transaction>(response, Transaction.class);
     }
 
     public Result<Transaction> cloneTransaction(String id, TransactionCloneRequest request) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/clone", request);
         return new Result<Transaction>(response, Transaction.class);
     }
@@ -76,7 +85,7 @@ public class TransactionGateway {
      * @return the {@link Transaction} or raises a {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Transaction find(String id) {
-        if (id == null || id.trim().equals("")) {
+        if (StringUtils.isInvalidPathSegment(id)) {
             throw new NotFoundException();
         }
         return new Transaction(http.get(configuration.getMerchantPath() + "/transactions/" + id));
@@ -88,17 +97,29 @@ public class TransactionGateway {
      * @return a {@link Result}.
      */
     public Result<Transaction> refund(String id) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/refund");
         return new Result<Transaction>(response, Transaction.class);
     }
 
     public Result<Transaction> refund(String id, BigDecimal amount) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         TransactionRequest request = new TransactionRequest().amount(amount);
         NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/refund", request);
         return new Result<Transaction>(response, Transaction.class);
     }
 
     public Result<Transaction> refund(String id, TransactionRefundRequest request) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/refund", request);
         return new Result<Transaction>(response, Transaction.class);
     }
@@ -150,6 +171,10 @@ public class TransactionGateway {
      * @return a {@link Result}.
      */
     public Result<Transaction> cancelRelease(String id) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         TransactionRequest request = new TransactionRequest();
         NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/cancel_release", request);
         return new Result<Transaction>(response, Transaction.class);
@@ -161,6 +186,10 @@ public class TransactionGateway {
      * @return a {@link Result}.
      */
     public Result<Transaction> releaseFromEscrow(String id) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         TransactionRequest request = new TransactionRequest();
         NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/release_from_escrow", request);
         return new Result<Transaction>(response, Transaction.class);
@@ -194,6 +223,10 @@ public class TransactionGateway {
      * @return {@link Result}.
      */
     public Result<Transaction> submitForSettlement(String id, TransactionRequest request) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/submit_for_settlement", request);
         return new Result<Transaction>(response, Transaction.class);
     }
@@ -205,6 +238,10 @@ public class TransactionGateway {
      * @return {@link Result}.
      */
     public Result<Transaction> updateDetails(String id, TransactionRequest request) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/update_details", request);
         return new Result<Transaction>(response, Transaction.class);
     }
@@ -225,6 +262,10 @@ public class TransactionGateway {
      * @return {@link Result}.
      */
     public Result<Transaction> voidTransaction(String id, TransactionVoidRequest request) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/void", request);
         return new Result<Transaction>(response, Transaction.class);
     }
@@ -247,6 +288,10 @@ public class TransactionGateway {
      * @return {@link Result}.
      */
     public Result<Transaction> submitForPartialSettlement(String id, TransactionRequest request) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/submit_for_partial_settlement", request);
         return new Result<Transaction>(response, Transaction.class);
     }
@@ -258,6 +303,10 @@ public class TransactionGateway {
      * @return {@link Result}.
      */
     public Result<Transaction> updateCustomFields(String id, TransactionRequest request) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper response = http.put(configuration.getMerchantPath() + "/transactions/" + id + "/custom_fields", request);
         return new Result<Transaction>(response, Transaction.class);
     }
@@ -269,6 +318,10 @@ public class TransactionGateway {
      * @return {@link Result}
      */
     public Result<Transaction> packageTracking(String id, PackageTrackingRequest packageTrackingRequest) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/shipments", packageTrackingRequest);
         return new Result<Transaction>(response, Transaction.class);
     }

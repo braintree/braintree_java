@@ -2,6 +2,7 @@ package com.braintreegateway.unittest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -21,6 +22,7 @@ import com.braintreegateway.TransactionGateway;
 import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.UsBankAccount;
 import com.braintreegateway.UsBankAccountGateway;
+import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.SimpleNodeWrapper;
 
@@ -82,4 +84,10 @@ public class UsBankAccountGatewayTest {
         assertTrue(xml.contains("<submitForSettlement>true</submitForSettlement>"),
                 "expected submitForSettlement(true) to be set, got: " + xml);
     }
+
+    @Test
+    public void findThrowsNotFoundForTraversalToken() {
+        assertThrows(NotFoundException.class, () -> gateway.find("../../foo"));
+    }
+
 }

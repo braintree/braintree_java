@@ -25,6 +25,8 @@ public class ThreeDSecureGateway {
             throw new BraintreeException("Amount required");
         } else if (request.getNonce() == null) {
             throw new BraintreeException("Payment method nonce required");
+        } else if (StringUtils.isInvalidPathSegment(request.getNonce())) {
+            throw new BraintreeException("Payment method nonce required");
         }
 
         try {

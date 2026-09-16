@@ -94,4 +94,10 @@ public class CreditCardVerificationGatewayTest {
         assertEquals(1, collection.getMaximumSize());
         assertEquals("verification_id", collection.getFirst().getId());
     }
+
+    @Test
+    public void findThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.find("../../foo"));
+    }
+
 }

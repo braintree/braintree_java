@@ -94,4 +94,10 @@ public class MerchantAccountGatewayTest {
         verify(http).get(merchantPath + "/merchant_accounts?page=1");
     }
 
+
+    @Test
+    public void findThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.find("../../foo"));
+    }
+
 }

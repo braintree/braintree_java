@@ -3,6 +3,7 @@ package com.braintreegateway;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +70,10 @@ public class CustomerGateway {
      * @return a {@link Result}.
      */
     public Result<Customer> delete(String id) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         http.delete(configuration.getMerchantPath() + "/customers/" + id);
         return new Result<Customer>();
     }
@@ -82,7 +87,7 @@ public class CustomerGateway {
      *         {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Customer find(String id) {
-        if (id == null || id.trim().equals("")) {
+        if (StringUtils.isInvalidPathSegment(id)) {
             throw new NotFoundException();
         }
 
@@ -100,11 +105,11 @@ public class CustomerGateway {
      *         {@link com.braintreegateway.exceptions.NotFoundException}.
      */
     public Customer find(String id, String associationFilterId) {
-        if (id == null || id.trim().equals("")) {
+        if (StringUtils.isInvalidPathSegment(id)) {
             throw new NotFoundException();
         }
 
-        if (associationFilterId == null || associationFilterId.isEmpty()) {
+        if (StringUtils.isInvalidPathSegment(associationFilterId)) {
             throw new NotFoundException();
         }
 
@@ -133,6 +138,10 @@ public class CustomerGateway {
      * @return a {@link Result}.
      */
     public Result<Customer> update(String id, CustomerRequest request) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper node = http.put(configuration.getMerchantPath() + "/customers/" + id, request);
         return new Result<Customer>(node, Customer.class);
     }

@@ -145,4 +145,25 @@ public class SubscriptionGatewayTest {
     public void retryChargeWithAmountAndSubmitForSettlement() {
         assertTransaction(gateway.retryCharge("a_subscription_id", new BigDecimal("10.00"), true));
     }
+
+    @Test
+    public void cancelThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.cancel("../../foo"));
+    }
+
+    @Test
+    public void deleteThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.delete("a_customer_id", "../../foo"));
+    }
+
+    @Test
+    public void findThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.find("../../foo"));
+    }
+
+    @Test
+    public void updateThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.update("../../foo", new SubscriptionRequest()));
+    }
+
 }

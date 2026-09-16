@@ -3,6 +3,7 @@ package com.braintreegateway;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class CreditCardVerificationGateway {
     }
 
     public CreditCardVerification find(String id) {
-        if (id == null || id.trim().equals("")) {
+        if (StringUtils.isInvalidPathSegment(id)) {
             throw new NotFoundException();
         }
 

@@ -177,11 +177,32 @@ public class CustomerGatewayTest {
     }
 
     @Test
+    public void findWithAssociationFilterThrowsNotFoundWhenFilterContainsInvalidCharacters() {
+        assertThrows(NotFoundException.class, () -> gateway.find("customer_id", "a_filter&evil=1"));
+    }
+
+    @Test
     public void update() {
         Result<Customer> result = gateway.update("customer_id", new CustomerRequest().firstName("Dan"));
 
         assertTrue(result.isSuccess());
         assertEquals("customer_id", result.getTarget().getId());
         verify(http).put(eq(merchantPath + "/customers/customer_id"), nullable(Request.class));
+    }
+
+    @Test
+    public void deleteThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.delete("../transactions/a_transaction_id/void"));
+    }
+
+    @Test
+    public void findThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.find("../transactions/a_transaction_id/void"));
+    }
+
+    @Test
+    public void updateThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () ->
+                gateway.update("../transactions/a_transaction_id/void", new CustomerRequest().firstName("HackerOne")));
     }
 }

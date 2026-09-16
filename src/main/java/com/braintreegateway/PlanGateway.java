@@ -6,6 +6,7 @@ import java.util.List;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.StringUtils;
 
 public class PlanGateway {
   private Http http;
@@ -34,13 +35,17 @@ public class PlanGateway {
   }
 
   public Plan find(String id) {
-    if (id == null || id.trim().equals("")) {
+    if (StringUtils.isInvalidPathSegment(id)) {
       throw new NotFoundException();
     }
     return new Plan(http.get(configuration.getMerchantPath() + "/plans/" + id));
   }
 
   public Result<Plan> update(String id, PlanRequest request) {
+    if (StringUtils.isInvalidPathSegment(id)) {
+      throw new NotFoundException();
+    }
+
     NodeWrapper node = http.put(configuration.getMerchantPath() + "/plans/" + id, request);
     return new Result<Plan>(node, Plan.class);
   }

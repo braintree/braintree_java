@@ -3,6 +3,7 @@ package com.braintreegateway;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.NodeWrapper;
+import com.braintreegateway.util.StringUtils;
 import com.braintreegateway.util.PaymentMethodParser;
 
 public class PaymentMethodGateway {
@@ -20,22 +21,34 @@ public class PaymentMethodGateway {
     }
 
     public Result<? extends PaymentMethod> update(String token, PaymentMethodRequest request) {
+        if (StringUtils.isInvalidPathSegment(token)) {
+            throw new NotFoundException();
+        }
+
         NodeWrapper response = http.put(configuration.getMerchantPath() + "/payment_methods/any/" + token, request);
         return parseResponse(response);
     }
 
     public Result<? extends PaymentMethod> delete(String token) {
+        if (StringUtils.isInvalidPathSegment(token)) {
+            throw new NotFoundException();
+        }
+
         http.delete(configuration.getMerchantPath() + "/payment_methods/any/" + token);
         return new Result<UnknownPaymentMethod>();
     }
 
     public Result<? extends PaymentMethod> delete(String token, PaymentMethodDeleteRequest request) {
+        if (StringUtils.isInvalidPathSegment(token)) {
+            throw new NotFoundException();
+        }
+
         http.delete(configuration.getMerchantPath() + "/payment_methods/any/" + token + "?" + request.toQueryString());
         return new Result<UnknownPaymentMethod>();
     }
 
     public PaymentMethod find(String token) {
-        if(token == null || token.trim().equals("")) {
+        if (StringUtils.isInvalidPathSegment(token)) {
             throw new NotFoundException();
         }
 

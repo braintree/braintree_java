@@ -121,4 +121,17 @@ public class UsBankAccountVerificationGatewayTest {
         assertTrue(result.isSuccess());
         assertEquals("verification_id", result.getTarget().getId());
     }
+
+    @Test
+    public void findThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.find("../../foo"));
+    }
+
+    @Test
+    public void confirmMicroTransferAmountsThrowsNotFoundForTraversalId() {
+        UsBankAccountVerificationConfirmRequest request =
+                new UsBankAccountVerificationConfirmRequest().depositAmounts(Arrays.asList(17, 29));
+        assertThrows(NotFoundException.class, () -> gateway.confirmMicroTransferAmounts("../../foo", request));
+    }
+
 }

@@ -102,4 +102,15 @@ public class PlanGatewayTest {
         assertTrue(result.isSuccess());
         assertEquals("plan_id", result.getTarget().getId());
     }
+
+    @Test
+    public void findThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.find("../../foo"));
+    }
+
+    @Test
+    public void updateThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.update("../../foo", new PlanRequest()));
+    }
+
 }

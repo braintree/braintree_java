@@ -296,4 +296,100 @@ public class TransactionWithUsBankAccountIT extends IntegrationTest implements M
         assertEquals("standard", transaction.getAchType());
         assertEquals("standard", transaction.getRequestedAchType());
     }
+
+    @Test
+    public void searchOnAchTypeStandard() {
+        Transaction transaction = gateway.transaction().find("standard_ach_standard_requested");
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest()
+            .id().is(transaction.getId())
+            .achType().is(Transaction.AchType.STANDARD);
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(1, collection.getMaximumSize());
+        assertEquals(transaction.getId(), collection.getFirst().getId());
+
+        TransactionSearchRequest negativeSearchRequest = new TransactionSearchRequest()
+            .id().is(transaction.getId())
+            .achType().is(Transaction.AchType.SAME_DAY);
+
+        assertEquals(0, gateway.transaction().search(negativeSearchRequest).getMaximumSize());
+    }
+
+    @Test
+    public void searchOnAchTypeSameDay() {
+        Transaction transaction = gateway.transaction().find("sameday_ach_sameday_requested");
+
+        TransactionSearchRequest searchRequest = new TransactionSearchRequest()
+            .id().is(transaction.getId())
+            .achType().is(Transaction.AchType.SAME_DAY);
+
+        ResourceCollection<Transaction> collection = gateway.transaction().search(searchRequest);
+
+        assertEquals(1, collection.getMaximumSize());
+        assertEquals(transaction.getId(), collection.getFirst().getId());
+
+        TransactionSearchRequest negativeSearchRequest = new TransactionSearchRequest()
+            .id().is(transaction.getId())
+            .achType().is(Transaction.AchType.STANDARD);
+
+        assertEquals(0, gateway.transaction().search(negativeSearchRequest).getMaximumSize());
+    }
+
+    @Test
+    public void searchOnAchTypeIncludedInBothValues() {
+        Transaction sameDayTransaction = gateway.transaction().find("sameday_ach_sameday_requested");
+        Transaction standardTransaction = gateway.transaction().find("standard_ach_standard_requested");
+
+        TransactionSearchRequest sameDaySearchRequest = new TransactionSearchRequest()
+            .id().is(sameDayTransaction.getId())
+            .achType().in(Transaction.AchType.SAME_DAY, Transaction.AchType.STANDARD);
+
+        ResourceCollection<Transaction> sameDayCollection = gateway.transaction().search(sameDaySearchRequest);
+
+        assertEquals(1, sameDayCollection.getMaximumSize());
+        assertEquals(sameDayTransaction.getId(), sameDayCollection.getFirst().getId());
+
+        TransactionSearchRequest standardSearchRequest = new TransactionSearchRequest()
+            .id().is(standardTransaction.getId())
+            .achType().in(Transaction.AchType.SAME_DAY, Transaction.AchType.STANDARD);
+
+        ResourceCollection<Transaction> standardCollection = gateway.transaction().search(standardSearchRequest);
+
+        assertEquals(1, standardCollection.getMaximumSize());
+        assertEquals(standardTransaction.getId(), standardCollection.getFirst().getId());
+    }
+
+    @Test
+    public void searchOnAchTypeMatchesActualAchTypeNotRequested() {
+        Transaction transaction = gateway.transaction().find("standard_ach_sameday_requested");
+
+        assertEquals("standard", transaction.getAchType());
+        assertEquals("same_day", transaction.getRequestedAchType());
+
+        TransactionSearchRequest standardSearchRequest = new TransactionSearchRequest()
+            .id().is(transaction.getId())
+            .achType().is(Transaction.AchType.STANDARD);
+
+        ResourceCollection<Transaction> standardCollection = gateway.transaction().search(standardSearchRequest);
+
+        assertEquals(1, standardCollection.getMaximumSize());
+        assertEquals(transaction.getId(), standardCollection.getFirst().getId());
+
+        TransactionSearchRequest sameDaySearchRequest = new TransactionSearchRequest()
+            .id().is(transaction.getId())
+            .achType().is(Transaction.AchType.SAME_DAY);
+
+        assertEquals(0, gateway.transaction().search(sameDaySearchRequest).getMaximumSize());
+
+        TransactionSearchRequest bothSearchRequest = new TransactionSearchRequest()
+            .id().is(transaction.getId())
+            .achType().in(Transaction.AchType.SAME_DAY, Transaction.AchType.STANDARD);
+
+        ResourceCollection<Transaction> bothCollection = gateway.transaction().search(bothSearchRequest);
+
+        assertEquals(1, bothCollection.getMaximumSize());
+        assertEquals(transaction.getId(), bothCollection.getFirst().getId());
+    }
 }

@@ -175,4 +175,33 @@ public class PaymentMethodGatewayTest {
         paymentMethodGateway.delete(token, request);
         Mockito.verify(http).delete("/merchants/merchant_id/payment_methods/any/some_token?revoke_all_grants=true");
     }
+
+    @Test
+    public void findThrowsNotFoundExceptionOnTraversalToken() {
+        assertThrows(NotFoundException.class, () -> {
+            this.gateway.paymentMethod().find("../../foo");
+        });
+    }
+
+    @Test
+    public void updateThrowsNotFoundExceptionOnTraversalToken() {
+        assertThrows(NotFoundException.class, () -> {
+            this.gateway.paymentMethod().update("../../foo", new PaymentMethodRequest());
+        });
+    }
+
+    @Test
+    public void deleteThrowsNotFoundExceptionOnTraversalToken() {
+        assertThrows(NotFoundException.class, () -> {
+            this.gateway.paymentMethod().delete("../../foo");
+        });
+    }
+
+    @Test
+    public void deleteWithRequestThrowsNotFoundExceptionOnTraversalToken() {
+        assertThrows(NotFoundException.class, () -> {
+            this.gateway.paymentMethod().delete("../../foo", new PaymentMethodDeleteRequest());
+        });
+    }
+
 }

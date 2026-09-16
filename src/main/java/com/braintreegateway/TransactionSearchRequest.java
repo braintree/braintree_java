@@ -5,6 +5,10 @@ public class TransactionSearchRequest extends SearchRequest {
         return textNode("id");
     }
 
+    public MultipleValueNode<TransactionSearchRequest, Transaction.AchType> achType() {
+        return multiTypeNode("ach_type");
+    }
+
     public TextNode<TransactionSearchRequest> acquirerReferenceNumber() {
         return textNode("acquirer_reference_number");
     }

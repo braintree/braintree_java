@@ -1,6 +1,7 @@
 package com.braintreegateway.unittest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -19,6 +20,7 @@ import com.braintreegateway.PaymentMethodNonceGateway;
 import com.braintreegateway.PaymentMethodNonceRequest;
 import com.braintreegateway.Request;
 import com.braintreegateway.Result;
+import com.braintreegateway.exceptions.NotFoundException;
 import com.braintreegateway.util.Http;
 import com.braintreegateway.util.SimpleNodeWrapper;
 
@@ -71,4 +73,22 @@ public class PaymentMethodNonceGatewayTest {
         assertEquals("a-nonce", nonce.getNonce());
         verify(http).get(merchantPath + "/payment_method_nonces/a-nonce");
     }
+
+    @Test
+    public void createThrowsNotFoundForTraversalToken() {
+        assertThrows(NotFoundException.class, () -> gateway.create("../../foo"));
+    }
+
+    @Test
+    public void createWithRequestThrowsNotFoundForTraversalToken() {
+        PaymentMethodNonceRequest request = new PaymentMethodNonceRequest();
+        request.paymentMethodToken("../../foo");
+        assertThrows(NotFoundException.class, () -> gateway.create(request));
+    }
+
+    @Test
+    public void findThrowsNotFoundForTraversalNonce() {
+        assertThrows(NotFoundException.class, () -> gateway.find("../../foo"));
+    }
+
 }

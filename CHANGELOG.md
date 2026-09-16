@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.54.0
+* Add `ach_type` to transaction search
+* Add `surchargeAmount` to `TransactionRefundRequest`
+* Fix path traversal vulnerability in `CreditCard`, `CreditCardVerification`, `Customer`, `MerchantAccount`, `PayPalAccount`, `PaymentMethod`, `PaymentMethodNonce`, `Plan`, `SepaDirectDebitAccount`, `Subscription`, `ThreeDSecure`, `Transaction`, `TransactionLineItem`, `UsBankAccount`, and `UsBankAccountVerification` gateways by validating that IDs used in request paths do not contain path separators or relative-path segments
+
 ## 3.53.0
 * Add `PAYPAL_ACCOUNT_EMAIL_FORMAT_IS_INVALID (92963)` and `PAYPAL_ACCOUNT_EMAIL_IS_TOO_LONG (92964)` validation error codes
 * Bump `jackson-jr-objects` to `2.15.4`, upgrading the transitive `jackson-core` to `2.15.4` to address CVE-2025-52999 (`StackOverflowError` when parsing deeply nested JSON)
