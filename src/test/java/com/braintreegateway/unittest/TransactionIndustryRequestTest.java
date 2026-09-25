@@ -2,6 +2,7 @@ package com.braintreegateway.unittest;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.TransactionIndustryRequest;
@@ -21,6 +22,7 @@ public class TransactionIndustryRequestTest {
         TransactionIndustryRequest request = new TransactionIndustryRequest(txnRequest);
 
         Calendar arrivalDate = Calendar.getInstance();
+        arrivalDate.setTimeZone(TimeZone.getTimeZone("UTC"));
         arrivalDate.set(2023, Calendar.FEBRUARY, 10, 22, 45, 30);
 
         request.industryType(Transaction.IndustryType.TRAVEL_FLIGHT)

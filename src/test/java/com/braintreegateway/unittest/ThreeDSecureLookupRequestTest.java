@@ -11,6 +11,7 @@ import com.braintreegateway.exceptions.UnexpectedException;
 import java.util.Map;
 import com.fasterxml.jackson.jr.ob.JSON;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -215,6 +216,7 @@ public class ThreeDSecureLookupRequestTest {
             "}";
 
         Calendar authTime = Calendar.getInstance();
+        authTime.setTimeZone(TimeZone.getTimeZone("UTC"));
         authTime.set(2024, Calendar.FEBRUARY, 10, 22, 45, 30);
 
         ThreeDSecureLookupPriorAuthenticationDetails priorAuthenticationDetails = new ThreeDSecureLookupPriorAuthenticationDetails()
