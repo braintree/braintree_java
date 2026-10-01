@@ -49,15 +49,7 @@ public class CustomerRecommendationsPayload {
             getValue(response, "generateCustomerRecommendations.paymentRecommendations");
     
         List<PaymentRecommendation> paymentRecommendationList = paymentRecommendations.stream()
-            .map(recommendationObj -> {
-                Integer recommendedPriority = getValue(recommendationObj, "recommendedPriority");
-                String paymentOptionString = getValue(recommendationObj, "paymentOption");
-                RecommendedPaymentOption paymentOption = parsePaymentOption(paymentOptionString);
-                if (paymentOption == null) {
-                    return null;
-                }
-                return new PaymentRecommendation(paymentOption, recommendedPriority);
-            })
+            .map(CustomerRecommendationsPayload::parsePaymentRecommendation)
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
     
@@ -65,6 +57,21 @@ public class CustomerRecommendationsPayload {
     } catch (Exception e) {
       throw new ServerException("Error extracting recommendations: " + e.getMessage());
     }
+  }
+
+  private static PaymentRecommendation parsePaymentRecommendation(Map<String, Object> recommendationObj) {
+    if (recommendationObj == null || !recommendationObj.containsKey("paymentOption")) {
+      LOGGER.log(Level.WARNING, "Skipping payment recommendation with missing payment option");
+      return null;
+    }
+    RecommendedPaymentOption paymentOption = parsePaymentOption(getValue(recommendationObj, "paymentOption"));
+    if (paymentOption == null) {
+      return null;
+    }
+    Integer recommendedPriority = recommendationObj.containsKey("recommendedPriority")
+        ? (Integer) recommendationObj.get("recommendedPriority")
+        : null;
+    return new PaymentRecommendation(paymentOption, recommendedPriority);
   }
 
   private static RecommendedPaymentOption parsePaymentOption(String paymentOptionString) {
