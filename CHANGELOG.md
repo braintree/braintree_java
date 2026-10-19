@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.55.0
+* Add `PAYPAL_BILLING_AGREEMENT_RETRY_NOW` webhook notification kind and `PayPalBillingAgreementRetryNow` subject
+* Add `TransactionGateway.reverse` to automatically void or fully refund a transaction
+* Add `mastercard_transaction_link_id` to `external_vault` on `CreditCard` and `Customer`
+* Add `previous_mastercard_transaction_link_id` to `external_vault` on `Transaction` and `CreditCardVerification.create`
+
 ## 3.54.0
 * Add `ach_type` to transaction search
 * Add `surchargeAmount` to `TransactionRefundRequest`

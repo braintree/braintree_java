@@ -4,6 +4,7 @@ public class ExternalVaultRequest extends Request {
     private TransactionRequest parent;
     private ExternalVault.Status status;
     private String previousNetworkTransactionId;
+    private String previousMastercardTransactionLinkId;
 
     public ExternalVaultRequest(TransactionRequest parent) {
         this.parent = parent;
@@ -24,6 +25,11 @@ public class ExternalVaultRequest extends Request {
         return this;
     }
 
+    public ExternalVaultRequest previousMastercardTransactionLinkId(String previousMastercardTransactionLinkId) {
+        this.previousMastercardTransactionLinkId = previousMastercardTransactionLinkId;
+        return this;
+    }
+
     public TransactionRequest done() {
         return parent;
     }
@@ -36,6 +42,7 @@ public class ExternalVaultRequest extends Request {
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root)
             .addElement("status", status)
-            .addElement("previousNetworkTransactionId", previousNetworkTransactionId);
+            .addElement("previousNetworkTransactionId", previousNetworkTransactionId)
+            .addElement("previousMastercardTransactionLinkId", previousMastercardTransactionLinkId);
     }
 }

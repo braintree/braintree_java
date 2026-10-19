@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionCloneRequest;
 import com.braintreegateway.TransactionGateway;
 import com.braintreegateway.TransactionRefundRequest;
+import com.braintreegateway.TransactionReverseRequest;
 import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.TransactionSearchRequest;
 import com.braintreegateway.TransactionVoidRequest;
@@ -114,6 +116,20 @@ public class TransactionGatewayTest {
     @Test
     public void refundWithSurchargeAmount() {
         assertSuccess(gateway.refund("an_id", new TransactionRefundRequest().surchargeAmount(new BigDecimal("1.00"))));
+    }
+
+    @Test
+    public void reverseById() {
+        assertSuccess(gateway.reverse("an_id"));
+        verify(http).post(eq(merchantPath + "/transactions/an_id/reverse"), nullable(Request.class));
+    }
+
+    @Test
+    public void reverseWithRequest() {
+        TransactionReverseRequest request = new TransactionReverseRequest().apiRequestKey("reverse-key-789");
+
+        assertSuccess(gateway.reverse("an_id", request));
+        verify(http).post(eq(merchantPath + "/transactions/an_id/reverse"), eq(request));
     }
 
     @Test
@@ -255,6 +271,11 @@ public class TransactionGatewayTest {
     @Test
     public void refundWithRequestThrowsNotFoundForTraversalId() {
         assertThrows(NotFoundException.class, () -> gateway.refund("../../foo", new TransactionRefundRequest()));
+    }
+
+    @Test
+    public void reverseThrowsNotFoundForTraversalId() {
+        assertThrows(NotFoundException.class, () -> gateway.reverse("../../foo"));
     }
 
     @Test

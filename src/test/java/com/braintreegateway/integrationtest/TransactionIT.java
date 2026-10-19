@@ -60,6 +60,7 @@ import com.braintreegateway.TransactionIndustryDataAdditionalChargeRequest;
 import com.braintreegateway.TransactionLineItem;
 import com.braintreegateway.TransactionRefundRequest;
 import com.braintreegateway.TransactionRequest;
+import com.braintreegateway.TransactionReverseRequest;
 import com.braintreegateway.TransactionSearchRequest;
 import com.braintreegateway.ValidationError;
 import com.braintreegateway.ValidationErrorCode;
@@ -4562,6 +4563,25 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
     }
 
     @Test
+    public void saleWithExternalVaultPreviousMastercardTransactionLinkId() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                vaulted().
+                previousMastercardTransactionLinkId("1234567890123456789012").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertTrue(result.isSuccess());
+        Transaction transaction = result.getTarget();
+        assertTrue(transaction.getNetworkTransactionId().length() > 0);
+    }
+
+    @Test
     public void saleWithExternalVaultStatusVaultedWithoutPreviousNetworkTransactionId() {
         TransactionRequest request = new TransactionRequest().
             amount(new BigDecimal("10.00")).
@@ -4597,6 +4617,48 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertEquals(
             ValidationErrorCode.TRANSACTION_EXTERNAL_VAULT_STATUS_WITH_PREVIOUS_NETWORK_TRANSACTION_ID_IS_INVALID,
             result.getErrors().forObject("transaction").forObject("external_vault").onField("status").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void saleWithExternalVaultValidationErrorInvalidStatusWithPreviousMastercardTransactionLinkId() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                willVault().
+                previousMastercardTransactionLinkId("1234567890123456789012").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_EXTERNAL_VAULT_STATUS_WITH_PREVIOUS_MASTERCARD_TRANSACTION_LINK_ID_IS_INVALID,
+            result.getErrors().forObject("transaction").forObject("external_vault").onField("status").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void saleWithExternalVaultValidationErrorInvalidPreviousMastercardTransactionLinkId() {
+        TransactionRequest request = new TransactionRequest().
+            amount(new BigDecimal("10.00")).
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                vaulted().
+                previousMastercardTransactionLinkId("1234567890123456789012123").
+                done();
+
+        Result<Transaction> result = gateway.transaction().sale(request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+            ValidationErrorCode.TRANSACTION_EXTERNAL_VAULT_PREVIOUS_MASTERCARD_TRANSACTION_LINK_ID_IS_INVALID,
+            result.getErrors().forObject("transaction").forObject("external_vault").onField("previous_mastercard_transaction_link_id").get(0).getCode()
         );
     }
 
@@ -4929,6 +4991,127 @@ public class TransactionIT extends IntegrationTest implements MerchantAccountTes
         assertFalse(result.isSuccess());
         assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_BE_VOIDED,
                 result.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
+
+    @Test
+    public void reverseVoidsAVoidableTransaction() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        Result<Transaction> result = gateway.transaction().reverse(transaction.getId());
+        assertTrue(result.isSuccess());
+
+        assertEquals(transaction.getId(), result.getTarget().getId());
+        assertEquals(Transaction.Status.VOIDED, result.getTarget().getStatus());
+        assertNull(result.getTarget().getRefundedTransactionId());
+    }
+
+    @Test
+    public void reverseRefundsASettledTransaction() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
+        String transactionId = gateway.transaction().sale(request).getTarget().getId();
+        TestHelper.settle(gateway, transactionId);
+
+        Result<Transaction> result = gateway.transaction().reverse(transactionId);
+        assertTrue(result.isSuccess());
+
+        Transaction refund = result.getTarget();
+        Transaction originalTransaction = gateway.transaction().find(transactionId);
+
+        assertEquals(Transaction.Type.CREDIT, refund.getType());
+        assertEquals(originalTransaction.getId(), refund.getRefundedTransactionId());
+    }
+
+    @Test
+    public void reverseWithApiRequestKeyIsIdempotent() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        TransactionReverseRequest reverseRequest = new TransactionReverseRequest().
+            apiRequestKey("reverse-idempotency-" + transaction.getId());
+
+        Result<Transaction> firstResult = gateway.transaction().reverse(transaction.getId(), reverseRequest);
+        assertTrue(firstResult.isSuccess());
+
+        Result<Transaction> secondResult = gateway.transaction().reverse(transaction.getId(), reverseRequest);
+        assertTrue(secondResult.isSuccess());
+        assertEquals(firstResult.getTarget().getId(), secondResult.getTarget().getId());
+    }
+
+    @Test
+    public void reverseWithoutApiRequestKeyCannotBeRepeated() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done();
+        Transaction transaction = gateway.transaction().sale(request).getTarget();
+
+        Result<Transaction> firstResult = gateway.transaction().reverse(transaction.getId());
+        assertTrue(firstResult.isSuccess());
+
+        Result<Transaction> secondResult = gateway.transaction().reverse(transaction.getId());
+        assertFalse(secondResult.isSuccess());
+        assertEquals(ValidationErrorCode.TRANSACTION_CANNOT_REFUND_UNLESS_SETTLED,
+            secondResult.getErrors().forObject("transaction").onField("base").get(0).getCode());
+    }
+
+    @Test
+    public void reverseVoidsAVoidableRefund() {
+        TransactionRequest request = new TransactionRequest().
+            amount(TransactionAmount.AUTHORIZE.amount).
+            creditCard().
+                number(CreditCardNumber.VISA.number).
+                expirationDate("05/2008").
+                done().
+            options().
+                submitForSettlement(true).
+                done();
+        String transactionId = gateway.transaction().sale(request).getTarget().getId();
+        TestHelper.settle(gateway, transactionId);
+
+        Result<Transaction> refundResult = gateway.transaction().refund(transactionId);
+        assertTrue(refundResult.isSuccess());
+        Transaction refund = refundResult.getTarget();
+        Result<Transaction> result = gateway.transaction().reverse(refund.getId());
+
+        assertTrue(result.isSuccess());
+        assertEquals(refund.getId(), result.getTarget().getId());
+        assertEquals(Transaction.Status.VOIDED, result.getTarget().getStatus());
+        assertEquals(transactionId, result.getTarget().getRefundedTransactionId());
+    }
+
+    @Test
+    public void reverseWithBadId() {
+        assertThrows(NotFoundException.class, () -> {
+            gateway.transaction().reverse("badId");
+        });
+    }
+
+    @Test
+    public void reverseWithPathTraversalIdThrowsNotFound() {
+        assertThrows(NotFoundException.class, () -> {
+            gateway.transaction().reverse("../badId");
+        });
     }
 
     @Test

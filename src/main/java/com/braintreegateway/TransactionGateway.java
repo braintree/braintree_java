@@ -125,6 +125,34 @@ public class TransactionGateway {
     }
 
     /**
+     * Reverses a transaction. If a transaction can still be voided, it will be;
+     * otherwise, it creates a full refund.
+     *
+     * @param id the id of the transaction to reverse.
+     * @return a {@link Result} containing the voided transaction or the newly created refund.
+     */
+    public Result<Transaction> reverse(String id) {
+        return reverse(id, null);
+    }
+
+    /**
+     * Reverses a transaction. If a transaction can still be voided, it will be;
+     * otherwise, it creates a full refund.
+     *
+     * @param id the id of the transaction to reverse.
+     * @param request the request. It may be null; use it to supply an idempotency key.
+     * @return a {@link Result} containing the voided transaction or the newly created refund.
+     */
+    public Result<Transaction> reverse(String id, TransactionReverseRequest request) {
+        if (StringUtils.isInvalidPathSegment(id)) {
+            throw new NotFoundException();
+        }
+
+        NodeWrapper response = http.post(configuration.getMerchantPath() + "/transactions/" + id + "/reverse", request);
+        return new Result<Transaction>(response, Transaction.class);
+    }
+
+    /**
      * Creates a sale {@link Transaction}.
      * @param request the request.
      * @return a {@link Result}.

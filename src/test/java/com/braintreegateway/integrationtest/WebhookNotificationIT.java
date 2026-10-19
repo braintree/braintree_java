@@ -7,11 +7,13 @@ import com.braintreegateway.testhelpers.TestHelper;
 import com.braintreegateway.util.NodeWrapper;
 import com.braintreegateway.util.NodeWrapperFactory;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -885,6 +887,27 @@ public class WebhookNotificationIT extends IntegrationTest {
         assertEquals("shipping-locality", profileData.getShippingAddress().getLocality());
         assertEquals("shipping-region", profileData.getShippingAddress().getRegion());
         assertEquals("shipping-code", profileData.getShippingAddress().getPostalCode());
+    }
+
+    @Test
+    public void createsPayPalBillingAgreementRetryNow() {
+        HashMap<String, String> sampleNotification = this.gateway.webhookTesting().sampleNotification(WebhookNotification.Kind.PAYPAL_BILLING_AGREEMENT_RETRY_NOW, "my_id");
+
+        WebhookNotification notification = this.gateway.webhookNotification().parse(sampleNotification.get("bt_signature"), sampleNotification.get("bt_payload"));
+
+        assertEquals(WebhookNotification.Kind.PAYPAL_BILLING_AGREEMENT_RETRY_NOW, notification.getKind());
+
+        PayPalBillingAgreementRetryNow retryNow = notification.getPayPalBillingAgreementRetryNow();
+
+        assertEquals("B-1234567890", retryNow.getBillingAgreementId());
+        assertEquals("INV-2026-001", retryNow.getInvoiceNumber());
+        assertEquals(new BigDecimal("85.21"), retryNow.getTransactionAmount());
+        assertEquals("US", retryNow.getTransactionCountry());
+        assertEquals("USD", retryNow.getTransactionCurrency());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        assertEquals("2026-09-04T21:28:37Z", dateFormat.format(retryNow.getTransactionTime().getTime()));
     }
 
     @Test

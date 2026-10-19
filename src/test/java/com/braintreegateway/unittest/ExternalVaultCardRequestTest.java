@@ -17,6 +17,7 @@ public class ExternalVaultCardRequestTest {
 
         CreditCardRequest returned = request
                 .networkTransactionId("a-network-txn-id")
+                .mastercardTransactionLinkId("1234567890123456789012")
                 .done();
 
         assertSame(parent, returned);
@@ -24,5 +25,6 @@ public class ExternalVaultCardRequestTest {
         String xml = request.toXML();
         assertTrue(xml.contains("<externalVault>"), xml);
         assertTrue(xml.contains("<networkTransactionId>a-network-txn-id</networkTransactionId>"), xml);
+        assertTrue(xml.contains("<mastercardTransactionLinkId>1234567890123456789012</mastercardTransactionLinkId>"), xml);
     }
 }

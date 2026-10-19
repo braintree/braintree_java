@@ -233,6 +233,23 @@ public class CustomerIT extends IntegrationTest {
     }
 
     @Test
+    public void createWithCreditCardAndMastercardTransactionLinkId() {
+        CustomerRequest request = new CustomerRequest().
+            firstName("Fred").
+            lastName("Jones").
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/23").
+                externalVault().
+                    mastercardTransactionLinkId("1234567890123456789012").
+                    done().
+                done();
+
+        Result<Customer> result = gateway.customer().create(request);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
     public void createWithDuplicateCreditCard() {
         CustomerRequest customerRequest = new CustomerRequest();
         customerRequest.firstName("Fred").

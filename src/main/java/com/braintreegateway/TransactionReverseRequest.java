@@ -1,0 +1,39 @@
+package com.braintreegateway;
+
+/**
+ * Provides a fluent interface to build a transaction reversal request.
+ */
+public class TransactionReverseRequest extends Request {
+
+    private String apiRequestKey;
+
+    /**
+     * Sets a unique request identifier for idempotency.
+     *
+     * @param apiRequestKey the unique request identifier.
+     * @return this request.
+     */
+    public TransactionReverseRequest apiRequestKey(String apiRequestKey) {
+        this.apiRequestKey = apiRequestKey;
+        return this;
+    }
+
+    @Override
+    public String toQueryString() {
+        return toQueryString("transaction");
+    }
+
+    @Override
+    public String toQueryString(String root) {
+        return buildRequest(root).toQueryString();
+    }
+
+    @Override
+    public String toXML() {
+        return buildRequest("transaction").toXML();
+    }
+
+    protected RequestBuilder buildRequest(String root) {
+        return new RequestBuilder(root).addElement("api-request-key", apiRequestKey);
+    }
+}

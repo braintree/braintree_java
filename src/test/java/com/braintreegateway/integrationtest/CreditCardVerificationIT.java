@@ -287,6 +287,87 @@ public class CreditCardVerificationIT extends IntegrationTest {
     }
 
     @Test
+    public void createVerificationWithExternalVaultPreviousMastercardTransactionLinkId() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                cvv("123").
+                billingAddress().
+                    company("Braintree").
+                    countryCodeAlpha2("US").
+                    countryCodeAlpha3("USA").
+                    countryCodeNumeric("840").
+                    countryName("United States of America").
+                    extendedAddress("Unit B").
+                    firstName("John").
+                    lastName("Smith").
+                    locality("San Francisco").
+                    postalCode("60606").
+                    region("CA").
+                    streetAddress("123 Townsend St").
+                    done().
+                done().
+            options().
+                amount("5.00").
+                done().
+            externalVault().
+                previousMastercardTransactionLinkId("1234567890123456789012").
+                willVault().
+                done().
+            riskData().
+                customerBrowser("customer-browser-user-agent").
+                customerIP("127.0.0.1").
+                done();
+
+
+        TestHelper.assertIncludes("1234567890123456789012", request.toXML());
+        TestHelper.assertIncludes("will_vault", request.toXML());
+        TestHelper.assertIncludes("customer-browser-user-agent", request.toXML());
+        TestHelper.assertIncludes("127.0.0.1", request.toXML());
+    }
+
+    @Test
+    public void createVerificationWithExternalVaultValidationErrorInvalidStatusWithPreviousMastercardTransactionLinkId() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                willVault().
+                previousMastercardTransactionLinkId("1234567890123456789012").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+            ValidationErrorCode.VERIFICATION_EXTERNAL_VAULT_STATUS_WITH_PREVIOUS_MASTERCARD_TRANSACTION_LINK_ID_IS_INVALID,
+            result.getErrors().forObject("verification").forObject("external_vault").onField("status").get(0).getCode()
+        );
+    }
+
+    @Test
+    public void createVerificationWithExternalVaultValidationErrorInvalidPreviousMastercardTransactionLinkId() {
+        CreditCardVerificationRequest request = new CreditCardVerificationRequest().
+            creditCard().
+                number(CreditCardNumber.MASTER_CARD.number).
+                expirationDate("05/2009").
+                done().
+            externalVault().
+                vaulted().
+                previousMastercardTransactionLinkId("1234567890123456789012123").
+                done();
+
+        Result<CreditCardVerification> result = gateway.creditCardVerification().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+            ValidationErrorCode.VERIFICATION_EXTERNAL_VAULT_PREVIOUS_MASTERCARD_TRANSACTION_LINK_ID_IS_INVALID,
+            result.getErrors().forObject("verification").forObject("external_vault").onField("previous_mastercard_transaction_link_id").get(0).getCode()
+        );
+    }
+
+    @Test
     public void createVerificationWithThreeDSecureAuthenticationId() {
 
         String threeDSecureAuthenticationId = TestHelper.createTest3DS(gateway, "three_d_secure_merchant_account", new ThreeDSecureRequestForTests().

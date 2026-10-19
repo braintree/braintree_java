@@ -76,6 +76,7 @@ public class WebhookTestingGateway {
             case PARTNER_MERCHANT_DISCONNECTED: return partnerMerchantDisconnectedXml(id);
             case PAYMENT_METHOD_CUSTOMER_DATA_UPDATED: return paymentMethodCustomerDataUpdatedXml(id);
             case PAYMENT_METHOD_REVOKED_BY_CUSTOMER: return paymentMethodRevokedByCustomerXml(id);
+            case PAYPAL_BILLING_AGREEMENT_RETRY_NOW: return paypalBillingAgreementRetryNowXml();
             case RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD: return grantedPaymentInstrumentUpdateXml();
             case REFUND_FAILED: return refundFailedXml(id);
             case SUBSCRIPTION_BILLING_SKIPPED: return subscriptionBillingSkippedXml(id);
@@ -634,6 +635,17 @@ public class WebhookTestingGateway {
                           )
                      )
                 )
+        );
+    }
+
+    private String paypalBillingAgreementRetryNowXml() {
+        return node("paypal-billing-agreement-retry-now",
+                node("billing-agreement-id", "B-1234567890"),
+                node("invoice-number", "INV-2026-001"),
+                node("transaction-amount", "85.21"),
+                node("transaction-country", "US"),
+                node("transaction-currency", "USD"),
+                node("transaction-time", "2026-09-04T21:28:37Z")
         );
     }
 

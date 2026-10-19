@@ -3,6 +3,7 @@ package com.braintreegateway;
 public class ExternalVaultCardRequest extends Request {
     private CreditCardRequest parent;
     private String networkTransactionId;
+    private String mastercardTransactionLinkId;
 
     public ExternalVaultCardRequest(CreditCardRequest parent) {
         this.parent = parent;
@@ -10,6 +11,11 @@ public class ExternalVaultCardRequest extends Request {
 
     public ExternalVaultCardRequest networkTransactionId(String networkTransactionId) {
         this.networkTransactionId = networkTransactionId;
+        return this;
+    }
+
+    public ExternalVaultCardRequest mastercardTransactionLinkId(String mastercardTransactionLinkId) {
+        this.mastercardTransactionLinkId = mastercardTransactionLinkId;
         return this;
     }
 
@@ -24,6 +30,7 @@ public class ExternalVaultCardRequest extends Request {
 
     protected RequestBuilder buildRequest(String root) {
         return new RequestBuilder(root)
-            .addElement("networkTransactionId", networkTransactionId);
+            .addElement("networkTransactionId", networkTransactionId)
+            .addElement("mastercardTransactionLinkId", mastercardTransactionLinkId);
     }
 }

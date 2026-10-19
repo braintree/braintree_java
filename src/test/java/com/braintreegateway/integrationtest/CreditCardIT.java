@@ -203,6 +203,42 @@ public class CreditCardIT extends IntegrationTest implements MerchantAccountTest
      }
 
     @Test
+    public void createWithMastercardTransactionLinkId() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number(CreditCardNumber.MASTER_CARD.number).
+            expirationDate("05/23").
+            externalVault().
+                mastercardTransactionLinkId("1234567890123456789012").
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertTrue(result.isSuccess());
+     }
+
+    @Test
+    public void createWithInvalidMastercardTransactionLinkId() {
+        Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();
+
+        CreditCardRequest request = new CreditCardRequest().
+            customerId(customer.getId()).
+            number(CreditCardNumber.MASTER_CARD.number).
+            expirationDate("05/23").
+            externalVault().
+                mastercardTransactionLinkId("1234567890123456789012123").
+                done();
+
+        Result<CreditCard> result = gateway.creditCard().create(request);
+        assertFalse(result.isSuccess());
+        assertEquals(
+            ValidationErrorCode.CREDIT_CARD_EXTERNAL_VAULT_MASTERCARD_TRANSACTION_LINK_ID_IS_INVALID,
+            result.getErrors().forObject("credit_card").forObject("external_vault").onField("mastercard_transaction_link_id").get(0).getCode()
+        );
+    }
+
+    @Test
     public void createWithPaymentMethodNonce() {
         String nonce = TestHelper.generateUnlockedNonce(gateway);
         Customer customer = gateway.customer().create(new CustomerRequest()).getTarget();

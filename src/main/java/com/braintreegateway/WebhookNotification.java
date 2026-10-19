@@ -31,6 +31,7 @@ public class WebhookNotification {
         PARTNER_MERCHANT_DECLINED("partner_merchant_declined"),
         PAYMENT_METHOD_CUSTOMER_DATA_UPDATED("payment_method_customer_data_updated"),
         PAYMENT_METHOD_REVOKED_BY_CUSTOMER("payment_method_revoked_by_customer"),
+        PAYPAL_BILLING_AGREEMENT_RETRY_NOW("paypal_billing_agreement_retry_now"),
         RECIPIENT_UPDATED_GRANTED_PAYMENT_METHOD("recipient_updated_granted_payment_method"),
         REFUND_FAILED("refund_failed"),
         SUB_MERCHANT_ACCOUNT_APPROVED("sub_merchant_account_approved"),
@@ -79,6 +80,7 @@ public class WebhookNotification {
     private OAuthAccessRevocation oauthAccessRevocation;
     private PartnerMerchant partnerMerchant;
     private PaymentMethodCustomerDataUpdatedMetadata paymentMethodCustomerDataUpdatedMetadata;
+    private PayPalBillingAgreementRetryNow paypalBillingAgreementRetryNow;
     private RevokedPaymentMethodMetadata revokedPaymentMethodMetadata;
     private String sourceMerchantId;
     private Subscription subscription;
@@ -188,6 +190,11 @@ public class WebhookNotification {
             this.paymentMethodCustomerDataUpdatedMetadata = new PaymentMethodCustomerDataUpdatedMetadata(paymentMethodCustomerDataUpdatedMetadataNode);
         }
 
+        NodeWrapper paypalBillingAgreementRetryNowNode = wrapperNode.findFirst("paypal-billing-agreement-retry-now");
+        if (paypalBillingAgreementRetryNowNode != null && kind == Kind.PAYPAL_BILLING_AGREEMENT_RETRY_NOW) {
+            this.paypalBillingAgreementRetryNow = new PayPalBillingAgreementRetryNow(paypalBillingAgreementRetryNowNode);
+        }
+
         if (!wrapperNode.isSuccess()) {
             this.errors = new ValidationErrors(wrapperNode);
         }
@@ -279,5 +286,9 @@ public class WebhookNotification {
 
     public PaymentMethodCustomerDataUpdatedMetadata getPaymentMethodCustomerDataUpdatedMetadata() {
         return this.paymentMethodCustomerDataUpdatedMetadata;
+    }
+
+    public PayPalBillingAgreementRetryNow getPayPalBillingAgreementRetryNow() {
+        return this.paypalBillingAgreementRetryNow;
     }
 }

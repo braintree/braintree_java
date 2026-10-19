@@ -89,6 +89,9 @@ public class WebhookNotificationTest {
         assertNotNull(notificationFor(
                 WebhookNotification.Kind.PAYMENT_METHOD_CUSTOMER_DATA_UPDATED, "id")
                 .getPaymentMethodCustomerDataUpdatedMetadata());
+        assertNotNull(notificationFor(
+                WebhookNotification.Kind.PAYPAL_BILLING_AGREEMENT_RETRY_NOW, "id")
+                .getPayPalBillingAgreementRetryNow());
     }
 
     @Test

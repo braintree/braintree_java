@@ -19,6 +19,7 @@ public class ExternalVaultVerificationRequestTest {
         CreditCardVerificationRequest returned = request
                 .willVault()
                 .previousNetworkTransactionId("a-network-txn-id")
+                .previousMastercardTransactionLinkId("1234567890123456789012")
                 .done();
 
         assertSame(parent, returned);
@@ -27,6 +28,7 @@ public class ExternalVaultVerificationRequestTest {
         assertTrue(xml.contains("<externalVault>"), xml);
         assertTrue(xml.contains("<status>will_vault</status>"), xml);
         assertTrue(xml.contains("<previousNetworkTransactionId>a-network-txn-id</previousNetworkTransactionId>"), xml);
+        assertTrue(xml.contains("<previousMastercardTransactionLinkId>1234567890123456789012</previousMastercardTransactionLinkId>"), xml);
     }
 
     @Test
