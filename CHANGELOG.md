@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.55.1
+* Bump `central-publishing-maven-plugin` to `0.12.0` to fix Maven Central deploy failure
+
 ## 3.55.0
 * Add `PAYPAL_BILLING_AGREEMENT_RETRY_NOW` webhook notification kind and `PayPalBillingAgreementRetryNow` subject
 * Add `TransactionGateway.reverse` to automatically void or fully refund a transaction
